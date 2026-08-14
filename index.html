@@ -25,6 +25,18 @@
     --line:#D8D2C1;
     --gold:#B08D3E;
   }
+  body.dark-mode {
+    --paper:#121915;
+    --paper-2:#1C2620;
+    --ink:#E3E8E4;
+    --ink-soft:#8C9E93;
+    --green:#3E8E65;
+    --green-soft:#1E3328;
+    --red:#D4563C;
+    --red-soft:#3B1C17;
+    --line:#2A3A30;
+    --gold:#C9A44B;
+  }
   *{box-sizing:border-box;}
   body{
     margin:0;
@@ -32,6 +44,7 @@
     color:var(--ink);
     font-family:'Inter',sans-serif;
     -webkit-font-smoothing:antialiased;
+    transition: background 0.2s, color 0.2s;
   }
   ::selection{background:var(--gold);color:var(--paper);}
   header{
@@ -62,6 +75,40 @@
   }
   main{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
 
+  /* Navegação entre Abas */
+  .nav-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 10px;
+  }
+  .nav-tab {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.15s ease;
+  }
+  .nav-tab:hover {
+    background: var(--paper-2);
+  }
+  .nav-tab.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
+
   .balance-strip{
     display:grid;
     grid-template-columns:1.3fr repeat(auto-fill,minmax(150px,1fr));
@@ -76,7 +123,6 @@
     position:relative;
   }
   .balance-card.total{background:var(--ink);color:var(--paper);}
-  .balance-card.invest{background:var(--paper-2);border-left:3px solid var(--gold);}
   .balance-card .label{
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
@@ -128,7 +174,7 @@
   .modal-overlay{
     position:fixed;
     inset:0;
-    background:rgba(28, 43, 36, 0.6);
+    background:rgba(0, 0, 0, 0.65);
     z-index:90;
     display:flex;
     align-items:center;
@@ -150,7 +196,7 @@
     max-width:560px;
     max-height:90vh;
     overflow-y:auto;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     display:none;
   }
   .panel.open{display:block;}
@@ -188,7 +234,7 @@
     font-size:14px;
     padding:9px 10px;
     border:1.5px solid var(--line);
-    background:#fff;
+    background:var(--paper-2);
     color:var(--ink);
     border-radius:2px;
   }
@@ -247,7 +293,7 @@
   }
   .cat-row .cat-bar-wrap{
     flex:1;
-    background:#fff;
+    background:var(--paper-2);
     border:1px solid var(--line);
     height:10px;
     position:relative;
@@ -334,7 +380,7 @@
     font-size:14px;
     vertical-align:middle;
   }
-  tbody tr:hover{background:rgba(0,0,0,0.02);}
+  tbody tr:hover{background:rgba(0,0,0,0.03);}
   .amt{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;text-align:right;}
   .amt.in{color:var(--green);}
   .amt.out{color:var(--red);}
@@ -354,15 +400,54 @@
   .action-btn:hover{color:var(--ink);}
   .action-btn.del:hover{color:var(--red);}
 
-  .bank-list-item, .cat-list-item, .inv-list-item{
+  .bank-list-item, .cat-list-item, .invest-card{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:8px 12px;
-    background:#fff;
+    padding:10px 14px;
+    background:var(--paper-2);
     border:1px solid var(--line);
-    margin-top:6px;
+    margin-top:8px;
     font-size:13px;
+  }
+
+  .invest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .invest-box {
+    border: 1.5px solid var(--line);
+    background: var(--paper-2);
+    padding: 16px;
+    border-radius: 2px;
+  }
+  .invest-box h4 {
+    margin: 0 0 6px;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .invest-box .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2px 6px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .invest-box .val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 10px 0 6px;
+  }
+  .invest-box .units {
+    font-size: 12px;
+    color: var(--ink-soft);
   }
 
   .empty{
@@ -516,25 +601,85 @@
     <h1>Livro-Caixa</h1>
     <div class="subtitle" id="todayLabel">—</div>
   </div>
-  <div id="userBar"></div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <button id="btnThemeToggle" title="Alternar Tema Escuro/Claro" style="padding:6px 10px; font-size:14px;">🌙</button>
+    <div id="userBar"></div>
+  </div>
 </header>
 
 <main>
+  <!-- Barra de Navegação por Abas -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')">📖 Livro-Caixa</button>
+    <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">🪙 Cripto & Investimentos</button>
+  </div>
+
   <div class="balance-strip" id="balanceStrip"></div>
 
-  <div class="toolbar">
-    <button class="primary" id="btnNovo">+ Novo lançamento</button>
-    <button id="btnBanco">+ Banco</button>
-    <button id="btnCategoria">+ Categoria</button>
-    <button id="btnInvestimento">🪙 Cripto/Invest</button>
-    <button id="btnTransferencia">🔄 Transferência</button>
-    <button id="btnPasteTrigger">Colar Texto</button>
-    <button id="btnImportTrigger">Importar PDF</button>
-    <button id="btnExport">Exportar PDF</button>
-    <button id="btnExportBackup">Exportar Backup</button>
-    <button id="btnImportBackupTrigger">Restaurar Backup</button>
-    <input type="file" id="fileImport" accept="application/pdf">
-    <input type="file" id="fileBackupImport" accept="application/json">
+  <!-- ABA 1: LIVRO CAIXA -->
+  <div id="viewCaixa" class="tab-content active">
+    <div class="toolbar">
+      <button class="primary" id="btnNovo">+ Novo lançamento</button>
+      <button id="btnBanco">+ Banco</button>
+      <button id="btnCategoria">+ Categoria</button>
+      <button id="btnTransferencia">🔄 Transferência</button>
+      <button id="btnPasteTrigger">Colar Texto</button>
+      <button id="btnImportTrigger">Importar PDF</button>
+      <button id="btnExport">Exportar PDF</button>
+      <button id="btnExportBackup">Exportar Backup</button>
+      <button id="btnImportBackupTrigger">Restaurar Backup</button>
+      <input type="file" id="fileImport" accept="application/pdf">
+      <input type="file" id="fileBackupImport" accept="application/json">
+    </div>
+
+    <div id="categorySummary"></div>
+
+    <div class="ledger">
+      <div class="ledger-month">
+        <span id="ledgerLabel">Lançamentos</span>
+        <span id="ledgerCount">0</span>
+      </div>
+
+      <!-- Barra de Filtros Completa -->
+      <div class="ledger-filters">
+        <div>
+          <label for="filterMonth">Mês</label>
+          <select id="filterMonth"></select>
+        </div>
+        <div>
+          <label for="filterDateStart">Data Início</label>
+          <input type="date" id="filterDateStart">
+        </div>
+        <div>
+          <label for="filterDateEnd">Data Fim</label>
+          <input type="date" id="filterDateEnd">
+        </div>
+        <div>
+          <label for="filterBank">Banco</label>
+          <select id="filterBank"></select>
+        </div>
+        <div>
+          <label for="filterCategory">Categoria</label>
+          <select id="filterCategory"></select>
+        </div>
+        <div style="flex: 0 0 auto;">
+          <button type="button" id="btnClearFilters" style="padding: 7px 12px; font-size: 11px;">Limpar Filtros</button>
+        </div>
+      </div>
+
+      <div class="ledger-scroll-area">
+        <div id="ledgerBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA 2: CRIPTO E INVESTIMENTOS -->
+  <div id="viewInvest" class="tab-content">
+    <div class="toolbar">
+      <button class="primary" id="btnNovoInvest">+ Novo Ativo / Cripto</button>
+    </div>
+
+    <div id="investGrid" class="invest-grid"></div>
   </div>
 
   <!-- Janelas Flutuantes (Modais) -->
@@ -611,29 +756,8 @@
         </div>
       </div>
       <div style="margin-top:16px;">
-        <label>Categorias Cadastrados:</label>
+        <label>Categorias Cadastradas:</label>
         <div id="catManageList"></div>
-      </div>
-    </div>
-
-    <div class="panel" id="panelInvestimento">
-      <h3>Cripto e Investimentos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div>
-          <label for="invNome">Nome do Ativo</label>
-          <input type="text" id="invNome" placeholder="Ex: USDC, Bitcoin, Tesouro">
-        </div>
-        <div>
-          <label for="invValor">Valor Total Atual (R$)</label>
-          <input type="number" id="invValor" step="0.01" min="0" placeholder="0,00">
-        </div>
-        <div>
-          <button class="primary" id="invSalvar" style="width:100%">Adicionar / Salvar</button>
-        </div>
-      </div>
-      <div style="margin-top:16px;">
-        <label>Ativos / Reservas Cadastradas:</label>
-        <div id="invManageList"></div>
       </div>
     </div>
 
@@ -666,6 +790,36 @@
       </div>
     </div>
 
+    <div class="panel" id="panelInvest">
+      <h3 id="panelInvestTitle">Novo Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label for="iNome">Nome do Ativo</label>
+          <input type="text" id="iNome" placeholder="Ex: USDC (Solana), Bitcoin, CDB">
+        </div>
+        <div>
+          <label for="iTipo">Tipo / Categoria</label>
+          <select id="iTipo">
+            <option value="Stablecoin">Stablecoin (ex: USDC)</option>
+            <option value="Criptomoeda">Criptomoeda</option>
+            <option value="Renda Fixa">Renda Fixa / CDI</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+        <div>
+          <label for="iUnidades">Unidades / Tokens (Opcional)</label>
+          <input type="number" id="iUnidades" step="0.000001" placeholder="Ex: 50.00">
+        </div>
+        <div>
+          <label for="iValor">Valor Total Atual (R$)</label>
+          <input type="number" id="iValor" step="0.01" min="0" placeholder="0,00">
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
+          <button class="primary" id="iSalvar" style="width:100%">Salvar Ativo</button>
+        </div>
+      </div>
+    </div>
+
     <div class="panel" id="panelPaste">
       <h3>Colar texto do extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <label for="pasteArea">Cole abaixo o texto do seu extrato bancário ou relatório:</label>
@@ -684,46 +838,6 @@
         <button class="primary" id="importConfirm">Adicionar lançamentos selecionados</button>
         <button id="importCancel">Cancelar</button>
       </div>
-    </div>
-  </div>
-
-  <div id="categorySummary"></div>
-
-  <div class="ledger">
-    <div class="ledger-month">
-      <span id="ledgerLabel">Lançamentos</span>
-      <span id="ledgerCount">0</span>
-    </div>
-
-    <!-- Barra de Filtros Completa -->
-    <div class="ledger-filters">
-      <div>
-        <label for="filterMonth">Mês</label>
-        <select id="filterMonth"></select>
-      </div>
-      <div>
-        <label for="filterDateStart">Data Início</label>
-        <input type="date" id="filterDateStart">
-      </div>
-      <div>
-        <label for="filterDateEnd">Data Fim</label>
-        <input type="date" id="filterDateEnd">
-      </div>
-      <div>
-        <label for="filterBank">Banco</label>
-        <select id="filterBank"></select>
-      </div>
-      <div>
-        <label for="filterCategory">Categoria</label>
-        <select id="filterCategory"></select>
-      </div>
-      <div style="flex: 0 0 auto;">
-        <button type="button" id="btnClearFilters" style="padding: 7px 12px; font-size: 11px;">Limpar Filtros</button>
-      </div>
-    </div>
-
-    <div class="ledger-scroll-area">
-      <div id="ledgerBody"></div>
     </div>
   </div>
 </main>
@@ -760,11 +874,34 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentType = 'in';
   let editingEntryId = null;
   let editingBankId = null;
+  let editingInvestId = null;
   let catChartInstance = null;
 
   const fmt = (n) => (n < 0 ? '-' : '') + 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const todayISO = () => new Date().toISOString().slice(0, 10);
   const currentMonthYM = () => todayISO().slice(0, 7);
+
+  // Sistema de Tema Escuro / Claro
+  const themeBtn = document.getElementById('btnThemeToggle');
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeBtn.textContent = '☀️';
+  }
+  themeBtn.onclick = () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    themeBtn.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    renderCategorySummary();
+  };
+
+  // Alternância de Abas
+  window.switchTab = function(tabName) {
+    document.getElementById('tabBtnCaixa').classList.toggle('active', tabName === 'caixa');
+    document.getElementById('tabBtnInvest').classList.toggle('active', tabName === 'invest');
+    document.getElementById('viewCaixa').classList.toggle('active', tabName === 'caixa');
+    document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
+  };
 
   function formatMonthLabel(ym) {
     if (!ym) return 'Todos os Meses';
@@ -841,10 +978,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(err => { console.error(err); setSyncDot(false); });
   }
 
-  function persistAll() {
-    persistNow();
-  }
-
+  function persistAll() { persistNow(); }
   function saveBanks() { persistAll(); }
   function saveCategories() { persistAll(); }
   function saveEntries() { persistAll(); }
@@ -860,30 +994,29 @@ document.addEventListener('DOMContentLoaded', () => {
     return banks.reduce((sum, b) => sum + bankBalance(b.id), 0);
   }
 
-  function totalInvestmentsBalance() {
-    return investments.reduce((sum, i) => sum + (i.amount || 0), 0);
-  }
-
-  function totalBalance() {
-    return totalBankBalance() + totalInvestmentsBalance();
+  function totalInvestBalance() {
+    return investments.reduce((sum, i) => sum + (i.value || 0), 0);
   }
 
   function renderBalances() {
     const strip = document.getElementById('balanceStrip');
-    const total = totalBalance();
-    const totalInv = totalInvestmentsBalance();
-    
-    let html = `<div class="balance-card total">
+    const bankTotal = totalBankBalance();
+    const investTotal = totalInvestBalance();
+    const totalPatrimonio = bankTotal + investTotal;
+
+    let html = `
+    <div class="balance-card total">
       <span class="label">Patrimônio Total</span>
-      <span class="amount ${total < 0 ? 'neg' : ''}">${fmt(total)}</span>
+      <span class="amount ${totalPatrimonio < 0 ? 'neg' : ''}">${fmt(totalPatrimonio)}</span>
+    </div>
+    <div class="balance-card">
+      <span class="label">Caixa (Bancos)</span>
+      <span class="amount ${bankTotal < 0 ? 'neg' : ''}">${fmt(bankTotal)}</span>
+    </div>
+    <div class="balance-card">
+      <span class="label">Investido / Cripto</span>
+      <span class="amount">${fmt(investTotal)}</span>
     </div>`;
-    
-    if (totalInv > 0) {
-      html += `<div class="balance-card invest">
-        <span class="label">Cripto / Invest.</span>
-        <span class="amount">${fmt(totalInv)}</span>
-      </div>`;
-    }
 
     banks.forEach(b => {
       const bal = bankBalance(b.id);
@@ -892,6 +1025,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="amount ${bal < 0 ? 'neg' : ''}">${fmt(bal)}</span>
       </div>`;
     });
+
     strip.innerHTML = html;
   }
 
@@ -919,20 +1053,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
-  function renderInvestmentManageList() {
-    const container = document.getElementById('invManageList');
-    if (investments.length === 0) {
-      container.innerHTML = `<div style="font-size:12px; color:var(--ink-soft); padding:8px 0;">Nenhum ativo cadastrado.</div>`;
-      return;
-    }
-    container.innerHTML = investments.map(i => `
-      <div class="inv-list-item">
-        <span><strong>${i.name}</strong> — Valor: R$ ${(i.amount || 0).toFixed(2).replace('.', ',')}</span>
-        <button type="button" class="action-btn del" onclick="deleteInvestment('${i.id}')" title="Excluir">×</button>
-      </div>
-    `).join('');
-  }
-
   function renderCategorySelect() {
     const sel = document.getElementById('fCategoria');
     const currentVal = sel.value;
@@ -948,6 +1068,26 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="cat-list-item">
         <span><strong>${c.name}</strong></span>
         <button type="button" class="action-btn del" onclick="deleteCategory('${c.id}')" title="Excluir">×</button>
+      </div>
+    `).join('');
+  }
+
+  function renderInvestments() {
+    const container = document.getElementById('investGrid');
+    if (investments.length === 0) {
+      container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhum ativo ou investimento cadastrado. Clique em "+ Novo Ativo / Cripto" para registrar.</div>`;
+      return;
+    }
+
+    container.innerHTML = investments.map(inv => `
+      <div class="invest-box">
+        <h4><span>${inv.name}</span> <span class="tag">${inv.type}</span></h4>
+        <div class="val">${fmt(inv.value || 0)}</div>
+        ${inv.units ? `<div class="units">${inv.units} unidades / tokens</div>` : ''}
+        <div style="margin-top:12px; text-align:right;">
+          <button type="button" class="action-btn" onclick="editInvest('${inv.id}')">✏️ Editar</button>
+          <button type="button" class="action-btn del" onclick="deleteInvest('${inv.id}')">×</button>
+        </div>
       </div>
     `).join('');
   }
@@ -1064,6 +1204,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const palette = ['#B3432B', '#2F6F4F', '#B08D3E', '#4C5A52', '#8C5383', '#3A6B88', '#D9822B', '#5C7A68'];
       
+      const isDark = document.body.classList.contains('dark-mode');
+      const textColor = isDark ? '#E3E8E4' : '#1C2B24';
+      const borderColor = isDark ? '#121915' : '#F7F5EF';
+
       catChartInstance = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -1071,7 +1215,7 @@ document.addEventListener('DOMContentLoaded', () => {
           datasets: [{
             data: spend.map(x => x.total),
             backgroundColor: palette.slice(0, spend.length),
-            borderColor: '#F7F5EF',
+            borderColor: borderColor,
             borderWidth: 2
           }]
         },
@@ -1084,7 +1228,7 @@ document.addEventListener('DOMContentLoaded', () => {
               position: 'bottom',
               labels: {
                 font: { family: 'IBM Plex Mono', size: 11 },
-                color: '#1C2B24',
+                color: textColor,
                 boxWidth: 12
               }
             },
@@ -1149,11 +1293,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBalances();
     renderBankSelects();
     renderBankManageList();
-    renderInvestmentManageList();
     renderCategorySelect();
     renderCategoryManageList();
     renderCategorySummary();
     renderLedger();
+    renderInvestments();
   }
 
   document.getElementById('filterMonth').onchange = () => { renderCategorySummary(); renderLedger(); };
@@ -1190,14 +1334,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  window.deleteInvestment = function(id) {
-    if (confirm('Deseja excluir este ativo de investimento?')) {
-      investments = investments.filter(i => i.id !== id);
-      saveInvestments();
-      render();
-    }
-  };
-
   window.deleteCategory = function(id) {
     if (categories.length <= 1) {
       alert('Você precisa ter pelo menos uma categoria cadastrada.');
@@ -1207,6 +1343,14 @@ document.addEventListener('DOMContentLoaded', () => {
       categories = categories.filter(c => c.id !== id);
       saveCategories();
       populateFilterControls();
+      render();
+    }
+  };
+
+  window.deleteInvest = function(id) {
+    if (confirm('Deseja excluir este registro de investimento?')) {
+      investments = investments.filter(i => i.id !== id);
+      saveInvestments();
       render();
     }
   };
@@ -1238,6 +1382,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('panelBancoTitle').innerHTML = 'Editar Banco <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('bSalvar').textContent = 'Atualizar';
     openModal('panelBanco');
+  };
+
+  window.editInvest = function(id) {
+    const inv = investments.find(i => i.id === id);
+    if (!inv) return;
+    editingInvestId = inv.id;
+    document.getElementById('iNome').value = inv.name;
+    document.getElementById('iTipo').value = inv.type || 'Stablecoin';
+    document.getElementById('iUnidades').value = inv.units || '';
+    document.getElementById('iValor').value = inv.value || 0;
+    document.getElementById('panelInvestTitle').innerHTML = 'Editar Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    document.getElementById('iSalvar').textContent = 'Atualizar Ativo';
+    openModal('panelInvest');
   };
 
   function openModal(panelId) {
@@ -1274,6 +1431,16 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal('panelNovo');
   };
 
+  document.getElementById('btnNovoInvest').onclick = () => {
+    editingInvestId = null;
+    document.getElementById('iNome').value = '';
+    document.getElementById('iUnidades').value = '';
+    document.getElementById('iValor').value = '';
+    document.getElementById('panelInvestTitle').innerHTML = 'Novo Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    document.getElementById('iSalvar').textContent = 'Salvar Ativo';
+    openModal('panelInvest');
+  };
+
   document.getElementById('btnBanco').onclick = () => {
     editingBankId = null;
     document.getElementById('bNome').value = '';
@@ -1284,11 +1451,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   document.getElementById('btnCategoria').onclick = () => openModal('panelCategoria');
-  document.getElementById('btnInvestimento').onclick = () => {
-    document.getElementById('invNome').value = '';
-    document.getElementById('invValor').value = '';
-    openModal('panelInvestimento');
-  };
 
   document.getElementById('btnTransferencia').onclick = () => {
     if (banks.length < 2) {
@@ -1355,6 +1517,29 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   };
 
+  document.getElementById('iSalvar').onclick = () => {
+    const name = document.getElementById('iNome').value.trim();
+    const type = document.getElementById('iTipo').value;
+    const units = parseFloat(document.getElementById('iUnidades').value) || null;
+    const value = parseFloat(document.getElementById('iValor').value) || 0;
+
+    if (!name) { alert('Informe o nome do ativo.'); return; }
+
+    if (editingInvestId) {
+      const idx = investments.findIndex(i => i.id === editingInvestId);
+      if (idx !== -1) {
+        investments[idx] = { id: editingInvestId, name, type, units, value };
+      }
+      editingInvestId = null;
+    } else {
+      investments.push({ id: 'inv' + Date.now(), name, type, units, value });
+    }
+
+    saveInvestments();
+    closeAllPanels();
+    render();
+  };
+
   document.getElementById('bSalvar').onclick = () => {
     const name = document.getElementById('bNome').value.trim();
     const saldo = parseFloat(document.getElementById('bSaldo').value) || 0;
@@ -1377,26 +1562,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('bSaldo').value = '';
     document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('bSalvar').textContent = 'Adicionar';
-    closeAllPanels();
-    render();
-  };
-
-  document.getElementById('invSalvar').onclick = () => {
-    const name = document.getElementById('invNome').value.trim();
-    const valor = parseFloat(document.getElementById('invValor').value);
-    if (!name || isNaN(valor) || valor < 0) {
-      alert('Informe um nome válido e um valor de investimento.');
-      return;
-    }
-    const existingIndex = investments.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
-    if (existingIndex !== -1) {
-      investments[existingIndex].amount = valor;
-    } else {
-      investments.push({ id: 'inv' + Date.now(), name, amount: valor });
-    }
-    saveInvestments();
-    document.getElementById('invNome').value = '';
-    document.getElementById('invValor').value = '';
     closeAllPanels();
     render();
   };
@@ -1528,20 +1693,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let y = 36;
     doc.setFont('helvetica', 'bold');
-    doc.text('Saldos Atuais e Ativos', 14, y);
+    doc.text('Saldos Atuais por Banco', 14, y);
     y += 7;
     doc.setFont('helvetica', 'normal');
     banks.forEach(b => {
       doc.text(`${b.name}: ${fmt(bankBalance(b.id))}`, 14, y);
       y += 6;
     });
-    investments.forEach(i => {
-      doc.text(`${i.name} (Invest): ${fmt(i.amount)}`, 14, y);
-      y += 6;
-    });
     doc.setFont('helvetica', 'bold');
-    doc.text(`Patrimônio Total: ${fmt(totalBalance())}`, 14, y + 2);
-    y += 14;
+    doc.text(`Saldo Caixa: ${fmt(totalBankBalance())}`, 14, y + 2);
+    doc.text(`Reservas/Investimentos: ${fmt(totalInvestBalance())}`, 14, y + 8);
+    doc.text(`Patrimônio Total: ${fmt(totalBankBalance() + totalInvestBalance())}`, 14, y + 14);
+    y += 22;
 
     doc.setFont('helvetica', 'bold');
     doc.text('Data', 14, y);
