@@ -45,6 +45,7 @@
     font-family:'Inter',sans-serif;
     -webkit-font-smoothing:antialiased;
     transition: background 0.2s, color 0.2s;
+    overflow-x: hidden;
   }
   ::selection{background:var(--gold);color:var(--paper);}
   header{
@@ -82,6 +83,10 @@
     margin-bottom: 24px;
     border-bottom: 2px solid var(--ink);
     padding-bottom: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
   .nav-tab {
     font-family: 'IBM Plex Mono', monospace;
@@ -94,6 +99,8 @@
     cursor: pointer;
     border-radius: 4px 4px 0 0;
     transition: all 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .nav-tab:hover {
     background: var(--paper-2);
@@ -810,9 +817,11 @@
 
   <!-- ABA 2: CRIPTO E INVESTIMENTOS -->
   <div id="viewInvest" class="tab-content">
-    <div class="toolbar" style="grid-template-columns: minmax(200px, 260px);">
+    <div class="toolbar" style="grid-template-columns: minmax(200px, 220px) minmax(200px, 220px);">
       <button class="primary" id="btnNovoInvest">+ Novo Ativo / Cripto</button>
+      <button type="button" id="btnUpdateAllPrices">🔄 Atualizar Todas as Cotações</button>
     </div>
+    <div id="updateAllStatus" style="font-size:12px; margin-bottom:16px; opacity:0.75;"></div>
 
     <div id="investGrid" class="invest-grid"></div>
   </div>
@@ -956,11 +965,11 @@
         </div>
         <div>
           <label for="iValor">Valor Total Atual (R$)</label>
-          <div style="display:flex; gap:6px;">
-            <input type="number" id="iValor" step="0.01" min="0" placeholder="0,00" style="flex:1;">
-            <button type="button" id="btnFetchPrice" title="Buscar cotação automática" style="white-space:nowrap;">🔄 Cotação</button>
+          <div style="display:flex; gap:6px; align-items:stretch;">
+            <input type="number" id="iValor" step="0.01" min="0" placeholder="0,00" style="flex:2; min-width:0;">
+            <button type="button" id="btnFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;">🔄 Cotação</button>
           </div>
-          <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;"></div>
+          <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">A cotação não atualiza sozinha — clique em "Cotação" sempre que quiser o preço mais recente (ao criar ou editar o ativo).</div>
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="iSalvar" style="width:100%">Salvar Ativo</button>
@@ -1241,11 +1250,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderBankSelects() {
     const options = banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
     document.getElementById('fBanco').innerHTML = options;
-    
+
+    const bankOptGroup = banks.map(b => `<option value="${b.id}">🏦 ${b.name}</option>`).join('');
+    const pocketOptGroup = pockets.map(p => `<option value="${p.id}">🐷 ${p.name} (Caixinha)</option>`).join('');
+    const transferOptions =
+      (bankOptGroup ? `<optgroup label="Bancos">${bankOptGroup}</optgroup>` : '') +
+      (pocketOptGroup ? `<optgroup label="Caixinhas">${pocketOptGroup}</optgroup>` : '');
+
     const tDe = document.getElementById('tDe');
     const tPara = document.getElementById('tPara');
-    tDe.innerHTML = options;
-    tPara.innerHTML = options;
+    tDe.innerHTML = transferOptions;
+    tPara.innerHTML = transferOptions;
     if (banks.length > 1) tPara.selectedIndex = 1;
   }
 
@@ -1905,13 +1920,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!nameQuery) { statusEl.textContent = 'Digite o nome do ativo primeiro (ex: Bitcoin, USDC).'; return; }
     statusEl.textContent = 'Buscando cotação...';
     try {
-      const searchRes = await fetch('https://api.coingecko.com/api/v3/search?query=' + encodeURIComponent(nameQuery));
-      const searchData = await searchRes.json();
-      const coin = searchData.coins && searchData.coins[0];
+      const coin = await fetchCoinMatch(nameQuery);
       if (!coin) { statusEl.textContent = 'Ativo não encontrado. Preencha o valor manualmente.'; return; }
-      const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + coin.id + '&vs_currencies=brl');
-      const priceData = await priceRes.json();
-      const price = priceData[coin.id] && priceData[coin.id].brl;
+      const price = await fetchCoinPriceBRL(coin.id);
       if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
       const units = parseFloat(document.getElementById('iUnidades').value) || 1;
       document.getElementById('iValor').value = (price * units).toFixed(2);
@@ -1920,6 +1931,53 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(err);
       statusEl.textContent = 'Erro ao buscar cotação. Verifique sua conexão.';
     }
+  };
+
+  async function fetchCoinMatch(nameQuery) {
+    const searchRes = await fetch('https://api.coingecko.com/api/v3/search?query=' + encodeURIComponent(nameQuery));
+    const searchData = await searchRes.json();
+    return searchData.coins && searchData.coins[0];
+  }
+
+  async function fetchCoinPriceBRL(coinId) {
+    const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + coinId + '&vs_currencies=brl');
+    const priceData = await priceRes.json();
+    return priceData[coinId] && priceData[coinId].brl;
+  }
+
+  const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+  document.getElementById('btnUpdateAllPrices').onclick = async () => {
+    const statusEl = document.getElementById('updateAllStatus');
+    const btn = document.getElementById('btnUpdateAllPrices');
+    const candidates = investments.filter(inv => inv.units);
+    if (candidates.length === 0) {
+      statusEl.textContent = 'Nenhum ativo com unidades cadastradas para atualizar automaticamente (ativos sem "unidades/tokens" precisam ser editados manualmente).';
+      return;
+    }
+    btn.disabled = true;
+    let updated = 0, failed = [];
+    for (let i = 0; i < candidates.length; i++) {
+      const inv = candidates[i];
+      statusEl.textContent = `Atualizando ${i + 1}/${candidates.length}: ${inv.name}...`;
+      try {
+        const coin = await fetchCoinMatch(inv.name);
+        if (!coin) { failed.push(inv.name); continue; }
+        const price = await fetchCoinPriceBRL(coin.id);
+        if (!price) { failed.push(inv.name); continue; }
+        inv.value = price * inv.units;
+        updated++;
+      } catch (err) {
+        console.error(err);
+        failed.push(inv.name);
+      }
+      if (i < candidates.length - 1) await sleep(1200); // evita limite de requisições da API
+    }
+    if (updated > 0) persistAll();
+    render();
+    btn.disabled = false;
+    statusEl.textContent = `${updated} de ${candidates.length} cotação(ões) atualizada(s).` +
+      (failed.length ? ` Não encontrados: ${failed.join(', ')}.` : '');
   };
 
   document.getElementById('bSalvar').onclick = () => {
@@ -1967,7 +2025,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const desc = document.getElementById('tDesc').value.trim();
 
     if (deId === paraId) {
-      alert('Escolha bancos diferentes para origem e destino.');
+      alert('Escolha contas diferentes para origem e destino.');
       return;
     }
     if (isNaN(valor) || valor <= 0) {
@@ -1976,31 +2034,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const deBank = banks.find(b => b.id === deId);
+    const dePocket = pockets.find(p => p.id === deId);
     const paraBank = banks.find(b => b.id === paraId);
+    const paraPocket = pockets.find(p => p.id === paraId);
     let transCat = categories.find(c => c.name === 'Transferência');
     const extraDesc = desc ? ` (${desc})` : '';
+    const deName = deBank ? deBank.name : (dePocket ? dePocket.name + ' (Caixinha)' : '');
+    const paraName = paraBank ? paraBank.name : (paraPocket ? paraPocket.name + ' (Caixinha)' : '');
 
-    entries.push({
-      id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7),
-      date,
-      desc: `Transferência para ${paraBank ? paraBank.name : ''}${extraDesc}`,
-      bank: deId,
-      category: transCat ? transCat.id : (categories[0] ? categories[0].id : ''),
-      amount: valor,
-      type: 'out'
-    });
+    if (deBank) {
+      entries.push({
+        id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7),
+        date,
+        desc: `Transferência para ${paraName}${extraDesc}`,
+        bank: deId,
+        category: transCat ? transCat.id : (categories[0] ? categories[0].id : ''),
+        amount: valor,
+        type: 'out'
+      });
+    } else if (dePocket) {
+      dePocket.value = (dePocket.value || 0) - valor;
+    }
 
-    entries.push({
-      id: 'e' + (Date.now() + 1) + Math.random().toString(36).slice(2, 7),
-      date,
-      desc: `Transferência de ${deBank ? deBank.name : ''}${extraDesc}`,
-      bank: paraId,
-      category: transCat ? transCat.id : (categories[0] ? categories[0].id : ''),
-      amount: valor,
-      type: 'in'
-    });
+    if (paraBank) {
+      entries.push({
+        id: 'e' + (Date.now() + 1) + Math.random().toString(36).slice(2, 7),
+        date,
+        desc: `Transferência de ${deName}${extraDesc}`,
+        bank: paraId,
+        category: transCat ? transCat.id : (categories[0] ? categories[0].id : ''),
+        amount: valor,
+        type: 'in'
+      });
+    } else if (paraPocket) {
+      paraPocket.value = (paraPocket.value || 0) + valor;
+    }
 
-    saveEntries();
+    persistAll();
     populateFilterControls();
     document.getElementById('tValor').value = '';
     document.getElementById('tDesc').value = '';
