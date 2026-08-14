@@ -746,6 +746,7 @@
   <div class="nav-tabs">
     <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')">📖 Livro-Caixa</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">🪙 Cripto & Investimentos</button>
+    <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')">🐷 Caixinhas</button>
   </div>
 
   <div class="balance-strip" id="balanceStrip"></div>
@@ -814,6 +815,15 @@
     </div>
 
     <div id="investGrid" class="invest-grid"></div>
+  </div>
+
+  <div id="viewPockets" class="tab-content">
+    <div class="balance-strip" id="pocketBalanceStrip"></div>
+    <div class="toolbar" style="grid-template-columns: minmax(200px, 260px);">
+      <button class="primary" id="btnNovoPocket">+ Nova Caixinha</button>
+    </div>
+
+    <div id="pocketGrid" class="invest-grid"></div>
   </div>
 
   <!-- Modais -->
@@ -946,10 +956,56 @@
         </div>
         <div>
           <label for="iValor">Valor Total Atual (R$)</label>
-          <input type="number" id="iValor" step="0.01" min="0" placeholder="0,00">
+          <div style="display:flex; gap:6px;">
+            <input type="number" id="iValor" step="0.01" min="0" placeholder="0,00" style="flex:1;">
+            <button type="button" id="btnFetchPrice" title="Buscar cotação automática" style="white-space:nowrap;">🔄 Cotação</button>
+          </div>
+          <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;"></div>
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="iSalvar" style="width:100%">Salvar Ativo</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panelPocket">
+      <h3 id="panelPocketTitle">Nova Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label for="pNome">Nome da Caixinha</label>
+          <input type="text" id="pNome" placeholder="Ex: Viagem, Reserva de Emergência">
+        </div>
+        <div>
+          <label for="pObjetivo">Objetivo (Opcional)</label>
+          <input type="text" id="pObjetivo" placeholder="Ex: Meta de R$ 5.000">
+        </div>
+        <div>
+          <label for="pValor">Saldo Atual (R$)</label>
+          <input type="number" id="pValor" step="0.01" min="0" placeholder="0,00">
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
+          <button class="primary" id="pSalvar" style="width:100%">Salvar Caixinha</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panelYield">
+      <h3 id="panelYieldTitle">Registrar Rendimento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label for="yData">Data</label>
+          <input type="date" id="yData">
+        </div>
+        <div>
+          <label for="yValor">Valor do Rendimento (R$)</label>
+          <input type="number" id="yValor" step="0.01" placeholder="0,00">
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label for="yDesc">Observação (Opcional)</label>
+          <input type="text" id="yDesc" placeholder="Ex: Rendimento mensal Binance Earn">
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
+          <button class="primary" id="ySalvar" style="width:100%">Registrar Rendimento</button>
         </div>
       </div>
     </div>
@@ -1004,11 +1060,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let categories = [];
   let entries = [];
   let investments = [];
+  let pockets = [];
+  let yieldsLog = [];
   let pendingImport = [];
   let currentType = 'in';
   let editingEntryId = null;
   let editingBankId = null;
   let editingInvestId = null;
+  let editingPocketId = null;
   let catChartInstance = null;
 
   const fmt = (n) => (n < 0 ? '-' : '') + 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1038,8 +1097,10 @@ document.addEventListener('DOMContentLoaded', () => {
   window.switchTab = function(tabName) {
     document.getElementById('tabBtnCaixa').classList.toggle('active', tabName === 'caixa');
     document.getElementById('tabBtnInvest').classList.toggle('active', tabName === 'invest');
+    document.getElementById('tabBtnPockets').classList.toggle('active', tabName === 'pockets');
     document.getElementById('viewCaixa').classList.toggle('active', tabName === 'caixa');
     document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
+    document.getElementById('viewPockets').classList.toggle('active', tabName === 'pockets');
   };
 
   function formatMonthLabel(ym) {
@@ -1068,11 +1129,15 @@ document.addEventListener('DOMContentLoaded', () => {
         entries = data.entries || [];
         categories = data.categories || [];
         investments = data.investments || [];
+        pockets = data.pockets || [];
+        yieldsLog = data.yieldsLog || [];
       } else {
         banks = [];
         entries = [];
         categories = [];
         investments = [];
+        pockets = [];
+        yieldsLog = [];
       }
       
       const filteredBanks = banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
@@ -1112,7 +1177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentUser) return Promise.resolve();
     clearTimeout(saveTimer);
     setSyncDot(true);
-    return docRef().set({ banks, categories, entries, investments }, { merge: false })
+    return docRef().set({ banks, categories, entries, investments, pockets, yieldsLog }, { merge: false })
       .then(() => setSyncDot(false))
       .catch(err => { console.error(err); setSyncDot(false); });
   }
@@ -1122,6 +1187,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function saveCategories() { persistAll(); }
   function saveEntries() { persistAll(); }
   function saveInvestments() { persistAll(); }
+  function savePockets() { persistAll(); }
 
   function bankBalance(bankId) {
     const bank = banks.find(b => b.id === bankId);
@@ -1135,6 +1201,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function totalInvestBalance() {
     return investments.reduce((sum, i) => sum + (i.value || 0), 0);
+  }
+
+  function totalPocketBalance() {
+    return pockets.reduce((sum, p) => sum + (p.value || 0), 0);
   }
 
   function renderBalances() {
@@ -1224,8 +1294,45 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="val">${fmt(inv.value || 0)}</div>
         ${inv.units ? `<div class="units">${inv.units} unidades / tokens</div>` : ''}
         <div style="margin-top:12px; text-align:right;">
+          <button type="button" class="action-btn" onclick="openYieldModal('invest','${inv.id}')" title="Registrar Rendimento">📈 Rendimento</button>
           <button type="button" class="action-btn" onclick="editInvest('${inv.id}')">✏️ Editar</button>
           <button type="button" class="action-btn del" onclick="deleteInvest('${inv.id}')">×</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderPocketBalances() {
+    const strip = document.getElementById('pocketBalanceStrip');
+    const total = totalPocketBalance();
+    let html = `<div class="balance-card total">
+      <span class="label">Total em Caixinhas</span>
+      <span class="amount">${fmt(total)}</span>
+    </div>`;
+    pockets.forEach(p => {
+      html += `<div class="balance-card">
+        <span class="label">${p.name}</span>
+        <span class="amount">${fmt(p.value || 0)}</span>
+      </div>`;
+    });
+    strip.innerHTML = html;
+  }
+
+  function renderPockets() {
+    const container = document.getElementById('pocketGrid');
+    if (pockets.length === 0) {
+      container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhuma caixinha cadastrada. Clique em "+ Nova Caixinha" para começar.</div>`;
+      return;
+    }
+    container.innerHTML = pockets.map(p => `
+      <div class="invest-box">
+        <h4><span>${p.name}</span></h4>
+        <div class="val">${fmt(p.value || 0)}</div>
+        ${p.goal ? `<div class="units">${p.goal}</div>` : ''}
+        <div style="margin-top:12px; text-align:right;">
+          <button type="button" class="action-btn" onclick="openYieldModal('pocket','${p.id}')" title="Registrar Rendimento">📈 Rendimento</button>
+          <button type="button" class="action-btn" onclick="editPocket('${p.id}')">✏️ Editar</button>
+          <button type="button" class="action-btn del" onclick="deletePocket('${p.id}')">×</button>
         </div>
       </div>
     `).join('');
@@ -1451,6 +1558,8 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCategorySummary();
     renderLedger();
     renderInvestments();
+    renderPocketBalances();
+    renderPockets();
   }
 
   document.getElementById('filterMonth').onchange = () => { renderCategorySummary(); renderLedger(); };
@@ -1503,9 +1612,44 @@ document.addEventListener('DOMContentLoaded', () => {
   window.deleteInvest = function(id) {
     if (confirm('Deseja excluir este registro de investimento?')) {
       investments = investments.filter(i => i.id !== id);
+      yieldsLog = yieldsLog.filter(y => !(y.targetType === 'invest' && y.targetId === id));
       saveInvestments();
       render();
     }
+  };
+
+  window.deletePocket = function(id) {
+    if (confirm('Deseja excluir esta caixinha?')) {
+      pockets = pockets.filter(p => p.id !== id);
+      yieldsLog = yieldsLog.filter(y => !(y.targetType === 'pocket' && y.targetId === id));
+      savePockets();
+      render();
+    }
+  };
+
+  window.editPocket = function(id) {
+    const pocket = pockets.find(p => p.id === id);
+    if (!pocket) return;
+    editingPocketId = pocket.id;
+    document.getElementById('pNome').value = pocket.name;
+    document.getElementById('pObjetivo').value = pocket.goal || '';
+    document.getElementById('pValor').value = pocket.value || 0;
+    document.getElementById('panelPocketTitle').innerHTML = 'Editar Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    document.getElementById('pSalvar').textContent = 'Atualizar Caixinha';
+    openModal('panelPocket');
+  };
+
+  let yieldTarget = null; // { type: 'invest'|'pocket', id }
+
+  window.openYieldModal = function(type, id) {
+    yieldTarget = { type, id };
+    document.getElementById('yData').value = todayISO();
+    document.getElementById('yValor').value = '';
+    document.getElementById('yDesc').value = '';
+    const list = type === 'invest' ? investments : pockets;
+    const item = list.find(x => x.id === id);
+    document.getElementById('panelYieldTitle').innerHTML = 'Registrar Rendimento — ' + (item ? item.name : '') + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    openModal('panelYield');
   };
 
   window.editEntry = function(id) {
@@ -1695,6 +1839,87 @@ document.addEventListener('DOMContentLoaded', () => {
     saveInvestments();
     closeAllPanels();
     render();
+  };
+
+  document.getElementById('btnNovoPocket').onclick = () => {
+    editingPocketId = null;
+    document.getElementById('pNome').value = '';
+    document.getElementById('pObjetivo').value = '';
+    document.getElementById('pValor').value = '';
+    document.getElementById('panelPocketTitle').innerHTML = 'Nova Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    document.getElementById('pSalvar').textContent = 'Salvar Caixinha';
+    openModal('panelPocket');
+  };
+
+  document.getElementById('pSalvar').onclick = () => {
+    const name = document.getElementById('pNome').value.trim();
+    const goal = document.getElementById('pObjetivo').value.trim();
+    const value = parseFloat(document.getElementById('pValor').value) || 0;
+
+    if (!name) { alert('Informe o nome da caixinha.'); return; }
+
+    if (editingPocketId) {
+      const idx = pockets.findIndex(p => p.id === editingPocketId);
+      if (idx !== -1) {
+        pockets[idx] = { id: editingPocketId, name, goal, value };
+      }
+      editingPocketId = null;
+    } else {
+      pockets.push({ id: 'pkt' + Date.now(), name, goal, value });
+    }
+
+    savePockets();
+    closeAllPanels();
+    render();
+  };
+
+  document.getElementById('ySalvar').onclick = () => {
+    if (!yieldTarget) return;
+    const date = document.getElementById('yData').value || todayISO();
+    const amount = parseFloat(document.getElementById('yValor').value);
+    const desc = document.getElementById('yDesc').value.trim();
+
+    if (isNaN(amount) || amount === 0) { alert('Informe um valor de rendimento válido.'); return; }
+
+    const list = yieldTarget.type === 'invest' ? investments : pockets;
+    const item = list.find(x => x.id === yieldTarget.id);
+    if (!item) return;
+    item.value = (item.value || 0) + amount;
+
+    yieldsLog.push({
+      id: 'yld' + Date.now(),
+      targetType: yieldTarget.type,
+      targetId: yieldTarget.id,
+      date, amount, desc
+    });
+
+    if (yieldTarget.type === 'invest') saveInvestments(); else savePockets();
+    yieldTarget = null;
+    closeAllPanels();
+    render();
+  };
+
+  document.getElementById('btnFetchPrice').onclick = async () => {
+    const nameQuery = document.getElementById('iNome').value.trim();
+    const statusEl = document.getElementById('fetchPriceStatus');
+    if (!nameQuery) { statusEl.textContent = 'Digite o nome do ativo primeiro (ex: Bitcoin, USDC).'; return; }
+    statusEl.textContent = 'Buscando cotação...';
+    try {
+      const searchRes = await fetch('https://api.coingecko.com/api/v3/search?query=' + encodeURIComponent(nameQuery));
+      const searchData = await searchRes.json();
+      const coin = searchData.coins && searchData.coins[0];
+      if (!coin) { statusEl.textContent = 'Ativo não encontrado. Preencha o valor manualmente.'; return; }
+      const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + coin.id + '&vs_currencies=brl');
+      const priceData = await priceRes.json();
+      const price = priceData[coin.id] && priceData[coin.id].brl;
+      if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
+      const units = parseFloat(document.getElementById('iUnidades').value) || 1;
+      document.getElementById('iValor').value = (price * units).toFixed(2);
+      statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · atualizado agora`;
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = 'Erro ao buscar cotação. Verifique sua conexão.';
+    }
   };
 
   document.getElementById('bSalvar').onclick = () => {
