@@ -76,6 +76,7 @@
     position:relative;
   }
   .balance-card.total{background:var(--ink);color:var(--paper);}
+  .balance-card.invest{background:var(--paper-2);border-left:3px solid var(--gold);}
   .balance-card .label{
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
@@ -353,7 +354,7 @@
   .action-btn:hover{color:var(--ink);}
   .action-btn.del:hover{color:var(--red);}
 
-  .bank-list-item, .cat-list-item{
+  .bank-list-item, .cat-list-item, .inv-list-item{
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -525,6 +526,7 @@
     <button class="primary" id="btnNovo">+ Novo lançamento</button>
     <button id="btnBanco">+ Banco</button>
     <button id="btnCategoria">+ Categoria</button>
+    <button id="btnInvestimento">🪙 Cripto/Invest</button>
     <button id="btnTransferencia">🔄 Transferência</button>
     <button id="btnPasteTrigger">Colar Texto</button>
     <button id="btnImportTrigger">Importar PDF</button>
@@ -609,8 +611,29 @@
         </div>
       </div>
       <div style="margin-top:16px;">
-        <label>Categorias Cadastradas:</label>
+        <label>Categorias Cadastrados:</label>
         <div id="catManageList"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="panelInvestimento">
+      <h3>Cripto e Investimentos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label for="invNome">Nome do Ativo</label>
+          <input type="text" id="invNome" placeholder="Ex: USDC, Bitcoin, Tesouro">
+        </div>
+        <div>
+          <label for="invValor">Valor Total Atual (R$)</label>
+          <input type="number" id="invValor" step="0.01" min="0" placeholder="0,00">
+        </div>
+        <div>
+          <button class="primary" id="invSalvar" style="width:100%">Adicionar / Salvar</button>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <label>Ativos / Reservas Cadastradas:</label>
+        <div id="invManageList"></div>
       </div>
     </div>
 
@@ -732,6 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let banks = [];
   let categories = [];
   let entries = [];
+  let investments = [];
   let pendingImport = [];
   let currentType = 'in';
   let editingEntryId = null;
@@ -767,10 +791,12 @@ document.addEventListener('DOMContentLoaded', () => {
         banks = data.banks || [];
         entries = data.entries || [];
         categories = data.categories || [];
+        investments = data.investments || [];
       } else {
         banks = [];
         entries = [];
         categories = [];
+        investments = [];
       }
       
       const filteredBanks = banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
@@ -810,7 +836,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentUser) return Promise.resolve();
     clearTimeout(saveTimer);
     setSyncDot(true);
-    return docRef().set({ banks, categories, entries }, { merge: false })
+    return docRef().set({ banks, categories, entries, investments }, { merge: false })
       .then(() => setSyncDot(false))
       .catch(err => { console.error(err); setSyncDot(false); });
   }
@@ -822,6 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function saveBanks() { persistAll(); }
   function saveCategories() { persistAll(); }
   function saveEntries() { persistAll(); }
+  function saveInvestments() { persistAll(); }
 
   function bankBalance(bankId) {
     const bank = banks.find(b => b.id === bankId);
@@ -829,17 +856,35 @@ document.addEventListener('DOMContentLoaded', () => {
     return entries.filter(e => e.bank === bankId).reduce((sum, e) => sum + (e.type === 'in' ? e.amount : -e.amount), initial);
   }
 
-  function totalBalance() {
+  function totalBankBalance() {
     return banks.reduce((sum, b) => sum + bankBalance(b.id), 0);
+  }
+
+  function totalInvestmentsBalance() {
+    return investments.reduce((sum, i) => sum + (i.amount || 0), 0);
+  }
+
+  function totalBalance() {
+    return totalBankBalance() + totalInvestmentsBalance();
   }
 
   function renderBalances() {
     const strip = document.getElementById('balanceStrip');
     const total = totalBalance();
+    const totalInv = totalInvestmentsBalance();
+    
     let html = `<div class="balance-card total">
-      <span class="label">Saldo total</span>
+      <span class="label">Patrimônio Total</span>
       <span class="amount ${total < 0 ? 'neg' : ''}">${fmt(total)}</span>
     </div>`;
+    
+    if (totalInv > 0) {
+      html += `<div class="balance-card invest">
+        <span class="label">Cripto / Invest.</span>
+        <span class="amount">${fmt(totalInv)}</span>
+      </div>`;
+    }
+
     banks.forEach(b => {
       const bal = bankBalance(b.id);
       html += `<div class="balance-card">
@@ -870,6 +915,20 @@ document.addEventListener('DOMContentLoaded', () => {
           <button type="button" class="action-btn" onclick="editBank('${b.id}')">✏️ Editar</button>
           <button type="button" class="action-btn del" onclick="deleteBank('${b.id}')" title="Excluir">×</button>
         </div>
+      </div>
+    `).join('');
+  }
+
+  function renderInvestmentManageList() {
+    const container = document.getElementById('invManageList');
+    if (investments.length === 0) {
+      container.innerHTML = `<div style="font-size:12px; color:var(--ink-soft); padding:8px 0;">Nenhum ativo cadastrado.</div>`;
+      return;
+    }
+    container.innerHTML = investments.map(i => `
+      <div class="inv-list-item">
+        <span><strong>${i.name}</strong> — Valor: R$ ${(i.amount || 0).toFixed(2).replace('.', ',')}</span>
+        <button type="button" class="action-btn del" onclick="deleteInvestment('${i.id}')" title="Excluir">×</button>
       </div>
     `).join('');
   }
@@ -1090,6 +1149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBalances();
     renderBankSelects();
     renderBankManageList();
+    renderInvestmentManageList();
     renderCategorySelect();
     renderCategoryManageList();
     renderCategorySummary();
@@ -1126,6 +1186,14 @@ document.addEventListener('DOMContentLoaded', () => {
       banks = banks.filter(b => b.id !== id);
       saveBanks();
       populateFilterControls();
+      render();
+    }
+  };
+
+  window.deleteInvestment = function(id) {
+    if (confirm('Deseja excluir este ativo de investimento?')) {
+      investments = investments.filter(i => i.id !== id);
+      saveInvestments();
       render();
     }
   };
@@ -1216,6 +1284,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   document.getElementById('btnCategoria').onclick = () => openModal('panelCategoria');
+  document.getElementById('btnInvestimento').onclick = () => {
+    document.getElementById('invNome').value = '';
+    document.getElementById('invValor').value = '';
+    openModal('panelInvestimento');
+  };
 
   document.getElementById('btnTransferencia').onclick = () => {
     if (banks.length < 2) {
@@ -1308,6 +1381,26 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   };
 
+  document.getElementById('invSalvar').onclick = () => {
+    const name = document.getElementById('invNome').value.trim();
+    const valor = parseFloat(document.getElementById('invValor').value);
+    if (!name || isNaN(valor) || valor < 0) {
+      alert('Informe um nome válido e um valor de investimento.');
+      return;
+    }
+    const existingIndex = investments.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
+    if (existingIndex !== -1) {
+      investments[existingIndex].amount = valor;
+    } else {
+      investments.push({ id: 'inv' + Date.now(), name, amount: valor });
+    }
+    saveInvestments();
+    document.getElementById('invNome').value = '';
+    document.getElementById('invValor').value = '';
+    closeAllPanels();
+    render();
+  };
+
   document.getElementById('cSalvar').onclick = () => {
     const name = document.getElementById('cNome').value.trim();
     if (!name) { alert('Dê um nome à categoria.'); return; }
@@ -1377,7 +1470,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnCancelPaste').onclick = () => closeAllPanels();
 
   document.getElementById('btnExportBackup').onclick = () => {
-    const data = { banks, categories, entries };
+    const data = { banks, categories, entries, investments };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1399,6 +1492,7 @@ document.addEventListener('DOMContentLoaded', () => {
           banks = data.banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
           categories = data.categories;
           entries = data.entries;
+          investments = data.investments || [];
           persistNow().then(() => {
             populateFilterControls(true);
             render();
@@ -1434,15 +1528,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let y = 36;
     doc.setFont('helvetica', 'bold');
-    doc.text('Saldos Atuais por Banco', 14, y);
+    doc.text('Saldos Atuais e Ativos', 14, y);
     y += 7;
     doc.setFont('helvetica', 'normal');
     banks.forEach(b => {
       doc.text(`${b.name}: ${fmt(bankBalance(b.id))}`, 14, y);
       y += 6;
     });
+    investments.forEach(i => {
+      doc.text(`${i.name} (Invest): ${fmt(i.amount)}`, 14, y);
+      y += 6;
+    });
     doc.setFont('helvetica', 'bold');
-    doc.text(`Saldo Total: ${fmt(totalBalance())}`, 14, y + 2);
+    doc.text(`Patrimônio Total: ${fmt(totalBalance())}`, 14, y + 2);
     y += 14;
 
     doc.setFont('helvetica', 'bold');
@@ -1699,7 +1797,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadState();
     } else {
       overlay.classList.remove('hidden');
-      banks = []; categories = []; entries = [];
+      banks = []; categories = []; entries = []; investments = [];
       renderUserBar();
     }
   });
