@@ -233,7 +233,6 @@
     flex-shrink:0;
   }
 
-  /* Ledger com área de Filtros */
   .ledger{border:2px solid var(--ink);}
   .ledger-month{
     background:var(--ink);
@@ -679,16 +678,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// Essa linha salva sua vida e acaba com a demora de carregamento!
-firebase.firestore().enablePersistence().catch(err => console.log(err));
-
-const db = firebase.firestore();
-
 // Ativa o cache local para carregamento instantâneo e proteção contra perda de dados
 firebase.firestore().enablePersistence().catch(err => {
   console.log("A persistência offline não pôde ser ativada:", err);
 });
 const db = firebase.firestore();
+
 let currentUser = null;
 let isSignupMode = false;
 let saveTimer = null;
@@ -721,52 +716,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let isInitialLoad = true;
 
-function loadState() {
-  const defaultCats = ['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Salário', 'Renda Extra', 'Transferência', 'Outros'];
-  
-  // Trocamos o .get() por .onSnapshot() para carregamento instantâneo
-  docRef().onSnapshot(snap => {
-    let changed = false;
+  function loadState() {
+    const defaultCats = ['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Salário', 'Renda Extra', 'Transferência', 'Outros'];
     
-    if (snap.exists) {
-      const data = snap.data();
-      banks = data.banks || [];
-      entries = data.entries || [];
-      categories = data.categories || [];
-    } else {
-      banks = [];
-      entries = [];
-      categories = [];
-    }
-    
-    const filteredBanks = banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
-    if (filteredBanks.length !== banks.length) changed = true;
-    banks = filteredBanks;
-
-    if (categories.length === 0) {
-      categories = defaultCats.map(name => ({ id: 'c' + name, name }));
-      changed = true;
-    } else {
-      defaultCats.forEach(name => {
-        if (!categories.some(c => c.name === name)) {
-          categories.push({ id: 'c' + name, name });
-          changed = true;
-        }
-      });
-    }
-    
-    if (changed) persistNow();
-    
-    populateFilterControls(isInitialLoad);
-    isInitialLoad = false;
-    render();
-    
-  }, err => {
-    console.error(err);
-    alert('Erro ao carregar dados. O aplicativo pode estar offline.');
-  });
-}
-
+    // Carregamento instantâneo em tempo real com onSnapshot e cache offline
+    docRef().onSnapshot(snap => {
+      let changed = false;
+      
+      if (snap.exists) {
+        const data = snap.data();
+        banks = data.banks || [];
+        entries = data.entries || [];
+        categories = data.categories || [];
+      } else {
+        banks = [];
+        entries = [];
+        categories = [];
+      }
+      
       const filteredBanks = banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
       if (filteredBanks.length !== banks.length) changed = true;
       banks = filteredBanks;
@@ -782,12 +749,16 @@ function loadState() {
           }
         });
       }
+      
       if (changed) persistNow();
-      populateFilterControls(true);
+      
+      populateFilterControls(isInitialLoad);
+      isInitialLoad = false;
       render();
-    }).catch(err => {
+      
+    }, err => {
       console.error(err);
-      alert('Erro ao carregar seus dados da nuvem. Verifique sua conexão.');
+      alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     });
   }
 
@@ -796,8 +767,6 @@ function loadState() {
     if (dot) dot.classList.toggle('saving', saving);
   }
 
-  // Gravação imediata (sem espera) — usada para ações críticas como restaurar backup,
-  // onde uma gravação atrasada correria risco de ser sobrescrita por um recarregamento da página.
   function persistNow() {
     if (!currentUser) return Promise.resolve();
     clearTimeout(saveTimer);
@@ -807,8 +776,7 @@ function loadState() {
       .catch(err => { console.error(err); setSyncDot(false); });
   }
 
-    function persistAll() {
-    // Substituímos o temporizador por um salvamento imediato e seguro
+  function persistAll() {
     persistNow();
   }
 
@@ -886,7 +854,6 @@ function loadState() {
     `).join('');
   }
 
-  // Preencher controles de filtros
   function populateFilterControls(isInitial = false) {
     const monthSel = document.getElementById('filterMonth');
     const bankSel = document.getElementById('filterBank');
@@ -896,7 +863,6 @@ function loadState() {
     const currBankVal = bankSel.value;
     const currCatVal = catSel.value;
 
-    // Coletar meses únicos das entradas
     const monthSet = new Set();
     monthSet.add(currentMonthYM());
     entries.forEach(e => {
@@ -911,14 +877,12 @@ function loadState() {
     });
     monthSel.innerHTML = monthHtml;
 
-        if (isInitial) {
-      // Deixando vazio, o sistema seleciona "Todos os Meses" por padrão
+    if (isInitial) {
       monthSel.value = ""; 
     } else if (currMonthVal !== undefined) {
       monthSel.value = currMonthVal;
     }
 
-    // Filtro de Bancos
     let bankHtml = `<option value="">Todos os Bancos</option>`;
     banks.forEach(b => {
       bankHtml += `<option value="${b.id}">${b.name}</option>`;
@@ -926,7 +890,6 @@ function loadState() {
     bankSel.innerHTML = bankHtml;
     if (currBankVal) bankSel.value = currBankVal;
 
-    // Filtro de Categorias
     let catHtml = `<option value="">Todas as Categorias</option>`;
     categories.forEach(c => {
       catHtml += `<option value="${c.id}">${c.name}</option>`;
@@ -935,7 +898,6 @@ function loadState() {
     if (currCatVal) catSel.value = currCatVal;
   }
 
-  // Obter lançamentos filtrados
   function getFilteredEntries() {
     const m = document.getElementById('filterMonth').value;
     const b = document.getElementById('filterBank').value;
@@ -949,7 +911,6 @@ function loadState() {
     });
   }
 
-  // Renderização dos Gastos com Gráfico de Pizza (respeitando os filtros ativos)
   function renderCategorySummary() {
     const wrap = document.getElementById('categorySummary');
     const activeEntries = getFilteredEntries();
@@ -1085,7 +1046,6 @@ function loadState() {
     renderLedger();
   }
 
-  // Eventos de alteração dos Filtros
   document.getElementById('filterMonth').onchange = () => { renderCategorySummary(); renderLedger(); };
   document.getElementById('filterBank').onchange = () => { renderCategorySummary(); renderLedger(); };
   document.getElementById('filterCategory').onchange = () => { renderCategorySummary(); renderLedger(); };
@@ -1166,7 +1126,6 @@ function loadState() {
     else panel.classList.toggle('open');
   }
 
-  // Painéis
   document.getElementById('btnNovo').onclick = () => {
     if (banks.length === 0) {
       alert('Cadastre pelo menos um banco antes de fazer lançamentos.');
@@ -1200,7 +1159,6 @@ function loadState() {
   };
   document.getElementById('btnPasteTrigger').onclick = () => togglePanel('panelPaste');
 
-  // Cadastro Rápido de Categoria
   document.getElementById('btnQuickCat').onclick = () => {
     const name = prompt('Digite o nome da nova categoria:');
     if (name && name.trim()) {
@@ -1214,7 +1172,6 @@ function loadState() {
     }
   };
 
-  // Alternar Entrada / Saída
   document.getElementById('tglIn').onclick = () => {
     currentType = 'in';
     document.getElementById('tglIn').classList.add('active-in');
@@ -1226,7 +1183,6 @@ function loadState() {
     document.getElementById('tglIn').classList.remove('active-in');
   };
 
-  // Salvar / Editar Lançamento
   document.getElementById('fSalvar').onclick = () => {
     const date = document.getElementById('fData').value || todayISO();
     const desc = document.getElementById('fDesc').value.trim();
@@ -1257,7 +1213,6 @@ function loadState() {
     render();
   };
 
-  // Salvar / Editar Banco
   document.getElementById('bSalvar').onclick = () => {
     const name = document.getElementById('bNome').value.trim();
     const saldo = parseFloat(document.getElementById('bSaldo').value) || 0;
@@ -1284,7 +1239,6 @@ function loadState() {
     render();
   };
 
-  // Salvar Categoria no Painel
   document.getElementById('cSalvar').onclick = () => {
     const name = document.getElementById('cNome').value.trim();
     if (!name) { alert('Dê um nome à categoria.'); return; }
@@ -1295,7 +1249,6 @@ function loadState() {
     render();
   };
 
-  // Executar Transferência
   document.getElementById('tSalvar').onclick = () => {
     const date = document.getElementById('tData').value || todayISO();
     const deId = document.getElementById('tDe').value;
@@ -1345,7 +1298,6 @@ function loadState() {
     render();
   };
 
-  // Processar Colagem de Texto
   document.getElementById('btnProcessPaste').onclick = () => {
     const txt = document.getElementById('pasteArea').value;
     if(!txt.trim()){ alert('Cole algum texto primeiro.'); return; }
@@ -1355,7 +1307,6 @@ function loadState() {
   };
   document.getElementById('btnCancelPaste').onclick = () => togglePanel('panelPaste');
 
-  // Exportar Backup JSON
   document.getElementById('btnExportBackup').onclick = () => {
     const data = { banks, categories, entries };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1367,7 +1318,6 @@ function loadState() {
     URL.revokeObjectURL(url);
   };
 
-  // Restaurar Backup JSON
   document.getElementById('btnImportBackupTrigger').onclick = () => document.getElementById('fileBackupImport').click();
   document.getElementById('fileBackupImport').onchange = (ev) => {
     const file = ev.target.files[0];
@@ -1396,7 +1346,6 @@ function loadState() {
     ev.target.value = '';
   };
 
-  // Exportar PDF
   document.getElementById('btnExport').onclick = () => {
     const activeEntries = getFilteredEntries();
     if (activeEntries.length === 0) { alert('Não há lançamentos para exportar nos filtros atuais.'); return; }
@@ -1454,7 +1403,6 @@ function loadState() {
     doc.save(`livro-caixa-relatorio-${todayISO()}.pdf`);
   };
 
-  // Importar PDF
   document.getElementById('btnImportTrigger').onclick = () => document.getElementById('fileImport').click();
 
   document.getElementById('fileImport').onchange = async (ev) => {
@@ -1603,7 +1551,6 @@ function loadState() {
 
   document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
-  // ---- Autenticação ----
   function renderUserBar() {
     const bar = document.getElementById('userBar');
     if (!currentUser) { bar.innerHTML = ''; return; }
@@ -1688,7 +1635,6 @@ function loadState() {
     }
   });
 });
-
 </script>
 </body>
 </html>
