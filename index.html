@@ -120,7 +120,7 @@
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
     gap:12px;
-    margin-bottom:24px;
+    margin-bottom:32px;
   }
   .balance-card{
     background:var(--paper);
@@ -155,64 +155,6 @@
   }
   .balance-card .amount.neg{color:var(--red);}
   .balance-card.total .amount.neg{color:var(--red);}
-
-  /* Caixa de Texto da IA */
-  .ai-container {
-    background: var(--paper);
-    border: 1.5px solid var(--gold);
-    border-radius: 6px;
-    padding: 16px;
-    margin-bottom: 32px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  }
-  .ai-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-  .ai-title {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 16px;
-    color: var(--gold);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .ai-input-wrap {
-    display: flex;
-    gap: 10px;
-  }
-  .ai-input-wrap input {
-    flex: 1;
-    border-color: var(--gold);
-  }
-  .ai-input-wrap input:focus-visible {
-    outline: 2px solid var(--gold);
-  }
-  .btn-ai {
-    background: var(--gold);
-    color: var(--paper);
-    border-color: var(--gold);
-  }
-  .btn-ai:hover {
-    background: #997830;
-    color: var(--paper);
-  }
-  body.dark-mode .btn-ai:hover {
-    background: #dcb65b;
-  }
-  .ai-response {
-    margin-top: 12px;
-    padding: 12px 16px;
-    background: var(--paper-2);
-    border-radius: 4px;
-    font-size: 13px;
-    border-left: 3px solid var(--gold);
-    color: var(--ink);
-    line-height: 1.5;
-  }
 
   .toolbar{
     display:grid;
@@ -814,20 +756,7 @@
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')">🐷 Caixinhas</button>
   </div>
 
-  <!-- FAIXA DE SALDOS GERAIS -->
   <div class="balance-strip" id="balanceStrip"></div>
-
-  <!-- CAIXA DE TEXTO DA IA -->
-  <div class="ai-container" id="aiContainer">
-    <div class="ai-header">
-      <span class="ai-title">✨ Assistente IA</span>
-    </div>
-    <div class="ai-input-wrap">
-      <input type="text" id="aiInput" placeholder="Ex: Pergunte resumos, adicione lançamentos naturais ou analise gastos..." autocomplete="off">
-      <button id="btnAiSend" class="btn-ai">Enviar</button>
-    </div>
-    <div id="aiResponse" class="ai-response" style="display: none;"></div>
-  </div>
 
   <!-- ABA 1: LIVRO CAIXA -->
   <div id="viewCaixa" class="tab-content active">
@@ -1182,34 +1111,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
     document.getElementById('viewPockets').classList.toggle('active', tabName === 'pockets');
   };
-
-  // ----------------------------------------------------
-  // EVENTOS DO ASSISTENTE DE IA
-  // ----------------------------------------------------
-  const aiInput = document.getElementById('aiInput');
-  const btnAiSend = document.getElementById('btnAiSend');
-  const aiResponse = document.getElementById('aiResponse');
-
-  btnAiSend.onclick = () => {
-    const text = aiInput.value.trim();
-    if(!text) return;
-    
-    // Feedback visual do frontend
-    aiResponse.style.display = 'block';
-    aiResponse.innerHTML = `<em>Processando: "${text}"...</em><br><br><span style="opacity: 0.7; font-size: 11.5px;">Nota: A interface da IA está pronta. Para torná-la funcional, é necessário plugar a chamada para uma API (como a da OpenAI ou Gemini) no Javascript.</span>`;
-    
-    // Limpar input
-    aiInput.value = '';
-    
-    // Aqui você vai adicionar sua futura requisição Fetch para o modelo da IA
-  };
-
-  aiInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      btnAiSend.click();
-    }
-  });
-  // ----------------------------------------------------
 
   function formatMonthLabel(ym) {
     if (!ym) return 'Todos os Meses';
@@ -1632,25 +1533,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const cat = categories.find(c => c.id === e.category);
       const dateFmt = e.date.split('-').reverse().join('/');
       
+      // Define as cores e sinais baseado se é entrada (in) ou saída (out)
       const tipoClasse = e.type === 'in' ? 'receita' : 'despesa';
       const sinal = e.type === 'in' ? '+' : '−';
 
+      // Monta o novo Card usando as suas variáveis
       html += `
         <div class="card-lancamento">
           <div class="card-left">
-            <div class="card-border-line ${tipoClasse}"></div>
+            <div class="card-border-line"></div>
             <div class="card-info">
               <span class="card-date">${dateFmt}</span>
               <h3 class="card-title">${e.desc}</h3>
-              <span class="card-tags">
-                <span class="card-badge">${bank ? bank.name : '—'}</span>
-                <span class="card-category">${cat ? cat.name : '—'}</span>
-              </span>
+              <span class="card-badge">${bank ? bank.name : '—'}</span>
+              <span class="card-category">${cat ? cat.name : '—'}</span>
             </div>
           </div>
           
           <div class="card-right">
-            <span class="card-amount ${tipoClasse}">${sinal} ${fmt(Math.abs(e.amount)).replace('R$ ','')}</span>
+            <span class="card-amount ${tipoClasse}">${sinal} ${fmt(Math.abs(e.amount))}</span>
             <div class="card-actions">
               <button class="btn-action edit" onclick="editEntry('${e.id}')" aria-label="Editar">✏️</button>
               <button class="btn-action delete" onclick="deleteEntry('${e.id}')" aria-label="Excluir">✖</button>
