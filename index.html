@@ -123,19 +123,49 @@
   button:disabled{opacity:0.4;cursor:not-allowed;}
   input[type=file]{display:none;}
 
+  /* Janela Flutuante (Modal) */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(28, 43, 36, 0.6);
+    z-index:90;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s ease;
+  }
+  .modal-overlay.open{
+    opacity:1;
+    pointer-events:auto;
+  }
   .panel{
     background:var(--paper);
-    border:1.5px solid var(--line);
-    padding:20px;
-    margin-bottom:24px;
+    border:2px solid var(--ink);
+    padding:24px;
+    width:100%;
+    max-width:560px;
+    max-height:90vh;
+    overflow-y:auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     display:none;
   }
   .panel.open{display:block;}
   .panel h3{
     font-family:'Fraunces',serif;
-    margin:0 0 14px;
-    font-size:18px;
+    margin:0 0 18px;
+    font-size:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
   }
+  .modal-close{
+    background:none;border:none;font-size:18px;cursor:pointer;padding:4px 8px;
+  }
+  .modal-close:hover{background:var(--ink);color:var(--paper);}
+
   .form-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
@@ -257,13 +287,13 @@
   }
   .ledger-filters div{
     flex:1;
-    min-width:140px;
+    min-width:130px;
   }
   .ledger-filters label{
     font-size:10px;
     margin-bottom:4px;
   }
-  .ledger-filters select{
+  .ledger-filters select, .ledger-filters input{
     padding:7px 8px;
     font-size:13px;
   }
@@ -505,129 +535,132 @@
     <input type="file" id="fileBackupImport" accept="application/json">
   </div>
 
-  <div class="panel" id="panelNovo">
-    <h3 id="panelNovoTitle">Novo lançamento</h3>
-    <div class="form-grid">
-      <div>
-        <label>Tipo</label>
-        <div class="type-toggle">
-          <button type="button" id="tglIn" class="active-in">Entrada</button>
-          <button type="button" id="tglOut">Saída</button>
+  <!-- Janelas Flutuantes (Modais) -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="panel" id="panelNovo">
+      <h3 id="panelNovoTitle">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label>Tipo</label>
+          <div class="type-toggle">
+            <button type="button" id="tglIn" class="active-in">Entrada</button>
+            <button type="button" id="tglOut">Saída</button>
+          </div>
+        </div>
+        <div>
+          <label for="fData">Data</label>
+          <input type="date" id="fData">
+        </div>
+        <div>
+          <label for="fDesc">Descrição</label>
+          <input type="text" id="fDesc" placeholder="Ex: Salário, Mercado...">
+        </div>
+        <div>
+          <label for="fBanco">Banco</label>
+          <select id="fBanco"></select>
+        </div>
+        <div>
+          <label for="fCategoria">Categoria</label>
+          <div style="display:flex; gap:6px;">
+            <select id="fCategoria" style="flex:1;"></select>
+            <button type="button" id="btnQuickCat" title="Cadastrar Nova Categoria" style="padding:0 12px; font-weight:bold; font-size:14px;">+</button>
+          </div>
+        </div>
+        <div>
+          <label for="fValor">Valor (R$)</label>
+          <input type="number" id="fValor" step="0.01" min="0" placeholder="0,00">
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
+          <button class="primary" id="fSalvar" style="width:100%">Salvar</button>
         </div>
       </div>
-      <div>
-        <label for="fData">Data</label>
-        <input type="date" id="fData">
-      </div>
-      <div>
-        <label for="fDesc">Descrição</label>
-        <input type="text" id="fDesc" placeholder="Ex: Salário, Mercado...">
-      </div>
-      <div>
-        <label for="fBanco">Banco</label>
-        <select id="fBanco"></select>
-      </div>
-      <div>
-        <label for="fCategoria">Categoria</label>
-        <div style="display:flex; gap:6px;">
-          <select id="fCategoria" style="flex:1;"></select>
-          <button type="button" id="btnQuickCat" title="Cadastrar Nova Categoria" style="padding:0 12px; font-weight:bold; font-size:14px;">+</button>
+    </div>
+
+    <div class="panel" id="panelBanco">
+      <h3 id="panelBancoTitle">Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label for="bNome">Nome do banco</label>
+          <input type="text" id="bNome" placeholder="Ex: Nubank">
+        </div>
+        <div>
+          <label for="bSaldo">Saldo inicial (R$)</label>
+          <input type="number" id="bSaldo" step="0.01" placeholder="0,00">
+        </div>
+        <div>
+          <button class="primary" id="bSalvar" style="width:100%">Adicionar</button>
         </div>
       </div>
-      <div>
-        <label for="fValor">Valor (R$)</label>
-        <input type="number" id="fValor" step="0.01" min="0" placeholder="0,00">
-      </div>
-      <div>
-        <button class="primary" id="fSalvar" style="width:100%">Salvar</button>
+      <div style="margin-top:16px;">
+        <label>Bancos Cadastrados:</label>
+        <div id="bankManageList"></div>
       </div>
     </div>
-  </div>
 
-  <div class="panel" id="panelBanco">
-    <h3 id="panelBancoTitle">Gerenciar Bancos</h3>
-    <div class="form-grid">
-      <div>
-        <label for="bNome">Nome do banco</label>
-        <input type="text" id="bNome" placeholder="Ex: Nubank">
+    <div class="panel" id="panelCategoria">
+      <h3>Gerenciar Categorias <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label for="cNome">Nome da nova categoria</label>
+          <input type="text" id="cNome" placeholder="Ex: Renda Extra">
+        </div>
+        <div>
+          <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
+        </div>
       </div>
-      <div>
-        <label for="bSaldo">Saldo inicial (R$)</label>
-        <input type="number" id="bSaldo" step="0.01" placeholder="0,00">
-      </div>
-      <div>
-        <button class="primary" id="bSalvar" style="width:100%">Adicionar</button>
+      <div style="margin-top:16px;">
+        <label>Categorias Cadastradas:</label>
+        <div id="catManageList"></div>
       </div>
     </div>
-    <div style="margin-top:16px;">
-      <label>Bancos Cadastrados:</label>
-      <div id="bankManageList"></div>
-    </div>
-  </div>
 
-  <div class="panel" id="panelCategoria">
-    <h3>Gerenciar Categorias</h3>
-    <div class="form-grid">
-      <div>
-        <label for="cNome">Nome da nova categoria</label>
-        <input type="text" id="cNome" placeholder="Ex: Renda Extra">
-      </div>
-      <div>
-        <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
+    <div class="panel" id="panelTransferencia">
+      <h3>Transferência entre Contas <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label for="tData">Data</label>
+          <input type="date" id="tData">
+        </div>
+        <div>
+          <label for="tDe">Origem (Sai de)</label>
+          <select id="tDe"></select>
+        </div>
+        <div>
+          <label for="tPara">Destino (Vai para)</label>
+          <select id="tPara"></select>
+        </div>
+        <div>
+          <label for="tValor">Valor (R$)</label>
+          <input type="number" id="tValor" step="0.01" min="0" placeholder="0,00">
+        </div>
+        <div>
+          <label for="tDesc">Observação (Opcional)</label>
+          <input type="text" id="tDesc" placeholder="Ex: Reserva mensal">
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
+          <button class="primary" id="tSalvar" style="width:100%">Transferir</button>
+        </div>
       </div>
     </div>
-    <div style="margin-top:16px;">
-      <label>Categorias Cadastradas:</label>
-      <div id="catManageList"></div>
-    </div>
-  </div>
 
-  <div class="panel" id="panelTransferencia">
-    <h3>Transferência entre Contas</h3>
-    <div class="form-grid">
-      <div>
-        <label for="tData">Data</label>
-        <input type="date" id="tData">
-      </div>
-      <div>
-        <label for="tDe">Origem (Sai de)</label>
-        <select id="tDe"></select>
-      </div>
-      <div>
-        <label for="tPara">Destino (Vai para)</label>
-        <select id="tPara"></select>
-      </div>
-      <div>
-        <label for="tValor">Valor (R$)</label>
-        <input type="number" id="tValor" step="0.01" min="0" placeholder="0,00">
-      </div>
-      <div>
-        <label for="tDesc">Observação (Opcional)</label>
-        <input type="text" id="tDesc" placeholder="Ex: Reserva mensal">
-      </div>
-      <div>
-        <button class="primary" id="tSalvar" style="width:100%">Transferir</button>
+    <div class="panel" id="panelPaste">
+      <h3>Colar texto do extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <label for="pasteArea">Cole abaixo o texto do seu extrato bancário ou relatório:</label>
+      <textarea id="pasteArea" placeholder="Cole as linhas do extrato aqui..."></textarea>
+      <div class="toolbar" style="margin-top:10px; margin-bottom:0;">
+        <button class="primary" id="btnProcessPaste">Processar Texto</button>
+        <button id="btnCancelPaste">Cancelar</button>
       </div>
     </div>
-  </div>
 
-  <div class="panel" id="panelPaste">
-    <h3>Colar texto do extrato</h3>
-    <label for="pasteArea">Cole abaixo o texto do seu extrato bancário ou relatório:</label>
-    <textarea id="pasteArea" placeholder="Cole as linhas do extrato aqui..."></textarea>
-    <div class="toolbar" style="margin-top:10px;">
-      <button class="primary" id="btnProcessPaste">Processar Texto</button>
-      <button id="btnCancelPaste">Cancelar</button>
-    </div>
-  </div>
-
-  <div class="panel" id="panelImport">
-    <h3>Revisar importação</h3>
-    <div id="importList"></div>
-    <div class="hint">Confira os dados antes de confirmar. Remova as linhas que não forem lançamentos reais.</div>
-    <div class="toolbar" style="margin-top:14px;">
-      <button class="primary" id="importConfirm">Adicionar lançamentos selecionados</button>
-      <button id="importCancel">Cancelar</button>
+    <div class="panel" id="panelImport">
+      <h3>Revisar importação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div id="importList"></div>
+      <div class="hint">Confira os dados antes de confirmar. Remova as linhas que não forem lançamentos reais.</div>
+      <div class="toolbar" style="margin-top:14px; margin-bottom:0;">
+        <button class="primary" id="importConfirm">Adicionar lançamentos selecionados</button>
+        <button id="importCancel">Cancelar</button>
+      </div>
     </div>
   </div>
 
@@ -639,11 +672,19 @@
       <span id="ledgerCount">0</span>
     </div>
 
-    <!-- Barra de Filtros -->
+    <!-- Barra de Filtros Completa -->
     <div class="ledger-filters">
       <div>
         <label for="filterMonth">Mês</label>
         <select id="filterMonth"></select>
+      </div>
+      <div>
+        <label for="filterDateStart">Data Início</label>
+        <input type="date" id="filterDateStart">
+      </div>
+      <div>
+        <label for="filterDateEnd">Data Fim</label>
+        <input type="date" id="filterDateEnd">
       </div>
       <div>
         <label for="filterBank">Banco</label>
@@ -678,7 +719,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// Ativa o cache local para carregamento instantâneo e proteção contra perda de dados
 firebase.firestore().enablePersistence().catch(err => {
   console.log("A persistência offline não pôde ser ativada:", err);
 });
@@ -719,7 +759,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadState() {
     const defaultCats = ['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Salário', 'Renda Extra', 'Transferência', 'Outros'];
     
-    // Carregamento instantâneo em tempo real com onSnapshot e cache offline
     docRef().onSnapshot(snap => {
       let changed = false;
       
@@ -900,11 +939,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getFilteredEntries() {
     const m = document.getElementById('filterMonth').value;
+    const dateStart = document.getElementById('filterDateStart').value;
+    const dateEnd = document.getElementById('filterDateEnd').value;
     const b = document.getElementById('filterBank').value;
     const c = document.getElementById('filterCategory').value;
 
     return entries.filter(e => {
       if (m && (!e.date || !e.date.startsWith(m))) return false;
+      if (dateStart && e.date < dateStart) return false;
+      if (dateEnd && e.date > dateEnd) return false;
       if (b && e.bank !== b) return false;
       if (c && e.category !== c) return false;
       return true;
@@ -930,8 +973,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const max = spend[0].total;
 
+    const monthVal = document.getElementById('filterMonth').value;
+    const ds = document.getElementById('filterDateStart').value;
+    const de = document.getElementById('filterDateEnd').value;
+    let subtitle = '';
+    if (monthVal) subtitle = '— ' + formatMonthLabel(monthVal);
+    else if (ds || de) subtitle = `— ${ds ? ds.split('-').reverse().join('/') : 'Início'} até ${de ? de.split('-').reverse().join('/') : 'Hoje'}`;
+
     wrap.innerHTML = `<div class="cat-summary">
-      <h3>Gastos por Categoria ${document.getElementById('filterMonth').value ? '— ' + formatMonthLabel(document.getElementById('filterMonth').value) : ''}</h3>
+      <h3>Gastos por Categoria ${subtitle}</h3>
       <div class="cat-summary-content">
         <div class="chart-container">
           <canvas id="catPieChart"></canvas>
@@ -1047,11 +1097,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('filterMonth').onchange = () => { renderCategorySummary(); renderLedger(); };
+  document.getElementById('filterDateStart').onchange = () => { renderCategorySummary(); renderLedger(); };
+  document.getElementById('filterDateEnd').onchange = () => { renderCategorySummary(); renderLedger(); };
   document.getElementById('filterBank').onchange = () => { renderCategorySummary(); renderLedger(); };
   document.getElementById('filterCategory').onchange = () => { renderCategorySummary(); renderLedger(); };
   
   document.getElementById('btnClearFilters').onclick = () => {
     document.getElementById('filterMonth').value = '';
+    document.getElementById('filterDateStart').value = '';
+    document.getElementById('filterDateEnd').value = '';
     document.getElementById('filterBank').value = '';
     document.getElementById('filterCategory').value = '';
     renderCategorySummary();
@@ -1102,9 +1156,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (entry.type === 'in') document.getElementById('tglIn').click();
     else document.getElementById('tglOut').click();
 
-    document.getElementById('panelNovoTitle').textContent = 'Editar lançamento';
+    document.getElementById('panelNovoTitle').innerHTML = 'Editar lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('fSalvar').textContent = 'Atualizar';
-    togglePanel('panelNovo', true);
+    openModal('panelNovo');
   };
 
   window.editBank = function(id) {
@@ -1113,51 +1167,66 @@ document.addEventListener('DOMContentLoaded', () => {
     editingBankId = bank.id;
     document.getElementById('bNome').value = bank.name;
     document.getElementById('bSaldo').value = bank.initial || 0;
-    document.getElementById('panelBancoTitle').textContent = 'Editar Banco';
+    document.getElementById('panelBancoTitle').innerHTML = 'Editar Banco <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('bSalvar').textContent = 'Atualizar';
+    openModal('panelBanco');
   };
 
-  function togglePanel(id, forceOpen = false) {
-    document.querySelectorAll('.panel').forEach(p => {
-      if (p.id !== id) p.classList.remove('open');
-    });
-    const panel = document.getElementById(id);
-    if (forceOpen) panel.classList.add('open');
-    else panel.classList.toggle('open');
+  function openModal(panelId) {
+    const overlay = document.getElementById('modalOverlay');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+    document.getElementById(panelId).classList.add('open');
+    overlay.classList.add('open');
   }
+
+  window.closeAllPanels = function() {
+    const overlay = document.getElementById('modalOverlay');
+    overlay.classList.remove('open');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+  }
+
+  document.getElementById('modalOverlay').onclick = (e) => {
+    if (e.target === document.getElementById('modalOverlay')) {
+      closeAllPanels();
+    }
+  };
 
   document.getElementById('btnNovo').onclick = () => {
     if (banks.length === 0) {
       alert('Cadastre pelo menos um banco antes de fazer lançamentos.');
-      togglePanel('panelBanco');
+      openModal('panelBanco');
       return;
     }
     editingEntryId = null;
-    document.getElementById('panelNovoTitle').textContent = 'Novo lançamento';
+    document.getElementById('panelNovoTitle').innerHTML = 'Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('fSalvar').textContent = 'Salvar';
     document.getElementById('fDesc').value = '';
     document.getElementById('fValor').value = '';
     document.getElementById('fData').value = todayISO();
-    togglePanel('panelNovo');
+    openModal('panelNovo');
   };
+
   document.getElementById('btnBanco').onclick = () => {
     editingBankId = null;
     document.getElementById('bNome').value = '';
     document.getElementById('bSaldo').value = '';
-    document.getElementById('panelBancoTitle').textContent = 'Gerenciar Bancos';
+    document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('bSalvar').textContent = 'Adicionar';
-    togglePanel('panelBanco');
+    openModal('panelBanco');
   };
-  document.getElementById('btnCategoria').onclick = () => togglePanel('panelCategoria');
+
+  document.getElementById('btnCategoria').onclick = () => openModal('panelCategoria');
+
   document.getElementById('btnTransferencia').onclick = () => {
     if (banks.length < 2) {
       alert('Você precisa ter pelo menos dois bancos cadastrados para realizar transferências.');
       return;
     }
     document.getElementById('tData').value = todayISO();
-    togglePanel('panelTransferencia');
+    openModal('panelTransferencia');
   };
-  document.getElementById('btnPasteTrigger').onclick = () => togglePanel('panelPaste');
+
+  document.getElementById('btnPasteTrigger').onclick = () => openModal('panelPaste');
 
   document.getElementById('btnQuickCat').onclick = () => {
     const name = prompt('Digite o nome da nova categoria:');
@@ -1209,7 +1278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populateFilterControls();
     document.getElementById('fDesc').value = '';
     document.getElementById('fValor').value = '';
-    togglePanel('panelNovo');
+    closeAllPanels();
     render();
   };
 
@@ -1233,9 +1302,9 @@ document.addEventListener('DOMContentLoaded', () => {
     populateFilterControls();
     document.getElementById('bNome').value = '';
     document.getElementById('bSaldo').value = '';
-    document.getElementById('panelBancoTitle').textContent = 'Gerenciar Bancos';
+    document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('bSalvar').textContent = 'Adicionar';
-    togglePanel('panelBanco');
+    closeAllPanels();
     render();
   };
 
@@ -1246,6 +1315,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveCategories();
     populateFilterControls();
     document.getElementById('cNome').value = '';
+    closeAllPanels();
     render();
   };
 
@@ -1294,7 +1364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populateFilterControls();
     document.getElementById('tValor').value = '';
     document.getElementById('tDesc').value = '';
-    togglePanel('panelTransferencia');
+    closeAllPanels();
     render();
   };
 
@@ -1303,9 +1373,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!txt.trim()){ alert('Cole algum texto primeiro.'); return; }
     parseImportedText(txt);
     document.getElementById('pasteArea').value = '';
-    togglePanel('panelPaste');
   };
-  document.getElementById('btnCancelPaste').onclick = () => togglePanel('panelPaste');
+  document.getElementById('btnCancelPaste').onclick = () => closeAllPanels();
 
   document.getElementById('btnExportBackup').onclick = () => {
     const data = { banks, categories, entries };
@@ -1333,7 +1402,7 @@ document.addEventListener('DOMContentLoaded', () => {
           persistNow().then(() => {
             populateFilterControls(true);
             render();
-            alert('Backup restaurado e salvo com sucesso! Você já pode navegar ou recarregar a página com segurança.');
+            alert('Backup restaurado e salvo com sucesso!');
           });
         } else {
           alert('Arquivo de backup inválido.');
@@ -1426,7 +1495,7 @@ document.addEventListener('DOMContentLoaded', () => {
       parseImportedText(fullText);
     } catch(err) {
       console.error(err);
-      alert('Não consegui ler esse PDF. Tente usar "Colar Texto" copiando o extrato diretamente do seu app.');
+      alert('Não consegui ler esse PDF. Tente usar "Colar Texto".');
     }
     ev.target.value = '';
   };
@@ -1503,7 +1572,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     renderImportReview();
-    togglePanel('panelImport');
+    openModal('panelImport');
   }
 
   function renderImportReview() {
@@ -1540,13 +1609,13 @@ document.addEventListener('DOMContentLoaded', () => {
     saveEntries();
     pendingImport = [];
     populateFilterControls();
-    togglePanel('panelImport');
+    closeAllPanels();
     render();
   };
 
   document.getElementById('importCancel').onclick = () => {
     pendingImport = [];
-    togglePanel('panelImport');
+    closeAllPanels();
   };
 
   document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
