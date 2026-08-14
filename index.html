@@ -678,6 +678,11 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+
+// Ativa o cache local para carregamento instantâneo e proteção contra perda de dados
+firebase.firestore().enablePersistence().catch(err => {
+  console.log("A persistência offline não pôde ser ativada:", err);
+});
 const db = firebase.firestore();
 let currentUser = null;
 let isSignupMode = false;
@@ -763,15 +768,9 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(err => { console.error(err); setSyncDot(false); });
   }
 
-  function persistAll() {
-    if (!currentUser) return;
-    setSyncDot(true);
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      docRef().set({ banks, categories, entries }, { merge: false })
-        .then(() => setSyncDot(false))
-        .catch(err => { console.error(err); setSyncDot(false); });
-    }, 400);
+    function persistAll() {
+    // Substituímos o temporizador por um salvamento imediato e seguro
+    persistNow();
   }
 
   function saveBanks() { persistAll(); }
@@ -873,8 +872,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     monthSel.innerHTML = monthHtml;
 
-    if (isInitial) {
-      monthSel.value = currentMonthYM();
+        if (isInitial) {
+      // Deixando vazio, o sistema seleciona "Todos os Meses" por padrão
+      monthSel.value = ""; 
     } else if (currMonthVal !== undefined) {
       monthSel.value = currMonthVal;
     }
