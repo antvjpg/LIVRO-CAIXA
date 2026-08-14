@@ -142,9 +142,9 @@
   .balance-card.total .amount.neg{color:#E8967D;}
 
   .toolbar{
-    display:flex;
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap:10px;
-    flex-wrap:wrap;
     margin-bottom:18px;
   }
   button{
@@ -155,19 +155,24 @@
     border:1.5px solid var(--ink);
     background:transparent;
     color:var(--ink);
-    padding:10px 16px;
+    padding:12px 14px;
     cursor:pointer;
-    border-radius:2px;
-    transition:background 0.15s, color 0.15s;
+    border-radius:4px;
+    transition:background 0.15s, color 0.15s, transform 0.05s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
   button:hover{background:var(--ink);color:var(--paper);}
+  button:active{transform:scale(0.98);}
   button.primary{background:var(--green);border-color:var(--green);color:#fff;}
   button.primary:hover{background:#255939;}
   button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
     outline:2px solid var(--gold);
     outline-offset:2px;
   }
-  button:disabled{opacity:0.4;cursor:not-allowed;}
+  button:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
   input[type=file]{display:none;}
 
   /* Janela Flutuante (Modal) */
@@ -245,7 +250,7 @@
     font-size:12px;
   }
   .type-toggle{display:flex;border:1.5px solid var(--ink);border-radius:2px;overflow:hidden;}
-  .type-toggle button{border:none;flex:1;border-radius:0;}
+  .type-toggle button{border:none;flex:1;border-radius:0;padding:10px 4px;}
   .type-toggle button.active-in{background:var(--green);color:#fff;}
   .type-toggle button.active-out{background:var(--red);color:#fff;}
 
@@ -552,6 +557,7 @@
     display:inline-block;
   }
   .sync-dot.saving{background:var(--gold);}
+  
   @media (max-width:768px){
     .import-row{grid-template-columns:1fr; gap:4px; padding:10px 0;}
     .cat-summary-content{flex-direction:column;}
@@ -559,9 +565,17 @@
   }
   @media (max-width:600px){
     .balance-strip{grid-template-columns:1fr 1fr;}
+    .toolbar{grid-template-columns: 1fr 1fr;}
     thead{display:none;}
     tbody td{display:block;padding:4px 14px;border-bottom:none;}
-    tbody tr{border-bottom:1.5px solid var(--line);padding:8px 0;display:block;}
+    tbody tr{
+      border-bottom:1.5px solid var(--line);
+      padding:12px;
+      display:block;
+      background: var(--paper-2);
+      margin-bottom: 8px;
+      border-radius: 8px;
+    }
     .amt{text-align:left;}
   }
 </style>
@@ -608,7 +622,7 @@
 </header>
 
 <main>
-  <!-- Barra de Navegação por Abas -->
+  <!-- Navegação por Abas -->
   <div class="nav-tabs">
     <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')">📖 Livro-Caixa</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">🪙 Cripto & Investimentos</button>
@@ -623,11 +637,11 @@
       <button id="btnBanco">+ Banco</button>
       <button id="btnCategoria">+ Categoria</button>
       <button id="btnTransferencia">🔄 Transferência</button>
-      <button id="btnPasteTrigger">Colar Texto</button>
-      <button id="btnImportTrigger">Importar PDF</button>
-      <button id="btnExport">Exportar PDF</button>
-      <button id="btnExportBackup">Exportar Backup</button>
-      <button id="btnImportBackupTrigger">Restaurar Backup</button>
+      <button id="btnPasteTrigger">📋 Colar Texto</button>
+      <button id="btnImportTrigger">📄 Importar PDF</button>
+      <button id="btnExport">📊 Exportar PDF</button>
+      <button id="btnExportBackup">💾 Exportar Backup</button>
+      <button id="btnImportBackupTrigger">📥 Restaurar Backup</button>
       <input type="file" id="fileImport" accept="application/pdf">
       <input type="file" id="fileBackupImport" accept="application/json">
     </div>
@@ -640,7 +654,7 @@
         <span id="ledgerCount">0</span>
       </div>
 
-      <!-- Barra de Filtros Completa -->
+      <!-- Filtros -->
       <div class="ledger-filters">
         <div>
           <label for="filterMonth">Mês</label>
@@ -675,14 +689,14 @@
 
   <!-- ABA 2: CRIPTO E INVESTIMENTOS -->
   <div id="viewInvest" class="tab-content">
-    <div class="toolbar">
+    <div class="toolbar" style="grid-template-columns: minmax(200px, 260px);">
       <button class="primary" id="btnNovoInvest">+ Novo Ativo / Cripto</button>
     </div>
 
     <div id="investGrid" class="invest-grid"></div>
   </div>
 
-  <!-- Janelas Flutuantes (Modais) -->
+  <!-- Modais -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="panel" id="panelNovo">
       <h3 id="panelNovoTitle">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
@@ -824,9 +838,9 @@
       <h3>Colar texto do extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <label for="pasteArea">Cole abaixo o texto do seu extrato bancário ou relatório:</label>
       <textarea id="pasteArea" placeholder="Cole as linhas do extrato aqui..."></textarea>
-      <div class="toolbar" style="margin-top:10px; margin-bottom:0;">
-        <button class="primary" id="btnProcessPaste">Processar Texto</button>
-        <button id="btnCancelPaste">Cancelar</button>
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <button class="primary" id="btnProcessPaste" style="flex:1;">Processar Texto</button>
+        <button id="btnCancelPaste" style="flex:1;">Cancelar</button>
       </div>
     </div>
 
@@ -834,9 +848,9 @@
       <h3>Revisar importação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <div id="importList"></div>
       <div class="hint">Confira os dados antes de confirmar. Remova as linhas que não forem lançamentos reais.</div>
-      <div class="toolbar" style="margin-top:14px; margin-bottom:0;">
-        <button class="primary" id="importConfirm">Adicionar lançamentos selecionados</button>
-        <button id="importCancel">Cancelar</button>
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button class="primary" id="importConfirm" style="flex:1;">Confirmar Lançamentos</button>
+        <button id="importCancel" style="flex:1;">Cancelar</button>
       </div>
     </div>
   </div>
@@ -881,7 +895,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const todayISO = () => new Date().toISOString().slice(0, 10);
   const currentMonthYM = () => todayISO().slice(0, 7);
 
-  // Sistema de Tema Escuro / Claro
+  // Tema Escuro / Claro
   const themeBtn = document.getElementById('btnThemeToggle');
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
@@ -894,6 +908,11 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     renderCategorySummary();
   };
+
+  // Suporte a tecla ESC para fechar modais
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAllPanels();
+  });
 
   // Alternância de Abas
   window.switchTab = function(tabName) {
@@ -1488,6 +1507,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   document.getElementById('fSalvar').onclick = () => {
+    const btn = document.getElementById('fSalvar');
     const date = document.getElementById('fData').value || todayISO();
     const desc = document.getElementById('fDesc').value.trim();
     const bank = document.getElementById('fBanco').value;
@@ -1498,6 +1518,8 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Preencha a descrição e um valor válido.');
       return;
     }
+
+    btn.disabled = true;
 
     if (editingEntryId) {
       const idx = entries.findIndex(e => e.id === editingEntryId);
@@ -1513,6 +1535,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populateFilterControls();
     document.getElementById('fDesc').value = '';
     document.getElementById('fValor').value = '';
+    btn.disabled = false;
     closeAllPanels();
     render();
   };
@@ -1786,7 +1809,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let cleanLine = rawLine.replace(dateMatch[0], '');
 
-      const moneyMatch = cleanLine.match(/([\+\-]?\s*R\$\s*[\+\-]?\d+(?:[\.,]\d+)?|[\+\-]\d+(?:[\.,]\d+)?|\b\d+(?:[\.,]\d{2})\b|\b\d+\b)/i);
+      const moneyMatch = cleanLine.match(/(?:[\+\-]\s*)?(?:R\$\s*)?([\+\-]?\d+(?:\.\d{3})*(?:,\d{2})?|[\+\-]?\d+(?:\,\d{3})*(?:\.\d{2})?)/i);
 
       if (!moneyMatch) return;
 
