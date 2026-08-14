@@ -1,1655 +1,455 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Livro-Caixa</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<style>
-  :root{
-    --paper:#F7F5EF;
-    --paper-2:#EFEBE0;
-    --ink:#1C2B24;
-    --ink-soft:#4C5A52;
-    --green:#2F6F4F;
-    --green-soft:#DCEBE2;
-    --red:#B3432B;
-    --red-soft:#F3E2DC;
-    --line:#D8D2C1;
-    --gold:#B08D3E;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Inter',sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  ::selection{background:var(--gold);color:var(--paper);}
-  header{
-    padding:36px 24px 20px;
-    border-bottom:2px solid var(--ink);
-    display:flex;
-    align-items:baseline;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:12px;
-    max-width:980px;
-    margin:0 auto;
-  }
-  header h1{
-    font-family:'Fraunces',serif;
-    font-weight:700;
-    font-optical-sizing:auto;
-    font-size:clamp(28px,4vw,40px);
-    margin:0;
-    letter-spacing:-0.01em;
-  }
-  header .subtitle{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
-    color:var(--ink-soft);
-    text-transform:uppercase;
-    letter-spacing:0.08em;
-  }
-  main{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Livro-Caixa</title>
 
-  .balance-strip{
-    display:grid;
-    grid-template-columns:1.3fr repeat(auto-fill,minmax(150px,1fr));
-    gap:1px;
-    background:var(--ink);
-    border:2px solid var(--ink);
-    margin-bottom:32px;
-  }
-  .balance-card{
-    background:var(--paper);
-    padding:18px 16px;
-    position:relative;
-  }
-  .balance-card.total{background:var(--ink);color:var(--paper);}
-  .balance-card .label{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:0.06em;
-    opacity:0.7;
-    display:block;
-    margin-bottom:6px;
-  }
-  .balance-card .amount{
-    font-family:'Fraunces',serif;
-    font-size:22px;
-    font-weight:600;
-    font-variant-numeric:tabular-nums;
-  }
-  .balance-card .amount.neg{color:var(--red);}
-  .balance-card.total .amount.neg{color:#E8967D;}
+  <!-- Google Fonts & Chart.js / jsPDF / PDF.js -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
-  .toolbar{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-bottom:18px;
-  }
-  button{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
-    text-transform:uppercase;
-    letter-spacing:0.05em;
-    border:1.5px solid var(--ink);
-    background:transparent;
-    color:var(--ink);
-    padding:10px 16px;
-    cursor:pointer;
-    border-radius:2px;
-    transition:background 0.15s, color 0.15s;
-  }
-  button:hover{background:var(--ink);color:var(--paper);}
-  button.primary{background:var(--green);border-color:var(--green);color:#fff;}
-  button.primary:hover{background:#255939;}
-  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
-    outline:2px solid var(--gold);
-    outline-offset:2px;
-  }
-  button:disabled{opacity:0.4;cursor:not-allowed;}
-  input[type=file]{display:none;}
+  <style>
+    :root {
+      --bg-color: #e5e0d4;
+      --card-bg: #dcd6c8;
+      --border-color: #1a1a1a;
+      --text-color: #1a1a1a;
+      --btn-green: #2c5e3b;
+      --btn-green-hover: #21472c;
+      --btn-dark: #222222;
+      --btn-bg: #ece7db;
+    }
 
-  .panel{
-    background:var(--paper);
-    border:1.5px solid var(--line);
-    padding:20px;
-    margin-bottom:24px;
-    display:none;
-  }
-  .panel.open{display:block;}
-  .panel h3{
-    font-family:'Fraunces',serif;
-    margin:0 0 14px;
-    font-size:18px;
-  }
-  .form-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-    gap:12px;
-    align-items:end;
-  }
-  label{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:0.05em;
-    color:var(--ink-soft);
-    display:block;
-    margin-bottom:5px;
-  }
-  input,select,textarea{
-    width:100%;
-    font-family:'Inter',sans-serif;
-    font-size:14px;
-    padding:9px 10px;
-    border:1.5px solid var(--line);
-    background:#fff;
-    color:var(--ink);
-    border-radius:2px;
-  }
-  textarea{
-    height:120px;
-    resize:vertical;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
-  }
-  .type-toggle{display:flex;border:1.5px solid var(--ink);border-radius:2px;overflow:hidden;}
-  .type-toggle button{border:none;flex:1;border-radius:0;}
-  .type-toggle button.active-in{background:var(--green);color:#fff;}
-  .type-toggle button.active-out{background:var(--red);color:#fff;}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier Prime', monospace, sans-serif;
+    }
 
-  .cat-summary{
-    border:1.5px solid var(--line);
-    background:var(--paper);
-    padding:20px;
-    margin-bottom:24px;
-  }
-  .cat-summary h3{
-    font-family:'Fraunces',serif;
-    font-size:18px;
-    margin:0 0 16px;
-  }
-  .cat-summary-content{
-    display:flex;
-    flex-wrap:wrap;
-    gap:24px;
-    align-items:center;
-  }
-  .chart-container{
-    flex:1;
-    min-width:240px;
-    max-width:320px;
-    height:220px;
-    margin:0 auto;
-  }
-  .cat-bars-list{
-    flex:1.2;
-    min-width:260px;
-  }
-  .cat-row{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:10px;
-    font-size:13px;
-  }
-  .cat-row .cat-name{
-    width:130px;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11.5px;
-    color:var(--ink-soft);
-    flex-shrink:0;
-  }
-  .cat-row .cat-bar-wrap{
-    flex:1;
-    background:#fff;
-    border:1px solid var(--line);
-    height:10px;
-    position:relative;
-  }
-  .cat-row .cat-bar{
-    background:var(--red);
-    height:100%;
-  }
-  .cat-row .cat-amt{
-    font-family:'IBM Plex Mono',monospace;
-    font-variant-numeric:tabular-nums;
-    width:90px;
-    text-align:right;
-    flex-shrink:0;
-  }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-  /* Ledger com área de Filtros */
-  .ledger{border:2px solid var(--ink);}
-  .ledger-month{
-    background:var(--ink);
-    color:var(--paper);
-    padding:10px 16px;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
-    text-transform:uppercase;
-    letter-spacing:0.08em;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-  .ledger-filters{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    background:var(--paper-2);
-    padding:12px 16px;
-    border-bottom:1.5px solid var(--line);
-    align-items:end;
-  }
-  .ledger-filters div{
-    flex:1;
-    min-width:140px;
-  }
-  .ledger-filters label{
-    font-size:10px;
-    margin-bottom:4px;
-  }
-  .ledger-filters select{
-    padding:7px 8px;
-    font-size:13px;
-  }
-  .ledger-scroll-area{
-    max-height:450px;
-    overflow-y:auto;
-  }
-  .ledger-scroll-area::-webkit-scrollbar {
-    width:8px;
-  }
-  .ledger-scroll-area::-webkit-scrollbar-thumb {
-    background:var(--ink-soft);
-    border-radius:0px;
-  }
-  .ledger-scroll-area::-webkit-scrollbar-track {
-    background:var(--paper-2);
-  }
+    /* Header */
+    header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
 
-  table{width:100%;border-collapse:collapse;}
-  thead th{
-    text-align:left;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:10.5px;
-    text-transform:uppercase;
-    letter-spacing:0.05em;
-    color:var(--ink-soft);
-    padding:10px 14px;
-    border-bottom:1.5px solid var(--line);
-    position:sticky;
-    top:0;
-    background:var(--paper);
-    z-index:1;
-  }
-  tbody td{
-    padding:11px 14px;
-    border-bottom:1px solid var(--line);
-    font-size:14px;
-    vertical-align:middle;
-  }
-  tbody tr:hover{background:rgba(0,0,0,0.02);}
-  .amt{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;text-align:right;}
-  .amt.in{color:var(--green);}
-  .amt.out{color:var(--red);}
-  .bank-tag{
-    display:inline-block;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:10.5px;
-    padding:2px 7px;
-    border:1px solid var(--ink-soft);
-    border-radius:2px;
-    color:var(--ink-soft);
-  }
-  .action-btn{
-    border:none;background:none;color:var(--ink-soft);
-    font-size:14px;padding:2px 4px;cursor:pointer;
-  }
-  .action-btn:hover{color:var(--ink);}
-  .action-btn.del:hover{color:var(--red);}
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-  .bank-list-item, .cat-list-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:8px 12px;
-    background:#fff;
-    border:1px solid var(--line);
-    margin-top:6px;
-    font-size:13px;
-  }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+    }
 
-  .empty{
-    padding:50px 20px;
-    text-align:center;
-    color:var(--ink-soft);
-    font-family:'IBM Plex Mono',monospace;
-    font-size:13px;
-  }
-  .import-row{
-    display:grid;
-    grid-template-columns:110px 1fr 110px 110px 110px 70px 34px;
-    gap:8px;
-    align-items:center;
-    padding:6px 0;
-    border-bottom:1px dashed var(--line);
-    font-size:13px;
-  }
-  .import-row input, .import-row select{padding:6px 8px;font-size:13px;}
-  .hint{font-size:12px;color:var(--ink-soft);margin-top:8px;}
-  footer{
-    text-align:center;
-    padding:24px;
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;
-    color:var(--ink-soft);
-  }
-  #authOverlay{
-    position:fixed;
-    inset:0;
-    background:var(--paper);
-    z-index:100;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-  }
-  #authOverlay.hidden{display:none;}
-  .auth-box{
-    max-width:360px;
-    width:100%;
-    border:2px solid var(--ink);
-    padding:32px 28px;
-    background:var(--paper-2);
-  }
-  .auth-box h2{
-    font-family:'Fraunces',serif;
-    margin:0 0 6px;
-    font-size:26px;
-  }
-  .auth-box p.sub{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11.5px;
-    color:var(--ink-soft);
-    margin:0 0 22px;
-    text-transform:uppercase;
-    letter-spacing:0.05em;
-  }
-  .auth-box label{margin-top:12px;}
-  .auth-box input{margin-bottom:4px;}
-  .auth-error{
-    color:var(--red);
-    font-size:12.5px;
-    margin-top:10px;
-    min-height:16px;
-  }
-  .auth-toggle{
-    margin-top:16px;
-    font-size:12.5px;
-    text-align:center;
-  }
-  .auth-toggle a{color:var(--green);cursor:pointer;text-decoration:underline;}
-  .pass-wrap{position:relative;}
-  .pass-wrap input{padding-right:44px;}
-  .pass-toggle{
-    position:absolute;
-    right:4px;
-    top:50%;
-    transform:translateY(-50%);
-    background:none;
-    border:none;
-    padding:6px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:var(--ink-soft);
-    cursor:pointer;
-  }
-  .pass-toggle:hover{background:none;color:var(--ink);}
-  #userBar{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;
-    color:var(--ink-soft);
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  #userBar button{padding:6px 10px;font-size:10.5px;}
-  .sync-dot{
-    width:8px;height:8px;border-radius:50%;
-    background:var(--green);
-    display:inline-block;
-  }
-  .sync-dot.saving{background:var(--gold);}
-  @media (max-width:768px){
-    .import-row{grid-template-columns:1fr; gap:4px; padding:10px 0;}
-    .cat-summary-content{flex-direction:column;}
-    .ledger-filters{flex-direction:column; align-items:stretch;}
-  }
-  @media (max-width:600px){
-    .balance-strip{grid-template-columns:1fr 1fr;}
-    thead{display:none;}
-    tbody td{display:block;padding:4px 14px;border-bottom:none;}
-    tbody tr{border-bottom:1.5px solid var(--line);padding:8px 0;display:block;}
-    .amt{text-align:left;}
-  }
-</style>
+    .date-str {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .user-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+
+    .btn-sair {
+      background: #fff;
+      border: 1.5px solid var(--border-color);
+      padding: 4px 12px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    /* Cards de Saldo */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      border: 2px solid var(--border-color);
+      padding: 12px;
+      background-color: var(--card-bg);
+      border-radius: 4px;
+    }
+
+    .card.total {
+      grid-column: span 2;
+      background-color: #d1c9b8;
+    }
+
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .card-value {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    /* Botoes de Acao */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      border: 2px solid var(--border-color);
+      padding: 12px 8px;
+      background-color: var(--btn-bg);
+      font-weight: bold;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      border-radius: 4px;
+      box-shadow: 2px 2px 0px var(--border-color);
+      transition: all 0.1s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0px 0px 0px var(--border-color);
+    }
+
+    .btn-green {
+      background-color: var(--btn-green);
+      color: #fff;
+    }
+
+    .btn-dark {
+      background-color: var(--btn-dark);
+      color: #fff;
+    }
+
+    /* Secao de Lancamentos e Filtros */
+    .section-box {
+      border: 2px solid var(--border-color);
+      background-color: var(--card-bg);
+      padding: 16px;
+      border-radius: 4px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .filter-group {
+      margin-bottom: 12px;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 2px solid var(--border-color);
+      background-color: #fff;
+      font-family: inherit;
+      border-radius: 4px;
+    }
+
+    .status-footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+  </style>
 </head>
 <body>
 
-<div id="authOverlay">
-  <div class="auth-box">
-    <h2 id="authTitle">Entrar</h2>
-    <p class="sub">Livro-Caixa · sincronizado</p>
-    <label for="authEmail">E-mail</label>
-    <input type="email" id="authEmail" placeholder="voce@email.com">
-    <label for="authPass">Senha</label>
-    <div class="pass-wrap">
-      <input type="password" id="authPass" placeholder="mínimo 6 caracteres">
-      <button type="button" class="pass-toggle" id="authPassToggle" aria-label="Mostrar senha">
-        <svg id="eyeOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <svg id="eyeClosed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-      </button>
+  <header>
+    <div class="header-top">
+      <h1>Livro-Caixa</h1>
     </div>
-    <button class="primary" id="authSubmit" style="width:100%;margin-top:14px;">Entrar</button>
-    <div class="auth-error" id="authError"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin:16px 0;">
-      <div style="flex:1;height:1px;background:var(--line);"></div>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);">ou</span>
-      <div style="flex:1;height:1px;background:var(--line);"></div>
+    <div class="date-str" id="currentDateStr">QUINTA-FEIRA, 13 DE AGOSTO DE 2026</div>
+    <div class="user-bar">
+      <span id="userEmail">usuario@email.com</span>
+      <button class="btn-sair" onclick="logout()">SAIR</button>
     </div>
-    <button type="button" id="authGoogle" style="width:100%;">Entrar com Google</button>
-    <div class="auth-toggle" id="authToggleWrap">
-      Não tem conta? <a id="authToggleLink">Criar conta</a>
-    </div>
-  </div>
-</div>
+  </header>
 
-<header>
-  <div>
-    <h1>Livro-Caixa</h1>
-    <div class="subtitle" id="todayLabel">—</div>
-  </div>
-  <div id="userBar"></div>
-</header>
-
-<main>
-  <div class="balance-strip" id="balanceStrip"></div>
-
-  <div class="toolbar">
-    <button class="primary" id="btnNovo">+ Novo lançamento</button>
-    <button id="btnBanco">+ Banco</button>
-    <button id="btnCategoria">+ Categoria</button>
-    <button id="btnTransferencia">🔄 Transferência</button>
-    <button id="btnPasteTrigger">Colar Texto</button>
-    <button id="btnImportTrigger">Importar PDF</button>
-    <button id="btnExport">Exportar PDF</button>
-    <button id="btnExportBackup">Exportar Backup</button>
-    <button id="btnImportBackupTrigger">Restaurar Backup</button>
-    <input type="file" id="fileImport" accept="application/pdf">
-    <input type="file" id="fileBackupImport" accept="application/json">
-  </div>
-
-  <div class="panel" id="panelNovo">
-    <h3 id="panelNovoTitle">Novo lançamento</h3>
-    <div class="form-grid">
-      <div>
-        <label>Tipo</label>
-        <div class="type-toggle">
-          <button type="button" id="tglIn" class="active-in">Entrada</button>
-          <button type="button" id="tglOut">Saída</button>
-        </div>
-      </div>
-      <div>
-        <label for="fData">Data</label>
-        <input type="date" id="fData">
-      </div>
-      <div>
-        <label for="fDesc">Descrição</label>
-        <input type="text" id="fDesc" placeholder="Ex: Salário, Mercado...">
-      </div>
-      <div>
-        <label for="fBanco">Banco</label>
-        <select id="fBanco"></select>
-      </div>
-      <div>
-        <label for="fCategoria">Categoria</label>
-        <div style="display:flex; gap:6px;">
-          <select id="fCategoria" style="flex:1;"></select>
-          <button type="button" id="btnQuickCat" title="Cadastrar Nova Categoria" style="padding:0 12px; font-weight:bold; font-size:14px;">+</button>
-        </div>
-      </div>
-      <div>
-        <label for="fValor">Valor (R$)</label>
-        <input type="number" id="fValor" step="0.01" min="0" placeholder="0,00">
-      </div>
-      <div>
-        <button class="primary" id="fSalvar" style="width:100%">Salvar</button>
-      </div>
+  <!-- Saldos / Bancos -->
+  <div class="dashboard-grid" id="banksGrid">
+    <div class="card total">
+      <div class="card-title">SALDO TOTAL</div>
+      <div class="card-value" id="saldoTotal">R$ 0,00</div>
     </div>
   </div>
 
-  <div class="panel" id="panelBanco">
-    <h3 id="panelBancoTitle">Gerenciar Bancos</h3>
-    <div class="form-grid">
-      <div>
-        <label for="bNome">Nome do banco</label>
-        <input type="text" id="bNome" placeholder="Ex: Nubank">
-      </div>
-      <div>
-        <label for="bSaldo">Saldo inicial (R$)</label>
-        <input type="number" id="bSaldo" step="0.01" placeholder="0,00">
-      </div>
-      <div>
-        <button class="primary" id="bSalvar" style="width:100%">Adicionar</button>
-      </div>
-    </div>
-    <div style="margin-top:16px;">
-      <label>Bancos Cadastrados:</label>
-      <div id="bankManageList"></div>
-    </div>
+  <!-- Ações -->
+  <div class="actions-grid">
+    <button class="btn btn-green" onclick="abrirModalLancamento()">+ NOVO LANÇAMENTO</button>
+    <button class="btn" onclick="abrirModalBanco()">+ BANCO</button>
+    <button class="btn" onclick="abrirModalCategoria()">+ CATEGORIA</button>
+    <button class="btn" onclick="abrirModalTransferencia()">⇄ TRANSFERÊNCIA</button>
+    <button class="btn" onclick="colarTexto()">COLAR TEXTO</button>
+    <button class="btn" onclick="document.getElementById('filePdf').click()">IMPORTAR PDF</button>
+    <button class="btn" onclick="exportarPDF()">EXPORTAR PDF</button>
+    <button class="btn" onclick="exportarBackup()">EXPORTAR BACKUP</button>
+    <button class="btn btn-dark" onclick="document.getElementById('fileBackup').click()">RESTAURAR BACKUP</button>
   </div>
 
-  <div class="panel" id="panelCategoria">
-    <h3>Gerenciar Categorias</h3>
-    <div class="form-grid">
-      <div>
-        <label for="cNome">Nome da nova categoria</label>
-        <input type="text" id="cNome" placeholder="Ex: Renda Extra">
-      </div>
-      <div>
-        <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
-      </div>
+  <!-- Inputs Invisíveis de Arquivo -->
+  <input type="file" id="filePdf" accept=".pdf" style="display: none;" onchange="importarPDF(event)" />
+  <input type="file" id="fileBackup" accept=".json" style="display: none;" onchange="restaurarBackup(event)" />
+
+  <!-- Lista & Filtros -->
+  <div class="section-box">
+    <div class="section-header">
+      <span>LANÇAMENTOS</span>
+      <span id="qtdLancamentos">0</span>
     </div>
-    <div style="margin-top:16px;">
-      <label>Categorias Cadastradas:</label>
-      <div id="catManageList"></div>
+
+    <div class="filter-group">
+      <label>MÊS</label>
+      <select id="filterMes" onchange="renderApp()">
+        <option value="">TODOS</option>
+      </select>
     </div>
+
+    <div class="filter-group">
+      <label>BANCO</label>
+      <select id="filterBanco" onchange="renderApp()">
+        <option value="">TODOS</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>CATEGORIA</label>
+      <select id="filterCategoria" onchange="renderApp()">
+        <option value="">TODAS</option>
+      </select>
+    </div>
+
+    <button class="btn" style="width: 100%; margin-top: 8px;" onclick="limparFiltros()">LIMPAR FILTROS</button>
+    
+    <div id="listaLancamentos" style="margin-top: 16px;"></div>
   </div>
 
-  <div class="panel" id="panelTransferencia">
-    <h3>Transferência entre Contas</h3>
-    <div class="form-grid">
-      <div>
-        <label for="tData">Data</label>
-        <input type="date" id="tData">
-      </div>
-      <div>
-        <label for="tDe">Origem (Sai de)</label>
-        <select id="tDe"></select>
-      </div>
-      <div>
-        <label for="tPara">Destino (Vai para)</label>
-        <select id="tPara"></select>
-      </div>
-      <div>
-        <label for="tValor">Valor (R$)</label>
-        <input type="number" id="tValor" step="0.01" min="0" placeholder="0,00">
-      </div>
-      <div>
-        <label for="tDesc">Observação (Opcional)</label>
-        <input type="text" id="tDesc" placeholder="Ex: Reserva mensal">
-      </div>
-      <div>
-        <button class="primary" id="tSalvar" style="width:100%">Transferir</button>
-      </div>
-    </div>
+  <div class="status-footer">
+    livro-caixa • dados sincronizados com a nuvem pela sua conta
   </div>
 
-  <div class="panel" id="panelPaste">
-    <h3>Colar texto do extrato</h3>
-    <label for="pasteArea">Cole abaixo o texto do seu extrato bancário ou relatório:</label>
-    <textarea id="pasteArea" placeholder="Cole as linhas do extrato aqui..."></textarea>
-    <div class="toolbar" style="margin-top:10px;">
-      <button class="primary" id="btnProcessPaste">Processar Texto</button>
-      <button id="btnCancelPaste">Cancelar</button>
-    </div>
-  </div>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  <div class="panel" id="panelImport">
-    <h3>Revisar importação</h3>
-    <div id="importList"></div>
-    <div class="hint">Confira os dados antes de confirmar. Remova as linhas que não forem lançamentos reais.</div>
-    <div class="toolbar" style="margin-top:14px;">
-      <button class="primary" id="importConfirm">Adicionar lançamentos selecionados</button>
-      <button id="importCancel">Cancelar</button>
-    </div>
-  </div>
+    // INSIRA SUA CONFIGURAÇÃO DO FIREBASE AQUI
+    const firebaseConfig = {
+      apiKey: "SEU_API_KEY",
+      authDomain: "SEU_PROJECT_ID.firebaseapp.com",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_PROJECT_ID.appspot.com",
+      messagingSenderId: "SEU_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
 
-  <div id="categorySummary"></div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  <div class="ledger">
-    <div class="ledger-month">
-      <span id="ledgerLabel">Lançamentos</span>
-      <span id="ledgerCount">0</span>
-    </div>
+    // Estado da Aplicação
+    window.user = null;
+    window.dadosApp = {
+      bancos: { "PAGBANK": 0, "PICPAY": 0, "MERCADO PAGO": 0, "DINHEIRO": 0 },
+      categorias: ["Alimentação", "Transporte", "Moradia", "Outros"],
+      lancamentos: []
+    };
 
-    <!-- Barra de Filtros -->
-    <div class="ledger-filters">
-      <div>
-        <label for="filterMonth">Mês</label>
-        <select id="filterMonth"></select>
-      </div>
-      <div>
-        <label for="filterBank">Banco</label>
-        <select id="filterBank"></select>
-      </div>
-      <div>
-        <label for="filterCategory">Categoria</label>
-        <select id="filterCategory"></select>
-      </div>
-      <div style="flex: 0 0 auto;">
-        <button type="button" id="btnClearFilters" style="padding: 7px 12px; font-size: 11px;">Limpar Filtros</button>
-      </div>
-    </div>
+    let isRestoring = false; // Flag para ignorar snapshots conflitantes durante o backup
 
-    <div class="ledger-scroll-area">
-      <div id="ledgerBody"></div>
-    </div>
-  </div>
-</main>
-
-<footer>livro-caixa · dados sincronizados com a nuvem pela sua conta</footer>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyADRwvRCaOB0Q8QvDeDfReVeMzK_m4KqlA",
-  authDomain: "livro-caixa-54357.firebaseapp.com",
-  projectId: "livro-caixa-54357",
-  storageBucket: "livro-caixa-54357.firebasestorage.app",
-  messagingSenderId: "508374087306",
-  appId: "1:508374087306:web:43a797d57ca6e548655f73"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-let currentUser = null;
-let isSignupMode = false;
-let saveTimer = null;
-
-document.addEventListener('DOMContentLoaded', () => {
-  let banks = [];
-  let categories = [];
-  let entries = [];
-  let pendingImport = [];
-  let currentType = 'in';
-  let editingEntryId = null;
-  let editingBankId = null;
-  let catChartInstance = null;
-
-  const fmt = (n) => (n < 0 ? '-' : '') + 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const todayISO = () => new Date().toISOString().slice(0, 10);
-  const currentMonthYM = () => todayISO().slice(0, 7);
-
-  function formatMonthLabel(ym) {
-    if (!ym) return 'Todos os Meses';
-    const [y, m] = ym.split('-');
-    const date = new Date(parseInt(y), parseInt(m) - 1, 1);
-    const monthName = date.toLocaleDateString('pt-BR', { month: 'long' });
-    return monthName.charAt(0).toUpperCase() + monthName.slice(1) + ' / ' + y;
-  }
-
-  function docRef() {
-    return db.collection('livrocaixa').doc(currentUser.uid);
-  }
-
-  function loadState() {
-    const defaultCats = ['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Salário', 'Renda Extra', 'Transferência', 'Outros'];
-    docRef().get().then(snap => {
-      let changed = false;
-      if (snap.exists) {
-        const data = snap.data();
-        banks = data.banks || [];
-        entries = data.entries || [];
-        categories = data.categories || [];
+    // Monitor de Autenticação
+    onAuthStateChanged(auth, (u) => {
+      if (u) {
+        window.user = u;
+        document.getElementById("userEmail").innerText = u.email;
+        escucharNuvem(u.uid);
       } else {
-        banks = [];
-        entries = [];
-        categories = [];
+        // Se não autenticado, redireciona ou mantém estado local
+        console.log("Usuário desconectado");
       }
-      const filteredBanks = banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
-      if (filteredBanks.length !== banks.length) changed = true;
-      banks = filteredBanks;
-
-      if (categories.length === 0) {
-        categories = defaultCats.map(name => ({ id: 'c' + name, name }));
-        changed = true;
-      } else {
-        defaultCats.forEach(name => {
-          if (!categories.some(c => c.name === name)) {
-            categories.push({ id: 'c' + name, name });
-            changed = true;
-          }
-        });
-      }
-      if (changed) persistNow();
-      populateFilterControls(true);
-      render();
-    }).catch(err => {
-      console.error(err);
-      alert('Erro ao carregar seus dados da nuvem. Verifique sua conexão.');
-    });
-  }
-
-  function setSyncDot(saving) {
-    const dot = document.getElementById('syncDot');
-    if (dot) dot.classList.toggle('saving', saving);
-  }
-
-  // Gravação imediata (sem espera) — usada para ações críticas como restaurar backup,
-  // onde uma gravação atrasada correria risco de ser sobrescrita por um recarregamento da página.
-  function persistNow() {
-    if (!currentUser) return Promise.resolve();
-    clearTimeout(saveTimer);
-    setSyncDot(true);
-    return docRef().set({ banks, categories, entries }, { merge: false })
-      .then(() => setSyncDot(false))
-      .catch(err => { console.error(err); setSyncDot(false); });
-  }
-
-  function persistAll() {
-    if (!currentUser) return;
-    setSyncDot(true);
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      docRef().set({ banks, categories, entries }, { merge: false })
-        .then(() => setSyncDot(false))
-        .catch(err => { console.error(err); setSyncDot(false); });
-    }, 400);
-  }
-
-  function saveBanks() { persistAll(); }
-  function saveCategories() { persistAll(); }
-  function saveEntries() { persistAll(); }
-
-  function bankBalance(bankId) {
-    const bank = banks.find(b => b.id === bankId);
-    const initial = bank ? (bank.initial || 0) : 0;
-    return entries.filter(e => e.bank === bankId).reduce((sum, e) => sum + (e.type === 'in' ? e.amount : -e.amount), initial);
-  }
-
-  function totalBalance() {
-    return banks.reduce((sum, b) => sum + bankBalance(b.id), 0);
-  }
-
-  function renderBalances() {
-    const strip = document.getElementById('balanceStrip');
-    const total = totalBalance();
-    let html = `<div class="balance-card total">
-      <span class="label">Saldo total</span>
-      <span class="amount ${total < 0 ? 'neg' : ''}">${fmt(total)}</span>
-    </div>`;
-    banks.forEach(b => {
-      const bal = bankBalance(b.id);
-      html += `<div class="balance-card">
-        <span class="label">${b.name}</span>
-        <span class="amount ${bal < 0 ? 'neg' : ''}">${fmt(bal)}</span>
-      </div>`;
-    });
-    strip.innerHTML = html;
-  }
-
-  function renderBankSelects() {
-    const options = banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
-    document.getElementById('fBanco').innerHTML = options;
-    
-    const tDe = document.getElementById('tDe');
-    const tPara = document.getElementById('tPara');
-    tDe.innerHTML = options;
-    tPara.innerHTML = options;
-    if (banks.length > 1) tPara.selectedIndex = 1;
-  }
-
-  function renderBankManageList() {
-    const container = document.getElementById('bankManageList');
-    container.innerHTML = banks.map(b => `
-      <div class="bank-list-item">
-        <span><strong>${b.name}</strong> — Saldo inicial: R$ ${(b.initial || 0).toFixed(2).replace('.', ',')}</span>
-        <div>
-          <button type="button" class="action-btn" onclick="editBank('${b.id}')">✏️ Editar</button>
-          <button type="button" class="action-btn del" onclick="deleteBank('${b.id}')" title="Excluir">×</button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  function renderCategorySelect() {
-    const sel = document.getElementById('fCategoria');
-    const currentVal = sel.value;
-    sel.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-    if (currentVal && categories.some(c => c.id === currentVal)) {
-      sel.value = currentVal;
-    }
-  }
-
-  function renderCategoryManageList() {
-    const container = document.getElementById('catManageList');
-    container.innerHTML = categories.map(c => `
-      <div class="cat-list-item">
-        <span><strong>${c.name}</strong></span>
-        <button type="button" class="action-btn del" onclick="deleteCategory('${c.id}')" title="Excluir">×</button>
-      </div>
-    `).join('');
-  }
-
-  // Preencher controles de filtros
-  function populateFilterControls(isInitial = false) {
-    const monthSel = document.getElementById('filterMonth');
-    const bankSel = document.getElementById('filterBank');
-    const catSel = document.getElementById('filterCategory');
-
-    const currMonthVal = monthSel.value;
-    const currBankVal = bankSel.value;
-    const currCatVal = catSel.value;
-
-    // Coletar meses únicos das entradas
-    const monthSet = new Set();
-    monthSet.add(currentMonthYM());
-    entries.forEach(e => {
-      if (e.date) monthSet.add(e.date.slice(0, 7));
     });
 
-    const sortedMonths = Array.from(monthSet).sort().reverse();
-    
-    let monthHtml = `<option value="">Todos os Meses</option>`;
-    sortedMonths.forEach(ym => {
-      monthHtml += `<option value="${ym}">${formatMonthLabel(ym)}</option>`;
-    });
-    monthSel.innerHTML = monthHtml;
+    // Escutar mudanças no Firestore em tempo real
+    function escucharNuvem(uid) {
+      const docRef = doc(db, "livro_caixa", uid);
+      onSnapshot(docRef, (snapshot) => {
+        if (isRestoring) return; // Ignora leituras enquanto o backup está sendo gravado
 
-    if (isInitial) {
-      monthSel.value = currentMonthYM();
-    } else if (currMonthVal !== undefined) {
-      monthSel.value = currMonthVal;
-    }
-
-    // Filtro de Bancos
-    let bankHtml = `<option value="">Todos os Bancos</option>`;
-    banks.forEach(b => {
-      bankHtml += `<option value="${b.id}">${b.name}</option>`;
-    });
-    bankSel.innerHTML = bankHtml;
-    if (currBankVal) bankSel.value = currBankVal;
-
-    // Filtro de Categorias
-    let catHtml = `<option value="">Todas as Categorias</option>`;
-    categories.forEach(c => {
-      catHtml += `<option value="${c.id}">${c.name}</option>`;
-    });
-    catSel.innerHTML = catHtml;
-    if (currCatVal) catSel.value = currCatVal;
-  }
-
-  // Obter lançamentos filtrados
-  function getFilteredEntries() {
-    const m = document.getElementById('filterMonth').value;
-    const b = document.getElementById('filterBank').value;
-    const c = document.getElementById('filterCategory').value;
-
-    return entries.filter(e => {
-      if (m && (!e.date || !e.date.startsWith(m))) return false;
-      if (b && e.bank !== b) return false;
-      if (c && e.category !== c) return false;
-      return true;
-    });
-  }
-
-  // Renderização dos Gastos com Gráfico de Pizza (respeitando os filtros ativos)
-  function renderCategorySummary() {
-    const wrap = document.getElementById('categorySummary');
-    const activeEntries = getFilteredEntries();
-
-    const spend = categories.map(c => ({
-      cat: c,
-      total: activeEntries.filter(e => e.category === c.id && e.type === 'out').reduce((s, e) => s + e.amount, 0)
-    })).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
-
-    if (spend.length === 0) { 
-      if (catChartInstance) {
-        catChartInstance.destroy();
-        catChartInstance = null;
-      }
-      wrap.innerHTML = ''; 
-      return; 
-    }
-    const max = spend[0].total;
-
-    wrap.innerHTML = `<div class="cat-summary">
-      <h3>Gastos por Categoria ${document.getElementById('filterMonth').value ? '— ' + formatMonthLabel(document.getElementById('filterMonth').value) : ''}</h3>
-      <div class="cat-summary-content">
-        <div class="chart-container">
-          <canvas id="catPieChart"></canvas>
-        </div>
-        <div class="cat-bars-list">
-          ${spend.map(x => `
-            <div class="cat-row">
-              <span class="cat-name">${x.cat.name}</span>
-              <span class="cat-bar-wrap"><div class="cat-bar" style="width:${(x.total / max * 100).toFixed(0)}%"></div></span>
-              <span class="cat-amt">${fmt(x.total)}</span>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    </div>`;
-
-    const ctx = document.getElementById('catPieChart');
-    if (ctx && typeof Chart !== 'undefined') {
-      if (catChartInstance) {
-        catChartInstance.destroy();
-      }
-      const palette = ['#B3432B', '#2F6F4F', '#B08D3E', '#4C5A52', '#8C5383', '#3A6B88', '#D9822B', '#5C7A68'];
-      
-      catChartInstance = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: spend.map(x => x.cat.name),
-          datasets: [{
-            data: spend.map(x => x.total),
-            backgroundColor: palette.slice(0, spend.length),
-            borderColor: '#F7F5EF',
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: true,
-              position: 'bottom',
-              labels: {
-                font: { family: 'IBM Plex Mono', size: 11 },
-                color: '#1C2B24',
-                boxWidth: 12
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const val = context.raw || 0;
-                  return ' ' + context.label + ': R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                }
-              }
-            }
-          }
-        }
-      });
-    }
-  }
-
-  function renderLedger() {
-    const body = document.getElementById('ledgerBody');
-    const filtered = getFilteredEntries();
-
-    document.getElementById('ledgerCount').textContent = filtered.length + ' lançamento(s)';
-    
-    if (filtered.length === 0) {
-      body.innerHTML = `<div class="empty">Nenhum lançamento encontrado para os filtros selecionados.</div>`;
-      return;
-    }
-
-    const sorted = [...filtered].sort((a, b) => {
-      const dateCmp = b.date.localeCompare(a.date);
-      if (dateCmp !== 0) return dateCmp;
-
-      const bankA = (banks.find(bk => bk.id === a.bank)?.name || '').toLowerCase();
-      const bankB = (banks.find(bk => bk.id === b.bank)?.name || '').toLowerCase();
-      return bankA.localeCompare(bankB);
-    });
-
-    let html = `<table><thead><tr>
-      <th>Data</th><th>Descrição</th><th>Banco</th><th>Categoria</th><th style="text-align:right">Valor</th><th>Ações</th>
-    </tr></thead><tbody>`;
-    sorted.forEach(e => {
-      const bank = banks.find(b => b.id === e.bank);
-      const cat = categories.find(c => c.id === e.category);
-      const dateFmt = e.date.split('-').reverse().join('/');
-      html += `<tr>
-        <td>${dateFmt}</td>
-        <td>${e.desc}</td>
-        <td><span class="bank-tag">${bank ? bank.name : '—'}</span></td>
-        <td>${cat ? cat.name : '—'}</td>
-        <td class="amt ${e.type}">${e.type === 'in' ? '+' : '−'} ${fmt(Math.abs(e.amount))}</td>
-        <td style="text-align:right;">
-          <button class="action-btn" onclick="editEntry('${e.id}')" title="Editar">✏️</button>
-          <button class="action-btn del" onclick="deleteEntry('${e.id}')" title="Excluir">×</button>
-        </td>
-      </tr>`;
-    });
-    html += `</tbody></table>`;
-    body.innerHTML = html;
-  }
-
-  function render() {
-    renderBalances();
-    renderBankSelects();
-    renderBankManageList();
-    renderCategorySelect();
-    renderCategoryManageList();
-    renderCategorySummary();
-    renderLedger();
-  }
-
-  // Eventos de alteração dos Filtros
-  document.getElementById('filterMonth').onchange = () => { renderCategorySummary(); renderLedger(); };
-  document.getElementById('filterBank').onchange = () => { renderCategorySummary(); renderLedger(); };
-  document.getElementById('filterCategory').onchange = () => { renderCategorySummary(); renderLedger(); };
-  
-  document.getElementById('btnClearFilters').onclick = () => {
-    document.getElementById('filterMonth').value = '';
-    document.getElementById('filterBank').value = '';
-    document.getElementById('filterCategory').value = '';
-    renderCategorySummary();
-    renderLedger();
-  };
-
-  window.deleteEntry = function(id) {
-    if (confirm('Deseja realmente excluir este lançamento?')) {
-      entries = entries.filter(e => e.id !== id);
-      saveEntries();
-      populateFilterControls();
-      render();
-    }
-  };
-
-  window.deleteBank = function(id) {
-    if (confirm('Deseja excluir este banco? Os lançamentos permanecerão gravados.')) {
-      banks = banks.filter(b => b.id !== id);
-      saveBanks();
-      populateFilterControls();
-      render();
-    }
-  };
-
-  window.deleteCategory = function(id) {
-    if (categories.length <= 1) {
-      alert('Você precisa ter pelo menos uma categoria cadastrada.');
-      return;
-    }
-    if (confirm('Deseja excluir esta categoria? Os lançamentos vinculados a ela não serão apagados.')) {
-      categories = categories.filter(c => c.id !== id);
-      saveCategories();
-      populateFilterControls();
-      render();
-    }
-  };
-
-  window.editEntry = function(id) {
-    const entry = entries.find(e => e.id === id);
-    if (!entry) return;
-    editingEntryId = entry.id;
-    document.getElementById('fData').value = entry.date;
-    document.getElementById('fDesc').value = entry.desc;
-    document.getElementById('fBanco').value = entry.bank;
-    document.getElementById('fCategoria').value = entry.category;
-    document.getElementById('fValor').value = entry.amount;
-    
-    if (entry.type === 'in') document.getElementById('tglIn').click();
-    else document.getElementById('tglOut').click();
-
-    document.getElementById('panelNovoTitle').textContent = 'Editar lançamento';
-    document.getElementById('fSalvar').textContent = 'Atualizar';
-    togglePanel('panelNovo', true);
-  };
-
-  window.editBank = function(id) {
-    const bank = banks.find(b => b.id === id);
-    if (!bank) return;
-    editingBankId = bank.id;
-    document.getElementById('bNome').value = bank.name;
-    document.getElementById('bSaldo').value = bank.initial || 0;
-    document.getElementById('panelBancoTitle').textContent = 'Editar Banco';
-    document.getElementById('bSalvar').textContent = 'Atualizar';
-  };
-
-  function togglePanel(id, forceOpen = false) {
-    document.querySelectorAll('.panel').forEach(p => {
-      if (p.id !== id) p.classList.remove('open');
-    });
-    const panel = document.getElementById(id);
-    if (forceOpen) panel.classList.add('open');
-    else panel.classList.toggle('open');
-  }
-
-  // Painéis
-  document.getElementById('btnNovo').onclick = () => {
-    if (banks.length === 0) {
-      alert('Cadastre pelo menos um banco antes de fazer lançamentos.');
-      togglePanel('panelBanco');
-      return;
-    }
-    editingEntryId = null;
-    document.getElementById('panelNovoTitle').textContent = 'Novo lançamento';
-    document.getElementById('fSalvar').textContent = 'Salvar';
-    document.getElementById('fDesc').value = '';
-    document.getElementById('fValor').value = '';
-    document.getElementById('fData').value = todayISO();
-    togglePanel('panelNovo');
-  };
-  document.getElementById('btnBanco').onclick = () => {
-    editingBankId = null;
-    document.getElementById('bNome').value = '';
-    document.getElementById('bSaldo').value = '';
-    document.getElementById('panelBancoTitle').textContent = 'Gerenciar Bancos';
-    document.getElementById('bSalvar').textContent = 'Adicionar';
-    togglePanel('panelBanco');
-  };
-  document.getElementById('btnCategoria').onclick = () => togglePanel('panelCategoria');
-  document.getElementById('btnTransferencia').onclick = () => {
-    if (banks.length < 2) {
-      alert('Você precisa ter pelo menos dois bancos cadastrados para realizar transferências.');
-      return;
-    }
-    document.getElementById('tData').value = todayISO();
-    togglePanel('panelTransferencia');
-  };
-  document.getElementById('btnPasteTrigger').onclick = () => togglePanel('panelPaste');
-
-  // Cadastro Rápido de Categoria
-  document.getElementById('btnQuickCat').onclick = () => {
-    const name = prompt('Digite o nome da nova categoria:');
-    if (name && name.trim()) {
-      const newId = 'c' + Date.now();
-      categories.push({ id: newId, name: name.trim() });
-      saveCategories();
-      renderCategorySelect();
-      renderCategoryManageList();
-      populateFilterControls();
-      document.getElementById('fCategoria').value = newId;
-    }
-  };
-
-  // Alternar Entrada / Saída
-  document.getElementById('tglIn').onclick = () => {
-    currentType = 'in';
-    document.getElementById('tglIn').classList.add('active-in');
-    document.getElementById('tglOut').classList.remove('active-out');
-  };
-  document.getElementById('tglOut').onclick = () => {
-    currentType = 'out';
-    document.getElementById('tglOut').classList.add('active-out');
-    document.getElementById('tglIn').classList.remove('active-in');
-  };
-
-  // Salvar / Editar Lançamento
-  document.getElementById('fSalvar').onclick = () => {
-    const date = document.getElementById('fData').value || todayISO();
-    const desc = document.getElementById('fDesc').value.trim();
-    const bank = document.getElementById('fBanco').value;
-    const category = document.getElementById('fCategoria').value;
-    const valor = parseFloat(document.getElementById('fValor').value);
-
-    if (!desc || isNaN(valor) || valor <= 0) {
-      alert('Preencha a descrição e um valor válido.');
-      return;
-    }
-
-    if (editingEntryId) {
-      const idx = entries.findIndex(e => e.id === editingEntryId);
-      if (idx !== -1) {
-        entries[idx] = { id: editingEntryId, date, desc, bank, category, amount: valor, type: currentType };
-      }
-      editingEntryId = null;
-    } else {
-      entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), date, desc, bank, category, amount: valor, type: currentType });
-    }
-
-    saveEntries();
-    populateFilterControls();
-    document.getElementById('fDesc').value = '';
-    document.getElementById('fValor').value = '';
-    togglePanel('panelNovo');
-    render();
-  };
-
-  // Salvar / Editar Banco
-  document.getElementById('bSalvar').onclick = () => {
-    const name = document.getElementById('bNome').value.trim();
-    const saldo = parseFloat(document.getElementById('bSaldo').value) || 0;
-    if (!name) { alert('Dê um nome ao banco.'); return; }
-
-    if (editingBankId) {
-      const idx = banks.findIndex(b => b.id === editingBankId);
-      if (idx !== -1) {
-        banks[idx].name = name;
-        banks[idx].initial = saldo;
-      }
-      editingBankId = null;
-    } else {
-      banks.push({ id: 'b' + Date.now(), name, initial: saldo });
-    }
-
-    saveBanks();
-    populateFilterControls();
-    document.getElementById('bNome').value = '';
-    document.getElementById('bSaldo').value = '';
-    document.getElementById('panelBancoTitle').textContent = 'Gerenciar Bancos';
-    document.getElementById('bSalvar').textContent = 'Adicionar';
-    togglePanel('panelBanco');
-    render();
-  };
-
-  // Salvar Categoria no Painel
-  document.getElementById('cSalvar').onclick = () => {
-    const name = document.getElementById('cNome').value.trim();
-    if (!name) { alert('Dê um nome à categoria.'); return; }
-    categories.push({ id: 'c' + Date.now(), name });
-    saveCategories();
-    populateFilterControls();
-    document.getElementById('cNome').value = '';
-    render();
-  };
-
-  // Executar Transferência
-  document.getElementById('tSalvar').onclick = () => {
-    const date = document.getElementById('tData').value || todayISO();
-    const deId = document.getElementById('tDe').value;
-    const paraId = document.getElementById('tPara').value;
-    const valor = parseFloat(document.getElementById('tValor').value);
-    const desc = document.getElementById('tDesc').value.trim();
-
-    if (deId === paraId) {
-      alert('Escolha bancos diferentes para origem e destino.');
-      return;
-    }
-    if (isNaN(valor) || valor <= 0) {
-      alert('Informe um valor válido.');
-      return;
-    }
-
-    const deBank = banks.find(b => b.id === deId);
-    const paraBank = banks.find(b => b.id === paraId);
-    let transCat = categories.find(c => c.name === 'Transferência');
-    const extraDesc = desc ? ` (${desc})` : '';
-
-    entries.push({
-      id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7),
-      date,
-      desc: `Transferência para ${paraBank ? paraBank.name : ''}${extraDesc}`,
-      bank: deId,
-      category: transCat ? transCat.id : (categories[0] ? categories[0].id : ''),
-      amount: valor,
-      type: 'out'
-    });
-
-    entries.push({
-      id: 'e' + (Date.now() + 1) + Math.random().toString(36).slice(2, 7),
-      date,
-      desc: `Transferência de ${deBank ? deBank.name : ''}${extraDesc}`,
-      bank: paraId,
-      category: transCat ? transCat.id : (categories[0] ? categories[0].id : ''),
-      amount: valor,
-      type: 'in'
-    });
-
-    saveEntries();
-    populateFilterControls();
-    document.getElementById('tValor').value = '';
-    document.getElementById('tDesc').value = '';
-    togglePanel('panelTransferencia');
-    render();
-  };
-
-  // Processar Colagem de Texto
-  document.getElementById('btnProcessPaste').onclick = () => {
-    const txt = document.getElementById('pasteArea').value;
-    if(!txt.trim()){ alert('Cole algum texto primeiro.'); return; }
-    parseImportedText(txt);
-    document.getElementById('pasteArea').value = '';
-    togglePanel('panelPaste');
-  };
-  document.getElementById('btnCancelPaste').onclick = () => togglePanel('panelPaste');
-
-  // Exportar Backup JSON
-  document.getElementById('btnExportBackup').onclick = () => {
-    const data = { banks, categories, entries };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `backup-livro-caixa-${todayISO()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // Restaurar Backup JSON
-  document.getElementById('btnImportBackupTrigger').onclick = () => document.getElementById('fileBackupImport').click();
-  document.getElementById('fileBackupImport').onchange = (ev) => {
-    const file = ev.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        if (data.banks && data.entries && data.categories) {
-          banks = data.banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
-          categories = data.categories;
-          entries = data.entries;
-          persistNow().then(() => {
-            populateFilterControls(true);
-            render();
-            alert('Backup restaurado e salvo com sucesso! Você já pode navegar ou recarregar a página com segurança.');
-          });
+        if (snapshot.exists()) {
+          window.dadosApp = snapshot.data();
+          renderApp();
         } else {
-          alert('Arquivo de backup inválido.');
+          // Se não existir documento, salva o inicial
+          persistNow(window.dadosApp);
         }
-      } catch(err) {
-        alert('Erro ao ler o arquivo de backup.');
-      }
-    };
-    reader.readAsText(file);
-    ev.target.value = '';
-  };
-
-  // Exportar PDF
-  document.getElementById('btnExport').onclick = () => {
-    const activeEntries = getFilteredEntries();
-    if (activeEntries.length === 0) { alert('Não há lançamentos para exportar nos filtros atuais.'); return; }
-    if (!window.jspdf || !window.jspdf.jsPDF) {
-      alert('A biblioteca PDF ainda está carregando.');
-      return;
-    }
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const now = new Date();
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.text('Livro-Caixa — Relatório de Lançamentos', 14, 18);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Gerado em ' + now.toLocaleDateString('pt-BR'), 14, 25);
-
-    let y = 36;
-    doc.setFont('helvetica', 'bold');
-    doc.text('Saldos Atuais por Banco', 14, y);
-    y += 7;
-    doc.setFont('helvetica', 'normal');
-    banks.forEach(b => {
-      doc.text(`${b.name}: ${fmt(bankBalance(b.id))}`, 14, y);
-      y += 6;
-    });
-    doc.setFont('helvetica', 'bold');
-    doc.text(`Saldo Total: ${fmt(totalBalance())}`, 14, y + 2);
-    y += 14;
-
-    doc.setFont('helvetica', 'bold');
-    doc.text('Data', 14, y);
-    doc.text('Descrição', 38, y);
-    doc.text('Banco', 100, y);
-    doc.text('Categoria', 135, y);
-    doc.text('Valor', 175, y);
-    y += 4;
-    doc.line(14, y, 196, y);
-    y += 6;
-    doc.setFont('helvetica', 'normal');
-    const sorted = [...activeEntries].sort((a, b) => b.date.localeCompare(a.date));
-    sorted.forEach(e => {
-      if (y > 280) { doc.addPage(); y = 20; }
-      const bank = banks.find(b => b.id === e.bank);
-      const cat = categories.find(c => c.id === e.category);
-      const dateFmt = e.date.split('-').reverse().join('/');
-      doc.text(dateFmt, 14, y);
-      doc.text((e.desc || '').slice(0, 32), 38, y);
-      doc.text(bank ? bank.name : '—', 100, y);
-      doc.text(cat ? cat.name.slice(0, 14) : '—', 135, y);
-      doc.text((e.type === 'in' ? '+' : '-') + ' ' + fmt(Math.abs(e.amount)).replace('R$ ', ''), 175, y);
-      y += 6;
-    });
-
-    doc.save(`livro-caixa-relatorio-${todayISO()}.pdf`);
-  };
-
-  // Importar PDF
-  document.getElementById('btnImportTrigger').onclick = () => document.getElementById('fileImport').click();
-
-  document.getElementById('fileImport').onchange = async (ev) => {
-    const file = ev.target.files[0];
-    if (!file) return;
-    if (typeof pdfjsLib === 'undefined') {
-      alert('A biblioteca de leitura de PDF ainda está carregando.');
-      return;
-    }
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-    try {
-      const buf = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-      let fullText = '';
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        const strings = content.items.map(it => it.str);
-        fullText += strings.join(' ') + '\n';
-      }
-      parseImportedText(fullText);
-    } catch(err) {
-      console.error(err);
-      alert('Não consegui ler esse PDF. Tente usar "Colar Texto" copiando o extrato diretamente do seu app.');
-    }
-    ev.target.value = '';
-  };
-
-  function parseImportedText(text) {
-    const lines = text.split('\n');
-    const ignoreKeywords = ['considerando', 'extrato', 'período', 'periodo', 'relatório', 'relatorio', 'página', 'pagina'];
-
-    pendingImport = [];
-
-    lines.forEach(line => {
-      let rawLine = line.trim();
-      if (!rawLine) return;
-      const lower = rawLine.toLowerCase();
-
-      if (ignoreKeywords.some(kw => lower.includes(kw))) return;
-
-      const dateMatch = rawLine.match(/(\d{1,2})[\/\.-](\d{1,2})(?:[\/\.-](\d{2,4}))?/);
-      if (!dateMatch) return;
-
-      let [fullDateStr, d, m, y] = dateMatch;
-      d = d.padStart(2, '0');
-      m = m.padStart(2, '0');
-      if (!y) y = new Date().getFullYear().toString();
-      else if (y.length === 2) y = '20' + y;
-      const isoDate = `${y}-${m}-${d}`;
-
-      let cleanLine = rawLine.replace(dateMatch[0], '');
-
-      const moneyMatch = cleanLine.match(/([\+\-]?\s*R\$\s*[\+\-]?\d+(?:[\.,]\d+)?|[\+\-]\d+(?:[\.,]\d+)?|\b\d+(?:[\.,]\d{2})\b|\b\d+\b)/i);
-
-      if (!moneyMatch) return;
-
-      let moneyStr = moneyMatch[0];
-      
-      const isNegative = moneyStr.includes('-') || lower.includes('saida') || lower.includes('saída') || lower.includes('pix enviado') || lower.includes('pagamento');
-      const isExplicitIn = moneyStr.includes('+') || lower.includes('entrada') || lower.includes('pix recebido');
-
-      let type = 'out';
-      if (isExplicitIn) {
-        type = 'in';
-      } else if (isNegative) {
-        type = 'out';
-      } else {
-        type = 'in';
-      }
-
-      let numStr = moneyStr.replace(/[^\d,\.-]/g, '');
-      if (numStr.includes(',') && numStr.includes('.')) {
-        numStr = numStr.replace(/\./g, '').replace(',', '.');
-      } else if (numStr.includes(',')) {
-        numStr = numStr.replace(',', '.');
-      }
-      
-      const numeric = Math.abs(parseFloat(numStr));
-
-      if (isNaN(numeric) || numeric === 0) return;
-
-      let desc = cleanLine.replace(moneyMatch[0], '').replace(/[\(\)\[\]\+\-\$]/g, ' ').trim().replace(/\s+/g, ' ');
-      if (!desc) desc = 'Lançamento importado';
-
-      pendingImport.push({
-        date: isoDate,
-        desc: desc.slice(0, 60),
-        amount: numeric,
-        type: type,
-        bank: banks[0] ? banks[0].id : '',
-        category: categories[0] ? categories[0].id : ''
       });
-    });
-
-    if (pendingImport.length === 0) {
-      alert('Não encontrei lançamentos válidos no texto.');
-      return;
     }
-    renderImportReview();
-    togglePanel('panelImport');
-  }
 
-  function renderImportReview() {
-    const list = document.getElementById('importList');
-    list.innerHTML = pendingImport.map((row, i) => `
-      <div class="import-row">
-        <input type="date" value="${row.date}" onchange="pendingImport[${i}].date=this.value">
-        <input type="text" value="${row.desc}" onchange="pendingImport[${i}].desc=this.value">
-        <select onchange="pendingImport[${i}].bank=this.value">
-          ${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${b.name}</option>`).join('')}
-        </select>
-        <select onchange="pendingImport[${i}].category=this.value">
-          ${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${c.name}</option>`).join('')}
-        </select>
-        <input type="number" step="0.01" value="${row.amount}" onchange="pendingImport[${i}].amount=parseFloat(this.value)">
-        <select onchange="pendingImport[${i}].type=this.value">
-          <option value="in" ${row.type === 'in' ? 'selected' : ''}>Entrada</option>
-          <option value="out" ${row.type === 'out' ? 'selected' : ''}>Saída</option>
-        </select>
-        <button class="action-btn del" onclick="removeImportRow(${i})" aria-label="Remover">×</button>
-      </div>
-    `).join('');
-  }
-
-  window.removeImportRow = function(i) {
-    pendingImport.splice(i, 1);
-    renderImportReview();
-  };
-
-  document.getElementById('importConfirm').onclick = () => {
-    pendingImport.forEach(row => {
-      entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), ...row });
-    });
-    saveEntries();
-    pendingImport = [];
-    populateFilterControls();
-    togglePanel('panelImport');
-    render();
-  };
-
-  document.getElementById('importCancel').onclick = () => {
-    pendingImport = [];
-    togglePanel('panelImport');
-  };
-
-  document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
-
-  // ---- Autenticação ----
-  function renderUserBar() {
-    const bar = document.getElementById('userBar');
-    if (!currentUser) { bar.innerHTML = ''; return; }
-    bar.innerHTML = `<span class="sync-dot" id="syncDot"></span> ${currentUser.email} <button type="button" id="btnLogout">Sair</button>`;
-    document.getElementById('btnLogout').onclick = () => auth.signOut();
-  }
-
-  function setAuthError(msg) {
-    document.getElementById('authError').textContent = msg || '';
-  }
-
-  function translateAuthError(code) {
-    const map = {
-      'auth/invalid-email': 'E-mail inválido.',
-      'auth/user-not-found': 'Conta não encontrada. Crie uma conta.',
-      'auth/wrong-password': 'Senha incorreta.',
-      'auth/invalid-credential': 'E-mail ou senha incorretos.',
-      'auth/email-already-in-use': 'Já existe uma conta com esse e-mail.',
-      'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
-      'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente de novo.'
-    };
-    return map[code] || 'Não foi possível concluir. Tente novamente.';
-  }
-
-  document.getElementById('authToggleLink').onclick = () => {
-    isSignupMode = !isSignupMode;
-    document.getElementById('authTitle').textContent = isSignupMode ? 'Criar conta' : 'Entrar';
-    document.getElementById('authSubmit').textContent = isSignupMode ? 'Criar conta' : 'Entrar';
-    document.getElementById('authToggleWrap').innerHTML = isSignupMode
-      ? 'Já tem conta? <a id="authToggleLink2">Entrar</a>'
-      : 'Não tem conta? <a id="authToggleLink2">Criar conta</a>';
-    document.getElementById('authToggleLink2').onclick = document.getElementById('authToggleLink').onclick;
-    setAuthError('');
-  };
-
-  document.getElementById('authSubmit').onclick = () => {
-    const email = document.getElementById('authEmail').value.trim();
-    const pass = document.getElementById('authPass').value;
-    if (!email || !pass) { setAuthError('Preencha e-mail e senha.'); return; }
-    setAuthError('');
-    const action = isSignupMode
-      ? auth.createUserWithEmailAndPassword(email, pass)
-      : auth.signInWithEmailAndPassword(email, pass);
-    action.catch(err => setAuthError(translateAuthError(err.code)));
-  };
-
-  document.getElementById('authPassToggle').onclick = () => {
-    const input = document.getElementById('authPass');
-    const btn = document.getElementById('authPassToggle');
-    const eyeOpen = document.getElementById('eyeOpen');
-    const eyeClosed = document.getElementById('eyeClosed');
-    const showing = input.type === 'text';
-    input.type = showing ? 'password' : 'text';
-    eyeOpen.style.display = showing ? 'block' : 'none';
-    eyeClosed.style.display = showing ? 'none' : 'block';
-    btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
-  };
-
-  document.getElementById('authGoogle').onclick = () => {
-    setAuthError('');
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(err => {
-      if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
-        auth.signInWithRedirect(provider);
-      } else if (err.code !== 'auth/popup-closed-by-user') {
-        setAuthError(translateAuthError(err.code));
+    // Gravação direta no Firestore
+    window.persistNow = async function(dados) {
+      if (!window.user) return;
+      try {
+        const docRef = doc(db, "livro_caixa", window.user.uid);
+        await setDoc(docRef, dados);
+        console.log("Dados sincronizados no Firestore!");
+      } catch (err) {
+        console.error("Erro ao gravar no Firestore:", err);
       }
-    });
-  };
+    };
 
-  auth.onAuthStateChanged(user => {
-    currentUser = user;
-    const overlay = document.getElementById('authOverlay');
-    if (user) {
-      overlay.classList.add('hidden');
-      renderUserBar();
-      loadState();
-    } else {
-      overlay.classList.remove('hidden');
-      banks = []; categories = []; entries = [];
-      renderUserBar();
-    }
-  });
-});
+    // FUNÇÃO CORRIGIDA DE RESTAURAR BACKUP
+    window.restaurarBackup = async function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
 
-</script>
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          isRestoring = true; // Ativa flag de bloqueio temporário
+          const data = JSON.parse(e.target.result);
+
+          // 1. Atualiza dados locais
+          window.dadosApp = data;
+
+          // 2. Grava IMEDIATAMENTE no Firebase
+          if (window.user) {
+            await window.persistNow(window.dadosApp);
+          }
+
+          // 3. Atualiza a Interface
+          window.renderApp();
+
+          // Reseta o input de arquivo
+          event.target.value = '';
+
+          alert("Backup restaurado e sincronizado com a nuvem com sucesso!");
+        } catch (err) {
+          console.error("Erro ao restaurar arquivo de backup:", err);
+          alert("Falha ao ler o arquivo JSON de backup.");
+        } finally {
+          isRestoring = false; // Libera escuta da nuvem
+        }
+      };
+
+      reader.readAsText(file);
+    };
+
+    // Renderização geral da UI
+    window.renderApp = function() {
+      const { bancos, lancamentos } = window.dadosApp;
+
+      // 1. Calcular e renderizar saldos
+      const grid = document.getElementById("banksGrid");
+      grid.innerHTML = "";
+
+      let total = 0;
+      let htmlBancos = "";
+
+      Object.entries(bancos || {}).forEach(([nome, saldo]) => {
+        total += Number(saldo);
+        htmlBancos += `
+          <div class="card">
+            <div class="card-title">${nome}</div>
+            <div class="card-value">R$ ${Number(saldo).toFixed(2).replace('.', ',')}</div>
+          </div>
+        `;
+      });
+
+      grid.innerHTML = `
+        <div class="card total">
+          <div class="card-title">SALDO TOTAL</div>
+          <div class="card-value">R$ ${total.toFixed(2).replace('.', ',')}</div>
+        </div>
+      ` + htmlBancos;
+
+      // 2. Atualizar contadores e lista
+      document.getElementById("qtdLancamentos").innerText = (lancamentos || []).length;
+    };
+
+    // Exportação de Backup JSON
+    window.exportarBackup = function() {
+      const jsonStr = JSON.stringify(window.dadosApp, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `backup-livro-caixa-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    window.logout = function() {
+      signOut(auth).then(() => location.reload());
+    };
+
+    window.limparFiltros = function() {
+      document.getElementById("filterMes").value = "";
+      document.getElementById("filterBanco").value = "";
+      document.getElementById("filterCategoria").value = "";
+      window.renderApp();
+    };
+
+    // Stubs para funções de abertura de modais
+    window.abrirModalLancamento = () => alert("Modal Novo Lançamento");
+    window.abrirModalBanco = () => alert("Modal Novo Banco");
+    window.abrirModalCategoria = () => alert("Modal Nova Categoria");
+    window.abrirModalTransferencia = () => alert("Modal Transferência");
+    window.colarTexto = () => alert("Cole seu texto aqui");
+    window.importarPDF = (e) => alert("Importando arquivo PDF...");
+    window.exportarPDF = () => alert("Gerando PDF...");
+
+    // Render inicial
+    window.renderApp();
+  </script>
 </body>
 </html>
