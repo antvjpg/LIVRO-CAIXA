@@ -1243,7 +1243,11 @@ document.addEventListener('DOMContentLoaded', () => {
   let catChartInstance = null;
 
   const fmt = (n) => (n < 0 ? '-' : '') + 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const todayISO = () => new Date().toISOString().slice(0, 10);
+  const todayISO = () => {
+    const d = new Date();
+    const offset = d.getTimezoneOffset();
+    return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10);
+  };
   const currentMonthYM = () => todayISO().slice(0, 7);
 
   // Tema Escuro / Claro
@@ -1289,32 +1293,67 @@ document.addEventListener('DOMContentLoaded', () => {
   function docRef() {
     return db.collection('livrocaixa').doc(currentUser.uid);
   }
+  function colRef(name) {
+    return docRef().collection(name);
+  }
 
-  let isInitialLoad = true;
+  const COLLECTIONS = ['banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog'];
+  let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {} };
+  let realtimeUnsubscribers = [];
 
-  function loadState() {
+  function arrToMap(arr) {
+    const m = {};
+    (arr || []).forEach(it => { if (it && it.id) m[it.id] = it; });
+    return m;
+  }
+
+  function currentStateSnapshot() {
+    return { banks, categories, entries, investments, pockets, yieldsLog };
+  }
+
+  function setLastSyncedFromCurrentState() {
+    const s = currentStateSnapshot();
+    lastSynced = {
+      banks: arrToMap(s.banks), categories: arrToMap(s.categories), entries: arrToMap(s.entries),
+      investments: arrToMap(s.investments), pockets: arrToMap(s.pockets), yieldsLog: arrToMap(s.yieldsLog)
+    };
+  }
+
+  function setStateArray(name, arr) {
+    switch (name) {
+      case 'banks': banks = arr.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral'); break;
+      case 'categories': categories = arr; break;
+      case 'entries': entries = arr; break;
+      case 'investments': investments = arr; break;
+      case 'pockets': pockets = arr; break;
+      case 'yieldsLog': yieldsLog = arr; break;
+    }
+  }
+
+  async function loadState() {
     const defaultCats = ['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Salário', 'Renda Extra', 'Transferência', 'Outros'];
-    
-    docRef().onSnapshot(snap => {
-      let changed = false;
-      
-      if (snap.exists) {
-        const data = snap.data();
+    try {
+      const snaps = await Promise.all(COLLECTIONS.map(name => colRef(name).get()));
+      const hasSubData = snaps.some(s => !s.empty);
+
+      if (hasSubData) {
+        COLLECTIONS.forEach((name, i) => setStateArray(name, snaps[i].docs.map(d => d.data())));
+        setLastSyncedFromCurrentState();
+      } else {
+        // Migração automática do formato antigo (documento único) para subcoleções
+        const oldSnap = await docRef().get();
+        const data = oldSnap.exists ? oldSnap.data() : {};
         banks = data.banks || [];
-        entries = data.entries || [];
         categories = data.categories || [];
+        entries = data.entries || [];
         investments = data.investments || [];
         pockets = data.pockets || [];
         yieldsLog = data.yieldsLog || [];
-      } else {
-        banks = [];
-        entries = [];
-        categories = [];
-        investments = [];
-        pockets = [];
-        yieldsLog = [];
+        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {} };
       }
-      
+
+      let changed = !hasSubData;
+
       const filteredBanks = banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
       if (filteredBanks.length !== banks.length) changed = true;
       banks = filteredBanks;
@@ -1330,16 +1369,41 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       }
-      
-      if (changed) persistNow();
-      
-      populateFilterControls(isInitialLoad);
-      isInitialLoad = false;
+
+      if (changed) await persistNow();
+
+      populateFilterControls(true);
       render();
-      
-    }, err => {
+      attachRealtimeListeners();
+    } catch (err) {
       console.error(err);
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
+    }
+  }
+
+  function getStateArray(name) {
+    switch (name) {
+      case 'banks': return banks;
+      case 'categories': return categories;
+      case 'entries': return entries;
+      case 'investments': return investments;
+      case 'pockets': return pockets;
+      case 'yieldsLog': return yieldsLog;
+    }
+  }
+
+  function attachRealtimeListeners() {
+    realtimeUnsubscribers.forEach(unsub => unsub());
+    realtimeUnsubscribers = [];
+    COLLECTIONS.forEach(name => {
+      const unsub = colRef(name).onSnapshot(snap => {
+        if (snap.metadata.hasPendingWrites) return; // ignora eco da própria escrita local em andamento
+        const arr = snap.docs.map(d => d.data());
+        setStateArray(name, arr);
+        lastSynced[name] = arrToMap(getStateArray(name));
+        render();
+      }, err => console.error(err));
+      realtimeUnsubscribers.push(unsub);
     });
   }
 
@@ -1352,9 +1416,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentUser) return Promise.resolve();
     clearTimeout(saveTimer);
     setSyncDot(true);
-    return docRef().set({ banks, categories, entries, investments, pockets, yieldsLog }, { merge: false })
-      .then(() => setSyncDot(false))
-      .catch(err => { console.error(err); setSyncDot(false); });
+    return commitDiff().then(() => setSyncDot(false)).catch(err => { console.error(err); setSyncDot(false); });
+  }
+
+  async function commitDiff() {
+    const current = currentStateSnapshot();
+    const batch = db.batch();
+    let opCount = 0;
+
+    COLLECTIONS.forEach(name => {
+      const newMap = arrToMap(current[name]);
+      const oldMap = lastSynced[name] || {};
+
+      Object.keys(newMap).forEach(id => {
+        const newItem = newMap[id];
+        const oldItem = oldMap[id];
+        if (!oldItem || JSON.stringify(oldItem) !== JSON.stringify(newItem)) {
+          batch.set(colRef(name).doc(id), newItem);
+          opCount++;
+        }
+      });
+      Object.keys(oldMap).forEach(id => {
+        if (!newMap[id]) {
+          batch.delete(colRef(name).doc(id));
+          opCount++;
+        }
+      });
+    });
+
+    if (opCount === 0) return;
+    if (opCount > 450) {
+      console.warn('Muitas alterações de uma vez (' + opCount + '); considere dividir em lotes.');
+    }
+    await batch.commit();
+    setLastSyncedFromCurrentState();
   }
 
   function persistAll() { persistNow(); }
@@ -3153,8 +3248,11 @@ document.addEventListener('DOMContentLoaded', () => {
       renderUserBar();
       loadState();
     } else {
+      realtimeUnsubscribers.forEach(unsub => unsub());
+      realtimeUnsubscribers = [];
+      lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {} };
+      banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = [];
       overlay.classList.remove('hidden');
-      banks = []; categories = []; entries = []; investments = [];
       renderUserBar();
     }
   });
