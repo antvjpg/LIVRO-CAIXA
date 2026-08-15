@@ -1466,10 +1466,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function priceHistoryHTML(inv) {
-    if (!inv.priceHistory || inv.priceHistory.length < 2) return '';
+    if (!inv.priceHistory || inv.priceHistory.length === 0) return '';
+    const sorted = [...inv.priceHistory].sort((a, b) => a.date.localeCompare(b.date));
+    const rows = sorted.slice().reverse().map(p => {
+      const units = p.units ?? null;
+      const value = p.value ?? (units != null && p.price != null ? p.price * units : null);
+      return `<tr>
+        <td style="padding:6px 8px;">${p.date.split('-').reverse().join('/')}</td>
+        <td class="amt" style="padding:6px 8px;">${fmt(p.price || 0)}</td>
+        <td class="amt" style="padding:6px 8px;">${units != null ? Number(units).toLocaleString('pt-BR', {maximumFractionDigits: 8}) : '—'}</td>
+        <td class="amt" style="padding:6px 8px;">${value != null ? fmt(value) : '—'}</td>
+      </tr>`;
+    }).join('');
     return `<details class="yield-history">
       <summary>📉 Histórico de Cotação (${inv.priceHistory.length})</summary>
-      <div style="height:120px; margin-top:8px;"><canvas id="priceChart-${inv.id}"></canvas></div>
+      <div style="overflow-x:auto; margin-top:8px;">
+        <table style="font-size:11px; min-width:420px;">
+          <thead><tr>
+            <th style="padding:6px 8px;">Data</th>
+            <th style="padding:6px 8px;">Cotação</th>
+            <th style="padding:6px 8px;">Quantidade</th>
+            <th style="padding:6px 8px;">Valor atualizado</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      ${inv.priceHistory.length >= 2 ? `<div style="height:120px; margin-top:8px;"><canvas id="priceChart-${inv.id}"></canvas></div>` : ''}
     </details>`;
   }
 
@@ -2136,7 +2158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isCrypto && pendingPricePoint && targetItem) {
       if (!targetItem.priceHistory) targetItem.priceHistory = [];
-      targetItem.priceHistory.push({ date: todayISO(), price: pendingPricePoint.price });
+      targetItem.priceHistory.push({ date: todayISO(), price: pendingPricePoint.price, units, value: pendingPricePoint.value });
     }
     pendingPricePoint = null;
 
@@ -2228,7 +2250,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
       const units = parseFloat(document.getElementById('iUnidades').value) || 1;
       document.getElementById('iValor').value = (price * units).toFixed(2);
-      pendingPricePoint = { price };
+      pendingPricePoint = { price, units, value: price * units };
       statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · atualizado agora`;
     } catch (err) {
       console.error(err);
@@ -2270,7 +2292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!price) { failed.push(inv.name); continue; }
         inv.value = price * inv.units;
         if (!inv.priceHistory) inv.priceHistory = [];
-        inv.priceHistory.push({ date: todayISO(), price });
+        inv.priceHistory.push({ date: todayISO(), price, units: inv.units, value: inv.value });
         updated++;
       } catch (err) {
         console.error(err);
