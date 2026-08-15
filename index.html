@@ -493,13 +493,52 @@
   }
   .yield-row{
     display:flex;
+    align-items:center;
     justify-content:space-between;
     gap:8px;
     font-size:12px;
   }
-  .yield-row span:first-child{color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .yield-row span:first-child{color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;}
   .yield-pos{color:var(--green); font-family:'IBM Plex Mono',monospace; flex-shrink:0;}
   .yield-neg{color:var(--red); font-family:'IBM Plex Mono',monospace; flex-shrink:0;}
+  .yield-actions{display:flex; gap:2px; flex-shrink:0;}
+  .yield-actions .action-btn{padding:2px 5px; font-size:11px;}
+  .rentability-box{
+    margin-top:8px;
+    padding:8px 10px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    font-size:11.5px;
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--ink-soft);
+  }
+
+  .fab-add{
+    position:fixed;
+    bottom:22px;
+    right:22px;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:var(--green);
+    color:#fff;
+    border:none;
+    font-size:30px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 14px rgba(0,0,0,0.25);
+    cursor:pointer;
+    z-index:60;
+    transition:transform 0.15s ease;
+  }
+  .fab-add:hover{background:#255939; transform:scale(1.06);}
+  .fab-add:active{transform:scale(0.95);}
 
   .empty{
     padding:50px 20px;
@@ -867,6 +906,8 @@
   </div>
 
   <!-- Modais -->
+  <button type="button" id="fabAdd" class="fab-add" title="Adicionar" aria-label="Adicionar">+</button>
+
   <div class="modal-overlay" id="modalOverlay">
     <div class="panel" id="panelNovo">
       <h3 id="panelNovoTitle">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
@@ -1170,7 +1211,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Alternância de Abas
+  let currentTab = 'caixa';
+
   window.switchTab = function(tabName) {
+    currentTab = tabName;
     document.getElementById('tabBtnCaixa').classList.toggle('active', tabName === 'caixa');
     document.getElementById('tabBtnInvest').classList.toggle('active', tabName === 'invest');
     document.getElementById('tabBtnPockets').classList.toggle('active', tabName === 'pockets');
@@ -1394,12 +1438,76 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<div class="yield-row">
         <span>${dateFmt}${y.desc ? ' · ' + y.desc : ''}</span>
         <span class="${y.amount >= 0 ? 'yield-pos' : 'yield-neg'}">${y.amount >= 0 ? '+' : ''}${fmt(y.amount)}</span>
+        <span class="yield-actions">
+          <button type="button" class="action-btn" onclick="editYield('${y.id}')" title="Editar">✏️</button>
+          <button type="button" class="action-btn del" onclick="deleteYield('${y.id}')" title="Excluir">×</button>
+        </span>
       </div>`;
     }).join('');
     return `<details class="yield-history">
       <summary>📈 Histórico de rendimentos (${items.length})</summary>
       <div class="yield-history-list">${rows}</div>
     </details>`;
+  }
+
+  function rentabilityHTML(targetType, targetId, currentValue) {
+    const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId);
+    if (items.length === 0) return '';
+    const totalYield = items.reduce((s, y) => s + y.amount, 0);
+    const baseValue = currentValue - totalYield;
+    const firstDate = items.map(y => y.date).sort()[0];
+    const days = Math.max(1, Math.round((new Date(todayISO()) - new Date(firstDate)) / 86400000));
+    const monthly = totalYield / (days / 30);
+    const pct = baseValue > 0 ? (totalYield / baseValue * 100) : null;
+    return `<div class="rentability-box">
+      <span>💹 Rendimento total: <strong class="${totalYield >= 0 ? 'yield-pos' : 'yield-neg'}">${fmt(totalYield)}</strong>${pct !== null ? ` (${pct.toFixed(2)}%)` : ''}</span>
+      <span>Média: ${fmt(monthly)}/mês · desde ${firstDate.split('-').reverse().join('/')}</span>
+    </div>`;
+  }
+
+  function priceHistoryHTML(inv) {
+    if (!inv.priceHistory || inv.priceHistory.length < 2) return '';
+    return `<details class="yield-history">
+      <summary>📉 Histórico de Cotação (${inv.priceHistory.length})</summary>
+      <div style="height:120px; margin-top:8px;"><canvas id="priceChart-${inv.id}"></canvas></div>
+    </details>`;
+  }
+
+  let priceChartInstances = {};
+
+  function renderPriceCharts() {
+    if (typeof Chart === 'undefined') return;
+    investments.forEach(inv => {
+      const canvas = document.getElementById('priceChart-' + inv.id);
+      if (!canvas || !inv.priceHistory || inv.priceHistory.length < 2) return;
+      if (priceChartInstances[inv.id]) priceChartInstances[inv.id].destroy();
+      const isDark = document.body.classList.contains('dark-mode');
+      const textColor = isDark ? '#E3E8E4' : '#1C2B24';
+      const sorted = [...inv.priceHistory].sort((a, b) => a.date.localeCompare(b.date));
+      priceChartInstances[inv.id] = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: sorted.map(p => p.date.split('-').reverse().join('/')),
+          datasets: [{
+            data: sorted.map(p => p.price),
+            borderColor: '#2F6F4F',
+            backgroundColor: 'rgba(47,111,79,0.15)',
+            fill: true,
+            tension: 0.25,
+            pointRadius: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } },
+            y: { ticks: { color: textColor, font: { size: 9 } }, grid: { color: 'rgba(128,128,128,0.15)' } }
+          }
+        }
+      });
+    });
   }
 
   function renderInvestments() {
@@ -1416,6 +1524,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ${inv.units ? `<div class="units">${inv.units} unidades / tokens</div>` : ''}
         ${inv.institution ? `<div class="units">${inv.institution}${inv.rate ? ' · ' + inv.rate : ''}</div>` : ''}
         ${inv.dueDate ? `<div class="units">Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</div>` : ''}
+        ${rentabilityHTML('invest', inv.id, inv.value || 0)}
+        ${priceHistoryHTML(inv)}
         ${yieldHistoryHTML('invest', inv.id)}
         <div style="margin-top:12px; text-align:right;">
           <button type="button" class="action-btn" onclick="openYieldModal('invest','${inv.id}')" title="Registrar Rendimento">📈 Rendimento</button>
@@ -1424,6 +1534,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `).join('');
+
+    renderPriceCharts();
   }
 
   function renderPocketBalances() {
@@ -1453,6 +1565,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <h4><span>${p.name}</span></h4>
         <div class="val">${fmt(p.value || 0)}</div>
         ${p.goal ? `<div class="units">${p.goal}</div>` : ''}
+        ${rentabilityHTML('pocket', p.id, p.value || 0)}
         ${yieldHistoryHTML('pocket', p.id)}
         <div style="margin-top:12px; text-align:right;">
           <button type="button" class="action-btn" onclick="openYieldModal('pocket','${p.id}')" title="Registrar Rendimento">📈 Rendimento</button>
@@ -1766,16 +1879,46 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let yieldTarget = null; // { type: 'invest'|'pocket', id }
+  let editingYieldId = null;
 
   window.openYieldModal = function(type, id) {
     yieldTarget = { type, id };
+    editingYieldId = null;
     document.getElementById('yData').value = todayISO();
     document.getElementById('yValor').value = '';
     document.getElementById('yDesc').value = '';
+    document.getElementById('ySalvar').textContent = 'Registrar Rendimento';
     const list = type === 'invest' ? investments : pockets;
     const item = list.find(x => x.id === id);
     document.getElementById('panelYieldTitle').innerHTML = 'Registrar Rendimento — ' + (item ? item.name : '') + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     openModal('panelYield');
+  };
+
+  window.editYield = function(yieldId) {
+    const y = yieldsLog.find(x => x.id === yieldId);
+    if (!y) return;
+    yieldTarget = { type: y.targetType, id: y.targetId };
+    editingYieldId = y.id;
+    document.getElementById('yData').value = y.date;
+    document.getElementById('yValor').value = y.amount;
+    document.getElementById('yDesc').value = y.desc || '';
+    document.getElementById('ySalvar').textContent = 'Salvar Alteração';
+    const list = y.targetType === 'invest' ? investments : pockets;
+    const item = list.find(x => x.id === y.targetId);
+    document.getElementById('panelYieldTitle').innerHTML = 'Editar Rendimento — ' + (item ? item.name : '') + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    openModal('panelYield');
+  };
+
+  window.deleteYield = function(yieldId) {
+    const y = yieldsLog.find(x => x.id === yieldId);
+    if (!y) return;
+    if (!confirm('Deseja excluir este registro de rendimento? O valor será subtraído do saldo atual.')) return;
+    const list = y.targetType === 'invest' ? investments : pockets;
+    const item = list.find(x => x.id === y.targetId);
+    if (item) item.value = (item.value || 0) - y.amount;
+    yieldsLog = yieldsLog.filter(x => x.id !== yieldId);
+    if (y.targetType === 'invest') saveInvestments(); else savePockets();
+    render();
   };
 
   window.editEntry = function(id) {
@@ -1808,6 +1951,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.editInvest = function(id) {
+    pendingPricePoint = null;
     const inv = investments.find(i => i.id === id);
     if (!inv) return;
     editingInvestId = inv.id;
@@ -1861,6 +2005,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btnNovoInvest').onclick = () => {
     editingInvestId = null;
+    pendingPricePoint = null;
     document.getElementById('iNome').value = '';
     document.getElementById('iTipo').value = 'Stablecoin';
     document.getElementById('iUnidades').value = '';
@@ -1976,15 +2121,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const record = { name, type, units, value, institution, rate, dueDate };
 
+    let targetItem;
     if (editingInvestId) {
       const idx = investments.findIndex(i => i.id === editingInvestId);
       if (idx !== -1) {
-        investments[idx] = { id: editingInvestId, ...record };
+        investments[idx] = { id: editingInvestId, createdAt: investments[idx].createdAt, priceHistory: investments[idx].priceHistory, ...record };
+        targetItem = investments[idx];
       }
       editingInvestId = null;
     } else {
-      investments.push({ id: 'inv' + Date.now(), ...record });
+      targetItem = { id: 'inv' + Date.now(), createdAt: todayISO(), ...record };
+      investments.push(targetItem);
     }
+
+    if (isCrypto && pendingPricePoint && targetItem) {
+      if (!targetItem.priceHistory) targetItem.priceHistory = [];
+      targetItem.priceHistory.push({ date: todayISO(), price: pendingPricePoint.price });
+    }
+    pendingPricePoint = null;
 
     saveInvestments();
     closeAllPanels();
@@ -2034,20 +2188,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = yieldTarget.type === 'invest' ? investments : pockets;
     const item = list.find(x => x.id === yieldTarget.id);
     if (!item) return;
-    item.value = (item.value || 0) + amount;
 
-    yieldsLog.push({
-      id: 'yld' + Date.now(),
-      targetType: yieldTarget.type,
-      targetId: yieldTarget.id,
-      date, amount, desc
-    });
+    if (editingYieldId) {
+      const y = yieldsLog.find(x => x.id === editingYieldId);
+      if (y) {
+        item.value = (item.value || 0) - y.amount + amount; // remove valor antigo, aplica o novo
+        y.date = date;
+        y.amount = amount;
+        y.desc = desc;
+      }
+      editingYieldId = null;
+    } else {
+      item.value = (item.value || 0) + amount;
+      yieldsLog.push({
+        id: 'yld' + Date.now(),
+        targetType: yieldTarget.type,
+        targetId: yieldTarget.id,
+        date, amount, desc
+      });
+    }
 
     if (yieldTarget.type === 'invest') saveInvestments(); else savePockets();
     yieldTarget = null;
     closeAllPanels();
     render();
   };
+
+  let pendingPricePoint = null;
 
   document.getElementById('btnFetchPrice').onclick = async () => {
     const nameQuery = document.getElementById('iNome').value.trim();
@@ -2061,6 +2228,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
       const units = parseFloat(document.getElementById('iUnidades').value) || 1;
       document.getElementById('iValor').value = (price * units).toFixed(2);
+      pendingPricePoint = { price };
       statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · atualizado agora`;
     } catch (err) {
       console.error(err);
@@ -2101,6 +2269,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const price = await fetchCoinPriceBRL(coin.id);
         if (!price) { failed.push(inv.name); continue; }
         inv.value = price * inv.units;
+        if (!inv.priceHistory) inv.priceHistory = [];
+        inv.priceHistory.push({ date: todayISO(), price });
         updated++;
       } catch (err) {
         console.error(err);
@@ -2630,6 +2800,16 @@ document.addEventListener('DOMContentLoaded', () => {
         setAuthError(translateAuthError(err.code));
       }
     });
+  };
+
+  document.getElementById('fabAdd').onclick = () => {
+    if (currentTab === 'invest') {
+      document.getElementById('btnNovoInvest').click();
+    } else if (currentTab === 'pockets') {
+      document.getElementById('btnNovoPocket').click();
+    } else {
+      document.getElementById('btnNovo').click();
+    }
   };
 
   auth.onAuthStateChanged(user => {
