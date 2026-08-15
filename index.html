@@ -1653,8 +1653,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ${rentabilityHTML('pocket', p.id, p.value || 0)}
         ${yieldHistoryHTML('pocket', p.id)}
         <div style="margin-top:12px; text-align:right;">
-          <button type="button" class="action-btn" onclick="openPocketMovementModal('aporte','${p.id}')" title="Registrar Aporte">💰 Aporte</button>
-          <button type="button" class="action-btn" onclick="openPocketMovementModal('resgate','${p.id}')" title="Registrar Resgate">↩️ Resgate</button>
+          <button type="button" class="action-btn" onclick="openPocketMovementModal('aporte','${p.id}')" title="Registrar Movimentação">↕️ Movimentação</button>
           <button type="button" class="action-btn" onclick="openPocketMovementModal('rendimento','${p.id}')" title="Registrar Rendimento">📈 Rendimento</button>
           <button type="button" class="action-btn" onclick="editPocket('${p.id}')">✏️ Editar</button>
           <button type="button" class="action-btn del" onclick="deletePocket('${p.id}')">×</button>
