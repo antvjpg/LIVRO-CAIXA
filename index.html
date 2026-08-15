@@ -1038,12 +1038,17 @@
             <input type="number" id="iUnidades" step="0.000001" placeholder="Ex: 50.00">
           </div>
           <div>
-            <label for="iValor">Valor Total Atual (R$)</label>
+            <label for="iCotacao">Cotação (R$ por unidade)</label>
             <div style="display:flex; gap:6px; align-items:stretch;">
-              <input type="number" id="iValor" step="0.01" min="0" placeholder="0,00" style="flex:2; min-width:0;">
+              <input type="number" id="iCotacao" step="0.00000001" min="0" placeholder="Digite ou busque a cotação" style="flex:2; min-width:0;">
               <button type="button" id="btnFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;">🔄 Cotação</button>
             </div>
-            <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">A cotação não atualiza sozinha — clique em "Cotação" sempre que quiser o preço mais recente (ao criar ou editar o ativo).</div>
+            <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Você pode digitar a cotação manualmente ou clicar em "Cotação" para buscar pela internet.</div>
+          </div>
+          <div>
+            <label for="iValor">Valor Total Atual (R$)</label>
+            <input type="number" id="iValor" step="0.01" min="0" placeholder="0,00" style="width:100%;">
+            <div style="font-size:11px; margin-top:4px; opacity:0.7;">Com cotação e quantidade preenchidas, o valor é calculado automaticamente.</div>
           </div>
         </div>
 
@@ -1131,10 +1136,10 @@
         <div>
           <label for="imCotacao">Cotação</label>
           <div style="display:flex; gap:6px; align-items:stretch;">
-            <input type="number" id="imCotacao" step="0.00000001" min="0" placeholder="Cotação automática por API" readonly style="flex:2; min-width:0;">
+            <input type="number" id="imCotacao" step="0.00000001" min="0" placeholder="Digite ou busque a cotação" style="flex:2; min-width:0;">
             <button type="button" id="imFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;">🔄</button>
           </div>
-          <div id="imPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a quantidade e clique em atualizar para buscar a cotação.</div>
+          <div id="imPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a cotação manualmente ou clique no botão 🔄 para buscar pela internet.</div>
         </div>
         <div>
           <label for="imValor">Valor (R$)</label>
@@ -1980,7 +1985,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imCotacao').value = '';
     document.getElementById('imValor').value = '';
     document.getElementById('imDesc').value = '';
-    document.getElementById('imPriceStatus').textContent = 'Digite a quantidade e clique em atualizar para buscar a cotação.';
+    document.getElementById('imPriceStatus').textContent = 'Digite a cotação manualmente ou clique no botão 🔄 para buscar pela internet.';
     document.getElementById('panelInvestMovementTitle').innerHTML = (kind === 'aporte' ? 'Registrar Aporte — ' : 'Registrar Rendimento — ') + item.name + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('imSalvar').textContent = kind === 'aporte' ? 'Registrar Aporte' : 'Registrar Rendimento';
     openModal('panelInvestMovement');
@@ -2002,7 +2007,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('imDesc').value = y.desc || '';
       document.getElementById('panelInvestMovementTitle').innerHTML = 'Editar Rendimento — ' + (investments.find(i => i.id === y.targetId)?.name || '') + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
       document.getElementById('imSalvar').textContent = 'Atualizar Rendimento';
-      document.getElementById('imPriceStatus').textContent = y.price ? `Cotação registrada: ${fmt(y.price)}` : 'Cotação não registrada.';
+      document.getElementById('imPriceStatus').textContent = y.price ? `Cotação registrada: ${fmt(y.price)} · pode ser alterada manualmente` : 'Cotação não registrada. Você pode digitá-la manualmente.';
       investmentMovementEditingId = y.id;
       openModal('panelInvestMovement');
       return;
@@ -2079,6 +2084,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('iNome').value = inv.name;
     document.getElementById('iTipo').value = inv.type || 'Stablecoin';
     document.getElementById('iUnidades').value = inv.units || '';
+    const latestQuote = inv.price != null ? inv.price : (inv.priceHistory && inv.priceHistory.length ? inv.priceHistory[inv.priceHistory.length - 1].price : '');
+    document.getElementById('iCotacao').value = latestQuote != null ? latestQuote : '';
     document.getElementById('iValor').value = inv.value || 0;
     document.getElementById('iValorSimples').value = inv.value || 0;
     document.getElementById('iInstituicao').value = inv.institution || '';
@@ -2130,6 +2137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('iNome').value = '';
     document.getElementById('iTipo').value = 'Stablecoin';
     document.getElementById('iUnidades').value = '';
+    document.getElementById('iCotacao').value = '';
     document.getElementById('iValor').value = '';
     document.getElementById('iValorSimples').value = '';
     document.getElementById('iInstituicao').value = '';
@@ -2226,27 +2234,44 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   };
 
+  function updateInvestmentMainValue() {
+    const type = document.getElementById('iTipo').value;
+    if (type !== 'Stablecoin' && type !== 'Criptomoeda') return;
+    const units = parseFloat(document.getElementById('iUnidades').value) || 0;
+    const price = parseFloat(document.getElementById('iCotacao').value) || 0;
+    if (units > 0 && price > 0) {
+      document.getElementById('iValor').value = (units * price).toFixed(2);
+    }
+  }
+
+  document.getElementById('iUnidades').addEventListener('input', updateInvestmentMainValue);
+  document.getElementById('iCotacao').addEventListener('input', updateInvestmentMainValue);
+
   document.getElementById('iSalvar').onclick = () => {
     const name = document.getElementById('iNome').value.trim();
     const type = document.getElementById('iTipo').value;
     const isCrypto = (type === 'Stablecoin' || type === 'Criptomoeda');
     const units = isCrypto ? (parseFloat(document.getElementById('iUnidades').value) || null) : null;
+    const quoteRaw = isCrypto ? parseFloat(document.getElementById('iCotacao').value) : NaN;
+    const quote = isFinite(quoteRaw) && quoteRaw > 0 ? quoteRaw : null;
     const value = isCrypto
-      ? (parseFloat(document.getElementById('iValor').value) || 0)
+      ? (quote != null && units != null ? units * quote : (parseFloat(document.getElementById('iValor').value) || 0))
       : (parseFloat(document.getElementById('iValorSimples').value) || 0);
     const institution = type === 'Renda Fixa' ? document.getElementById('iInstituicao').value.trim() : '';
     const rate = type === 'Renda Fixa' ? document.getElementById('iTaxa').value.trim() : '';
     const dueDate = type === 'Renda Fixa' ? document.getElementById('iVencimento').value : '';
 
     if (!name) { alert('Informe o nome do ativo.'); return; }
+    if (isCrypto && (units == null || units <= 0)) { alert('Informe uma quantidade válida de unidades/tokens.'); return; }
 
-    const record = { name, type, units, value, institution, rate, dueDate };
+    const record = { name, type, units, value, price: quote, institution, rate, dueDate };
 
     let targetItem;
     if (editingInvestId) {
       const idx = investments.findIndex(i => i.id === editingInvestId);
       if (idx !== -1) {
-        investments[idx] = { id: editingInvestId, createdAt: investments[idx].createdAt, priceHistory: investments[idx].priceHistory, ...record };
+        const old = investments[idx];
+        investments[idx] = { id: editingInvestId, createdAt: old.createdAt, priceHistory: old.priceHistory, ...record };
         targetItem = investments[idx];
       }
       editingInvestId = null;
@@ -2255,9 +2280,18 @@ document.addEventListener('DOMContentLoaded', () => {
       investments.push(targetItem);
     }
 
-    if (isCrypto && pendingPricePoint && targetItem) {
+    if (isCrypto && quote != null && targetItem) {
       if (!targetItem.priceHistory) targetItem.priceHistory = [];
-      targetItem.priceHistory.push({ date: todayISO(), price: pendingPricePoint.price, units, value: pendingPricePoint.value });
+      const today = todayISO();
+      const latest = targetItem.priceHistory[targetItem.priceHistory.length - 1];
+      const shouldAddPoint = !latest || latest.date !== today || Number(latest.price) !== Number(quote) || Number(latest.units) !== Number(units);
+      if (shouldAddPoint) {
+        targetItem.priceHistory.push({ date: today, price: quote, units, value });
+      } else {
+        latest.price = quote;
+        latest.units = units;
+        latest.value = value;
+      }
     }
     pendingPricePoint = null;
 
@@ -2315,7 +2349,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     if (!isFinite(units) || units <= 0) { alert('Informe uma quantidade válida.'); return; }
-    if (!isFinite(price) || price <= 0) { alert('Busque uma cotação válida antes de registrar.'); return; }
+    if (!isFinite(price) || price <= 0) { alert('Informe uma cotação válida ou use o botão 🔄 para buscá-la.'); return; }
     if (!isFinite(amount) || amount <= 0) { alert('A quantidade e a cotação precisam gerar um valor válido.'); return; }
 
     if (investmentMovementEditingId) {
@@ -2409,6 +2443,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const price = await fetchCoinPriceBRL(coin.id);
       if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
       const units = parseFloat(document.getElementById('iUnidades').value) || 1;
+      document.getElementById('iCotacao').value = price;
       document.getElementById('iValor').value = (price * units).toFixed(2);
       pendingPricePoint = { price, units, value: price * units };
       statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · atualizado agora`;
