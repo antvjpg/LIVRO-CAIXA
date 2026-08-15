@@ -1117,6 +1117,39 @@
       </div>
     </div>
 
+    <div class="panel" id="panelInvestMovement">
+      <h3 id="panelInvestMovementTitle">Registrar Rendimento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label for="imData">Data</label>
+          <input type="date" id="imData">
+        </div>
+        <div>
+          <label for="imQuantidade">Quantidade</label>
+          <input type="number" id="imQuantidade" step="0.00000001" min="0" placeholder="Ex: 0.50">
+        </div>
+        <div>
+          <label for="imCotacao">Cotação</label>
+          <div style="display:flex; gap:6px; align-items:stretch;">
+            <input type="number" id="imCotacao" step="0.00000001" min="0" placeholder="Cotação automática por API" readonly style="flex:2; min-width:0;">
+            <button type="button" id="imFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;">🔄</button>
+          </div>
+          <div id="imPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a quantidade e clique em atualizar para buscar a cotação.</div>
+        </div>
+        <div>
+          <label for="imValor">Valor (R$)</label>
+          <input type="number" id="imValor" step="0.01" min="0" placeholder="R$ 0,00" readonly>
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label for="imDesc">Observação (Opcional)</label>
+          <input type="text" id="imDesc" placeholder="Ex: Rendimento mensal Binance Earn / Aporte mensal">
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
+          <button class="primary" id="imSalvar" style="width:100%">Registrar Lançamento</button>
+        </div>
+      </div>
+    </div>
+
     <div class="panel" id="panelExportFormat">
       <h3>Exportar Extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <p style="font-size:13px; opacity:0.8; margin-top:-6px;">Escolha o formato do arquivo. As movimentações são organizadas por banco (em ordem alfabética), e dentro de cada banco por data crescente, com entradas antes das saídas em cada dia.</p>
@@ -1185,6 +1218,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingCategoryId = null;
   let editingInvestId = null;
   let editingPocketId = null;
+  let investmentMovementTarget = null; // { kind: 'aporte'|'rendimento', id }
   let catChartInstance = null;
 
   const fmt = (n) => (n < 0 ? '-' : '') + 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1430,7 +1464,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function yieldHistoryHTML(targetType, targetId) {
     const items = yieldsLog
-      .filter(y => y.targetType === targetType && y.targetId === targetId)
+      .filter(y => y.targetType === targetType && y.targetId === targetId && (y.kind || 'rendimento') === 'rendimento')
       .sort((a, b) => b.date.localeCompare(a.date));
     if (items.length === 0) return '';
     const rows = items.map(y => {
@@ -1451,7 +1485,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function rentabilityHTML(targetType, targetId, currentValue) {
-    const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId);
+    const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId && (y.kind || 'rendimento') === 'rendimento');
     if (items.length === 0) return '';
     const totalYield = items.reduce((s, y) => s + y.amount, 0);
     const baseValue = currentValue - totalYield;
@@ -1467,32 +1501,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function priceHistoryHTML(inv) {
     if (!inv.priceHistory || inv.priceHistory.length === 0) return '';
-    const sorted = [...inv.priceHistory].sort((a, b) => a.date.localeCompare(b.date));
-    const rows = sorted.slice().reverse().map(p => {
-      const units = p.units ?? null;
-      const value = p.value ?? (units != null && p.price != null ? p.price * units : null);
-      return `<tr>
-        <td style="padding:6px 8px;">${p.date.split('-').reverse().join('/')}</td>
-        <td class="amt" style="padding:6px 8px;">${fmt(p.price || 0)}</td>
-        <td class="amt" style="padding:6px 8px;">${units != null ? Number(units).toLocaleString('pt-BR', {maximumFractionDigits: 8}) : '—'}</td>
-        <td class="amt" style="padding:6px 8px;">${value != null ? fmt(value) : '—'}</td>
-      </tr>`;
-    }).join('');
-    return `<details class="yield-history">
-      <summary>📉 Histórico de Cotação (${inv.priceHistory.length})</summary>
-      <div style="overflow-x:auto; margin-top:8px;">
-        <table style="font-size:11px; min-width:420px;">
-          <thead><tr>
-            <th style="padding:6px 8px;">Data</th>
-            <th style="padding:6px 8px;">Cotação</th>
-            <th style="padding:6px 8px;">Quantidade</th>
-            <th style="padding:6px 8px;">Valor atualizado</th>
-          </tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-      ${inv.priceHistory.length >= 2 ? `<div style="height:120px; margin-top:8px;"><canvas id="priceChart-${inv.id}"></canvas></div>` : ''}
-    </details>`;
+    return `<div class="price-chart-box" style="margin-top:10px; height:140px;">
+      <canvas id="priceChart-${inv.id}"></canvas>
+    </div>`;
   }
 
   let priceChartInstances = {};
@@ -1501,11 +1512,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof Chart === 'undefined') return;
     investments.forEach(inv => {
       const canvas = document.getElementById('priceChart-' + inv.id);
-      if (!canvas || !inv.priceHistory || inv.priceHistory.length < 2) return;
+      if (!canvas || !inv.priceHistory || inv.priceHistory.length === 0) return;
       if (priceChartInstances[inv.id]) priceChartInstances[inv.id].destroy();
       const isDark = document.body.classList.contains('dark-mode');
       const textColor = isDark ? '#E3E8E4' : '#1C2B24';
-      const sorted = [...inv.priceHistory].sort((a, b) => a.date.localeCompare(b.date));
+
+      // Keep only the latest quote recorded for each date, avoiding repeated points.
+      const byDate = new Map();
+      [...inv.priceHistory]
+        .sort((a, b) => (a.date || '').localeCompare(b.date || ''))
+        .forEach(p => byDate.set(p.date, p));
+      const sorted = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+
       priceChartInstances[inv.id] = new Chart(canvas, {
         type: 'line',
         data: {
@@ -1516,16 +1534,24 @@ document.addEventListener('DOMContentLoaded', () => {
             backgroundColor: 'rgba(47,111,79,0.15)',
             fill: true,
             tension: 0.25,
-            pointRadius: 2
+            pointRadius: 3,
+            pointHoverRadius: 5
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => fmt(ctx.parsed.y)
+              }
+            }
+          },
           scales: {
             x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } },
-            y: { ticks: { color: textColor, font: { size: 9 } }, grid: { color: 'rgba(128,128,128,0.15)' } }
+            y: { ticks: { color: textColor, font: { size: 9 }, callback: v => fmt(v) }, grid: { color: 'rgba(128,128,128,0.15)' } }
           }
         }
       });
@@ -1550,7 +1576,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ${priceHistoryHTML(inv)}
         ${yieldHistoryHTML('invest', inv.id)}
         <div style="margin-top:12px; text-align:right;">
-          <button type="button" class="action-btn" onclick="openYieldModal('invest','${inv.id}')" title="Registrar Rendimento">📈 Rendimento</button>
+          <button type="button" class="action-btn" onclick="openInvestmentMovementModal('rendimento','${inv.id}')" title="Registrar Rendimento">📈 Rendimento</button>
+          <button type="button" class="action-btn" onclick="openInvestmentMovementModal('aporte','${inv.id}')" title="Registrar Aporte">💰 Aporte</button>
           <button type="button" class="action-btn" onclick="editInvest('${inv.id}')">✏️ Editar</button>
           <button type="button" class="action-btn del" onclick="deleteInvest('${inv.id}')">×</button>
         </div>
@@ -1904,32 +1931,95 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingYieldId = null;
 
   window.openYieldModal = function(type, id) {
+    // Keep the existing rendimento modal for caixinhas.
+    if (type === 'invest') return openInvestmentMovementModal('rendimento', id);
     yieldTarget = { type, id };
     editingYieldId = null;
     document.getElementById('yData').value = todayISO();
     document.getElementById('yValor').value = '';
     document.getElementById('yDesc').value = '';
     document.getElementById('ySalvar').textContent = 'Registrar Rendimento';
-    const list = type === 'invest' ? investments : pockets;
+    const list = pockets;
     const item = list.find(x => x.id === id);
     document.getElementById('panelYieldTitle').innerHTML = 'Registrar Rendimento — ' + (item ? item.name : '') + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     openModal('panelYield');
   };
 
+  function updateInvestmentMovementValue() {
+    const qty = parseFloat(document.getElementById('imQuantidade').value) || 0;
+    const price = parseFloat(document.getElementById('imCotacao').value) || 0;
+    document.getElementById('imValor').value = qty > 0 && price > 0 ? (qty * price).toFixed(2) : '';
+  }
+
+  async function fetchInvestmentMovementPrice() {
+    if (!investmentMovementTarget) return;
+    const item = investments.find(x => x.id === investmentMovementTarget.id);
+    const statusEl = document.getElementById('imPriceStatus');
+    if (!item) return;
+    statusEl.textContent = 'Buscando cotação...';
+    try {
+      const coin = await fetchCoinMatch(item.name);
+      if (!coin) { statusEl.textContent = 'Ativo não encontrado. Não foi possível buscar a cotação.'; return; }
+      const price = await fetchCoinPriceBRL(coin.id);
+      if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
+      document.getElementById('imCotacao').value = price;
+      updateInvestmentMovementValue();
+      statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · atualizado agora`;
+    } catch (err) {
+      console.error(err);
+      statusEl.textContent = 'Erro ao buscar cotação. Verifique sua conexão.';
+    }
+  }
+
+  window.openInvestmentMovementModal = function(kind, id) {
+    const item = investments.find(x => x.id === id);
+    if (!item) return;
+    investmentMovementTarget = { kind, id };
+    document.getElementById('imData').value = todayISO();
+    document.getElementById('imQuantidade').value = '';
+    document.getElementById('imCotacao').value = '';
+    document.getElementById('imValor').value = '';
+    document.getElementById('imDesc').value = '';
+    document.getElementById('imPriceStatus').textContent = 'Digite a quantidade e clique em atualizar para buscar a cotação.';
+    document.getElementById('panelInvestMovementTitle').innerHTML = (kind === 'aporte' ? 'Registrar Aporte — ' : 'Registrar Rendimento — ') + item.name + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    document.getElementById('imSalvar').textContent = kind === 'aporte' ? 'Registrar Aporte' : 'Registrar Rendimento';
+    openModal('panelInvestMovement');
+  };
+
+  document.getElementById('imQuantidade').addEventListener('input', updateInvestmentMovementValue);
+  document.getElementById('imCotacao').addEventListener('input', updateInvestmentMovementValue);
+  document.getElementById('imFetchPrice').onclick = fetchInvestmentMovementPrice;
+
   window.editYield = function(yieldId) {
     const y = yieldsLog.find(x => x.id === yieldId);
     if (!y) return;
+    if (y.targetType === 'invest' && y.units != null) {
+      investmentMovementTarget = { kind: 'rendimento', id: y.targetId };
+      document.getElementById('imData').value = y.date;
+      document.getElementById('imQuantidade').value = y.units;
+      document.getElementById('imCotacao').value = y.price || '';
+      document.getElementById('imValor').value = y.amount || 0;
+      document.getElementById('imDesc').value = y.desc || '';
+      document.getElementById('panelInvestMovementTitle').innerHTML = 'Editar Rendimento — ' + (investments.find(i => i.id === y.targetId)?.name || '') + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+      document.getElementById('imSalvar').textContent = 'Atualizar Rendimento';
+      document.getElementById('imPriceStatus').textContent = y.price ? `Cotação registrada: ${fmt(y.price)}` : 'Cotação não registrada.';
+      investmentMovementEditingId = y.id;
+      openModal('panelInvestMovement');
+      return;
+    }
     yieldTarget = { type: y.targetType, id: y.targetId };
     editingYieldId = y.id;
     document.getElementById('yData').value = y.date;
     document.getElementById('yValor').value = y.amount;
     document.getElementById('yDesc').value = y.desc || '';
-    document.getElementById('ySalvar').textContent = 'Salvar Alteração';
     const list = y.targetType === 'invest' ? investments : pockets;
     const item = list.find(x => x.id === y.targetId);
     document.getElementById('panelYieldTitle').innerHTML = 'Editar Rendimento — ' + (item ? item.name : '') + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    document.getElementById('ySalvar').textContent = 'Atualizar Rendimento';
     openModal('panelYield');
   };
+
+  let investmentMovementEditingId = null;
 
   window.deleteYield = function(yieldId) {
     const y = yieldsLog.find(x => x.id === yieldId);
@@ -1937,11 +2027,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!confirm('Deseja excluir este registro de rendimento? O valor será subtraído do saldo atual.')) return;
     const list = y.targetType === 'invest' ? investments : pockets;
     const item = list.find(x => x.id === y.targetId);
-    if (item) item.value = (item.value || 0) - y.amount;
+    if (item) {
+      if (y.targetType === 'invest' && y.units != null) {
+        item.units = Math.max(0, (item.units || 0) - y.units);
+        const latest = item.priceHistory && item.priceHistory.length ? item.priceHistory[item.priceHistory.length - 1].price : y.price;
+        item.value = latest ? item.units * latest : Math.max(0, (item.value || 0) - y.amount);
+      } else {
+        item.value = (item.value || 0) - y.amount;
+      }
+    }
     yieldsLog = yieldsLog.filter(x => x.id !== yieldId);
-    if (y.targetType === 'invest') saveInvestments(); else savePockets();
+    persistAll();
     render();
   };
+
 
   window.editEntry = function(id) {
     const entry = entries.find(e => e.id === id);
@@ -2199,6 +2298,66 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   };
 
+  document.getElementById('imSalvar').onclick = () => {
+    if (!investmentMovementTarget) return;
+    const item = investments.find(x => x.id === investmentMovementTarget.id);
+    if (!item) return;
+
+    const date = document.getElementById('imData').value || todayISO();
+    const units = parseFloat(document.getElementById('imQuantidade').value);
+    const price = parseFloat(document.getElementById('imCotacao').value);
+    const amount = parseFloat(document.getElementById('imValor').value);
+    const desc = document.getElementById('imDesc').value.trim();
+    const kind = investmentMovementTarget.kind;
+
+    if (!item.units && item.type !== 'Stablecoin' && item.type !== 'Criptomoeda') {
+      alert('Aporte/rendimento por quantidade está disponível para cripto e stablecoins.');
+      return;
+    }
+    if (!isFinite(units) || units <= 0) { alert('Informe uma quantidade válida.'); return; }
+    if (!isFinite(price) || price <= 0) { alert('Busque uma cotação válida antes de registrar.'); return; }
+    if (!isFinite(amount) || amount <= 0) { alert('A quantidade e a cotação precisam gerar um valor válido.'); return; }
+
+    if (investmentMovementEditingId) {
+      const old = yieldsLog.find(x => x.id === investmentMovementEditingId);
+      if (old) {
+        item.units = Math.max(0, (item.units || 0) - (old.units || 0));
+        item.units += units;
+        old.date = date;
+        old.units = units;
+        old.price = price;
+        old.amount = amount;
+        old.desc = desc;
+        old.kind = 'rendimento';
+      }
+      investmentMovementEditingId = null;
+    } else {
+      item.units = (item.units || 0) + units;
+      yieldsLog.push({
+        id: 'imv' + Date.now() + Math.random().toString(36).slice(2, 7),
+        targetType: 'invest',
+        targetId: item.id,
+        kind,
+        date,
+        units,
+        price,
+        amount,
+        desc
+      });
+    }
+
+    // The displayed investment value follows the quantity at the quote used in this update.
+    item.value = item.units * price;
+
+    if (!item.priceHistory) item.priceHistory = [];
+    item.priceHistory.push({ date, price, units: item.units, value: item.value });
+
+    persistAll();
+    investmentMovementTarget = null;
+    closeAllPanels();
+    render();
+  };
+
   document.getElementById('ySalvar').onclick = () => {
     if (!yieldTarget) return;
     const date = document.getElementById('yData').value || todayISO();
@@ -2226,6 +2385,7 @@ document.addEventListener('DOMContentLoaded', () => {
         id: 'yld' + Date.now(),
         targetType: yieldTarget.type,
         targetId: yieldTarget.id,
+        kind: 'rendimento',
         date, amount, desc
       });
     }
@@ -2430,7 +2590,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnCancelPaste').onclick = () => closeAllPanels();
 
   document.getElementById('btnExportBackup').onclick = () => {
-    const data = { banks, categories, entries, investments };
+    const data = { banks, categories, entries, investments, pockets, yieldsLog };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -2453,6 +2613,8 @@ document.addEventListener('DOMContentLoaded', () => {
           categories = data.categories;
           entries = data.entries;
           investments = data.investments || [];
+          pockets = data.pockets || [];
+          yieldsLog = data.yieldsLog || [];
           persistNow().then(() => {
             populateFilterControls(true);
             render();
