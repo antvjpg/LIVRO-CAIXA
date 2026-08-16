@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1C2B24">
+<meta name="background-color" content="#F7F5EF">
+<meta name="description" content="Livro-Caixa — controle financeiro pessoal sincronizado e disponível offline.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Livro-Caixa">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Livro-Caixa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -866,6 +875,7 @@
   </div>
   <div style="display:flex; align-items:center; gap:12px;">
     <button id="btnThemeToggle" title="Alternar Tema Escuro/Claro" style="padding:6px 10px; font-size:14px;">🌙</button>
+    <button id="btnInstallPWA" title="Instalar Livro-Caixa" aria-label="Instalar Livro-Caixa" style="padding:6px 10px; font-size:12px; display:none;">📲 Instalar</button>
     <div id="userBar"></div>
   </div>
 </header>
@@ -1302,6 +1312,33 @@ let isSignupMode = false;
 let saveTimer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+  // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      console.log('[PWA] Service Worker registrado:', reg.scope);
+    }).catch(err => console.warn('[PWA] Falha ao registrar Service Worker:', err));
+  }
+
+  let deferredInstallPrompt = null;
+  const installBtn = document.getElementById('btnInstallPWA');
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    if (installBtn) installBtn.style.display = 'inline-flex';
+  });
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    if (installBtn) installBtn.style.display = 'none';
+  });
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      try { await deferredInstallPrompt.userChoice; } catch (_) {}
+      deferredInstallPrompt = null;
+      installBtn.style.display = 'none';
+    });
+  }
   let banks = [];
   let categories = [];
   let entries = [];
