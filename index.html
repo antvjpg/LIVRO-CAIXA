@@ -1201,13 +1201,22 @@
     </div>
 
     <div class="panel" id="panelInvestMovement">
-      <h3 id="panelInvestMovementTitle">Registrar Rendimento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelInvestMovementTitle">Registrar Movimentação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="type-toggle movement-tabs" style="margin-bottom:14px;">
+        <button type="button" id="imAporte" class="active-in">Aporte</button>
+        <button type="button" id="imResgate">Resgate</button>
+        <button type="button" id="imRendimento">Rendimento</button>
+      </div>
+      <div id="imPeriodToggle" class="type-toggle" style="margin-bottom:14px; display:none;">
+        <button type="button" id="imDia" class="active-in">Dia</button>
+        <button type="button" id="imPeriodo">Período</button>
+      </div>
       <div class="form-grid">
         <div>
-          <label for="imData">Data Inicial</label>
+          <label for="imData" id="imDataLabel">Data</label>
           <input type="date" id="imData">
         </div>
-        <div>
+        <div id="imDataFimWrap" style="display:none;">
           <label for="imDataFim">Data Final</label>
           <input type="date" id="imDataFim">
         </div>
@@ -1305,7 +1314,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingCategoryId = null;
   let editingInvestId = null;
   let editingPocketId = null;
-  let investmentMovementTarget = null; // { kind: 'aporte'|'rendimento', id }
+  let investmentMovementTarget = null; // { kind: 'aporte'|'resgate'|'rendimento', id }
   let catChartInstance = null;
 
   const fmt = (n) => (n < 0 ? '-' : '') + 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1821,8 +1830,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ${priceHistoryHTML(inv)}
         ${yieldHistoryHTML('invest', inv.id)}
         <div style="margin-top:12px; text-align:right;">
-          <button type="button" class="action-btn" onclick="openInvestmentMovementModal('rendimento','${inv.id}')" title="Registrar Rendimento">📈 Rendimento</button>
-          <button type="button" class="action-btn" onclick="openInvestmentMovementModal('aporte','${inv.id}')" title="Registrar Aporte">💰 Aporte</button>
+          <button type="button" class="action-btn" onclick="openInvestmentMovementModal('aporte','${inv.id}')" title="Registrar Movimentação">↕️ Movimentações</button>
           <button type="button" class="action-btn" onclick="editInvest('${inv.id}')">✏️ Editar</button>
           <button type="button" class="action-btn del" onclick="deleteInvest('${inv.id}')">×</button>
         </div>
@@ -2159,13 +2167,37 @@ document.addEventListener('DOMContentLoaded', () => {
   let pocketMovementTarget = null; // { kind, id }
   let pocketMovementEditingId = null;
 
-  function setInvestmentMovementMode(item) {
+  function updateInvestmentMovementUI() {
+    if (!investmentMovementTarget) return;
+    const kind = investmentMovementTarget.kind;
+    const item = investments.find(x => x.id === investmentMovementTarget.id);
+    const isYield = kind === 'rendimento';
     const isCrypto = item && (item.type === 'Stablecoin' || item.type === 'Criptomoeda');
-    document.getElementById('imCryptoQuantityField').style.display = isCrypto ? 'block' : 'none';
-    document.getElementById('imCryptoQuoteField').style.display = isCrypto ? 'block' : 'none';
+    document.getElementById('imAporte').classList.toggle('active-in', kind === 'aporte');
+    document.getElementById('imResgate').classList.toggle('active-out', kind === 'resgate');
+    document.getElementById('imRendimento').classList.toggle('active-yield', isYield);
+    document.getElementById('imPeriodToggle').style.display = isYield ? 'flex' : 'none';
+    const periodActive = document.getElementById('imPeriodo').classList.contains('active-in');
+    document.getElementById('imDataFimWrap').style.display = isYield && periodActive ? 'block' : 'none';
+    document.getElementById('imDataLabel').textContent = isYield && periodActive ? 'Data Inicial' : 'Data';
+    const label = movementKindLabel(kind);
+    const verb = investmentMovementEditingId ? 'Atualizar' : 'Registrar';
+    document.getElementById('panelInvestMovementTitle').innerHTML = `${verb} ${label} — ${item ? (item.alias || item.name) : ''} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    document.getElementById('imSalvar').textContent = `${verb} ${label}`;
     document.getElementById('imValor').readOnly = isCrypto;
     document.getElementById('imValor').placeholder = isCrypto ? 'Calculado pela quantidade × cotação' : '0,00';
+    document.getElementById('imCryptoQuantityField').style.display = isCrypto ? 'block' : 'none';
+    document.getElementById('imCryptoQuoteField').style.display = isCrypto ? 'block' : 'none';
     document.getElementById('imPriceStatus').style.display = isCrypto ? 'block' : 'none';
+  }
+
+  function setInvestmentPeriodMode(period) {
+    const isPeriod = period === 'periodo';
+    document.getElementById('imDia').classList.toggle('active-in', !isPeriod);
+    document.getElementById('imPeriodo').classList.toggle('active-in', isPeriod);
+    document.getElementById('imDataFimWrap').style.display = isPeriod && investmentMovementTarget?.kind === 'rendimento' ? 'block' : 'none';
+    document.getElementById('imDataLabel').textContent = isPeriod && investmentMovementTarget?.kind === 'rendimento' ? 'Data Inicial' : 'Data';
+    if (!isPeriod) document.getElementById('imDataFim').value = document.getElementById('imData').value;
   }
 
   function setInvestmentMovementDefaults() {
@@ -2176,6 +2208,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imValor').value = '';
     document.getElementById('imDesc').value = '';
     document.getElementById('imPriceStatus').textContent = 'Digite a cotação manualmente ou clique no botão 🔄 para buscar pela internet.';
+    document.getElementById('imDia').classList.add('active-in');
+    document.getElementById('imPeriodo').classList.remove('active-in');
   }
 
   window.openYieldModal = function(type, id) {
@@ -2212,14 +2246,18 @@ document.addEventListener('DOMContentLoaded', () => {
   window.openInvestmentMovementModal = function(kind, id) {
     const item = investments.find(x => x.id === id);
     if (!item) return;
-    investmentMovementTarget = { kind, id };
+    investmentMovementTarget = { kind: ['aporte','resgate','rendimento'].includes(kind) ? kind : 'aporte', id };
     investmentMovementEditingId = null;
     setInvestmentMovementDefaults();
-    setInvestmentMovementMode(item);
-    document.getElementById('panelInvestMovementTitle').innerHTML = (kind === 'aporte' ? 'Registrar Aporte — ' : 'Registrar Rendimento — ') + (item.alias || item.name) + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
-    document.getElementById('imSalvar').textContent = kind === 'aporte' ? 'Registrar Aporte' : 'Registrar Rendimento';
+    updateInvestmentMovementUI();
     openModal('panelInvestMovement');
   };
+
+  document.getElementById('imAporte').onclick = () => { if (investmentMovementTarget) { investmentMovementTarget.kind = 'aporte'; updateInvestmentMovementUI(); } };
+  document.getElementById('imResgate').onclick = () => { if (investmentMovementTarget) { investmentMovementTarget.kind = 'resgate'; updateInvestmentMovementUI(); } };
+  document.getElementById('imRendimento').onclick = () => { if (investmentMovementTarget) { investmentMovementTarget.kind = 'rendimento'; updateInvestmentMovementUI(); } };
+  document.getElementById('imDia').onclick = () => setInvestmentPeriodMode('dia');
+  document.getElementById('imPeriodo').onclick = () => setInvestmentPeriodMode('periodo');
 
   function updatePocketMovementUI() {
     if (!pocketMovementTarget) return;
@@ -2280,17 +2318,18 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadInvestmentMovementForEdit(y) {
     const item = investments.find(i => i.id === y.targetId);
     if (!item) return;
-    investmentMovementTarget = { kind: y.kind || 'rendimento', id: y.targetId };
+    investmentMovementTarget = { kind: ['aporte','resgate','rendimento'].includes(y.kind) ? y.kind : 'rendimento', id: y.targetId };
     investmentMovementEditingId = y.id;
-    setInvestmentMovementMode(item);
     document.getElementById('imData').value = y.date || todayISO();
     document.getElementById('imDataFim').value = y.dateEnd || y.date || todayISO();
     document.getElementById('imQuantidade').value = y.units != null ? y.units : '';
     document.getElementById('imCotacao').value = y.price != null ? y.price : '';
     document.getElementById('imValor').value = y.amount || 0;
     document.getElementById('imDesc').value = y.desc || '';
-    document.getElementById('panelInvestMovementTitle').innerHTML = 'Editar ' + movementKindLabel(y.kind || 'rendimento') + ' — ' + (item.alias || item.name) + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
-    document.getElementById('imSalvar').textContent = 'Atualizar ' + movementKindLabel(y.kind || 'rendimento');
+    const isPeriod = y.dateEnd && y.dateEnd !== y.date;
+    document.getElementById('imDia').classList.toggle('active-in', !isPeriod);
+    document.getElementById('imPeriodo').classList.toggle('active-in', !!isPeriod);
+    updateInvestmentMovementUI();
     document.getElementById('imPriceStatus').textContent = y.price ? `Cotação registrada: ${fmt(y.price)} · pode ser alterada manualmente` : 'Cotação não registrada. Você pode digitá-la manualmente.';
     if (item.type === 'Stablecoin' || item.type === 'Criptomoeda') updateInvestmentMovementValue();
     openModal('panelInvestMovement');
@@ -2333,9 +2372,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (item) {
       const isCrypto = y.targetType === 'invest' && (item.type === 'Stablecoin' || item.type === 'Criptomoeda') && y.units != null;
       if (isCrypto) {
-        item.units = Math.max(0, (item.units || 0) - (y.units || 0));
+        const signedUnits = y.kind === 'resgate' ? -(y.units || 0) : (y.units || 0);
+        item.units = Math.max(0, (item.units || 0) - signedUnits);
         const latestPrice = item.priceHistory && item.priceHistory.length ? Number(item.priceHistory[item.priceHistory.length - 1].price) : Number(y.price || 0);
-        item.value = latestPrice > 0 ? item.units * latestPrice : Math.max(0, (item.value || 0) - (y.amount || 0));
+        item.value = latestPrice > 0 ? item.units * latestPrice : Math.max(0, (item.value || 0) - ((y.kind === 'resgate' ? -1 : 1) * (y.amount || 0)));
       }
     }
     yieldsLog = yieldsLog.filter(x => x.id !== yieldId);
@@ -2673,18 +2713,29 @@ document.addEventListener('DOMContentLoaded', () => {
       price = parseFloat(document.getElementById('imCotacao').value);
       if (!isFinite(units) || units <= 0) { alert('Informe uma quantidade válida.'); return; }
       if (!isFinite(price) || price <= 0) { alert('Informe uma cotação válida ou use o botão 🔄 para buscá-la.'); return; }
+      if (kind === 'resgate') {
+        const old = investmentMovementEditingId ? yieldsLog.find(x => x.id === investmentMovementEditingId) : null;
+        const available = (item.units || 0) + (old && old.kind === 'resgate' ? (old.units || 0) : 0);
+        if (units > available + 1e-12) { alert(`O resgate não pode ser maior que o saldo disponível (${available}).`); return; }
+      }
       amount = units * price;
       document.getElementById('imValor').value = amount.toFixed(2);
     } else {
       if (!isFinite(amount) || amount <= 0) { alert('Informe um valor válido.'); return; }
+      if (kind === 'resgate') {
+        const old = investmentMovementEditingId ? yieldsLog.find(x => x.id === investmentMovementEditingId) : null;
+        const available = (item.value || 0) + (old && old.kind === 'resgate' ? (old.amount || 0) : 0);
+        if (amount > available + 1e-9) { alert(`O resgate não pode ser maior que o saldo atual (${fmt(available)}).`); return; }
+      }
     }
 
     if (investmentMovementEditingId) {
       const old = yieldsLog.find(x => x.id === investmentMovementEditingId);
       if (old) {
         if (isCrypto) {
-          item.units = Math.max(0, (item.units || 0) - (old.units || 0));
-          item.units += units;
+          const oldSignedUnits = old.kind === 'resgate' ? -(old.units || 0) : (old.units || 0);
+          item.units = Math.max(0, (item.units || 0) - oldSignedUnits);
+          item.units += (kind === 'resgate' ? -units : units);
         } else {
           item.value = Math.max(0, (item.value || 0) - movementDelta(old));
           item.value += (kind === 'resgate' ? -amount : amount);
@@ -2700,7 +2751,9 @@ document.addEventListener('DOMContentLoaded', () => {
       investmentMovementEditingId = null;
     } else {
       if (isCrypto) {
-        item.units = (item.units || 0) + units;
+        item.units = (item.units || 0) + (kind === 'resgate' ? -units : units);
+        if (item.units < -1e-12) { alert('O resgate não pode ser maior que o saldo disponível.'); return; }
+        item.units = Math.max(0, item.units);
       } else {
         item.value = (item.value || 0) + (kind === 'resgate' ? -amount : amount);
         if (item.value < 0) { alert('O resgate não pode ser maior que o saldo atual.'); item.value -= (kind === 'resgate' ? -amount : amount); return; }
