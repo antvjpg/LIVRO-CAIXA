@@ -576,6 +576,34 @@
     padding:24px;
   }
   #authOverlay.hidden{display:none;}
+
+  #syncOverlay{
+    position:fixed;
+    inset:0;
+    background:var(--paper);
+    z-index:90;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  #syncOverlay.hidden{display:none;}
+  .sync-box{
+    text-align:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .sync-spinner{
+    width:34px;
+    height:34px;
+    border:3px solid var(--line);
+    border-top-color:var(--green);
+    border-radius:50%;
+    margin:0 auto 14px;
+    animation:sync-spin 0.8s linear infinite;
+  }
+  @keyframes sync-spin{ to{ transform:rotate(360deg); } }
   .auth-box{
     max-width:360px;
     width:100%;
@@ -804,6 +832,13 @@
     <div class="auth-toggle" id="authToggleWrap">
       Não tem conta? <a id="authToggleLink">Criar conta</a>
     </div>
+  </div>
+</div>
+
+<div id="syncOverlay" class="hidden">
+  <div class="sync-box">
+    <div class="sync-spinner"></div>
+    <p id="syncOverlayText">Sincronizando seus dados...</p>
   </div>
 </div>
 
@@ -1332,14 +1367,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadState() {
     const defaultCats = ['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Salário', 'Renda Extra', 'Transferência', 'Outros'];
-    try {
-      const snaps = await Promise.all(COLLECTIONS.map(name => colRef(name).get()));
-      const hasSubData = snaps.some(s => !s.empty);
+    const syncOverlay = document.getElementById('syncOverlay');
+    const syncOverlayText = document.getElementById('syncOverlayText');
+    syncOverlayText.textContent = 'Sincronizando seus dados...';
+    syncOverlay.classList.remove('hidden');
 
-      if (hasSubData) {
-        COLLECTIONS.forEach((name, i) => setStateArray(name, snaps[i].docs.map(d => d.data())));
-        setLastSyncedFromCurrentState();
-      } else {
+    realtimeUnsubscribers.forEach(unsub => unsub());
+    realtimeUnsubscribers = [];
+    let firstLoadDone = false;
+
+    try {
+      // Cada coleção resolve assim que a PRIMEIRA leitura chega — que, com o cache offline
+      // ativo, costuma vir do disco do próprio celular quase instantaneamente, mesmo antes
+      // da confirmação do servidor. Isso evita esperar a rede toda vez que a página recarrega.
+      await Promise.all(COLLECTIONS.map(name => new Promise((resolve, reject) => {
+        let resolved = false;
+        const unsub = colRef(name).onSnapshot(snap => {
+          const arr = snap.docs.map(d => d.data());
+          setStateArray(name, arr);
+          if (!snap.metadata.hasPendingWrites) {
+            lastSynced[name] = arrToMap(getStateArray(name));
+          }
+          if (!resolved) {
+            resolved = true;
+            resolve();
+          } else if (firstLoadDone) {
+            render();
+          }
+        }, err => {
+          if (!resolved) { resolved = true; reject(err); }
+          else console.error(err);
+        });
+        realtimeUnsubscribers.push(unsub);
+      })));
+
+      const hasSubData = COLLECTIONS.some(name => getStateArray(name).length > 0);
+
+      if (!hasSubData) {
         // Migração automática do formato antigo (documento único) para subcoleções
         const oldSnap = await docRef().get();
         const data = oldSnap.exists ? oldSnap.data() : {};
@@ -1350,6 +1414,9 @@ document.addEventListener('DOMContentLoaded', () => {
         pockets = data.pockets || [];
         yieldsLog = data.yieldsLog || [];
         lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {} };
+        if (data.banks || data.entries) {
+          syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
+        }
       }
 
       let changed = !hasSubData;
@@ -1374,10 +1441,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       populateFilterControls(true);
       render();
-      attachRealtimeListeners();
+      firstLoadDone = true;
     } catch (err) {
       console.error(err);
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
+    } finally {
+      syncOverlay.classList.add('hidden');
     }
   }
 
@@ -1390,21 +1459,6 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'pockets': return pockets;
       case 'yieldsLog': return yieldsLog;
     }
-  }
-
-  function attachRealtimeListeners() {
-    realtimeUnsubscribers.forEach(unsub => unsub());
-    realtimeUnsubscribers = [];
-    COLLECTIONS.forEach(name => {
-      const unsub = colRef(name).onSnapshot(snap => {
-        if (snap.metadata.hasPendingWrites) return; // ignora eco da própria escrita local em andamento
-        const arr = snap.docs.map(d => d.data());
-        setStateArray(name, arr);
-        lastSynced[name] = arrToMap(getStateArray(name));
-        render();
-      }, err => console.error(err));
-      realtimeUnsubscribers.push(unsub);
-    });
   }
 
   function setSyncDot(saving) {
@@ -3243,6 +3297,7 @@ document.addEventListener('DOMContentLoaded', () => {
   auth.onAuthStateChanged(user => {
     currentUser = user;
     const overlay = document.getElementById('authOverlay');
+    const syncOverlay = document.getElementById('syncOverlay');
     if (user) {
       overlay.classList.add('hidden');
       renderUserBar();
@@ -3252,6 +3307,7 @@ document.addEventListener('DOMContentLoaded', () => {
       realtimeUnsubscribers = [];
       lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {} };
       banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = [];
+      syncOverlay.classList.add('hidden');
       overlay.classList.remove('hidden');
       renderUserBar();
     }
