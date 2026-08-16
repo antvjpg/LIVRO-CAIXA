@@ -25,6 +25,10 @@
     --red-soft:#F3E2DC;
     --line:#D8D2C1;
     --gold:#B08D3E;
+    --on-accent:#FFFFFF;
+    --overlay:rgba(0,0,0,0.65);
+    --shadow:rgba(0,0,0,0.18);
+    --hover-soft:rgba(0,0,0,0.03);
   }
   body.dark-mode {
     --paper:#121915;
@@ -37,6 +41,10 @@
     --red-soft:#3B1C17;
     --line:#2A3A30;
     --gold:#C9A44B;
+    --on-accent:#08110C;
+    --overlay:rgba(0,0,0,0.78);
+    --shadow:rgba(0,0,0,0.45);
+    --hover-soft:rgba(255,255,255,0.06);
   }
   *{box-sizing:border-box;}
   body{
@@ -130,7 +138,7 @@
     padding:20px 18px;
     border:1px solid var(--line);
     position:relative;
-    box-shadow:0 1px 3px rgba(0,0,0,0.08);
+    box-shadow:0 1px 3px var(--shadow);
   }
   .balance-card.total{
     grid-column:1 / -1;
@@ -182,8 +190,8 @@
   }
   button:hover{background:var(--ink);color:var(--paper);}
   button:active{transform:scale(0.98);}
-  button.primary{background:var(--green);border-color:var(--green);color:#fff;}
-  button.primary:hover{background:#255939;}
+  button.primary{background:var(--green);border-color:var(--green);color:var(--on-accent);}
+  button.primary:hover{background:var(--green);filter:brightness(0.92);}
   button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
     outline:2px solid var(--gold);
     outline-offset:2px;
@@ -195,7 +203,7 @@
   .modal-overlay{
     position:fixed;
     inset:0;
-    background:rgba(0, 0, 0, 0.65);
+    background:var(--overlay);
     z-index:90;
     display:flex;
     align-items:center;
@@ -217,7 +225,7 @@
     max-width:560px;
     max-height:90vh;
     overflow-y:auto;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    box-shadow:0 10px 30px var(--shadow);
     display:none;
   }
   .panel.open{display:block;}
@@ -269,6 +277,14 @@
   .type-toggle button{border:none;flex:1;border-radius:0;padding:10px 4px;}
   .type-toggle button.active-in{background:var(--green);color:#fff;}
   .type-toggle button.active-out{background:var(--red);color:#fff;}
+
+
+  .movement-tabs button.active-yield{background:var(--gold);color:var(--on-accent);}
+  .movement-tabs button{min-height:38px;}
+  .investment-name-secondary{margin-top:-6px;margin-bottom:4px;}
+  input[readonly]{opacity:0.8;cursor:not-allowed;background:var(--paper);}
+  body.dark-mode input[readonly]{opacity:0.95;}
+  .hint{color:var(--ink-soft);}
 
   .cat-summary{
     border:1.5px solid var(--line);
@@ -401,7 +417,7 @@
     font-size:14px;
     vertical-align:middle;
   }
-  tbody tr:hover{background:rgba(0,0,0,0.03);}
+  tbody tr:hover{background:var(--hover-soft);}
   .amt{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;text-align:right;}
   .amt.in{color:var(--green);}
   .amt.out{color:var(--red);}
@@ -525,19 +541,19 @@
     height:56px;
     border-radius:50%;
     background:var(--green);
-    color:#fff;
+    color:var(--on-accent);
     border:none;
     font-size:30px;
     line-height:1;
     display:flex;
     align-items:center;
     justify-content:center;
-    box-shadow:0 4px 14px rgba(0,0,0,0.25);
+    box-shadow:0 4px 14px var(--shadow);
     cursor:pointer;
     z-index:60;
     transition:transform 0.15s ease;
   }
-  .fab-add:hover{background:#255939; transform:scale(1.06);}
+  .fab-add:hover{background:var(--green);filter:brightness(0.92); transform:scale(1.06);}
   .fab-add:active{transform:scale(0.95);}
 
   .empty{
@@ -706,7 +722,7 @@
     transition: background 0.15s;
   }
   .card-lancamento:hover {
-    background: rgba(0, 0, 0, 0.02);
+    background:var(--hover-soft);
   }
   .card-left {
     display: flex;
@@ -1059,7 +1075,12 @@
       <div class="form-grid">
         <div>
           <label for="iNome">Nome do Ativo</label>
-          <input type="text" id="iNome" placeholder="Ex: USDC (Solana), Bitcoin, CDB">
+          <input type="text" id="iNome" placeholder="Ex: USDC, Bitcoin, CDB">
+        </div>
+        <div>
+          <label for="iApelido">Apelido / Identificação</label>
+          <input type="text" id="iApelido" placeholder="Ex: USDC - Coinbase, USDC - Binance">
+          <div class="hint">Use um apelido para diferenciar o mesmo ativo em locais diferentes.</div>
         </div>
         <div>
           <label for="iTipo">Tipo / Categoria</label>
@@ -1131,8 +1152,13 @@
           <input type="text" id="pObjetivo" placeholder="Ex: Meta de R$ 5.000">
         </div>
         <div>
-          <label for="pValor">Saldo Atual (R$)</label>
-          <input type="number" id="pValor" step="0.01" min="0" placeholder="0,00">
+          <label for="pInicial">Saldo Inicial (R$)</label>
+          <input type="number" id="pInicial" step="0.01" min="0" placeholder="0,00">
+        </div>
+        <div>
+          <label for="pAtual">Saldo Atual (R$)</label>
+          <input type="number" id="pAtual" step="0.01" placeholder="Calculado automaticamente" readonly aria-readonly="true">
+          <div class="hint">Saldo inicial + movimentações registradas nesta caixinha.</div>
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="pSalvar" style="width:100%">Salvar Caixinha</button>
@@ -1142,16 +1168,21 @@
 
     <div class="panel" id="panelPocketMovement">
       <h3 id="panelPocketMovementTitle">Registrar Movimentação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="type-toggle" style="margin-bottom:14px;">
+      <div class="type-toggle movement-tabs" style="margin-bottom:14px;">
         <button type="button" id="pmAporte" class="active-in">Aporte</button>
         <button type="button" id="pmResgate">Resgate</button>
+        <button type="button" id="pmRendimento">Rendimento</button>
+      </div>
+      <div id="pmPeriodToggle" class="type-toggle" style="margin-bottom:14px; display:none;">
+        <button type="button" id="pmDia" class="active-in">Dia</button>
+        <button type="button" id="pmPeriodo">Período</button>
       </div>
       <div class="form-grid">
         <div>
-          <label for="pmData">Data Inicial</label>
+          <label for="pmData" id="pmDataLabel">Data</label>
           <input type="date" id="pmData">
         </div>
-        <div>
+        <div id="pmDataFimWrap" style="display:none;">
           <label for="pmDataFim">Data Final</label>
           <input type="date" id="pmDataFim">
         </div>
@@ -1161,10 +1192,10 @@
         </div>
         <div style="grid-column: 1 / -1;">
           <label for="pmDesc">Observação (Opcional)</label>
-          <input type="text" id="pmDesc" placeholder="Ex: Aporte mensal / Resgate para pagamento">
+          <input type="text" id="pmDesc" placeholder="Ex: Aporte mensal / Rendimento do período / Resgate">
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
-          <button class="primary" id="pmSalvar" style="width:100%">Registrar Movimentação</button>
+          <button class="primary" id="pmSalvar" style="width:100%">Registrar Aporte</button>
         </div>
       </div>
     </div>
@@ -1297,6 +1328,9 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.textContent = isDark ? '☀️' : '🌙';
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     renderCategorySummary();
+    renderInvestments();
+    renderPockets();
+    renderPocketBalances();
   };
 
   // Suporte a tecla ESC para fechar modais
@@ -1420,6 +1454,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       let changed = !hasSubData;
+      const beforePocketState = JSON.stringify(pockets);
+      normalizePockets();
+      if (JSON.stringify(pockets) !== beforePocketState) changed = true;
 
       const filteredBanks = banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
       if (filteredBanks.length !== banks.length) changed = true;
@@ -1527,8 +1564,30 @@ document.addEventListener('DOMContentLoaded', () => {
     return investments.reduce((sum, i) => sum + (i.value || 0), 0);
   }
 
+  function pocketMovementTotal(pocketId, excludeId = null) {
+    return yieldsLog
+      .filter(y => y.targetType === 'pocket' && y.targetId === pocketId && y.id !== excludeId)
+      .reduce((sum, y) => sum + (y.kind === 'resgate' ? -1 : 1) * (Number(y.amount) || 0), 0);
+  }
+
+  function pocketCurrentBalance(pocket) {
+    const initial = Number(pocket.initial ?? pocket.value ?? 0) || 0;
+    return initial + pocketMovementTotal(pocket.id);
+  }
+
+  function normalizePockets() {
+    pockets.forEach(p => {
+      if (p.initial == null) {
+        const currentStored = Number(p.value) || 0;
+        const movementTotal = pocketMovementTotal(p.id);
+        p.initial = Math.max(0, currentStored - movementTotal);
+      }
+      p.value = pocketCurrentBalance(p);
+    });
+  }
+
   function totalPocketBalance() {
-    return pockets.reduce((sum, p) => sum + (p.value || 0), 0);
+    return pockets.reduce((sum, p) => sum + pocketCurrentBalance(p), 0);
   }
 
   function renderBalances() {
@@ -1700,7 +1759,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!canvas || !inv.priceHistory || inv.priceHistory.length === 0) return;
       if (priceChartInstances[inv.id]) priceChartInstances[inv.id].destroy();
       const isDark = document.body.classList.contains('dark-mode');
-      const textColor = isDark ? '#E3E8E4' : '#1C2B24';
+      const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
 
       // Keep only the latest quote recorded for each date, avoiding repeated points.
       const byDate = new Map();
@@ -1752,7 +1811,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     container.innerHTML = investments.map(inv => `
       <div class="invest-box">
-        <h4><span>${inv.name}</span> <span class="tag">${inv.type}</span></h4>
+        <h4><span>${inv.alias || inv.name}</span> <span class="tag">${inv.type}</span></h4>
+        ${inv.alias ? `<div class="units investment-name-secondary">${inv.name}</div>` : ''}
         <div class="val">${fmt(inv.value || 0)}</div>
         ${inv.units ? `<div class="units">${inv.units} unidades / tokens</div>` : ''}
         ${inv.institution ? `<div class="units">${inv.institution}${inv.rate ? ' · ' + inv.rate : ''}</div>` : ''}
@@ -1782,7 +1842,7 @@ document.addEventListener('DOMContentLoaded', () => {
     pockets.forEach(p => {
       html += `<div class="balance-card">
         <span class="label">${p.name}</span>
-        <span class="amount">${fmt(p.value || 0)}</span>
+        <span class="amount">${fmt(pocketCurrentBalance(p))}</span>
       </div>`;
     });
     strip.innerHTML = html;
@@ -1794,21 +1854,22 @@ document.addEventListener('DOMContentLoaded', () => {
       container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhuma caixinha cadastrada. Clique em "+ Nova Caixinha" para começar.</div>`;
       return;
     }
-    container.innerHTML = pockets.map(p => `
+    container.innerHTML = pockets.map(p => {
+      const current = pocketCurrentBalance(p);
+      return `
       <div class="invest-box">
         <h4><span>${p.name}</span></h4>
-        <div class="val">${fmt(p.value || 0)}</div>
+        <div class="val">${fmt(current)}</div>
         ${p.goal ? `<div class="units">${p.goal}</div>` : ''}
-        ${rentabilityHTML('pocket', p.id, p.value || 0)}
+        ${rentabilityHTML('pocket', p.id, current)}
         ${yieldHistoryHTML('pocket', p.id)}
         <div style="margin-top:12px; text-align:right;">
-          <button type="button" class="action-btn" onclick="openPocketMovementModal('aporte','${p.id}')" title="Registrar Movimentação">↕️ Movimentação</button>
-          <button type="button" class="action-btn" onclick="openPocketMovementModal('rendimento','${p.id}')" title="Registrar Rendimento">📈 Rendimento</button>
-          <button type="button" class="action-btn" onclick="editPocket('${p.id}')">✏️ Editar</button>
-          <button type="button" class="action-btn del" onclick="deletePocket('${p.id}')">×</button>
+          <button type="button" class="action-btn" onclick="openPocketMovementModal('aporte','${p.id}')" title="Registrar movimentação">↕️ Movimentações</button>
+          <button type="button" class="action-btn" onclick="editPocket('${p.id}')" title="Editar caixinha">✏️ Editar</button>
+          <button type="button" class="action-btn del" onclick="deletePocket('${p.id}')" title="Excluir caixinha">× Excluir</button>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   function populateFilterControls(isInitial = false) {
@@ -1902,8 +1963,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const palette = ['#B3432B', '#2F6F4F', '#B08D3E', '#4C5A52', '#8C5383', '#3A6B88', '#D9822B', '#5C7A68'];
       
       const isDark = document.body.classList.contains('dark-mode');
-      const textColor = isDark ? '#E3E8E4' : '#1C2B24';
-      const borderColor = isDark ? '#121915' : '#F7F5EF';
+      const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
+      const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
 
       catChartInstance = new Chart(ctx, {
         type: 'doughnut',
@@ -2071,10 +2132,10 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.deletePocket = function(id) {
-    if (confirm('Deseja excluir esta caixinha?')) {
+    if (confirm('Deseja excluir esta caixinha e todo o histórico de movimentações dela?')) {
       pockets = pockets.filter(p => p.id !== id);
       yieldsLog = yieldsLog.filter(y => !(y.targetType === 'pocket' && y.targetId === id));
-      savePockets();
+      persistAll();
       render();
     }
   };
@@ -2085,7 +2146,8 @@ document.addEventListener('DOMContentLoaded', () => {
     editingPocketId = pocket.id;
     document.getElementById('pNome').value = pocket.name;
     document.getElementById('pObjetivo').value = pocket.goal || '';
-    document.getElementById('pValor').value = pocket.value || 0;
+    document.getElementById('pInicial').value = Number(pocket.initial ?? pocket.value ?? 0).toFixed(2);
+    document.getElementById('pAtual').value = pocketCurrentBalance(pocket).toFixed(2);
     document.getElementById('panelPocketTitle').innerHTML = 'Editar Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('pSalvar').textContent = 'Atualizar Caixinha';
     openModal('panelPocket');
@@ -2154,49 +2216,64 @@ document.addEventListener('DOMContentLoaded', () => {
     investmentMovementEditingId = null;
     setInvestmentMovementDefaults();
     setInvestmentMovementMode(item);
-    document.getElementById('panelInvestMovementTitle').innerHTML = (kind === 'aporte' ? 'Registrar Aporte — ' : 'Registrar Rendimento — ') + item.name + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    document.getElementById('panelInvestMovementTitle').innerHTML = (kind === 'aporte' ? 'Registrar Aporte — ' : 'Registrar Rendimento — ') + (item.alias || item.name) + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('imSalvar').textContent = kind === 'aporte' ? 'Registrar Aporte' : 'Registrar Rendimento';
     openModal('panelInvestMovement');
   };
 
-  function setPocketMovementMode(kind) {
-    kind = kind === 'resgate' ? 'resgate' : 'aporte';
+  function updatePocketMovementUI() {
     if (!pocketMovementTarget) return;
-    pocketMovementTarget.kind = kind;
-    const aporteBtn = document.getElementById('pmAporte');
-    const resgateBtn = document.getElementById('pmResgate');
-    aporteBtn.classList.toggle('active-in', kind === 'aporte');
-    resgateBtn.classList.toggle('active-out', kind === 'resgate');
+    const kind = pocketMovementTarget.kind;
     const item = pockets.find(x => x.id === pocketMovementTarget.id);
+    const isYield = kind === 'rendimento';
+    document.getElementById('pmAporte').classList.toggle('active-in', kind === 'aporte');
+    document.getElementById('pmResgate').classList.toggle('active-out', kind === 'resgate');
+    document.getElementById('pmRendimento').classList.toggle('active-yield', isYield);
+    document.getElementById('pmPeriodToggle').style.display = isYield ? 'flex' : 'none';
+    document.getElementById('pmDataFimWrap').style.display = isYield && document.getElementById('pmPeriodo').classList.contains('active-in') ? 'block' : 'none';
+    document.getElementById('pmDataLabel').textContent = isYield && document.getElementById('pmPeriodo').classList.contains('active-in') ? 'Data Inicial' : 'Data';
     const label = movementKindLabel(kind);
-    document.getElementById('panelPocketMovementTitle').innerHTML = `Registrar ${label} — ${item ? item.name : ''} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
-    document.getElementById('pmSalvar').textContent = `Registrar ${label}`;
+    const verb = pocketMovementEditingId ? 'Atualizar' : 'Registrar';
+    document.getElementById('panelPocketMovementTitle').innerHTML = `${verb} ${label} — ${item ? item.name : ''} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    document.getElementById('pmSalvar').textContent = `${verb} ${label}`;
+  }
+
+  function setPocketMovementMode(kind) {
+    if (!pocketMovementTarget) return;
+    pocketMovementTarget.kind = ['aporte','resgate','rendimento'].includes(kind) ? kind : 'aporte';
+    updatePocketMovementUI();
+  }
+
+  function setPocketPeriodMode(period) {
+    const isPeriod = period === 'periodo';
+    document.getElementById('pmDia').classList.toggle('active-in', !isPeriod);
+    document.getElementById('pmPeriodo').classList.toggle('active-in', isPeriod);
+    document.getElementById('pmDataFimWrap').style.display = isPeriod ? 'block' : 'none';
+    document.getElementById('pmDataLabel').textContent = isPeriod ? 'Data Inicial' : 'Data';
+    if (!isPeriod) document.getElementById('pmDataFim').value = document.getElementById('pmData').value;
   }
 
   window.openPocketMovementModal = function(kind, id) {
     const item = pockets.find(x => x.id === id);
     if (!item) return;
-    pocketMovementTarget = { kind: kind === 'resgate' ? 'resgate' : (kind === 'rendimento' ? 'rendimento' : 'aporte'), id };
+    pocketMovementTarget = { kind: ['aporte','resgate','rendimento'].includes(kind) ? kind : 'aporte', id };
     pocketMovementEditingId = null;
     document.getElementById('pmData').value = todayISO();
     document.getElementById('pmDataFim').value = todayISO();
     document.getElementById('pmValor').value = '';
     document.getElementById('pmDesc').value = '';
-    if (pocketMovementTarget.kind === 'rendimento') {
-      document.getElementById('pmAporte').classList.remove('active-in');
-      document.getElementById('pmResgate').classList.remove('active-out');
-      document.getElementById('panelPocketMovementTitle').innerHTML = `Registrar Rendimento — ${item.name} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
-      document.getElementById('pmSalvar').textContent = 'Registrar Rendimento';
-    } else {
-      setPocketMovementMode(pocketMovementTarget.kind);
-    }
+    setPocketPeriodMode('dia');
+    updatePocketMovementUI();
     openModal('panelPocketMovement');
   };
 
   document.getElementById('pmAporte').onclick = () => setPocketMovementMode('aporte');
   document.getElementById('pmResgate').onclick = () => setPocketMovementMode('resgate');
+  document.getElementById('pmRendimento').onclick = () => setPocketMovementMode('rendimento');
+  document.getElementById('pmDia').onclick = () => setPocketPeriodMode('dia');
+  document.getElementById('pmPeriodo').onclick = () => setPocketPeriodMode('periodo');
 
-  document.getElementById('imQuantidade').addEventListener('input', updateInvestmentMovementValue);
+    document.getElementById('imQuantidade').addEventListener('input', updateInvestmentMovementValue);
   document.getElementById('imCotacao').addEventListener('input', updateInvestmentMovementValue);
   document.getElementById('imFetchPrice').onclick = fetchInvestmentMovementPrice;
 
@@ -2212,7 +2289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imCotacao').value = y.price != null ? y.price : '';
     document.getElementById('imValor').value = y.amount || 0;
     document.getElementById('imDesc').value = y.desc || '';
-    document.getElementById('panelInvestMovementTitle').innerHTML = 'Editar ' + movementKindLabel(y.kind || 'rendimento') + ' — ' + item.name + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    document.getElementById('panelInvestMovementTitle').innerHTML = 'Editar ' + movementKindLabel(y.kind || 'rendimento') + ' — ' + (item.alias || item.name) + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('imSalvar').textContent = 'Atualizar ' + movementKindLabel(y.kind || 'rendimento');
     document.getElementById('imPriceStatus').textContent = y.price ? `Cotação registrada: ${fmt(y.price)} · pode ser alterada manualmente` : 'Cotação não registrada. Você pode digitá-la manualmente.';
     if (item.type === 'Stablecoin' || item.type === 'Criptomoeda') updateInvestmentMovementValue();
@@ -2222,20 +2299,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadPocketMovementForEdit(y) {
     const item = pockets.find(x => x.id === y.targetId);
     if (!item) return;
-    pocketMovementTarget = { kind: y.kind === 'resgate' ? 'resgate' : (y.kind === 'rendimento' ? 'rendimento' : 'aporte'), id: y.targetId };
+    pocketMovementTarget = { kind: ['aporte','resgate','rendimento'].includes(y.kind) ? y.kind : 'aporte', id: y.targetId };
     pocketMovementEditingId = y.id;
     document.getElementById('pmData').value = y.date || todayISO();
     document.getElementById('pmDataFim').value = y.dateEnd || y.date || todayISO();
     document.getElementById('pmValor').value = y.amount || 0;
     document.getElementById('pmDesc').value = y.desc || '';
-    if (pocketMovementTarget.kind === 'rendimento') {
-      document.getElementById('pmAporte').classList.remove('active-in');
-      document.getElementById('pmResgate').classList.remove('active-out');
-    } else {
-      setPocketMovementMode(pocketMovementTarget.kind);
-    }
-    document.getElementById('panelPocketMovementTitle').innerHTML = 'Editar ' + movementKindLabel(y.kind || 'aporte') + ' — ' + item.name + ' <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
-    document.getElementById('pmSalvar').textContent = 'Atualizar ' + movementKindLabel(y.kind || 'aporte');
+    setPocketPeriodMode(y.dateEnd && y.dateEnd !== y.date ? 'periodo' : 'dia');
+    updatePocketMovementUI();
+    document.getElementById('panelPocketMovementTitle').innerHTML = `Editar ${movementKindLabel(y.kind || 'aporte')} — ${item.name} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    document.getElementById('pmSalvar').textContent = `Atualizar ${movementKindLabel(y.kind || 'aporte')}`;
     openModal('panelPocketMovement');
   }
 
@@ -2263,11 +2336,13 @@ document.addEventListener('DOMContentLoaded', () => {
         item.units = Math.max(0, (item.units || 0) - (y.units || 0));
         const latestPrice = item.priceHistory && item.priceHistory.length ? Number(item.priceHistory[item.priceHistory.length - 1].price) : Number(y.price || 0);
         item.value = latestPrice > 0 ? item.units * latestPrice : Math.max(0, (item.value || 0) - (y.amount || 0));
-      } else {
-        item.value = Math.max(0, (item.value || 0) - movementDelta(y));
       }
     }
     yieldsLog = yieldsLog.filter(x => x.id !== yieldId);
+    if (y.targetType === 'pocket') {
+      const pocket = pockets.find(p => p.id === y.targetId);
+      if (pocket) pocket.value = pocketCurrentBalance(pocket);
+    }
     persistAll();
     render();
   };
@@ -2307,6 +2382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!inv) return;
     editingInvestId = inv.id;
     document.getElementById('iNome').value = inv.name;
+    document.getElementById('iApelido').value = inv.alias || '';
     document.getElementById('iTipo').value = inv.type || 'Stablecoin';
     document.getElementById('iUnidades').value = inv.units || '';
     const latestQuote = inv.price != null ? inv.price : (inv.priceHistory && inv.priceHistory.length ? inv.priceHistory[inv.priceHistory.length - 1].price : '');
@@ -2360,6 +2436,7 @@ document.addEventListener('DOMContentLoaded', () => {
     editingInvestId = null;
     pendingPricePoint = null;
     document.getElementById('iNome').value = '';
+    document.getElementById('iApelido').value = '';
     document.getElementById('iTipo').value = 'Stablecoin';
     document.getElementById('iUnidades').value = '';
     document.getElementById('iCotacao').value = '';
@@ -2474,6 +2551,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('iSalvar').onclick = () => {
     const name = document.getElementById('iNome').value.trim();
+    const alias = document.getElementById('iApelido').value.trim();
     const type = document.getElementById('iTipo').value;
     const isCrypto = (type === 'Stablecoin' || type === 'Criptomoeda');
     const units = isCrypto ? (parseFloat(document.getElementById('iUnidades').value) || null) : null;
@@ -2489,7 +2567,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!name) { alert('Informe o nome do ativo.'); return; }
     if (isCrypto && (units == null || units <= 0)) { alert('Informe uma quantidade válida de unidades/tokens.'); return; }
 
-    const record = { name, type, units, value, price: quote, institution, rate, dueDate };
+    const record = { name, alias, type, units, value, price: quote, institution, rate, dueDate };
 
     let targetItem;
     if (editingInvestId) {
@@ -2529,30 +2607,46 @@ document.addEventListener('DOMContentLoaded', () => {
     editingPocketId = null;
     document.getElementById('pNome').value = '';
     document.getElementById('pObjetivo').value = '';
-    document.getElementById('pValor').value = '';
+    document.getElementById('pInicial').value = '';
+    document.getElementById('pAtual').value = '0.00';
     document.getElementById('panelPocketTitle').innerHTML = 'Nova Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('pSalvar').textContent = 'Salvar Caixinha';
     openModal('panelPocket');
   };
 
+  document.getElementById('pInicial').addEventListener('input', () => {
+    const initial = parseFloat(document.getElementById('pInicial').value) || 0;
+    const current = editingPocketId ? pocketCurrentBalance(pockets.find(p => p.id === editingPocketId)) : initial;
+    if (editingPocketId) {
+      const pocket = pockets.find(p => p.id === editingPocketId);
+      const movements = pocket ? pocketMovementTotal(pocket.id) : 0;
+      document.getElementById('pAtual').value = Math.max(0, initial + movements).toFixed(2);
+    } else {
+      document.getElementById('pAtual').value = Math.max(0, current).toFixed(2);
+    }
+  });
+
   document.getElementById('pSalvar').onclick = () => {
     const name = document.getElementById('pNome').value.trim();
     const goal = document.getElementById('pObjetivo').value.trim();
-    const value = parseFloat(document.getElementById('pValor').value) || 0;
+    const initial = parseFloat(document.getElementById('pInicial').value);
 
     if (!name) { alert('Informe o nome da caixinha.'); return; }
+    if (!isFinite(initial) || initial < 0) { alert('Informe um saldo inicial válido.'); return; }
 
     if (editingPocketId) {
       const idx = pockets.findIndex(p => p.id === editingPocketId);
       if (idx !== -1) {
-        pockets[idx] = { id: editingPocketId, name, goal, value };
+        pockets[idx] = { ...pockets[idx], id: editingPocketId, name, goal, initial };
+        pockets[idx].value = pocketCurrentBalance(pockets[idx]);
       }
       editingPocketId = null;
     } else {
-      pockets.push({ id: 'pkt' + Date.now(), name, goal, value });
+      const id = 'pkt' + Date.now();
+      pockets.push({ id, name, goal, initial, value: initial });
     }
 
-    savePockets();
+    persistAll();
     closeAllPanels();
     render();
   };
@@ -2650,7 +2744,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const item = pockets.find(x => x.id === pocketMovementTarget.id);
     if (!item) return;
     const date = document.getElementById('pmData').value || todayISO();
-    const dateEnd = document.getElementById('pmDataFim').value || date;
+    const isPeriod = pocketMovementTarget.kind === 'rendimento' && document.getElementById('pmPeriodo').classList.contains('active-in');
+    const dateEnd = isPeriod ? (document.getElementById('pmDataFim').value || date) : date;
     const amount = parseFloat(document.getElementById('pmValor').value);
     const desc = document.getElementById('pmDesc').value.trim();
     const kind = pocketMovementTarget.kind;
@@ -2658,12 +2753,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!isFinite(amount) || amount <= 0) { alert('Informe um valor válido.'); return; }
 
     const delta = kind === 'resgate' ? -amount : amount;
+    const baseBalance = pocketCurrentBalance(item) - (pocketMovementEditingId ? movementDelta(yieldsLog.find(y => y.id === pocketMovementEditingId) || {}) : 0);
+    if (baseBalance + delta < 0) { alert('O resgate não pode ser maior que o saldo disponível.'); return; }
+
     if (pocketMovementEditingId) {
       const old = yieldsLog.find(x => x.id === pocketMovementEditingId);
       if (old) {
-        item.value = Math.max(0, (item.value || 0) - movementDelta(old));
-        item.value += delta;
-        if (item.value < 0) { alert('O resgate não pode ser maior que o saldo atual.'); item.value -= delta; item.value += movementDelta(old); return; }
         old.date = date;
         old.dateEnd = dateEnd;
         old.amount = amount;
@@ -2672,9 +2767,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       pocketMovementEditingId = null;
     } else {
-      const nextValue = (item.value || 0) + delta;
-      if (nextValue < 0) { alert('O resgate não pode ser maior que o saldo atual.'); return; }
-      item.value = nextValue;
       yieldsLog.push({
         id: 'pmv' + Date.now() + Math.random().toString(36).slice(2, 7),
         targetType: 'pocket',
@@ -2687,6 +2779,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    item.value = pocketCurrentBalance(item);
     persistAll();
     pocketMovementTarget = null;
     closeAllPanels();
