@@ -819,6 +819,7 @@
   .btn-action.delete:hover {
     color: var(--red);
   }
+  .single-action-locked{opacity:0.65;cursor:wait;}
 </style>
 </head>
 <body>
@@ -1325,6 +1326,151 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const currentMonthYM = () => todayISO().slice(0, 7);
 
+  // Segurança: os dados financeiros podem conter texto fornecido pelo usuário.
+  // Nunca interpolamos texto bruto em HTML.
+  function escapeHTML(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  const BACKUP_SCHEMA_VERSION = 2;
+  const SESSION_IDLE_MS = 30 * 60 * 1000; // 30 minutos de inatividade
+  let sessionIdleTimer = null;
+  let sessionLastActivity = Date.now();
+  let sessionSecurityStarted = false;
+
+  function clearSessionMemory() {
+    pendingImport = [];
+    editingEntryId = null;
+    editingBankId = null;
+    editingCategoryId = null;
+    editingInvestId = null;
+    editingPocketId = null;
+    investmentMovementTarget = null;
+    investmentMovementEditingId = null;
+    pocketMovementTarget = null;
+    pocketMovementEditingId = null;
+    yieldTarget = null;
+    editingYieldId = null;
+    closeAllPanels();
+    ['authPass','authEmail'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+  }
+
+  function stopSessionSecurity() {
+    if (sessionIdleTimer) {
+      clearTimeout(sessionIdleTimer);
+      sessionIdleTimer = null;
+    }
+  }
+
+  function lockSessionForInactivity() {
+    stopSessionSecurity();
+    if (!currentUser) return;
+    setAuthError('Sessão encerrada por 30 minutos de inatividade. Entre novamente para continuar.');
+    clearSessionMemory();
+    auth.signOut();
+  }
+
+  function scheduleSessionTimeout() {
+    stopSessionSecurity();
+    if (!currentUser) return;
+    sessionLastActivity = Date.now();
+    sessionIdleTimer = setTimeout(lockSessionForInactivity, SESSION_IDLE_MS);
+  }
+
+  function registerSessionActivity() {
+    if (!currentUser) return;
+    const now = Date.now();
+    sessionLastActivity = now;
+    if (sessionIdleTimer) {
+      clearTimeout(sessionIdleTimer);
+      sessionIdleTimer = setTimeout(lockSessionForInactivity, SESSION_IDLE_MS);
+    }
+  }
+
+  function startSessionSecurity() {
+    if (sessionSecurityStarted) return;
+    sessionSecurityStarted = true;
+    ['pointerdown','keydown','touchstart','click'].forEach(evt => {
+      document.addEventListener(evt, registerSessionActivity, { passive: true });
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!currentUser || document.hidden) return;
+      if (Date.now() - sessionLastActivity >= SESSION_IDLE_MS) {
+        lockSessionForInactivity();
+      } else {
+        registerSessionActivity();
+      }
+    });
+    scheduleSessionTimeout();
+  }
+
+  function markSingleActionButtons() {
+    ['fSalvar','bSalvar','cSalvar','tSalvar','iSalvar','pSalvar','pmSalvar','imSalvar','importConfirm','btnFetchPrice','imFetchPrice','btnUpdateAllPrices','btnExportBackup'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.dataset.singleAction = '1';
+    });
+  }
+
+  // Proteção contra toques/cliques duplicados muito rápidos.
+  document.addEventListener('click', (event) => {
+    const btn = event.target.closest('button[data-single-action="1"]');
+    if (!btn) return;
+    const now = Date.now();
+    const lockedUntil = Number(btn.dataset.actionLockedUntil || 0);
+    if (now < lockedUntil) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+    btn.dataset.actionLockedUntil = String(now + 1200);
+    btn.classList.add('single-action-locked');
+    setTimeout(() => {
+      if (Number(btn.dataset.actionLockedUntil || 0) <= Date.now()) {
+        btn.classList.remove('single-action-locked');
+      }
+    }, 1250);
+  }, true);
+
+  function buildBackupPayload() {
+    return {
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      app: 'livro-caixa',
+      exportedAt: new Date().toISOString(),
+      data: { banks, categories, entries, investments, pockets, yieldsLog }
+    };
+  }
+
+  function isValidBackupPayload(payload) {
+    if (!payload || typeof payload !== 'object') return false;
+    const data = payload.data && typeof payload.data === 'object' ? payload.data : payload;
+    const required = ['banks','categories','entries'];
+    if (!required.every(k => Array.isArray(data[k]))) return false;
+    if (payload.schemaVersion != null && (!Number.isInteger(payload.schemaVersion) || payload.schemaVersion < 1 || payload.schemaVersion > BACKUP_SCHEMA_VERSION)) return false;
+    const optional = ['investments','pockets','yieldsLog'];
+    if (optional.some(k => data[k] != null && !Array.isArray(data[k]))) return false;
+    return true;
+  }
+
+  function extractBackupData(payload) {
+    const data = payload.data && typeof payload.data === 'object' ? payload.data : payload;
+    return {
+      banks: Array.isArray(data.banks) ? data.banks : [],
+      categories: Array.isArray(data.categories) ? data.categories : [],
+      entries: Array.isArray(data.entries) ? data.entries : [],
+      investments: Array.isArray(data.investments) ? data.investments : [],
+      pockets: Array.isArray(data.pockets) ? data.pockets : [],
+      yieldsLog: Array.isArray(data.yieldsLog) ? data.yieldsLog : []
+    };
+  }
+
   // Tema Escuro / Claro
   const themeBtn = document.getElementById('btnThemeToggle');
   if (localStorage.getItem('theme') === 'dark') {
@@ -1622,7 +1768,7 @@ document.addEventListener('DOMContentLoaded', () => {
     banks.forEach(b => {
       const bal = bankBalance(b.id);
       html += `<div class="balance-card">
-        <span class="label">${b.name}</span>
+        <span class="label">${escapeHTML(b.name)}</span>
         <span class="amount ${bal < 0 ? 'neg' : ''}">${fmt(bal)}</span>
       </div>`;
     });
@@ -1631,11 +1777,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderBankSelects() {
-    const options = banks.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+    const options = banks.map(b => `<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
     document.getElementById('fBanco').innerHTML = options;
 
-    const bankOptGroup = banks.map(b => `<option value="${b.id}">🏦 ${b.name}</option>`).join('');
-    const pocketOptGroup = pockets.map(p => `<option value="${p.id}">🐷 ${p.name} (Caixinha)</option>`).join('');
+    const bankOptGroup = banks.map(b => `<option value="${b.id}">🏦 ${escapeHTML(b.name)}</option>`).join('');
+    const pocketOptGroup = pockets.map(p => `<option value="${p.id}">🐷 ${escapeHTML(p.name)} (Caixinha)</option>`).join('');
     const transferOptions =
       (bankOptGroup ? `<optgroup label="Bancos">${bankOptGroup}</optgroup>` : '') +
       (pocketOptGroup ? `<optgroup label="Caixinhas">${pocketOptGroup}</optgroup>` : '');
@@ -1651,7 +1797,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('bankManageList');
     container.innerHTML = banks.map(b => `
       <div class="bank-list-item">
-        <span><strong>${b.name}</strong> — Saldo inicial: R$ ${(b.initial || 0).toFixed(2).replace('.', ',')}</span>
+        <span><strong>${escapeHTML(b.name)}</strong> — Saldo inicial: R$ ${(b.initial || 0).toFixed(2).replace('.', ',')}</span>
         <div>
           <button type="button" class="action-btn" onclick="editBank('${b.id}')">✏️ Editar</button>
           <button type="button" class="action-btn del" onclick="deleteBank('${b.id}')" title="Excluir">×</button>
@@ -1663,7 +1809,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderCategorySelect() {
     const sel = document.getElementById('fCategoria');
     const currentVal = sel.value;
-    sel.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    sel.innerHTML = categories.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('');
     if (currentVal && categories.some(c => c.id === currentVal)) {
       sel.value = currentVal;
     }
@@ -1673,7 +1819,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('catManageList');
     container.innerHTML = categories.map(c => `
       <div class="cat-list-item">
-        <span><strong>${c.name}</strong></span>
+        <span><strong>${escapeHTML(c.name)}</strong></span>
         <span>
           <button type="button" class="action-btn" onclick="editCategory('${c.id}')" title="Editar">✏️</button>
           <button type="button" class="action-btn del" onclick="deleteCategory('${c.id}')" title="Excluir">×</button>
@@ -1722,7 +1868,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const positive = kind !== 'resgate';
       const sign = positive ? '+' : '−';
       return `<div class="yield-row">
-        <span>${formatMovementPeriod(y)} · ${movementKindLabel(kind)}${y.desc ? ' · ' + y.desc : ''}</span>
+        <span>${escapeHTML(formatMovementPeriod(y))} · ${movementKindLabel(kind)}${y.desc ? ' · ' + escapeHTML(y.desc) : ''}</span>
         <span class="${positive ? 'yield-pos' : 'yield-neg'}">${sign}${fmt(Math.abs(y.amount || 0))}</span>
         <span class="yield-actions">
           <button type="button" class="action-btn" onclick="editYield('${y.id}')" title="Editar">✏️</button>
@@ -1820,11 +1966,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     container.innerHTML = investments.map(inv => `
       <div class="invest-box">
-        <h4><span>${inv.alias || inv.name}</span> <span class="tag">${inv.type}</span></h4>
-        ${inv.alias ? `<div class="units investment-name-secondary">${inv.name}</div>` : ''}
+        <h4><span>${escapeHTML(inv.alias || inv.name)}</span> <span class="tag">${escapeHTML(inv.type)}</span></h4>
+        ${inv.alias ? `<div class="units investment-name-secondary">${escapeHTML(inv.name)}</div>` : ''}
         <div class="val">${fmt(inv.value || 0)}</div>
         ${inv.units ? `<div class="units">${inv.units} unidades / tokens</div>` : ''}
-        ${inv.institution ? `<div class="units">${inv.institution}${inv.rate ? ' · ' + inv.rate : ''}</div>` : ''}
+        ${inv.institution ? `<div class="units">${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</div>` : ''}
         ${inv.dueDate ? `<div class="units">Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</div>` : ''}
         ${rentabilityHTML('invest', inv.id, inv.value || 0)}
         ${priceHistoryHTML(inv)}
@@ -1849,7 +1995,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>`;
     pockets.forEach(p => {
       html += `<div class="balance-card">
-        <span class="label">${p.name}</span>
+        <span class="label">${escapeHTML(p.name)}</span>
         <span class="amount">${fmt(pocketCurrentBalance(p))}</span>
       </div>`;
     });
@@ -1866,9 +2012,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const current = pocketCurrentBalance(p);
       return `
       <div class="invest-box">
-        <h4><span>${p.name}</span></h4>
+        <h4><span>${escapeHTML(p.name)}</span></h4>
         <div class="val">${fmt(current)}</div>
-        ${p.goal ? `<div class="units">${p.goal}</div>` : ''}
+        ${p.goal ? `<div class="units">${escapeHTML(p.goal)}</div>` : ''}
         ${rentabilityHTML('pocket', p.id, current)}
         ${yieldHistoryHTML('pocket', p.id)}
         <div style="margin-top:12px; text-align:right;">
@@ -1891,12 +2037,12 @@ document.addEventListener('DOMContentLoaded', () => {
     flowSel.value = currFlowVal || '';
 
     let bankHtml = `<option value="">Todos os Bancos</option>`;
-    banks.forEach(b => { bankHtml += `<option value="${b.id}">${b.name}</option>`; });
+    banks.forEach(b => { bankHtml += `<option value="${b.id}">${escapeHTML(b.name)}</option>`; });
     bankSel.innerHTML = bankHtml;
     if (currBankVal) bankSel.value = currBankVal;
 
     let catHtml = `<option value="">Todas as Categorias</option>`;
-    categories.forEach(c => { catHtml += `<option value="${c.id}">${c.name}</option>`; });
+    categories.forEach(c => { catHtml += `<option value="${c.id}">${escapeHTML(c.name)}</option>`; });
     catSel.innerHTML = catHtml;
     if (currCatVal) catSel.value = currCatVal;
   }
@@ -1954,7 +2100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="cat-bars-list">
           ${spend.map(x => `
             <div class="cat-row">
-              <span class="cat-name">${x.cat.name}</span>
+              <span class="cat-name">${escapeHTML(x.cat.name)}</span>
               <span class="cat-bar-wrap"><div class="cat-bar" style="width:${(x.total / max * 100).toFixed(0)}%"></div></span>
               <span class="cat-amt">${fmt(x.total)}</span>
             </div>
@@ -2050,9 +2196,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="card-border-line"></div>
             <div class="card-info">
               <span class="card-date">${dateFmt}</span>
-              <h3 class="card-title">${e.desc}</h3>
-              <span class="card-badge">${bank ? bank.name : '—'}</span>
-              <span class="card-category">${cat ? cat.name : '—'}</span>
+              <h3 class="card-title">${escapeHTML(e.desc)}</h3>
+              <span class="card-badge">${bank ? escapeHTML(bank.name) : '—'}</span>
+              <span class="card-category">${cat ? escapeHTML(cat.name) : '—'}</span>
             </div>
           </div>
           
@@ -2182,7 +2328,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imDataLabel').textContent = isYield && periodActive ? 'Data Inicial' : 'Data';
     const label = movementKindLabel(kind);
     const verb = investmentMovementEditingId ? 'Atualizar' : 'Registrar';
-    document.getElementById('panelInvestMovementTitle').innerHTML = `${verb} ${label} — ${item ? (item.alias || item.name) : ''} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    document.getElementById('panelInvestMovementTitle').innerHTML = `${verb} ${label} — ${item ? escapeHTML(item.alias || item.name) : ''} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
     document.getElementById('imSalvar').textContent = `${verb} ${label}`;
     document.getElementById('imValor').readOnly = isCrypto;
     document.getElementById('imValor').placeholder = isCrypto ? 'Calculado pela quantidade × cotação' : '0,00';
@@ -2272,7 +2418,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('pmDataLabel').textContent = isYield && document.getElementById('pmPeriodo').classList.contains('active-in') ? 'Data Inicial' : 'Data';
     const label = movementKindLabel(kind);
     const verb = pocketMovementEditingId ? 'Atualizar' : 'Registrar';
-    document.getElementById('panelPocketMovementTitle').innerHTML = `${verb} ${label} — ${item ? item.name : ''} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    document.getElementById('panelPocketMovementTitle').innerHTML = `${verb} ${label} — ${item ? escapeHTML(item.name) : ''} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
     document.getElementById('pmSalvar').textContent = `${verb} ${label}`;
   }
 
@@ -2346,7 +2492,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('pmDesc').value = y.desc || '';
     setPocketPeriodMode(y.dateEnd && y.dateEnd !== y.date ? 'periodo' : 'dia');
     updatePocketMovementUI();
-    document.getElementById('panelPocketMovementTitle').innerHTML = `Editar ${movementKindLabel(y.kind || 'aporte')} — ${item.name} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    document.getElementById('panelPocketMovementTitle').innerHTML = `Editar ${movementKindLabel(y.kind || 'aporte')} — ${escapeHTML(item.name)} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
     document.getElementById('pmSalvar').textContent = `Atualizar ${movementKindLabel(y.kind || 'aporte')}`;
     openModal('panelPocketMovement');
   }
@@ -2888,7 +3034,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let updated = 0, failed = [];
     for (let i = 0; i < candidates.length; i++) {
       const inv = candidates[i];
-      statusEl.textContent = `Atualizando ${i + 1}/${candidates.length}: ${inv.name}...`;
+      statusEl.textContent = `Atualizando ${i + 1}/${candidates.length}: ${escapeHTML(inv.name)}...`;
       try {
         const coin = await fetchCoinMatch(inv.name);
         if (!coin) { failed.push(inv.name); continue; }
@@ -3034,45 +3180,51 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnCancelPaste').onclick = () => closeAllPanels();
 
   document.getElementById('btnExportBackup').onclick = () => {
-    const data = { banks, categories, entries, investments, pockets, yieldsLog };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const payload = buildBackupPayload();
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `backup-livro-caixa-${todayISO()}.json`;
+    a.download = `backup-livro-caixa-v${BACKUP_SCHEMA_VERSION}-${todayISO()}.json`;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   document.getElementById('btnImportBackupTrigger').onclick = () => document.getElementById('fileBackupImport').click();
+  let restoringBackup = false;
   document.getElementById('fileBackupImport').onchange = (ev) => {
     const file = ev.target.files[0];
-    if (!file) return;
+    if (!file || restoringBackup) return;
+    restoringBackup = true;
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
-        const data = JSON.parse(e.target.result);
-        if (data.banks && data.entries && data.categories) {
-          banks = data.banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
-          categories = data.categories;
-          entries = data.entries;
-          investments = data.investments || [];
-          pockets = data.pockets || [];
-          yieldsLog = data.yieldsLog || [];
-          persistNow().then(() => {
-            populateFilterControls(true);
-            render();
-            alert('Backup restaurado e salvo com sucesso!');
-          });
-        } else {
-          alert('Arquivo de backup inválido.');
+        const payload = JSON.parse(e.target.result);
+        if (!isValidBackupPayload(payload)) {
+          alert('Arquivo de backup inválido ou incompatível com esta versão.');
+          return;
         }
+        const data = extractBackupData(payload);
+        banks = data.banks.filter(bk => bk && bk.id && bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral');
+        categories = data.categories.filter(c => c && c.id && c.name);
+        entries = data.entries;
+        investments = data.investments;
+        pockets = data.pockets;
+        yieldsLog = data.yieldsLog;
+        normalizePockets();
+        await persistNow();
+        populateFilterControls(true);
+        render();
+        alert(`Backup restaurado com sucesso! Versão ${payload.schemaVersion || 'antiga'}.`);
       } catch(err) {
-        alert('Erro ao ler o arquivo de backup.');
+        console.error('Falha ao restaurar backup:', err);
+        alert('Não foi possível restaurar o backup. Verifique se o arquivo é um JSON válido do Livro-Caixa.');
+      } finally {
+        restoringBackup = false;
+        ev.target.value = '';
       }
     };
     reader.readAsText(file);
-    ev.target.value = '';
   };
 
   function getOrganizedExportData() {
@@ -3320,12 +3472,12 @@ document.addEventListener('DOMContentLoaded', () => {
     list.innerHTML = pendingImport.map((row, i) => `
       <div class="import-row">
         <input type="date" value="${row.date}" onchange="pendingImport[${i}].date=this.value">
-        <input type="text" value="${row.desc}" onchange="pendingImport[${i}].desc=this.value">
+        <input type="text" value="${escapeHTML(row.desc)}" onchange="pendingImport[${i}].desc=this.value">
         <select onchange="pendingImport[${i}].bank=this.value">
-          ${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${b.name}</option>`).join('')}
+          ${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}
         </select>
         <select onchange="pendingImport[${i}].category=this.value">
-          ${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${c.name}</option>`).join('')}
+          ${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}
         </select>
         <input type="number" step="0.01" value="${row.amount}" onchange="pendingImport[${i}].amount=parseFloat(this.value)">
         <select onchange="pendingImport[${i}].type=this.value">
@@ -3363,7 +3515,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderUserBar() {
     const bar = document.getElementById('userBar');
     if (!currentUser) { bar.innerHTML = ''; return; }
-    bar.innerHTML = `<span class="sync-dot" id="syncDot"></span> ${currentUser.email} <button type="button" id="btnLogout">Sair</button>`;
+    bar.innerHTML = `<span class="sync-dot" id="syncDot"></span> ${escapeHTML(currentUser.email)} <button type="button" id="btnLogout">Sair</button>`;
     document.getElementById('btnLogout').onclick = () => auth.signOut();
   }
 
@@ -3440,19 +3592,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  markSingleActionButtons();
+
   auth.onAuthStateChanged(user => {
     currentUser = user;
     const overlay = document.getElementById('authOverlay');
     const syncOverlay = document.getElementById('syncOverlay');
     if (user) {
+      clearSessionMemory();
       overlay.classList.add('hidden');
       renderUserBar();
+      startSessionSecurity();
       loadState();
     } else {
+      stopSessionSecurity();
       realtimeUnsubscribers.forEach(unsub => unsub());
       realtimeUnsubscribers = [];
       lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {} };
       banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = [];
+      clearSessionMemory();
       syncOverlay.classList.add('hidden');
       overlay.classList.remove('hidden');
       renderUserBar();
