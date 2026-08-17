@@ -891,10 +891,10 @@
     .card-border-line.despesa::after { content:"−"; color:var(--red); font-size:26px; inset:1px 0 0 13px; }
     .card-title { font-size:12px; letter-spacing:.02em; }
     .card-date { font-size:9px; }
-    .card-meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px 7px; margin-top:2px; }
-    .card-badge,.card-category { display:inline-flex; align-items:center; gap:4px; color:#66746B; font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.01em; }
-    .card-category { padding-left:7px; border-left:1px solid #E1E1D9; }
-    .card-meta .category-dot { width:6px; height:6px; flex:0 0 6px; border-radius:50%; }
+    .card-meta { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:3px; min-width:0; }
+    .card-badge,.card-category { display:inline-flex; align-items:center; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.01em; border-radius:999px; }
+    .card-badge { padding:3px 6px; border:1px solid #D5E3D8; background:#E7EFE8; color:#1E6C4B; }
+    .card-category { padding:3px 7px; border:1px solid var(--category-color); background:var(--category-color); color:#fffefa; }
     .card-right { gap:5px; align-items:center; }
     .card-amount { font-size:13px; white-space:nowrap; }
     .card-actions { display:flex; gap:4px; }
@@ -915,6 +915,12 @@
     .invest-grid { grid-template-columns:1fr; gap:10px; margin-top:8px; }
     .invest-box { padding:16px; border-radius:15px; background:#fffefa; border-color:var(--line); }
     .invest-box h4 { font-size:18px; }
+    .invest-box,.yield-history,.yield-history-list,.yield-row { min-width:0; max-width:100%; }
+    .invest-box .tag { max-width:118px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .yield-row { align-items:flex-start; }
+    .yield-row span:first-child { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:normal; overflow-wrap:anywhere; line-height:1.3; }
+    .yield-actions { flex:0 0 auto; }
+    .yield-history canvas { max-width:100%!important; }
     .fab-add { width:54px; height:54px; right:18px; bottom:83px; z-index:72; background:#2F7654; box-shadow:0 9px 20px rgba(22,65,45,.28); }
     main:has(.modal-overlay.open) { z-index:100; }
     .modal-overlay { z-index:101; align-items:center; padding:16px; background:rgba(13,42,30,.56); backdrop-filter:blur(7px); }
@@ -2056,6 +2062,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'Rendimento';
   }
 
+  function compactMoney(value) {
+    const amount = Number(value) || 0;
+    const abs = Math.abs(amount);
+    if (abs >= 1000000) return `R$ ${(amount / 1000000).toFixed(1)} mi`;
+    if (abs >= 1000) return `R$ ${(amount / 1000).toFixed(1)} mil`;
+    return fmt(amount);
+  }
+
   function yieldHistoryHTML(targetType, targetId) {
     const items = yieldsLog
       .filter(y => y.targetType === targetType && y.targetId === targetId)
@@ -2065,8 +2079,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const kind = y.kind || 'rendimento';
       const positive = kind !== 'resgate';
       const sign = positive ? '+' : '−';
+      const label = movementKindLabel(kind);
+      let description = String(y.desc || '').trim();
+      const duplicateLabel = new RegExp(`^${label}\\s*[-–—:]?\\s*`, 'i');
+      description = description.replace(duplicateLabel, '');
       return `<div class="yield-row">
-        <span>${escapeHTML(formatMovementPeriod(y))} · ${movementKindLabel(kind)}${y.desc ? ' · ' + escapeHTML(y.desc) : ''}</span>
+        <span>${escapeHTML(formatMovementPeriod(y))} · ${label}${description ? ' · ' + escapeHTML(description) : ''}</span>
         <span class="${positive ? 'yield-pos' : 'yield-neg'}">${sign}${fmt(Math.abs(y.amount || 0))}</span>
         <span class="yield-actions">
           <button type="button" class="action-btn beta-icon-button edit" onclick="editYield('${y.id}')" aria-label="Editar movimentação"></button>
@@ -2148,7 +2166,7 @@ document.addEventListener('DOMContentLoaded', () => {
           },
           scales: {
             x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } },
-            y: { ticks: { color: textColor, font: { size: 9 }, callback: v => fmt(v) }, grid: { color: 'rgba(128,128,128,0.15)' } }
+            y: { ticks: { color: textColor, font: { size: 9 }, callback: v => compactMoney(v) }, grid: { color: 'rgba(128,128,128,0.15)' } }
           }
         }
       });
@@ -2396,7 +2414,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="card-info">
               <span class="card-date">${dateFmt}</span>
               <h3 class="card-title">${escapeHTML(e.desc)}</h3>
-              <span class="card-meta"><span class="card-badge">${bank ? escapeHTML(bank.name) : 'Banco não informado'}</span><span class="card-category"><i class="category-dot" style="background:${categoryColor(cat)}"></i>${cat ? escapeHTML(cat.name) : 'Sem categoria'}</span></span>
+              <span class="card-meta"><span class="card-badge">${bank ? escapeHTML(bank.name) : 'Banco não informado'}</span><span class="card-category" style="--category-color:${categoryColor(cat)}">${cat ? escapeHTML(cat.name) : 'Sem categoria'}</span></span>
             </div>
           </div>
           
