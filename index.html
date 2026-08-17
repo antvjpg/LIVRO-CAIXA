@@ -830,6 +830,75 @@
     color: var(--red);
   }
   .single-action-locked{opacity:0.65;cursor:wait;}
+
+  /* Direção visual: Livro-Caixa mobile editorial, verde profundo e superfícies de papel. */
+  .mobile-bottom-nav { display:none; }
+  @media (max-width:680px) {
+    :root { --paper:#F8F7F2; --paper-2:#F0F0EA; --ink:#19352A; --ink-soft:#66746B; --green:#327957; --green-soft:#E7EFE8; --line:#E1E1D9; --gold:#B89034; --shadow:rgba(20,48,36,.08); }
+    body { background:var(--paper); padding-bottom:86px; }
+    header.app-header { background:linear-gradient(135deg,#153429,#1D3B30); color:#F9F8F3; min-height:258px; max-width:none; margin:0; padding:48px 22px 40px; border:0; align-items:flex-start; position:relative; overflow:hidden; }
+    header.app-header::after { content:""; position:absolute; width:230px; height:230px; right:-105px; top:-90px; border:1px solid rgba(255,255,255,.10); border-radius:50%; box-shadow:0 0 0 34px rgba(255,255,255,.025),0 0 0 68px rgba(255,255,255,.018); }
+    header.app-header .app-brand, .app-header-actions { position:relative; z-index:1; }
+    header.app-header h1 { color:#F9F8F3; font-size:clamp(38px,11vw,51px); line-height:.98; letter-spacing:-.045em; margin-bottom:18px; }
+    header.app-header .subtitle { color:rgba(248,247,242,.85); font-size:13px; letter-spacing:.06em; text-transform:none; display:flex; align-items:center; gap:8px; }
+    header.app-header .subtitle::before { content:"▣"; color:#B9D0BB; font-size:14px; }
+    .app-header-actions { display:flex; align-items:center; gap:8px; }
+    #userBar { display:none; }
+    #btnThemeToggle,#btnInstallPWA { min-width:52px; min-height:52px; padding:0!important; border:1px solid rgba(248,247,242,.30); color:#F8F7F2; background:rgba(9,30,21,.25); border-radius:12px; box-shadow:none; }
+    #btnInstallPWA { min-width:auto; padding:0 13px!important; font-size:10px!important; }
+    main { max-width:none; margin:-22px 0 0; padding:18px 14px 24px; position:relative; z-index:3; background:var(--paper); border-radius:28px 28px 0 0; }
+    .nav-tabs { margin:0 0 18px; padding:5px; gap:2px; border:1px solid var(--line); border-radius:15px; background:#fffefa; overflow:visible; box-shadow:0 4px 14px rgba(20,48,36,.04); }
+    .nav-tab { flex:1; min-width:0; padding:13px 5px; border:0; border-radius:10px; color:#566258; font-size:10px; letter-spacing:.02em; text-transform:none; }
+    .nav-tab.active { background:#18362A; color:#fffef9; box-shadow:0 5px 10px rgba(17,52,39,.16); }
+    .balance-strip { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-bottom:17px; }
+    .balance-card { min-height:116px; padding:18px 15px; border-radius:16px; border:1px solid var(--line); background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.035); }
+    .balance-card.total { grid-column:1/-1; min-height:184px; padding:28px 25px; background:linear-gradient(120deg,#18382C,#1E4536); border:0; border-radius:18px; box-shadow:0 10px 24px rgba(18,52,38,.16); position:relative; overflow:hidden; }
+    .balance-card.total::after { content:"◉"; position:absolute; right:24px; top:30px; color:#DDEADD; font-size:28px; font-family:Georgia,serif; }
+    .balance-card .label { font-size:10px; color:inherit; opacity:.72; margin-bottom:9px; }
+    .balance-card .amount { font-size:24px; letter-spacing:-.035em; }
+    .balance-card.total .amount { font-size:clamp(42px,12vw,57px); line-height:1; }
+    .toolbar { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:0 0 18px; }
+    .toolbar button { min-height:44px; padding:7px 5px; border:1px solid var(--line); border-radius:10px; background:#fffefa; font-size:8.5px; letter-spacing:.025em; line-height:1.15; text-transform:none; box-shadow:none; }
+    .toolbar button.primary { grid-column:1/-1; min-height:62px; background:linear-gradient(100deg,#2F7654,#3A8A62); color:#fffef9; border:0; border-radius:11px; font-size:13px; letter-spacing:.08em; box-shadow:0 7px 15px rgba(47,118,84,.20); }
+    .cat-summary { margin:0 0 18px; padding:22px 18px; border:1px solid var(--line); border-radius:17px; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
+    .cat-summary h3 { font-size:23px; letter-spacing:-.025em; margin-bottom:14px; }
+    .cat-summary-content { gap:14px; align-items:center; }
+    .chart-container { min-width:138px; max-width:148px; height:148px; margin:0; }
+    .cat-bars-list { min-width:0; }
+    .cat-row { gap:8px; margin-bottom:10px; }
+    .cat-row .cat-name { width:auto; flex:1; font-size:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .cat-row .cat-bar-wrap { display:none; }
+    .cat-row .cat-amt { width:75px; font-size:10px; }
+    .ledger { border:1px solid var(--line); border-radius:17px; overflow:hidden; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
+    .ledger-month { padding:18px 18px 10px; background:transparent; color:var(--ink); font-family:'Fraunces',serif; font-size:23px; letter-spacing:-.025em; text-transform:none; }
+    .ledger-month #ledgerCount { color:var(--green); font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0; text-transform:none; }
+    .ledger-filters { padding:9px 12px 12px; gap:6px; background:var(--paper); border-top:0; border-bottom:1px solid var(--line); }
+    .ledger-filters div { min-width:calc(50% - 4px); }
+    .ledger-filters div:last-child { min-width:100%; }
+    .ledger-filters label { display:none; }
+    .ledger-filters select,.ledger-filters input { padding:8px; border-radius:8px; font-size:10px; background:#fffefa; }
+    .ledger-filters button { width:100%; padding:8px; font-size:9px; border-radius:8px; }
+    .ledger-scroll-area { max-height:470px; padding:4px 12px 10px; }
+    .card-lancamento { padding:13px 0; margin:0; gap:8px; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; }
+    .card-lancamento:last-child { border-bottom:0; }
+    .card-lancamento:hover { background:transparent; }
+    .card-border-line { width:38px; height:38px; border-radius:10px; background:var(--green-soft)!important; position:relative; }
+    .card-border-line::after { content:"↗"; color:#1B5138; font-family:Georgia,serif; font-size:22px; position:absolute; inset:6px 0 0 9px; }
+    .card-border-line.despesa::after { content:"−"; color:var(--red); font-size:26px; inset:1px 0 0 13px; }
+    .card-title { font-size:12px; letter-spacing:.02em; }
+    .card-date { font-size:9px; }
+    .card-badge,.card-category,.card-actions { display:none; }
+    .card-right { gap:6px; }
+    .card-amount { font-size:13px; white-space:nowrap; }
+    .invest-grid { grid-template-columns:1fr; gap:10px; margin-top:8px; }
+    .invest-box { padding:16px; border-radius:15px; background:#fffefa; border-color:var(--line); }
+    .invest-box h4 { font-size:18px; }
+    .fab-add { width:54px; height:54px; right:18px; bottom:83px; z-index:72; background:#2F7654; box-shadow:0 9px 20px rgba(22,65,45,.28); }
+    .mobile-bottom-nav { display:grid; grid-template-columns:repeat(4,1fr); align-items:center; position:fixed; left:0; right:0; bottom:0; z-index:70; min-height:74px; padding:7px 10px max(8px,env(safe-area-inset-bottom)); background:rgba(255,254,249,.96); border-top:1px solid var(--line); backdrop-filter:blur(14px); }
+    .mobile-bottom-nav button { min-height:54px; padding:4px 2px; border:0; border-radius:10px; background:transparent; color:#59665E; font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:0; text-transform:none; flex-direction:column; gap:3px; }
+    .mobile-bottom-nav button .nav-icon { font-size:21px; line-height:1; color:#19352A; }
+    .mobile-bottom-nav button.is-active,.mobile-bottom-nav button.is-active .nav-icon { color:#1E6C4B; }
+  }
 </style>
 </head>
 <body>
@@ -869,12 +938,12 @@
   </div>
 </div>
 
-<header>
-  <div>
+<header class="app-header">
+  <div class="app-brand">
     <h1>Livro-Caixa</h1>
     <div class="subtitle" id="todayLabel">—</div>
   </div>
-  <div style="display:flex; align-items:center; gap:12px;">
+  <div class="app-header-actions">
     <button id="btnThemeToggle" title="Alternar Tema Escuro/Claro" style="padding:6px 10px; font-size:14px;">🌙</button>
     <button id="btnInstallPWA" title="Instalar Livro-Caixa" aria-label="Instalar Livro-Caixa" style="padding:6px 10px; font-size:12px; display:none;">📲 Instalar</button>
     <div id="userBar"></div>
@@ -1340,6 +1409,26 @@ document.addEventListener('DOMContentLoaded', () => {
       installBtn.style.display = 'none';
     });
   }
+  document.querySelectorAll('.mobile-bottom-nav button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const destination = button.dataset.destination;
+      document.querySelectorAll('.mobile-bottom-nav button').forEach((item) => item.classList.remove('is-active'));
+      button.classList.add('is-active');
+      if (destination === 'home') {
+        switchTab('caixa');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (destination === 'entries') {
+        switchTab('caixa');
+        setTimeout(() => document.querySelector('.ledger')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+      } else if (destination === 'chart') {
+        switchTab('caixa');
+        setTimeout(() => document.querySelector('.cat-summary')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+      } else {
+        switchTab('invest');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  });
   let banks = [];
   let categories = [];
   let entries = [];
@@ -3656,5 +3745,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+<nav class="mobile-bottom-nav" aria-label="Navegação principal">
+  <button type="button" class="is-active" data-destination="home"><span class="nav-icon">⌂</span>Início</button>
+  <button type="button" data-destination="entries"><span class="nav-icon">☷</span>Lançamentos</button>
+  <button type="button" data-destination="chart"><span class="nav-icon">◔</span>Gráficos</button>
+  <button type="button" data-destination="more"><span class="nav-icon">•••</span>Mais</button>
+</nav>
 </body>
 </html>
