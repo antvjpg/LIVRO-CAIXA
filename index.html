@@ -891,7 +891,10 @@
     .card-border-line.despesa::after { content:"−"; color:var(--red); font-size:26px; inset:1px 0 0 13px; }
     .card-title { font-size:12px; letter-spacing:.02em; }
     .card-date { font-size:9px; }
-    .card-badge,.card-category { display:none; }
+    .card-meta { display:flex; flex-wrap:wrap; align-items:center; gap:4px 7px; margin-top:2px; }
+    .card-badge,.card-category { display:inline-flex; align-items:center; gap:4px; color:#66746B; font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.01em; }
+    .card-category { padding-left:7px; border-left:1px solid #E1E1D9; }
+    .card-meta .category-dot { width:6px; height:6px; flex:0 0 6px; border-radius:50%; }
     .card-right { gap:5px; align-items:center; }
     .card-amount { font-size:13px; white-space:nowrap; }
     .card-actions { display:flex; gap:4px; }
@@ -903,13 +906,19 @@
     .card-actions .btn-action:hover { background:#327957; color:#fffefa; }
     .card-actions .btn-action.delete:hover { background:#B3432B; color:#fffefa; }
     .card-actions .btn-action:active { transform:scale(.94); }
+    .section-hidden { display:none!important; }
+    .section-balance-strip { margin-bottom:12px; }
+    .ledger-month { position:relative; padding-right:90px; }
+    .ledger-filter-button { position:absolute; right:10px; top:50%; transform:translateY(-50%); min-height:30px; padding:5px 8px; border:1px solid #D5E3D8; border-radius:8px; background:#E7EFE8; color:#1E6C4B; font-size:8px; letter-spacing:.02em; }
+    .ledger-filter-button:hover { background:#327957; color:#fffefa; }
+    .cat-row .cat-bar { background:var(--category-color,#B3432B); }
     .invest-grid { grid-template-columns:1fr; gap:10px; margin-top:8px; }
     .invest-box { padding:16px; border-radius:15px; background:#fffefa; border-color:var(--line); }
     .invest-box h4 { font-size:18px; }
     .fab-add { width:54px; height:54px; right:18px; bottom:83px; z-index:72; background:#2F7654; box-shadow:0 9px 20px rgba(22,65,45,.28); }
     main:has(.modal-overlay.open) { z-index:100; }
-    .modal-overlay { z-index:101; align-items:flex-end; padding:12px; background:rgba(13,42,30,.56); backdrop-filter:blur(7px); }
-    .panel { width:100%; max-width:560px; max-height:calc(100svh - 24px); margin:0 auto; padding:18px 16px max(20px,env(safe-area-inset-bottom)); background:#fffefa; color:#19352A; border:1px solid #E1E1D9; border-radius:18px; box-shadow:0 -10px 32px rgba(20,48,36,.18); }
+    .modal-overlay { z-index:101; align-items:center; padding:16px; background:rgba(13,42,30,.56); backdrop-filter:blur(7px); }
+    .panel { width:100%; max-width:560px; max-height:86svh; margin:0 auto; padding:18px 16px; background:#fffefa; color:#19352A; border:1px solid #E1E1D9; border-radius:18px; box-shadow:0 14px 34px rgba(20,48,36,.20); }
     .panel.open { animation:mobile-panel-enter .22s cubic-bezier(.23,1,.32,1) both; }
     .panel h3 { margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid #E1E1D9; color:#19352A; font-size:22px; letter-spacing:-.03em; }
     .modal-close { width:34px; height:34px; padding:0; border:1px solid #D5E3D8; border-radius:10px; background:#E7EFE8; color:#1E6C4B; font-size:20px; line-height:1; }
@@ -928,6 +937,21 @@
     .panel .bank-list-item,.panel .cat-list-item { margin-top:7px; padding:11px; border:1px solid #E1E1D9; border-radius:10px; background:#F8F7F2; color:#19352A; }
     .panel .action-btn { color:#327957; }
     .panel .action-btn.del,.panel .action-btn.delete { color:#B3432B; }
+    .bank-list-item { display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:9px; }
+    .cat-list-item { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:9px; }
+    .manage-item-copy { display:flex; flex-direction:column; min-width:0; color:#19352A; }
+    .manage-item-copy span { color:#66746B; font-family:'IBM Plex Mono',monospace; font-size:8px; margin-top:2px; }
+    .manage-item-value { color:#1E6C4B; font-family:'IBM Plex Mono',monospace; font-size:11px; white-space:nowrap; }
+    .manage-item-actions,.item-action-row { display:flex; align-items:center; gap:5px; }
+    .item-action-row { justify-content:flex-end; margin-top:12px; }
+    .beta-icon-button { width:30px; height:30px; min-height:30px; padding:0; border:1px solid #D5E3D8; border-radius:8px; background:#E7EFE8; color:#1E6C4B; font-size:0; box-shadow:none; }
+    .beta-icon-button::after { display:block; line-height:28px; }
+    .beta-icon-button.edit::after { content:"✎"; font-family:Georgia,serif; font-size:18px; font-weight:700; transform:rotate(-14deg); }
+    .beta-icon-button.move::after { content:"↕"; font-family:Georgia,serif; font-size:20px; font-weight:700; }
+    .beta-icon-button.delete { border-color:#F0D8D1; background:#FFF3F0; color:#B3432B; }
+    .beta-icon-button.delete::after { content:"×"; font-family:Arial,sans-serif; font-size:20px; }
+    .beta-icon-button:hover { background:#327957; color:#fffefa; }
+    .beta-icon-button.delete:hover { background:#B3432B; color:#fffefa; }
     @keyframes mobile-panel-enter { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
     .mobile-bottom-nav { display:grid; grid-template-columns:repeat(4,1fr); align-items:center; position:fixed; left:0; right:0; bottom:0; z-index:70; min-height:74px; padding:7px 10px max(8px,env(safe-area-inset-bottom)); background:rgba(255,254,249,.96); border-top:1px solid var(--line); backdrop-filter:blur(14px); }
     .mobile-bottom-nav button { min-height:54px; padding:4px 2px; border:0; border-radius:10px; background:transparent; color:#59665E; font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:0; text-transform:none; flex-direction:column; gap:3px; }
@@ -1017,37 +1041,7 @@
       <div class="ledger-month">
         <span id="ledgerLabel">Lançamentos</span>
         <span id="ledgerCount">0</span>
-      </div>
-
-      <!-- Filtros -->
-      <div class="ledger-filters">
-        <div>
-          <label for="filterFlow">Movimentação</label>
-          <select id="filterFlow">
-            <option value="">Todas</option>
-            <option value="in">Somente Entradas</option>
-            <option value="out">Somente Saídas</option>
-          </select>
-        </div>
-        <div>
-          <label for="filterDateStart">Data Início</label>
-          <input type="date" id="filterDateStart">
-        </div>
-        <div>
-          <label for="filterDateEnd">Data Fim</label>
-          <input type="date" id="filterDateEnd">
-        </div>
-        <div>
-          <label for="filterBank">Banco</label>
-          <select id="filterBank"></select>
-        </div>
-        <div>
-          <label for="filterCategory">Categoria</label>
-          <select id="filterCategory"></select>
-        </div>
-        <div style="flex: 0 0 auto;">
-          <button type="button" id="btnClearFilters" style="padding: 7px 12px; font-size: 11px;">Limpar Filtros</button>
-        </div>
+        <button type="button" id="btnOpenFilters" class="ledger-filter-button" aria-label="Filtrar movimentações">⌘ Filtros</button>
       </div>
 
       <div class="ledger-scroll-area">
@@ -1058,6 +1052,7 @@
 
   <!-- ABA 2: CRIPTO E INVESTIMENTOS -->
   <div id="viewInvest" class="tab-content">
+    <div class="balance-strip section-balance-strip" id="investBalanceStrip"></div>
     <div class="toolbar">
       <button class="primary" id="btnNovoInvest">+ Novo Ativo / Cripto</button>
       <button type="button" id="btnUpdateAllPrices">🔄 Atualizar Cotações</button>
@@ -1154,6 +1149,40 @@
       <div style="margin-top:16px;">
         <label>Categorias Cadastradas:</label>
         <div id="catManageList"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="panelFiltros">
+      <h3>Filtrar movimentações <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div>
+          <label for="filterFlow">Movimentação</label>
+          <select id="filterFlow">
+            <option value="">Todas</option>
+            <option value="in">Somente Entradas</option>
+            <option value="out">Somente Saídas</option>
+          </select>
+        </div>
+        <div>
+          <label for="filterDateStart">Data inicial</label>
+          <input type="date" id="filterDateStart">
+        </div>
+        <div>
+          <label for="filterDateEnd">Data final</label>
+          <input type="date" id="filterDateEnd">
+        </div>
+        <div>
+          <label for="filterBank">Banco</label>
+          <select id="filterBank"></select>
+        </div>
+        <div>
+          <label for="filterCategory">Categoria</label>
+          <select id="filterCategory"></select>
+        </div>
+        <div style="grid-column:1/-1; display:flex; gap:8px; margin-top:4px;">
+          <button type="button" id="btnClearFilters" style="flex:1;">Limpar</button>
+          <button type="button" class="primary" id="btnApplyFilters" style="flex:1;">Aplicar filtros</button>
+        </div>
       </div>
     </div>
 
@@ -1475,6 +1504,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingEntryId = null;
   let editingBankId = null;
   let editingCategoryId = null;
+  let returnToEntryAfterCategory = false;
   let editingInvestId = null;
   let editingPocketId = null;
   let investmentMovementTarget = null; // { kind: 'aporte'|'resgate'|'rendimento', id }
@@ -1666,6 +1696,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('viewCaixa').classList.toggle('active', tabName === 'caixa');
     document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
     document.getElementById('viewPockets').classList.toggle('active', tabName === 'pockets');
+    document.getElementById('balanceStrip').classList.toggle('section-hidden', tabName !== 'caixa');
   };
 
   function formatMonthLabel(ym) {
@@ -1782,13 +1813,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (categories.length === 0) {
         categories = defaultCats.map(name => ({ id: 'c' + name, name }));
         changed = true;
-      } else {
-        defaultCats.forEach(name => {
-          if (!categories.some(c => c.name === name)) {
-            categories.push({ id: 'c' + name, name });
-            changed = true;
-          }
-        });
       }
 
       if (changed) await persistNow();
@@ -1860,12 +1884,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setLastSyncedFromCurrentState();
   }
 
-  function persistAll() { persistNow(); }
-  function saveBanks() { persistAll(); }
-  function saveCategories() { persistAll(); }
-  function saveEntries() { persistAll(); }
-  function saveInvestments() { persistAll(); }
-  function savePockets() { persistAll(); }
+  function persistAll() { return persistNow(); }
+  function saveBanks() { return persistAll(); }
+  function saveCategories() { return persistAll(); }
+  function saveEntries() { return persistAll(); }
+  function saveInvestments() { return persistAll(); }
+  function savePockets() { return persistAll(); }
 
   function bankBalance(bankId) {
     const bank = banks.find(b => b.id === bankId);
@@ -1960,13 +1984,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('bankManageList');
     container.innerHTML = banks.map(b => `
       <div class="bank-list-item">
-        <span><strong>${escapeHTML(b.name)}</strong> — Saldo atual: ${fmt(bankBalance(b.id))}</span>
-        <div>
-          <button type="button" class="action-btn" onclick="editBank('${b.id}')">✏️ Editar</button>
-          <button type="button" class="action-btn del" onclick="deleteBank('${b.id}')" title="Excluir">×</button>
+        <div class="manage-item-copy"><strong>${escapeHTML(b.name)}</strong><span>Saldo atual</span></div>
+        <strong class="manage-item-value">${fmt(bankBalance(b.id))}</strong>
+        <div class="manage-item-actions">
+          <button type="button" class="action-btn beta-icon-button edit" onclick="editBank('${b.id}')" aria-label="Editar banco"></button>
+          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteBank('${b.id}')" aria-label="Excluir banco"></button>
         </div>
       </div>
     `).join('');
+  }
+
+  const CATEGORY_PALETTE = ['#B3432B', '#2F7654', '#B89034', '#3A6B88', '#8C5383', '#D9822B', '#5C7A68', '#B05A88'];
+  function categoryColor(category) {
+    if (!category) return '#66746B';
+    if (category.color) return category.color;
+    const text = String(category.id || category.name || 'outros');
+    const seed = [...text].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return CATEGORY_PALETTE[seed % CATEGORY_PALETTE.length];
   }
 
   function renderCategorySelect() {
@@ -1982,10 +2016,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('catManageList');
     container.innerHTML = categories.map(c => `
       <div class="cat-list-item">
-        <span><strong>${escapeHTML(c.name)}</strong></span>
-        <span>
-          <button type="button" class="action-btn" onclick="editCategory('${c.id}')" title="Editar">✏️</button>
-          <button type="button" class="action-btn del" onclick="deleteCategory('${c.id}')" title="Excluir">×</button>
+        <span class="category-dot" style="background:${categoryColor(c)}"></span>
+        <strong class="manage-item-copy">${escapeHTML(c.name)}</strong>
+        <span class="manage-item-actions">
+          <button type="button" class="action-btn beta-icon-button edit" onclick="editCategory('${c.id}')" aria-label="Editar categoria"></button>
+          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria"></button>
         </span>
       </div>
     `).join('');
@@ -2034,8 +2069,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <span>${escapeHTML(formatMovementPeriod(y))} · ${movementKindLabel(kind)}${y.desc ? ' · ' + escapeHTML(y.desc) : ''}</span>
         <span class="${positive ? 'yield-pos' : 'yield-neg'}">${sign}${fmt(Math.abs(y.amount || 0))}</span>
         <span class="yield-actions">
-          <button type="button" class="action-btn" onclick="editYield('${y.id}')" title="Editar">✏️</button>
-          <button type="button" class="action-btn del" onclick="deleteYield('${y.id}')" title="Excluir">×</button>
+          <button type="button" class="action-btn beta-icon-button edit" onclick="editYield('${y.id}')" aria-label="Editar movimentação"></button>
+          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteYield('${y.id}')" aria-label="Excluir movimentação"></button>
         </span>
       </div>`;
     }).join('');
@@ -2122,6 +2157,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderInvestments() {
     const container = document.getElementById('investGrid');
+    const summary = document.getElementById('investBalanceStrip');
+    const total = totalInvestBalance();
+    summary.innerHTML = `<div class="balance-card total"><span class="label">Total investido</span><span class="amount">${fmt(total)}</span></div>`;
     if (investments.length === 0) {
       container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhum ativo ou investimento cadastrado. Clique em "+ Novo Ativo / Cripto" para registrar.</div>`;
       return;
@@ -2138,10 +2176,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ${rentabilityHTML('invest', inv.id, inv.value || 0)}
         ${priceHistoryHTML(inv)}
         ${yieldHistoryHTML('invest', inv.id)}
-        <div style="margin-top:12px; text-align:right;">
-          <button type="button" class="action-btn" onclick="openInvestmentMovementModal('aporte','${inv.id}')" title="Registrar Movimentação">↕️ Movimentações</button>
-          <button type="button" class="action-btn" onclick="editInvest('${inv.id}')">✏️ Editar</button>
-          <button type="button" class="action-btn del" onclick="deleteInvest('${inv.id}')">×</button>
+        <div class="item-action-row">
+          <button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações do investimento"></button>
+          <button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar investimento"></button>
+          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir investimento"></button>
         </div>
       </div>
     `).join('');
@@ -2180,10 +2218,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ${p.goal ? `<div class="units">${escapeHTML(p.goal)}</div>` : ''}
         ${rentabilityHTML('pocket', p.id, current)}
         ${yieldHistoryHTML('pocket', p.id)}
-        <div style="margin-top:12px; text-align:right;">
-          <button type="button" class="action-btn" onclick="openPocketMovementModal('aporte','${p.id}')" title="Registrar movimentação">↕️ Movimentações</button>
-          <button type="button" class="action-btn" onclick="editPocket('${p.id}')" title="Editar caixinha">✏️ Editar</button>
-          <button type="button" class="action-btn del" onclick="deletePocket('${p.id}')" title="Excluir caixinha">× Excluir</button>
+        <div class="item-action-row">
+          <button type="button" class="action-btn beta-icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button>
+          <button type="button" class="action-btn beta-icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button>
+          <button type="button" class="action-btn beta-icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button>
         </div>
       </div>`;
     }).join('');
@@ -2262,7 +2300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="cat-bars-list">
           ${spend.map(x => `
-            <div class="cat-row">
+            <div class="cat-row" style="--category-color:${categoryColor(x.cat)}">
               <span class="cat-name">${escapeHTML(x.cat.name)}</span>
               <span class="cat-bar-wrap"><div class="cat-bar" style="width:${(x.total / max * 100).toFixed(0)}%"></div></span>
               <span class="cat-amt">${fmt(x.total)}</span>
@@ -2277,8 +2315,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (catChartInstance) {
         catChartInstance.destroy();
       }
-      const palette = ['#B3432B', '#2F6F4F', '#B08D3E', '#4C5A52', '#8C5383', '#3A6B88', '#D9822B', '#5C7A68'];
-      
       const isDark = document.body.classList.contains('dark-mode');
       const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
       const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
@@ -2289,7 +2325,7 @@ document.addEventListener('DOMContentLoaded', () => {
           labels: spend.map(x => x.cat.name),
           datasets: [{
             data: spend.map(x => x.total),
-            backgroundColor: palette.slice(0, spend.length),
+            backgroundColor: spend.map(x => categoryColor(x.cat)),
             borderColor: borderColor,
             borderWidth: 2
           }]
@@ -2360,16 +2396,15 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="card-info">
               <span class="card-date">${dateFmt}</span>
               <h3 class="card-title">${escapeHTML(e.desc)}</h3>
-              <span class="card-badge">${bank ? escapeHTML(bank.name) : '—'}</span>
-              <span class="card-category">${cat ? escapeHTML(cat.name) : '—'}</span>
+              <span class="card-meta"><span class="card-badge">${bank ? escapeHTML(bank.name) : 'Banco não informado'}</span><span class="card-category"><i class="category-dot" style="background:${categoryColor(cat)}"></i>${cat ? escapeHTML(cat.name) : 'Sem categoria'}</span></span>
             </div>
           </div>
           
           <div class="card-right">
             <span class="card-amount ${tipoClasse}">${sinal} ${fmt(Math.abs(e.amount))}</span>
             <div class="card-actions">
-              <button class="btn-action edit" onclick="editEntry('${e.id}')" aria-label="Editar">✏️</button>
-              <button class="btn-action delete" onclick="deleteEntry('${e.id}')" aria-label="Excluir">✖</button>
+              <button class="btn-action edit" onclick="editEntry('${e.id}')" aria-label="Editar lançamento"></button>
+              <button class="btn-action delete" onclick="deleteEntry('${e.id}')" aria-label="Excluir lançamento"></button>
             </div>
           </div>
         </div>
@@ -2392,11 +2427,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPockets();
   }
 
-  document.getElementById('filterFlow').onchange = () => { renderCategorySummary(); renderLedger(); };
-  document.getElementById('filterDateStart').onchange = () => { renderCategorySummary(); renderLedger(); };
-  document.getElementById('filterDateEnd').onchange = () => { renderCategorySummary(); renderLedger(); };
-  document.getElementById('filterBank').onchange = () => { renderCategorySummary(); renderLedger(); };
-  document.getElementById('filterCategory').onchange = () => { renderCategorySummary(); renderLedger(); };
+  function refreshFilteredViews() { renderCategorySummary(); renderLedger(); }
+  document.getElementById('btnOpenFilters').onclick = () => openModal('panelFiltros');
+  document.getElementById('btnApplyFilters').onclick = () => { refreshFilteredViews(); closeAllPanels(); };
   
   document.getElementById('btnClearFilters').onclick = () => {
     document.getElementById('filterFlow').value = '';
@@ -2404,14 +2437,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('filterDateEnd').value = '';
     document.getElementById('filterBank').value = '';
     document.getElementById('filterCategory').value = '';
-    renderCategorySummary();
-    renderLedger();
+    refreshFilteredViews();
   };
 
-  window.deleteEntry = function(id) {
+  window.deleteEntry = async function(id) {
     if (confirm('Deseja realmente excluir este lançamento?')) {
       entries = entries.filter(e => e.id !== id);
-      saveEntries();
+      await saveEntries();
       populateFilterControls();
       render();
     }
@@ -2426,14 +2458,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  window.deleteCategory = function(id) {
+  window.deleteCategory = async function(id) {
     if (categories.length <= 1) {
       alert('Você precisa ter pelo menos uma categoria cadastrada.');
       return;
     }
-    if (confirm('Deseja excluir esta categoria? Os lançamentos vinculados a ela não serão apagados.')) {
+    if (confirm('Deseja excluir esta categoria? Os lançamentos vinculados a ela serão movidos para outra categoria.')) {
+      const replacementId = categories.find(c => c.id !== id)?.id || '';
       categories = categories.filter(c => c.id !== id);
-      saveCategories();
+      entries = entries.map(entry => entry.category === id ? { ...entry, category: replacementId } : entry);
+      await Promise.all([saveCategories(), saveEntries()]);
       populateFilterControls();
       render();
     }
@@ -2758,6 +2792,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('modalOverlay');
     overlay.classList.remove('open');
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+    returnToEntryAfterCategory = false;
   }
 
   document.getElementById('modalOverlay').onclick = (e) => {
@@ -2810,6 +2845,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   document.getElementById('btnCategoria').onclick = () => {
+    returnToEntryAfterCategory = false;
     editingCategoryId = null;
     document.getElementById('cNome').value = '';
     document.getElementById('cSalvar').textContent = 'Adicionar';
@@ -2828,16 +2864,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnPasteTrigger').onclick = () => openModal('panelPaste');
 
   document.getElementById('btnQuickCat').onclick = () => {
-    const name = prompt('Digite o nome da nova categoria:');
-    if (name && name.trim()) {
-      const newId = 'c' + Date.now();
-      categories.push({ id: newId, name: name.trim() });
-      saveCategories();
-      renderCategorySelect();
-      renderCategoryManageList();
-      populateFilterControls();
-      document.getElementById('fCategoria').value = newId;
-    }
+    returnToEntryAfterCategory = true;
+    editingCategoryId = null;
+    document.getElementById('cNome').value = '';
+    document.getElementById('cSalvar').textContent = 'Adicionar categoria';
+    openModal('panelCategoria');
+    setTimeout(() => document.getElementById('cNome').focus(), 80);
   };
 
   document.getElementById('tglIn').onclick = () => {
@@ -3246,22 +3278,30 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   };
 
-  document.getElementById('cSalvar').onclick = () => {
+  document.getElementById('cSalvar').onclick = async () => {
     const name = document.getElementById('cNome').value.trim();
     if (!name) { alert('Dê um nome à categoria.'); return; }
+    let savedCategoryId = editingCategoryId;
     if (editingCategoryId) {
       const cat = categories.find(c => c.id === editingCategoryId);
       if (cat) cat.name = name;
       editingCategoryId = null;
       document.getElementById('cSalvar').textContent = 'Adicionar';
     } else {
-      categories.push({ id: 'c' + Date.now(), name });
+      savedCategoryId = 'c' + Date.now();
+      categories.push({ id: savedCategoryId, name });
     }
-    saveCategories();
+    await saveCategories();
     populateFilterControls();
     document.getElementById('cNome').value = '';
-    closeAllPanels();
     render();
+    if (returnToEntryAfterCategory) {
+      returnToEntryAfterCategory = false;
+      document.getElementById('fCategoria').value = savedCategoryId;
+      openModal('panelNovo');
+    } else {
+      closeAllPanels();
+    }
   };
 
   window.editCategory = function(id) {
