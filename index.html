@@ -898,6 +898,27 @@
     .invest-box { padding:16px; border-radius:15px; background:#fffefa; border-color:var(--line); }
     .invest-box h4 { font-size:18px; }
     .fab-add { width:54px; height:54px; right:18px; bottom:83px; z-index:72; background:#2F7654; box-shadow:0 9px 20px rgba(22,65,45,.28); }
+    .modal-overlay { align-items:flex-end; padding:12px; background:rgba(13,42,30,.56); backdrop-filter:blur(7px); }
+    .panel { width:100%; max-width:560px; max-height:82svh; margin:0 auto; padding:18px 16px max(18px,env(safe-area-inset-bottom)); background:#fffefa; color:#19352A; border:1px solid #E1E1D9; border-radius:18px; box-shadow:0 -10px 32px rgba(20,48,36,.18); }
+    .panel.open { animation:mobile-panel-enter .22s cubic-bezier(.23,1,.32,1) both; }
+    .panel h3 { margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid #E1E1D9; color:#19352A; font-size:22px; letter-spacing:-.03em; }
+    .modal-close { width:34px; height:34px; padding:0; border:1px solid #D5E3D8; border-radius:10px; background:#E7EFE8; color:#1E6C4B; font-size:20px; line-height:1; }
+    .modal-close:hover { background:#327957; color:#fffefa; }
+    .panel .form-grid { grid-template-columns:1fr; gap:10px; }
+    .panel label { margin-bottom:5px; color:#66746B; font-size:9px; letter-spacing:.07em; }
+    .panel input,.panel select,.panel textarea { min-height:43px; padding:10px 11px; border:1px solid #E1E1D9; border-radius:10px; background:#F8F7F2; color:#19352A; font-size:13px; box-shadow:none; }
+    .panel textarea { min-height:104px; }
+    .panel input:focus,.panel select:focus,.panel textarea:focus { border-color:#327957; outline:2px solid rgba(50,121,87,.16); outline-offset:1px; }
+    .panel .type-toggle { border:1px solid #E1E1D9; border-radius:10px; background:#F8F7F2; }
+    .panel .type-toggle button { min-height:42px; padding:8px; border:0; border-radius:8px; color:#66746B; background:transparent; font-size:10px; }
+    .panel .type-toggle button.active-in { background:#327957; color:#fffefa; }
+    .panel .type-toggle button.active-out { background:#B3432B; color:#fffefa; }
+    .panel button.primary { min-height:48px; border:0; border-radius:10px; background:#327957; color:#fffefa; box-shadow:0 7px 14px rgba(50,121,87,.18); font-size:11px; letter-spacing:.07em; }
+    .panel .hint { margin-top:5px; color:#66746B; font-size:10px; line-height:1.35; }
+    .panel .bank-list-item,.panel .cat-list-item { margin-top:7px; padding:11px; border:1px solid #E1E1D9; border-radius:10px; background:#F8F7F2; color:#19352A; }
+    .panel .action-btn { color:#327957; }
+    .panel .action-btn.del,.panel .action-btn.delete { color:#B3432B; }
+    @keyframes mobile-panel-enter { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
     .mobile-bottom-nav { display:grid; grid-template-columns:repeat(4,1fr); align-items:center; position:fixed; left:0; right:0; bottom:0; z-index:70; min-height:74px; padding:7px 10px max(8px,env(safe-area-inset-bottom)); background:rgba(255,254,249,.96); border-top:1px solid var(--line); backdrop-filter:blur(14px); }
     .mobile-bottom-nav button { min-height:54px; padding:4px 2px; border:0; border-radius:10px; background:transparent; color:#59665E; font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:0; text-transform:none; flex-direction:column; gap:3px; }
     .mobile-bottom-nav button .nav-icon { font-size:21px; line-height:1; color:#19352A; }
