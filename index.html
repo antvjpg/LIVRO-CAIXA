@@ -40,6 +40,29 @@
     --overlay:rgba(0,0,0,0.65);
     --shadow:rgba(0,0,0,0.18);
     --hover-soft:rgba(0,0,0,0.03);
+    --surface:#FFFEFA;
+    --surface-raised:#FCFDF9;
+    --surface-accent:#18382C;
+    --accent:#327957;
+    --accent-to:#3A8A62;
+    --accent-ink:#FFFEF9;
+    --header-from:#153429;
+    --header-to:#1D3B30;
+    --header-ink:#F9F8F3;
+    --header-control-bg:rgba(9,30,21,.42);
+    --action-border:#C9D9CC;
+  }
+  body:not(.dark-mode)[data-light-theme="2"] {
+    --paper:#F3F8FA; --paper-2:#E7F1F4; --ink:#173B4D; --ink-soft:#627882; --green:#247C88; --green-soft:#DDF0F1; --line:#C9DCE1; --gold:#E97865;
+    --surface:#FFFFFF; --surface-raised:#FBFDFE; --surface-accent:#1E5360; --accent:#247C88; --accent-to:#3A97A1; --accent-ink:#FFFFFF; --header-from:#1E5360; --header-to:#2A6F7B; --header-ink:#FFFFFF; --header-control-bg:rgba(14,54,64,.34); --action-border:#BFD9DF;
+  }
+  body:not(.dark-mode)[data-light-theme="3"] {
+    --paper:#F7F4FA; --paper-2:#EEE8F3; --ink:#37253F; --ink-soft:#796A7F; --green:#78538E; --green-soft:#EEE4F2; --line:#D8CEDF; --gold:#E89A68;
+    --surface:#FFFEFF; --surface-raised:#FCFAFD; --surface-accent:#593B68; --accent:#78538E; --accent-to:#9268A9; --accent-ink:#FFFFFF; --header-from:#593B68; --header-to:#78538E; --header-ink:#FFFFFF; --header-control-bg:rgba(47,27,59,.34); --action-border:#D4C6DD;
+  }
+  body:not(.dark-mode)[data-light-theme="4"] {
+    --paper:#FBF6EF; --paper-2:#F2E8DC; --ink:#342C25; --ink-soft:#81766B; --green:#5F8A70; --green-soft:#E0ECE2; --line:#E2D3C0; --gold:#C66F50;
+    --surface:#FFFDF8; --surface-raised:#FFFBF5; --surface-accent:#8F4F3C; --accent:#C66F50; --accent-to:#D88766; --accent-ink:#FFFFFF; --header-from:#8F4F3C; --header-to:#BD7657; --header-ink:#FFFFFF; --header-control-bg:rgba(74,37,27,.30); --action-border:#E1C8B5;
   }
   body.dark-mode {
     --paper:#0F1712;
@@ -81,6 +104,15 @@
     --ink:#FFFFFF; --ink-soft:#9A9A9E; --green:#22C55E; --green-soft:#263D2D; --line:#2C2C2E; --gold:#22C55E;
     --accent:#22C55E; --accent-to:#22C55E; --accent-ink:#0A2415; --accent-muted:#1E3A27; --header-from:#121212; --header-to:#1A251D; --on-accent:#0A2415;
   }
+  .light-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:-12px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
+  body:not(.dark-mode) .light-theme-picker{display:flex;}
+  .light-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
+  .light-theme-option{width:28px;min-width:28px;height:28px;min-height:28px;padding:0;border:2px solid transparent;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);}
+  .light-theme-option[data-theme="1"]{--swatch:#327957;}
+  .light-theme-option[data-theme="2"]{--swatch:linear-gradient(135deg,#247C88,#E97865);}
+  .light-theme-option[data-theme="3"]{--swatch:linear-gradient(135deg,#78538E,#E89A68);}
+  .light-theme-option[data-theme="4"]{--swatch:linear-gradient(135deg,#C66F50,#5F8A70);}
+  .light-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.36);}
   .dark-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:-12px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
   body.dark-mode .dark-theme-picker{display:flex;}
   .dark-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
@@ -741,6 +773,11 @@
   #authSubmit{min-height:48px!important;border-radius:11px!important;font-size:12px!important;font-weight:700!important;letter-spacing:.02em!important;}
   #authGoogle{min-height:44px;border:1px solid var(--line);border-radius:11px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;}
   #authGoogle:hover{background:var(--green-soft);color:var(--ink);}
+  body:not(.dark-mode) #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 29%),var(--paper);}
+  body:not(.dark-mode) .auth-box{background:var(--surface);border-color:var(--line);box-shadow:0 18px 42px color-mix(in srgb,var(--accent) 18%,transparent);}
+  body:not(.dark-mode) .auth-box::before,body:not(.dark-mode) .auth-toggle a{color:var(--accent);}
+  body:not(.dark-mode) .auth-box input,body:not(.dark-mode) #authGoogle{background:var(--paper);border-color:var(--line);color:var(--ink);}
+  body:not(.dark-mode) #authGoogle:hover{background:var(--surface-raised);color:var(--ink);}
   body.dark-mode #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 29%),var(--paper);}
   body.dark-mode .auth-box{background:var(--surface);border-color:var(--line);box-shadow:0 18px 42px rgba(0,0,0,.34);}
   body.dark-mode .auth-box::before{color:var(--accent);}
@@ -1083,6 +1120,40 @@
     body.dark-mode .mobile-bottom-nav { border-color:var(--line); background:rgba(10,23,17,.96); }
     body.dark-mode .mobile-bottom-nav button,body.dark-mode .mobile-bottom-nav button .nav-icon { color:var(--ink-soft); }
     body.dark-mode .mobile-bottom-nav button.is-active,body.dark-mode .mobile-bottom-nav button.is-active .nav-icon { color:var(--accent); }
+    body:not(.dark-mode) header.app-header { background:linear-gradient(135deg,var(--header-from),var(--header-to)); color:var(--header-ink); }
+    body:not(.dark-mode) header.app-header h1 { color:var(--header-ink); }
+    body:not(.dark-mode) header.app-header .subtitle { color:color-mix(in srgb,var(--header-ink) 84%,transparent); }
+    body:not(.dark-mode) header.app-header .subtitle::before { color:color-mix(in srgb,var(--header-ink) 74%,transparent); }
+    body:not(.dark-mode) #btnThemeToggle,body:not(.dark-mode) #btnInstallPWA { background:var(--header-control-bg); border-color:color-mix(in srgb,var(--header-ink) 45%,transparent); color:var(--header-ink); }
+    body:not(.dark-mode) .nav-tabs,body:not(.dark-mode) .balance-card,body:not(.dark-mode) .cat-summary,body:not(.dark-mode) .ledger,body:not(.dark-mode) .invest-box { background:var(--surface); border-color:var(--line); }
+    body:not(.dark-mode) .nav-tab { color:var(--ink-soft); }
+    body:not(.dark-mode) .nav-tab.active { background:var(--surface-accent); color:var(--header-ink); }
+    body:not(.dark-mode) .balance-card.total { background:linear-gradient(120deg,var(--surface-accent),var(--accent)); color:var(--header-ink); box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 24%,transparent); }
+    body:not(.dark-mode) .balance-card.total .label,body:not(.dark-mode) .balance-card.total .amount { color:var(--header-ink); }
+    body:not(.dark-mode) .balance-card.total::after { color:color-mix(in srgb,var(--header-ink) 88%,transparent); }
+    body:not(.dark-mode) .balance-detail-link,body:not(.dark-mode) .ledger-month #ledgerCount { color:var(--accent); }
+    body:not(.dark-mode) .toolbar button { background:var(--surface-raised); border-color:var(--action-border); color:var(--ink); box-shadow:0 2px 5px color-mix(in srgb,var(--accent) 9%,transparent); }
+    body:not(.dark-mode) .toolbar button:hover { background:var(--green-soft); color:var(--ink); }
+    body:not(.dark-mode) .toolbar button.primary { background:linear-gradient(100deg,var(--accent),var(--accent-to)); color:var(--accent-ink); box-shadow:0 7px 15px color-mix(in srgb,var(--accent) 28%,transparent); }
+    body:not(.dark-mode) #btnUpdateAllPrices,body:not(.dark-mode) .ledger-filter-button,body:not(.dark-mode) .card-badge,body:not(.dark-mode) .beta-icon-button { background:var(--green-soft); border-color:var(--action-border); color:var(--accent); }
+    body:not(.dark-mode) .ledger-filters { background:var(--paper); border-color:var(--line); }
+    body:not(.dark-mode) .ledger-filters select,body:not(.dark-mode) .ledger-filters input { background:var(--surface); border-color:var(--line); color:var(--ink); }
+    body:not(.dark-mode) .card-border-line { background:var(--green-soft)!important; }
+    body:not(.dark-mode) .card-actions .btn-action:hover,body:not(.dark-mode) .ledger-filter-button:hover,body:not(.dark-mode) .beta-icon-button:hover { background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+    body:not(.dark-mode) .fab-add,body:not(.dark-mode) .panel button.primary { background:var(--accent); color:var(--accent-ink); box-shadow:0 9px 20px color-mix(in srgb,var(--accent) 30%,transparent); }
+    body:not(.dark-mode) .panel { background:var(--surface); color:var(--ink); border-color:var(--line); box-shadow:0 14px 34px color-mix(in srgb,var(--accent) 20%,transparent); }
+    body:not(.dark-mode) .panel h3,body:not(.dark-mode) .manage-item-copy,body:not(.dark-mode) .export-preview-bank h4 { color:var(--ink); border-color:var(--line); }
+    body:not(.dark-mode) .panel label,body:not(.dark-mode) .panel .hint,body:not(.dark-mode) .manage-item-copy span,body:not(.dark-mode) .export-preview-more { color:var(--ink-soft); }
+    body:not(.dark-mode) .panel input,body:not(.dark-mode) .panel select,body:not(.dark-mode) .panel textarea,body:not(.dark-mode) .panel .bank-list-item,body:not(.dark-mode) .panel .cat-list-item,body:not(.dark-mode) .export-preview-bank { background:var(--paper); border-color:var(--line); color:var(--ink); }
+    body:not(.dark-mode) .panel .type-toggle { background:var(--paper); border-color:var(--line); }
+    body:not(.dark-mode) .panel .type-toggle button { color:var(--ink-soft); }
+    body:not(.dark-mode) .panel .type-toggle button.active-in { background:var(--accent); color:var(--accent-ink); }
+    body:not(.dark-mode) .manage-item-value,body:not(.dark-mode) .export-preview-bank h4 small { color:var(--accent); }
+    body:not(.dark-mode) .modal-close { background:var(--green-soft); border-color:var(--action-border); color:var(--accent); }
+    body:not(.dark-mode) .mobile-bottom-nav { background:color-mix(in srgb,var(--surface) 96%,transparent); border-color:var(--line); }
+    body:not(.dark-mode) .mobile-bottom-nav button { color:var(--ink-soft); }
+    body:not(.dark-mode) .mobile-bottom-nav button .nav-icon { color:var(--ink); }
+    body:not(.dark-mode) .mobile-bottom-nav button.is-active,body:not(.dark-mode) .mobile-bottom-nav button.is-active .nav-icon { color:var(--accent); }
   }
 </style>
 </head>
@@ -1141,6 +1212,14 @@
     <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')">📖 Livro-Caixa</button>
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')">🐷 Caixinhas</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">🪙 Investimentos</button>
+  </div>
+
+  <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
+    <span class="light-theme-picker-label">Paleta clara</span>
+    <button type="button" class="light-theme-option" data-theme="1" aria-label="Verde original" aria-pressed="true" title="Verde original"></button>
+    <button type="button" class="light-theme-option" data-theme="2" aria-label="Coastal Ledger" aria-pressed="false" title="Coastal Ledger"></button>
+    <button type="button" class="light-theme-option" data-theme="3" aria-label="Lilac Paper" aria-pressed="false" title="Lilac Paper"></button>
+    <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracotta e Sage" aria-pressed="false" title="Terracotta & Sage"></button>
   </div>
 
   <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
@@ -1856,6 +1935,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tema Escuro / Claro
   const themeBtn = document.getElementById('btnThemeToggle');
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+  const lightThemePicker = document.getElementById('lightThemePicker');
+  const lightThemeOptions = Array.from(document.querySelectorAll('.light-theme-option'));
+  const LIGHT_THEME_STORAGE_KEY = 'livro-caixa-light-theme';
+  const LIGHT_THEME_COLORS = {
+    '1': '#F8F7F2',
+    '2': '#F3F8FA',
+    '3': '#F7F4FA',
+    '4': '#FBF6EF'
+  };
   const darkThemePicker = document.getElementById('darkThemePicker');
   const darkThemeOptions = Array.from(document.querySelectorAll('.dark-theme-option'));
   const DARK_THEME_STORAGE_KEY = 'livro-caixa-dark-theme';
@@ -1865,6 +1953,29 @@ document.addEventListener('DOMContentLoaded', () => {
     '3': '#141410',
     '4': '#121212'
   };
+
+  function validLightTheme(value) {
+    return Object.prototype.hasOwnProperty.call(LIGHT_THEME_COLORS, value) ? value : '1';
+  }
+
+  function getSavedLightTheme() {
+    return validLightTheme(localStorage.getItem(LIGHT_THEME_STORAGE_KEY));
+  }
+
+  function updateLightThemePicker(themeId) {
+    lightThemeOptions.forEach(option => {
+      const selected = option.dataset.theme === themeId;
+      option.setAttribute('aria-pressed', String(selected));
+    });
+  }
+
+  function applyLightTheme(themeId, persist = true) {
+    const selectedTheme = validLightTheme(themeId);
+    document.body.dataset.lightTheme = selectedTheme;
+    updateLightThemePicker(selectedTheme);
+    if (persist) localStorage.setItem(LIGHT_THEME_STORAGE_KEY, selectedTheme);
+    if (themeColorMeta) themeColorMeta.setAttribute('content', LIGHT_THEME_COLORS[selectedTheme]);
+  }
 
   function validDarkTheme(value) {
     return Object.prototype.hasOwnProperty.call(DARK_THEME_COLORS, value) ? value : '1';
@@ -1893,7 +2004,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('dark-mode');
     themeBtn.textContent = '☀️';
     applyDarkTheme(getSavedDarkTheme());
-  }
+  } else applyLightTheme(getSavedLightTheme());
+  lightThemeOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      if (document.body.classList.contains('dark-mode')) return;
+      applyLightTheme(option.dataset.theme);
+      renderCategorySummary();
+      renderInvestments();
+      renderPockets();
+      renderPocketBalances();
+    });
+  });
   darkThemeOptions.forEach(option => {
     option.addEventListener('click', () => {
       if (!document.body.classList.contains('dark-mode')) return;
@@ -1910,7 +2031,7 @@ document.addEventListener('DOMContentLoaded', () => {
     themeBtn.textContent = isDark ? '☀️' : '🌙';
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     if (isDark) applyDarkTheme(getSavedDarkTheme());
-    else if (themeColorMeta) themeColorMeta.setAttribute('content', '#18362A');
+    else applyLightTheme(getSavedLightTheme());
     renderCategorySummary();
     renderInvestments();
     renderPockets();
