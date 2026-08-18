@@ -41,17 +41,17 @@
     --hover-soft:rgba(0,0,0,0.03);
   }
   body.dark-mode {
-    --paper:#121915;
-    --paper-2:#1C2620;
-    --ink:#E3E8E4;
-    --ink-soft:#8C9E93;
-    --green:#3E8E65;
-    --green-soft:#1E3328;
-    --red:#D4563C;
-    --red-soft:#3B1C17;
-    --line:#2A3A30;
-    --gold:#C9A44B;
-    --on-accent:#08110C;
+    --paper:#12251D;
+    --paper-2:#173128;
+    --ink:#EDF4EE;
+    --ink-soft:#A5B9AC;
+    --green:#58A979;
+    --green-soft:#203D30;
+    --red:#E06B54;
+    --red-soft:#48241D;
+    --line:#315043;
+    --gold:#D4B763;
+    --on-accent:#0D2118;
     --overlay:rgba(0,0,0,0.78);
     --shadow:rgba(0,0,0,0.45);
     --hover-soft:rgba(255,255,255,0.06);
@@ -887,8 +887,8 @@
     .card-lancamento:last-child { border-bottom:0; }
     .card-lancamento:hover { background:transparent; }
     .card-border-line { width:38px; height:38px; border-radius:10px; background:var(--green-soft)!important; position:relative; }
-    .card-border-line::after { content:"↗"; color:#1B5138; font-family:Georgia,serif; font-size:22px; position:absolute; inset:6px 0 0 9px; }
-    .card-border-line.despesa::after { content:"−"; color:var(--red); font-size:26px; inset:1px 0 0 13px; }
+    .card-border-line::after { display:none; }
+    .movement-category-icon { position:absolute; inset:0; display:grid; place-items:center; font-size:18px; line-height:1; }
     .card-title { font-size:12px; letter-spacing:.02em; }
     .card-date { font-size:9px; }
     .card-meta { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:3px; min-width:0; }
@@ -941,6 +941,7 @@
     .panel button.primary { min-height:48px; border:0; border-radius:10px; background:#327957; color:#fffefa; box-shadow:0 7px 14px rgba(50,121,87,.18); font-size:11px; letter-spacing:.07em; }
     .panel .hint { margin-top:5px; color:#66746B; font-size:10px; line-height:1.35; }
     .panel .bank-list-item,.panel .cat-list-item { margin-top:7px; padding:11px; border:1px solid #E1E1D9; border-radius:10px; background:#F8F7F2; color:#19352A; }
+    .category-dot { width:30px; height:30px; display:grid; place-items:center; border-radius:9px; font-size:15px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.42); }
     .panel .action-btn { color:#327957; }
     .panel .action-btn.del,.panel .action-btn.delete { color:#B3432B; }
     .bank-list-item { display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:9px; }
@@ -958,6 +959,24 @@
     .beta-icon-button.delete::after { content:"×"; font-family:Arial,sans-serif; font-size:20px; }
     .beta-icon-button:hover { background:#327957; color:#fffefa; }
     .beta-icon-button.delete:hover { background:#B3432B; color:#fffefa; }
+    .export-preview { max-height:280px; overflow:auto; margin-top:12px; padding-right:2px; }
+    .export-preview-bank { margin:0 0 10px; padding:10px; border:1px solid #E1E1D9; border-radius:10px; background:#F8F7F2; }
+    .export-preview-bank h4 { display:flex; justify-content:space-between; gap:8px; margin:0 0 8px; color:#19352A; font-family:'Fraunces',serif; font-size:15px; }
+    .export-preview-bank h4 small { color:#1E6C4B; font-family:'IBM Plex Mono',monospace; font-size:9px; font-weight:600; white-space:nowrap; }
+    .export-preview-row { display:grid; grid-template-columns:56px minmax(0,1fr) 66px auto; gap:6px; align-items:center; padding:5px 0; border-top:1px solid #E1E1D9; font-family:'IBM Plex Mono',monospace; font-size:8px; }
+    .export-preview-row strong,.export-preview-row span { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .export-preview-row b { font-size:8px; white-space:nowrap; }
+    .export-preview-row b.positive { color:#1E6C4B; }.export-preview-row b.negative { color:#B3432B; }
+    .export-preview-more { padding-top:6px; color:#66746B; font-family:'IBM Plex Mono',monospace; font-size:8px; }
+    .mobile-bottom-nav button.is-disabled { opacity:.35; pointer-events:none; }
+    body.dark-mode { --paper:#12251D; --paper-2:#173128; --ink:#EDF4EE; --ink-soft:#A5B9AC; --green:#58A979; --green-soft:#203D30; --line:#315043; --gold:#D4B763; --shadow:rgba(0,0,0,.28); background:#12251D; }
+    body.dark-mode main,body.dark-mode .mobile-bottom-nav { background:#12251D; }
+    body.dark-mode .nav-tabs,body.dark-mode .balance-card:not(.total),body.dark-mode .cat-summary,body.dark-mode .ledger,body.dark-mode .invest-box,body.dark-mode .panel { background:#173128; border-color:#315043; color:#EDF4EE; }
+    body.dark-mode .panel input,body.dark-mode .panel select,body.dark-mode .panel textarea,body.dark-mode .panel .bank-list-item,body.dark-mode .panel .cat-list-item,body.dark-mode .export-preview-bank { background:#12251D; border-color:#315043; color:#EDF4EE; }
+    body.dark-mode .panel h3,body.dark-mode .manage-item-copy,body.dark-mode .export-preview-bank h4 { color:#EDF4EE; border-color:#315043; }
+    body.dark-mode .card-lancamento { border-color:#315043; }
+    body.dark-mode .card-badge { background:#203D30; border-color:#315043; color:#BDE2C9; }
+    body.dark-mode .export-preview-row { border-color:#315043; }
     @keyframes mobile-panel-enter { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
     .mobile-bottom-nav { display:grid; grid-template-columns:repeat(4,1fr); align-items:center; position:fixed; left:0; right:0; bottom:0; z-index:70; min-height:74px; padding:7px 10px max(8px,env(safe-area-inset-bottom)); background:rgba(255,254,249,.96); border-top:1px solid var(--line); backdrop-filter:blur(14px); }
     .mobile-bottom-nav button { min-height:54px; padding:4px 2px; border:0; border-radius:10px; background:transparent; color:#59665E; font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:0; text-transform:none; flex-direction:column; gap:3px; }
@@ -1112,7 +1131,7 @@
         </div>
         <div>
           <label for="fValor">Valor (R$)</label>
-          <input type="number" id="fValor" step="0.01" min="0" placeholder="0,00">
+          <input type="text" id="fValor" data-money="true" placeholder="R$ 0,00">
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="fSalvar" style="width:100%">Salvar</button>
@@ -1129,7 +1148,7 @@
         </div>
         <div>
           <label for="bSaldo">Saldo inicial (R$)</label>
-          <input type="number" id="bSaldo" step="0.01" placeholder="0,00">
+          <input type="text" id="bSaldo" data-money="true" placeholder="R$ 0,00">
         </div>
         <div>
           <button class="primary" id="bSalvar" style="width:100%">Adicionar</button>
@@ -1147,6 +1166,21 @@
         <div>
           <label for="cNome">Nome da nova categoria</label>
           <input type="text" id="cNome" placeholder="Ex: Renda Extra">
+        </div>
+        <div>
+          <label for="cIcon">Ícone</label>
+          <select id="cIcon">
+            <option value="🍔">🍔 Alimentação</option>
+            <option value="🚗">🚗 Transporte</option>
+            <option value="🏠">🏠 Casa</option>
+            <option value="💰">💰 Salário / Renda</option>
+            <option value="📈">📈 Investimentos</option>
+            <option value="🎮">🎮 Lazer</option>
+            <option value="🛒">🛒 Compras</option>
+            <option value="❤️">❤️ Saúde</option>
+            <option value="📚">📚 Educação</option>
+            <option value="📦">📦 Outros</option>
+          </select>
         </div>
         <div>
           <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
@@ -1209,7 +1243,7 @@
         </div>
         <div>
           <label for="tValor">Valor (R$)</label>
-          <input type="number" id="tValor" step="0.01" min="0" placeholder="0,00">
+          <input type="text" id="tValor" data-money="true" placeholder="R$ 0,00">
         </div>
         <div>
           <label for="tDesc">Observação (Opcional)</label>
@@ -1251,14 +1285,14 @@
           <div>
             <label for="iCotacao">Cotação (R$ por unidade)</label>
             <div style="display:flex; gap:6px; align-items:stretch;">
-              <input type="number" id="iCotacao" step="0.00000001" min="0" placeholder="Digite ou busque a cotação" style="flex:2; min-width:0;">
+              <input type="text" id="iCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
               <button type="button" id="btnFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;">🔄 Cotação</button>
             </div>
             <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Você pode digitar a cotação manualmente ou clicar em "Cotação" para buscar pela internet.</div>
           </div>
           <div>
             <label for="iValor">Valor Total Atual (R$)</label>
-            <input type="number" id="iValor" step="0.01" min="0" placeholder="0,00" style="width:100%;">
+            <input type="text" id="iValor" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true" style="width:100%;">
             <div style="font-size:11px; margin-top:4px; opacity:0.7;">Com cotação e quantidade preenchidas, o valor é calculado automaticamente.</div>
           </div>
         </div>
@@ -1281,7 +1315,7 @@
         <div id="valorSimplesField" style="display:none;">
           <div>
             <label for="iValorSimples">Valor Total Atual (R$)</label>
-            <input type="number" id="iValorSimples" step="0.01" min="0" placeholder="0,00">
+            <input type="text" id="iValorSimples" data-money="true" placeholder="R$ 0,00">
           </div>
         </div>
 
@@ -1304,11 +1338,11 @@
         </div>
         <div>
           <label for="pInicial">Saldo Inicial (R$)</label>
-          <input type="number" id="pInicial" step="0.01" min="0" placeholder="0,00">
+          <input type="text" id="pInicial" data-money="true" placeholder="R$ 0,00">
         </div>
         <div>
           <label for="pAtual">Saldo Atual (R$)</label>
-          <input type="number" id="pAtual" step="0.01" placeholder="Calculado automaticamente" readonly aria-readonly="true">
+          <input type="text" id="pAtual" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true">
           <div class="hint">Saldo inicial + movimentações registradas nesta caixinha.</div>
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
@@ -1339,7 +1373,7 @@
         </div>
         <div>
           <label for="pmValor">Valor (R$)</label>
-          <input type="number" id="pmValor" step="0.01" min="0" placeholder="0,00">
+          <input type="text" id="pmValor" data-money="true" placeholder="R$ 0,00">
         </div>
         <div style="grid-column: 1 / -1;">
           <label for="pmDesc">Observação (Opcional)</label>
@@ -1378,14 +1412,14 @@
         <div id="imCryptoQuoteField">
           <label for="imCotacao">Cotação</label>
           <div style="display:flex; gap:6px; align-items:stretch;">
-            <input type="number" id="imCotacao" step="0.00000001" min="0" placeholder="Digite ou busque a cotação" style="flex:2; min-width:0;">
+            <input type="text" id="imCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
             <button type="button" id="imFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;">🔄</button>
           </div>
           <div id="imPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a cotação manualmente ou clique no botão 🔄 para buscar pela internet.</div>
         </div>
         <div>
           <label for="imValor">Valor (R$)</label>
-          <input type="number" id="imValor" step="0.01" min="0" placeholder="R$ 0,00">
+          <input type="text" id="imValor" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true">
         </div>
         <div style="grid-column: 1 / -1;">
           <label for="imDesc">Observação (Opcional)</label>
@@ -1399,7 +1433,8 @@
 
     <div class="panel" id="panelExportFormat">
       <h3>Exportar Extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <p style="font-size:13px; opacity:0.8; margin-top:-6px;">Escolha o formato do arquivo. As movimentações são organizadas por banco (em ordem alfabética), e dentro de cada banco por data crescente, com entradas antes das saídas em cada dia.</p>
+      <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:-6px;">Confira a prévia respeitando os filtros atuais antes de escolher o formato.</p>
+      <div id="exportPreview" class="export-preview" aria-live="polite"></div>
       <div class="toolbar" style="grid-template-columns: 1fr 1fr; margin-top:14px;">
         <button class="primary" id="btnExportFormatPdf">📄 PDF</button>
         <button class="primary" id="btnExportFormatXlsx">📊 Excel (.xlsx)</button>
@@ -1494,8 +1529,10 @@ document.addEventListener('DOMContentLoaded', () => {
         switchTab('caixa');
         setTimeout(() => document.querySelector('.cat-summary')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
       } else {
-        switchTab('invest');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        button.classList.remove('is-active');
+        button.setAttribute('aria-disabled', 'true');
+        button.classList.add('is-disabled');
+        return;
       }
     });
   });
@@ -1517,6 +1554,40 @@ document.addEventListener('DOMContentLoaded', () => {
   let catChartInstance = null;
 
   const fmt = (n) => (n < 0 ? '-' : '') + 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const MONEY_FORMATTER = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  function moneyDigits(value) {
+    return String(value ?? '').replace(/\D/g, '').replace(/^0+(?=\d)/, '') || '0';
+  }
+
+  function formatMoneyFromCents(cents) {
+    return MONEY_FORMATTER.format((Number(cents) || 0) / 100);
+  }
+
+  function setMoneyInput(target, amount) {
+    const input = typeof target === 'string' ? document.getElementById(target) : target;
+    if (!input) return;
+    input.value = MONEY_FORMATTER.format(Number(amount) || 0);
+  }
+
+  function readMoneyInput(target) {
+    const input = typeof target === 'string' ? document.getElementById(target) : target;
+    if (!input) return 0;
+    return Number(moneyDigits(input.value)) / 100;
+  }
+
+  function applyMoneyMask(input) {
+    input.value = formatMoneyFromCents(moneyDigits(input.value));
+  }
+
+  function initMoneyMasks() {
+    document.querySelectorAll('input[data-money="true"]').forEach(input => {
+      input.setAttribute('inputmode', 'numeric');
+      input.setAttribute('autocomplete', 'off');
+      input.addEventListener('input', () => applyMoneyMask(input));
+      input.addEventListener('focus', () => { if (!input.value) setMoneyInput(input, 0); });
+    });
+  }
   const todayISO = () => {
     const d = new Date();
     const offset = d.getTimezoneOffset();
@@ -1671,15 +1742,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Tema Escuro / Claro
   const themeBtn = document.getElementById('btnThemeToggle');
+  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
     themeBtn.textContent = '☀️';
+    if (themeColorMeta) themeColorMeta.setAttribute('content', '#12251D');
   }
   themeBtn.onclick = () => {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
     themeBtn.textContent = isDark ? '☀️' : '🌙';
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    if (themeColorMeta) themeColorMeta.setAttribute('content', isDark ? '#12251D' : '#18362A');
     renderCategorySummary();
     renderInvestments();
     renderPockets();
@@ -1927,9 +2001,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (p.initial == null) {
         const currentStored = Number(p.value) || 0;
         const movementTotal = pocketMovementTotal(p.id);
-        p.initial = Math.max(0, currentStored - movementTotal);
+        p.initial = currentStored - movementTotal;
       }
-      p.value = pocketCurrentBalance(p);
+      if ('value' in p) delete p.value;
     });
   }
 
@@ -1993,20 +2067,33 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="manage-item-copy"><strong>${escapeHTML(b.name)}</strong><span>Saldo atual</span></div>
         <strong class="manage-item-value">${fmt(bankBalance(b.id))}</strong>
         <div class="manage-item-actions">
-          <button type="button" class="action-btn beta-icon-button edit" onclick="editBank('${b.id}')" aria-label="Editar banco"></button>
-          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteBank('${b.id}')" aria-label="Excluir banco"></button>
+          <button type="button" class="action-btn beta-icon-button edit" onclick="editBank('${b.id}')" aria-label="Editar banco" title="Editar banco"></button>
+          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteBank('${b.id}')" aria-label="Excluir banco" title="Excluir banco"></button>
         </div>
       </div>
     `).join('');
   }
 
   const CATEGORY_PALETTE = ['#B3432B', '#2F7654', '#B89034', '#3A6B88', '#8C5383', '#D9822B', '#5C7A68', '#B05A88'];
+  const CATEGORY_ICON_RULES = [
+    [/aliment|restaur|mercado|comida/i, '🍔'], [/transporte|uber|ônibus|combust/i, '🚗'],
+    [/moradia|casa|aluguel|luz|água/i, '🏠'], [/salário|renda|receb|trabalho/i, '💰'],
+    [/invest|cripto|cdb|renda fixa/i, '📈'], [/lazer|jogo|cinema|stream/i, '🎮'],
+    [/compra|loja/i, '🛒'], [/saúde|farmácia|médic/i, '❤️'], [/educa|curso|livro/i, '📚'], [/transfer/i, '↔️']
+  ];
   function categoryColor(category) {
     if (!category) return '#66746B';
     if (category.color) return category.color;
     const text = String(category.id || category.name || 'outros');
     const seed = [...text].reduce((sum, char) => sum + char.charCodeAt(0), 0);
     return CATEGORY_PALETTE[seed % CATEGORY_PALETTE.length];
+  }
+
+  function categoryIcon(category, flow = 'in') {
+    if (category?.icon) return category.icon;
+    const name = String(category?.name || '');
+    const match = CATEGORY_ICON_RULES.find(([rule]) => rule.test(name));
+    return match ? match[1] : (flow === 'out' ? '↘' : '↗');
   }
 
   function renderCategorySelect() {
@@ -2022,11 +2109,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('catManageList');
     container.innerHTML = categories.map(c => `
       <div class="cat-list-item">
-        <span class="category-dot" style="background:${categoryColor(c)}"></span>
-        <strong class="manage-item-copy">${escapeHTML(c.name)}</strong>
+        <span class="category-dot" style="background:${categoryColor(c)}">${categoryIcon(c)}</span>
+        <strong class="manage-item-copy">${escapeHTML(c.name)}<span>${escapeHTML(categoryIcon(c))} · ${escapeHTML(c.color ? 'cor personalizada' : 'cor automática')}</span></strong>
         <span class="manage-item-actions">
-          <button type="button" class="action-btn beta-icon-button edit" onclick="editCategory('${c.id}')" aria-label="Editar categoria"></button>
-          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria"></button>
+          <button type="button" class="action-btn beta-icon-button edit" onclick="editCategory('${c.id}')" aria-label="Editar categoria" title="Editar categoria"></button>
+          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria" title="Excluir categoria"></button>
         </span>
       </div>
     `).join('');
@@ -2068,6 +2155,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (abs >= 1000000) return `R$ ${(amount / 1000000).toFixed(1)} mi`;
     if (abs >= 1000) return `R$ ${(amount / 1000).toFixed(1)} mil`;
     return fmt(amount);
+  }
+
+  function formatQuoteUpdatedAt(value) {
+    if (!value) return 'sem atualização registrada';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? 'atualização registrada' : date.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
   }
 
   function yieldHistoryHTML(targetType, targetId) {
@@ -2189,6 +2282,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ${inv.alias ? `<div class="units investment-name-secondary">${escapeHTML(inv.name)}</div>` : ''}
         <div class="val">${fmt(inv.value || 0)}</div>
         ${inv.units ? `<div class="units">${inv.units} unidades / tokens</div>` : ''}
+        ${(inv.type === 'Stablecoin' || inv.type === 'Criptomoeda') ? `<div class="units">Cotação: ${fmt(inv.price || 0)} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</div>` : ''}
         ${inv.institution ? `<div class="units">${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</div>` : ''}
         ${inv.dueDate ? `<div class="units">Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</div>` : ''}
         ${rentabilityHTML('invest', inv.id, inv.value || 0)}
@@ -2410,7 +2504,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html += `
         <div class="card-lancamento">
           <div class="card-left">
-            <div class="card-border-line"></div>
+            <div class="card-border-line"><span class="movement-category-icon">${escapeHTML(categoryIcon(cat, e.type))}</span></div>
             <div class="card-info">
               <span class="card-date">${dateFmt}</span>
               <h3 class="card-title">${escapeHTML(e.desc)}</h3>
@@ -2421,8 +2515,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="card-right">
             <span class="card-amount ${tipoClasse}">${sinal} ${fmt(Math.abs(e.amount))}</span>
             <div class="card-actions">
-              <button class="btn-action edit" onclick="editEntry('${e.id}')" aria-label="Editar lançamento"></button>
-              <button class="btn-action delete" onclick="deleteEntry('${e.id}')" aria-label="Excluir lançamento"></button>
+              <button class="btn-action edit" onclick="editEntry('${e.id}')" aria-label="Editar lançamento" title="Editar lançamento"></button>
+              <button class="btn-action delete" onclick="deleteEntry('${e.id}')" aria-label="Excluir lançamento" title="Excluir lançamento"></button>
             </div>
           </div>
         </div>
@@ -2515,8 +2609,8 @@ document.addEventListener('DOMContentLoaded', () => {
     editingPocketId = pocket.id;
     document.getElementById('pNome').value = pocket.name;
     document.getElementById('pObjetivo').value = pocket.goal || '';
-    document.getElementById('pInicial').value = Number(pocket.initial ?? pocket.value ?? 0).toFixed(2);
-    document.getElementById('pAtual').value = pocketCurrentBalance(pocket).toFixed(2);
+    setMoneyInput('pInicial', Number(pocket.initial ?? pocket.value ?? 0));
+    setMoneyInput('pAtual', pocketCurrentBalance(pocket));
     document.getElementById('panelPocketTitle').innerHTML = 'Editar Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('pSalvar').textContent = 'Atualizar Caixinha';
     openModal('panelPocket');
@@ -2565,8 +2659,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imData').value = todayISO();
     document.getElementById('imDataFim').value = todayISO();
     document.getElementById('imQuantidade').value = '';
-    document.getElementById('imCotacao').value = '';
-    document.getElementById('imValor').value = '';
+    setMoneyInput('imCotacao', 0);
+    setMoneyInput('imValor', 0);
     document.getElementById('imDesc').value = '';
     document.getElementById('imPriceStatus').textContent = 'Digite a cotação manualmente ou clique no botão 🔄 para buscar pela internet.';
     document.getElementById('imDia').classList.add('active-in');
@@ -2580,8 +2674,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateInvestmentMovementValue() {
     const qty = parseFloat(document.getElementById('imQuantidade').value) || 0;
-    const price = parseFloat(document.getElementById('imCotacao').value) || 0;
-    document.getElementById('imValor').value = qty > 0 && price > 0 ? (qty * price).toFixed(2) : '';
+    const price = readMoneyInput('imCotacao');
+    setMoneyInput('imValor', qty > 0 && price > 0 ? qty * price : 0);
   }
 
   async function fetchInvestmentMovementPrice() {
@@ -2595,7 +2689,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!coin) { statusEl.textContent = 'Ativo não encontrado. Não foi possível buscar a cotação.'; return; }
       const price = await fetchCoinPriceBRL(coin.id);
       if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
-      document.getElementById('imCotacao').value = price;
+      setMoneyInput('imCotacao', price);
       updateInvestmentMovementValue();
       statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · atualizado agora`;
     } catch (err) {
@@ -2659,7 +2753,7 @@ document.addEventListener('DOMContentLoaded', () => {
     pocketMovementEditingId = null;
     document.getElementById('pmData').value = todayISO();
     document.getElementById('pmDataFim').value = todayISO();
-    document.getElementById('pmValor').value = '';
+    setMoneyInput('pmValor', 0);
     document.getElementById('pmDesc').value = '';
     setPocketPeriodMode('dia');
     updatePocketMovementUI();
@@ -2684,8 +2778,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imData').value = y.date || todayISO();
     document.getElementById('imDataFim').value = y.dateEnd || y.date || todayISO();
     document.getElementById('imQuantidade').value = y.units != null ? y.units : '';
-    document.getElementById('imCotacao').value = y.price != null ? y.price : '';
-    document.getElementById('imValor').value = y.amount || 0;
+    setMoneyInput('imCotacao', y.price || 0);
+    setMoneyInput('imValor', y.amount || 0);
     document.getElementById('imDesc').value = y.desc || '';
     const isPeriod = y.dateEnd && y.dateEnd !== y.date;
     document.getElementById('imDia').classList.toggle('active-in', !isPeriod);
@@ -2703,7 +2797,7 @@ document.addEventListener('DOMContentLoaded', () => {
     pocketMovementEditingId = y.id;
     document.getElementById('pmData').value = y.date || todayISO();
     document.getElementById('pmDataFim').value = y.dateEnd || y.date || todayISO();
-    document.getElementById('pmValor').value = y.amount || 0;
+    setMoneyInput('pmValor', y.amount || 0);
     document.getElementById('pmDesc').value = y.desc || '';
     setPocketPeriodMode(y.dateEnd && y.dateEnd !== y.date ? 'periodo' : 'dia');
     updatePocketMovementUI();
@@ -2736,14 +2830,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const signedUnits = y.kind === 'resgate' ? -(y.units || 0) : (y.units || 0);
         item.units = Math.max(0, (item.units || 0) - signedUnits);
         const latestPrice = item.priceHistory && item.priceHistory.length ? Number(item.priceHistory[item.priceHistory.length - 1].price) : Number(y.price || 0);
+        item.price = latestPrice || item.price || null;
         item.value = latestPrice > 0 ? item.units * latestPrice : Math.max(0, (item.value || 0) - ((y.kind === 'resgate' ? -1 : 1) * (y.amount || 0)));
+      } else if (y.targetType === 'invest') {
+        item.value = Math.max(0, (item.value || 0) - movementDelta(y));
       }
     }
     yieldsLog = yieldsLog.filter(x => x.id !== yieldId);
-    if (y.targetType === 'pocket') {
-      const pocket = pockets.find(p => p.id === y.targetId);
-      if (pocket) pocket.value = pocketCurrentBalance(pocket);
-    }
     persistAll();
     render();
   };
@@ -2756,7 +2849,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fDesc').value = entry.desc;
     document.getElementById('fBanco').value = entry.bank;
     document.getElementById('fCategoria').value = entry.category;
-    document.getElementById('fValor').value = entry.amount;
+    setMoneyInput('fValor', entry.amount);
     
     if (entry.type === 'in') document.getElementById('tglIn').click();
     else document.getElementById('tglOut').click();
@@ -2771,7 +2864,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!bank) return;
     editingBankId = bank.id;
     document.getElementById('bNome').value = bank.name;
-    document.getElementById('bSaldo').value = bank.initial || 0;
+    setMoneyInput('bSaldo', bank.initial || 0);
     document.getElementById('panelBancoTitle').innerHTML = 'Editar Banco <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('bSalvar').textContent = 'Atualizar';
     openModal('panelBanco');
@@ -2787,9 +2880,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('iTipo').value = inv.type || 'Stablecoin';
     document.getElementById('iUnidades').value = inv.units || '';
     const latestQuote = inv.price != null ? inv.price : (inv.priceHistory && inv.priceHistory.length ? inv.priceHistory[inv.priceHistory.length - 1].price : '');
-    document.getElementById('iCotacao').value = latestQuote != null ? latestQuote : '';
-    document.getElementById('iValor').value = inv.value || 0;
-    document.getElementById('iValorSimples').value = inv.value || 0;
+    setMoneyInput('iCotacao', latestQuote || 0);
+    setMoneyInput('iValor', inv.value || 0);
+    setMoneyInput('iValorSimples', inv.value || 0);
     document.getElementById('iInstituicao').value = inv.institution || '';
     document.getElementById('iTaxa').value = inv.rate || '';
     document.getElementById('iVencimento').value = inv.dueDate || '';
@@ -2829,7 +2922,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('panelNovoTitle').innerHTML = 'Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('fSalvar').textContent = 'Salvar';
     document.getElementById('fDesc').value = '';
-    document.getElementById('fValor').value = '';
+    setMoneyInput('fValor', 0);
     document.getElementById('fData').value = todayISO();
     openModal('panelNovo');
   };
@@ -2841,9 +2934,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('iApelido').value = '';
     document.getElementById('iTipo').value = 'Stablecoin';
     document.getElementById('iUnidades').value = '';
-    document.getElementById('iCotacao').value = '';
-    document.getElementById('iValor').value = '';
-    document.getElementById('iValorSimples').value = '';
+    setMoneyInput('iCotacao', 0);
+    setMoneyInput('iValor', 0);
+    setMoneyInput('iValorSimples', 0);
     document.getElementById('iInstituicao').value = '';
     document.getElementById('iTaxa').value = '';
     document.getElementById('iVencimento').value = '';
@@ -2856,7 +2949,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnBanco').onclick = () => {
     editingBankId = null;
     document.getElementById('bNome').value = '';
-    document.getElementById('bSaldo').value = '';
+    setMoneyInput('bSaldo', 0);
     document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('bSalvar').textContent = 'Adicionar';
     openModal('panelBanco');
@@ -2866,6 +2959,7 @@ document.addEventListener('DOMContentLoaded', () => {
     returnToEntryAfterCategory = false;
     editingCategoryId = null;
     document.getElementById('cNome').value = '';
+    document.getElementById('cIcon').value = '📦';
     document.getElementById('cSalvar').textContent = 'Adicionar';
     openModal('panelCategoria');
   };
@@ -2885,6 +2979,7 @@ document.addEventListener('DOMContentLoaded', () => {
     returnToEntryAfterCategory = true;
     editingCategoryId = null;
     document.getElementById('cNome').value = '';
+    document.getElementById('cIcon').value = '📦';
     document.getElementById('cSalvar').textContent = 'Adicionar categoria';
     openModal('panelCategoria');
     setTimeout(() => document.getElementById('cNome').focus(), 80);
@@ -2907,7 +3002,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const desc = document.getElementById('fDesc').value.trim();
     const bank = document.getElementById('fBanco').value;
     const category = document.getElementById('fCategoria').value;
-    const valor = parseFloat(document.getElementById('fValor').value);
+    const valor = readMoneyInput('fValor');
 
     if (!desc || isNaN(valor) || valor <= 0) {
       alert('Preencha a descrição e um valor válido.');
@@ -2929,7 +3024,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveEntries();
     populateFilterControls();
     document.getElementById('fDesc').value = '';
-    document.getElementById('fValor').value = '';
+    setMoneyInput('fValor', 0);
     btn.disabled = false;
     closeAllPanels();
     render();
@@ -2939,9 +3034,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const type = document.getElementById('iTipo').value;
     if (type !== 'Stablecoin' && type !== 'Criptomoeda') return;
     const units = parseFloat(document.getElementById('iUnidades').value) || 0;
-    const price = parseFloat(document.getElementById('iCotacao').value) || 0;
+    const price = readMoneyInput('iCotacao');
     if (units > 0 && price > 0) {
-      document.getElementById('iValor').value = (units * price).toFixed(2);
+      setMoneyInput('iValor', units * price);
     }
   }
 
@@ -2954,11 +3049,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const type = document.getElementById('iTipo').value;
     const isCrypto = (type === 'Stablecoin' || type === 'Criptomoeda');
     const units = isCrypto ? (parseFloat(document.getElementById('iUnidades').value) || null) : null;
-    const quoteRaw = isCrypto ? parseFloat(document.getElementById('iCotacao').value) : NaN;
+    const quoteRaw = isCrypto ? readMoneyInput('iCotacao') : NaN;
     const quote = isFinite(quoteRaw) && quoteRaw > 0 ? quoteRaw : null;
     const value = isCrypto
-      ? (quote != null && units != null ? units * quote : (parseFloat(document.getElementById('iValor').value) || 0))
-      : (parseFloat(document.getElementById('iValorSimples').value) || 0);
+      ? (quote != null && units != null ? units * quote : readMoneyInput('iValor'))
+      : readMoneyInput('iValorSimples');
     const institution = type === 'Renda Fixa' ? document.getElementById('iInstituicao').value.trim() : '';
     const rate = type === 'Renda Fixa' ? document.getElementById('iTaxa').value.trim() : '';
     const dueDate = type === 'Renda Fixa' ? document.getElementById('iVencimento').value : '';
@@ -2994,6 +3089,8 @@ document.addEventListener('DOMContentLoaded', () => {
         latest.units = units;
         latest.value = value;
       }
+      targetItem.price = quote;
+      targetItem.lastQuoteAt = new Date().toISOString();
     }
     pendingPricePoint = null;
 
@@ -3006,29 +3103,29 @@ document.addEventListener('DOMContentLoaded', () => {
     editingPocketId = null;
     document.getElementById('pNome').value = '';
     document.getElementById('pObjetivo').value = '';
-    document.getElementById('pInicial').value = '';
-    document.getElementById('pAtual').value = '0.00';
+    setMoneyInput('pInicial', 0);
+    setMoneyInput('pAtual', 0);
     document.getElementById('panelPocketTitle').innerHTML = 'Nova Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('pSalvar').textContent = 'Salvar Caixinha';
     openModal('panelPocket');
   };
 
   document.getElementById('pInicial').addEventListener('input', () => {
-    const initial = parseFloat(document.getElementById('pInicial').value) || 0;
+    const initial = readMoneyInput('pInicial');
     const current = editingPocketId ? pocketCurrentBalance(pockets.find(p => p.id === editingPocketId)) : initial;
     if (editingPocketId) {
       const pocket = pockets.find(p => p.id === editingPocketId);
       const movements = pocket ? pocketMovementTotal(pocket.id) : 0;
-      document.getElementById('pAtual').value = Math.max(0, initial + movements).toFixed(2);
+      setMoneyInput('pAtual', Math.max(0, initial + movements));
     } else {
-      document.getElementById('pAtual').value = Math.max(0, current).toFixed(2);
+      setMoneyInput('pAtual', Math.max(0, current));
     }
   });
 
   document.getElementById('pSalvar').onclick = () => {
     const name = document.getElementById('pNome').value.trim();
     const goal = document.getElementById('pObjetivo').value.trim();
-    const initial = parseFloat(document.getElementById('pInicial').value);
+    const initial = readMoneyInput('pInicial');
 
     if (!name) { alert('Informe o nome da caixinha.'); return; }
     if (!isFinite(initial) || initial < 0) { alert('Informe um saldo inicial válido.'); return; }
@@ -3037,12 +3134,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = pockets.findIndex(p => p.id === editingPocketId);
       if (idx !== -1) {
         pockets[idx] = { ...pockets[idx], id: editingPocketId, name, goal, initial };
-        pockets[idx].value = pocketCurrentBalance(pockets[idx]);
       }
       editingPocketId = null;
     } else {
       const id = 'pkt' + Date.now();
-      pockets.push({ id, name, goal, initial, value: initial });
+      pockets.push({ id, name, goal, initial });
     }
 
     persistAll();
@@ -3065,11 +3161,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let units = null;
     let price = null;
-    let amount = parseFloat(document.getElementById('imValor').value);
+    let amount = readMoneyInput('imValor');
 
     if (isCrypto) {
       units = parseFloat(document.getElementById('imQuantidade').value);
-      price = parseFloat(document.getElementById('imCotacao').value);
+      price = readMoneyInput('imCotacao');
       if (!isFinite(units) || units <= 0) { alert('Informe uma quantidade válida.'); return; }
       if (!isFinite(price) || price <= 0) { alert('Informe uma cotação válida ou use o botão 🔄 para buscá-la.'); return; }
       if (kind === 'resgate') {
@@ -3078,7 +3174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (units > available + 1e-12) { alert(`O resgate não pode ser maior que o saldo disponível (${available}).`); return; }
       }
       amount = units * price;
-      document.getElementById('imValor').value = amount.toFixed(2);
+      setMoneyInput('imValor', amount);
     } else {
       if (!isFinite(amount) || amount <= 0) { alert('Informe um valor válido.'); return; }
       if (kind === 'resgate') {
@@ -3133,6 +3229,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isCrypto) {
       item.value = item.units * price;
+      item.price = price;
+      item.lastQuoteAt = new Date().toISOString();
       if (!item.priceHistory) item.priceHistory = [];
       const latest = item.priceHistory[item.priceHistory.length - 1];
       const pointDate = dateEnd;
@@ -3158,7 +3256,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const date = document.getElementById('pmData').value || todayISO();
     const isPeriod = pocketMovementTarget.kind === 'rendimento' && document.getElementById('pmPeriodo').classList.contains('active-in');
     const dateEnd = isPeriod ? (document.getElementById('pmDataFim').value || date) : date;
-    const amount = parseFloat(document.getElementById('pmValor').value);
+    const amount = readMoneyInput('pmValor');
     const desc = document.getElementById('pmDesc').value.trim();
     const kind = pocketMovementTarget.kind;
     if (dateEnd < date) { alert('A data final não pode ser anterior à data inicial.'); return; }
@@ -3191,7 +3289,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    item.value = pocketCurrentBalance(item);
     persistAll();
     pocketMovementTarget = null;
     closeAllPanels();
@@ -3211,8 +3308,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const price = await fetchCoinPriceBRL(coin.id);
       if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
       const units = parseFloat(document.getElementById('iUnidades').value) || 1;
-      document.getElementById('iCotacao').value = price;
-      document.getElementById('iValor').value = (price * units).toFixed(2);
+      setMoneyInput('iCotacao', price);
+      setMoneyInput('iValor', price * units);
       pendingPricePoint = { price, units, value: price * units };
       statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · atualizado agora`;
     } catch (err) {
@@ -3253,7 +3350,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!coin) { failed.push(inv.name); continue; }
         const price = await fetchCoinPriceBRL(coin.id);
         if (!price) { failed.push(inv.name); continue; }
+        inv.price = price;
         inv.value = price * inv.units;
+        inv.lastQuoteAt = new Date().toISOString();
         if (!inv.priceHistory) inv.priceHistory = [];
         inv.priceHistory.push({ date: todayISO(), price, units: inv.units, value: inv.value });
         updated++;
@@ -3272,7 +3371,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('bSalvar').onclick = () => {
     const name = document.getElementById('bNome').value.trim();
-    const saldo = parseFloat(document.getElementById('bSaldo').value) || 0;
+    const saldo = readMoneyInput('bSaldo');
     if (!name) { alert('Dê um nome ao banco.'); return; }
 
     if (editingBankId) {
@@ -3289,7 +3388,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveBanks();
     populateFilterControls();
     document.getElementById('bNome').value = '';
-    document.getElementById('bSaldo').value = '';
+    setMoneyInput('bSaldo', 0);
     document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('bSalvar').textContent = 'Adicionar';
     closeAllPanels();
@@ -3298,27 +3397,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('cSalvar').onclick = async () => {
     const name = document.getElementById('cNome').value.trim();
+    const icon = document.getElementById('cIcon').value || '📦';
     if (!name) { alert('Dê um nome à categoria.'); return; }
     let savedCategoryId = editingCategoryId;
     if (editingCategoryId) {
       const cat = categories.find(c => c.id === editingCategoryId);
-      if (cat) cat.name = name;
+      if (cat) { cat.name = name; cat.icon = icon; }
       editingCategoryId = null;
       document.getElementById('cSalvar').textContent = 'Adicionar';
     } else {
       savedCategoryId = 'c' + Date.now();
-      categories.push({ id: savedCategoryId, name });
+      categories.push({ id: savedCategoryId, name, icon });
     }
     await saveCategories();
     populateFilterControls();
     document.getElementById('cNome').value = '';
+    document.getElementById('cIcon').value = '📦';
     render();
     if (returnToEntryAfterCategory) {
       returnToEntryAfterCategory = false;
       document.getElementById('fCategoria').value = savedCategoryId;
       openModal('panelNovo');
-    } else {
-      closeAllPanels();
     }
   };
 
@@ -3327,6 +3426,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!cat) return;
     editingCategoryId = id;
     document.getElementById('cNome').value = cat.name;
+    document.getElementById('cIcon').value = categoryIcon(cat);
     document.getElementById('cSalvar').textContent = 'Salvar Alteração';
     openModal('panelCategoria');
   };
@@ -3335,7 +3435,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const date = document.getElementById('tData').value || todayISO();
     const deId = document.getElementById('tDe').value;
     const paraId = document.getElementById('tPara').value;
-    const valor = parseFloat(document.getElementById('tValor').value);
+    const valor = readMoneyInput('tValor');
     const desc = document.getElementById('tDesc').value.trim();
 
     if (deId === paraId) {
@@ -3367,7 +3467,12 @@ document.addEventListener('DOMContentLoaded', () => {
         type: 'out'
       });
     } else if (dePocket) {
-      dePocket.value = (dePocket.value || 0) - valor;
+      yieldsLog.push({
+        id: 'pmv' + Date.now() + Math.random().toString(36).slice(2, 7),
+        targetType: 'pocket', targetId: dePocket.id, kind: 'resgate',
+        date, dateEnd: date, amount: valor,
+        desc: `Transferência para ${paraName}${extraDesc}`
+      });
     }
 
     if (paraBank) {
@@ -3381,12 +3486,17 @@ document.addEventListener('DOMContentLoaded', () => {
         type: 'in'
       });
     } else if (paraPocket) {
-      paraPocket.value = (paraPocket.value || 0) + valor;
+      yieldsLog.push({
+        id: 'pmv' + (Date.now() + 1) + Math.random().toString(36).slice(2, 7),
+        targetType: 'pocket', targetId: paraPocket.id, kind: 'aporte',
+        date, dateEnd: date, amount: valor,
+        desc: `Transferência de ${deName}${extraDesc}`
+      });
     }
 
     persistAll();
     populateFilterControls();
-    document.getElementById('tValor').value = '';
+    setMoneyInput('tValor', 0);
     document.getElementById('tDesc').value = '';
     closeAllPanels();
     render();
@@ -3470,8 +3580,29 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnExport').onclick = () => {
     const activeEntries = getFilteredEntries();
     if (activeEntries.length === 0) { alert('Não há lançamentos para exportar nos filtros atuais.'); return; }
+    renderExportPreview();
     openModal('panelExportFormat');
   };
+
+  function renderExportPreview() {
+    const grouped = getOrganizedExportData();
+    const count = grouped.reduce((sum, group) => sum + group.entries.length, 0);
+    const preview = document.getElementById('exportPreview');
+    document.getElementById('exportPreviewCaption').textContent = `${count} movimentação(ões) selecionada(s), agrupadas por banco e respeitando os filtros atuais.`;
+    preview.innerHTML = grouped.map(group => {
+      const rows = group.entries.slice(0, 6).map(entry => {
+        const category = categories.find(c => c.id === entry.category);
+        return `<div class="export-preview-row">
+          <span>${escapeHTML(entry.date.split('-').reverse().join('/'))}</span>
+          <strong>${escapeHTML(entry.desc || 'Lançamento')}</strong>
+          <span>${escapeHTML(category?.name || 'Sem categoria')}</span>
+          <b class="${entry.type === 'in' ? 'positive' : 'negative'}">${entry.type === 'in' ? '+' : '−'} ${fmt(Math.abs(entry.amount))}</b>
+        </div>`;
+      }).join('');
+      const extra = group.entries.length > 6 ? `<div class="export-preview-more">+ ${group.entries.length - 6} lançamento(s)</div>` : '';
+      return `<section class="export-preview-bank"><h4>${escapeHTML(group.bank.name)} <small>${fmt(bankBalance(group.bank.id))}</small></h4>${rows}${extra}</section>`;
+    }).join('');
+  }
 
   document.getElementById('btnExportFormatPdf').onclick = () => {
     closeAllPanels();
@@ -3813,6 +3944,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  initMoneyMasks();
   markSingleActionButtons();
 
   auth.onAuthStateChanged(user => {
