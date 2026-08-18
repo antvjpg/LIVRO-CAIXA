@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="./icon-192.png">
 <title>Livro-Caixa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -25,6 +25,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
   :root{
+    --font-ui:'Plus Jakarta Sans',sans-serif;
     --paper:#F7F5EF;
     --paper-2:#EFEBE0;
     --ink:#1C2B24;
@@ -57,6 +58,7 @@
     --hover-soft:rgba(255,255,255,0.06);
   }
   *{box-sizing:border-box;}
+  body,body *{font-family:var(--font-ui)!important;}
   body{
     margin:0;
     background:var(--paper);
@@ -168,7 +170,7 @@
   .balance-card .amount{
     font-family:'Fraunces',serif;
     font-size:22px;
-    font-weight:600;
+    font-weight:700;
     font-variant-numeric:tabular-nums;
     color:inherit;
   }
@@ -202,10 +204,12 @@
   button:active{transform:scale(0.98);}
   button.primary{background:var(--green);border-color:var(--green);color:var(--on-accent);}
   button.primary:hover{background:var(--green);filter:brightness(0.92);}
-  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  button:focus, input:focus, select:focus, textarea:focus, a:focus, [tabindex]:focus{outline:none;}
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, [tabindex]:focus-visible{
     outline:2px solid var(--gold);
-    outline-offset:2px;
+    outline-offset:3px;
   }
+  button,input,select,textarea{-webkit-tap-highlight-color:transparent;}
   button:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
   input[type=file]{display:none;}
 
@@ -594,7 +598,7 @@
   #authOverlay{
     position:fixed;
     inset:0;
-    background:var(--paper);
+    background:radial-gradient(circle at 85% 9%,rgba(67,139,97,.18),transparent 28%),var(--paper);
     z-index:100;
     display:flex;
     align-items:center;
@@ -631,39 +635,59 @@
   }
   @keyframes sync-spin{ to{ transform:rotate(360deg); } }
   .auth-box{
-    max-width:360px;
+    max-width:390px;
     width:100%;
-    border:2px solid var(--ink);
-    padding:32px 28px;
-    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:30px 26px 26px;
+    background:#fffefa;
+    box-shadow:0 18px 42px rgba(20,48,36,.14);
+    position:relative;
+    overflow:hidden;
+  }
+  .auth-box::before{
+    content:"▣  LIVRO-CAIXA";
+    display:block;
+    margin-bottom:18px;
+    color:var(--green);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.12em;
   }
   .auth-box h2{
-    font-family:'Fraunces',serif;
-    margin:0 0 6px;
-    font-size:26px;
+    font-family:var(--font-ui);
+    margin:0 0 7px;
+    font-size:27px;
+    font-weight:700;
+    letter-spacing:-.045em;
   }
   .auth-box p.sub{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11.5px;
+    font-family:var(--font-ui);
+    font-size:12px;
+    font-weight:500;
     color:var(--ink-soft);
-    margin:0 0 22px;
-    text-transform:uppercase;
-    letter-spacing:0.05em;
+    margin:0 0 24px;
+    text-transform:none;
+    letter-spacing:0;
   }
-  .auth-box label{margin-top:12px;}
-  .auth-box input{margin-bottom:4px;}
+  .auth-box label{margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.04em;}
+  .auth-box input{min-height:46px;margin-bottom:4px;border-radius:11px;background:var(--paper);}
+  .auth-box input:focus{border-color:var(--green);outline:2px solid color-mix(in srgb,var(--green) 22%,transparent);outline-offset:1px;}
   .auth-error{
     color:var(--red);
-    font-size:12.5px;
+    font-size:12px;
+    font-weight:500;
     margin-top:10px;
     min-height:16px;
   }
   .auth-toggle{
     margin-top:16px;
-    font-size:12.5px;
+    font-size:12px;
+    font-weight:500;
     text-align:center;
   }
-  .auth-toggle a{color:var(--green);cursor:pointer;text-decoration:underline;}
+  .auth-toggle a{color:var(--green);cursor:pointer;font-weight:700;text-decoration:none;}
+  .auth-toggle a:hover{text-decoration:underline;}
   .pass-wrap{position:relative;}
   .pass-wrap input{padding-right:44px;}
   .pass-toggle{
@@ -681,6 +705,16 @@
     cursor:pointer;
   }
   .pass-toggle:hover{background:none;color:var(--ink);}
+  #authSubmit{min-height:48px!important;border-radius:11px!important;font-size:12px!important;font-weight:700!important;letter-spacing:.02em!important;}
+  #authGoogle{min-height:44px;border:1px solid var(--line);border-radius:11px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;}
+  #authGoogle:hover{background:var(--green-soft);color:var(--ink);}
+  body.dark-mode #authOverlay{background:radial-gradient(circle at 85% 9%,rgba(91,175,123,.16),transparent 29%),#0D2118;}
+  body.dark-mode .auth-box{background:#173128;border-color:#315043;box-shadow:0 18px 42px rgba(0,0,0,.34);}
+  body.dark-mode .auth-box::before{color:#83D3A3;}
+  body.dark-mode .auth-box p.sub{color:#B7CCBD;}
+  body.dark-mode .auth-box input,body.dark-mode #authGoogle{background:#12251D;border-color:#315043;color:#EDF4EE;}
+  body.dark-mode #authGoogle:hover{background:#254C39;color:#F3FBF5;}
+  body.dark-mode .auth-toggle a{color:#8CD5A8;}
   #userBar{
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
@@ -854,16 +888,20 @@
     .balance-card { min-height:86px; padding:14px 14px; border-radius:13px; border:1px solid var(--line); background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.035); }
     .balance-card.total { grid-column:1/-1; min-height:142px; padding:22px 21px; background:linear-gradient(120deg,#18382C,#1E4536); border:0; border-radius:15px; box-shadow:0 8px 18px rgba(18,52,38,.14); position:relative; overflow:hidden; }
     .balance-card.total::after { content:"◉"; position:absolute; right:20px; top:23px; color:#DDEADD; font-size:23px; font-family:Georgia,serif; }
-    .balance-card .label { font-size:9px; color:inherit; opacity:.72; margin-bottom:6px; }
+    .balance-card .label { font-size:9px; color:inherit; opacity:.82; margin-bottom:6px; font-weight:600; }
     .balance-card .amount { font-size:19px; letter-spacing:-.035em; }
-    .balance-card.total .amount { font-size:clamp(37px,10.5vw,48px); line-height:1; }
+    .balance-card.total { color:#F3FBF5; }
+    .balance-card.total .label { color:#D6E9DC; opacity:1; }
+    .balance-card.total .amount { color:#F3FBF5; font-size:clamp(37px,10.5vw,48px); line-height:1; font-weight:700; }
     .bank-summary-card { cursor:pointer; position:relative; transition:transform .16s ease, box-shadow .16s ease; }
     .bank-summary-card:active { transform:scale(.98); }
     .bank-summary-card:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
     .balance-detail-link { display:block; margin-top:6px; color:var(--green); font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.02em; }
-    .toolbar { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin:0 0 13px; }
-    .toolbar button { min-height:39px; padding:6px 4px; border:1px solid var(--line); border-radius:9px; background:#fffefa; font-size:8px; letter-spacing:.02em; line-height:1.1; text-transform:none; box-shadow:none; }
-    .toolbar button.primary { grid-column:1/-1; min-height:52px; background:linear-gradient(100deg,#2F7654,#3A8A62); color:#fffef9; border:0; border-radius:10px; font-size:11px; letter-spacing:.07em; box-shadow:0 6px 13px rgba(47,118,84,.18); }
+    .toolbar { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:0 0 15px; }
+    .toolbar button { min-height:46px; padding:7px 5px; border:1px solid #C9D9CC; border-radius:10px; background:#FCFDF9; color:#1E4B38; font-size:9px; font-weight:700; letter-spacing:.01em; line-height:1.25; text-transform:none; box-shadow:0 2px 5px rgba(20,48,36,.055); }
+    .toolbar button:hover { background:#E7EFE8; color:#163C2C; }
+    .toolbar button.primary { grid-column:1/-1; min-height:54px; background:linear-gradient(100deg,#2F7654,#3A8A62); color:#fffef9; border:0; border-radius:11px; font-size:11px; font-weight:700; letter-spacing:.04em; box-shadow:0 7px 15px rgba(47,118,84,.20); }
+    #btnUpdateAllPrices { border-color:#8CB9A0; background:#E7F1E9; color:#1C6042; }
     .cat-summary { margin:0 0 13px; padding:16px 15px; border:1px solid var(--line); border-radius:14px; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
     .cat-summary h3 { font-size:20px; letter-spacing:-.025em; margin-bottom:10px; }
     .cat-summary-content { gap:14px; align-items:center; }
@@ -972,16 +1010,43 @@
     body.dark-mode { --paper:#12251D; --paper-2:#173128; --ink:#EDF4EE; --ink-soft:#A5B9AC; --green:#58A979; --green-soft:#203D30; --line:#315043; --gold:#D4B763; --shadow:rgba(0,0,0,.28); background:#12251D; }
     body.dark-mode main,body.dark-mode .mobile-bottom-nav { background:#12251D; }
     body.dark-mode .nav-tabs,body.dark-mode .balance-card:not(.total),body.dark-mode .cat-summary,body.dark-mode .ledger,body.dark-mode .invest-box,body.dark-mode .panel { background:#173128; border-color:#315043; color:#EDF4EE; }
+    body.dark-mode .balance-card.total { background:linear-gradient(120deg,#245941,#173E2D); color:#F1FAF3; box-shadow:0 9px 22px rgba(0,0,0,.26); }
+    body.dark-mode .balance-card.total .label { color:#D1E7D8; opacity:1; }
+    body.dark-mode .balance-card.total .amount { color:#F1FAF3; }
+    body.dark-mode .balance-card:not(.total) .label { color:#B7CCBD; opacity:1; }
+    body.dark-mode .balance-card:not(.total) .amount { color:#EDF4EE; }
+    body.dark-mode .toolbar button { background:#203D30; border-color:#3E6B56; color:#EAF6EC; box-shadow:0 3px 8px rgba(0,0,0,.15); }
+    body.dark-mode .toolbar button:hover,body.dark-mode .toolbar button:active { background:#2B5B43; color:#FFFFFF; }
+    body.dark-mode .toolbar button.primary { background:linear-gradient(100deg,#3B8F64,#52A976); border-color:#52A976; color:#F7FFF9; }
+    body.dark-mode #btnUpdateAllPrices { background:#254F3A; border-color:#5FA77C; color:#DCF6E4; }
+    body.dark-mode #btnUpdateAllPrices:hover { background:#327357; color:#FFFFFF; }
     body.dark-mode .panel input,body.dark-mode .panel select,body.dark-mode .panel textarea,body.dark-mode .panel .bank-list-item,body.dark-mode .panel .cat-list-item,body.dark-mode .export-preview-bank { background:#12251D; border-color:#315043; color:#EDF4EE; }
     body.dark-mode .panel h3,body.dark-mode .manage-item-copy,body.dark-mode .export-preview-bank h4 { color:#EDF4EE; border-color:#315043; }
+    body.dark-mode .panel label,body.dark-mode .panel .hint,body.dark-mode .manage-item-copy span,body.dark-mode .export-preview-more { color:#B8CCBE; }
+    body.dark-mode .manage-item-value,body.dark-mode .export-preview-bank h4 small { color:#8CD5A8; }
+    body.dark-mode .panel button.primary { background:#3B8F64; color:#F5FFF7; box-shadow:0 7px 14px rgba(0,0,0,.22); }
+    body.dark-mode .panel .type-toggle { background:#12251D; border-color:#315043; }
+    body.dark-mode .panel .type-toggle button { color:#BDD2C3; }
+    body.dark-mode .panel .type-toggle button.active-in { background:#3B8F64; color:#F5FFF7; }
+    body.dark-mode .panel .type-toggle button.active-out { background:#B95A47; color:#FFF7F4; }
     body.dark-mode .card-lancamento { border-color:#315043; }
     body.dark-mode .card-badge { background:#203D30; border-color:#315043; color:#BDE2C9; }
     body.dark-mode .export-preview-row { border-color:#315043; }
+    body.dark-mode .invest-box .tag { background:#315F49; color:#EEFAF0; }
+    body.dark-mode .rentability-box { background:#12251D; border-color:#315043; }
+    body.dark-mode .ledger-filters { background:#12251D; border-color:#315043; }
+    body.dark-mode .ledger-filters select,body.dark-mode .ledger-filters input { background:#173128; border-color:#315043; color:#EDF4EE; }
     @keyframes mobile-panel-enter { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
     .mobile-bottom-nav { display:grid; grid-template-columns:repeat(4,1fr); align-items:center; position:fixed; left:0; right:0; bottom:0; z-index:70; min-height:74px; padding:7px 10px max(8px,env(safe-area-inset-bottom)); background:rgba(255,254,249,.96); border-top:1px solid var(--line); backdrop-filter:blur(14px); }
-    .mobile-bottom-nav button { min-height:54px; padding:4px 2px; border:0; border-radius:10px; background:transparent; color:#59665E; font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:0; text-transform:none; flex-direction:column; gap:3px; }
+    .mobile-bottom-nav button { min-height:54px; padding:4px 2px; border:0; border-radius:10px; background:transparent; color:#59665E; font-family:'IBM Plex Mono',monospace; font-size:8.5px; font-weight:600; letter-spacing:0; text-transform:none; flex-direction:column; gap:3px; }
     .mobile-bottom-nav button .nav-icon { font-size:21px; line-height:1; color:#19352A; }
     .mobile-bottom-nav button.is-active,.mobile-bottom-nav button.is-active .nav-icon { color:#1E6C4B; }
+    body.dark-mode .nav-tab { color:#BBD0C1; }
+    body.dark-mode .nav-tab.active { background:#2A5C45; color:#F1FAF3; box-shadow:0 5px 12px rgba(0,0,0,.20); }
+    body.dark-mode .mobile-bottom-nav { border-color:#315043; background:rgba(18,37,29,.96); }
+    body.dark-mode .mobile-bottom-nav button { color:#AFC7B8; }
+    body.dark-mode .mobile-bottom-nav button .nav-icon { color:#AFC7B8; }
+    body.dark-mode .mobile-bottom-nav button.is-active,body.dark-mode .mobile-bottom-nav button.is-active .nav-icon { color:#73C695; }
   }
 </style>
 </head>
@@ -1466,6 +1531,10 @@
 <footer>livro-caixa · dados sincronizados com a nuvem pela sua conta</footer>
 
 <script>
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.font.family = 'Plus Jakarta Sans';
+  Chart.defaults.font.weight = '500';
+}
 const firebaseConfig = {
   apiKey: "AIzaSyADRwvRCaOB0Q8QvDeDfReVeMzK_m4KqlA",
   authDomain: "livro-caixa-54357.firebaseapp.com",
@@ -2451,7 +2520,7 @@ document.addEventListener('DOMContentLoaded', () => {
               display: true,
               position: 'bottom',
               labels: {
-                font: { family: 'IBM Plex Mono', size: 11 },
+                font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' },
                 color: textColor,
                 boxWidth: 12
               }
