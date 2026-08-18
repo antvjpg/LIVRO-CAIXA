@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="./icon-192.png">
 <title>Livro-Caixa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -25,7 +25,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
   :root{
-    --font-ui:'Manrope',sans-serif;
+    --font-ui:'Plus Jakarta Sans',sans-serif;
     --paper:#F7F5EF;
     --paper-2:#EFEBE0;
     --ink:#1C2B24;
@@ -272,7 +272,8 @@
   .balance-card .amount.neg{color:var(--red);}
   .balance-card.total .amount.neg{color:var(--red);}
   .balance-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .balance-symbol{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:color-mix(in srgb,currentColor 10%,transparent);color:inherit;font-size:24px;line-height:1;}
+  .balance-symbol{display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:color-mix(in srgb,currentColor 10%,transparent);color:inherit;line-height:1;}
+  .balance-symbol svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
   .balance-card.total .balance-symbol{background:rgba(255,255,255,.14);}
   .balance-insight{display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:inherit;font-size:11px;font-weight:650;opacity:.92;}
   .balance-insight strong{font-size:12px;}
@@ -280,6 +281,8 @@
   .balance-insight.is-negative strong{color:#FFD0C4;}
   .balance-share{display:inline-flex;align-items:center;margin-top:9px;padding:4px 8px;border-radius:999px;background:var(--green-soft);color:var(--accent);font-size:10px;font-weight:750;line-height:1;}
   .balance-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
+  .invest-summary-card .balance-symbol{background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--gold);}
+  .cat-legend-head{display:none;}
 
   .toolbar{
     display:grid;
@@ -979,23 +982,23 @@
   @media (max-width:680px) {
     :root { --paper:#F8F7F2; --paper-2:#F0F0EA; --ink:#19352A; --ink-soft:#66746B; --green:#327957; --green-soft:#E7EFE8; --line:#E1E1D9; --gold:#B89034; --shadow:rgba(20,48,36,.08); }
     body { background:var(--paper); padding-bottom:116px; }
-    header.app-header { background:linear-gradient(135deg,#153429,#1D3B30); color:#F9F8F3; min-height:184px; max-width:none; margin:0; padding:33px 22px 24px; border:0; align-items:flex-start; position:relative; overflow:hidden; }
+    header.app-header { background:linear-gradient(135deg,#153429,#1D3B30); color:#F9F8F3; min-height:194px; max-width:none; margin:0; padding:33px 22px 24px; border:0; align-items:flex-start; position:relative; overflow:hidden; }
     body.dark-mode header.app-header { background:linear-gradient(135deg,var(--header-from),var(--header-to)); }
     header.app-header::after { content:""; position:absolute; width:230px; height:230px; right:-105px; top:-90px; border:1px solid rgba(255,255,255,.10); border-radius:50%; box-shadow:0 0 0 34px rgba(255,255,255,.025),0 0 0 68px rgba(255,255,255,.018); }
     header.app-header .app-brand, .app-header-actions { position:relative; z-index:1; }
     header.app-header .app-brand { pointer-events:none; user-select:none; }
-    header.app-header .app-brand { margin-left:50px; }
-    header.app-header h1 { color:#F9F8F3; font-size:clamp(34px,9.5vw,44px); line-height:.98; letter-spacing:-.045em; margin-bottom:12px; }
+    header.app-header .app-brand { margin-left:50px; padding-right:56px; }
+    header.app-header h1 { color:#F9F8F3; font-size:clamp(30px,8.5vw,40px); line-height:.98; letter-spacing:-.045em; margin-bottom:12px; }
     header.app-header .subtitle { color:rgba(248,247,242,.85); font-size:11px; letter-spacing:.05em; text-transform:none; display:flex; align-items:center; gap:7px; }
     header.app-header .subtitle::before { content:"▣"; color:#B9D0BB; font-size:14px; }
-    .app-header-actions { display:flex; align-items:center; gap:8px; }
+    .app-header-actions { position:absolute; top:33px; right:18px; z-index:3; display:flex; flex-direction:column; align-items:center; gap:10px; }
     #userBar { display:none; }
     #btnOpenDrawer{position:absolute;top:33px;left:18px;z-index:3;}
-    #btnOpenDrawer,#btnNotifications,#btnThemeToggle,#btnInstallPWA { min-width:44px; min-height:44px; padding:0!important; border:1px solid rgba(248,247,242,.48); color:#FFFFFF; background:rgba(9,30,21,.42); border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,.12); text-shadow:0 1px 2px rgba(0,0,0,.24); }
+    #btnOpenDrawer,#btnNotifications,#btnThemeToggle,#btnInstallPWA { width:44px; min-width:44px; height:44px; min-height:44px; padding:0!important; border:1px solid rgba(248,247,242,.48); color:#FFFFFF; background:rgba(9,30,21,.42); border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,.12); text-shadow:0 1px 2px rgba(0,0,0,.24); }
     #btnNotifications{font-size:17px;}
     #btnOpenDrawer{font-size:23px;}
     #btnNotifications .notification-badge{box-shadow:0 0 0 2px #18362A;}
-    #btnInstallPWA { min-width:auto; padding:0 13px!important; font-size:10px!important; }
+    #btnInstallPWA { position:absolute; top:106px; right:0; width:auto; min-width:auto; height:34px; min-height:34px; padding:0 11px!important; font-size:9px!important; }
     main { max-width:none; margin:-18px 0 0; padding:14px 14px 20px; position:relative; z-index:3; background:var(--paper); border-radius:24px 24px 0 0; }
     .nav-tabs { margin:0 0 13px; padding:4px; gap:2px; border:1px solid var(--line); border-radius:13px; background:#fffefa; overflow:visible; box-shadow:0 4px 14px rgba(20,48,36,.04); }
     .nav-tab { flex:1; min-width:0; padding:10px 4px; border:0; border-radius:9px; color:#566258; font-size:9px; letter-spacing:.01em; text-transform:none; }
@@ -1003,12 +1006,20 @@
     .balance-strip { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-bottom:12px; }
     .balance-card { min-height:86px; padding:14px 14px; border-radius:13px; border:1px solid var(--line); background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.035); }
     .balance-card.total { grid-column:1/-1; min-height:142px; padding:22px 21px; background:linear-gradient(120deg,#18382C,#1E4536); border:0; border-radius:15px; box-shadow:0 8px 18px rgba(18,52,38,.14); position:relative; overflow:hidden; }
-    .balance-card.total::after { content:"◉"; position:absolute; right:20px; top:23px; color:#DDEADD; font-size:23px; font-family:Georgia,serif; }
+    .balance-card.total::after { display:none; }
     .balance-card .label { font-size:9px; color:inherit; opacity:.82; margin-bottom:6px; font-weight:600; }
     .balance-card .amount { font-size:19px; letter-spacing:-.035em; }
     .balance-card.total { color:#F3FBF5; }
     .balance-card.total .label { color:#D6E9DC; opacity:1; }
     .balance-card.total .amount { color:#F3FBF5; font-size:clamp(37px,10.5vw,48px); line-height:1; font-weight:700; }
+    .balance-card-head{margin-bottom:7px;}
+    .balance-card .balance-symbol{width:43px;height:43px;border-radius:14px;background:var(--green-soft);color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 14%,transparent);}
+    .balance-card .balance-symbol svg{width:22px;height:22px;}
+    .balance-card.total .balance-symbol{background:rgba(255,255,255,.14);color:#F3FBF5;box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);}
+    .invest-summary-card .balance-symbol{background:color-mix(in srgb,var(--gold) 15%,var(--surface));color:var(--gold);}
+    .balance-share{width:max-content;margin-top:9px;padding:5px 8px;border:1px solid color-mix(in srgb,var(--accent) 19%,transparent);border-radius:999px;background:color-mix(in srgb,var(--accent) 11%,var(--surface));color:var(--accent);font-size:9px;font-weight:750;line-height:1;}
+    .balance-insight{gap:7px;margin-top:11px;font-size:9px;}
+    .balance-insight strong{font-size:11px;}
     .bank-summary-card { cursor:pointer; position:relative; transition:transform .16s ease, box-shadow .16s ease; }
     .bank-summary-card:active { transform:scale(.98); }
     .bank-summary-card:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
@@ -1019,20 +1030,22 @@
     .toolbar button.primary { grid-column:1/-1; min-height:54px; background:linear-gradient(100deg,#2F7654,#3A8A62); color:#fffef9; border:0; border-radius:11px; font-size:11px; font-weight:700; letter-spacing:.04em; box-shadow:0 7px 15px rgba(47,118,84,.20); }
     .toolbar .quick-primary{gap:10px;}
     .quick-primary-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--accent);font-size:23px;font-weight:500;line-height:1;}
-    .toolbar .quick-action{flex-direction:column;gap:4px;min-height:70px;padding:8px 4px;font-size:8px;line-height:1.15;text-transform:none;letter-spacing:0;}
-    .quick-action-icon{display:grid;place-items:center;width:25px;height:25px;color:var(--accent);font-size:21px;line-height:1;}
+    .toolbar .quick-action{flex-direction:column;gap:6px;min-height:78px;padding:9px 4px;font-size:9px;line-height:1.15;text-transform:none;letter-spacing:0;}
+    .quick-action-icon{display:grid;place-items:center;width:31px;height:31px;border:1px solid color-mix(in srgb,var(--accent) 15%,transparent);border-radius:10px;background:var(--green-soft);color:var(--accent);font-size:19px;line-height:1;}
     #btnUpdateAllPrices { border-color:#8CB9A0; background:#E7F1E9; color:#1C6042; }
     #viewCaixa .toolbar #btnImportBackupTrigger { grid-column:span 2; }
     .cat-summary { margin:0 0 13px; padding:17px 15px; border:1px solid var(--line); border-radius:14px; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
     .cat-summary h3 { font-size:20px; letter-spacing:-.025em; margin-bottom:14px; }
-    .cat-summary-content { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:13px; align-items:center; }
-    .chart-container { min-width:0; max-width:none; width:100%; height:188px; margin:0; }
-    .cat-bars-list { min-width:0; display:flex; flex-direction:column; gap:7px; }
-    .cat-row { display:grid; grid-template-columns:8px minmax(0,1fr) auto auto; align-items:center; gap:6px; margin:0; }
+    .cat-summary-content { display:grid; grid-template-columns:minmax(116px,.82fr) minmax(0,1.18fr); gap:12px; align-items:center; }
+    .chart-container { min-width:0; max-width:none; width:100%; height:166px; margin:0; }
+    .cat-bars-list { min-width:0; display:flex; flex-direction:column; gap:8px; }
+    .cat-legend-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;padding:0 0 4px 14px;color:var(--ink-soft);font-size:8px;font-weight:750;letter-spacing:.02em;text-transform:uppercase;}
+    .cat-legend-head span:nth-child(2),.cat-legend-head span:nth-child(3){text-align:right;}
+    .cat-row { display:grid; grid-template-columns:8px minmax(0,1fr) auto auto; align-items:start; gap:7px; margin:0; }
     .cat-row::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--category-color); }
-    .cat-row .cat-name { width:auto; min-width:0; flex:none; font-size:9px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .cat-row .cat-name { width:auto; min-width:0; flex:none; font-size:9px; line-height:1.28; overflow-wrap:anywhere; white-space:normal; }
     .cat-row .cat-bar-wrap { display:none; }
-    .cat-row .cat-amt { width:auto; font-size:9px; white-space:nowrap; }
+    .cat-row .cat-amt { width:auto; font-size:9px; text-align:right; white-space:nowrap; }
     .cat-row .cat-pct{min-width:31px;color:var(--ink-soft);font-size:9px;font-weight:750;text-align:right;white-space:nowrap;}
     .cat-summary-total{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:10px 1px 0;border-top:1px solid var(--line);font-size:10px;color:var(--ink-soft);}
     .cat-summary-total strong{color:var(--ink);font-size:13px;letter-spacing:-.02em;}
@@ -1139,11 +1152,16 @@
     body.dark-mode .nav-tabs,body.dark-mode .balance-card:not(.total),body.dark-mode .cat-summary,body.dark-mode .ledger,body.dark-mode .invest-box,body.dark-mode .panel { background:var(--surface); border-color:var(--line); color:#EDF4EE; box-shadow:0 6px 16px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.025); }
     body.dark-mode .balance-card.total { background:linear-gradient(125deg,var(--surface-accent),var(--accent-muted)); border-color:var(--accent); color:var(--ink); box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),0 13px 28px rgba(0,0,0,.34),0 0 24px color-mix(in srgb,var(--accent) 18%,transparent); }
     body.dark-mode .balance-card.total .label,body.dark-mode .balance-card.total .amount { color:var(--ink); opacity:1; }
+    body.dark-mode .balance-card.total .balance-symbol { background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--ink); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent); }
     body.dark-mode .balance-card:not(.total) .label { color:var(--ink-soft); opacity:1; }
     body.dark-mode .balance-card:not(.total) .amount { color:var(--ink); }
+    body.dark-mode .balance-card:not(.total) .balance-symbol { background:color-mix(in srgb,var(--accent) 14%,var(--surface)); color:var(--accent); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent); }
+    body.dark-mode .invest-summary-card .balance-symbol { background:color-mix(in srgb,var(--gold) 16%,var(--surface)); color:var(--gold); }
+    body.dark-mode .balance-share { background:color-mix(in srgb,var(--accent) 13%,var(--surface)); border-color:color-mix(in srgb,var(--accent) 30%,transparent); color:var(--accent); }
     body.dark-mode .toolbar button { background:var(--surface-raised); border-color:var(--line); color:var(--ink); box-shadow:0 5px 12px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.04); }
     body.dark-mode .toolbar button:hover,body.dark-mode .toolbar button:active { background:var(--surface-accent); border-color:var(--accent); color:var(--ink); box-shadow:0 7px 15px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06); }
     body.dark-mode .toolbar button.primary { background:linear-gradient(100deg,var(--accent),var(--accent-to)); border-color:var(--accent); color:var(--accent-ink); box-shadow:0 9px 19px rgba(0,0,0,.30),0 0 18px color-mix(in srgb,var(--accent) 20%,transparent); }
+    body.dark-mode .toolbar .quick-action-icon { background:color-mix(in srgb,var(--accent) 13%,var(--surface-raised)); border-color:color-mix(in srgb,var(--accent) 22%,transparent); color:var(--accent); }
     body.dark-mode #btnUpdateAllPrices { background:var(--surface-accent); border-color:var(--accent); color:var(--ink); }
     body.dark-mode #btnUpdateAllPrices:hover { background:var(--accent-muted); border-color:var(--accent); color:var(--ink); }
     body.dark-mode .panel input,body.dark-mode .panel select,body.dark-mode .panel textarea,body.dark-mode .panel .bank-list-item,body.dark-mode .panel .cat-list-item,body.dark-mode .export-preview-bank { background:var(--paper); border-color:var(--line); color:#EDF4EE; }
@@ -1736,7 +1754,7 @@
 
 <script>
 if (typeof Chart !== 'undefined') {
-  Chart.defaults.font.family = 'Manrope';
+  Chart.defaults.font.family = 'Plus Jakarta Sans';
   Chart.defaults.font.weight = '500';
 }
 const firebaseConfig = {
@@ -2396,6 +2414,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return Math.max(0, value / total * 100);
   }
 
+  function financialIcon(kind) {
+    const icons = {
+      wallet: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18a2 2 0 0 1 2 2v2H6a2 2 0 0 0-2 2v6.5A2.5 2.5 0 0 0 6.5 20H18a2 2 0 0 0 2-2v-7"/><path d="M16 14h.01"/><path d="M4.5 7.5 15.2 4"/></svg>',
+      bank: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-6 9 6"/><path d="M5 10h14"/><path d="M6.5 10v7M10 10v7M14 10v7M17.5 10v7"/><path d="M4 20h16"/></svg>',
+      growth: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19v-5"/><path d="M16 19v-9"/><path d="M4 19h16"/><path d="m13 6 3-3 3 3"/><path d="M16 3v7"/></svg>'
+    };
+    return icons[kind] || icons.wallet;
+  }
+
   function renderBalances() {
     const strip = document.getElementById('balanceStrip');
     const bankTotal = totalBankBalance();
@@ -2407,18 +2434,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let html = `
     <div class="balance-card total">
-      <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" aria-hidden="true">▱</span></div>
+      <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" aria-hidden="true">${financialIcon('wallet')}</span></div>
       <span class="amount ${totalPatrimonio < 0 ? 'neg' : ''}">${fmt(totalPatrimonio)}</span>
       <span class="balance-insight is-${flowInsight.kind}"><strong>${escapeHTML(flowInsight.value)}</strong><span>${escapeHTML(flowInsight.detail)}</span></span>
     </div>
     <div class="balance-card bank-summary-card" role="button" tabindex="0" aria-label="Ver saldos dos bancos" title="Ver saldos dos bancos">
-      <div class="balance-card-head"><span class="label">Caixa (Bancos)</span><span class="balance-symbol" aria-hidden="true">▦</span></div>
+      <div class="balance-card-head"><span class="label">Caixa (Bancos)</span><span class="balance-symbol" aria-hidden="true">${financialIcon('bank')}</span></div>
       <span class="amount ${bankTotal < 0 ? 'neg' : ''}">${fmt(bankTotal)}</span>
       ${bankShare === null ? '' : `<span class="balance-share">${bankShare.toFixed(0)}% do patrimônio</span>`}
       <span class="balance-detail-link">Ver contas →</span>
     </div>
-    <div class="balance-card">
-      <div class="balance-card-head"><span class="label">Investido / Cripto</span><span class="balance-symbol" aria-hidden="true">↗</span></div>
+    <div class="balance-card invest-summary-card">
+      <div class="balance-card-head"><span class="label">Investido / Cripto</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div>
       <span class="amount">${fmt(investTotal)}</span>
       ${investShare === null ? '' : `<span class="balance-share">${investShare.toFixed(0)}% do patrimônio</span>`}
     </div>`;
@@ -2716,7 +2743,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('investGrid');
     const summary = document.getElementById('investBalanceStrip');
     const total = totalInvestBalance();
-    summary.innerHTML = `<div class="balance-card total"><span class="label">Total investido</span><span class="amount">${fmt(total)}</span></div>`;
+    summary.innerHTML = `<div class="balance-card total"><div class="balance-card-head"><span class="label">Total investido</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div><span class="amount">${fmt(total)}</span></div>`;
     if (investments.length === 0) {
       container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhum ativo ou investimento cadastrado. Clique em "+ Novo Ativo / Cripto" para registrar.</div>`;
       return;
@@ -2749,7 +2776,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const strip = document.getElementById('pocketBalanceStrip');
     const total = totalPocketBalance();
     let html = `<div class="balance-card total">
-      <span class="label">Total em Caixinhas</span>
+      <div class="balance-card-head"><span class="label">Total em Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('wallet')}</span></div>
       <span class="amount">${fmt(total)}</span>
     </div>`;
     pockets.forEach(p => {
@@ -2860,9 +2887,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <canvas id="catPieChart"></canvas>
         </div>
         <div class="cat-bars-list">
+          <div class="cat-legend-head"><span>Categoria</span><span>Valor</span><span>%</span></div>
           ${spend.map(x => `
             <div class="cat-row" style="--category-color:${categoryColor(x.cat)}">
-              <span class="cat-name">${escapeHTML(categoryIcon(x.cat, 'out'))} ${escapeHTML(x.cat.name)}</span>
+              <span class="cat-name">${escapeHTML(x.cat.name)}</span>
               <span class="cat-bar-wrap"><div class="cat-bar" style="width:${(x.total / max * 100).toFixed(0)}%"></div></span>
               <span class="cat-amt">${fmt(x.total)}</span>
               <span class="cat-pct">${(x.total / totalSpend * 100).toFixed(1).replace('.', ',')}%</span>
@@ -2903,7 +2931,7 @@ document.addEventListener('DOMContentLoaded', () => {
               display: !isMobileLayout,
               position: 'bottom',
               labels: {
-                font: { family: 'Manrope', size: 11, weight: '500' },
+                font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' },
                 color: textColor,
                 boxWidth: 12
               }
