@@ -674,7 +674,7 @@
     z-index:60;
     transition:transform 0.15s ease;
   }
-  .fab-add::after{content:"+";display:block;font-family:var(--font-ui);font-size:37px;font-weight:400;line-height:1;transform:translateY(-1px);}
+  .fab-add .add-icon{width:31px;height:31px;display:block;fill:none;stroke:currentColor;stroke-width:2.35;stroke-linecap:round;}
   .fab-add:hover{background:var(--green);filter:brightness(0.92); transform:scale(1.06);}
   .fab-add:active{transform:scale(0.95);}
 
@@ -1030,7 +1030,8 @@
     .toolbar button:hover { background:#E7EFE8; color:#163C2C; }
     .toolbar button.primary { grid-column:1/-1; min-height:54px; background:linear-gradient(100deg,#2F7654,#3A8A62); color:#fffef9; border:0; border-radius:11px; font-size:11px; font-weight:700; letter-spacing:.04em; box-shadow:0 7px 15px rgba(47,118,84,.20); }
     .toolbar .quick-primary{gap:10px;}
-    .quick-primary-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--accent);font-size:23px;font-weight:500;line-height:1;}
+    .quick-primary-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--accent);line-height:0;}
+    .quick-primary-icon .add-icon{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;}
     .toolbar .quick-action{flex-direction:column;gap:6px;min-height:78px;padding:9px 4px;font-size:9px;line-height:1.15;text-transform:none;letter-spacing:0;}
     .quick-action-icon{display:grid;place-items:center;width:31px;height:31px;border:1px solid color-mix(in srgb,var(--accent) 15%,transparent);border-radius:10px;background:var(--green-soft);color:var(--accent);line-height:1;}
     .quick-action-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;}
@@ -1336,7 +1337,7 @@
   <!-- ABA 1: LIVRO CAIXA -->
   <div id="viewCaixa" class="tab-content active">
     <div class="toolbar">
-      <button class="primary quick-primary" id="btnNovo"><span class="quick-primary-icon">+</span> Novo lançamento</button>
+      <button class="primary quick-primary" id="btnNovo"><span class="quick-primary-icon" aria-hidden="true"><svg class="add-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span> Novo lançamento</button>
       <button class="quick-action" id="btnBanco"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-6 9 6M5 10h14M6.5 10v7M10 10v7M14 10v7M17.5 10v7M4 20h16"/></svg></span><span>Banco</span></button>
       <button class="quick-action" id="btnCategoria"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 5.5h8l6 6-7 7-7-7z"/><path d="M8.2 9.2h.01"/></svg></span><span>Categoria</span></button>
       <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h13"/><path d="m15 5 3 3-3 3"/><path d="M19 16H6"/><path d="m9 13-3 3 3 3"/></svg></span><span>Transferência</span></button>
@@ -1386,7 +1387,7 @@
   </div>
 
   <!-- Modais -->
-  <button type="button" id="fabAdd" class="fab-add" title="Adicionar" aria-label="Adicionar">+</button>
+  <button type="button" id="fabAdd" class="fab-add" title="Adicionar" aria-label="Adicionar"><svg class="add-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
 
   <div class="modal-overlay" id="modalOverlay">
     <div class="panel" id="panelNovo">

@@ -1,5 +1,5 @@
 /* Livro-Caixa PWA: cacheia a interface local, mas nunca dados financeiros remotos. */
-const CACHE_NAME = "livro-caixa-shell-v10";
+const CACHE_NAME = "livro-caixa-shell-v11";
 const APP_SHELL = [
   "./",
   "./index.html",
