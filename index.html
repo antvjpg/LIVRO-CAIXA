@@ -161,6 +161,36 @@
     letter-spacing:0.08em;
   }
   main{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  header.app-header{position:relative;}
+  .header-icon-button{width:42px;min-width:42px;height:42px;min-height:42px;padding:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:20px;line-height:1;letter-spacing:0;box-shadow:0 3px 10px var(--shadow);position:relative;z-index:2;}
+  .header-icon-button:hover{background:var(--green-soft);color:var(--accent);border-color:var(--accent);}
+  #btnOpenDrawer{margin-right:2px;}
+  .notification-button{font-size:18px;}
+  .notification-badge{position:absolute;top:-7px;right:-7px;display:grid;place-items:center;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:var(--gold);color:var(--accent-ink);font-size:10px;font-weight:800;line-height:1;box-shadow:0 0 0 2px var(--surface);}
+  .app-drawer-overlay,.notification-overlay{position:fixed;inset:0;z-index:120;display:none;background:rgba(9,16,12,.48);backdrop-filter:blur(5px);}
+  .app-drawer-overlay.is-open,.notification-overlay.is-open{display:block;}
+  .app-drawer{width:min(330px,86vw);height:100%;padding:24px 18px;background:var(--surface);color:var(--ink);border-right:1px solid var(--line);box-shadow:18px 0 42px rgba(0,0,0,.22);transform:translateX(-102%);transition:transform .24s cubic-bezier(.23,1,.32,1);}
+  .app-drawer-overlay.is-open .app-drawer{transform:translateX(0);}
+  .drawer-heading,.notification-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .drawer-heading>span{font-size:19px;font-weight:800;letter-spacing:-.03em;}
+  .drawer-caption{margin:8px 0 22px;color:var(--ink-soft);font-size:12px;line-height:1.45;}
+  .drawer-close{width:34px;min-width:34px;height:34px;min-height:34px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink-soft);font-size:22px;line-height:1;letter-spacing:0;}
+  .drawer-close:hover{background:var(--green-soft);border-color:var(--accent);color:var(--accent);}
+  .drawer-nav{display:grid;gap:5px;}
+  .drawer-nav button{justify-content:flex-start;gap:12px;min-height:44px;padding:10px 11px;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--ink);font-size:12px;font-weight:650;letter-spacing:0;text-transform:none;}
+  .drawer-nav button span{width:20px;display:inline-grid;place-items:center;color:var(--accent);font-size:17px;}
+  .drawer-nav button:hover{background:var(--green-soft);border-color:var(--line);color:var(--ink);}
+  .drawer-divider{height:1px;margin:18px 3px;background:var(--line);}
+  .drawer-nav-secondary button{color:var(--ink-soft);}
+  .notification-center{width:min(420px,calc(100vw - 28px));max-height:min(620px,calc(100svh - 32px));margin:72px 14px 0 auto;overflow:auto;padding:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:17px;box-shadow:0 18px 46px rgba(0,0,0,.27);}
+  .notification-heading .eyebrow{display:block;margin-bottom:3px;color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+  .notification-heading h2{margin:0;font-size:22px;letter-spacing:-.04em;}
+  .notification-list{display:grid;gap:9px;margin-top:18px;}
+  .notification-item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--paper);}
+  .notification-item-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--green-soft);color:var(--accent);font-size:16px;}
+  .notification-item strong{display:block;font-size:12px;line-height:1.3;}
+  .notification-item p{margin:3px 0 0;color:var(--ink-soft);font-size:11px;line-height:1.4;}
+  .notification-empty{padding:20px 10px;text-align:center;color:var(--ink-soft);font-size:12px;line-height:1.5;}
 
   /* Navegação entre Abas */
   .nav-tabs {
@@ -241,6 +271,15 @@
   }
   .balance-card .amount.neg{color:var(--red);}
   .balance-card.total .amount.neg{color:var(--red);}
+  .balance-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .balance-symbol{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:color-mix(in srgb,currentColor 10%,transparent);color:inherit;font-size:24px;line-height:1;}
+  .balance-card.total .balance-symbol{background:rgba(255,255,255,.14);}
+  .balance-insight{display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:inherit;font-size:11px;font-weight:650;opacity:.92;}
+  .balance-insight strong{font-size:12px;}
+  .balance-insight.is-positive strong{color:#BCE8CA;}
+  .balance-insight.is-negative strong{color:#FFD0C4;}
+  .balance-share{display:inline-flex;align-items:center;margin-top:9px;padding:4px 8px;border-radius:999px;background:var(--green-soft);color:var(--accent);font-size:10px;font-weight:750;line-height:1;}
+  .balance-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
 
   .toolbar{
     display:grid;
@@ -945,12 +984,17 @@
     header.app-header::after { content:""; position:absolute; width:230px; height:230px; right:-105px; top:-90px; border:1px solid rgba(255,255,255,.10); border-radius:50%; box-shadow:0 0 0 34px rgba(255,255,255,.025),0 0 0 68px rgba(255,255,255,.018); }
     header.app-header .app-brand, .app-header-actions { position:relative; z-index:1; }
     header.app-header .app-brand { pointer-events:none; user-select:none; }
+    header.app-header .app-brand { margin-left:50px; }
     header.app-header h1 { color:#F9F8F3; font-size:clamp(34px,9.5vw,44px); line-height:.98; letter-spacing:-.045em; margin-bottom:12px; }
     header.app-header .subtitle { color:rgba(248,247,242,.85); font-size:11px; letter-spacing:.05em; text-transform:none; display:flex; align-items:center; gap:7px; }
     header.app-header .subtitle::before { content:"▣"; color:#B9D0BB; font-size:14px; }
     .app-header-actions { display:flex; align-items:center; gap:8px; }
     #userBar { display:none; }
-    #btnThemeToggle,#btnInstallPWA { min-width:52px; min-height:52px; padding:0!important; border:1px solid rgba(248,247,242,.48); color:#FFFFFF; background:rgba(9,30,21,.42); border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,.12); text-shadow:0 1px 2px rgba(0,0,0,.24); }
+    #btnOpenDrawer{position:absolute;top:33px;left:18px;z-index:3;}
+    #btnOpenDrawer,#btnNotifications,#btnThemeToggle,#btnInstallPWA { min-width:44px; min-height:44px; padding:0!important; border:1px solid rgba(248,247,242,.48); color:#FFFFFF; background:rgba(9,30,21,.42); border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,.12); text-shadow:0 1px 2px rgba(0,0,0,.24); }
+    #btnNotifications{font-size:17px;}
+    #btnOpenDrawer{font-size:23px;}
+    #btnNotifications .notification-badge{box-shadow:0 0 0 2px #18362A;}
     #btnInstallPWA { min-width:auto; padding:0 13px!important; font-size:10px!important; }
     main { max-width:none; margin:-18px 0 0; padding:14px 14px 20px; position:relative; z-index:3; background:var(--paper); border-radius:24px 24px 0 0; }
     .nav-tabs { margin:0 0 13px; padding:4px; gap:2px; border:1px solid var(--line); border-radius:13px; background:#fffefa; overflow:visible; box-shadow:0 4px 14px rgba(20,48,36,.04); }
@@ -973,6 +1017,10 @@
     .toolbar button { min-height:46px; padding:7px 5px; border:1px solid #C9D9CC; border-radius:10px; background:#FCFDF9; color:#1E4B38; font-size:9px; font-weight:700; letter-spacing:.01em; line-height:1.25; text-transform:none; box-shadow:0 2px 5px rgba(20,48,36,.055); }
     .toolbar button:hover { background:#E7EFE8; color:#163C2C; }
     .toolbar button.primary { grid-column:1/-1; min-height:54px; background:linear-gradient(100deg,#2F7654,#3A8A62); color:#fffef9; border:0; border-radius:11px; font-size:11px; font-weight:700; letter-spacing:.04em; box-shadow:0 7px 15px rgba(47,118,84,.20); }
+    .toolbar .quick-primary{gap:10px;}
+    .quick-primary-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--accent);font-size:23px;font-weight:500;line-height:1;}
+    .toolbar .quick-action{flex-direction:column;gap:4px;min-height:70px;padding:8px 4px;font-size:8px;line-height:1.15;text-transform:none;letter-spacing:0;}
+    .quick-action-icon{display:grid;place-items:center;width:25px;height:25px;color:var(--accent);font-size:21px;line-height:1;}
     #btnUpdateAllPrices { border-color:#8CB9A0; background:#E7F1E9; color:#1C6042; }
     #viewCaixa .toolbar #btnImportBackupTrigger { grid-column:span 2; }
     .cat-summary { margin:0 0 13px; padding:17px 15px; border:1px solid var(--line); border-radius:14px; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
@@ -980,11 +1028,15 @@
     .cat-summary-content { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:13px; align-items:center; }
     .chart-container { min-width:0; max-width:none; width:100%; height:188px; margin:0; }
     .cat-bars-list { min-width:0; display:flex; flex-direction:column; gap:7px; }
-    .cat-row { display:grid; grid-template-columns:8px minmax(0,1fr) auto; align-items:center; gap:6px; margin:0; }
+    .cat-row { display:grid; grid-template-columns:8px minmax(0,1fr) auto auto; align-items:center; gap:6px; margin:0; }
     .cat-row::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--category-color); }
     .cat-row .cat-name { width:auto; min-width:0; flex:none; font-size:9px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .cat-row .cat-bar-wrap { display:none; }
     .cat-row .cat-amt { width:auto; font-size:9px; white-space:nowrap; }
+    .cat-row .cat-pct{min-width:31px;color:var(--ink-soft);font-size:9px;font-weight:750;text-align:right;white-space:nowrap;}
+    .cat-summary-total{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:10px 1px 0;border-top:1px solid var(--line);font-size:10px;color:var(--ink-soft);}
+    .cat-summary-total strong{color:var(--ink);font-size:13px;letter-spacing:-.02em;}
+    .cat-summary-leader{margin:-6px 0 11px;color:var(--ink-soft);font-size:9px;}
     .ledger { border:1px solid var(--line); border-radius:17px; overflow:hidden; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
     .ledger-month { padding:18px 18px 10px; background:transparent; color:var(--ink); font-family:'Fraunces',serif; font-size:23px; letter-spacing:-.025em; text-transform:none; }
     .ledger-month #ledgerCount { color:var(--green); font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0; text-transform:none; }
@@ -1195,16 +1247,45 @@
 </div>
 
 <header class="app-header">
+  <button type="button" id="btnOpenDrawer" class="header-icon-button" aria-label="Abrir menu" title="Menu">☰</button>
   <div class="app-brand">
     <h1>Livro-Caixa</h1>
     <div class="subtitle" id="todayLabel">—</div>
   </div>
   <div class="app-header-actions">
+    <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos">🔔<span id="notificationBadge" class="notification-badge" hidden>0</span></button>
     <button id="btnThemeToggle" title="Alternar Tema Escuro/Claro" style="padding:6px 10px; font-size:14px;">🌙</button>
     <button id="btnInstallPWA" title="Instalar Livro-Caixa" aria-label="Instalar Livro-Caixa" style="padding:6px 10px; font-size:12px; display:none;">📲 Instalar</button>
     <div id="userBar"></div>
   </div>
 </header>
+
+<div id="appDrawerOverlay" class="app-drawer-overlay" aria-hidden="true">
+  <aside class="app-drawer" role="dialog" aria-modal="true" aria-label="Menu principal">
+    <div class="drawer-heading"><span>Livro-Caixa</span><button type="button" class="drawer-close" data-close-drawer aria-label="Fechar menu">×</button></div>
+    <p class="drawer-caption">Navegação e configurações rápidas</p>
+    <nav class="drawer-nav" aria-label="Navegação principal">
+      <button type="button" data-drawer-action="overview"><span>⌂</span> Visão geral</button>
+      <button type="button" data-drawer-action="entries"><span>≡</span> Lançamentos</button>
+      <button type="button" data-drawer-action="reports"><span>◔</span> Gastos por categoria</button>
+      <button type="button" data-drawer-action="pockets"><span>◌</span> Caixinhas</button>
+      <button type="button" data-drawer-action="investments"><span>↗</span> Investimentos</button>
+    </nav>
+    <div class="drawer-divider"></div>
+    <div class="drawer-nav drawer-nav-secondary">
+      <button type="button" data-drawer-action="banks"><span>▦</span> Contas bancárias</button>
+      <button type="button" data-drawer-action="categories"><span>◇</span> Categorias</button>
+      <button type="button" data-drawer-action="theme"><span>◐</span> Tema e paleta</button>
+    </div>
+  </aside>
+</div>
+
+<div id="notificationOverlay" class="notification-overlay" aria-hidden="true">
+  <section class="notification-center" role="dialog" aria-modal="true" aria-label="Avisos">
+    <div class="notification-heading"><div><span class="eyebrow">Livro-Caixa</span><h2>Avisos</h2></div><button type="button" class="drawer-close" data-close-notifications aria-label="Fechar avisos">×</button></div>
+    <div id="notificationList" class="notification-list"></div>
+  </section>
+</div>
 
 <main>
   <!-- Navegação por Abas -->
@@ -1235,15 +1316,15 @@
   <!-- ABA 1: LIVRO CAIXA -->
   <div id="viewCaixa" class="tab-content active">
     <div class="toolbar">
-      <button class="primary" id="btnNovo">+ Novo lançamento</button>
-      <button id="btnBanco">+ Banco</button>
-      <button id="btnCategoria">+ Categoria</button>
-      <button id="btnTransferencia">🔄 Transferência</button>
-      <button id="btnPasteTrigger">📋 Colar Texto</button>
-      <button id="btnImportTrigger">📄 Importar PDF</button>
-      <button id="btnExport">📊 Exportar Extrato</button>
-      <button id="btnExportBackup">💾 Exportar Backup</button>
-      <button id="btnImportBackupTrigger">📥 Restaurar Backup</button>
+      <button class="primary quick-primary" id="btnNovo"><span class="quick-primary-icon">+</span> Novo lançamento</button>
+      <button class="quick-action" id="btnBanco"><span class="quick-action-icon">▦</span><span>Banco</span></button>
+      <button class="quick-action" id="btnCategoria"><span class="quick-action-icon">◇</span><span>Categoria</span></button>
+      <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon">↔</span><span>Transferência</span></button>
+      <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon">▤</span><span>Colar texto</span></button>
+      <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon">⇩</span><span>Importar PDF</span></button>
+      <button class="quick-action" id="btnExport"><span class="quick-action-icon">▥</span><span>Exportar extrato</span></button>
+      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon">▣</span><span>Exportar backup</span></button>
+      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon">⇧</span><span>Restaurar backup</span></button>
       <input type="file" id="fileImport" accept="application/pdf">
       <input type="file" id="fileBackupImport" accept="application/json">
     </div>
@@ -2289,25 +2370,57 @@ document.addEventListener('DOMContentLoaded', () => {
     return pockets.reduce((sum, p) => sum + pocketCurrentBalance(p), 0);
   }
 
+  function monthKeyOffset(offset) {
+    const base = new Date();
+    base.setDate(1);
+    base.setMonth(base.getMonth() + offset);
+    return `${base.getFullYear()}-${String(base.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  function netFlowForMonth(monthKey) {
+    return entries.filter(entry => String(entry.date || '').startsWith(monthKey)).reduce((sum, entry) => sum + (entry.type === 'in' ? Number(entry.amount || 0) : -Number(entry.amount || 0)), 0);
+  }
+
+  function monthlyFlowInsight() {
+    const current = netFlowForMonth(monthKeyOffset(0));
+    const previous = netFlowForMonth(monthKeyOffset(-1));
+    if (current === 0 && previous === 0) return { kind:'neutral', value:'Sem comparativo mensal', detail:'Registre lançamentos em meses diferentes' };
+    if (previous === 0) return { kind: current >= 0 ? 'positive' : 'negative', value:fmt(current), detail:'Fluxo líquido no mês atual' };
+    const delta = ((current - previous) / Math.abs(previous)) * 100;
+    const arrow = delta >= 0 ? '↑' : '↓';
+    return { kind:delta >= 0 ? 'positive' : 'negative', value:`${arrow} ${Math.abs(delta).toFixed(1).replace('.', ',')}%`, detail:'em relação ao fluxo do mês anterior' };
+  }
+
+  function percentOfTotal(value, total) {
+    if (!Number.isFinite(total) || total <= 0) return null;
+    return Math.max(0, value / total * 100);
+  }
+
   function renderBalances() {
     const strip = document.getElementById('balanceStrip');
     const bankTotal = totalBankBalance();
     const investTotal = totalInvestBalance();
     const totalPatrimonio = bankTotal + investTotal;
+    const flowInsight = monthlyFlowInsight();
+    const bankShare = percentOfTotal(bankTotal, totalPatrimonio);
+    const investShare = percentOfTotal(investTotal, totalPatrimonio);
 
     let html = `
     <div class="balance-card total">
-      <span class="label">Patrimônio Total</span>
+      <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" aria-hidden="true">▱</span></div>
       <span class="amount ${totalPatrimonio < 0 ? 'neg' : ''}">${fmt(totalPatrimonio)}</span>
+      <span class="balance-insight is-${flowInsight.kind}"><strong>${escapeHTML(flowInsight.value)}</strong><span>${escapeHTML(flowInsight.detail)}</span></span>
     </div>
     <div class="balance-card bank-summary-card" role="button" tabindex="0" aria-label="Ver saldos dos bancos" title="Ver saldos dos bancos">
-      <span class="label">Caixa (Bancos)</span>
+      <div class="balance-card-head"><span class="label">Caixa (Bancos)</span><span class="balance-symbol" aria-hidden="true">▦</span></div>
       <span class="amount ${bankTotal < 0 ? 'neg' : ''}">${fmt(bankTotal)}</span>
+      ${bankShare === null ? '' : `<span class="balance-share">${bankShare.toFixed(0)}% do patrimônio</span>`}
       <span class="balance-detail-link">Ver contas →</span>
     </div>
     <div class="balance-card">
-      <span class="label">Investido / Cripto</span>
+      <div class="balance-card-head"><span class="label">Investido / Cripto</span><span class="balance-symbol" aria-hidden="true">↗</span></div>
       <span class="amount">${fmt(investTotal)}</span>
+      ${investShare === null ? '' : `<span class="balance-share">${investShare.toFixed(0)}% do patrimônio</span>`}
     </div>`;
     strip.innerHTML = html;
     const bankSummaryCard = strip.querySelector('.bank-summary-card');
@@ -2319,6 +2432,61 @@ document.addEventListener('DOMContentLoaded', () => {
         openBankPanel();
       }
     });
+  }
+
+  function getDashboardAlerts() {
+    const alerts = [];
+    if (banks.length === 0) {
+      alerts.push({ icon: '▦', title: 'Adicione uma conta bancária', detail: 'Cadastre um banco para acompanhar seu saldo disponível.' });
+    }
+    banks.filter(bank => bankBalance(bank.id) < 0).forEach(bank => {
+      alerts.push({ icon: '!', title: `${bank.name} está com saldo negativo`, detail: `Saldo atual: ${fmt(bankBalance(bank.id))}.` });
+    });
+    const cryptoWithoutQuote = investments.filter(inv => (inv.type === 'Stablecoin' || inv.type === 'Criptomoeda') && !inv.lastQuoteAt);
+    cryptoWithoutQuote.slice(0, 2).forEach(inv => {
+      alerts.push({ icon: '↻', title: `Atualize a cotação de ${inv.alias || inv.name}`, detail: 'Este ativo ainda não possui uma atualização de cotação registrada.' });
+    });
+    if (entries.length === 0 && banks.length > 0) {
+      alerts.push({ icon: '+', title: 'Registre seu primeiro lançamento', detail: 'Use “Novo lançamento” para começar a acompanhar suas movimentações.' });
+    }
+    return alerts.slice(0, 5);
+  }
+
+  function renderNotifications() {
+    const list = document.getElementById('notificationList');
+    const badge = document.getElementById('notificationBadge');
+    if (!list || !badge) return;
+    const alerts = getDashboardAlerts();
+    badge.hidden = alerts.length === 0;
+    badge.textContent = alerts.length > 9 ? '9+' : String(alerts.length);
+    list.innerHTML = alerts.length ? alerts.map(alert => `<article class="notification-item"><span class="notification-item-icon">${alert.icon}</span><div><strong>${escapeHTML(alert.title)}</strong><p>${escapeHTML(alert.detail)}</p></div></article>`).join('') : `<div class="notification-empty">Nenhum aviso pendente. Seus dados estão organizados.</div>`;
+  }
+
+  function closeDrawer() {
+    const overlay = document.getElementById('appDrawerOverlay');
+    overlay?.classList.remove('is-open');
+    overlay?.setAttribute('aria-hidden', 'true');
+  }
+
+  function closeNotifications() {
+    const overlay = document.getElementById('notificationOverlay');
+    overlay?.classList.remove('is-open');
+    overlay?.setAttribute('aria-hidden', 'true');
+  }
+
+  function openDrawer() {
+    closeNotifications();
+    const overlay = document.getElementById('appDrawerOverlay');
+    overlay?.classList.add('is-open');
+    overlay?.setAttribute('aria-hidden', 'false');
+  }
+
+  function openNotifications() {
+    closeDrawer();
+    renderNotifications();
+    const overlay = document.getElementById('notificationOverlay');
+    overlay?.classList.add('is-open');
+    overlay?.setAttribute('aria-hidden', 'false');
   }
 
   function renderBankSelects() {
@@ -2673,6 +2841,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return; 
     }
     const max = spend[0].total;
+    const totalSpend = spend.reduce((sum, item) => sum + item.total, 0);
+    const leader = spend[0];
 
     const flowVal = document.getElementById('filterFlow').value;
     const ds = document.getElementById('filterDateStart').value;
@@ -2684,6 +2854,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     wrap.innerHTML = `<div class="cat-summary">
       <h3>Gastos por Categoria ${subtitle}</h3>
+      <p class="cat-summary-leader">Maior gasto: <strong>${escapeHTML(leader.cat.name)}</strong> · ${(leader.total / totalSpend * 100).toFixed(1).replace('.', ',')}%</p>
       <div class="cat-summary-content">
         <div class="chart-container">
           <canvas id="catPieChart"></canvas>
@@ -2691,13 +2862,15 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="cat-bars-list">
           ${spend.map(x => `
             <div class="cat-row" style="--category-color:${categoryColor(x.cat)}">
-              <span class="cat-name">${escapeHTML(x.cat.name)}</span>
+              <span class="cat-name">${escapeHTML(categoryIcon(x.cat, 'out'))} ${escapeHTML(x.cat.name)}</span>
               <span class="cat-bar-wrap"><div class="cat-bar" style="width:${(x.total / max * 100).toFixed(0)}%"></div></span>
               <span class="cat-amt">${fmt(x.total)}</span>
+              <span class="cat-pct">${(x.total / totalSpend * 100).toFixed(1).replace('.', ',')}%</span>
             </div>
           `).join('')}
         </div>
       </div>
+      <div class="cat-summary-total"><span>Total de gastos</span><strong>${fmt(totalSpend)}</strong></div>
     </div>`;
 
     const ctx = document.getElementById('catPieChart');
@@ -2816,7 +2989,29 @@ document.addEventListener('DOMContentLoaded', () => {
     renderInvestments();
     renderPocketBalances();
     renderPockets();
+    renderNotifications();
   }
+
+  document.getElementById('btnOpenDrawer')?.addEventListener('click', openDrawer);
+  document.getElementById('btnNotifications')?.addEventListener('click', openNotifications);
+  document.querySelector('[data-close-drawer]')?.addEventListener('click', closeDrawer);
+  document.querySelector('[data-close-notifications]')?.addEventListener('click', closeNotifications);
+  document.getElementById('appDrawerOverlay')?.addEventListener('click', event => { if (event.target.id === 'appDrawerOverlay') closeDrawer(); });
+  document.getElementById('notificationOverlay')?.addEventListener('click', event => { if (event.target.id === 'notificationOverlay') closeNotifications(); });
+  document.querySelectorAll('[data-drawer-action]').forEach(button => button.addEventListener('click', () => {
+    const action = button.dataset.drawerAction;
+    const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
+    if (action === 'overview') { window.switchTab('caixa'); window.scrollTo({ top:0, behavior:'smooth' }); }
+    if (action === 'entries') { window.switchTab('caixa'); setTimeout(() => scrollTo('ledgerBody'), 20); }
+    if (action === 'reports') { window.switchTab('caixa'); setTimeout(() => scrollTo('categorySummary'), 20); }
+    if (action === 'pockets') window.switchTab('pockets');
+    if (action === 'investments') window.switchTab('invest');
+    if (action === 'banks') document.getElementById('btnBanco')?.click();
+    if (action === 'categories') document.getElementById('btnCategoria')?.click();
+    if (action === 'theme') document.getElementById('btnThemeToggle')?.click();
+    closeDrawer();
+  }));
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeDrawer(); closeNotifications(); } });
 
   function refreshFilteredViews() { renderCategorySummary(); renderLedger(); }
   document.getElementById('btnOpenFilters').onclick = () => openModal('panelFiltros');
