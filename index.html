@@ -664,16 +664,17 @@
     background:var(--green);
     color:var(--on-accent);
     border:none;
-    font-size:30px;
-    line-height:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    padding:0;
+    font-size:0;
+    line-height:0;
+    display:grid;
+    place-items:center;
     box-shadow:0 4px 14px var(--shadow);
     cursor:pointer;
     z-index:60;
     transition:transform 0.15s ease;
   }
+  .fab-add::after{content:"+";display:block;font-family:var(--font-ui);font-size:37px;font-weight:400;line-height:1;transform:translateY(-1px);}
   .fab-add:hover{background:var(--green);filter:brightness(0.92); transform:scale(1.06);}
   .fab-add:active{transform:scale(0.95);}
 
@@ -1031,7 +1032,8 @@
     .toolbar .quick-primary{gap:10px;}
     .quick-primary-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--accent);font-size:23px;font-weight:500;line-height:1;}
     .toolbar .quick-action{flex-direction:column;gap:6px;min-height:78px;padding:9px 4px;font-size:9px;line-height:1.15;text-transform:none;letter-spacing:0;}
-    .quick-action-icon{display:grid;place-items:center;width:31px;height:31px;border:1px solid color-mix(in srgb,var(--accent) 15%,transparent);border-radius:10px;background:var(--green-soft);color:var(--accent);font-size:19px;line-height:1;}
+    .quick-action-icon{display:grid;place-items:center;width:31px;height:31px;border:1px solid color-mix(in srgb,var(--accent) 15%,transparent);border-radius:10px;background:var(--green-soft);color:var(--accent);line-height:1;}
+    .quick-action-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;}
     #btnUpdateAllPrices { border-color:#8CB9A0; background:#E7F1E9; color:#1C6042; }
     #viewCaixa .toolbar #btnImportBackupTrigger { grid-column:span 2; }
     .cat-summary { margin:0 0 13px; padding:17px 15px; border:1px solid var(--line); border-radius:14px; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
@@ -1335,14 +1337,14 @@
   <div id="viewCaixa" class="tab-content active">
     <div class="toolbar">
       <button class="primary quick-primary" id="btnNovo"><span class="quick-primary-icon">+</span> Novo lançamento</button>
-      <button class="quick-action" id="btnBanco"><span class="quick-action-icon">▦</span><span>Banco</span></button>
-      <button class="quick-action" id="btnCategoria"><span class="quick-action-icon">◇</span><span>Categoria</span></button>
-      <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon">↔</span><span>Transferência</span></button>
-      <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon">▤</span><span>Colar texto</span></button>
-      <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon">⇩</span><span>Importar PDF</span></button>
-      <button class="quick-action" id="btnExport"><span class="quick-action-icon">▥</span><span>Exportar extrato</span></button>
-      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon">▣</span><span>Exportar backup</span></button>
-      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon">⇧</span><span>Restaurar backup</span></button>
+      <button class="quick-action" id="btnBanco"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-6 9 6M5 10h14M6.5 10v7M10 10v7M14 10v7M17.5 10v7M4 20h16"/></svg></span><span>Banco</span></button>
+      <button class="quick-action" id="btnCategoria"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 5.5h8l6 6-7 7-7-7z"/><path d="M8.2 9.2h.01"/></svg></span><span>Categoria</span></button>
+      <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h13"/><path d="m15 5 3 3-3 3"/><path d="M19 16H6"/><path d="m9 13-3 3 3 3"/></svg></span><span>Transferência</span></button>
+      <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3H8z"/><path d="M6 7h12v13H6z"/><path d="M9 12h6M9 15h6"/></svg></span><span>Colar texto</span></button>
+      <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Importar PDF</span></button>
+      <button class="quick-action" id="btnExport"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M10 19V5M15 19v-7M20 19V7M3 19h18"/></svg></span><span>Exportar extrato</span></button>
+      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14v13H5z"/><path d="M8 6V4h8v2M8 12h8M9 16h6"/></svg></span><span>Exportar backup</span></button>
+      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19V9"/><path d="m8.5 12.5 3.5-3.5 3.5 3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Restaurar backup</span></button>
       <input type="file" id="fileImport" accept="application/pdf">
       <input type="file" id="fileBackupImport" accept="application/json">
     </div>
