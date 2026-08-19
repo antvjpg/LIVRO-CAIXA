@@ -695,6 +695,9 @@
     font-size:13px;
   }
   .import-row input, .import-row select{padding:6px 8px;font-size:13px;}
+  .import-row .import-status{grid-column:1/-1;font-size:11px;line-height:1.35;color:var(--ink-soft);}
+  .import-row.is-duplicate{opacity:.68;}.import-row.is-duplicate .import-status{color:var(--out);font-weight:700;}
+  .import-summary{margin:9px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink-soft);font-size:12px;line-height:1.4;}.import-summary b{color:var(--ink);}.import-summary .import-ready{color:var(--green);font-weight:700;}.import-summary .import-warning{color:var(--out);font-weight:700;}
   .hint{font-size:12px;color:var(--ink-soft);margin-top:8px;}
   footer{
     text-align:center;
@@ -1227,6 +1230,22 @@
     body:not(.dark-mode) .mobile-bottom-nav button { color:var(--ink-soft); }
     body:not(.dark-mode) .mobile-bottom-nav button .nav-icon { color:var(--ink); }
     body:not(.dark-mode) .mobile-bottom-nav button.is-active,body:not(.dark-mode) .mobile-bottom-nav button.is-active .nav-icon { color:var(--accent); }
+
+    .category-icon-picker{margin-top:12px;}
+    .emoji-trigger{width:100%;min-height:58px;display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;color:var(--ink);padding:10px 12px;}
+    .emoji-trigger-preview{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--action-border);font-size:21px;flex:0 0 auto;}
+    .emoji-trigger-copy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}.emoji-trigger-copy strong{font-size:14px;line-height:1.1;}.emoji-trigger-copy span{color:var(--ink-soft);font-size:12px;line-height:1.1;}.emoji-trigger-chevron{color:var(--accent);font-size:17px;}
+    .emoji-picker{display:none;margin-top:10px;padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--paper);}.emoji-picker.is-open{display:block;}
+    .emoji-picker-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}.emoji-picker-head strong{font-size:14px;}.emoji-picker-head span{font-size:12px;color:var(--ink-soft);}
+    .emoji-search{width:100%;margin-top:10px!important;background:var(--surface)!important;}
+    .emoji-filter-row{display:flex;gap:7px;overflow-x:auto;margin:10px 0 11px;padding-top:1px;}.emoji-filter{white-space:nowrap;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);font-size:11px;padding:7px 10px;}.emoji-filter.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+    .emoji-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;max-height:206px;overflow-y:auto;padding-top:2px;}.emoji-choice{height:38px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-size:20px;display:grid;place-items:center;padding:0;}.emoji-choice.selected{border:2px solid var(--accent);background:var(--green-soft);}.emoji-choice:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+    .emoji-native-divider{display:flex;align-items:center;gap:9px;margin:13px 0 10px;color:var(--ink-soft);font-size:11px;}.emoji-native-divider:before,.emoji-native-divider:after{content:"";height:1px;background:var(--line);flex:1;}
+    .emoji-native-toggle{width:100%;min-height:42px;border:1px dashed var(--action-border);border-radius:11px;background:var(--surface);color:var(--accent);font-weight:700;font-size:12px;}.emoji-native-box{display:none;margin-top:10px;gap:7px;align-items:center;}.emoji-native-box.is-open{display:flex;}.emoji-native-box input{min-width:0;flex:1;margin:0!important;text-align:center;font-size:22px;padding:7px 9px;}.emoji-native-box button{min-height:38px;border-radius:10px;font-size:12px;padding:0 10px;}.emoji-native-box .primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}.emoji-native-help{margin-top:8px;color:var(--ink-soft);font-size:11px;line-height:1.35;}
+    body.dark-mode .emoji-trigger,body.dark-mode .emoji-picker,body.dark-mode .emoji-filter,body.dark-mode .emoji-choice,body.dark-mode .emoji-native-toggle{background:var(--surface);border-color:var(--line);color:var(--ink);}body.dark-mode .emoji-trigger-preview,body.dark-mode .emoji-choice.selected{background:var(--green-soft);border-color:var(--action-border);}body.dark-mode .emoji-filter.active,body.dark-mode .emoji-native-box .primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+  }
+  @media (min-width:681px){
+    .category-icon-picker{margin-top:12px;}.emoji-trigger{width:100%;min-height:58px;display:flex;align-items:center;gap:12px;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:14px;color:var(--ink);padding:10px 12px;}.emoji-trigger-preview{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--line);font-size:21px;flex:0 0 auto;}.emoji-trigger-copy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}.emoji-trigger-copy strong{font-size:14px;line-height:1.1;}.emoji-trigger-copy span{color:var(--ink-soft);font-size:12px;line-height:1.1;}.emoji-trigger-chevron{color:var(--accent);font-size:17px;}.emoji-picker{display:none;margin-top:10px;padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--paper);}.emoji-picker.is-open{display:block;}.emoji-picker-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}.emoji-picker-head strong{font-size:14px;}.emoji-picker-head span{font-size:12px;color:var(--ink-soft);}.emoji-search{width:100%;margin-top:10px!important;background:var(--surface)!important;}.emoji-filter-row{display:flex;gap:7px;overflow-x:auto;margin:10px 0 11px;padding-top:1px;}.emoji-filter{white-space:nowrap;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);font-size:11px;padding:7px 10px;}.emoji-filter.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}.emoji-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;max-height:206px;overflow-y:auto;padding-top:2px;}.emoji-choice{height:38px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-size:20px;display:grid;place-items:center;padding:0;}.emoji-choice.selected{border:2px solid var(--accent);background:var(--green-soft);}.emoji-native-divider{display:flex;align-items:center;gap:9px;margin:13px 0 10px;color:var(--ink-soft);font-size:11px;}.emoji-native-divider:before,.emoji-native-divider:after{content:"";height:1px;background:var(--line);flex:1;}.emoji-native-toggle{width:100%;min-height:42px;border:1px dashed var(--action-border);border-radius:11px;background:var(--surface);color:var(--accent);font-weight:700;font-size:12px;}.emoji-native-box{display:none;margin-top:10px;gap:7px;align-items:center;}.emoji-native-box.is-open{display:flex;}.emoji-native-box input{min-width:0;flex:1;margin:0!important;text-align:center;font-size:22px;padding:7px 9px;}.emoji-native-box button{min-height:38px;border-radius:10px;font-size:12px;padding:0 10px;}.emoji-native-box .primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}.emoji-native-help{margin-top:8px;color:var(--ink-soft);font-size:11px;line-height:1.35;}body.dark-mode .emoji-trigger,body.dark-mode .emoji-picker,body.dark-mode .emoji-filter,body.dark-mode .emoji-choice,body.dark-mode .emoji-native-toggle{background:var(--surface);border-color:var(--line);color:var(--ink);}body.dark-mode .emoji-trigger-preview,body.dark-mode .emoji-choice.selected{background:var(--green-soft);border-color:var(--action-border);}body.dark-mode .emoji-filter.active,body.dark-mode .emoji-native-box .primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
   }
 </style>
 </head>
@@ -1458,19 +1477,29 @@
           <input type="text" id="cNome" placeholder="Ex: Renda Extra">
         </div>
         <div>
-          <label for="cIcon">Ícone</label>
-          <select id="cIcon">
-            <option value="🍔">🍔 Alimentação</option>
-            <option value="🚗">🚗 Transporte</option>
-            <option value="🏠">🏠 Casa</option>
-            <option value="💰">💰 Salário / Renda</option>
-            <option value="📈">📈 Investimentos</option>
-            <option value="🎮">🎮 Lazer</option>
-            <option value="🛒">🛒 Compras</option>
-            <option value="❤️">❤️ Saúde</option>
-            <option value="📚">📚 Educação</option>
-            <option value="📦">📦 Outros</option>
-          </select>
+          <label for="btnEmojiCatalog">Ícone</label>
+          <input type="hidden" id="cIcon" value="📦">
+          <div class="category-icon-picker">
+            <button type="button" class="emoji-trigger" id="btnEmojiCatalog" aria-expanded="false" aria-controls="emojiPicker">
+              <span class="emoji-trigger-preview" id="cEmojiPreview">📦</span>
+              <span class="emoji-trigger-copy"><strong id="cEmojiLabel">Outros</strong><span>Toque para explorar o catálogo</span></span>
+              <span class="emoji-trigger-chevron" aria-hidden="true">⌄</span>
+            </button>
+            <section class="emoji-picker" id="emojiPicker" aria-label="Catálogo de emojis">
+              <div class="emoji-picker-head"><strong>Escolher ícone</strong><span id="emojiCatalogCount"></span></div>
+              <input type="search" id="emojiSearch" class="emoji-search" placeholder="Buscar no catálogo" autocomplete="off">
+              <div class="emoji-filter-row" id="emojiFilterRow" role="group" aria-label="Filtros de emojis"></div>
+              <div class="emoji-grid" id="emojiGrid" aria-live="polite"></div>
+              <div class="emoji-native-divider">ou</div>
+              <button type="button" id="btnEmojiKeyboard" class="emoji-native-toggle">⌨ Usar emoji do teclado</button>
+              <div class="emoji-native-box" id="emojiNativeBox">
+                <input type="text" id="cEmojiNativeInput" inputmode="text" maxlength="16" placeholder="🪴" aria-label="Emoji personalizado">
+                <button type="button" id="btnEmojiNativeUse" class="primary">Usar</button>
+                <button type="button" id="btnEmojiNativeClear">Limpar</button>
+              </div>
+              <p class="emoji-native-help">Use o teclado do aparelho para escolher um emoji fora do catálogo. A prévia só é aplicada quando você tocar em “Usar”.</p>
+            </section>
+          </div>
         </div>
         <div>
           <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
@@ -1735,16 +1764,18 @@
       <h3>Colar texto do extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <label for="pasteArea">Cole abaixo o texto do seu extrato bancário ou relatório:</label>
       <textarea id="pasteArea" placeholder="Cole as linhas do extrato aqui..."></textarea>
+      <p class="hint">A prévia busca linhas com data e valor. Revise banco, categoria, valor e sentido antes de confirmar qualquer lançamento.</p>
       <div style="display:flex; gap:10px; margin-top:12px;">
-        <button class="primary" id="btnProcessPaste" style="flex:1;">Processar Texto</button>
+        <button class="primary" id="btnProcessPaste" style="flex:1;">Gerar Prévia</button>
         <button id="btnCancelPaste" style="flex:1;">Cancelar</button>
       </div>
     </div>
 
     <div class="panel" id="panelImport">
       <h3>Revisar importação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div id="importSummary" class="import-summary" aria-live="polite"></div>
       <div id="importList"></div>
-      <div class="hint">Confira os dados antes de confirmar. Remova as linhas que não forem lançamentos reais.</div>
+      <div class="hint">Possíveis duplicidades são mantidas visíveis para revisão, mas não entram na confirmação. Edite ou remova as linhas que não forem lançamentos reais.</div>
       <div style="display:flex; gap:10px; margin-top:14px;">
         <button class="primary" id="importConfirm" style="flex:1;">Confirmar Lançamentos</button>
         <button id="importCancel" style="flex:1;">Cancelar</button>
@@ -1837,6 +1868,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let pockets = [];
   let yieldsLog = [];
   let pendingImport = [];
+  let pendingImportSource = '';
   let currentType = 'in';
   let editingEntryId = null;
   let editingBankId = null;
@@ -2571,6 +2603,85 @@ document.addEventListener('DOMContentLoaded', () => {
     const match = CATEGORY_ICON_RULES.find(([rule]) => rule.test(name));
     return match ? match[1] : (flow === 'out' ? '↘' : '↗');
   }
+
+  const EMOJI_CATALOG = [
+    ['🏦','Banco','Finanças'],['💳','Cartão','Finanças'],['💰','Renda','Finanças'],['📈','Investimento','Finanças'],['🧾','Conta','Finanças'],['🤝','Transferência','Finanças'],
+    ['🏠','Moradia','Casa'],['🔑','Aluguel','Casa'],['💡','Luz','Casa'],['💧','Água','Casa'],['🛠️','Manutenção','Casa'],['🪴','Decoração','Casa'],
+    ['🍔','Alimentação','Alimentação'],['☕','Café','Alimentação'],['🛒','Mercado','Alimentação'],['🍕','Restaurante','Alimentação'],['🥗','Refeição','Alimentação'],['🍰','Doce','Alimentação'],
+    ['🚗','Carro','Transporte'],['🚌','Ônibus','Transporte'],['⛽','Combustível','Transporte'],['✈️','Viagem','Transporte'],['🚕','Táxi','Transporte'],['🛵','Moto','Transporte'],
+    ['💼','Trabalho','Trabalho'],['💻','Tecnologia','Trabalho'],['📚','Educação','Trabalho'],['📦','Freelance','Trabalho'],['📞','Serviço','Trabalho'],['🗂️','Organização','Trabalho'],
+    ['❤️','Saúde','Saúde'],['💊','Farmácia','Saúde'],['🏥','Médico','Saúde'],['🧘','Bem-estar','Saúde'],['🏋️','Academia','Saúde'],['🪥','Cuidados','Saúde'],
+    ['🎮','Jogos','Lazer'],['🎬','Cinema','Lazer'],['🎵','Música','Lazer'],['🎁','Presentes','Lazer'],['🐾','Pets','Lazer'],['✨','Outros','Lazer']
+  ];
+  const EMOJI_GROUPS = ['Todos','Finanças','Casa','Alimentação','Transporte','Trabalho','Saúde','Lazer'];
+  let activeEmojiGroup = 'Todos';
+
+  function emojiLabel(icon) {
+    return (EMOJI_CATALOG.find(([emoji]) => emoji === icon) || [icon, 'Emoji personalizado'])[1];
+  }
+  function isEmojiValue(value) {
+    try { return /\p{Extended_Pictographic}/u.test(String(value || '')); } catch (err) { return String(value || '').trim().length > 0; }
+  }
+  function setCategoryDraftIcon(icon, closePicker = false) {
+    const value = String(icon || '📦').trim();
+    document.getElementById('cIcon').value = value;
+    document.getElementById('cEmojiPreview').textContent = value;
+    document.getElementById('cEmojiLabel').textContent = emojiLabel(value);
+    if (closePicker) {
+      document.getElementById('emojiPicker').classList.remove('is-open');
+      document.getElementById('btnEmojiCatalog').setAttribute('aria-expanded', 'false');
+    }
+    renderEmojiCatalog();
+  }
+  function renderEmojiCatalog() {
+    const query = (document.getElementById('emojiSearch')?.value || '').trim().toLocaleLowerCase('pt-BR');
+    const current = document.getElementById('cIcon')?.value || '📦';
+    const filtered = EMOJI_CATALOG.filter(([emoji, label, group]) =>
+      (activeEmojiGroup === 'Todos' || group === activeEmojiGroup) && (!query || `${emoji} ${label} ${group}`.toLocaleLowerCase('pt-BR').includes(query))
+    );
+    document.getElementById('emojiFilterRow').innerHTML = EMOJI_GROUPS.map(group => `<button type="button" class="emoji-filter ${group === activeEmojiGroup ? 'active' : ''}" data-emoji-group="${group}" aria-pressed="${group === activeEmojiGroup}">${group}</button>`).join('');
+    document.getElementById('emojiGrid').innerHTML = filtered.length
+      ? filtered.map(([emoji, label]) => `<button type="button" class="emoji-choice ${emoji === current ? 'selected' : ''}" data-emoji="${emoji}" title="${escapeHTML(label)}" aria-label="${escapeHTML(label)}" aria-pressed="${emoji === current}">${emoji}</button>`).join('')
+      : '<p class="hint" style="grid-column:1/-1;margin:6px 0;">Nenhum emoji encontrado neste filtro.</p>';
+    document.getElementById('emojiCatalogCount').textContent = `${filtered.length} opções`;
+  }
+  function initCategoryEmojiPicker() {
+    const trigger = document.getElementById('btnEmojiCatalog');
+    const picker = document.getElementById('emojiPicker');
+    trigger.onclick = () => {
+      const open = picker.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', String(open));
+      if (open) renderEmojiCatalog();
+    };
+    document.getElementById('emojiSearch').oninput = renderEmojiCatalog;
+    document.getElementById('emojiFilterRow').onclick = event => {
+      const button = event.target.closest('[data-emoji-group]');
+      if (!button) return;
+      activeEmojiGroup = button.dataset.emojiGroup;
+      renderEmojiCatalog();
+    };
+    document.getElementById('emojiGrid').onclick = event => {
+      const button = event.target.closest('[data-emoji]');
+      if (!button) return;
+      setCategoryDraftIcon(button.dataset.emoji, true);
+    };
+    document.getElementById('btnEmojiKeyboard').onclick = () => {
+      const nativeBox = document.getElementById('emojiNativeBox');
+      nativeBox.classList.add('is-open');
+      setTimeout(() => document.getElementById('cEmojiNativeInput').focus(), 0);
+    };
+    document.getElementById('btnEmojiNativeUse').onclick = () => {
+      const input = document.getElementById('cEmojiNativeInput');
+      const value = input.value.trim();
+      if (!isEmojiValue(value)) { alert('Digite ou cole um emoji válido do teclado.'); return; }
+      setCategoryDraftIcon(value, true);
+      input.value = '';
+      document.getElementById('emojiNativeBox').classList.remove('is-open');
+    };
+    document.getElementById('btnEmojiNativeClear').onclick = () => { document.getElementById('cEmojiNativeInput').value = ''; };
+    setCategoryDraftIcon(document.getElementById('cIcon').value || '📦');
+  }
+  initCategoryEmojiPicker();
 
   function renderCategorySelect() {
     const sel = document.getElementById('fCategoria');
@@ -3917,7 +4028,7 @@ document.addEventListener('DOMContentLoaded', () => {
     await saveCategories();
     populateFilterControls();
     document.getElementById('cNome').value = '';
-    document.getElementById('cIcon').value = '📦';
+    setCategoryDraftIcon('📦');
     render();
     if (returnToEntryAfterCategory) {
       returnToEntryAfterCategory = false;
@@ -3931,7 +4042,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!cat) return;
     editingCategoryId = id;
     document.getElementById('cNome').value = cat.name;
-    document.getElementById('cIcon').value = categoryIcon(cat);
+    setCategoryDraftIcon(categoryIcon(cat));
     document.getElementById('cSalvar').textContent = 'Salvar Alteração';
     openModal('panelCategoria');
   };
@@ -4010,8 +4121,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnProcessPaste').onclick = () => {
     const txt = document.getElementById('pasteArea').value;
     if(!txt.trim()){ alert('Cole algum texto primeiro.'); return; }
-    parseImportedText(txt);
-    document.getElementById('pasteArea').value = '';
+    if (parseImportedText(txt, 'Texto colado')) document.getElementById('pasteArea').value = '';
   };
   document.getElementById('btnCancelPaste').onclick = () => closeAllPanels();
 
@@ -4221,151 +4331,183 @@ document.addEventListener('DOMContentLoaded', () => {
     XLSX.writeFile(wb, `livro-caixa-extrato-${todayISO()}.xlsx`);
   }
 
+  const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
+  const PDF_IMPORT_MAX_PAGES = 80;
+  let pdfImportInProgress = false;
+  function extractPdfPageLines(content) {
+    const groups = [];
+    content.items.filter(item => String(item.str || '').trim()).forEach(item => {
+      const y = Number(item.transform?.[5] || 0);
+      const x = Number(item.transform?.[4] || 0);
+      let group = groups.find(current => Math.abs(current.y - y) < 3);
+      if (!group) { group = { y, items: [] }; groups.push(group); }
+      group.items.push({ x, text: String(item.str).trim() });
+    });
+    return groups.sort((a, b) => b.y - a.y).map(group => group.items.sort((a, b) => a.x - b.x).map(item => item.text).join(' ')).filter(Boolean).join('\n');
+  }
   document.getElementById('btnImportTrigger').onclick = () => document.getElementById('fileImport').click();
 
   document.getElementById('fileImport').onchange = async (ev) => {
     const file = ev.target.files[0];
-    if (!file) return;
-    if (typeof pdfjsLib === 'undefined') {
-      alert('A biblioteca de leitura de PDF ainda está carregando.');
-      return;
-    }
+    if (!file || pdfImportInProgress) return;
+    const looksLikePdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+    if (!looksLikePdf) { alert('Selecione um arquivo PDF válido.'); ev.target.value = ''; return; }
+    if (file.size > PDF_IMPORT_MAX_BYTES) { alert('O PDF excede o limite de 12 MB. Use um arquivo menor ou cole o texto do extrato.'); ev.target.value = ''; return; }
+    if (typeof pdfjsLib === 'undefined') { alert('A biblioteca de leitura de PDF ainda está carregando.'); ev.target.value = ''; return; }
+    pdfImportInProgress = true;
+    const trigger = document.getElementById('btnImportTrigger');
+    trigger.disabled = true;
+    const originalLabel = trigger.querySelector('span:last-child')?.textContent || 'Importar PDF';
+    const label = trigger.querySelector('span:last-child');
+    if (label) label.textContent = 'Lendo PDF…';
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     try {
-      const buf = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-      let fullText = '';
+      const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      if (pdf.numPages > PDF_IMPORT_MAX_PAGES) throw new Error('O PDF possui muitas páginas para esta importação.');
+      const pages = [];
       for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        const strings = content.items.map(it => it.str);
-        fullText += strings.join(' ') + '\n';
+        const content = await (await pdf.getPage(i)).getTextContent();
+        const pageText = extractPdfPageLines(content);
+        if (pageText) pages.push(pageText);
       }
-      parseImportedText(fullText);
+      const fullText = pages.join('\n');
+      if (!fullText.trim()) throw new Error('Não encontrei texto selecionável neste PDF.');
+      parseImportedText(fullText, `PDF · ${String(file.name || 'extrato').slice(0, 80)}`);
     } catch(err) {
       console.error(err);
-      alert('Não consegui ler esse PDF. Tente usar "Colar Texto".');
+      alert(err?.message || 'Não consegui ler esse PDF. Tente usar "Colar Texto".');
+    } finally {
+      ev.target.value = '';
+      pdfImportInProgress = false;
+      trigger.disabled = false;
+      if (label) label.textContent = originalLabel;
     }
-    ev.target.value = '';
   };
 
-  function parseImportedText(text) {
-    const lines = text.split('\n');
-    const ignoreKeywords = ['considerando', 'extrato', 'período', 'periodo', 'relatório', 'relatorio', 'página', 'pagina'];
-
-    pendingImport = [];
-
-    lines.forEach(line => {
-      let rawLine = line.trim();
+  const IMPORT_MAX_TEXT_LENGTH = 120000;
+  const IMPORT_MAX_ROWS = 250;
+  function isValidImportDate(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ''))) return false;
+    const [year, month, day] = value.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  }
+  function parseImportMoney(value) {
+    let text = String(value || '').replace(/[^\d,\.\-+]/g, '').replace(/\s/g, '');
+    const lastComma = text.lastIndexOf(',');
+    const lastDot = text.lastIndexOf('.');
+    if (lastComma > -1 && lastDot > -1) {
+      text = lastComma > lastDot ? text.replace(/\./g, '').replace(',', '.') : text.replace(/,/g, '');
+    } else if (lastComma > -1) {
+      text = text.replace(',', '.');
+    }
+    const amount = Math.abs(Number.parseFloat(text));
+    return Number.isFinite(amount) ? amount : NaN;
+  }
+  function normalizeImportDescription(value) {
+    return String(value || '').replace(/[\(\)\[\]\+\-\$]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90) || 'Lançamento importado';
+  }
+  function importSignature(row) {
+    return [row.date, String(row.bank || ''), String(row.type || ''), Number(row.amount || 0).toFixed(2), normalizeImportDescription(row.desc).toLocaleLowerCase('pt-BR')].join('|');
+  }
+  function isValidImportRow(row) {
+    return isValidImportDate(row.date) && Number.isFinite(Number(row.amount)) && Number(row.amount) > 0 && String(row.desc || '').trim().length > 0;
+  }
+  function refreshImportFlags() {
+    const existing = new Set(entries.map(importSignature));
+    const seen = new Set();
+    pendingImport.forEach(row => {
+      row.valid = isValidImportRow(row);
+      const signature = importSignature(row);
+      row.duplicate = existing.has(signature) || seen.has(signature);
+      seen.add(signature);
+    });
+  }
+  function parseImportedText(text, source = 'Importação') {
+    const normalizedText = String(text || '').replace(/\r/g, '\n').replace(/\u00A0/g, ' ').trim();
+    if (!normalizedText) { alert('Não encontrei texto para importar.'); return false; }
+    if (normalizedText.length > IMPORT_MAX_TEXT_LENGTH) { alert('O conteúdo é muito extenso. Importe um trecho menor, de até 120 mil caracteres.'); return false; }
+    const ignoreKeywords = ['considerando', 'extrato', 'período', 'periodo', 'relatório', 'relatorio', 'página', 'pagina', 'saldo anterior', 'saldo final'];
+    const rows = [];
+    normalizedText.split('\n').forEach(line => {
+      if (rows.length >= IMPORT_MAX_ROWS) return;
+      const rawLine = line.replace(/\s+/g, ' ').trim();
       if (!rawLine) return;
-      const lower = rawLine.toLowerCase();
-
-      if (ignoreKeywords.some(kw => lower.includes(kw))) return;
-
+      const lower = rawLine.toLocaleLowerCase('pt-BR');
+      if (ignoreKeywords.some(keyword => lower.includes(keyword))) return;
       const dateMatch = rawLine.match(/(\d{1,2})[\/\.-](\d{1,2})(?:[\/\.-](\d{2,4}))?/);
       if (!dateMatch) return;
-
-      let [fullDateStr, d, m, y] = dateMatch;
-      d = d.padStart(2, '0');
-      m = m.padStart(2, '0');
-      if (!y) y = new Date().getFullYear().toString();
-      else if (y.length === 2) y = '20' + y;
-      const isoDate = `${y}-${m}-${d}`;
-
-      let cleanLine = rawLine.replace(dateMatch[0], '');
-
-      const moneyMatch = cleanLine.match(/(?:[\+\-]\s*)?(?:R\$\s*)?([\+\-]?\d+(?:\.\d{3})*(?:,\d{2})?|[\+\-]?\d+(?:\,\d{3})*(?:\.\d{2})?)/i);
-
+      let [, day, month, year] = dateMatch;
+      day = day.padStart(2, '0'); month = month.padStart(2, '0');
+      if (!year) year = String(new Date().getFullYear());
+      else if (year.length === 2) year = `20${year}`;
+      const date = `${year}-${month}-${day}`;
+      if (!isValidImportDate(date)) return;
+      const withoutDate = rawLine.replace(dateMatch[0], ' ');
+      const moneyMatches = [...withoutDate.matchAll(/(?:R\$\s*)?[+\-]?\s*(?:(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{2})|(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2}))/gi)];
+      const moneyMatch = moneyMatches.find(match => /[+\-]/.test(match[0])) || moneyMatches[0];
       if (!moneyMatch) return;
-
-      let moneyStr = moneyMatch[0];
-      
-      const isNegative = moneyStr.includes('-') || lower.includes('saida') || lower.includes('saída') || lower.includes('pix enviado') || lower.includes('pagamento');
-      const isExplicitIn = moneyStr.includes('+') || lower.includes('entrada') || lower.includes('pix recebido');
-
-      let type = 'out';
-      if (isExplicitIn) {
-        type = 'in';
-      } else if (isNegative) {
-        type = 'out';
-      } else {
-        type = 'in';
-      }
-
-      let numStr = moneyStr.replace(/[^\d,\.-]/g, '');
-      if (numStr.includes(',') && numStr.includes('.')) {
-        numStr = numStr.replace(/\./g, '').replace(',', '.');
-      } else if (numStr.includes(',')) {
-        numStr = numStr.replace(',', '.');
-      }
-      
-      const numeric = Math.abs(parseFloat(numStr));
-
-      if (isNaN(numeric) || numeric === 0) return;
-
-      let desc = cleanLine.replace(moneyMatch[0], '').replace(/[\(\)\[\]\+\-\$]/g, ' ').trim().replace(/\s+/g, ' ');
-      if (!desc) desc = 'Lançamento importado';
-
-      pendingImport.push({
-        date: isoDate,
-        desc: desc.slice(0, 60),
-        amount: numeric,
-        type: type,
-        bank: banks[0] ? banks[0].id : '',
-        category: categories[0] ? categories[0].id : ''
-      });
+      const amount = parseImportMoney(moneyMatch[0]);
+      if (!Number.isFinite(amount) || amount <= 0) return;
+      const negative = moneyMatch[0].includes('-') || /sa[ií]da|pix enviado|pagamento|d[eé]bito|compra/.test(lower);
+      const positive = moneyMatch[0].includes('+') || /entrada|pix recebido|cr[eé]dito|recebimento/.test(lower);
+      const type = positive && !negative ? 'in' : (negative ? 'out' : 'in');
+      const desc = normalizeImportDescription(withoutDate.replace(moneyMatch[0], ' '));
+      rows.push({ date, desc, amount, type, bank: banks[0] ? banks[0].id : '', category: categories[0] ? categories[0].id : '', source });
     });
-
-    if (pendingImport.length === 0) {
-      alert('Não encontrei lançamentos válidos no texto.');
-      return;
-    }
+    if (!rows.length) { alert('Não encontrei linhas com data e valor válidos. Tente colar um trecho mais detalhado do extrato.'); return false; }
+    pendingImport = rows;
+    pendingImportSource = source;
+    refreshImportFlags();
     renderImportReview();
     openModal('panelImport');
+    return true;
   }
 
   function renderImportReview() {
+    refreshImportFlags();
+    const ready = pendingImport.filter(row => row.valid && !row.duplicate).length;
+    const duplicates = pendingImport.filter(row => row.duplicate).length;
+    const invalid = pendingImport.filter(row => !row.valid).length;
+    document.getElementById('importSummary').innerHTML = `<b>${escapeHTML(pendingImportSource || 'Importação')}</b> · ${pendingImport.length} linha(s) identificada(s) · <span class="import-ready">${ready} pronta(s)</span>${duplicates ? ` · <span class="import-warning">${duplicates} possível(is) duplicidade(s)</span>` : ''}${invalid ? ` · <span class="import-warning">${invalid} inválida(s)</span>` : ''}`;
     const list = document.getElementById('importList');
     list.innerHTML = pendingImport.map((row, i) => `
-      <div class="import-row">
-        <input type="date" value="${row.date}" onchange="pendingImport[${i}].date=this.value">
-        <input type="text" value="${escapeHTML(row.desc)}" onchange="pendingImport[${i}].desc=this.value">
-        <select onchange="pendingImport[${i}].bank=this.value">
-          ${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}
-        </select>
-        <select onchange="pendingImport[${i}].category=this.value">
-          ${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}
-        </select>
-        <input type="number" step="0.01" value="${row.amount}" onchange="pendingImport[${i}].amount=parseFloat(this.value)">
-        <select onchange="pendingImport[${i}].type=this.value">
-          <option value="in" ${row.type === 'in' ? 'selected' : ''}>Entrada</option>
-          <option value="out" ${row.type === 'out' ? 'selected' : ''}>Saída</option>
-        </select>
+      <div class="import-row ${row.duplicate ? 'is-duplicate' : ''}">
+        <input type="date" value="${row.date}" onchange="updateImportRow(${i}, 'date', this.value)">
+        <input type="text" value="${escapeHTML(row.desc)}" onchange="updateImportRow(${i}, 'desc', this.value)">
+        <select onchange="updateImportRow(${i}, 'bank', this.value)">${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}</select>
+        <select onchange="updateImportRow(${i}, 'category', this.value)">${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select>
+        <input type="number" step="0.01" min="0.01" value="${row.amount}" onchange="updateImportRow(${i}, 'amount', this.value)">
+        <select onchange="updateImportRow(${i}, 'type', this.value)"><option value="in" ${row.type === 'in' ? 'selected' : ''}>Entrada</option><option value="out" ${row.type === 'out' ? 'selected' : ''}>Saída</option></select>
         <button class="action-btn del" onclick="removeImportRow(${i})" aria-label="Remover">×</button>
+        <div class="import-status">${row.duplicate ? 'Possível duplicidade: esta linha será ignorada até que você a edite ou remova.' : (row.valid ? 'Pronta para importar.' : 'Linha inválida: revise data, descrição e valor.')}</div>
       </div>
     `).join('');
+    const confirm = document.getElementById('importConfirm');
+    confirm.disabled = ready === 0;
+    confirm.textContent = ready ? `Confirmar ${ready} lançamento(s)` : 'Nenhum lançamento pronto';
   }
-
-  window.removeImportRow = function(i) {
-    pendingImport.splice(i, 1);
+  window.updateImportRow = function(index, field, value) {
+    const row = pendingImport[index];
+    if (!row) return;
+    row[field] = field === 'amount' ? Number.parseFloat(value) : value;
     renderImportReview();
   };
+  window.removeImportRow = function(i) { pendingImport.splice(i, 1); renderImportReview(); };
 
   document.getElementById('importConfirm').onclick = () => {
-    pendingImport.forEach(row => {
-      entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), ...row });
-    });
+    refreshImportFlags();
+    const rowsToSave = pendingImport.filter(row => row.valid && !row.duplicate).map(({ source, valid, duplicate, ...row }) => row);
+    if (!rowsToSave.length) { alert('Não há lançamentos válidos e inéditos para confirmar.'); return; }
+    rowsToSave.forEach(row => entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), ...row }));
     saveEntries();
-    pendingImport = [];
+    pendingImport = []; pendingImportSource = '';
     populateFilterControls();
     closeAllPanels();
     render();
   };
 
-  document.getElementById('importCancel').onclick = () => {
-    pendingImport = [];
-    closeAllPanels();
-  };
+  document.getElementById('importCancel').onclick = () => { pendingImport = []; pendingImportSource = ''; closeAllPanels(); };
 
   document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
