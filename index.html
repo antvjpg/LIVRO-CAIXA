@@ -1106,7 +1106,7 @@
     .yield-history canvas { max-width:100%!important; }
     .fab-add { width:54px; height:54px; right:18px; bottom:104px; z-index:72; background:#2F7654; box-shadow:0 9px 20px rgba(22,65,45,.28); }
     main:has(.modal-overlay.open) { z-index:100; }
-    .modal-overlay { z-index:101; align-items:center; padding:16px; background:rgba(13,42,30,.56); backdrop-filter:blur(7px); }
+    .modal-overlay { z-index:300; align-items:center; padding:16px; background:rgba(13,42,30,.56); backdrop-filter:blur(7px); }
     .panel { width:100%; max-width:560px; max-height:86svh; margin:0 auto; padding:18px 16px; background:#fffefa; color:#19352A; border:1px solid #E1E1D9; border-radius:18px; box-shadow:0 14px 34px rgba(20,48,36,.20); }
     .panel.open { animation:mobile-panel-enter .22s cubic-bezier(.23,1,.32,1) both; }
     .panel h3 { margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid #E1E1D9; color:#19352A; font-size:22px; letter-spacing:-.03em; }
@@ -1204,13 +1204,21 @@
     @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.mobile-bottom-nav{background:var(--surface);}.mobile-bottom-nav{box-shadow:0 13px 30px rgba(20,35,28,.22);}.dark-mode .mobile-bottom-nav{background:var(--paper);}}
     .profile-shell{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:19px 16px;}.profile-heading{display:flex;align-items:center;gap:13px;padding-bottom:17px;border-bottom:1px solid var(--line);}.profile-avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--action-border);color:var(--accent);}.profile-avatar svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-heading h2{font-size:22px;line-height:1.1;color:var(--ink);}.profile-heading p{margin-top:4px;max-width:215px;color:var(--ink-soft);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.profile-intro{margin:16px 0;color:var(--ink-soft);font-size:12px;line-height:1.5;}.profile-list{display:grid;gap:8px;}.profile-item{display:flex;align-items:center;gap:12px;min-height:59px;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--paper);}.profile-item-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--green-soft);color:var(--accent);border:1px solid var(--action-border);}.profile-item-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-item-copy{flex:1;min-width:0;}.profile-item-copy strong{display:block;color:var(--ink);font-size:12px;}.profile-item-copy span{display:block;margin-top:3px;color:var(--ink-soft);font-size:10px;}.profile-item-arrow{color:var(--ink-soft);font-size:16px;}.profile-roadmap{margin-top:14px;padding:11px 12px;border-radius:13px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--ink-soft);font-size:10px;line-height:1.4;}.profile-roadmap b{color:var(--accent);}
     body.dark-mode .profile-shell{background:var(--surface);border-color:var(--line);}body.dark-mode .profile-item{background:var(--paper);border-color:var(--line);}body.dark-mode .profile-avatar,body.dark-mode .profile-item-icon{background:color-mix(in srgb,var(--accent) 14%,var(--surface));border-color:color-mix(in srgb,var(--accent) 26%,transparent);}
+    body:has(.modal-overlay.open){overflow:hidden;}
     .modal-overlay{height:100dvh;min-height:100svh;max-height:100dvh;overflow:hidden;overscroll-behavior:contain;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
-    .panel{max-height:calc(100dvh - 32px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
-    #panelCategoria.open{display:flex;flex-direction:column;min-height:0;}
+    .panel{max-height:calc(100dvh - 32px);max-width:calc(100vw - 32px);overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+    #panelCategoria.open{display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+    #panelCategoria h3,#panelCategoria .category-modal-footer{flex:0 0 auto;}
+    #panelCategoria .category-modal-body{flex:1 1 auto;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 2px 8px 0;}
     #panelCategoria .form-grid{min-height:0;}
+    #panelCategoria .category-managed-section{margin-top:18px;}
+    #panelCategoria .category-modal-footer{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);background:var(--paper);}
     #panelCategoria .emoji-picker.is-open{max-height:min(46dvh,330px);overflow:hidden;display:flex;flex-direction:column;}
     #panelCategoria .emoji-grid{min-height:0;max-height:none;flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
-    #panelCategoria #catManageList{max-height:22dvh;overflow-y:auto;overscroll-behavior:contain;padding-right:2px;}
+    #panelCategoria #catManageList{display:grid;gap:7px;max-height:none;overflow:visible;padding:0 2px 4px 0;}
+    #panelCategoria .cat-list-item{min-width:0;margin-top:0;}
+    #panelCategoria .manage-item-copy{overflow-wrap:anywhere;}
+    #panelCategoria .manage-item-actions{flex-shrink:0;}
     body:not(.dark-mode) header.app-header { background:linear-gradient(135deg,var(--header-from),var(--header-to)); color:var(--header-ink); }
     body:not(.dark-mode) header.app-header h1 { color:var(--header-ink); }
     body:not(.dark-mode) header.app-header .subtitle { color:color-mix(in srgb,var(--header-ink) 84%,transparent); }
@@ -1502,43 +1510,45 @@
 
     <div class="panel" id="panelCategoria">
       <h3>Gerenciar Categorias <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div>
-          <label for="cNome">Nome da nova categoria</label>
-          <input type="text" id="cNome" placeholder="Ex: Renda Extra">
-        </div>
-        <div>
-          <label for="btnEmojiCatalog">Ícone</label>
-          <input type="hidden" id="cIcon" value="📦">
-          <div class="category-icon-picker">
-            <button type="button" class="emoji-trigger" id="btnEmojiCatalog" aria-expanded="false" aria-controls="emojiPicker">
-              <span class="emoji-trigger-preview" id="cEmojiPreview">📦</span>
-              <span class="emoji-trigger-copy"><strong id="cEmojiLabel">Outros</strong><span>Toque para explorar o catálogo</span></span>
-              <span class="emoji-trigger-chevron" aria-hidden="true">⌄</span>
-            </button>
-            <section class="emoji-picker" id="emojiPicker" aria-label="Catálogo de emojis">
-              <div class="emoji-picker-head"><strong>Escolher ícone</strong><span id="emojiCatalogCount"></span></div>
-              <input type="search" id="emojiSearch" class="emoji-search" placeholder="Buscar no catálogo" autocomplete="off">
-              <div class="emoji-filter-row" id="emojiFilterRow" role="group" aria-label="Filtros de emojis"></div>
-              <div class="emoji-grid" id="emojiGrid" aria-live="polite"></div>
-              <div class="emoji-native-divider">ou</div>
-              <button type="button" id="btnEmojiKeyboard" class="emoji-native-toggle">⌨ Usar emoji do teclado</button>
-              <div class="emoji-native-box" id="emojiNativeBox">
-                <input type="text" id="cEmojiNativeInput" inputmode="text" maxlength="16" placeholder="🪴" aria-label="Emoji personalizado">
-                <button type="button" id="btnEmojiNativeUse" class="primary">Usar</button>
-                <button type="button" id="btnEmojiNativeClear">Limpar</button>
-              </div>
-              <p class="emoji-native-help">Use o teclado do aparelho para escolher um emoji fora do catálogo. A prévia só é aplicada quando você tocar em “Usar”.</p>
-            </section>
+      <div class="category-modal-body">
+        <div class="form-grid">
+          <div>
+            <label for="cNome">Nome da nova categoria</label>
+            <input type="text" id="cNome" placeholder="Ex: Renda Extra">
+          </div>
+          <div>
+            <label for="btnEmojiCatalog">Ícone</label>
+            <input type="hidden" id="cIcon" value="📦">
+            <div class="category-icon-picker">
+              <button type="button" class="emoji-trigger" id="btnEmojiCatalog" aria-expanded="false" aria-controls="emojiPicker">
+                <span class="emoji-trigger-preview" id="cEmojiPreview">📦</span>
+                <span class="emoji-trigger-copy"><strong id="cEmojiLabel">Outros</strong><span>Toque para explorar o catálogo</span></span>
+                <span class="emoji-trigger-chevron" aria-hidden="true">⌄</span>
+              </button>
+              <section class="emoji-picker" id="emojiPicker" aria-label="Catálogo de emojis">
+                <div class="emoji-picker-head"><strong>Escolher ícone</strong><span id="emojiCatalogCount"></span></div>
+                <input type="search" id="emojiSearch" class="emoji-search" placeholder="Buscar no catálogo" autocomplete="off">
+                <div class="emoji-filter-row" id="emojiFilterRow" role="group" aria-label="Filtros de emojis"></div>
+                <div class="emoji-grid" id="emojiGrid" aria-live="polite"></div>
+                <div class="emoji-native-divider">ou</div>
+                <button type="button" id="btnEmojiKeyboard" class="emoji-native-toggle">⌨ Usar emoji do teclado</button>
+                <div class="emoji-native-box" id="emojiNativeBox">
+                  <input type="text" id="cEmojiNativeInput" inputmode="text" maxlength="16" placeholder="🪴" aria-label="Emoji personalizado">
+                  <button type="button" id="btnEmojiNativeUse" class="primary">Usar</button>
+                  <button type="button" id="btnEmojiNativeClear">Limpar</button>
+                </div>
+                <p class="emoji-native-help">Use o teclado do aparelho para escolher um emoji fora do catálogo. A prévia só é aplicada quando você tocar em “Usar”.</p>
+              </section>
+            </div>
           </div>
         </div>
-        <div>
-          <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
+        <div class="category-managed-section">
+          <label>Categorias Cadastradas:</label>
+          <div id="catManageList"></div>
         </div>
       </div>
-      <div style="margin-top:16px;">
-        <label>Categorias Cadastradas:</label>
-        <div id="catManageList"></div>
+      <div class="category-modal-footer">
+        <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
       </div>
     </div>
 
