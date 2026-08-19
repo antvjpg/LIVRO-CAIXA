@@ -423,6 +423,7 @@
     flex-wrap:wrap;
     gap:24px;
     align-items:center;
+    min-width:0;
   }
   .chart-container{
     flex:1;
@@ -433,7 +434,7 @@
   }
   .cat-bars-list{
     flex:1.2;
-    min-width:260px;
+    min-width:0;
   }
   .cat-row{
     display:flex;
@@ -441,13 +442,19 @@
     gap:12px;
     margin-bottom:10px;
     font-size:13px;
+    min-width:0;
   }
   .cat-row .cat-name{
     width:130px;
+    min-width:0;
     font-family:'IBM Plex Mono',monospace;
     font-size:11.5px;
     color:var(--ink-soft);
     flex-shrink:0;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    overflow:visible;
+    text-overflow:clip;
   }
   .cat-row .cat-bar-wrap{
     flex:1;
@@ -464,7 +471,17 @@
     font-family:'IBM Plex Mono',monospace;
     font-variant-numeric:tabular-nums;
     width:90px;
+    min-width:max-content;
     text-align:right;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .cat-row .cat-pct{
+    min-width:max-content;
+    font-family:'IBM Plex Mono',monospace;
+    font-variant-numeric:tabular-nums;
+    text-align:right;
+    white-space:nowrap;
     flex-shrink:0;
   }
 
@@ -1292,6 +1309,61 @@
     body.dark-mode .emoji-float-window{background:var(--paper);}
     body.dark-mode .emoji-float-grid button,body.dark-mode .emoji-float-native,body.dark-mode .emoji-float-native-box input{background:var(--surface);border-color:var(--line);color:var(--ink);}
     body.dark-mode .emoji-float-grid button.selected{background:var(--green-soft);border-color:var(--action-border);}
+  /* V17-16 — refinamento visual e fluidez, sem alterar regras financeiras. */
+  :root{--v1616-ease:cubic-bezier(.23,1,.32,1);--v1616-fast:180ms;}
+  body,button,input,select,textarea{font-variant-numeric:tabular-nums;}
+  button{transition:transform var(--v1616-fast) var(--v1616-ease),background-color var(--v1616-fast) ease,border-color var(--v1616-fast) ease,box-shadow var(--v1616-fast) ease,color var(--v1616-fast) ease;}
+  button:active{transform:scale(.975);}
+  .balance-card.total .amount,.card-amount,.cat-summary-total strong,.manage-item-value{font-variant-numeric:tabular-nums;letter-spacing:-.025em;}
+  .balance-card.total .amount{font-weight:700;}
+  .toolbar button.primary{position:relative;isolation:isolate;}
+  .toolbar button.primary::after{content:"";position:absolute;inset:1px;border-radius:inherit;border:1px solid rgba(255,255,255,.22);opacity:.7;pointer-events:none;}
+  .toolbar .quick-action{box-shadow:none;border-color:color-mix(in srgb,var(--line) 88%,transparent);}
+  .toolbar .quick-action:hover{box-shadow:0 5px 13px color-mix(in srgb,var(--accent) 14%,transparent);}
+  .card-lancamento{transition:background-color var(--v1616-fast) ease,border-color var(--v1616-fast) ease,transform var(--v1616-fast) var(--v1616-ease);}
+  .card-lancamento:hover{transform:translateY(-1px);}
+  .card-title{font-weight:650;}
+  .card-date,.card-badge,.card-category{font-weight:500;}
+  .category-dot,.movement-category-icon{display:grid;place-items:center;line-height:1;flex:0 0 auto;}
+  .movement-category-icon{font-size:18px;}
+  .card-amount{font-weight:700;}
+  .cat-row{transition:opacity var(--v1616-fast) ease,transform var(--v1616-fast) var(--v1616-ease);}
+  .cat-row:hover{transform:translateX(2px);}
+  .mobile-bottom-nav{isolation:isolate;overflow:hidden;}
+  .quick-action-icon,.profile-item-icon,.nav-icon{display:grid;place-items:center;line-height:0;flex:0 0 auto;}
+  .quick-action-icon svg,.profile-item-icon svg,.nav-icon svg{display:block;width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;}
+  .profile-avatar svg{display:block;width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+  .beta-icon-button{display:inline-grid;place-items:center;min-width:34px;min-height:34px;line-height:1;vertical-align:middle;}
+  .mobile-bottom-nav::before{content:"";position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/4);border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),0 5px 13px color-mix(in srgb,var(--accent) 10%,transparent);transform:translateX(0%);transition:transform 220ms var(--v1616-ease),background-color 220ms ease,box-shadow 220ms ease;pointer-events:none;}
+  .mobile-bottom-nav[data-active="pockets"]::before{transform:translateX(100%);}
+  .mobile-bottom-nav[data-active="invest"]::before{transform:translateX(200%);}
+  .mobile-bottom-nav[data-active="profile"]::before{transform:translateX(300%);}
+  .mobile-bottom-nav button{position:relative;z-index:1;background:transparent!important;transition:color 220ms ease,transform 160ms var(--v1616-ease);}
+  .mobile-bottom-nav button.is-active{background:transparent!important;box-shadow:none!important;}
+  .mobile-bottom-nav button:active{transform:scale(.94);}
+  .tab-content{animation:tab-content-enter 220ms var(--v1616-ease) both;}
+  @keyframes tab-content-enter{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
+  @keyframes v1616-pulse{0%,100%{opacity:.58}50%{opacity:1}}
+  @keyframes v1616-value{0%{transform:translateY(3px);opacity:.5}100%{transform:none;opacity:1}}
+  .value-refresh{animation:v1616-value 260ms var(--v1616-ease) both;}
+  body.is-data-loading .balance-card > *,body.is-data-loading #categorySummary > *,body.is-data-loading #ledgerBody > *,body.is-data-loading #pocketBalanceStrip > *,body.is-data-loading #viewInvest .invest-grid > *,body.is-data-loading #pocketGrid > *{visibility:hidden;}
+  body.is-data-loading .balance-card,body.is-data-loading #categorySummary,body.is-data-loading #ledgerBody,body.is-data-loading #pocketBalanceStrip,body.is-data-loading #viewInvest .invest-grid > *,body.is-data-loading #pocketGrid > *{position:relative;overflow:hidden;}
+  body.is-data-loading .balance-card::after,body.is-data-loading #categorySummary::after,body.is-data-loading #ledgerBody::after,body.is-data-loading #pocketBalanceStrip::after,body.is-data-loading #viewInvest .invest-grid > *::after,body.is-data-loading #pocketGrid > *::after{content:"";position:absolute;inset:16px;border-radius:10px;background:linear-gradient(100deg,color-mix(in srgb,var(--line) 35%,transparent) 20%,color-mix(in srgb,var(--surface-raised) 86%,transparent) 45%,color-mix(in srgb,var(--line) 35%,transparent) 70%);background-size:220% 100%;animation:v1616-pulse 1.2s ease-in-out infinite;}
+  @media (max-width:680px){
+    .card-lancamento{align-items:flex-start;}
+    .card-info{padding-top:1px;}
+    .card-title{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.3;}
+    .card-right{align-items:flex-start;gap:6px;padding-top:1px;}
+    .card-amount{font-size:13px;}
+    .card-actions{flex-shrink:0;}
+    .cat-summary-content{align-items:stretch;}
+    .cat-bars-list{padding-top:2px;}
+    .cat-summary-total{margin-top:16px;padding-top:11px;}
+    footer{max-width:100%;padding:16px 14px calc(122px + env(safe-area-inset-bottom));line-height:1.45;white-space:normal;overflow-wrap:anywhere;}
+    .mobile-bottom-nav{backdrop-filter:blur(20px) saturate(1.18);-webkit-backdrop-filter:blur(20px) saturate(1.18);}
+    body.dark-mode .mobile-bottom-nav::before{background:color-mix(in srgb,var(--accent) 20%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent),0 6px 16px rgba(0,0,0,.22);}
+  }
+  @media (prefers-reduced-motion:reduce){button,.mobile-bottom-nav::before,.tab-content,.value-refresh,.card-lancamento{transition:none!important;animation:none!important;}}
   </style>
 </head>
 <body>
@@ -1861,6 +1933,21 @@ let currentUser = null;
 let isSignupMode = false;
 let saveTimer = null;
 
+  function updateNavIndicator(tabName) {
+    const nav = document.querySelector('.mobile-bottom-nav');
+    if (!nav) return;
+    const index = ['caixa','pockets','invest','profile'].indexOf(tabName);
+    nav.dataset.active = tabName;
+    nav.style.setProperty('--nav-indicator-x', `${Math.max(index, 0) * 100}%`);
+  }
+
+  function markValueRefresh(root = document) {
+    root.querySelectorAll('.balance-card .amount,.card-amount,.cat-summary-total strong').forEach((node) => {
+      node.classList.remove('value-refresh');
+      requestAnimationFrame(() => node.classList.add('value-refresh'));
+    });
+  }
+
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
@@ -2216,6 +2303,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.switchTab = function(tabName) {
     currentTab = tabName;
+    document.body.classList.add('tab-changing');
+    window.setTimeout(() => document.body.classList.remove('tab-changing'), 240);
+    updateNavIndicator(tabName);
     document.getElementById('tabBtnCaixa')?.classList.toggle('active', tabName === 'caixa');
     document.getElementById('tabBtnInvest')?.classList.toggle('active', tabName === 'invest');
     document.getElementById('tabBtnPockets')?.classList.toggle('active', tabName === 'pockets');
@@ -2280,6 +2370,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultCats = ['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Salário', 'Renda Extra', 'Transferência', 'Outros'];
     const syncOverlay = document.getElementById('syncOverlay');
     const syncOverlayText = document.getElementById('syncOverlayText');
+    document.body.classList.add('is-data-loading');
     syncOverlayText.textContent = 'Sincronizando seus dados...';
     syncOverlay.classList.remove('hidden');
 
@@ -2354,6 +2445,8 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
       syncOverlay.classList.add('hidden');
+      document.body.classList.remove('is-data-loading');
+      markValueRefresh();
     }
   }
 
@@ -2522,6 +2615,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ${investShare === null ? '' : `<span class="balance-share">${investShare.toFixed(0)}% do patrimônio</span>`}
     </div>`;
     strip.innerHTML = html;
+    markValueRefresh(strip);
     const bankSummaryCard = strip.querySelector('.bank-summary-card');
     const openBankPanel = () => document.getElementById('btnBanco').click();
     bankSummaryCard?.addEventListener('click', openBankPanel);
@@ -2716,6 +2810,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setCategoryDraftIcon(document.getElementById('cIcon').value || '📦');
   }
   initCategoryEmojiPicker();
+  updateNavIndicator(currentTab);
 
   function renderCategorySelect() {
     const sel = document.getElementById('fCategoria');
@@ -3015,9 +3110,12 @@ document.addEventListener('DOMContentLoaded', () => {
       wrap.innerHTML = ''; 
       return; 
     }
-    const max = spend[0].total;
     const totalSpend = spend.reduce((sum, item) => sum + item.total, 0);
     const leader = spend[0];
+    const chartSpend = spend.length > 7
+      ? [...spend.slice(0, 6), { cat: { id: '__others__', name: 'Outras', color: '#8B9A92' }, total: spend.slice(6).reduce((sum, item) => sum + item.total, 0) }]
+      : spend;
+    const max = chartSpend[0].total;
 
     const flowVal = document.getElementById('filterFlow').value;
     const ds = document.getElementById('filterDateStart').value;
@@ -3036,7 +3134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="cat-bars-list">
           <div class="cat-legend-head"><span>Categoria</span><span>Valor</span><span>%</span></div>
-          ${spend.map(x => `
+          ${chartSpend.map(x => `
             <div class="cat-row" style="--category-color:${categoryColor(x.cat)}">
               <span class="cat-name">${escapeHTML(x.cat.name)}</span>
               <span class="cat-bar-wrap"><div class="cat-bar" style="width:${(x.total / max * 100).toFixed(0)}%"></div></span>
@@ -3062,10 +3160,10 @@ document.addEventListener('DOMContentLoaded', () => {
       catChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: spend.map(x => x.cat.name),
+          labels: chartSpend.map(x => x.cat.name),
           datasets: [{
-            data: spend.map(x => x.total),
-            backgroundColor: spend.map(x => categoryColor(x.cat)),
+            data: chartSpend.map(x => x.total),
+            backgroundColor: chartSpend.map(x => categoryColor(x.cat)),
             borderColor: borderColor,
             borderWidth: 2
           }]
