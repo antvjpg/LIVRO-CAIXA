@@ -1,12 +1,12 @@
 /* Livro-Caixa PWA: cacheia a interface local, mas nunca dados financeiros remotos. */
-const CACHE_NAME = "livro-caixa-shell-v12";
+const CACHE_NAME = "livro-caixa-shell-v13";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./manifest.webmanifest",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./icon-512-maskable.png"
+  "./manifest.webmanifest?v=13",
+  "./icon-192.png?v=13",
+  "./icon-512.png?v=13",
+  "./icon-512-maskable.png?v=13"
 ];
 
 self.addEventListener("install", (event) => {
