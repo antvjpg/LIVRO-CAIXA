@@ -1187,15 +1187,30 @@
     body.dark-mode .ledger-filters { background:var(--paper); border-color:var(--line); }
     body.dark-mode .ledger-filters select,body.dark-mode .ledger-filters input { background:var(--surface); border-color:var(--line); color:#EDF4EE; }
     @keyframes mobile-panel-enter { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-    .mobile-bottom-nav { display:grid; grid-template-columns:repeat(4,1fr); align-items:center; position:fixed; left:0; right:0; bottom:0; z-index:70; min-height:84px; padding:8px 12px max(12px,env(safe-area-inset-bottom)); background:rgba(255,254,249,.97); border-top:1px solid var(--line); backdrop-filter:blur(14px); }
-    .mobile-bottom-nav button { min-height:58px; padding:5px 2px; border:0; border-radius:11px; background:transparent; color:#4E6257; font-family:'IBM Plex Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0; text-transform:none; flex-direction:column; gap:4px; }
-    .mobile-bottom-nav button .nav-icon { font-size:23px; line-height:1; color:#19352A; }
-    .mobile-bottom-nav button.is-active,.mobile-bottom-nav button.is-active .nav-icon { color:#1E6C4B; }
+    body{padding-bottom:calc(106px + env(safe-area-inset-bottom));}
+    .nav-tabs{display:none;}
+    .mobile-bottom-nav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:center; position:fixed; left:50%; bottom:max(14px,env(safe-area-inset-bottom)); transform:translateX(-50%); width:min(390px,calc(100% - 28px)); z-index:70; min-height:68px; padding:6px; background:color-mix(in srgb,var(--surface) 83%,transparent); border:1px solid color-mix(in srgb,var(--line) 84%,transparent); border-radius:999px; box-shadow:0 13px 30px rgba(20,35,28,.18),inset 0 1px 0 rgba(255,255,255,.48); backdrop-filter:blur(18px) saturate(1.22); -webkit-backdrop-filter:blur(18px) saturate(1.22); }
+    .mobile-bottom-nav button { min-height:54px; min-width:0; padding:5px 3px; border:0; border-radius:999px; background:transparent; color:var(--ink-soft); font-family:'Plus Jakarta Sans',sans-serif; font-size:9px; font-weight:700; line-height:1.12; letter-spacing:-.01em; text-transform:none; display:grid; grid-template-rows:24px auto; justify-items:center; align-content:center; gap:3px; }
+    .mobile-bottom-nav button .nav-icon { width:21px; height:21px; display:grid; place-items:center; color:var(--ink); }
+    .mobile-bottom-nav button .nav-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+    .mobile-bottom-nav button.is-active{background:color-mix(in srgb,var(--accent) 18%,var(--surface));color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),0 4px 12px color-mix(in srgb,var(--accent) 14%,transparent);}
+    .mobile-bottom-nav button.is-active .nav-icon{color:var(--accent);}
     body.dark-mode .nav-tab { color:var(--ink-soft); }
     body.dark-mode .nav-tab.active { background:var(--accent-muted); color:var(--ink); box-shadow:0 5px 12px rgba(0,0,0,.26); }
-    body.dark-mode .mobile-bottom-nav { border-color:var(--line); background:rgba(10,23,17,.96); }
+    body.dark-mode .mobile-bottom-nav { border-color:color-mix(in srgb,var(--line) 78%,transparent); background:color-mix(in srgb,var(--paper) 78%,transparent); box-shadow:0 15px 32px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.08); }
     body.dark-mode .mobile-bottom-nav button,body.dark-mode .mobile-bottom-nav button .nav-icon { color:var(--ink-soft); }
-    body.dark-mode .mobile-bottom-nav button.is-active,body.dark-mode .mobile-bottom-nav button.is-active .nav-icon { color:var(--accent); }
+    body.dark-mode .mobile-bottom-nav button.is-active{background:color-mix(in srgb,var(--accent) 21%,var(--surface));color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 38%,transparent),0 4px 14px rgba(0,0,0,.22);}body.dark-mode .mobile-bottom-nav button.is-active .nav-icon{color:var(--accent);}
+    .fab-add{bottom:calc(96px + env(safe-area-inset-bottom));}
+    @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.mobile-bottom-nav{background:var(--surface);}.mobile-bottom-nav{box-shadow:0 13px 30px rgba(20,35,28,.22);}.dark-mode .mobile-bottom-nav{background:var(--paper);}}
+    .profile-shell{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:19px 16px;}.profile-heading{display:flex;align-items:center;gap:13px;padding-bottom:17px;border-bottom:1px solid var(--line);}.profile-avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--action-border);color:var(--accent);}.profile-avatar svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-heading h2{font-size:22px;line-height:1.1;color:var(--ink);}.profile-heading p{margin-top:4px;max-width:215px;color:var(--ink-soft);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.profile-intro{margin:16px 0;color:var(--ink-soft);font-size:12px;line-height:1.5;}.profile-list{display:grid;gap:8px;}.profile-item{display:flex;align-items:center;gap:12px;min-height:59px;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--paper);}.profile-item-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--green-soft);color:var(--accent);border:1px solid var(--action-border);}.profile-item-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-item-copy{flex:1;min-width:0;}.profile-item-copy strong{display:block;color:var(--ink);font-size:12px;}.profile-item-copy span{display:block;margin-top:3px;color:var(--ink-soft);font-size:10px;}.profile-item-arrow{color:var(--ink-soft);font-size:16px;}.profile-roadmap{margin-top:14px;padding:11px 12px;border-radius:13px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--ink-soft);font-size:10px;line-height:1.4;}.profile-roadmap b{color:var(--accent);}
+    body.dark-mode .profile-shell{background:var(--surface);border-color:var(--line);}body.dark-mode .profile-item{background:var(--paper);border-color:var(--line);}body.dark-mode .profile-avatar,body.dark-mode .profile-item-icon{background:color-mix(in srgb,var(--accent) 14%,var(--surface));border-color:color-mix(in srgb,var(--accent) 26%,transparent);}
+    .modal-overlay{height:100dvh;min-height:100svh;max-height:100dvh;overflow:hidden;overscroll-behavior:contain;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
+    .panel{max-height:calc(100dvh - 32px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+    #panelCategoria.open{display:flex;flex-direction:column;min-height:0;}
+    #panelCategoria .form-grid{min-height:0;}
+    #panelCategoria .emoji-picker.is-open{max-height:min(46dvh,330px);overflow:hidden;display:flex;flex-direction:column;}
+    #panelCategoria .emoji-grid{min-height:0;max-height:none;flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+    #panelCategoria #catManageList{max-height:22dvh;overflow-y:auto;overscroll-behavior:contain;padding-right:2px;}
     body:not(.dark-mode) header.app-header { background:linear-gradient(135deg,var(--header-from),var(--header-to)); color:var(--header-ink); }
     body:not(.dark-mode) header.app-header h1 { color:var(--header-ink); }
     body:not(.dark-mode) header.app-header .subtitle { color:color-mix(in srgb,var(--header-ink) 84%,transparent); }
@@ -1403,6 +1418,22 @@
     </div>
 
     <div id="pocketGrid" class="invest-grid"></div>
+  </div>
+
+  <div id="viewProfile" class="tab-content">
+    <section class="profile-shell" aria-label="Área de perfil">
+      <div class="profile-heading">
+        <div class="profile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
+        <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
+      </div>
+      <p class="profile-intro">Esta área está pronta para centralizar suas preferências pessoais, aparência e segurança.</p>
+      <div class="profile-list">
+        <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/></svg></span><span class="profile-item-copy"><strong>Preferências financeiras</strong><span>Configurações pessoais em breve</span></span><span class="profile-item-arrow">›</span></div>
+        <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.1 2.1-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.57v.09h-3v-.09A1.7 1.7 0 0 0 10.68 18.64a1.7 1.7 0 0 0-1.88.34l-.06.06-2.1-2.1.06-.06A1.7 1.7 0 0 0 7.04 15a1.7 1.7 0 0 0-1.57-1.04h-.09v-3h.09A1.7 1.7 0 0 0 7.04 9.92 1.7 1.7 0 0 0 6.7 8.04l-.06-.06 2.1-2.1.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.04-1.57v-.09h3v.09a1.7 1.7 0 0 0 1.04 1.57 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.1 2.1-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.57 1.04h.09v3h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta já disponíveis no cabeçalho</span></span><span class="profile-item-arrow">›</span></div>
+        <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="profile-item-copy"><strong>Segurança</strong><span>Sessão e proteção de conta</span></span><span class="profile-item-arrow">›</span></div>
+      </div>
+      <div class="profile-roadmap"><b>Em preparação:</b> informações da conta, preferências, aparência, segurança e outras configurações futuras.</div>
+    </section>
   </div>
 
   <!-- Modais -->
@@ -1764,7 +1795,8 @@
       <h3>Colar texto do extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <label for="pasteArea">Cole abaixo o texto do seu extrato bancário ou relatório:</label>
       <textarea id="pasteArea" placeholder="Cole as linhas do extrato aqui..."></textarea>
-      <p class="hint">A prévia busca linhas com data e valor. Revise banco, categoria, valor e sentido antes de confirmar qualquer lançamento.</p>
+      <p id="pasteStatus" class="hint" aria-live="polite">A prévia busca linhas com data e valor. Revise banco, categoria, valor e sentido antes de confirmar qualquer lançamento.</p>
+      <button type="button" id="btnReadClipboard" class="emoji-native-toggle" style="margin-top:10px;">⌘ Ler área de transferência</button>
       <div style="display:flex; gap:10px; margin-top:12px;">
         <button class="primary" id="btnProcessPaste" style="flex:1;">Gerar Prévia</button>
         <button id="btnCancelPaste" style="flex:1;">Cancelar</button>
@@ -1841,24 +1873,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.querySelectorAll('.mobile-bottom-nav button').forEach((button) => {
     button.addEventListener('click', () => {
-      const destination = button.dataset.destination;
-      document.querySelectorAll('.mobile-bottom-nav button').forEach((item) => item.classList.remove('is-active'));
-      button.classList.add('is-active');
-      if (destination === 'home') {
-        switchTab('caixa');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (destination === 'entries') {
-        switchTab('caixa');
-        setTimeout(() => document.querySelector('.ledger')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
-      } else if (destination === 'chart') {
-        switchTab('caixa');
-        setTimeout(() => document.querySelector('.cat-summary')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
-      } else {
-        button.classList.remove('is-active');
-        button.setAttribute('aria-disabled', 'true');
-        button.classList.add('is-disabled');
-        return;
-      }
+      switchTab(button.dataset.destination);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
   let banks = [];
@@ -2182,13 +2198,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.switchTab = function(tabName) {
     currentTab = tabName;
-    document.getElementById('tabBtnCaixa').classList.toggle('active', tabName === 'caixa');
-    document.getElementById('tabBtnInvest').classList.toggle('active', tabName === 'invest');
-    document.getElementById('tabBtnPockets').classList.toggle('active', tabName === 'pockets');
+    document.getElementById('tabBtnCaixa')?.classList.toggle('active', tabName === 'caixa');
+    document.getElementById('tabBtnInvest')?.classList.toggle('active', tabName === 'invest');
+    document.getElementById('tabBtnPockets')?.classList.toggle('active', tabName === 'pockets');
     document.getElementById('viewCaixa').classList.toggle('active', tabName === 'caixa');
     document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
     document.getElementById('viewPockets').classList.toggle('active', tabName === 'pockets');
+    document.getElementById('viewProfile').classList.toggle('active', tabName === 'profile');
     document.getElementById('balanceStrip').classList.toggle('section-hidden', tabName !== 'caixa');
+    document.querySelectorAll('.mobile-bottom-nav button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === tabName));
+    if (tabName === 'profile') renderProfile();
   };
 
   function formatMonthLabel(ym) {
@@ -2668,7 +2687,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnEmojiKeyboard').onclick = () => {
       const nativeBox = document.getElementById('emojiNativeBox');
       nativeBox.classList.add('is-open');
-      setTimeout(() => document.getElementById('cEmojiNativeInput').focus(), 0);
+      requestAnimationFrame(() => document.getElementById('cEmojiNativeInput').focus({ preventScroll: true }));
     };
     document.getElementById('btnEmojiNativeUse').onclick = () => {
       const input = document.getElementById('cEmojiNativeInput');
@@ -4118,10 +4137,46 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   };
 
+  let pastePreviewInProgress = false;
+  function setPasteStatus(message) { document.getElementById('pasteStatus').textContent = message; }
+  document.getElementById('btnReadClipboard').onclick = async () => {
+    const area = document.getElementById('pasteArea');
+    if (!navigator.clipboard?.readText) { setPasteStatus('O navegador não liberou a leitura automática. Cole manualmente no campo acima.'); area.focus(); return; }
+    try {
+      setPasteStatus('Lendo a área de transferência…');
+      const text = await navigator.clipboard.readText();
+      if (!text.trim()) { setPasteStatus('A área de transferência está vazia. Cole o texto manualmente no campo acima.'); area.focus(); return; }
+      area.value = text;
+      setPasteStatus(`${text.trim().length.toLocaleString('pt-BR')} caracteres lidos. Revise e gere a prévia quando estiver pronto.`);
+    } catch (error) {
+      console.warn('Clipboard não disponível:', error);
+      setPasteStatus('Permissão não concedida. Você pode colar manualmente no campo acima.');
+      area.focus();
+    }
+  };
+  document.getElementById('pasteArea').addEventListener('input', event => {
+    const chars = event.target.value.trim().length;
+    if (chars) setPasteStatus(`${chars.toLocaleString('pt-BR')} caracteres prontos para análise. Nenhum lançamento será criado antes da confirmação.`);
+  });
   document.getElementById('btnProcessPaste').onclick = () => {
+    if (pastePreviewInProgress) return;
     const txt = document.getElementById('pasteArea').value;
     if(!txt.trim()){ alert('Cole algum texto primeiro.'); return; }
-    if (parseImportedText(txt, 'Texto colado')) document.getElementById('pasteArea').value = '';
+    pastePreviewInProgress = true;
+    const button = document.getElementById('btnProcessPaste');
+    const originalLabel = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Gerando prévia…';
+    try {
+      if (parseImportedText(txt, 'Texto colado')) {
+        document.getElementById('pasteArea').value = '';
+        setPasteStatus('Prévia criada. Confira os lançamentos antes de confirmar.');
+      }
+    } finally {
+      pastePreviewInProgress = false;
+      button.disabled = false;
+      button.textContent = originalLabel;
+    }
   };
   document.getElementById('btnCancelPaste').onclick = () => closeAllPanels();
 
@@ -4513,9 +4568,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderUserBar() {
     const bar = document.getElementById('userBar');
-    if (!currentUser) { bar.innerHTML = ''; return; }
+    if (!currentUser) { bar.innerHTML = ''; renderProfile(); return; }
     bar.innerHTML = `<span class="sync-dot" id="syncDot"></span> ${escapeHTML(currentUser.email)} <button type="button" id="btnLogout">Sair</button>`;
     document.getElementById('btnLogout').onclick = () => auth.signOut();
+    renderProfile();
+  }
+
+  function renderProfile() {
+    const email = currentUser?.email || 'Sua conta e preferências';
+    const target = document.getElementById('profileEmail');
+    if (target) target.textContent = email;
   }
 
   function setAuthError(msg) {
@@ -4619,10 +4681,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
-  <button type="button" class="is-active" data-destination="home"><span class="nav-icon">⌂</span>Início</button>
-  <button type="button" data-destination="entries"><span class="nav-icon">☷</span>Lançamentos</button>
-  <button type="button" data-destination="chart"><span class="nav-icon">◔</span>Gráficos</button>
-  <button type="button" data-destination="more"><span class="nav-icon">•••</span>Mais</button>
+  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h10a3 3 0 0 1 3 3V19H8a3 3 0 0 0-3 3z"/><path d="M5 5.5v15.5M8 9h6M8 13h6"/></svg></span><span>Livro-Caixa</span></button>
+  <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14v9.5A2.5 2.5 0 0 1 16.5 21h-9A2.5 2.5 0 0 1 5 18.5z"/><path d="M8 9V6.8A2.8 2.8 0 0 1 10.8 4h2.4A2.8 2.8 0 0 1 16 6.8V9M9 15h6"/></svg></span><span>Caixinhas</span></button>
+  <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span><span>Investimentos</span></button>
+  <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></span><span>Perfil</span></button>
 </nav>
 </body>
 </html>
