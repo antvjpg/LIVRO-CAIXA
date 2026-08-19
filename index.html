@@ -1271,6 +1271,28 @@
     .category-icon-picker{margin-top:12px;}.emoji-trigger{width:100%;min-height:58px;display:flex;align-items:center;gap:12px;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:14px;color:var(--ink);padding:10px 12px;}.emoji-trigger-preview{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--line);font-size:21px;flex:0 0 auto;}.emoji-trigger-copy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}.emoji-trigger-copy strong{font-size:14px;line-height:1.1;}.emoji-trigger-copy span{color:var(--ink-soft);font-size:12px;line-height:1.1;}.emoji-trigger-chevron{color:var(--accent);font-size:17px;}.emoji-picker{display:none;margin-top:10px;padding:13px;border:1px solid var(--line);border-radius:15px;background:var(--paper);}.emoji-picker.is-open{display:block;}.emoji-picker-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}.emoji-picker-head strong{font-size:14px;}.emoji-picker-head span{font-size:12px;color:var(--ink-soft);}.emoji-search{width:100%;margin-top:10px!important;background:var(--surface)!important;}.emoji-filter-row{display:flex;gap:7px;overflow-x:auto;margin:10px 0 11px;padding-top:1px;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);scrollbar-width:none;}.emoji-filter-row::-webkit-scrollbar{display:none;}.emoji-filter{white-space:nowrap;flex:0 0 auto;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);font-size:11px;padding:7px 10px;}.emoji-filter.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}.emoji-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;max-height:206px;overflow-y:auto;padding-top:2px;}.emoji-choice{height:38px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-size:20px;display:grid;place-items:center;padding:0;}.emoji-choice.selected{border:2px solid var(--accent);background:var(--green-soft);}.emoji-native-divider{display:flex;align-items:center;gap:9px;margin:13px 0 10px;color:var(--ink-soft);font-size:11px;}.emoji-native-divider:before,.emoji-native-divider:after{content:"";height:1px;background:var(--line);flex:1;}.emoji-native-toggle{width:100%;min-height:42px;border:1px dashed var(--action-border);border-radius:11px;background:var(--surface);color:var(--accent);font-weight:700;font-size:12px;}.emoji-native-box{display:none;margin-top:10px;gap:7px;align-items:center;}.emoji-native-box.is-open{display:flex;}.emoji-native-box input{min-width:0;flex:1;margin:0!important;text-align:center;font-size:22px;padding:7px 9px;}.emoji-native-box button{min-height:38px;border-radius:10px;font-size:12px;padding:0 10px;}.emoji-native-box .primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}.emoji-native-help{margin-top:8px;color:var(--ink-soft);font-size:11px;line-height:1.35;}body.dark-mode .emoji-trigger,body.dark-mode .emoji-picker,body.dark-mode .emoji-filter,body.dark-mode .emoji-choice,body.dark-mode .emoji-native-toggle{background:var(--surface);border-color:var(--line);color:var(--ink);}body.dark-mode .emoji-trigger-preview,body.dark-mode .emoji-choice.selected{background:var(--green-soft);border-color:var(--action-border);}body.dark-mode .emoji-filter.active,body.dark-mode .emoji-native-box .primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
   }
 </style>
+<style>
+    .emoji-float-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(13,42,30,.56);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
+    .emoji-float-overlay.open{display:flex;}
+    .emoji-float-window{width:100%;max-width:360px;max-height:min(560px,calc(100dvh - 32px));display:flex;flex-direction:column;background:var(--paper);border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);}
+    .emoji-float-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line);font-size:15px;font-weight:700;color:var(--ink);}
+    .emoji-float-close{width:30px;height:30px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);font-size:14px;}
+    .emoji-float-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px;}
+    .emoji-float-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;}
+    .emoji-float-grid button{height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:22px;display:grid;place-items:center;padding:0;}
+    .emoji-float-grid button.selected{border:2px solid var(--accent);background:var(--green-soft);}
+    .emoji-float-footer{flex:0 0 auto;padding:12px 16px max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--paper);}
+    .emoji-float-native{width:100%;min-height:40px;border:1px dashed var(--action-border);border-radius:11px;background:var(--surface);color:var(--accent);font-weight:700;font-size:12px;margin-bottom:8px;}
+    .emoji-float-native-box{display:none;gap:7px;margin-bottom:10px;}
+    .emoji-float-native-box.is-open{display:flex;}
+    .emoji-float-native-box input{min-width:0;flex:1;text-align:center;font-size:20px;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);}
+    .emoji-float-native-box button{border-radius:10px;padding:0 14px;}
+    .emoji-float-preview{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;color:var(--ink-soft);}
+    .emoji-float-preview span:first-child{width:34px;height:34px;border-radius:10px;background:var(--green-soft);display:grid;place-items:center;font-size:19px;flex:0 0 auto;}
+    body.dark-mode .emoji-float-window{background:var(--paper);}
+    body.dark-mode .emoji-float-grid button,body.dark-mode .emoji-float-native,body.dark-mode .emoji-float-native-box input{background:var(--surface);border-color:var(--line);color:var(--ink);}
+    body.dark-mode .emoji-float-grid button.selected{background:var(--green-soft);border-color:var(--action-border);}
+  </style>
 </head>
 <body>
 
@@ -1520,25 +1542,11 @@
             <label for="btnEmojiCatalog">Ícone</label>
             <input type="hidden" id="cIcon" value="📦">
             <div class="category-icon-picker">
-              <button type="button" class="emoji-trigger" id="btnEmojiCatalog" aria-expanded="false" aria-controls="emojiPicker">
+              <button type="button" class="emoji-trigger" id="btnEmojiCatalog" aria-haspopup="dialog">
                 <span class="emoji-trigger-preview" id="cEmojiPreview">📦</span>
-                <span class="emoji-trigger-copy"><strong id="cEmojiLabel">Outros</strong><span>Toque para explorar o catálogo</span></span>
+                <span class="emoji-trigger-copy"><strong id="cEmojiLabel">Outros</strong><span>Toque para escolher um ícone</span></span>
                 <span class="emoji-trigger-chevron" aria-hidden="true">⌄</span>
               </button>
-              <section class="emoji-picker" id="emojiPicker" aria-label="Catálogo de emojis">
-                <div class="emoji-picker-head"><strong>Escolher ícone</strong><span id="emojiCatalogCount"></span></div>
-                <input type="search" id="emojiSearch" class="emoji-search" placeholder="Buscar no catálogo" autocomplete="off">
-                <div class="emoji-filter-row" id="emojiFilterRow" role="group" aria-label="Filtros de emojis"></div>
-                <div class="emoji-grid" id="emojiGrid" aria-live="polite"></div>
-                <div class="emoji-native-divider">ou</div>
-                <button type="button" id="btnEmojiKeyboard" class="emoji-native-toggle">⌨ Usar emoji do teclado</button>
-                <div class="emoji-native-box" id="emojiNativeBox">
-                  <input type="text" id="cEmojiNativeInput" inputmode="text" maxlength="16" placeholder="🪴" aria-label="Emoji personalizado">
-                  <button type="button" id="btnEmojiNativeUse" class="primary">Usar</button>
-                  <button type="button" id="btnEmojiNativeClear">Limpar</button>
-                </div>
-                <p class="emoji-native-help">Use o teclado do aparelho para escolher um emoji fora do catálogo. A prévia só é aplicada quando você tocar em “Usar”.</p>
-              </section>
             </div>
           </div>
         </div>
@@ -2642,72 +2650,69 @@ document.addEventListener('DOMContentLoaded', () => {
     ['❤️','Saúde','Saúde'],['💊','Farmácia','Saúde'],['🏥','Médico','Saúde'],['🧘','Bem-estar','Saúde'],['🏋️','Academia','Saúde'],['🪥','Cuidados','Saúde'],
     ['🎮','Jogos','Lazer'],['🎬','Cinema','Lazer'],['🎵','Música','Lazer'],['🎁','Presentes','Lazer'],['🐾','Pets','Lazer'],['✨','Outros','Lazer']
   ];
-  const EMOJI_GROUPS = ['Todos','Finanças','Casa','Alimentação','Transporte','Trabalho','Saúde','Lazer'];
-  let activeEmojiGroup = 'Todos';
-
   function emojiLabel(icon) {
     return (EMOJI_CATALOG.find(([emoji]) => emoji === icon) || [icon, 'Emoji personalizado'])[1];
   }
   function isEmojiValue(value) {
     try { return /\p{Extended_Pictographic}/u.test(String(value || '')); } catch (err) { return String(value || '').trim().length > 0; }
   }
-  function setCategoryDraftIcon(icon, closePicker = false) {
+  function setCategoryDraftIcon(icon) {
     const value = String(icon || '📦').trim();
     document.getElementById('cIcon').value = value;
     document.getElementById('cEmojiPreview').textContent = value;
     document.getElementById('cEmojiLabel').textContent = emojiLabel(value);
-    if (closePicker) {
-      document.getElementById('emojiPicker').classList.remove('is-open');
-      document.getElementById('btnEmojiCatalog').setAttribute('aria-expanded', 'false');
-    }
-    renderEmojiCatalog();
   }
-  function renderEmojiCatalog() {
-    const query = (document.getElementById('emojiSearch')?.value || '').trim().toLocaleLowerCase('pt-BR');
-    const current = document.getElementById('cIcon')?.value || '📦';
-    const filtered = EMOJI_CATALOG.filter(([emoji, label, group]) =>
-      (activeEmojiGroup === 'Todos' || group === activeEmojiGroup) && (!query || `${emoji} ${label} ${group}`.toLocaleLowerCase('pt-BR').includes(query))
-    );
-    document.getElementById('emojiFilterRow').innerHTML = EMOJI_GROUPS.map(group => `<button type="button" class="emoji-filter ${group === activeEmojiGroup ? 'active' : ''}" data-emoji-group="${group}" aria-pressed="${group === activeEmojiGroup}">${group}</button>`).join('');
-    document.getElementById('emojiGrid').innerHTML = filtered.length
-      ? filtered.map(([emoji, label]) => `<button type="button" class="emoji-choice ${emoji === current ? 'selected' : ''}" data-emoji="${emoji}" title="${escapeHTML(label)}" aria-label="${escapeHTML(label)}" aria-pressed="${emoji === current}">${emoji}</button>`).join('')
-      : '<p class="hint" style="grid-column:1/-1;margin:6px 0;">Nenhum emoji encontrado neste filtro.</p>';
-    document.getElementById('emojiCatalogCount').textContent = `${filtered.length} opções`;
+  let emojiFloatPending = null;
+  function renderEmojiFloatGrid() {
+    const current = emojiFloatPending || document.getElementById('cIcon').value || '📦';
+    document.getElementById('emojiFloatGrid').innerHTML = EMOJI_CATALOG.map(([emoji, label]) =>
+      `<button type="button" class="${emoji === current ? 'selected' : ''}" data-emoji="${emoji}" title="${escapeHTML(label)}" aria-label="${escapeHTML(label)}" aria-pressed="${emoji === current}">${emoji}</button>`
+    ).join('');
+    updateEmojiFloatPreview(current);
+  }
+  function updateEmojiFloatPreview(icon) {
+    document.getElementById('emojiFloatPreviewIcon').textContent = icon;
+    document.getElementById('emojiFloatPreviewLabel').textContent = emojiLabel(icon);
+  }
+  function openEmojiFloat() {
+    emojiFloatPending = document.getElementById('cIcon').value || '📦';
+    document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
+    document.getElementById('emojiFloatNativeInput').value = '';
+    renderEmojiFloatGrid();
+    document.getElementById('emojiFloatOverlay').classList.add('open');
+  }
+  function closeEmojiFloat() {
+    document.getElementById('emojiFloatOverlay').classList.remove('open');
   }
   function initCategoryEmojiPicker() {
-    const trigger = document.getElementById('btnEmojiCatalog');
-    const picker = document.getElementById('emojiPicker');
-    trigger.onclick = () => {
-      const open = picker.classList.toggle('is-open');
-      trigger.setAttribute('aria-expanded', String(open));
-      if (open) renderEmojiCatalog();
+    document.getElementById('btnEmojiCatalog').onclick = openEmojiFloat;
+    document.getElementById('emojiFloatClose').onclick = closeEmojiFloat;
+    document.getElementById('emojiFloatOverlay').onclick = event => {
+      if (event.target.id === 'emojiFloatOverlay') closeEmojiFloat();
     };
-    document.getElementById('emojiSearch').oninput = renderEmojiCatalog;
-    document.getElementById('emojiFilterRow').onclick = event => {
-      const button = event.target.closest('[data-emoji-group]');
-      if (!button) return;
-      activeEmojiGroup = button.dataset.emojiGroup;
-      renderEmojiCatalog();
-    };
-    document.getElementById('emojiGrid').onclick = event => {
+    document.getElementById('emojiFloatGrid').onclick = event => {
       const button = event.target.closest('[data-emoji]');
       if (!button) return;
-      setCategoryDraftIcon(button.dataset.emoji, true);
+      emojiFloatPending = button.dataset.emoji;
+      document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
+      renderEmojiFloatGrid();
     };
-    document.getElementById('btnEmojiKeyboard').onclick = () => {
-      const nativeBox = document.getElementById('emojiNativeBox');
-      nativeBox.classList.add('is-open');
-      requestAnimationFrame(() => document.getElementById('cEmojiNativeInput').focus({ preventScroll: true }));
+    document.getElementById('emojiFloatKeyboard').onclick = () => {
+      document.getElementById('emojiFloatNativeBox').classList.add('is-open');
+      requestAnimationFrame(() => document.getElementById('emojiFloatNativeInput').focus({ preventScroll: true }));
     };
-    document.getElementById('btnEmojiNativeUse').onclick = () => {
-      const input = document.getElementById('cEmojiNativeInput');
+    document.getElementById('emojiFloatNativeUse').onclick = () => {
+      const input = document.getElementById('emojiFloatNativeInput');
       const value = input.value.trim();
       if (!isEmojiValue(value)) { alert('Digite ou cole um emoji válido do teclado.'); return; }
-      setCategoryDraftIcon(value, true);
-      input.value = '';
-      document.getElementById('emojiNativeBox').classList.remove('is-open');
+      emojiFloatPending = value;
+      updateEmojiFloatPreview(value);
+      renderEmojiFloatGrid();
     };
-    document.getElementById('btnEmojiNativeClear').onclick = () => { document.getElementById('cEmojiNativeInput').value = ''; };
+    document.getElementById('emojiFloatConfirm').onclick = () => {
+      setCategoryDraftIcon(emojiFloatPending || document.getElementById('cIcon').value);
+      closeEmojiFloat();
+    };
     setCategoryDraftIcon(document.getElementById('cIcon').value || '📦');
   }
   initCategoryEmojiPicker();
@@ -4696,5 +4701,28 @@ document.addEventListener('DOMContentLoaded', () => {
   <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span><span>Investimentos</span></button>
   <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></span><span>Perfil</span></button>
 </nav>
+<div class="emoji-float-overlay" id="emojiFloatOverlay" role="dialog" aria-modal="true" aria-label="Escolher ícone">
+  <div class="emoji-float-window">
+    <div class="emoji-float-head">
+      <strong>Escolher ícone</strong>
+      <button type="button" class="emoji-float-close" id="emojiFloatClose" aria-label="Fechar">✕</button>
+    </div>
+    <div class="emoji-float-body">
+      <div class="emoji-float-grid" id="emojiFloatGrid" aria-live="polite"></div>
+    </div>
+    <div class="emoji-float-footer">
+      <button type="button" class="emoji-float-native" id="emojiFloatKeyboard">⌨ Usar emoji do teclado</button>
+      <div class="emoji-float-native-box" id="emojiFloatNativeBox">
+        <input type="text" id="emojiFloatNativeInput" inputmode="text" maxlength="16" placeholder="🪴" aria-label="Emoji personalizado">
+        <button type="button" id="emojiFloatNativeUse" class="primary">Usar</button>
+      </div>
+      <div class="emoji-float-preview">
+        <span id="emojiFloatPreviewIcon">📦</span>
+        <span id="emojiFloatPreviewLabel">Nenhum emoji selecionado</span>
+      </div>
+      <button type="button" class="primary" id="emojiFloatConfirm" style="width:100%">Confirmar</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
