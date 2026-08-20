@@ -1754,8 +1754,14 @@
 
         <div id="valorSimplesField" style="display:none;">
           <div>
-            <label for="iValorSimples">Valor Total Atual (R$)</label>
+            <label for="iValorSimples">Saldo Inicial (R$)</label>
             <input type="text" id="iValorSimples" data-money="true" placeholder="R$ 0,00">
+            <div style="font-size:11px; margin-top:4px; opacity:0.7;">Editável. O saldo atual é recalculado pelas movimentações.</div>
+          </div>
+          <div>
+            <label for="iValorAtualSimples">Saldo Atual / Final (R$)</label>
+            <input type="text" id="iValorAtualSimples" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true" style="width:100%;">
+            <div style="font-size:11px; margin-top:4px; opacity:0.7;">Somente leitura: saldo inicial + aportes + rendimentos − resgates.</div>
           </div>
         </div>
 
@@ -2524,7 +2530,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function totalInvestBalance() {
-    return investments.reduce((sum, i) => sum + (i.value || 0), 0);
+    return investments.reduce((sum, i) => sum + (i.type === 'Renda Fixa' ? fixedIncomeCurrentValue(i) : (i.value || 0)), 0);
   }
 
   function pocketMovementTotal(pocketId, excludeId = null) {
@@ -2835,6 +2841,14 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   }
 
+  function updateFixedIncomeFormCurrent() {
+    const currentInput = document.getElementById('iValorAtualSimples');
+    if (!currentInput) return;
+    const item = editingInvestId ? investments.find(x => x.id === editingInvestId) : null;
+    const initial = readMoneyInput('iValorSimples');
+    const movements = item ? fixedIncomeMovementTotal(item) : 0;
+    setMoneyInput('iValorAtualSimples', Math.max(0, initial + movements));
+  }
   window.updateInvestFormLayout = function() {
     const type = document.getElementById('iTipo').value;
     const cryptoBox = document.getElementById('cryptoFields');
@@ -2851,6 +2865,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       simplesBox.style.display = 'block';
     }
+    if (type === 'Renda Fixa') updateFixedIncomeFormCurrent();
   };
 
   function formatMovementPeriod(y) {
@@ -2996,12 +3011,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="invest-box">
         <h4><span>${escapeHTML(inv.alias || inv.name)}</span> <span class="tag">${escapeHTML(inv.type)}</span></h4>
         ${inv.alias ? `<div class="units investment-name-secondary">${escapeHTML(inv.name)}</div>` : ''}
-        <div class="val">${fmt(inv.value || 0)}</div>
+        <div class="val">${fmt(inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0))}</div>
         ${inv.units ? `<div class="units">${inv.units} unidades / tokens</div>` : ''}
         ${(inv.type === 'Stablecoin' || inv.type === 'Criptomoeda') ? `<div class="units">Cotação: ${fmt(inv.price || 0)} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</div>` : ''}
         ${inv.institution ? `<div class="units">${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</div>` : ''}
         ${inv.dueDate ? `<div class="units">Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</div>` : ''}
-        ${rentabilityHTML('invest', inv.id, inv.value || 0)}
+        ${rentabilityHTML('invest', inv.id, inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0))}
         ${priceHistoryHTML(inv)}
         ${yieldHistoryHTML('invest', inv.id)}
         <div class="item-action-row">
@@ -3565,6 +3580,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const amount = Number(y.amount) || 0;
     return (y.kind === 'resgate' ? -1 : 1) * amount;
   }
+  function fixedIncomeMovementTotal(item) {
+    return yieldsLog
+      .filter(y => y.targetType === 'invest' && y.targetId === item.id)
+      .reduce((sum, y) => sum + movementDelta(y), 0);
+  }
+  function fixedIncomeInitialValue(item) {
+    if (Number.isFinite(Number(item.initialValue))) return Number(item.initialValue);
+    // Compatibilidade: registros antigos usavam item.value como saldo acumulado.
+    return Number(item.value || 0) - fixedIncomeMovementTotal(item);
+  }
+  function fixedIncomeCurrentValue(item) {
+    return Math.max(0, fixedIncomeInitialValue(item) + fixedIncomeMovementTotal(item));
+  }
+  function syncDerivedInvestmentValue(item) {
+    if (item && item.type === 'Renda Fixa') item.value = fixedIncomeCurrentValue(item);
+    return item;
+  }
 
   window.deleteYield = function(yieldId) {
     const y = yieldsLog.find(x => x.id === yieldId);
@@ -3585,6 +3617,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     yieldsLog = yieldsLog.filter(x => x.id !== yieldId);
+    if (item && y.targetType === 'invest' && item.type === 'Renda Fixa') syncDerivedInvestmentValue(item);
     persistAll();
     render();
   };
@@ -3630,7 +3663,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const latestQuote = inv.price != null ? inv.price : (inv.priceHistory && inv.priceHistory.length ? inv.priceHistory[inv.priceHistory.length - 1].price : '');
     setMoneyInput('iCotacao', latestQuote || 0);
     setMoneyInput('iValor', inv.value || 0);
-    setMoneyInput('iValorSimples', inv.value || 0);
+    setMoneyInput('iValorSimples', inv.type === 'Renda Fixa' ? fixedIncomeInitialValue(inv) : (inv.value || 0));
+    setMoneyInput('iValorAtualSimples', inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0));
     document.getElementById('iInstituicao').value = inv.institution || '';
     document.getElementById('iTaxa').value = inv.rate || '';
     document.getElementById('iVencimento').value = inv.dueDate || '';
@@ -3685,6 +3719,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setMoneyInput('iCotacao', 0);
     setMoneyInput('iValor', 0);
     setMoneyInput('iValorSimples', 0);
+    setMoneyInput('iValorAtualSimples', 0);
     document.getElementById('iInstituicao').value = '';
     document.getElementById('iTaxa').value = '';
     document.getElementById('iVencimento').value = '';
@@ -3790,6 +3825,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('iUnidades').addEventListener('input', updateInvestmentMainValue);
   document.getElementById('iCotacao').addEventListener('input', updateInvestmentMainValue);
+  document.getElementById('iValorSimples').addEventListener('input', updateFixedIncomeFormCurrent);
 
   document.getElementById('iSalvar').onclick = () => {
     const name = document.getElementById('iNome').value.trim();
@@ -3802,6 +3838,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const value = isCrypto
       ? (quote != null && units != null ? units * quote : readMoneyInput('iValor'))
       : readMoneyInput('iValorSimples');
+    const initialValue = type === 'Renda Fixa' ? value : null;
     const institution = type === 'Renda Fixa' ? document.getElementById('iInstituicao').value.trim() : '';
     const rate = type === 'Renda Fixa' ? document.getElementById('iTaxa').value.trim() : '';
     const dueDate = type === 'Renda Fixa' ? document.getElementById('iVencimento').value : '';
@@ -3809,7 +3846,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!name) { alert('Informe o nome do ativo.'); return; }
     if (isCrypto && (units == null || units <= 0)) { alert('Informe uma quantidade válida de unidades/tokens.'); return; }
 
-    const record = { name, alias, type, units, value, price: quote, institution, rate, dueDate };
+    const record = { name, alias, type, units, value, initialValue, price: quote, institution, rate, dueDate };
 
     let targetItem;
     if (editingInvestId) {
@@ -3825,6 +3862,7 @@ document.addEventListener('DOMContentLoaded', () => {
       investments.push(targetItem);
     }
 
+    if (targetItem && type === 'Renda Fixa') syncDerivedInvestmentValue(targetItem);
     if (isCrypto && quote != null && targetItem) {
       if (!targetItem.priceHistory) targetItem.priceHistory = [];
       const today = todayISO();
@@ -3950,6 +3988,7 @@ document.addEventListener('DOMContentLoaded', () => {
         old.amount = amount;
         old.desc = desc;
         old.kind = kind;
+        if (item.type === 'Renda Fixa') syncDerivedInvestmentValue(item);
       }
       investmentMovementEditingId = null;
     } else {
@@ -3971,10 +4010,10 @@ document.addEventListener('DOMContentLoaded', () => {
         units,
         price,
         amount,
-        desc
+                desc
       });
+      if (item.type === 'Renda Fixa') syncDerivedInvestmentValue(item);
     }
-
     if (isCrypto) {
       item.value = item.units * price;
       item.price = price;
