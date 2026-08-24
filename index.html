@@ -1939,12 +1939,24 @@ let currentUser = null;
 let isSignupMode = false;
 let saveTimer = null;
 let pendingSaveCount = 0;
+let snapshotBuffer = {};
 window.addEventListener('beforeunload', e => {
   if (pendingSaveCount > 0) {
     e.preventDefault();
     e.returnValue = '';
   }
 });
+function flushSnapshotBuffer() {
+  const names = Object.keys(snapshotBuffer);
+  if (!names.length) return;
+  names.forEach(name => {
+    const buffered = snapshotBuffer[name];
+    setStateArray(name, buffered.arr);
+    if (!buffered.hasPendingWrites) lastSynced[name] = arrToMap(getStateArray(name));
+  });
+  snapshotBuffer = {};
+  render();
+}
 
   function updateNavIndicator(tabName) {
     const nav = document.querySelector('.mobile-bottom-nav');
@@ -2399,6 +2411,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let resolved = false;
         const unsub = colRef(name).onSnapshot(snap => {
           const arr = snap.docs.map(d => d.data());
+          if (resolved && pendingSaveCount > 0) {
+            snapshotBuffer[name] = { arr, hasPendingWrites: snap.metadata.hasPendingWrites };
+            return;
+          }
           setStateArray(name, arr);
           if (!snap.metadata.hasPendingWrites) {
             lastSynced[name] = arrToMap(getStateArray(name));
@@ -2487,7 +2503,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return commitDiff()
       .then(() => { setSyncDot(false); })
       .catch(err => { console.error(err); setSyncDot(false); throw err; })
-      .finally(() => { pendingSaveCount = Math.max(0, pendingSaveCount - 1); });
+      .finally(() => {
+        pendingSaveCount = Math.max(0, pendingSaveCount - 1);
+        if (pendingSaveCount === 0) flushSnapshotBuffer();
+      });
   }
 
   async function commitDiff() {
