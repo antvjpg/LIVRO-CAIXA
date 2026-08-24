@@ -2212,6 +2212,43 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  function sanitizeBackupData(data) {
+    const dropped = { banks: 0, categories: 0, entries: 0, investments: 0, pockets: 0 };
+    const banks = data.banks.filter(b => {
+      const ok = b && typeof b === 'object' && typeof b.id === 'string' && b.id && typeof b.name === 'string' && b.name.trim();
+      if (!ok) dropped.banks++;
+      return ok;
+    });
+    const categories = data.categories.filter(c => {
+      const ok = c && typeof c === 'object' && typeof c.id === 'string' && c.id && typeof c.name === 'string' && c.name.trim();
+      if (!ok) dropped.categories++;
+      return ok;
+    });
+    const entries = data.entries.filter(e => {
+      const ok = e && typeof e === 'object' && typeof e.id === 'string' && e.id
+        && typeof e.desc === 'string' && e.desc.trim()
+        && typeof e.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(e.date)
+        && typeof e.amount === 'number' && isFinite(e.amount) && e.amount > 0
+        && (e.type === 'in' || e.type === 'out');
+      if (!ok) dropped.entries++;
+      return ok;
+    });
+    const investments = data.investments.filter(i => {
+      const ok = i && typeof i === 'object' && typeof i.id === 'string' && i.id && typeof i.name === 'string' && i.name.trim()
+        && typeof i.value === 'number' && isFinite(i.value) && i.value >= 0;
+      if (!ok) dropped.investments++;
+      return ok;
+    });
+    const pockets = data.pockets.filter(p => {
+      const ok = p && typeof p === 'object' && typeof p.id === 'string' && p.id && typeof p.name === 'string' && p.name.trim()
+        && typeof p.initial === 'number' && isFinite(p.initial) && p.initial >= 0;
+      if (!ok) dropped.pockets++;
+      return ok;
+    });
+    const yieldsLog = Array.isArray(data.yieldsLog) ? data.yieldsLog.filter(y => y && typeof y === 'object' && typeof y.id === 'string' && y.id) : [];
+    return { data: { banks, categories, entries, investments, pockets, yieldsLog }, dropped };
+  }
+
   // Tema Escuro / Claro
   const themeBtn = document.getElementById('btnThemeToggle');
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
@@ -4431,12 +4468,19 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
         const data = extractBackupData(payload);
-        banks = data.banks.filter(bk => bk && bk.id && bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral');
-        categories = data.categories.filter(c => c && c.id && c.name);
-        entries = data.entries;
-        investments = data.investments;
-        pockets = data.pockets;
-        yieldsLog = data.yieldsLog;
+        const { data: clean, dropped } = sanitizeBackupData(data);
+        const totalDropped = Object.values(dropped).reduce((a, b) => a + b, 0);
+        if (totalDropped > 0) {
+          const detail = Object.entries(dropped).filter(([, n]) => n > 0).map(([k, n]) => `${n} em "${k}"`).join(', ');
+          const proceed = confirm(`${totalDropped} registro(s) do backup estavam incompletos ou inválidos e serão ignorados (${detail}). Deseja continuar mesmo assim com o restante do backup?`);
+          if (!proceed) { return; }
+        }
+        banks = clean.banks.filter(bk => bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral');
+        categories = clean.categories;
+        entries = clean.entries;
+        investments = clean.investments;
+        pockets = clean.pockets;
+        yieldsLog = clean.yieldsLog;
         normalizePockets();
         await persistNow();
         populateFilterControls(true);
