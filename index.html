@@ -1449,6 +1449,7 @@
       <button type="button" data-drawer-action="banks"><span>▦</span> Contas bancárias</button>
       <button type="button" data-drawer-action="categories"><span>◇</span> Categorias</button>
       <button type="button" data-drawer-action="theme"><span>◐</span> Tema e paleta</button>
+      <button type="button" data-drawer-action="diagnostico"><span>◈</span> Diagnóstico de sincronização</button>
     </div>
   </aside>
 </div>
@@ -1702,6 +1703,16 @@
           <button type="button" id="btnClearFilters" style="flex:1;">Limpar</button>
           <button type="button" class="primary" id="btnApplyFilters" style="flex:1;">Aplicar filtros</button>
         </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panelDiagnostico">
+      <h3>Diagnóstico de sincronização <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <p class="hint" style="margin:0 0 10px;">Se algo não estiver salvando, os erros mais recentes aparecem aqui. Toque em "Copiar" e me envie o texto.</p>
+      <div id="diagnosticoList" style="max-height:50vh; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button type="button" id="btnCopyDiagnostico" style="flex:1;">Copiar</button>
+        <button type="button" id="btnClearDiagnostico" style="flex:1;">Limpar</button>
       </div>
     </div>
 
@@ -2602,6 +2613,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const dot = document.getElementById('syncDot');
     if (dot) dot.classList.toggle('saving', saving);
   }
+  const syncErrorLog = [];
+  function logSyncError(context, err) {
+    const entry = {
+      time: new Date().toLocaleString('pt-BR'),
+      context,
+      message: (err && err.message) ? err.message : String(err)
+    };
+    syncErrorLog.unshift(entry);
+    if (syncErrorLog.length > 15) syncErrorLog.length = 15;
+    try { localStorage.setItem('livrocaixa_sync_errors', JSON.stringify(syncErrorLog)); } catch (e) {}
+    console.error(`[${context}]`, err);
+    flashSyncError();
+  }
   function flashSyncError() {
     const dot = document.getElementById('syncDot');
     if (!dot) return;
@@ -3495,6 +3519,33 @@ document.addEventListener('DOMContentLoaded', () => {
     renderNotifications();
   }
 
+  function openDiagnostics() {
+    let stored = [];
+    try { stored = JSON.parse(localStorage.getItem('livrocaixa_sync_errors') || '[]'); } catch (e) {}
+    const list = document.getElementById('diagnosticoList');
+    list.innerHTML = stored.length
+      ? stored.map(e => `<div style="border:1px solid var(--line); border-radius:10px; padding:8px 10px; font-size:12px;"><strong>${escapeHTML(e.context)}</strong> · ${escapeHTML(e.time)}<br><span style="opacity:0.75;">${escapeHTML(e.message)}</span></div>`).join('')
+      : '<p class="hint">Nenhum erro registrado até agora.</p>';
+    openModal('panelDiagnostico');
+  }
+  document.getElementById('btnCopyDiagnostico').onclick = () => {
+    let stored = [];
+    try { stored = JSON.parse(localStorage.getItem('livrocaixa_sync_errors') || '[]'); } catch (e) {}
+    const text = stored.length
+      ? stored.map(e => `[${e.time}] ${e.context}: ${e.message}`).join('\n')
+      : 'Nenhum erro registrado.';
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => alert('Copiado! Cole numa mensagem pra mim.')).catch(() => alert(text));
+    } else {
+      alert(text);
+    }
+  };
+  document.getElementById('btnClearDiagnostico').onclick = () => {
+    localStorage.removeItem('livrocaixa_sync_errors');
+    syncErrorLog.length = 0;
+    openDiagnostics();
+  };
+
   document.getElementById('btnOpenDrawer')?.addEventListener('click', openDrawer);
   document.getElementById('btnNotifications')?.addEventListener('click', openNotifications);
   document.querySelector('[data-close-drawer]')?.addEventListener('click', closeDrawer);
@@ -3507,6 +3558,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (action === 'overview') { window.switchTab('caixa'); window.scrollTo({ top:0, behavior:'smooth' }); }
     if (action === 'entries') { window.switchTab('caixa'); setTimeout(() => scrollTo('ledgerBody'), 20); }
     if (action === 'bills') window.switchTab('bills');
+    if (action === 'diagnostico') openDiagnostics();
     if (action === 'reports') { window.switchTab('caixa'); setTimeout(() => scrollTo('categorySummary'), 20); }
     if (action === 'pockets') window.switchTab('pockets');
     if (action === 'investments') window.switchTab('invest');
@@ -4132,7 +4184,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setMoneyInput('fValor', 0);
       closeAllPanels();
     } catch (err) {
-      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
+      logSyncError('lançamento', err);
     } finally {
       btn.disabled = false;
       btn.textContent = originalLabel;
@@ -4223,7 +4275,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await saveInvestments();
       closeAllPanels();
     } catch (err) {
-      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
+      logSyncError('investimento', err);
     } finally {
       if (btnSalvarInvest) { btnSalvarInvest.disabled = false; btnSalvarInvest.textContent = originalLabel; }
       render();
@@ -4287,7 +4339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await persistAll();
       closeAllPanels();
     } catch (err) {
-      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
+      logSyncError('caixinha', err);
     } finally {
       render();
     }
@@ -4389,7 +4441,7 @@ document.addEventListener('DOMContentLoaded', () => {
       investmentMovementTarget = null;
       closeAllPanels();
     } catch (err) {
-      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
+      logSyncError('movimentação de investimento', err);
     } finally {
       render();
     }
@@ -4563,7 +4615,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('bSalvar').textContent = 'Adicionar';
       closeAllPanels();
     } catch (err) {
-      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
+      logSyncError('banco', err);
     } finally {
       render();
     }
