@@ -1,59 +1,28 @@
-/* Livro-Caixa PWA: cacheia a interface local, mas nunca dados financeiros remotos. */
-const CACHE_NAME = "livro-caixa-shell-v16";
+/* Livro-Caixa V18-06 PWA: cacheia apenas o App Shell; dados financeiros continuam no Firestore. */
+const CACHE_NAME = "livro-caixa-shell-v18-06";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./manifest.webmanifest?v=16",
-  "./icon-192.png?v=16",
-  "./icon-512.png?v=16",
-  "./icon-512-maskable.png?v=16"
+  "./manifest.webmanifest?v=18-06",
+  "./manifest.json?v=18-06",
+  "./icon-192.png?v=18-06",
+  "./icon-512.png?v=18-06",
+  "./icon-512-maskable.png?v=18-06"
 ];
-
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(
-      keys
-        .filter((key) => key.startsWith("livro-caixa-shell-") && key !== CACHE_NAME)
-        .map((key) => caches.delete(key))
-    )).then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener("fetch", (event) => {
+self.addEventListener("install", event => event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting())));
+self.addEventListener("activate", event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith("livro-caixa-shell-") && k !== CACHE_NAME).map(k => caches.delete(k)))).then(() => self.clients.claim())));
+self.addEventListener("fetch", event => {
   const request = event.request;
   const url = new URL(request.url);
-
-  // Não cacheia chamadas a Firebase, Firestore, Auth, CoinGecko ou outros domínios externos.
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
-
   if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request).catch(() => caches.match("./index.html"))
-    );
+    event.respondWith(fetch(request).catch(() => caches.match("./index.html")));
     return;
   }
-
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(request).then((response) => {
-        if (!response || response.status !== 200 || response.type !== "basic") {
-          return response;
-        }
-
-        const responseCopy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, responseCopy));
-        return response;
-      });
-    })
-  );
+  event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => {
+    if (!response || response.status !== 200 || response.type !== "basic") return response;
+    const copy = response.clone();
+    caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+    return response;
+  })));
 });
