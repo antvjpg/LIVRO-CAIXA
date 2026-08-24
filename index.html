@@ -1785,12 +1785,13 @@
         </div>
         <div>
           <label for="pInicial">Saldo Inicial (R$)</label>
-          <input type="text" id="pInicial" data-money="true" placeholder="R$ 0,00">
+          <input type="text" id="pInicial" data-money="true" placeholder="R$ 0,00" inputmode="decimal">
+          <div class="hint">Editável. É o valor de partida da caixinha.</div>
         </div>
         <div>
-          <label for="pAtual">Saldo Atual (R$)</label>
-          <input type="text" id="pAtual" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true">
-          <div class="hint">Saldo inicial + movimentações registradas nesta caixinha.</div>
+          <label for="pAtual">Saldo Final (R$)</label>
+          <input type="text" id="pAtual" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true" tabindex="-1">
+          <div class="hint">Somente leitura: saldo inicial + aportes + rendimentos − resgates.</div>
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="pSalvar" style="width:100%">Salvar Caixinha</button>
@@ -2601,15 +2602,51 @@ document.addEventListener('DOMContentLoaded', () => {
     return investments.reduce((sum, i) => sum + (i.type === 'Renda Fixa' ? fixedIncomeCurrentValue(i) : (i.value || 0)), 0);
   }
 
-  function pocketMovementTotal(pocketId, excludeId = null) {
-    return yieldsLog
-      .filter(y => y.targetType === 'pocket' && y.targetId === pocketId && y.id !== excludeId)
-      .reduce((sum, y) => sum + (y.kind === 'resgate' ? -1 : 1) * (Number(y.amount) || 0), 0);
+  // Saldo das caixinhas: o saldo inicial é a única base editável.
+  // O saldo final é sempre derivado das movimentações registradas.
+  function pocketBalanceBreakdown(pocketId, excludeId = null) {
+    const movements = yieldsLog.filter(y =>
+      y.targetType === 'pocket' &&
+      y.targetId === pocketId &&
+      y.id !== excludeId
+    );
+
+    const aportes = movements
+      .filter(y => y.kind === 'aporte')
+      .reduce((sum, y) => sum + (Number(y.amount) || 0), 0);
+
+    const rendimentos = movements
+      .filter(y => y.kind === 'rendimento')
+      .reduce((sum, y) => sum + (Number(y.amount) || 0), 0);
+
+    const resgates = movements
+      .filter(y => y.kind === 'resgate')
+      .reduce((sum, y) => sum + (Number(y.amount) || 0), 0);
+
+    return { aportes, rendimentos, resgates, movimentacoes: aportes + rendimentos - resgates };
   }
 
-  function pocketCurrentBalance(pocket) {
+  function pocketMovementTotal(pocketId, excludeId = null) {
+    const breakdown = pocketBalanceBreakdown(pocketId, excludeId);
+    return breakdown.movimentacoes;
+  }
+
+  function pocketCurrentBalance(pocket, excludeId = null) {
+    if (!pocket) return 0;
     const initial = Number(pocket.initial ?? pocket.value ?? 0) || 0;
-    return initial + pocketMovementTotal(pocket.id);
+    const breakdown = pocketBalanceBreakdown(pocket.id, excludeId);
+    // Fórmula oficial: SALDO INICIAL + APORTES + RENDIMENTOS - RESGATES.
+    return Math.max(0, initial + breakdown.aportes + breakdown.rendimentos - breakdown.resgates);
+  }
+
+  function updatePocketFinalBalance() {
+    const input = document.getElementById('pAtual');
+    if (!input) return;
+    const initial = readMoneyInput('pInicial');
+    const pocket = editingPocketId ? pockets.find(p => p.id === editingPocketId) : null;
+    const breakdown = pocket ? pocketBalanceBreakdown(pocket.id) : { aportes: 0, rendimentos: 0, resgates: 0 };
+    const final = Math.max(0, initial + breakdown.aportes + breakdown.rendimentos - breakdown.resgates);
+    setMoneyInput('pAtual', final);
   }
 
   function normalizePockets() {
@@ -4043,17 +4080,10 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal('panelPocket');
   };
 
-  document.getElementById('pInicial').addEventListener('input', () => {
-    const initial = readMoneyInput('pInicial');
-    const current = editingPocketId ? pocketCurrentBalance(pockets.find(p => p.id === editingPocketId)) : initial;
-    if (editingPocketId) {
-      const pocket = pockets.find(p => p.id === editingPocketId);
-      const movements = pocket ? pocketMovementTotal(pocket.id) : 0;
-      setMoneyInput('pAtual', Math.max(0, initial + movements));
-    } else {
-      setMoneyInput('pAtual', Math.max(0, current));
-    }
-  });
+  document.getElementById('pInicial').addEventListener('input', updatePocketFinalBalance);
+
+  document.getElementById('pAtual').setAttribute('data-derived-balance', 'true');
+  document.getElementById('pAtual').setAttribute('aria-label', 'Saldo final calculado automaticamente');
 
   document.getElementById('pSalvar').onclick = async () => {
     const name = document.getElementById('pNome').value.trim();
