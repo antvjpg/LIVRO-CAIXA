@@ -863,6 +863,7 @@
     display:inline-block;
   }
   .sync-dot.saving{background:var(--gold);}
+  .sync-dot.sync-error{background:#d9534f;}
   
   @media (max-width:768px){
     .import-row{grid-template-columns:1fr; gap:4px; padding:10px 0;}
@@ -1438,7 +1439,7 @@
     <nav class="drawer-nav" aria-label="Navegação principal">
       <button type="button" data-drawer-action="overview"><span>⌂</span> Visão geral</button>
       <button type="button" data-drawer-action="entries"><span>≡</span> Lançamentos</button>
-      <button type="button" data-drawer-action="bills"><span>🗓</span> Contas & Calendário</button>
+      <button type="button" data-drawer-action="bills"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span> Contas & Calendário</button>
       <button type="button" data-drawer-action="reports"><span>◔</span> Gastos por categoria</button>
       <button type="button" data-drawer-action="pockets"><span>◌</span> Caixinhas</button>
       <button type="button" data-drawer-action="investments"><span>↗</span> Investimentos</button>
@@ -1495,7 +1496,6 @@
       <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3H8z"/><path d="M6 7h12v13H6z"/><path d="M9 12h6M9 15h6"/></svg></span><span>Colar texto</span></button>
       <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Importar PDF</span></button>
       <button class="quick-action" id="btnExport"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M10 19V5M15 19v-7M20 19V7M3 19h18"/></svg></span><span>Exportar extrato</span></button>
-      <button class="quick-action" id="btnBills" type="button"><span class="quick-action-icon" aria-hidden="true">🗓</span><span>Contas & Calendário</span></button>
       <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14v13H5z"/><path d="M8 6V4h8v2M8 12h8M9 16h6"/></svg></span><span>Exportar backup</span></button>
       <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19V9"/><path d="m8.5 12.5 3.5-3.5 3.5 3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Restaurar backup</span></button>
       <input type="file" id="fileImport" accept="application/pdf">
@@ -2601,6 +2601,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function setSyncDot(saving) {
     const dot = document.getElementById('syncDot');
     if (dot) dot.classList.toggle('saving', saving);
+  }
+  function flashSyncError() {
+    const dot = document.getElementById('syncDot');
+    if (!dot) return;
+    dot.classList.add('sync-error');
+    setTimeout(() => dot.classList.remove('sync-error'), 4000);
   }
 
   function persistNow() {
@@ -3915,7 +3921,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  document.getElementById('btnBills').onclick = () => switchTab('bills');
   document.getElementById('btnNovoBill').onclick = () => openBillModal();
   document.getElementById('btnBillPrev').onclick = () => { billViewDate.setMonth(billViewDate.getMonth()-1); renderBills(); };
   document.getElementById('btnBillNext').onclick = () => { billViewDate.setMonth(billViewDate.getMonth()+1); renderBills(); };
@@ -4127,7 +4132,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setMoneyInput('fValor', 0);
       closeAllPanels();
     } catch (err) {
-      alert('Não foi possível salvar o lançamento agora. Verifique sua conexão e tente novamente — ele continua na tela, mas ainda não foi confirmado no servidor.');
+      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
     } finally {
       btn.disabled = false;
       btn.textContent = originalLabel;
@@ -4218,7 +4223,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await saveInvestments();
       closeAllPanels();
     } catch (err) {
-      alert('Não foi possível salvar o investimento agora. Verifique sua conexão e tente novamente — o registro continua na tela, mas ainda não foi confirmado no servidor.');
+      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
     } finally {
       if (btnSalvarInvest) { btnSalvarInvest.disabled = false; btnSalvarInvest.textContent = originalLabel; }
       render();
@@ -4282,7 +4287,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await persistAll();
       closeAllPanels();
     } catch (err) {
-      alert('Não foi possível salvar a caixinha agora. Verifique sua conexão e tente novamente.');
+      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
     } finally {
       render();
     }
@@ -4384,7 +4389,7 @@ document.addEventListener('DOMContentLoaded', () => {
       investmentMovementTarget = null;
       closeAllPanels();
     } catch (err) {
-      alert('Não foi possível salvar a movimentação agora. Verifique sua conexão e tente novamente.');
+      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
     } finally {
       render();
     }
@@ -4558,7 +4563,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('bSalvar').textContent = 'Adicionar';
       closeAllPanels();
     } catch (err) {
-      alert('Não foi possível salvar o banco agora. Verifique sua conexão e tente novamente.');
+      console.error('Falha ao salvar — dado permanece na tela pendente de sincronização.'); flashSyncError();
     } finally {
       render();
     }
