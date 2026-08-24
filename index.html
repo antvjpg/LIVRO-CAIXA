@@ -1712,6 +1712,7 @@
           <select id="iTipo" onchange="updateInvestFormLayout()">
             <option value="Stablecoin">Stablecoin (ex: USDC)</option>
             <option value="Criptomoeda">Criptomoeda</option>
+            <option value="Bitcoin">Bitcoin (SATS)</option>
             <option value="Renda Fixa">Renda Fixa / CDI</option>
             <option value="Outros">Outros</option>
           </select>
@@ -1719,11 +1720,11 @@
 
         <div id="cryptoFields" style="display:contents;">
           <div>
-            <label for="iUnidades">Unidades / Tokens</label>
+            <label for="iUnidades" id="iUnidadesLabel">Unidades / Tokens</label>
             <input type="number" id="iUnidades" step="0.000001" placeholder="Ex: 50.00">
           </div>
           <div>
-            <label for="iCotacao">Cotação (R$ por unidade)</label>
+            <label for="iCotacao" id="iCotacaoLabel">Cotação (R$ por unidade)</label>
             <div style="display:flex; gap:6px; align-items:stretch;">
               <input type="text" id="iCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
               <button type="button" id="btnFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;">🔄 Cotação</button>
@@ -1852,7 +1853,7 @@
           <input type="date" id="imDataFim">
         </div>
         <div id="imCryptoQuantityField">
-          <label for="imQuantidade">Quantidade</label>
+          <label for="imQuantidade" id="imQuantidadeLabel">Quantidade</label>
           <input type="number" id="imQuantidade" step="0.00000001" min="0" placeholder="Ex: 0.50">
         </div>
         <div id="imCryptoQuoteField">
@@ -2708,7 +2709,7 @@ document.addEventListener('DOMContentLoaded', () => {
     banks.filter(bank => bankBalance(bank.id) < 0).forEach(bank => {
       alerts.push({ icon: '!', title: `${bank.name} está com saldo negativo`, detail: `Saldo atual: ${fmt(bankBalance(bank.id))}.` });
     });
-    const cryptoWithoutQuote = investments.filter(inv => (inv.type === 'Stablecoin' || inv.type === 'Criptomoeda') && !inv.lastQuoteAt);
+    const cryptoWithoutQuote = investments.filter(inv => isCryptoType(inv.type) && !inv.lastQuoteAt);
     cryptoWithoutQuote.slice(0, 2).forEach(inv => {
       alerts.push({ icon: '↻', title: `Atualize a cotação de ${inv.alias || inv.name}`, detail: 'Este ativo ainda não possui uma atualização de cotação registrada.' });
     });
@@ -2916,16 +2917,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const movements = item ? fixedIncomeMovementTotal(item) : 0;
     setMoneyInput('iValorAtualSimples', Math.max(0, initial + movements));
   }
+  const SATS_PER_BTC = 100000000;
+  function isCryptoType(type) {
+    return type === 'Stablecoin' || type === 'Criptomoeda' || type === 'Bitcoin';
+  }
+  function isBitcoinType(type) {
+    return type === 'Bitcoin';
+  }
+  // 'units' de Bitcoin é sempre um inteiro de SATS. Nunca converter pra BTC fracionário
+  // pra evitar perda de precisão — a conversão só acontece na hora de calcular o valor em BRL.
+  function cryptoValueFromUnits(type, units, pricePerUnit) {
+    if (!isFinite(units) || !isFinite(pricePerUnit)) return 0;
+    if (isBitcoinType(type)) return (units / SATS_PER_BTC) * pricePerUnit;
+    return units * pricePerUnit;
+  }
+  function formatCryptoUnits(type, units) {
+    const n = Number(units) || 0;
+    if (isBitcoinType(type)) return `${Math.round(n).toLocaleString('pt-BR')} SATS`;
+    return n.toLocaleString('pt-BR', { maximumFractionDigits: 8 });
+  }
   window.updateInvestFormLayout = function() {
     const type = document.getElementById('iTipo').value;
     const cryptoBox = document.getElementById('cryptoFields');
     const rendaFixaBox = document.getElementById('rendaFixaFields');
     const simplesBox = document.getElementById('valorSimplesField');
+    const unidadesInput = document.getElementById('iUnidades');
+    const unidadesLabel = document.getElementById('iUnidadesLabel');
+    const cotacaoLabel = document.getElementById('iCotacaoLabel');
     cryptoBox.style.display = 'none';
     rendaFixaBox.style.display = 'none';
     simplesBox.style.display = 'none';
-    if (type === 'Stablecoin' || type === 'Criptomoeda') {
+    if (isCryptoType(type)) {
       cryptoBox.style.display = 'contents';
+      if (isBitcoinType(type)) {
+        unidadesLabel.textContent = 'Quantidade em SATS';
+        unidadesInput.step = '1';
+        unidadesInput.placeholder = 'Ex: 2024';
+        cotacaoLabel.textContent = 'Cotação (R$ por BTC)';
+      } else {
+        unidadesLabel.textContent = 'Unidades / Tokens';
+        unidadesInput.step = '0.000001';
+        unidadesInput.placeholder = 'Ex: 50.00';
+        cotacaoLabel.textContent = 'Cotação (R$ por unidade)';
+      }
     } else if (type === 'Renda Fixa') {
       rendaFixaBox.style.display = 'contents';
       simplesBox.style.display = 'block';
@@ -3079,8 +3113,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <h4><span>${escapeHTML(inv.alias || inv.name)}</span> <span class="tag">${escapeHTML(inv.type)}</span></h4>
         ${inv.alias ? `<div class="units investment-name-secondary">${escapeHTML(inv.name)}</div>` : ''}
         <div class="val">${fmt(inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0))}</div>
-        ${inv.units ? `<div class="units">${inv.units} unidades / tokens</div>` : ''}
-        ${(inv.type === 'Stablecoin' || inv.type === 'Criptomoeda') ? `<div class="units">Cotação: ${fmt(inv.price || 0)} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</div>` : ''}
+        ${inv.units ? `<div class="units">${formatCryptoUnits(inv.type, inv.units)}${isBitcoinType(inv.type) ? '' : ' unidades / tokens'}</div>` : ''}
+        ${isCryptoType(inv.type) ? `<div class="units">Cotação: ${fmt(inv.price || 0)} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</div>` : ''}
         ${inv.institution ? `<div class="units">${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</div>` : ''}
         ${inv.dueDate ? `<div class="units">Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</div>` : ''}
         ${rentabilityHTML('invest', inv.id, inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0))}
@@ -3457,7 +3491,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const kind = investmentMovementTarget.kind;
     const item = investments.find(x => x.id === investmentMovementTarget.id);
     const isYield = kind === 'rendimento';
-    const isCrypto = item && (item.type === 'Stablecoin' || item.type === 'Criptomoeda');
+    const isCrypto = item && isCryptoType(item.type);
     document.getElementById('imAporte').classList.toggle('active-in', kind === 'aporte');
     document.getElementById('imResgate').classList.toggle('active-out', kind === 'resgate');
     document.getElementById('imRendimento').classList.toggle('active-yield', isYield);
@@ -3474,6 +3508,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imCryptoQuantityField').style.display = isCrypto ? 'block' : 'none';
     document.getElementById('imCryptoQuoteField').style.display = isCrypto ? 'block' : 'none';
     document.getElementById('imPriceStatus').style.display = isCrypto ? 'block' : 'none';
+    const qtyInput = document.getElementById('imQuantidade');
+    const qtyLabel = document.getElementById('imQuantidadeLabel');
+    if (item && isBitcoinType(item.type)) {
+      qtyLabel.textContent = 'Quantidade em SATS';
+      qtyInput.step = '1';
+      qtyInput.placeholder = 'Ex: 500';
+    } else {
+      qtyLabel.textContent = 'Quantidade';
+      qtyInput.step = '0.00000001';
+      qtyInput.placeholder = 'Ex: 0.50';
+    }
   }
 
   function setInvestmentPeriodMode(period) {
@@ -3503,9 +3548,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function updateInvestmentMovementValue() {
-    const qty = parseFloat(document.getElementById('imQuantidade').value) || 0;
+    const item = investmentMovementTarget ? investments.find(x => x.id === investmentMovementTarget.id) : null;
+    const rawQty = parseFloat(document.getElementById('imQuantidade').value) || 0;
+    const qty = item && isBitcoinType(item.type) ? Math.round(rawQty) : rawQty;
     const price = readMoneyInput('imCotacao');
-    setMoneyInput('imValor', qty > 0 && price > 0 ? qty * price : 0);
+    setMoneyInput('imValor', qty > 0 && price > 0 ? cryptoValueFromUnits(item ? item.type : null, qty, price) : 0);
   }
 
   async function fetchInvestmentMovementPrice() {
@@ -3616,7 +3663,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imPeriodo').classList.toggle('active-in', !!isPeriod);
     updateInvestmentMovementUI();
     document.getElementById('imPriceStatus').textContent = y.price ? `Cotação registrada: ${fmt(y.price)} · pode ser alterada manualmente` : 'Cotação não registrada. Você pode digitá-la manualmente.';
-    if (item.type === 'Stablecoin' || item.type === 'Criptomoeda') updateInvestmentMovementValue();
+    if (isCryptoType(item.type)) updateInvestmentMovementValue();
     openModal('panelInvestMovement');
   }
 
@@ -3672,7 +3719,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = y.targetType === 'invest' ? investments : pockets;
     const item = list.find(x => x.id === y.targetId);
     if (item) {
-      const isCrypto = y.targetType === 'invest' && (item.type === 'Stablecoin' || item.type === 'Criptomoeda') && y.units != null;
+      const isCrypto = y.targetType === 'invest' && isCryptoType(item.type) && y.units != null;
       if (isCrypto) {
         const signedUnits = y.kind === 'resgate' ? -(y.units || 0) : (y.units || 0);
         item.units = Math.max(0, (item.units || 0) - signedUnits);
@@ -3903,11 +3950,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateInvestmentMainValue() {
     const type = document.getElementById('iTipo').value;
-    if (type !== 'Stablecoin' && type !== 'Criptomoeda') return;
-    const units = parseFloat(document.getElementById('iUnidades').value) || 0;
+    if (!isCryptoType(type)) return;
+    const rawUnits = parseFloat(document.getElementById('iUnidades').value) || 0;
+    const units = isBitcoinType(type) ? Math.round(rawUnits) : rawUnits;
     const price = readMoneyInput('iCotacao');
     if (units > 0 && price > 0) {
-      setMoneyInput('iValor', units * price);
+      setMoneyInput('iValor', cryptoValueFromUnits(type, units, price));
     }
   }
 
@@ -3919,12 +3967,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = document.getElementById('iNome').value.trim();
     const alias = document.getElementById('iApelido').value.trim();
     const type = document.getElementById('iTipo').value;
-    const isCrypto = (type === 'Stablecoin' || type === 'Criptomoeda');
-    const units = isCrypto ? (parseFloat(document.getElementById('iUnidades').value) || null) : null;
+    const isCrypto = isCryptoType(type);
+    const rawUnitsInput = isCrypto ? (parseFloat(document.getElementById('iUnidades').value) || null) : null;
+    const units = (isCrypto && rawUnitsInput != null && isBitcoinType(type)) ? Math.round(rawUnitsInput) : rawUnitsInput;
     const quoteRaw = isCrypto ? readMoneyInput('iCotacao') : NaN;
     const quote = isFinite(quoteRaw) && quoteRaw > 0 ? quoteRaw : null;
     const value = isCrypto
-      ? (quote != null && units != null ? units * quote : readMoneyInput('iValor'))
+      ? (quote != null && units != null ? cryptoValueFromUnits(type, units, quote) : readMoneyInput('iValor'))
       : readMoneyInput('iValorSimples');
     const initialValue = type === 'Renda Fixa' ? value : null;
     const institution = type === 'Renda Fixa' ? document.getElementById('iInstituicao').value.trim() : '';
@@ -4036,7 +4085,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  document.getElementById('imSalvar').onclick = () => {
+  document.getElementById('imSalvar').onclick = async () => {
     if (!investmentMovementTarget) return;
     const item = investments.find(x => x.id === investmentMovementTarget.id);
     if (!item) return;
@@ -4045,7 +4094,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateEnd = document.getElementById('imDataFim').value || date;
     const desc = document.getElementById('imDesc').value.trim();
     const kind = investmentMovementTarget.kind;
-    const isCrypto = item.type === 'Stablecoin' || item.type === 'Criptomoeda';
+    const isCrypto = isCryptoType(item.type);
 
     if (dateEnd < date) { alert('A data final não pode ser anterior à data inicial.'); return; }
 
@@ -4055,15 +4104,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isCrypto) {
       units = parseFloat(document.getElementById('imQuantidade').value);
+      if (isBitcoinType(item.type) && isFinite(units)) units = Math.round(units);
       price = readMoneyInput('imCotacao');
       if (!isFinite(units) || units <= 0) { alert('Informe uma quantidade válida.'); return; }
       if (!isFinite(price) || price <= 0) { alert('Informe uma cotação válida ou use o botão 🔄 para buscá-la.'); return; }
       if (kind === 'resgate') {
         const old = investmentMovementEditingId ? yieldsLog.find(x => x.id === investmentMovementEditingId) : null;
         const available = (item.units || 0) + (old && old.kind === 'resgate' ? (old.units || 0) : 0);
-        if (units > available + 1e-12) { alert(`O resgate não pode ser maior que o saldo disponível (${available}).`); return; }
+        if (units > available + 1e-12) { alert(`O resgate não pode ser maior que o saldo disponível (${formatCryptoUnits(item.type, available)}).`); return; }
       }
-      amount = units * price;
+      amount = cryptoValueFromUnits(item.type, units, price);
       setMoneyInput('imValor', amount);
     } else {
       if (!isFinite(amount) || amount <= 0) { alert('Informe um valor válido.'); return; }
@@ -4119,7 +4169,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (item.type === 'Renda Fixa') syncDerivedInvestmentValue(item);
     }
     if (isCrypto) {
-      item.value = item.units * price;
+      item.value = cryptoValueFromUnits(item.type, item.units, price);
       item.price = price;
       item.lastQuoteAt = new Date().toISOString();
       if (!item.priceHistory) item.priceHistory = [];
@@ -4134,10 +4184,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    persistAll();
-    investmentMovementTarget = null;
-    closeAllPanels();
     render();
+    try {
+      await persistAll();
+      investmentMovementTarget = null;
+      closeAllPanels();
+    } catch (err) {
+      alert('Não foi possível salvar a movimentação agora. Verifique sua conexão e tente novamente.');
+    } finally {
+      render();
+    }
   };
 
   document.getElementById('pmSalvar').onclick = () => {
@@ -4242,7 +4298,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const price = await fetchCoinPriceBRL(coin.id);
         if (!price) { failed.push(inv.name); continue; }
         inv.price = price;
-        inv.value = price * inv.units;
+        inv.value = cryptoValueFromUnits(inv.type, inv.units, price);
         inv.lastQuoteAt = new Date().toISOString();
         if (!inv.priceHistory) inv.priceHistory = [];
         inv.priceHistory.push({ date: todayISO(), price, units: inv.units, value: inv.value });
