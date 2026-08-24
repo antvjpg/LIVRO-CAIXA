@@ -1938,6 +1938,13 @@ const db = firebase.firestore();
 let currentUser = null;
 let isSignupMode = false;
 let saveTimer = null;
+let pendingSaveCount = 0;
+window.addEventListener('beforeunload', e => {
+  if (pendingSaveCount > 0) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 
   function updateNavIndicator(tabName) {
     const nav = document.querySelector('.mobile-bottom-nav');
@@ -2476,7 +2483,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentUser) return Promise.resolve();
     clearTimeout(saveTimer);
     setSyncDot(true);
-    return commitDiff().then(() => setSyncDot(false)).catch(err => { console.error(err); setSyncDot(false); });
+    pendingSaveCount++;
+    return commitDiff()
+      .then(() => { setSyncDot(false); })
+      .catch(err => { console.error(err); setSyncDot(false); throw err; })
+      .finally(() => { pendingSaveCount = Math.max(0, pendingSaveCount - 1); });
   }
 
   async function commitDiff() {
@@ -3827,7 +3838,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('iCotacao').addEventListener('input', updateInvestmentMainValue);
   document.getElementById('iValorSimples').addEventListener('input', updateFixedIncomeFormCurrent);
 
-  document.getElementById('iSalvar').onclick = () => {
+  document.getElementById('iSalvar').onclick = async () => {
     const name = document.getElementById('iNome').value.trim();
     const alias = document.getElementById('iApelido').value.trim();
     const type = document.getElementById('iTipo').value;
@@ -3880,9 +3891,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     pendingPricePoint = null;
 
-    saveInvestments();
-    closeAllPanels();
     render();
+    const btnSalvarInvest = document.getElementById('iSalvar');
+    const originalLabel = btnSalvarInvest ? btnSalvarInvest.textContent : null;
+    if (btnSalvarInvest) { btnSalvarInvest.disabled = true; btnSalvarInvest.textContent = 'Salvando...'; }
+    try {
+      await saveInvestments();
+      closeAllPanels();
+    } catch (err) {
+      alert('Não foi possível salvar o investimento agora. Verifique sua conexão e tente novamente — o registro continua na tela, mas ainda não foi confirmado no servidor.');
+    } finally {
+      if (btnSalvarInvest) { btnSalvarInvest.disabled = false; btnSalvarInvest.textContent = originalLabel; }
+      render();
+    }
   };
 
   document.getElementById('btnNovoPocket').onclick = () => {
