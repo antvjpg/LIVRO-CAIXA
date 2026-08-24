@@ -3790,7 +3790,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tglIn').classList.remove('active-in');
   };
 
-  document.getElementById('fSalvar').onclick = () => {
+  document.getElementById('fSalvar').onclick = async () => {
     const btn = document.getElementById('fSalvar');
     const date = document.getElementById('fData').value || todayISO();
     const desc = document.getElementById('fDesc').value.trim();
@@ -3803,7 +3803,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    if (!editingEntryId) {
+      const possibleDuplicate = entries.find(e =>
+        e.date === date && e.bank === bank && e.category === category &&
+        e.type === currentType && Math.abs(Number(e.amount) - valor) < 0.005 &&
+        e.desc.trim().toLocaleLowerCase('pt-BR') === desc.toLocaleLowerCase('pt-BR')
+      );
+      if (possibleDuplicate) {
+        const confirmDup = confirm('Já existe um lançamento igual a este nesta mesma data, banco e categoria. Deseja lançar mesmo assim?');
+        if (!confirmDup) return;
+      }
+    }
+
     btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.textContent = 'Salvando...';
 
     if (editingEntryId) {
       const idx = entries.findIndex(e => e.id === editingEntryId);
@@ -3815,13 +3829,20 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), date, desc, bank, category, amount: valor, type: currentType });
     }
 
-    saveEntries();
     populateFilterControls();
-    document.getElementById('fDesc').value = '';
-    setMoneyInput('fValor', 0);
-    btn.disabled = false;
-    closeAllPanels();
     render();
+    try {
+      await saveEntries();
+      document.getElementById('fDesc').value = '';
+      setMoneyInput('fValor', 0);
+      closeAllPanels();
+    } catch (err) {
+      alert('Não foi possível salvar o lançamento agora. Verifique sua conexão e tente novamente — ele continua na tela, mas ainda não foi confirmado no servidor.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+      render();
+    }
   };
 
   function updateInvestmentMainValue() {
@@ -3929,7 +3950,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  document.getElementById('pSalvar').onclick = () => {
+  document.getElementById('pSalvar').onclick = async () => {
     const name = document.getElementById('pNome').value.trim();
     const goal = document.getElementById('pObjetivo').value.trim();
     const initial = readMoneyInput('pInicial');
@@ -3948,9 +3969,15 @@ document.addEventListener('DOMContentLoaded', () => {
       pockets.push({ id, name, goal, initial });
     }
 
-    persistAll();
-    closeAllPanels();
     render();
+    try {
+      await persistAll();
+      closeAllPanels();
+    } catch (err) {
+      alert('Não foi possível salvar a caixinha agora. Verifique sua conexão e tente novamente.');
+    } finally {
+      render();
+    }
   };
 
   document.getElementById('imSalvar').onclick = () => {
@@ -4177,7 +4204,7 @@ document.addEventListener('DOMContentLoaded', () => {
       (failed.length ? ` Não encontrados: ${failed.join(', ')}.` : '');
   };
 
-  document.getElementById('bSalvar').onclick = () => {
+  document.getElementById('bSalvar').onclick = async () => {
     const name = document.getElementById('bNome').value.trim();
     const saldo = readMoneyInput('bSaldo');
     if (!name) { alert('Dê um nome ao banco.'); return; }
@@ -4193,14 +4220,20 @@ document.addEventListener('DOMContentLoaded', () => {
       banks.push({ id: 'b' + Date.now(), name, initial: saldo });
     }
 
-    saveBanks();
     populateFilterControls();
-    document.getElementById('bNome').value = '';
-    setMoneyInput('bSaldo', 0);
-    document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
-    document.getElementById('bSalvar').textContent = 'Adicionar';
-    closeAllPanels();
     render();
+    try {
+      await saveBanks();
+      document.getElementById('bNome').value = '';
+      setMoneyInput('bSaldo', 0);
+      document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+      document.getElementById('bSalvar').textContent = 'Adicionar';
+      closeAllPanels();
+    } catch (err) {
+      alert('Não foi possível salvar o banco agora. Verifique sua conexão e tente novamente.');
+    } finally {
+      render();
+    }
   };
 
   document.getElementById('cSalvar').onclick = async () => {
