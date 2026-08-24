@@ -1438,6 +1438,7 @@
     <nav class="drawer-nav" aria-label="Navegação principal">
       <button type="button" data-drawer-action="overview"><span>⌂</span> Visão geral</button>
       <button type="button" data-drawer-action="entries"><span>≡</span> Lançamentos</button>
+      <button type="button" data-drawer-action="bills"><span>🗓</span> Contas & Calendário</button>
       <button type="button" data-drawer-action="reports"><span>◔</span> Gastos por categoria</button>
       <button type="button" data-drawer-action="pockets"><span>◌</span> Caixinhas</button>
       <button type="button" data-drawer-action="investments"><span>↗</span> Investimentos</button>
@@ -1459,10 +1460,9 @@
 </div>
 
 <main>
-  <!-- Navegação por Abas -->
+  <!-- Navegação por Abas: Contas & Calendário acessível pelo menu lateral -->
   <div class="nav-tabs">
     <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')">📖 Livro-Caixa</button>
-    <button class="nav-tab" id="tabBtnBills" onclick="switchTab('bills')">🗓 Contas & Calendário</button>
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')">🐷 Caixinhas</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">🪙 Investimentos</button>
   </div>
@@ -3488,6 +3488,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
     if (action === 'overview') { window.switchTab('caixa'); window.scrollTo({ top:0, behavior:'smooth' }); }
     if (action === 'entries') { window.switchTab('caixa'); setTimeout(() => scrollTo('ledgerBody'), 20); }
+    if (action === 'bills') window.switchTab('bills');
     if (action === 'reports') { window.switchTab('caixa'); setTimeout(() => scrollTo('categorySummary'), 20); }
     if (action === 'pockets') window.switchTab('pockets');
     if (action === 'investments') window.switchTab('invest');
