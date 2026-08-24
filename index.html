@@ -2619,12 +2619,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function commitDiff() {
     const current = currentStateSnapshot();
-    const batch = db.batch();
-    let opCount = 0;
+    const failedCollections = [];
 
-    COLLECTIONS.forEach(name => {
+    for (const name of COLLECTIONS) {
       const newMap = arrToMap(current[name]);
       const oldMap = lastSynced[name] || {};
+      const batch = db.batch();
+      let opCount = 0;
 
       Object.keys(newMap).forEach(id => {
         const newItem = newMap[id];
@@ -2640,14 +2641,25 @@ document.addEventListener('DOMContentLoaded', () => {
           opCount++;
         }
       });
-    });
 
-    if (opCount === 0) return;
-    if (opCount > 450) {
-      console.warn('Muitas alterações de uma vez (' + opCount + '); considere dividir em lotes.');
+      if (opCount === 0) continue;
+      if (opCount > 450) {
+        console.warn(`Muitas alterações de uma vez em "${name}" (${opCount}); considere dividir em lotes.`);
+      }
+      try {
+        await batch.commit();
+        lastSynced[name] = newMap;
+      } catch (err) {
+        console.error(`Falha ao salvar a coleção "${name}":`, err);
+        failedCollections.push(name);
+      }
     }
-    await batch.commit();
-    setLastSyncedFromCurrentState();
+
+    if (failedCollections.length > 0) {
+      const err = new Error(`Falha ao sincronizar: ${failedCollections.join(', ')}`);
+      err.failedCollections = failedCollections;
+      throw err;
+    }
   }
 
   function persistAll() { return persistNow(); }
