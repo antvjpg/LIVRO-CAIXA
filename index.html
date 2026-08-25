@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Livro-Caixa">
-<link rel="manifest" href="./manifest.webmanifest?v=18-06">
+<link rel="manifest" href="./manifest.webmanifest?v=18-07">
 <link rel="icon" href="./icon-192.png?v=13" type="image/png">
 <link rel="apple-touch-icon" href="./icon-192.png?v=13">
 <title>Livro-Caixa</title>
@@ -19,6 +19,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -1379,7 +1380,24 @@
     body.dark-mode .mobile-bottom-nav::before{background:color-mix(in srgb,var(--accent) 20%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent),0 6px 16px rgba(0,0,0,.22);}
   }
   @media (prefers-reduced-motion:reduce){button,.mobile-bottom-nav::before,.tab-content,.value-refresh,.card-lancamento{transition:none!important;animation:none!important;}}
-  </style>
+
+  .toolbar .quick-action{border:1px solid var(--action-border);border-radius:12px;background:var(--surface);color:var(--ink-soft);font-family:var(--font-ui)!important;font-size:11px;font-weight:700;letter-spacing:.01em;text-transform:none;gap:8px;box-shadow:none;min-height:54px;transition:background .16s ease,color .16s ease,border-color .16s ease,transform .16s ease;}
+  .toolbar .quick-action:hover,.toolbar .quick-action:focus-visible{background:var(--green-soft);border-color:var(--accent);color:var(--accent);}
+  .toolbar .quick-action:active{transform:scale(.98);}
+  .log-toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0 12px;}
+  .log-entry{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 11px;background:var(--surface);font-size:11px;line-height:1.45;}
+  .log-entry.error{border-left-color:var(--red);}.log-entry.warn{border-left-color:var(--gold);}
+  .log-entry-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+  .log-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;background:var(--green-soft);color:var(--accent);font-size:9px;font-weight:800;letter-spacing:.05em;}
+  .log-entry.error .log-badge{background:var(--red-soft);color:var(--red);}.log-entry.warn .log-badge{background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold);}
+  .log-entry-meta{color:var(--ink-soft);font-size:10px;}.log-entry-description{margin-top:4px;font-weight:700;}.log-entry-details{margin-top:5px;color:var(--ink-soft);white-space:pre-wrap;overflow-wrap:anywhere;}
+  .history-audit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:6px 0 2px;color:var(--ink-soft);font-size:10px;}
+  .history-audit span{padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--paper);}
+  .history-unit{font-size:10px;color:var(--ink-soft);margin-left:4px;}.history-note{display:block;color:var(--ink-soft);font-size:10px;margin-top:2px;}
+  .reorder-actions{display:flex;gap:3px;margin-left:auto;}.reorder-actions .action-btn{font-size:12px;min-width:25px;min-height:25px;}
+  .bank-share-line{display:block;color:var(--accent);font-size:10px;margin-top:2px;}.bill-status.overdue{color:var(--red);font-weight:800;}
+  @media(max-width:600px){.history-audit{grid-template-columns:1fr;}.log-toolbar{grid-template-columns:1fr 1fr;}}
+</style>
 </head>
 <body>
 
@@ -1449,7 +1467,7 @@
       <button type="button" data-drawer-action="banks"><span>▦</span> Contas bancárias</button>
       <button type="button" data-drawer-action="categories"><span>◇</span> Categorias</button>
       <button type="button" data-drawer-action="theme"><span>◐</span> Tema e paleta</button>
-      <button type="button" data-drawer-action="diagnostico"><span>◈</span> Diagnóstico de sincronização</button>
+      <button type="button" data-drawer-action="diagnostico"><span>◈</span> Diagnóstico Geral (LOG)</button>
     </div>
   </aside>
 </div>
@@ -1535,7 +1553,7 @@
     </div>
     <div class="card" style="padding:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
-        <div><strong>Contas recorrentes</strong><div class="hint">Cadastre uma vez e use o calendário para gerar o lançamento no Livro-Caixa.</div></div>
+        <div><strong>Contas e faturas</strong><div class="hint">Compromissos futuros não alteram o saldo. Use “Lançar no Livro-Caixa” para registrar o pagamento.</div></div>
       </div>
       <div id="billList"></div>
     </div>
@@ -1707,12 +1725,17 @@
     </div>
 
     <div class="panel" id="panelDiagnostico">
-      <h3>Diagnóstico de sincronização <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <p class="hint" style="margin:0 0 10px;">Se algo não estiver salvando, os erros mais recentes aparecem aqui. Toque em "Copiar" e me envie o texto.</p>
+      <h3>Diagnóstico Geral (LOG) <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <p class="hint" style="margin:0 0 10px;">Registro técnico de carregamento, salvamento, sincronização, autenticação, importação, exportação, cálculos, cotações, calendário e operações concluídas ou falhas. Dados sensíveis não são registrados.</p>
+      <div class="log-toolbar">
+        <select id="logFilterType" aria-label="Filtrar tipo de LOG"><option value="">Todos os tipos</option><option value="INFO">INFO</option><option value="WARN">WARN</option><option value="ERROR">ERROR</option></select>
+        <select id="logFilterModule" aria-label="Filtrar módulo do LOG"><option value="">Todos os módulos</option></select>
+        <input id="logFilterText" type="search" placeholder="Buscar no LOG" aria-label="Buscar no LOG">
+      </div>
       <div id="diagnosticoList" style="max-height:50vh; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
       <div style="display:flex; gap:8px; margin-top:12px;">
-        <button type="button" id="btnCopyDiagnostico" style="flex:1;">Copiar</button>
-        <button type="button" id="btnClearDiagnostico" style="flex:1;">Limpar</button>
+        <button type="button" id="btnCopyDiagnostico" style="flex:1;">Copiar LOG</button>
+        <button type="button" id="btnClearDiagnostico" style="flex:1;">Limpar local</button>
       </div>
     </div>
 
@@ -1752,6 +1775,7 @@
         <div><label for="billNome">Nome da conta / fatura</label><input id="billNome" type="text" placeholder="Ex: Netflix, Energia, Cartão"></div>
         <div><label for="billValor">Valor (R$)</label><input id="billValor" type="text" data-money="true" placeholder="R$ 0,00"></div>
         <div><label for="billDia">Dia do vencimento</label><input id="billDia" type="number" min="1" max="31" step="1" placeholder="Ex: 10"></div>
+        <div><label for="billTipoOcorrencia">Tipo de ocorrência</label><select id="billTipoOcorrencia"><option value="recorrente">Recorrente</option><option value="nao_recorrente">Não recorrente</option></select></div>
         <div><label for="billBanco">Conta de pagamento</label><select id="billBanco"></select></div>
         <div><label for="billCategoria">Categoria</label><select id="billCategoria"></select></div>
         <div><label for="billInicio">Início</label><input id="billInicio" type="date"></div>
@@ -1760,6 +1784,14 @@
         <div style="grid-column:1/-1"><label for="billObs">Observação (opcional)</label><input id="billObs" type="text" placeholder="Ex: cobrança mensal automática"></div>
         <div style="grid-column:1/-1"><button class="primary" id="billSalvar" style="width:100%">Salvar Conta / Fatura</button></div>
       </div>
+    </div>
+
+    <div class="panel" id="panelBillLaunch">
+      <h3>Lançar no Livro-Caixa <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <p id="billLaunchDescription" class="hint">Escolha o banco que será utilizado para esta despesa.</p>
+      <label for="billLaunchBank">Banco utilizado</label>
+      <select id="billLaunchBank"></select>
+      <button type="button" class="primary" id="billLaunchConfirm" style="width:100%;margin-top:12px;">Confirmar lançamento</button>
     </div>
 
     <div class="panel" id="panelInvest">
@@ -1857,6 +1889,11 @@
           <input type="text" id="pObjetivo" placeholder="Ex: Meta de R$ 5.000">
         </div>
         <div>
+          <label for="pBancoOrigem">Banco de origem</label>
+          <select id="pBancoOrigem"><option value="">A definir</option></select>
+          <div class="hint">Usa os bancos já cadastrados no Livro-Caixa.</div>
+        </div>
+        <div>
           <label for="pInicial">Saldo Inicial (R$)</label>
           <input type="text" id="pInicial" data-money="true" placeholder="R$ 0,00">
         </div>
@@ -1878,7 +1915,7 @@
         <button type="button" id="pmResgate">Resgate</button>
         <button type="button" id="pmRendimento">Rendimento</button>
       </div>
-      <div id="pmPeriodToggle" class="type-toggle" style="margin-bottom:14px; display:none;">
+      <div id="pmPeriodToggle" class="type-toggle" style="margin-bottom:14px; display:none;" aria-hidden="true">
         <button type="button" id="pmDia" class="active-in">Dia</button>
         <button type="button" id="pmPeriodo">Período</button>
       </div>
@@ -1912,7 +1949,7 @@
         <button type="button" id="imResgate">Resgate</button>
         <button type="button" id="imRendimento">Rendimento</button>
       </div>
-      <div id="imPeriodToggle" class="type-toggle" style="margin-bottom:14px; display:none;">
+      <div id="imPeriodToggle" class="type-toggle" style="margin-bottom:14px; display:none;" aria-hidden="true">
         <button type="button" id="imDia" class="active-in">Dia</button>
         <button type="button" id="imPeriodo">Período</button>
       </div>
@@ -1958,6 +1995,7 @@
       <div class="toolbar" style="grid-template-columns: 1fr 1fr; margin-top:14px;">
         <button class="primary" id="btnExportFormatPdf">📄 PDF</button>
         <button class="primary" id="btnExportFormatXlsx">📊 Excel (.xlsx)</button>
+        <button class="primary" id="btnExportFormatDocx">📝 Word (.docx)</button>
       </div>
     </div>
 
@@ -2040,7 +2078,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     navigator.serviceWorker.register('./sw.js').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
-    }).catch(err => console.warn('[PWA] Falha ao registrar Service Worker:', err));
+      if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
+    }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
   }
 
   let deferredInstallPrompt = null;
@@ -2248,7 +2287,7 @@ document.addEventListener('DOMContentLoaded', () => {
       schemaVersion: BACKUP_SCHEMA_VERSION,
       app: 'livro-caixa',
       exportedAt: new Date().toISOString(),
-      data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills }
+      data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, diagnosticLog: diagnosticLog.slice(0, LOG_LIMIT) }
     };
   }
 
@@ -2258,7 +2297,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const required = ['banks','categories','entries'];
     if (!required.every(k => Array.isArray(data[k]))) return false;
     if (payload.schemaVersion != null && (!Number.isInteger(payload.schemaVersion) || payload.schemaVersion < 1 || payload.schemaVersion > BACKUP_SCHEMA_VERSION)) return false;
-    const optional = ['investments','pockets','yieldsLog','recurringBills'];
+    const optional = ['investments','pockets','yieldsLog','recurringBills','diagnosticLog'];
     if (optional.some(k => data[k] != null && !Array.isArray(data[k]))) return false;
     return true;
   }
@@ -2272,7 +2311,8 @@ document.addEventListener('DOMContentLoaded', () => {
       investments: Array.isArray(data.investments) ? data.investments : [],
       pockets: Array.isArray(data.pockets) ? data.pockets : [],
       yieldsLog: Array.isArray(data.yieldsLog) ? data.yieldsLog : [],
-      recurringBills: Array.isArray(data.recurringBills) ? data.recurringBills : []
+      recurringBills: Array.isArray(data.recurringBills) ? data.recurringBills : [],
+      diagnosticLog: Array.isArray(data.diagnosticLog) ? data.diagnosticLog : []
     };
   }
 
@@ -2310,7 +2350,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return ok;
     });
     const yieldsLog = Array.isArray(data.yieldsLog) ? data.yieldsLog.filter(y => y && typeof y === 'object' && typeof y.id === 'string' && y.id) : [];
-    return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills }, dropped };
+    const diagnosticLog = data.diagnosticLog.filter(item => item && typeof item === 'object' && typeof item.type === 'string' && typeof item.module === 'string').slice(0, LOG_LIMIT);
+    return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, diagnosticLog }, dropped };
   }
 
   // Tema Escuro / Claro
@@ -2472,6 +2513,35 @@ document.addEventListener('DOMContentLoaded', () => {
     return m;
   }
 
+  function ensureDisplayOrder(list) {
+    let changed = false;
+    (list || []).forEach((item, index) => {
+      if (!Number.isFinite(Number(item.order))) { item.order = index; changed = true; }
+    });
+    return changed;
+  }
+  function sortDisplayOrder(list) {
+    return [...(list || [])].sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+  }
+  async function moveDisplayItem(collectionName, id, direction) {
+    const list = collectionName === 'investments' ? investments : pockets;
+    ensureDisplayOrder(list);
+    const index = list.findIndex(item => item.id === id);
+    const target = index + direction;
+    if (index < 0 || target < 0 || target >= list.length) return;
+    [list[index], list[target]] = [list[target], list[index]];
+    list.forEach((item, position) => { item.order = position; });
+    render();
+    try {
+      await persistAll();
+      logInfo('Organização', collectionName === 'investments' ? 'Reordenação de investimento' : 'Reordenação de caixinha', 'Sucesso', `Item movido para a posição ${target + 1}.`);
+    } catch (err) {
+      logSyncError('reordenação', err);
+    }
+  }
+  window.moveInvestment = (id, direction) => moveDisplayItem('investments', id, direction);
+  window.movePocket = (id, direction) => moveDisplayItem('pockets', id, direction);
+
   function currentStateSnapshot() {
     return { banks, categories, entries, investments, pockets, yieldsLog, recurringBills };
   }
@@ -2489,8 +2559,8 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'banks': banks = arr.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral'); break;
       case 'categories': categories = arr; break;
       case 'entries': entries = arr; break;
-      case 'investments': investments = arr; break;
-      case 'pockets': pockets = arr; break;
+      case 'investments': investments = sortDisplayOrder(arr); break;
+      case 'pockets': pockets = sortDisplayOrder(arr); break;
       case 'yieldsLog': yieldsLog = arr; break;
       case 'recurringBills': recurringBills = arr; break;
     }
@@ -2507,6 +2577,8 @@ document.addEventListener('DOMContentLoaded', () => {
     realtimeUnsubscribers.forEach(unsub => unsub());
     realtimeUnsubscribers = [];
     let firstLoadDone = false;
+    await loadDiagnosticLog();
+    logInfo('Carregamento de dados', 'Início da sincronização', 'Em andamento', 'Leitura das coleções do Livro-Caixa iniciada.');
 
     try {
       // Cada coleção resolve assim que a PRIMEIRA leitura chega — que, com o cache offline
@@ -2531,8 +2603,7 @@ document.addEventListener('DOMContentLoaded', () => {
             render();
           }
         }, err => {
-          if (!resolved) { resolved = true; reject(err); }
-          else console.error(err);
+          if (!resolved) { resolved = true; reject(err);           } else { console.error(err); logSyncError(`sincronização — ${name}`, err); }
         });
         realtimeUnsubscribers.push(unsub);
       })));
@@ -2557,6 +2628,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       let changed = !hasSubData;
+      const orderChanged = ensureDisplayOrder(investments) | ensureDisplayOrder(pockets);
+      investments = sortDisplayOrder(investments);
+      pockets = sortDisplayOrder(pockets);
+      if (orderChanged) changed = true;
       const beforePocketState = JSON.stringify(pockets);
       normalizePockets();
       if (JSON.stringify(pockets) !== beforePocketState) changed = true;
@@ -2576,8 +2651,10 @@ document.addEventListener('DOMContentLoaded', () => {
       render();
       renderBills();
       firstLoadDone = true;
+      logInfo('Carregamento de dados', 'Sincronização concluída', 'Sucesso', `${COLLECTIONS.length} coleções carregadas.`);
     } catch (err) {
       console.error(err);
+      logSyncError('carregamento de dados', err);
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
       syncOverlay.classList.add('hidden');
@@ -2594,6 +2671,7 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'investments': return investments;
       case 'pockets': return pockets;
       case 'yieldsLog': return yieldsLog;
+      case 'recurringBills': return recurringBills;
     }
   }
 
@@ -2613,19 +2691,89 @@ document.addEventListener('DOMContentLoaded', () => {
     const dot = document.getElementById('syncDot');
     if (dot) dot.classList.toggle('saving', saving);
   }
-  const syncErrorLog = [];
-  function logSyncError(context, err) {
-    const entry = {
-      time: new Date().toLocaleString('pt-BR'),
-      context,
-      message: (err && err.message) ? err.message : String(err)
-    };
-    syncErrorLog.unshift(entry);
-    if (syncErrorLog.length > 15) syncErrorLog.length = 15;
-    try { localStorage.setItem('livrocaixa_sync_errors', JSON.stringify(syncErrorLog)); } catch (e) {}
-    console.error(`[${context}]`, err);
-    flashSyncError();
+  const diagnosticLog = [];
+  const syncErrorLog = diagnosticLog; // compatibilidade com a interface antiga.
+  const LOG_STORAGE_KEY = 'livrocaixa_diagnostic_log';
+  const LOG_LIMIT = 200;
+
+  function sanitizeLogValue(value, depth = 0) {
+    if (depth > 2 || value == null) return value == null ? null : String(value);
+    if (value instanceof Error) return { name: value.name, message: value.message, code: value.code || null };
+    if (typeof value === 'string') return value.slice(0, 800);
+    if (typeof value === 'number' || typeof value === 'boolean') return value;
+    if (Array.isArray(value)) return value.slice(0, 20).map(item => sanitizeLogValue(item, depth + 1));
+    if (typeof value === 'object') {
+      const result = {};
+      Object.keys(value).slice(0, 20).forEach(key => {
+        if (/password|token|secret|authorization|apiKey|credential|uid/i.test(key)) return;
+        result[key] = sanitizeLogValue(value[key], depth + 1);
+      });
+      return result;
+    }
+    return String(value);
   }
+  function persistDiagnosticLogLocally() {
+    try {
+      localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(diagnosticLog.slice(0, LOG_LIMIT)));
+      localStorage.setItem('livrocaixa_sync_errors', JSON.stringify(diagnosticLog.filter(item => item.type === 'ERROR').slice(0, 50)));
+    } catch (err) { console.warn('LOG local indisponível:', err); }
+  }
+  function hydrateDiagnosticLog() {
+    let stored = [];
+    try { stored = JSON.parse(localStorage.getItem(LOG_STORAGE_KEY) || '[]'); } catch (err) {}
+    if (!Array.isArray(stored) || stored.length === 0) {
+      try {
+        const legacy = JSON.parse(localStorage.getItem('livrocaixa_sync_errors') || '[]');
+        stored = Array.isArray(legacy) ? legacy.map(item => ({ id: 'legacy-' + Math.random().toString(36).slice(2), timestamp: new Date().toISOString(), type: 'ERROR', module: 'Sincronização', action: item.context || 'Operação', status: 'Falha', description: item.message || 'Erro legado', details: null })) : [];
+      } catch (err) {}
+    }
+    diagnosticLog.splice(0, diagnosticLog.length, ...stored.slice(0, LOG_LIMIT));
+  }
+  async function loadDiagnosticLog() {
+    hydrateDiagnosticLog();
+    if (!currentUser) return;
+    try {
+      const snap = await db.collection('livrocaixa').doc(currentUser.uid).collection('diagnostics').limit(100).get();
+      const remote = snap.docs.map(doc => doc.data()).filter(item => item && item.id);
+      const merged = new Map(diagnosticLog.map(item => [item.id, item]));
+      remote.forEach(item => merged.set(item.id, item));
+      diagnosticLog.splice(0, diagnosticLog.length, ...[...merged.values()].sort((a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || ''))).slice(0, LOG_LIMIT));
+      persistDiagnosticLogLocally();
+    } catch (err) { console.warn('LOG remoto indisponível:', err); }
+  }
+  function createLogEvent({ type = 'INFO', module = 'Sistema', action = 'Operação', status = 'Sucesso', description = '', details = null } = {}) {
+    return {
+      id: 'log' + Date.now() + Math.random().toString(36).slice(2, 8),
+      timestamp: new Date().toISOString(), type, module, action, status,
+      description: String(description || '').slice(0, 800), details: sanitizeLogValue(details)
+    };
+  }
+  function recordLogEvent(input) {
+    const event = createLogEvent(input);
+    diagnosticLog.unshift(event);
+    if (diagnosticLog.length > LOG_LIMIT) diagnosticLog.length = LOG_LIMIT;
+    persistDiagnosticLogLocally();
+    if (event.type === 'ERROR') flashSyncError();
+    if (currentUser) {
+      db.collection('livrocaixa').doc(currentUser.uid).collection('diagnostics').doc(event.id).set(event, { merge: true }).catch(err => console.warn('Falha ao sincronizar o LOG:', err));
+    }
+    if (event.type === 'ERROR') console.error(`[${event.module}] ${event.action}:`, event.description, event.details || '');
+    else if (event.type === 'WARN') console.warn(`[${event.module}] ${event.action}:`, event.description);
+    return event;
+  }
+  function logInfo(module, action, status = 'Sucesso', description = '', details = null) { return recordLogEvent({ type: 'INFO', module, action, status, description, details }); }
+  function logWarn(module, action, status = 'Atenção', description = '', details = null) { return recordLogEvent({ type: 'WARN', module, action, status, description, details }); }
+  function logSyncError(context, err) {
+    const message = err && err.message ? err.message : String(err);
+    recordLogEvent({ type: 'ERROR', module: context === 'sincronização' ? 'Sincronização' : 'Sistema', action: context, status: 'Falha', description: message, details: err && { code: err.code, failedCollections: err.failedCollections } });
+  }
+  window.addEventListener('error', event => {
+    const error = event.error || new Error(event.message || 'Erro de interface');
+    if (!error.__livroCaixaLogged) { error.__livroCaixaLogged = true; logSyncError('erro de interface', error); }
+  });
+  window.addEventListener('unhandledrejection', event => {
+    logSyncError('rejeição assíncrona', event.reason || new Error('Promise rejeitada sem motivo informado'));
+  });
   function flashSyncError() {
     const dot = document.getElementById('syncDot');
     if (!dot) return;
@@ -2639,8 +2787,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setSyncDot(true);
     pendingSaveCount++;
     return commitDiff()
-      .then(() => { setSyncDot(false); })
-      .catch(err => { console.error(err); setSyncDot(false); throw err; })
+      .then(() => { setSyncDot(false); logInfo('Salvamento', 'Persistência dos dados', 'Sucesso', 'Alterações gravadas nas coleções do Livro-Caixa.'); })
+      .catch(err => { logSyncError('salvamento', err); setSyncDot(false); throw err; })
       .finally(() => {
         pendingSaveCount = Math.max(0, pendingSaveCount - 1);
         if (pendingSaveCount === 0) flushSnapshotBuffer();
@@ -2871,6 +3019,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderBankSelects() {
     const options = banks.map(b => `<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
     document.getElementById('fBanco').innerHTML = options;
+    const pocketBank = document.getElementById('pBancoOrigem');
+    if (pocketBank) {
+      const current = pocketBank.value;
+      pocketBank.innerHTML = `<option value="">A definir</option>${options}`;
+      if (current && banks.some(b => b.id === current)) pocketBank.value = current;
+    }
 
     const bankOptGroup = banks.map(b => `<option value="${b.id}">🏦 ${escapeHTML(b.name)}</option>`).join('');
     const pocketOptGroup = pockets.map(p => `<option value="${p.id}">🐷 ${escapeHTML(p.name)} (Caixinha)</option>`).join('');
@@ -2887,16 +3041,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderBankManageList() {
     const container = document.getElementById('bankManageList');
-    container.innerHTML = banks.map(b => `
-      <div class="bank-list-item">
-        <div class="manage-item-copy"><strong>${escapeHTML(b.name)}</strong><span>Saldo atual</span></div>
-        <strong class="manage-item-value">${fmt(bankBalance(b.id))}</strong>
+    const total = totalBankBalance();
+    container.innerHTML = banks.map(b => {
+      const balance = bankBalance(b.id);
+      const share = percentOfTotal(balance, total);
+      return `<div class="bank-list-item">
+        <div class="manage-item-copy"><strong>${escapeHTML(b.name)}</strong><span>Saldo atual</span><span class="bank-share-line">${share == null ? '—' : share.toFixed(1).replace('.', ',') + '% do total'}</span></div>
+        <strong class="manage-item-value">${fmt(balance)}</strong>
         <div class="manage-item-actions">
           <button type="button" class="action-btn beta-icon-button edit" onclick="editBank('${b.id}')" aria-label="Editar banco" title="Editar banco"></button>
           <button type="button" class="action-btn beta-icon-button delete" onclick="deleteBank('${b.id}')" aria-label="Excluir banco" title="Excluir banco"></button>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   const CATEGORY_PALETTE = ['#B3432B', '#2F7654', '#B89034', '#3A6B88', '#8C5383', '#D9822B', '#5C7A68', '#B05A88'];
@@ -3063,10 +3220,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (price > 0) item.value = cryptoValueFromUnits(item.type, item.units, price);
     return item;
   }
-  function formatCryptoUnits(type, units) {
+  function formatCryptoUnits(type, units, assetName = '') {
     const n = Number(units) || 0;
     if (isBitcoinType(type)) return `${Math.round(n).toLocaleString('pt-BR')} SATS`;
-    return n.toLocaleString('pt-BR', { maximumFractionDigits: 8 });
+    const label = String(assetName || '').trim().toUpperCase();
+    return `${n.toLocaleString('pt-BR', { maximumFractionDigits: 8 })}${label ? ` ${escapeHTML(label)}` : ''}`;
   }
   window.updateInvestFormLayout = function() {
     const type = document.getElementById('iTipo').value;
@@ -3132,32 +3290,40 @@ document.addEventListener('DOMContentLoaded', () => {
     return Number.isNaN(date.getTime()) ? 'atualização registrada' : date.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
   }
 
+  function movementHistoryRows(targetType, targetId) {
+    const item = (targetType === 'invest' ? investments : pockets).find(x => x.id === targetId);
+    const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId).sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')) || String(a.id || '').localeCompare(String(b.id || '')));
+    let running = item && targetType === 'invest' && isCryptoType(item.type) ? cryptoInitialUnits(item) : (item && targetType === 'invest' ? fixedIncomeInitialValue(item) : Number(item?.initial ?? item?.value ?? 0) || 0);
+    return items.map(y => {
+      const before = running;
+      const delta = y.units != null && item && targetType === 'invest' && isCryptoType(item.type) ? (y.kind === 'resgate' ? -1 : 1) * Number(y.units || 0) : movementDelta(y);
+      running += delta;
+      return { y, before, delta, after: running, item };
+    });
+  }
   function yieldHistoryHTML(targetType, targetId) {
-    const items = yieldsLog
-      .filter(y => y.targetType === targetType && y.targetId === targetId)
-      .sort((a, b) => (b.dateEnd || b.date || '').localeCompare(a.dateEnd || a.date || ''));
-    if (items.length === 0) return '';
-    const rows = items.map(y => {
+    const rowsData = movementHistoryRows(targetType, targetId);
+    if (rowsData.length === 0) return '';
+    const rows = rowsData.slice().reverse().map(({ y, before, delta, after, item }) => {
       const kind = y.kind || 'rendimento';
       const positive = kind !== 'resgate';
       const sign = positive ? '+' : '−';
       const label = movementKindLabel(kind);
       let description = String(y.desc || '').trim();
-      const duplicateLabel = new RegExp(`^${label}\\s*[-–—:]?\\s*`, 'i');
+      const duplicateLabel = new RegExp(`^${label}\s*[-–—:]?\s*`, 'i');
       description = description.replace(duplicateLabel, '');
+      const isCrypto = item && targetType === 'invest' && isCryptoType(item.type) && y.units != null;
+      const valueLabel = isCrypto ? `${sign}${formatCryptoUnits(item.type, Math.abs(y.units), item.name)} · ≈ ${fmt(Math.abs(y.amount || 0))}` : `${sign}${fmt(Math.abs(y.amount || 0))}`;
+      const beforeLabel = isCrypto ? formatCryptoUnits(item.type, before, item.name) : fmt(before);
+      const deltaLabel = isCrypto ? `${sign}${formatCryptoUnits(item.type, Math.abs(delta), item.name)}` : `${sign}${fmt(Math.abs(delta))}`;
+      const afterLabel = isCrypto ? formatCryptoUnits(item.type, after, item.name) : fmt(after);
       return `<div class="yield-row">
-        <span>${escapeHTML(formatMovementPeriod(y))} · ${label}${description ? ' · ' + escapeHTML(description) : ''}</span>
-        <span class="${positive ? 'yield-pos' : 'yield-neg'}">${sign}${fmt(Math.abs(y.amount || 0))}</span>
-        <span class="yield-actions">
-          <button type="button" class="action-btn beta-icon-button edit" onclick="editYield('${y.id}')" aria-label="Editar movimentação"></button>
-          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteYield('${y.id}')" aria-label="Excluir movimentação"></button>
-        </span>
+        <span><strong>${escapeHTML(formatMovementPeriod(y))} · ${label}</strong>${description ? `<span class="history-note">${escapeHTML(description)}</span>` : ''}<span class="history-note">${valueLabel}${y.price ? ` · Cotação ${fmt(y.price)}` : ''}</span><span class="history-audit"><span>Anterior: ${beforeLabel}</span><span>Alteração: ${deltaLabel}</span><span>Posterior: ${afterLabel}</span></span></span>
+        <span class="${positive ? 'yield-pos' : 'yield-neg'}">${valueLabel}</span>
+        <span class="yield-actions"><button type="button" class="action-btn beta-icon-button edit" onclick="editYield('${y.id}')" aria-label="Editar movimentação"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deleteYield('${y.id}')" aria-label="Excluir movimentação"></button></span>
       </div>`;
     }).join('');
-    return `<details class="yield-history">
-      <summary>📋 Histórico de movimentações (${items.length})</summary>
-      <div class="yield-history-list">${rows}</div>
-    </details>`;
+    return `<details class="yield-history"><summary>📋 Histórico auditável (${rowsData.length})</summary><div class="yield-history-list">${rows}</div></details>`;
   }
 
   function rentabilityHTML(targetType, targetId, currentValue) {
@@ -3244,27 +3410,19 @@ document.addEventListener('DOMContentLoaded', () => {
       container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhum ativo ou investimento cadastrado. Clique em "+ Novo Ativo / Cripto" para registrar.</div>`;
       return;
     }
-
-    container.innerHTML = investments.map(inv => `
+    container.innerHTML = investments.map((inv, index) => `
       <div class="invest-box">
         <h4><span>${escapeHTML(inv.alias || inv.name)}</span> <span class="tag">${escapeHTML(inv.type)}</span></h4>
         ${inv.alias ? `<div class="units investment-name-secondary">${escapeHTML(inv.name)}</div>` : ''}
-        <div class="val">${fmt(inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (isCryptoType(inv.type) ? (inv.value || 0) : (inv.value || 0)))}</div>
-        ${isCryptoType(inv.type) ? `<div class="units">Saldo: ${formatCryptoUnits(inv.type, cryptoCurrentUnits(inv))}</div>` : ''}
-        ${isCryptoType(inv.type) ? `<div class="units">Cotação: ${fmt(inv.price || 0)} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</div>` : ''}
+        <div class="val">${fmt(inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0))}</div>
+        ${isCryptoType(inv.type) ? `<div class="units">Quantidade: ${formatCryptoUnits(inv.type, cryptoCurrentUnits(inv), inv.name)}</div>` : ''}
+        ${isCryptoType(inv.type) ? `<div class="units">Cotação: ${fmt(inv.price || 0)} · ${inv.quoteSource === 'api' ? 'Automática' : 'Manual'} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</div>` : ''}
         ${inv.institution ? `<div class="units">${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</div>` : ''}
         ${inv.dueDate ? `<div class="units">Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</div>` : ''}
         ${rentabilityHTML('invest', inv.id, inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0))}
-        ${priceHistoryHTML(inv)}
-        ${yieldHistoryHTML('invest', inv.id)}
-        <div class="item-action-row">
-          <button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações do investimento"></button>
-          <button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar investimento"></button>
-          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir investimento"></button>
-        </div>
-      </div>
-    `).join('');
-
+        ${priceHistoryHTML(inv)}${yieldHistoryHTML('invest', inv.id)}
+        <div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',-1)" ${index===0?'disabled':''} aria-label="Mover investimento para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',1)" ${index===investments.length-1?'disabled':''} aria-label="Mover investimento para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações do investimento"></button><button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar investimento"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir investimento"></button></div>
+      </div>`).join('');
     renderPriceCharts();
   }
 
@@ -3290,21 +3448,10 @@ document.addEventListener('DOMContentLoaded', () => {
       container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhuma caixinha cadastrada. Clique em "+ Nova Caixinha" para começar.</div>`;
       return;
     }
-    container.innerHTML = pockets.map(p => {
+    container.innerHTML = pockets.map((p, index) => {
       const current = pocketCurrentBalance(p);
-      return `
-      <div class="invest-box">
-        <h4><span>${escapeHTML(p.name)}</span></h4>
-        <div class="val">${fmt(current)}</div>
-        ${p.goal ? `<div class="units">${escapeHTML(p.goal)}</div>` : ''}
-        ${rentabilityHTML('pocket', p.id, current)}
-        ${yieldHistoryHTML('pocket', p.id)}
-        <div class="item-action-row">
-          <button type="button" class="action-btn beta-icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button>
-          <button type="button" class="action-btn beta-icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button>
-          <button type="button" class="action-btn beta-icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button>
-        </div>
-      </div>`;
+      const sourceBank = banks.find(b => b.id === p.sourceBankId);
+      return `<div class="invest-box"><h4><span>${escapeHTML(p.name)}</span></h4><div class="val">${fmt(current)}</div>${p.goal ? `<div class="units">${escapeHTML(p.goal)}</div>` : ''}${sourceBank ? `<div class="units">Banco de origem: ${escapeHTML(sourceBank.name)}</div>` : '<div class="units">Banco de origem: A definir</div>'}${rentabilityHTML('pocket', p.id, current)}${yieldHistoryHTML('pocket', p.id)}<div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="movePocket('${p.id}',-1)" ${index===0?'disabled':''} aria-label="Mover caixinha para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="movePocket('${p.id}',1)" ${index===pockets.length-1?'disabled':''} aria-label="Mover caixinha para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn beta-icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button><button type="button" class="action-btn beta-icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button></div></div>`;
     }).join('');
   }
 
@@ -3519,32 +3666,24 @@ document.addEventListener('DOMContentLoaded', () => {
     renderNotifications();
   }
 
-  function openDiagnostics() {
-    let stored = [];
-    try { stored = JSON.parse(localStorage.getItem('livrocaixa_sync_errors') || '[]'); } catch (e) {}
+  function renderDiagnosticLog() {
+    const type = document.getElementById('logFilterType')?.value || '';
+    const module = document.getElementById('logFilterModule')?.value || '';
+    const query = (document.getElementById('logFilterText')?.value || '').toLowerCase();
+    const modules = [...new Set(diagnosticLog.map(item => item.module).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    const moduleSelect = document.getElementById('logFilterModule');
+    if (moduleSelect) { const current=moduleSelect.value; moduleSelect.innerHTML='<option value="">Todos os módulos</option>'+modules.map(item=>`<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join(''); if(modules.includes(current)) moduleSelect.value=current; }
+    const filtered = diagnosticLog.filter(item => (!type || item.type === type) && (!module || item.module === module) && (!query || JSON.stringify(item).toLowerCase().includes(query)));
     const list = document.getElementById('diagnosticoList');
-    list.innerHTML = stored.length
-      ? stored.map(e => `<div style="border:1px solid var(--line); border-radius:10px; padding:8px 10px; font-size:12px;"><strong>${escapeHTML(e.context)}</strong> · ${escapeHTML(e.time)}<br><span style="opacity:0.75;">${escapeHTML(e.message)}</span></div>`).join('')
-      : '<p class="hint">Nenhum erro registrado até agora.</p>';
-    openModal('panelDiagnostico');
+    list.innerHTML = filtered.length ? filtered.map(item => { const date = item.timestamp ? new Date(item.timestamp).toLocaleString('pt-BR') : ''; const details = item.details ? (typeof item.details === 'string' ? item.details : JSON.stringify(item.details, null, 2)) : ''; return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span><span class="log-entry-meta">${escapeHTML(date)} · ${escapeHTML(item.module || 'Sistema')} · ${escapeHTML(item.status || '')}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${item.description ? ' — ' + escapeHTML(item.description) : ''}</div>${details ? `<div class="log-entry-details">${escapeHTML(details)}</div>` : ''}</article>`; }).join('') : '<p class="hint">Nenhum evento encontrado para os filtros atuais.</p>';
   }
+  function openDiagnostics() { renderDiagnosticLog(); openModal('panelDiagnostico'); }
+  ['logFilterType','logFilterModule','logFilterText'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
   document.getElementById('btnCopyDiagnostico').onclick = () => {
-    let stored = [];
-    try { stored = JSON.parse(localStorage.getItem('livrocaixa_sync_errors') || '[]'); } catch (e) {}
-    const text = stored.length
-      ? stored.map(e => `[${e.time}] ${e.context}: ${e.message}`).join('\n')
-      : 'Nenhum erro registrado.';
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(() => alert('Copiado! Cole numa mensagem pra mim.')).catch(() => alert(text));
-    } else {
-      alert(text);
-    }
+    const text = diagnosticLog.map(item => `[${item.type}] ${new Date(item.timestamp || Date.now()).toLocaleString('pt-BR')} | ${item.module} | ${item.action} | ${item.status} | ${item.description}${item.details ? ' | ' + JSON.stringify(item.details) : ''}`).join('\n') || 'Nenhum evento registrado.';
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(()=>alert('LOG copiado.')).catch(()=>alert(text)); else alert(text);
   };
-  document.getElementById('btnClearDiagnostico').onclick = () => {
-    localStorage.removeItem('livrocaixa_sync_errors');
-    syncErrorLog.length = 0;
-    openDiagnostics();
-  };
+  document.getElementById('btnClearDiagnostico').onclick = () => { if (!confirm('Limpar apenas a cópia local do LOG? O histórico remoto não será apagado.')) return; diagnosticLog.length=0; persistDiagnosticLogLocally(); renderDiagnosticLog(); };
 
   document.getElementById('btnOpenDrawer')?.addEventListener('click', openDrawer);
   document.getElementById('btnNotifications')?.addEventListener('click', openNotifications);
@@ -3619,16 +3758,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (confirm('Deseja excluir este registro de investimento?')) {
       investments = investments.filter(i => i.id !== id);
       yieldsLog = yieldsLog.filter(y => !(y.targetType === 'invest' && y.targetId === id));
-      saveInvestments();
+      saveInvestments().then(() => logInfo('Investimentos','Excluir investimento','Sucesso','Investimento e seu histórico foram removidos.')).catch(err => logSyncError('exclusão de investimento', err));
       render();
     }
   };
-
   window.deletePocket = function(id) {
     if (confirm('Deseja excluir esta caixinha e todo o histórico de movimentações dela?')) {
       pockets = pockets.filter(p => p.id !== id);
       yieldsLog = yieldsLog.filter(y => !(y.targetType === 'pocket' && y.targetId === id));
-      persistAll();
+      persistAll().then(() => logInfo('Caixinhas','Excluir caixinha','Sucesso','Caixinha e seu histórico foram removidos.')).catch(err => logSyncError('exclusão de caixinha', err));
       render();
     }
   };
@@ -3639,6 +3777,8 @@ document.addEventListener('DOMContentLoaded', () => {
     editingPocketId = pocket.id;
     document.getElementById('pNome').value = pocket.name;
     document.getElementById('pObjetivo').value = pocket.goal || '';
+    renderBankSelects();
+    document.getElementById('pBancoOrigem').value = pocket.sourceBankId || '';
     setMoneyInput('pInicial', Number(pocket.initial ?? pocket.value ?? 0));
     setMoneyInput('pAtual', pocketCurrentBalance(pocket));
     document.getElementById('panelPocketTitle').innerHTML = 'Editar Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
@@ -3661,7 +3801,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('imAporte').classList.toggle('active-in', kind === 'aporte');
     document.getElementById('imResgate').classList.toggle('active-out', kind === 'resgate');
     document.getElementById('imRendimento').classList.toggle('active-yield', isYield);
-    document.getElementById('imPeriodToggle').style.display = isYield ? 'flex' : 'none';
+    document.getElementById('imPeriodToggle').style.display = 'none';
     const periodActive = document.getElementById('imPeriodo').classList.contains('active-in');
     document.getElementById('imDataFimWrap').style.display = isYield && periodActive ? 'block' : 'none';
     document.getElementById('imDataLabel').textContent = isYield && periodActive ? 'Data Inicial' : 'Data';
@@ -3765,7 +3905,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('pmAporte').classList.toggle('active-in', kind === 'aporte');
     document.getElementById('pmResgate').classList.toggle('active-out', kind === 'resgate');
     document.getElementById('pmRendimento').classList.toggle('active-yield', isYield);
-    document.getElementById('pmPeriodToggle').style.display = isYield ? 'flex' : 'none';
+    document.getElementById('pmPeriodToggle').style.display = 'none';
     document.getElementById('pmDataFimWrap').style.display = isYield && document.getElementById('pmPeriodo').classList.contains('active-in') ? 'block' : 'none';
     document.getElementById('pmDataLabel').textContent = isYield && document.getElementById('pmPeriodo').classList.contains('active-in') ? 'Data Inicial' : 'Data';
     const label = movementKindLabel(kind);
@@ -3983,6 +4123,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function billMonthKey(date){ return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`; }
   function billAppliesToMonth(bill, year, month){
     if (!bill.active) return false;
+    if (bill.recurrenceType === 'nao_recorrente' || bill.frequency === 'once') { const oneDate = bill.startDate ? new Date(bill.startDate + 'T00:00:00') : null; return !!oneDate && oneDate.getFullYear() === year && oneDate.getMonth() === month; }
     const start = bill.startDate ? new Date(bill.startDate+'T00:00:00') : null;
     const end = bill.endDate ? new Date(bill.endDate+'T23:59:59') : null;
     const monthStart = new Date(year, month, 1);
@@ -3990,14 +4131,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return (!start || monthEnd >= start) && (!end || monthStart <= end);
   }
   function billDueDateForMonth(bill, year, month){
+    if (bill.recurrenceType === 'nao_recorrente' || bill.frequency === 'once') return bill.startDate || `${year}-${String(month+1).padStart(2,'0')}-01`;
     const lastDay = new Date(year, month+1, 0).getDate();
     const day = Math.min(Math.max(Number(bill.dueDay)||1,1), lastDay);
     return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
   }
   function billGeneratedForMonth(bill, key){ return Array.isArray(bill.generatedMonths) && bill.generatedMonths.includes(key); }
-  function billStatus(bill, key){ return billGeneratedForMonth(bill,key) ? 'Lançada' : 'Pendente'; }
+  function billStatus(bill, key){
+    if (billGeneratedForMonth(bill,key)) return 'Lançado/Pago';
+    const [year, month] = key.split('-').map(Number);
+    const dueDate = billDueDateForMonth(bill, year, month - 1);
+    return dueDate < todayISO() ? 'Atrasado' : 'Pendente';
+  }
   function populateBillForm(){
-    document.getElementById('billBanco').innerHTML = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
+    const options = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
+    document.getElementById('billBanco').innerHTML = `<option value="a-definir">A definir</option>${options}`;
     document.getElementById('billCategoria').innerHTML = categories.map(c=>`<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('');
   }
   function openBillModal(id=null){
@@ -4006,7 +4154,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('billNome').value=bill?.name||'';
     setMoneyInput('billValor', bill?.amount||0);
     document.getElementById('billDia').value=bill?.dueDay||'';
-    document.getElementById('billBanco').value=bill?.bank||banks[0]?.id||'';
+    document.getElementById('billTipoOcorrencia').value=bill?.recurrenceType==='nao_recorrente'?'nao_recorrente':'recorrente';
+    document.getElementById('billBanco').value=bill?.bank||'a-definir';
     document.getElementById('billCategoria').value=bill?.category||categories[0]?.id||'';
     document.getElementById('billInicio').value=bill?.startDate||todayISO();
     document.getElementById('billFim').value=bill?.endDate||'';
@@ -4017,38 +4166,61 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal('panelBill');
   }
   window.editBill = id => openBillModal(id);
-  window.deleteBill = async id => { if(!confirm('Excluir esta conta recorrente? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); renderBills(); };
-  async function launchBill(bill, monthKey){
+  window.deleteBill = async id => { if(!confirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); logInfo('Calendário','Exclusão de conta','Sucesso','Conta removida; lançamentos já realizados foram preservados.'); renderBills(); };
+  let pendingBillLaunch = null;
+  function openBillLaunchPanel(bill, monthKey){
+    pendingBillLaunch = { billId: bill.id, monthKey };
+    document.getElementById('billLaunchDescription').textContent = `${bill.name} · ${fmt(bill.amount)}. O banco “A definir” é temporário; selecione o banco real antes de lançar.`;
+    document.getElementById('billLaunchBank').innerHTML = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
+    openModal('panelBillLaunch');
+  }
+  async function launchBill(bill, monthKey, selectedBankId = null){
     if(!currentUser || billGeneratedForMonth(bill,monthKey)) return;
+    if (bill.bank === 'a-definir' && !selectedBankId) { openBillLaunchPanel(bill, monthKey); return; }
+    if (!confirm(`Confirmar lançamento de ${bill.name} no Livro-Caixa?`)) return;
     const [year,month] = monthKey.split('-').map(Number);
     const date=billDueDateForMonth(bill,year,month-1);
-    const entry={id:'e'+Date.now()+Math.random().toString(36).slice(2,7),date,desc:bill.name,bank:bill.bank||'',category:bill.category||'',amount:Number(bill.amount)||0,type:'out',recurringBillId:bill.id};
+    const bankId = selectedBankId || bill.bank;
+    if (!bankId || bankId === 'a-definir') { openBillLaunchPanel(bill, monthKey); return; }
+    const entry={id:'e'+Date.now()+Math.random().toString(36).slice(2,7),date,desc:bill.name,bank:bankId,category:bill.category||'',amount:Number(bill.amount)||0,type:'out',recurringBillId:bill.id};
     entries.push(entry);
+    bill.bank = bankId;
     bill.generatedMonths=Array.isArray(bill.generatedMonths)?bill.generatedMonths.slice():[];
     bill.generatedMonths.push(monthKey);
-    await persistAll();
-    render(); renderBills();
+    try {
+      await persistAll();
+      logInfo('Calendário','Lançar no Livro-Caixa','Sucesso',`${bill.name} lançado em ${date}.`,{bankId, recurringBillId: bill.id});
+      render(); renderBills(); closeAllPanels();
+    } catch (err) { logSyncError('lançamento de conta', err); }
   }
   window.launchBill = async (id,monthKey) => { const bill=recurringBills.find(b=>b.id===id); if(bill) await launchBill(bill,monthKey); };
+  document.getElementById('billLaunchConfirm').onclick = async () => {
+    if (!pendingBillLaunch) return;
+    const { billId, monthKey } = pendingBillLaunch;
+    const bill = recurringBills.find(b => b.id === billId);
+    const bankId = document.getElementById('billLaunchBank').value;
+    pendingBillLaunch = null;
+    if (bill) await launchBill(bill, monthKey, bankId);
+  };
   function renderBills(){
     const y=billViewDate.getFullYear(), m=billViewDate.getMonth(), key=billMonthKey(billViewDate);
     document.getElementById('billMonthLabel').textContent=billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
     const active=recurringBills.filter(b=>billAppliesToMonth(b,y,m));
     const pending=active.filter(b=>!billGeneratedForMonth(b,key));
     const total=active.reduce((s,b)=>s+Number(b.amount||0),0);
-    document.getElementById('billsSummary').innerHTML=`<div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pending.length}</span></div><div class="balance-card"><span class="label">Lançadas</span><span class="amount">${active.length-pending.length}</span></div>`;
+    const overdue=pending.filter(b=>billStatus(b,key)==='Atrasado').length;
+    document.getElementById('billsSummary').innerHTML=`<div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pending.length}</span></div><div class="balance-card"><span class="label">Atrasadas</span><span class="amount">${overdue}</span></div>`;
     const first=new Date(y,m,1).getDay(); const offset=first; const days=new Date(y,m+1,0).getDate();
-    const names=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-    let html=names.map(n=>`<div class="bill-weekday">${n}</div>`).join('');
+    const names=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']; let html=names.map(n=>`<div class="bill-weekday">${n}</div>`).join('');
     for(let i=0;i<offset;i++) html+=`<div class="bill-day muted"></div>`;
     const today=todayISO();
     for(let d=1;d<=days;d++){
       const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const events=active.filter(b=>Number(b.dueDay)===d);
+      const events=active.filter(b=>b.recurrenceType==='nao_recorrente' || b.frequency==='once' ? billDueDateForMonth(b,y,m)===date : Number(b.dueDay)===d);
       html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(b=>`<button type="button" class="bill-event ${billGeneratedForMonth(b,key)?'paid':''}" onclick="launchBill('${b.id}','${key}')" title="${escapeHTML(b.name)} · ${fmt(b.amount)}">${escapeHTML(b.name)} · ${fmt(b.amount)}</button>`).join('')}</div>`;
     }
     document.getElementById('billCalendar').innerHTML=html;
-    document.getElementById('billList').innerHTML=active.length?active.sort((a,b)=>Number(a.dueDay)-Number(b.dueDay)).map(b=>`<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}</strong><div class="hint">Dia ${Number(b.dueDay)} · ${fmt(b.amount)}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status">${billStatus(b,key)}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${billGeneratedForMonth(b,key)?'disabled':''}>${billGeneratedForMonth(b,key)?'Já lançada':'Lançar no Livro-Caixa'}</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`).join(''):`<div class="empty">Nenhuma conta recorrente cadastrada para este mês.</div>`;
+    document.getElementById('billList').innerHTML=active.length?active.sort((a,b)=>Number(a.dueDay)-Number(b.dueDay)).map(b=>{const status=billStatus(b,key); const launched=billGeneratedForMonth(b,key); return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':'Recorrente'} · ${b.bank==='a-definir'?'Banco: A definir':escapeHTML(banks.find(x=>x.id===b.bank)?.name||'Banco não informado')} · ${fmt(b.amount)}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${status==='Atrasado'?'overdue':''}">${status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${launched?'disabled':''}>${launched?'Já lançada':'Lançar no Livro-Caixa'}</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join(''):`<div class="empty">Nenhuma conta/fatura cadastrada para este mês.</div>`;
   }
 
   document.getElementById('btnNovo').onclick = () => {
@@ -4180,6 +4352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
     try {
       await saveEntries();
+      logInfo('Livro-Caixa','Salvar lançamento','Sucesso','Movimentação registrada.',{type: currentType, amount: valor});
       document.getElementById('fDesc').value = '';
       setMoneyInput('fValor', 0);
       closeAllPanels();
@@ -4240,12 +4413,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = investments.findIndex(i => i.id === editingInvestId);
       if (idx !== -1) {
         const old = investments[idx];
-        investments[idx] = { id: editingInvestId, createdAt: old.createdAt, priceHistory: old.priceHistory, ...record };
+        investments[idx] = { id: editingInvestId, createdAt: old.createdAt, order: old.order, priceHistory: old.priceHistory, ...record };
         targetItem = investments[idx];
       }
       editingInvestId = null;
     } else {
-      targetItem = { id: 'inv' + Date.now(), createdAt: todayISO(), ...record };
+      targetItem = { id: 'inv' + Date.now(), createdAt: todayISO(), order: investments.length, ...record };
       investments.push(targetItem);
     }
 
@@ -4263,6 +4436,7 @@ document.addEventListener('DOMContentLoaded', () => {
         latest.value = value;
       }
       targetItem.price = quote;
+      targetItem.quoteSource = 'manual';
       targetItem.lastQuoteAt = new Date().toISOString();
     }
     pendingPricePoint = null;
@@ -4273,6 +4447,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnSalvarInvest) { btnSalvarInvest.disabled = true; btnSalvarInvest.textContent = 'Salvando...'; }
     try {
       await saveInvestments();
+      logInfo('Investimentos','Salvar ativo','Sucesso','Ativo salvo com separação entre quantidade e valor em BRL.');
       closeAllPanels();
     } catch (err) {
       logSyncError('investimento', err);
@@ -4287,15 +4462,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!name){alert('Informe o nome da conta ou fatura.');return;}
     if(!(amount>0)){alert('Informe um valor válido.');return;}
     if(!(dueDay>=1&&dueDay<=31)){alert('Informe um dia de vencimento entre 1 e 31.');return;}
-    const record={name,amount,dueDay,bank:document.getElementById('billBanco').value,category:document.getElementById('billCategoria').value,startDate:document.getElementById('billInicio').value||todayISO(),endDate:document.getElementById('billFim').value||'',active:document.getElementById('billAtiva').value==='1',desc:document.getElementById('billObs').value.trim(),frequency:'monthly'};
+    const recurrenceType=document.getElementById('billTipoOcorrencia').value; const startDate=document.getElementById('billInicio').value||todayISO();
+    const record={name,amount,dueDay,bank:document.getElementById('billBanco').value,category:document.getElementById('billCategoria').value,startDate,endDate:recurrenceType==='nao_recorrente'?'':document.getElementById('billFim').value||'',active:document.getElementById('billAtiva').value==='1',desc:document.getElementById('billObs').value.trim(),frequency:recurrenceType==='nao_recorrente'?'once':'monthly',recurrenceType};
     if(editingBillId){ const idx=recurringBills.findIndex(b=>b.id===editingBillId); if(idx>=0) recurringBills[idx]={...recurringBills[idx],...record}; } else recurringBills.push({id:'bill'+Date.now()+Math.random().toString(36).slice(2,7),createdAt:todayISO(),generatedMonths:[],...record});
-    await persistAll(); editingBillId=null; closeAllPanels(); renderBills();
+    await persistAll(); editingBillId=null; logInfo('Calendário','Salvar conta','Sucesso',`Conta ${name} salva como ${recurrenceType==='nao_recorrente'?'não recorrente':'recorrente'}.`); closeAllPanels(); renderBills();
   };
 
   document.getElementById('btnNovoPocket').onclick = () => {
     editingPocketId = null;
     document.getElementById('pNome').value = '';
     document.getElementById('pObjetivo').value = '';
+    renderBankSelects();
+    document.getElementById('pBancoOrigem').value = '';
     setMoneyInput('pInicial', 0);
     setMoneyInput('pAtual', 0);
     document.getElementById('panelPocketTitle').innerHTML = 'Nova Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
@@ -4318,6 +4496,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pSalvar').onclick = async () => {
     const name = document.getElementById('pNome').value.trim();
     const goal = document.getElementById('pObjetivo').value.trim();
+    const sourceBankId = document.getElementById('pBancoOrigem').value || '';
     const initial = readMoneyInput('pInicial');
 
     if (!name) { alert('Informe o nome da caixinha.'); return; }
@@ -4326,12 +4505,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (editingPocketId) {
       const idx = pockets.findIndex(p => p.id === editingPocketId);
       if (idx !== -1) {
-        pockets[idx] = { ...pockets[idx], id: editingPocketId, name, goal, initial };
+        pockets[idx] = { ...pockets[idx], id: editingPocketId, name, goal, initial, sourceBankId };
       }
       editingPocketId = null;
     } else {
       const id = 'pkt' + Date.now();
-      pockets.push({ id, name, goal, initial });
+      pockets.push({ id, name, goal, initial, sourceBankId, order: pockets.length });
     }
 
     render();
@@ -4351,9 +4530,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!item) return;
 
     const date = document.getElementById('imData').value || todayISO();
-    const dateEnd = document.getElementById('imDataFim').value || date;
     const desc = document.getElementById('imDesc').value.trim();
     const kind = investmentMovementTarget.kind;
+    const legacyPeriodEnd = investmentMovementEditingId ? (document.getElementById('imDataFim').value || date) : date;
+    const dateEnd = kind === 'rendimento' ? legacyPeriodEnd : date;
     const isCrypto = isCryptoType(item.type);
 
     if (dateEnd < date) { alert('A data final não pode ser anterior à data inicial.'); return; }
@@ -4370,7 +4550,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isFinite(price) || price <= 0) { alert('Informe uma cotação válida ou use o botão 🔄 para buscá-la.'); return; }
       if (kind === 'resgate') {
         const available = cryptoCurrentUnits(item, investmentMovementEditingId);
-        if (units > available + 1e-12) { alert(`O resgate não pode ser maior que o saldo disponível (${formatCryptoUnits(item.type, available)}).`); return; }
+        if (units > available + 1e-12) { alert(`O resgate não pode ser maior que o saldo disponível (${formatCryptoUnits(item.type, available, item.name)}).`); return; }
       }
       amount = cryptoValueFromUnits(item.type, units, price);
       setMoneyInput('imValor', amount);
@@ -4438,6 +4618,7 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
     try {
       await persistAll();
+      logInfo('Investimentos','Salvar movimentação','Sucesso',`${movementKindLabel(kind)} registrada para ${item.name}.`);
       investmentMovementTarget = null;
       closeAllPanels();
     } catch (err) {
@@ -4488,6 +4669,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     persistAll();
+    logInfo('Caixinhas','Salvar movimentação','Sucesso',`${movementKindLabel(kind)} registrada para ${item.name}.`);
     pocketMovementTarget = null;
     closeAllPanels();
     render();
@@ -4501,6 +4683,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inv.price = Number(quote);
     inv.value = cryptoValueFromUnits(inv.type, units, inv.price);
     inv.lastQuoteAt = new Date().toISOString();
+    inv.quoteSource = source === 'api' ? 'api' : 'manual';
     if (!Array.isArray(inv.priceHistory)) inv.priceHistory=[];
     const today=todayISO();
     const latest=inv.priceHistory[inv.priceHistory.length-1];
@@ -4530,18 +4713,21 @@ document.addEventListener('DOMContentLoaded', () => {
       statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · ${editingInvestId?'salvo agora':'pronto para salvar'}`;
     } catch (err) {
       console.error(err);
-      statusEl.textContent = 'Erro ao buscar cotação. Verifique sua conexão.';
+      logSyncError('cotação CoinGecko', err);
+      statusEl.textContent = 'Erro ao buscar cotação. A última cotação válida foi preservada; informe uma cotação manual.';
     }
   };
 
   async function fetchCoinMatch(nameQuery) {
     const searchRes = await fetch('https://api.coingecko.com/api/v3/search?query=' + encodeURIComponent(nameQuery));
+    if (!searchRes.ok) throw new Error(`CoinGecko search HTTP ${searchRes.status}`);
     const searchData = await searchRes.json();
     return searchData.coins && searchData.coins[0];
   }
 
   async function fetchCoinPriceBRL(coinId) {
     const priceRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + coinId + '&vs_currencies=brl');
+    if (!priceRes.ok) throw new Error(`CoinGecko price HTTP ${priceRes.status}`);
     const priceData = await priceRes.json();
     return priceData[coinId] && priceData[coinId].brl;
   }
@@ -4570,6 +4756,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentUnits = cryptoCurrentUnits(inv);
         inv.value = cryptoValueFromUnits(inv.type, currentUnits, price);
         inv.lastQuoteAt = new Date().toISOString();
+        inv.quoteSource = 'api';
         if (!inv.priceHistory) inv.priceHistory = [];
         const today = todayISO();
         const latest = inv.priceHistory[inv.priceHistory.length - 1];
@@ -4579,6 +4766,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         console.error(err);
         failed.push(inv.name);
+        logSyncError(`cotação CoinGecko — ${inv.name}`, err);
       }
       if (i < candidates.length - 1) await sleep(1200); // evita limite de requisições da API
     }
@@ -4587,6 +4775,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.disabled = false;
     statusEl.textContent = `${updated} de ${candidates.length} cotação(ões) atualizada(s).` +
       (failed.length ? ` Não encontrados: ${failed.join(', ')}.` : '');
+    (failed.length ? logWarn : logInfo)('Cotação','Atualização em lote',failed.length ? 'Parcial' : 'Sucesso',`${updated} cotação(ões) atualizada(s).`,{failed});
   };
 
   document.getElementById('bSalvar').onclick = async () => {
@@ -4609,6 +4798,7 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
     try {
       await saveBanks();
+      logInfo('Bancos','Salvar banco','Sucesso',`Banco ${name} salvo.`);
       document.getElementById('bNome').value = '';
       setMoneyInput('bSaldo', 0);
       document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
@@ -4636,6 +4826,7 @@ document.addEventListener('DOMContentLoaded', () => {
       categories.push({ id: savedCategoryId, name, icon });
     }
     await saveCategories();
+    logInfo('Categorias','Salvar categoria','Sucesso',`Categoria ${name} salva.`);
     populateFilterControls();
     document.getElementById('cNome').value = '';
     setCategoryDraftIcon('📦');
@@ -4720,7 +4911,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    persistAll();
+    persistAll().then(() => logInfo('Livro-Caixa','Transferência','Sucesso',`Transferência de ${deName} para ${paraName} registrada.`,{amount: valor})).catch(err => logSyncError('transferência', err));
     populateFilterControls();
     setMoneyInput('tValor', 0);
     document.getElementById('tDesc').value = '';
@@ -4760,6 +4951,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.textContent = 'Gerando prévia…';
     try {
       if (parseImportedText(txt, 'Texto colado')) {
+        logInfo('Importação','Processar texto colado','Sucesso','Prévia de importação criada; nenhum lançamento foi salvo ainda.');
         document.getElementById('pasteArea').value = '';
         setPasteStatus('Prévia criada. Confira os lançamentos antes de confirmar.');
       }
@@ -4774,6 +4966,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnExportBackup').onclick = () => {
     const payload = buildBackupPayload();
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    logInfo('Exportação','Exportar backup','Sucesso','Backup JSON preparado.');
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -4807,16 +5000,22 @@ document.addEventListener('DOMContentLoaded', () => {
         banks = clean.banks.filter(bk => bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral');
         categories = clean.categories;
         entries = clean.entries;
-        investments = clean.investments;
-        pockets = clean.pockets;
+        investments = sortDisplayOrder(clean.investments);
+        pockets = sortDisplayOrder(clean.pockets);
+        ensureDisplayOrder(investments);
+        ensureDisplayOrder(pockets);
         yieldsLog = clean.yieldsLog;
         recurringBills = clean.recurringBills || [];
+        diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT));
+        persistDiagnosticLogLocally();
         normalizePockets();
         await persistNow();
         populateFilterControls(true);
         render();
+        logInfo('Importação','Restaurar backup','Sucesso','Backup restaurado após validação e sanitização.',{schemaVersion: payload.schemaVersion || 'antiga', dropped});
         alert(`Backup restaurado com sucesso! Versão ${payload.schemaVersion || 'antiga'}.`);
       } catch(err) {
+        logSyncError('restauração de backup', err);
         console.error('Falha ao restaurar backup:', err);
         alert('Não foi possível restaurar o backup. Verifique se o arquivo é um JSON válido do Livro-Caixa.');
       } finally {
@@ -4827,162 +5026,61 @@ document.addEventListener('DOMContentLoaded', () => {
     reader.readAsText(file);
   };
 
+  function getExportMeta(activeEntries = getFilteredEntries()) {
+    const startFilter = document.getElementById('filterDateStart').value;
+    const endFilter = document.getElementById('filterDateEnd').value;
+    const dates = activeEntries.map(e => e.date).filter(Boolean).sort();
+    const dateStart = startFilter || dates[0] || todayISO();
+    const dateEnd = endFilter || dates[dates.length - 1] || dateStart;
+    const initialForBank = bankId => (Number(banks.find(b => b.id === bankId)?.initial) || 0) + entries.filter(e => e.bank === bankId && e.date < dateStart).reduce((sum,e)=>sum+(e.type==='in'?Number(e.amount||0):-Number(e.amount||0)),0);
+    return { dateStart, dateEnd, initialForBank };
+  }
   function getOrganizedExportData() {
     const activeEntries = getFilteredEntries();
-    const banksUsed = [...new Set(activeEntries.map(e => e.bank))]
-      .map(id => banks.find(b => b.id === id))
-      .filter(Boolean)
-      .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
-
-    return banksUsed.map(bank => {
-      const bankEntries = activeEntries
-        .filter(e => e.bank === bank.id)
-        .sort((a, b) => {
-          if (a.date !== b.date) return a.date.localeCompare(b.date);
-          if (a.type !== b.type) return a.type === 'in' ? -1 : 1;
-          return 0;
-        });
-      return { bank, entries: bankEntries };
-    });
+    const meta = getExportMeta(activeEntries);
+    const bankIds = [...new Set(activeEntries.map(e => e.bank))];
+    return bankIds.map(id => {
+      const bank = banks.find(b => b.id === id);
+      if (!bank) return null;
+      const bankEntries = activeEntries.filter(e => e.bank === id).sort((a,b)=>a.date.localeCompare(b.date) || (a.type==='in'?-1:1));
+      const initialBalance = meta.initialForBank(id);
+      const finalBalance = initialBalance + bankEntries.reduce((sum,e)=>sum+(e.type==='in'?Number(e.amount||0):-Number(e.amount||0)),0);
+      return { bank, entries: bankEntries, initialBalance, finalBalance };
+    }).filter(Boolean);
   }
+  function downloadBlob(blob, filename) { const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
 
   document.getElementById('btnExport').onclick = () => {
     const activeEntries = getFilteredEntries();
     if (activeEntries.length === 0) { alert('Não há lançamentos para exportar nos filtros atuais.'); return; }
-    renderExportPreview();
-    openModal('panelExportFormat');
+    renderExportPreview(); openModal('panelExportFormat');
+    logInfo('Exportação','Abertura da prévia','Sucesso','Prévia do extrato aberta.',{count: activeEntries.length});
   };
-
   function renderExportPreview() {
-    const grouped = getOrganizedExportData();
-    const count = grouped.reduce((sum, group) => sum + group.entries.length, 0);
+    const grouped = getOrganizedExportData(); const count = grouped.reduce((sum, group) => sum + group.entries.length, 0); const meta=getExportMeta(); const initial=grouped.reduce((sum,g)=>sum+g.initialBalance,0); const final=grouped.reduce((sum,g)=>sum+g.finalBalance,0);
     const preview = document.getElementById('exportPreview');
-    document.getElementById('exportPreviewCaption').textContent = `${count} movimentação(ões) selecionada(s), agrupadas por banco e respeitando os filtros atuais.`;
-    preview.innerHTML = grouped.map(group => {
-      const rows = group.entries.slice(0, 6).map(entry => {
-        const category = categories.find(c => c.id === entry.category);
-        return `<div class="export-preview-row">
-          <span>${escapeHTML(entry.date.split('-').reverse().join('/'))}</span>
-          <strong>${escapeHTML(entry.desc || 'Lançamento')}</strong>
-          <span>${escapeHTML(category?.name || 'Sem categoria')}</span>
-          <b class="${entry.type === 'in' ? 'positive' : 'negative'}">${entry.type === 'in' ? '+' : '−'} ${fmt(Math.abs(entry.amount))}</b>
-        </div>`;
-      }).join('');
-      const extra = group.entries.length > 6 ? `<div class="export-preview-more">+ ${group.entries.length - 6} lançamento(s)</div>` : '';
-      return `<section class="export-preview-bank"><h4>${escapeHTML(group.bank.name)} <small>${fmt(bankBalance(group.bank.id))}</small></h4>${rows}${extra}</section>`;
-    }).join('');
+    document.getElementById('exportPreviewCaption').textContent = `${count} movimentação(ões) · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
+    preview.innerHTML = grouped.map(group => { const rows=group.entries.slice(0,6).map(entry=>{const category=categories.find(c=>c.id===entry.category); return `<div class="export-preview-row"><span>${escapeHTML(entry.date.split('-').reverse().join('/'))}</span><strong>${escapeHTML(entry.desc||'Lançamento')}</strong><span>${escapeHTML(category?.name||'Sem categoria')}</span><b class="${entry.type==='in'?'positive':'negative'}">${entry.type==='in'?'+':'−'} ${fmt(Math.abs(entry.amount))}</b></div>`;}).join(''); const extra=group.entries.length>6?`<div class="export-preview-more">+ ${group.entries.length-6} lançamento(s)</div>`:''; return `<section class="export-preview-bank"><h4>${escapeHTML(group.bank.name)} <small>Inicial ${fmt(group.initialBalance)} · Final ${fmt(group.finalBalance)}</small></h4>${rows}${extra}</section>`; }).join('');
   }
-
-  document.getElementById('btnExportFormatPdf').onclick = () => {
-    closeAllPanels();
-    exportExtractPdf();
-  };
-
-  document.getElementById('btnExportFormatXlsx').onclick = () => {
-    closeAllPanels();
-    exportExtractXlsx();
-  };
-
+  document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); };
+  document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); };
+  document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx().catch(err => { logSyncError('exportação DOCX', err); alert('Não foi possível gerar o arquivo Word.'); }); };
   function exportExtractPdf() {
-    if (!window.jspdf || !window.jspdf.jsPDF) {
-      alert('A biblioteca PDF ainda está carregando.');
-      return;
-    }
-    const grouped = getOrganizedExportData();
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const now = new Date();
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.text('Livro-Caixa — Extrato', 14, 18);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Gerado em ' + now.toLocaleDateString('pt-BR'), 14, 25);
-
-    let y = 36;
-    doc.setFont('helvetica', 'bold');
-    doc.text('Saldos Atuais por Banco', 14, y);
-    y += 7;
-    doc.setFont('helvetica', 'normal');
-    banks.forEach(b => {
-      doc.text(`${b.name}: ${fmt(bankBalance(b.id))}`, 14, y);
-      y += 6;
-    });
-    doc.setFont('helvetica', 'bold');
-    doc.text(`Saldo Caixa: ${fmt(totalBankBalance())}`, 14, y + 2);
-    doc.text(`Reservas/Investimentos: ${fmt(totalInvestBalance())}`, 14, y + 8);
-    doc.text(`Patrimônio Total: ${fmt(totalBankBalance() + totalInvestBalance())}`, 14, y + 14);
-    y += 24;
-
-    grouped.forEach(group => {
-      if (y > 260) { doc.addPage(); y = 20; }
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text(group.bank.name, 14, y);
-      y += 6;
-      doc.setFontSize(10);
-      doc.text('Data', 14, y);
-      doc.text('Descrição', 38, y);
-      doc.text('Categoria', 120, y);
-      doc.text('Valor', 175, y);
-      y += 4;
-      doc.line(14, y, 196, y);
-      y += 6;
-      doc.setFont('helvetica', 'normal');
-      group.entries.forEach(e => {
-        if (y > 280) { doc.addPage(); y = 20; }
-        const cat = categories.find(c => c.id === e.category);
-        const dateFmt = e.date.split('-').reverse().join('/');
-        doc.text(dateFmt, 14, y);
-        doc.text((e.desc || '').slice(0, 40), 38, y);
-        doc.text(cat ? cat.name.slice(0, 16) : '—', 120, y);
-        doc.text((e.type === 'in' ? '+' : '-') + ' ' + fmt(Math.abs(e.amount)).replace('R$ ', ''), 175, y);
-        y += 6;
-      });
-      y += 10;
-    });
-
-    doc.save(`livro-caixa-extrato-${todayISO()}.pdf`);
+    if (!window.jspdf || !window.jspdf.jsPDF) { alert('A biblioteca PDF ainda está carregando.'); return; }
+    const grouped=getOrganizedExportData(); const meta=getExportMeta(); const {jsPDF}=window.jspdf; const doc=new jsPDF(); const initial=grouped.reduce((s,g)=>s+g.initialBalance,0); const final=grouped.reduce((s,g)=>s+g.finalBalance,0); let y=18;
+    doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('Livro-Caixa — Extrato',14,y); y+=7; doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`,14,y); y+=6; doc.text(`Saldo Inicial: ${fmt(initial)}   Saldo Final: ${fmt(final)}`,14,y); y+=10;
+    grouped.forEach(group=>{ if(y>260){doc.addPage();y=20;} doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(group.bank.name,14,y);y+=6;doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`,14,y);y+=6;doc.text('Data',14,y);doc.text('Descrição',38,y);doc.text('Categoria',120,y);doc.text('Valor',175,y);y+=4;doc.line(14,y,196,y);y+=6;let running=group.initialBalance;group.entries.forEach(e=>{if(y>280){doc.addPage();y=20;}const cat=categories.find(c=>c.id===e.category);const dateFmt=e.date.split('-').reverse().join('/');running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);doc.text(dateFmt,14,y);doc.text((e.desc||'').slice(0,40),38,y);doc.text(cat?cat.name.slice(0,16):'—',120,y);doc.text((e.type==='in'?'+':'-')+' '+fmt(Math.abs(e.amount)).replace('R$ ',''),160,y);doc.text(fmt(running).replace('R$ ',''),185,y);y+=6;});y+=10;});
+    doc.save(`livro-caixa-extrato-${todayISO()}.pdf`); logInfo('Exportação','Exportação PDF','Sucesso','Extrato PDF gerado.',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
   }
-
   function exportExtractXlsx() {
-    if (typeof XLSX === 'undefined') {
-      alert('A biblioteca de Excel ainda está carregando.');
-      return;
-    }
-    const grouped = getOrganizedExportData();
-    const wb = XLSX.utils.book_new();
-
-    grouped.forEach(group => {
-      const rows = [['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor (R$)']];
-      group.entries.forEach(e => {
-        const cat = categories.find(c => c.id === e.category);
-        rows.push([
-          e.date.split('-').reverse().join('/'),
-          e.desc || '',
-          cat ? cat.name : '—',
-          e.type === 'in' ? 'Entrada' : 'Saída',
-          e.type === 'in' ? e.amount : -e.amount
-        ]);
-      });
-      rows.push([]);
-      rows.push(['', '', '', 'Saldo Atual', bankBalance(group.bank.id)]);
-      const ws = XLSX.utils.aoa_to_sheet(rows);
-      ws['!cols'] = [{ wch: 12 }, { wch: 34 }, { wch: 18 }, { wch: 10 }, { wch: 14 }];
-      const safeName = group.bank.name.replace(/[\\/*?:\[\]]/g, '').slice(0, 31) || 'Banco';
-      XLSX.utils.book_append_sheet(wb, ws, safeName);
-    });
-
-    const summaryRows = [['Banco', 'Saldo Atual']];
-    banks.forEach(b => summaryRows.push([b.name, bankBalance(b.id)]));
-    summaryRows.push([]);
-    summaryRows.push(['Saldo Caixa', totalBankBalance()]);
-    summaryRows.push(['Reservas/Investimentos', totalInvestBalance()]);
-    summaryRows.push(['Patrimônio Total', totalBankBalance() + totalInvestBalance()]);
-    const summaryWs = XLSX.utils.aoa_to_sheet(summaryRows);
-    XLSX.utils.book_append_sheet(wb, summaryWs, 'Resumo');
-
-    XLSX.writeFile(wb, `livro-caixa-extrato-${todayISO()}.xlsx`);
+    if(typeof XLSX==='undefined'){alert('A biblioteca de Excel ainda está carregando.');return;} const grouped=getOrganizedExportData(); const meta=getExportMeta(); const wb=XLSX.utils.book_new(); const totalInitial=grouped.reduce((s,g)=>s+g.initialBalance,0); const totalFinal=grouped.reduce((s,g)=>s+g.finalBalance,0);
+    grouped.forEach(group=>{const rows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],['Saldo Inicial',group.initialBalance],[],['Data','Descrição','Categoria','Entrada','Saída','Saldo']];let running=group.initialBalance;group.entries.forEach(e=>{const cat=categories.find(c=>c.id===e.category);running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);rows.push([e.date.split('-').reverse().join('/'),e.desc||'',cat?cat.name:'—',e.type==='in'?e.amount:'',e.type==='out'?e.amount:'',running]);});rows.push([],['','','','','Saldo Final',group.finalBalance]);const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:34},{wch:18},{wch:14},{wch:14},{wch:14}];const safeName=group.bank.name.replace(/[\/*?:\[\]]/g,'').slice(0,31)||'Banco';XLSX.utils.book_append_sheet(wb,ws,safeName);});
+    const summaryRows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],[],['Banco','Saldo Inicial','Saldo Final']];grouped.forEach(g=>summaryRows.push([g.bank.name,g.initialBalance,g.finalBalance]));summaryRows.push([],['Saldo Inicial Total',totalInitial],['Saldo Final Total',totalFinal]);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summaryRows),'Resumo');XLSX.writeFile(wb,`livro-caixa-extrato-${todayISO()}.xlsx`);logInfo('Exportação','Exportação Excel','Sucesso','Extrato Excel gerado.',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
+  }
+  async function exportExtractDocx() {
+    if(!window.docx){alert('A biblioteca Word ainda está carregando.');return;} const grouped=getOrganizedExportData(); const meta=getExportMeta(); const d=window.docx; const initial=grouped.reduce((s,g)=>s+g.initialBalance,0); const final=grouped.reduce((s,g)=>s+g.finalBalance,0); const children=[new d.Paragraph({text:'Livro-Caixa — Extrato',heading:d.HeadingLevel.TITLE}),new d.Paragraph(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`),new d.Paragraph(`Saldo Inicial: ${fmt(initial)}   |   Saldo Final: ${fmt(final)}`)];
+    grouped.forEach(group=>{children.push(new d.Paragraph({text:group.bank.name,heading:d.HeadingLevel.HEADING_1}),new d.Paragraph(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`));let running=group.initialBalance;const rows=[new d.TableRow({children:['Data','Descrição','Categoria','Entrada','Saída','Saldo'].map(v=>new d.TableCell({children:[new d.Paragraph({text:v})]}))})];group.entries.forEach(e=>{const cat=categories.find(c=>c.id===e.category);running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);rows.push(new d.TableRow({children:[e.date.split('-').reverse().join('/'),e.desc||'',cat?cat.name:'—',e.type==='in'?fmt(e.amount):'',e.type==='out'?fmt(e.amount):'',fmt(running)].map(v=>new d.TableCell({children:[new d.Paragraph({text:String(v)})]}))}));});children.push(new d.Table({rows,width:{size:100,type:d.WidthType.PERCENTAGE}}));});
+    const blob=await d.Packer.toBlob(new d.Document({sections:[{children}]}));downloadBlob(blob,`livro-caixa-extrato-${todayISO()}.docx`);logInfo('Exportação','Exportação DOCX','Sucesso','Extrato Word gerado.',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
   }
 
   const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
@@ -5027,7 +5125,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const fullText = pages.join('\n');
       if (!fullText.trim()) throw new Error('Não encontrei texto selecionável neste PDF.');
       parseImportedText(fullText, `PDF · ${String(file.name || 'extrato').slice(0, 80)}`);
+      logInfo('Importação','Ler PDF','Sucesso','Texto extraído do PDF para revisão; nenhum lançamento foi salvo automaticamente.',{pages: pdf.numPages});
     } catch(err) {
+      logSyncError('importação de PDF', err);
       console.error(err);
       alert(err?.message || 'Não consegui ler esse PDF. Tente usar "Colar Texto".');
     } finally {
@@ -5215,7 +5315,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const action = isSignupMode
       ? auth.createUserWithEmailAndPassword(email, pass)
       : auth.signInWithEmailAndPassword(email, pass);
-    action.catch(err => setAuthError(translateAuthError(err.code)));
+    action.catch(err => { logSyncError('autenticação', err); setAuthError(translateAuthError(err.code)); });
   };
 
   document.getElementById('authPassToggle').onclick = () => {
@@ -5237,6 +5337,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
         auth.signInWithRedirect(provider);
       } else if (err.code !== 'auth/popup-closed-by-user') {
+        logSyncError('autenticação Google', err);
         setAuthError(translateAuthError(err.code));
       }
     });
@@ -5257,6 +5358,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   auth.onAuthStateChanged(user => {
     currentUser = user;
+    if (user) logInfo('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
+    else if (typeof diagnosticLog !== 'undefined' && diagnosticLog.length) logInfo('Autenticação','Sessão encerrada','Sucesso','Sessão atual encerrada.');
     const overlay = document.getElementById('authOverlay');
     const syncOverlay = document.getElementById('syncOverlay');
     if (user) {
@@ -5270,7 +5373,7 @@ document.addEventListener('DOMContentLoaded', () => {
       realtimeUnsubscribers.forEach(unsub => unsub());
       realtimeUnsubscribers = [];
       lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {} };
-      banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = [];
+      banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = [];
       clearSessionMemory();
       syncOverlay.classList.add('hidden');
       overlay.classList.remove('hidden');
