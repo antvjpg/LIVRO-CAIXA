@@ -2020,18 +2020,6 @@ window.addEventListener('beforeunload', e => {
     e.returnValue = '';
   }
 });
-function flushSnapshotBuffer() {
-  const names = Object.keys(snapshotBuffer);
-  if (!names.length) return;
-  names.forEach(name => {
-    const buffered = snapshotBuffer[name];
-    setStateArray(name, buffered.arr);
-    if (!buffered.hasPendingWrites) lastSynced[name] = arrToMap(getStateArray(name));
-  });
-  snapshotBuffer = {};
-  render();
-}
-
   function updateNavIndicator(tabName) {
     const nav = document.querySelector('.mobile-bottom-nav');
     if (!nav) return;
@@ -2607,6 +2595,18 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'pockets': return pockets;
       case 'yieldsLog': return yieldsLog;
     }
+  }
+
+  function flushSnapshotBuffer() {
+    const names = Object.keys(snapshotBuffer);
+    if (!names.length) return;
+    names.forEach(name => {
+      const buffered = snapshotBuffer[name];
+      setStateArray(name, buffered.arr);
+      if (!buffered.hasPendingWrites) lastSynced[name] = arrToMap(getStateArray(name));
+    });
+    snapshotBuffer = {};
+    render();
   }
 
   function setSyncDot(saving) {
