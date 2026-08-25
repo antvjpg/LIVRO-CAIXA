@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Livro-Caixa">
-<link rel="manifest" href="./manifest.webmanifest?v=18-07">
+<link rel="manifest" href="./manifest.webmanifest?v=18-08">
 <link rel="icon" href="./icon-192.png?v=13" type="image/png">
 <link rel="apple-touch-icon" href="./icon-192.png?v=13">
 <title>Livro-Caixa</title>
@@ -653,7 +653,7 @@
     gap:8px;
     font-size:12px;
   }
-  .yield-row span:first-child{color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;}
+  .yield-row > span:first-child{color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;}
   .yield-pos{color:var(--green); font-family:'IBM Plex Mono',monospace; flex-shrink:0;}
   .yield-neg{color:var(--red); font-family:'IBM Plex Mono',monospace; flex-shrink:0;}
   .yield-actions{display:flex; gap:2px; flex-shrink:0;}
@@ -1120,7 +1120,7 @@
     .invest-box,.yield-history,.yield-history-list,.yield-row { min-width:0; max-width:100%; }
     .invest-box .tag { max-width:118px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .yield-row { align-items:flex-start; }
-    .yield-row span:first-child { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:normal; overflow-wrap:anywhere; line-height:1.3; }
+    .yield-row > span:first-child { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:normal; overflow-wrap:anywhere; line-height:1.3; }
     .yield-actions { flex:0 0 auto; }
     .yield-history canvas { max-width:100%!important; }
     .fab-add { width:54px; height:54px; right:18px; bottom:104px; z-index:72; background:#2F7654; box-shadow:0 9px 20px rgba(22,65,45,.28); }
@@ -1384,6 +1384,24 @@
   .toolbar .quick-action{border:1px solid var(--action-border);border-radius:12px;background:var(--surface);color:var(--ink-soft);font-family:var(--font-ui)!important;font-size:11px;font-weight:700;letter-spacing:.01em;text-transform:none;gap:8px;box-shadow:none;min-height:54px;transition:background .16s ease,color .16s ease,border-color .16s ease,transform .16s ease;}
   .toolbar .quick-action:hover,.toolbar .quick-action:focus-visible{background:var(--green-soft);border-color:var(--accent);color:var(--accent);}
   .toolbar .quick-action:active{transform:scale(.98);}
+  .yield-history-list{max-height:min(48vh,420px);gap:10px;}
+  .yield-row{display:flex;flex-direction:column;align-items:stretch;gap:9px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:0 2px 8px rgba(28,58,43,.05);min-width:0;}
+  .history-main{display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;min-width:0;}
+  .history-date{font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap;}
+  .history-kind{display:inline-flex;align-items:center;padding:3px 7px;border-radius:999px;background:var(--green-soft);color:var(--accent);font-size:10px;font-weight:800;white-space:nowrap;}
+  .history-kind.negative{background:var(--red-soft);color:var(--red);}
+  .history-description{color:var(--ink-soft);font-size:11px;line-height:1.4;overflow-wrap:anywhere;word-break:break-word;}
+  .history-value{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:800;overflow-wrap:anywhere;word-break:break-word;}
+  .history-value.positive{color:var(--green);}.history-value.negative{color:var(--red);}
+  .history-quote{color:var(--ink-soft);font-family:var(--font-ui);font-size:10px;font-weight:600;}
+  .history-audit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:3px 0 0;color:var(--ink-soft);font-size:10px;}
+  .history-audit span{display:flex;flex-direction:column;gap:3px;min-width:0;padding:6px 7px;border:1px solid var(--line);border-radius:8px;background:var(--surface);}
+  .history-audit small{font-size:9px;color:var(--ink-soft);font-weight:700;line-height:1.2;}
+  .history-audit strong{font-family:'IBM Plex Mono',monospace;color:var(--ink);font-size:10px;line-height:1.3;overflow-wrap:anywhere;word-break:break-word;}
+  .yield-row .yield-actions{display:flex;justify-content:flex-end;gap:6px;padding-top:7px;border-top:1px dashed var(--line);}
+  .yield-row .yield-actions .beta-icon-button{width:32px;height:32px;min-width:32px;min-height:32px;}
+  @media(max-width:600px){.yield-history-list{max-height:min(54vh,460px);}.history-audit{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}.history-audit span{padding:6px 5px;}.history-audit strong{font-size:9px;}.yield-row{padding:10px;}}
   .log-toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0 12px;}
   .log-entry{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 11px;background:var(--surface);font-size:11px;line-height:1.45;}
   .log-entry.error{border-left-color:var(--red);}.log-entry.warn{border-left-color:var(--gold);}
@@ -1391,12 +1409,10 @@
   .log-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;background:var(--green-soft);color:var(--accent);font-size:9px;font-weight:800;letter-spacing:.05em;}
   .log-entry.error .log-badge{background:var(--red-soft);color:var(--red);}.log-entry.warn .log-badge{background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold);}
   .log-entry-meta{color:var(--ink-soft);font-size:10px;}.log-entry-description{margin-top:4px;font-weight:700;}.log-entry-details{margin-top:5px;color:var(--ink-soft);white-space:pre-wrap;overflow-wrap:anywhere;}
-  .history-audit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:6px 0 2px;color:var(--ink-soft);font-size:10px;}
-  .history-audit span{padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--paper);}
   .history-unit{font-size:10px;color:var(--ink-soft);margin-left:4px;}.history-note{display:block;color:var(--ink-soft);font-size:10px;margin-top:2px;}
   .reorder-actions{display:flex;gap:3px;margin-left:auto;}.reorder-actions .action-btn{font-size:12px;min-width:25px;min-height:25px;}
   .bank-share-line{display:block;color:var(--accent);font-size:10px;margin-top:2px;}.bill-status.overdue{color:var(--red);font-weight:800;}
-  @media(max-width:600px){.history-audit{grid-template-columns:1fr;}.log-toolbar{grid-template-columns:1fr 1fr;}}
+  @media(max-width:600px){.log-toolbar{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
@@ -2567,6 +2583,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function loadState() {
+    const operation = beginLogOperation('Carregamento de dados', 'Sincronização');
     const defaultCats = ['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Salário', 'Renda Extra', 'Transferência', 'Outros'];
     const syncOverlay = document.getElementById('syncOverlay');
     const syncOverlayText = document.getElementById('syncOverlayText');
@@ -2578,7 +2595,7 @@ document.addEventListener('DOMContentLoaded', () => {
     realtimeUnsubscribers = [];
     let firstLoadDone = false;
     await loadDiagnosticLog();
-    logInfo('Carregamento de dados', 'Início da sincronização', 'Em andamento', 'Leitura das coleções do Livro-Caixa iniciada.');
+    logInfo('Carregamento de dados', 'Início da sincronização', 'Em andamento', 'Leitura das coleções do Livro-Caixa iniciada.', null, operation);
 
     try {
       // Cada coleção resolve assim que a PRIMEIRA leitura chega — que, com o cache offline
@@ -2645,16 +2662,16 @@ document.addEventListener('DOMContentLoaded', () => {
         changed = true;
       }
 
-      if (changed) await persistNow();
+      if (changed) await persistNow(operation);
 
       populateFilterControls(true);
       render();
       renderBills();
       firstLoadDone = true;
-      logInfo('Carregamento de dados', 'Sincronização concluída', 'Sucesso', `${COLLECTIONS.length} coleções carregadas.`);
+      logInfo('Carregamento de dados', 'Sincronização concluída', 'Sucesso', `${COLLECTIONS.length} coleções carregadas.`, null, operation);
     } catch (err) {
       console.error(err);
-      logSyncError('carregamento de dados', err);
+      logSyncError('carregamento de dados', err, operation);
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
       syncOverlay.classList.add('hidden');
@@ -2695,6 +2712,37 @@ document.addEventListener('DOMContentLoaded', () => {
   const syncErrorLog = diagnosticLog; // compatibilidade com a interface antiga.
   const LOG_STORAGE_KEY = 'livrocaixa_diagnostic_log';
   const LOG_LIMIT = 200;
+  const LOG_SCHEMA_VERSION = 2;
+  const LOG_SEQUENCE_STORAGE_KEY = 'livrocaixa_diagnostic_sequence';
+  const LOG_SOURCE = 'Livro-Caixa-web';
+  let logSequence = 0;
+
+  function nextLogSequence() {
+    let stored = 0;
+    try { stored = Number(localStorage.getItem(LOG_SEQUENCE_STORAGE_KEY)) || 0; } catch (err) {}
+    logSequence = Math.max(logSequence, stored) + 1;
+    try { localStorage.setItem(LOG_SEQUENCE_STORAGE_KEY, String(logSequence)); } catch (err) {}
+    return logSequence;
+  }
+  function createCorrelationId(label = 'operacao') {
+    const safeLabel = String(label || 'operacao').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) || 'operacao';
+    return `op_${Date.now()}_${safeLabel}_${Math.random().toString(36).slice(2, 8)}`;
+  }
+  function beginLogOperation(module, action, details = null) {
+    return { correlationId: createCorrelationId(`${module}-${action}`), startedAt: performance.now(), module, action, details };
+  }
+  function operationDuration(operation) {
+    if (!operation || !Number.isFinite(operation.startedAt)) return null;
+    return Math.max(0, Math.round(performance.now() - operation.startedAt));
+  }
+  function getLogContextFields(operation, durationMs = null) {
+    if (!operation) return {};
+    return {
+      correlationId: operation.correlationId || null,
+      durationMs: durationMs != null ? durationMs : null,
+      source: operation.source || LOG_SOURCE
+    };
+  }
 
   function sanitizeLogValue(value, depth = 0) {
     if (depth > 2 || value == null) return value == null ? null : String(value);
@@ -2712,10 +2760,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return String(value);
   }
+  function normalizeLogEvent(raw) {
+    const item = raw && typeof raw === 'object' ? raw : {};
+    const sequenceNumber = Number(item.sequence);
+    const durationNumber = Number(item.durationMs);
+    const retryNumber = Number(item.retryCount);
+    return {
+      id: String(item.id || `legacy-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`),
+      sequence: Number.isFinite(sequenceNumber) && sequenceNumber > 0 ? sequenceNumber : null,
+      timestamp: item.timestamp || new Date().toISOString(),
+      type: ['INFO', 'WARN', 'ERROR'].includes(item.type) ? item.type : 'INFO',
+      module: String(item.module || 'Sistema').slice(0, 120),
+      action: String(item.action || 'Operação').slice(0, 160),
+      status: String(item.status || 'Sucesso').slice(0, 80),
+      description: String(item.description || '').slice(0, 800),
+      details: sanitizeLogValue(item.details),
+      correlationId: item.correlationId ? String(item.correlationId).slice(0, 120) : null,
+      durationMs: Number.isFinite(durationNumber) && durationNumber >= 0 ? Math.round(durationNumber) : null,
+      retryCount: Number.isFinite(retryNumber) && retryNumber >= 0 ? Math.floor(retryNumber) : null,
+      source: String(item.source || 'Livro-Caixa-web').slice(0, 80),
+      synced: item.synced === true ? true : item.synced === false ? false : null,
+      schemaVersion: Number(item.schemaVersion) || 1
+    };
+  }
+  function normalizeDiagnosticLog(items) {
+    return (Array.isArray(items) ? items : []).filter(Boolean).map(normalizeLogEvent).slice(0, LOG_LIMIT);
+  }
+  function syncLogSequenceFromEvents(items) {
+    const maxSequence = (Array.isArray(items) ? items : []).reduce((max, item) => Math.max(max, Number(item?.sequence) || 0), 0);
+    if (maxSequence > logSequence) {
+      logSequence = maxSequence;
+      try { localStorage.setItem(LOG_SEQUENCE_STORAGE_KEY, String(logSequence)); } catch (err) {}
+    }
+  }
   function persistDiagnosticLogLocally() {
     try {
-      localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(diagnosticLog.slice(0, LOG_LIMIT)));
-      localStorage.setItem('livrocaixa_sync_errors', JSON.stringify(diagnosticLog.filter(item => item.type === 'ERROR').slice(0, 50)));
+      const normalized = normalizeDiagnosticLog(diagnosticLog);
+      diagnosticLog.splice(0, diagnosticLog.length, ...normalized);
+      localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(normalized));
+      localStorage.setItem('livrocaixa_sync_errors', JSON.stringify(normalized.filter(item => item.type === 'ERROR').slice(0, 50)));
     } catch (err) { console.warn('LOG local indisponível:', err); }
   }
   function hydrateDiagnosticLog() {
@@ -2727,45 +2810,55 @@ document.addEventListener('DOMContentLoaded', () => {
         stored = Array.isArray(legacy) ? legacy.map(item => ({ id: 'legacy-' + Math.random().toString(36).slice(2), timestamp: new Date().toISOString(), type: 'ERROR', module: 'Sincronização', action: item.context || 'Operação', status: 'Falha', description: item.message || 'Erro legado', details: null })) : [];
       } catch (err) {}
     }
-    diagnosticLog.splice(0, diagnosticLog.length, ...stored.slice(0, LOG_LIMIT));
+    diagnosticLog.splice(0, diagnosticLog.length, ...normalizeDiagnosticLog(stored));
+    syncLogSequenceFromEvents(diagnosticLog);
   }
   async function loadDiagnosticLog() {
     hydrateDiagnosticLog();
     if (!currentUser) return;
     try {
       const snap = await db.collection('livrocaixa').doc(currentUser.uid).collection('diagnostics').limit(100).get();
-      const remote = snap.docs.map(doc => doc.data()).filter(item => item && item.id);
-      const merged = new Map(diagnosticLog.map(item => [item.id, item]));
+      const remote = snap.docs.map(doc => ({ ...normalizeLogEvent(doc.data()), synced: true })).filter(item => item && item.id);
+      const merged = new Map(diagnosticLog.map(item => [item.id, normalizeLogEvent(item)]));
       remote.forEach(item => merged.set(item.id, item));
-      diagnosticLog.splice(0, diagnosticLog.length, ...[...merged.values()].sort((a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || ''))).slice(0, LOG_LIMIT));
+      diagnosticLog.splice(0, diagnosticLog.length, ...[...merged.values()].sort((a, b) => (Number(b.sequence || 0) - Number(a.sequence || 0)) || String(b.timestamp || '').localeCompare(String(a.timestamp || ''))).slice(0, LOG_LIMIT));
+      syncLogSequenceFromEvents(diagnosticLog);
       persistDiagnosticLogLocally();
     } catch (err) { console.warn('LOG remoto indisponível:', err); }
   }
-  function createLogEvent({ type = 'INFO', module = 'Sistema', action = 'Operação', status = 'Sucesso', description = '', details = null } = {}) {
+  function createLogEvent({ type = 'INFO', module = 'Sistema', action = 'Operação', status = 'Sucesso', description = '', details = null, correlationId = null, durationMs = null, retryCount = null, source = LOG_SOURCE, synced = null } = {}) {
     return {
       id: 'log' + Date.now() + Math.random().toString(36).slice(2, 8),
+      sequence: nextLogSequence(),
       timestamp: new Date().toISOString(), type, module, action, status,
-      description: String(description || '').slice(0, 800), details: sanitizeLogValue(details)
+      description: String(description || '').slice(0, 800), details: sanitizeLogValue(details),
+      correlationId: correlationId ? String(correlationId).slice(0, 120) : null,
+      durationMs: Number.isFinite(Number(durationMs)) && Number(durationMs) >= 0 ? Math.round(Number(durationMs)) : null,
+      retryCount: Number.isFinite(Number(retryCount)) && Number(retryCount) >= 0 ? Math.floor(Number(retryCount)) : null,
+      source: String(source || LOG_SOURCE).slice(0, 80), synced: synced === true ? true : synced === false ? false : null,
+      schemaVersion: LOG_SCHEMA_VERSION
     };
   }
-  function recordLogEvent(input) {
-    const event = createLogEvent(input);
+  function recordLogEvent(input = {}) {
+    const event = createLogEvent({ ...input, synced: currentUser ? false : false });
     diagnosticLog.unshift(event);
     if (diagnosticLog.length > LOG_LIMIT) diagnosticLog.length = LOG_LIMIT;
     persistDiagnosticLogLocally();
     if (event.type === 'ERROR') flashSyncError();
     if (currentUser) {
-      db.collection('livrocaixa').doc(currentUser.uid).collection('diagnostics').doc(event.id).set(event, { merge: true }).catch(err => console.warn('Falha ao sincronizar o LOG:', err));
+      db.collection('livrocaixa').doc(currentUser.uid).collection('diagnostics').doc(event.id).set(event, { merge: true })
+        .then(() => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = true; persistDiagnosticLogLocally(); })
+        .catch(err => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = false; persistDiagnosticLogLocally(); console.warn('Falha ao sincronizar o LOG:', err); });
     }
     if (event.type === 'ERROR') console.error(`[${event.module}] ${event.action}:`, event.description, event.details || '');
     else if (event.type === 'WARN') console.warn(`[${event.module}] ${event.action}:`, event.description);
     return event;
   }
-  function logInfo(module, action, status = 'Sucesso', description = '', details = null) { return recordLogEvent({ type: 'INFO', module, action, status, description, details }); }
-  function logWarn(module, action, status = 'Atenção', description = '', details = null) { return recordLogEvent({ type: 'WARN', module, action, status, description, details }); }
-  function logSyncError(context, err) {
+  function logInfo(module, action, status = 'Sucesso', description = '', details = null, operation = null) { const duration = ['Sucesso', 'Parcial', 'Falha', 'Cancelado'].includes(status) ? operationDuration(operation) : null; return recordLogEvent({ type: 'INFO', module, action, status, description, details, ...getLogContextFields(operation, duration) }); }
+  function logWarn(module, action, status = 'Atenção', description = '', details = null, operation = null) { const duration = ['Sucesso', 'Parcial', 'Falha', 'Cancelado'].includes(status) ? operationDuration(operation) : null; return recordLogEvent({ type: 'WARN', module, action, status, description, details, ...getLogContextFields(operation, duration) }); }
+  function logSyncError(context, err, operation = null) {
     const message = err && err.message ? err.message : String(err);
-    recordLogEvent({ type: 'ERROR', module: context === 'sincronização' ? 'Sincronização' : 'Sistema', action: context, status: 'Falha', description: message, details: err && { code: err.code, failedCollections: err.failedCollections } });
+    recordLogEvent({ type: 'ERROR', module: context === 'sincronização' ? 'Sincronização' : 'Sistema', action: context, status: 'Falha', description: message, details: err && { code: err.code, failedCollections: err.failedCollections }, ...getLogContextFields(operation, operationDuration(operation)) });
   }
   window.addEventListener('error', event => {
     const error = event.error || new Error(event.message || 'Erro de interface');
@@ -2781,14 +2874,14 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => dot.classList.remove('sync-error'), 4000);
   }
 
-  function persistNow() {
+  function persistNow(operation = null) {
     if (!currentUser) return Promise.resolve();
     clearTimeout(saveTimer);
     setSyncDot(true);
     pendingSaveCount++;
     return commitDiff()
-      .then(() => { setSyncDot(false); logInfo('Salvamento', 'Persistência dos dados', 'Sucesso', 'Alterações gravadas nas coleções do Livro-Caixa.'); })
-      .catch(err => { logSyncError('salvamento', err); setSyncDot(false); throw err; })
+      .then(() => { setSyncDot(false); logInfo('Salvamento', 'Persistência dos dados', 'Sucesso', 'Alterações gravadas nas coleções do Livro-Caixa.', null, operation); })
+      .catch(err => { logSyncError('salvamento', err, operation); setSyncDot(false); throw err; })
       .finally(() => {
         pendingSaveCount = Math.max(0, pendingSaveCount - 1);
         if (pendingSaveCount === 0) flushSnapshotBuffer();
@@ -2840,12 +2933,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function persistAll() { return persistNow(); }
-  function saveBanks() { return persistAll(); }
-  function saveCategories() { return persistAll(); }
-  function saveEntries() { return persistAll(); }
-  function saveInvestments() { return persistAll(); }
-  function savePockets() { return persistAll(); }
+  function persistAll(operation = null) { return persistNow(operation); }
+  function saveBanks(operation = null) { return persistAll(operation); }
+  function saveCategories(operation = null) { return persistAll(operation); }
+  function saveEntries(operation = null) { return persistAll(operation); }
+  function saveInvestments(operation = null) { return persistAll(operation); }
+  function savePockets(operation = null) { return persistAll(operation); }
 
   function bankBalance(bankId) {
     const bank = banks.find(b => b.id === bankId);
@@ -3310,18 +3403,22 @@ document.addEventListener('DOMContentLoaded', () => {
       const sign = positive ? '+' : '−';
       const label = movementKindLabel(kind);
       let description = String(y.desc || '').trim();
-      const duplicateLabel = new RegExp(`^${label}\s*[-–—:]?\s*`, 'i');
+      const duplicateLabel = new RegExp(`^${label}\\s*[-–—:]?\\s*`, 'i');
       description = description.replace(duplicateLabel, '');
       const isCrypto = item && targetType === 'invest' && isCryptoType(item.type) && y.units != null;
       const valueLabel = isCrypto ? `${sign}${formatCryptoUnits(item.type, Math.abs(y.units), item.name)} · ≈ ${fmt(Math.abs(y.amount || 0))}` : `${sign}${fmt(Math.abs(y.amount || 0))}`;
       const beforeLabel = isCrypto ? formatCryptoUnits(item.type, before, item.name) : fmt(before);
       const deltaLabel = isCrypto ? `${sign}${formatCryptoUnits(item.type, Math.abs(delta), item.name)}` : `${sign}${fmt(Math.abs(delta))}`;
       const afterLabel = isCrypto ? formatCryptoUnits(item.type, after, item.name) : fmt(after);
-      return `<div class="yield-row">
-        <span><strong>${escapeHTML(formatMovementPeriod(y))} · ${label}</strong>${description ? `<span class="history-note">${escapeHTML(description)}</span>` : ''}<span class="history-note">${valueLabel}${y.price ? ` · Cotação ${fmt(y.price)}` : ''}</span><span class="history-audit"><span>Anterior: ${beforeLabel}</span><span>Alteração: ${deltaLabel}</span><span>Posterior: ${afterLabel}</span></span></span>
-        <span class="${positive ? 'yield-pos' : 'yield-neg'}">${valueLabel}</span>
-        <span class="yield-actions"><button type="button" class="action-btn beta-icon-button edit" onclick="editYield('${y.id}')" aria-label="Editar movimentação"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deleteYield('${y.id}')" aria-label="Excluir movimentação"></button></span>
-      </div>`;
+      return `<article class="yield-row">
+        <div class="history-main">
+          <div class="history-head"><strong class="history-date">${escapeHTML(formatMovementPeriod(y))}</strong><span class="history-kind ${positive ? '' : 'negative'}">${escapeHTML(label)}</span></div>
+          ${description ? `<div class="history-description">${escapeHTML(description)}</div>` : ''}
+          <div class="history-value ${positive ? 'positive' : 'negative'}">${valueLabel}${y.price ? `<span class="history-quote">Cotação ${fmt(y.price)}</span>` : ''}</div>
+          <div class="history-audit"><span><small>Saldo anterior</small><strong>${beforeLabel}</strong></span><span><small>Alteração</small><strong>${deltaLabel}</strong></span><span><small>Saldo posterior</small><strong>${afterLabel}</strong></span></div>
+        </div>
+        <div class="yield-actions"><button type="button" class="action-btn beta-icon-button edit" onclick="editYield('${y.id}')" aria-label="Editar movimentação" title="Editar movimentação"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deleteYield('${y.id}')" aria-label="Excluir movimentação" title="Excluir movimentação"></button></div>
+      </article>`;
     }).join('');
     return `<details class="yield-history"><summary>📋 Histórico auditável (${rowsData.length})</summary><div class="yield-history-list">${rows}</div></details>`;
   }
@@ -3666,6 +3763,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderNotifications();
   }
 
+  function formatLogTimestamp(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    const base = date.toLocaleString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return `${base}.${String(date.getMilliseconds()).padStart(3, '0')}`;
+  }
   function renderDiagnosticLog() {
     const type = document.getElementById('logFilterType')?.value || '';
     const module = document.getElementById('logFilterModule')?.value || '';
@@ -3675,12 +3778,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (moduleSelect) { const current=moduleSelect.value; moduleSelect.innerHTML='<option value="">Todos os módulos</option>'+modules.map(item=>`<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join(''); if(modules.includes(current)) moduleSelect.value=current; }
     const filtered = diagnosticLog.filter(item => (!type || item.type === type) && (!module || item.module === module) && (!query || JSON.stringify(item).toLowerCase().includes(query)));
     const list = document.getElementById('diagnosticoList');
-    list.innerHTML = filtered.length ? filtered.map(item => { const date = item.timestamp ? new Date(item.timestamp).toLocaleString('pt-BR') : ''; const details = item.details ? (typeof item.details === 'string' ? item.details : JSON.stringify(item.details, null, 2)) : ''; return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span><span class="log-entry-meta">${escapeHTML(date)} · ${escapeHTML(item.module || 'Sistema')} · ${escapeHTML(item.status || '')}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${item.description ? ' — ' + escapeHTML(item.description) : ''}</div>${details ? `<div class="log-entry-details">${escapeHTML(details)}</div>` : ''}</article>`; }).join('') : '<p class="hint">Nenhum evento encontrado para os filtros atuais.</p>';
+    list.innerHTML = filtered.length ? filtered.map(item => {
+      const date = item.timestamp ? formatLogTimestamp(item.timestamp) : '';
+      const details = item.details ? (typeof item.details === 'string' ? item.details : JSON.stringify(item.details, null, 2)) : '';
+      const identity = item.sequence != null ? `#${item.sequence}` : 'sem sequência';
+      const operation = item.correlationId ? `op ${item.correlationId}` : '';
+      const duration = item.durationMs != null ? `${item.durationMs} ms` : '';
+      const sync = item.synced === true ? 'Sincronizado' : item.synced === false ? 'Pendente' : '';
+      const meta = [identity, date, item.module || 'Sistema', item.status || '', duration, sync].filter(Boolean).join(' · ');
+      return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span><span class="log-entry-meta">${escapeHTML(meta)}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${item.description ? ' — ' + escapeHTML(item.description) : ''}</div>${operation ? `<div class="log-entry-details">Operação: ${escapeHTML(operation)}</div>` : ''}${details ? `<div class="log-entry-details">${escapeHTML(details)}</div>` : ''}</article>`;
+    }).join('') : '<p class="hint">Nenhum evento encontrado para os filtros atuais.</p>';
   }
   function openDiagnostics() { renderDiagnosticLog(); openModal('panelDiagnostico'); }
   ['logFilterType','logFilterModule','logFilterText'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
   document.getElementById('btnCopyDiagnostico').onclick = () => {
-    const text = diagnosticLog.map(item => `[${item.type}] ${new Date(item.timestamp || Date.now()).toLocaleString('pt-BR')} | ${item.module} | ${item.action} | ${item.status} | ${item.description}${item.details ? ' | ' + JSON.stringify(item.details) : ''}`).join('\n') || 'Nenhum evento registrado.';
+    const text = diagnosticLog.map(item => `[${item.type}] ${item.sequence != null ? '#' + item.sequence + ' ' : ''}${formatLogTimestamp(item.timestamp || Date.now())} | ${item.module} | ${item.action} | ${item.status}${item.correlationId ? ' | op=' + item.correlationId : ''}${item.durationMs != null ? ' | duração=' + item.durationMs + 'ms' : ''}${item.synced === false ? ' | sincronização pendente' : ''} | ${item.description}${item.details ? ' | ' + JSON.stringify(item.details) : ''}`).join('\n') || 'Nenhum evento registrado.';
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(()=>alert('LOG copiado.')).catch(()=>alert(text)); else alert(text);
   };
   document.getElementById('btnClearDiagnostico').onclick = () => { if (!confirm('Limpar apenas a cópia local do LOG? O histórico remoto não será apagado.')) return; diagnosticLog.length=0; persistDiagnosticLogLocally(); renderDiagnosticLog(); };
@@ -4334,6 +4446,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    const operation = beginLogOperation('Livro-Caixa', editingEntryId ? 'Editar lançamento' : 'Salvar lançamento');
+    logInfo('Livro-Caixa', editingEntryId ? 'Editar lançamento' : 'Salvar lançamento', 'Em andamento', 'Operação de lançamento iniciada.', null, operation);
     btn.disabled = true;
     const originalLabel = btn.textContent;
     btn.textContent = 'Salvando...';
@@ -4351,13 +4465,13 @@ document.addEventListener('DOMContentLoaded', () => {
     populateFilterControls();
     render();
     try {
-      await saveEntries();
-      logInfo('Livro-Caixa','Salvar lançamento','Sucesso','Movimentação registrada.',{type: currentType, amount: valor});
+      await saveEntries(operation);
+      logInfo('Livro-Caixa','Salvar lançamento','Sucesso','Movimentação registrada.',{type: currentType}, operation);
       document.getElementById('fDesc').value = '';
       setMoneyInput('fValor', 0);
       closeAllPanels();
     } catch (err) {
-      logSyncError('lançamento', err);
+      logSyncError('lançamento', err, operation);
     } finally {
       btn.disabled = false;
       btn.textContent = originalLabel;
@@ -4406,6 +4520,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!name) { alert('Informe o nome do ativo.'); return; }
     if (isCrypto && (initialUnits == null || initialUnits < 0)) { alert('Informe um saldo inicial válido de unidades/tokens.'); return; }
 
+    const operation = beginLogOperation('Investimentos', editingInvestId ? 'Editar ativo' : 'Salvar ativo');
+    logInfo('Investimentos', editingInvestId ? 'Editar ativo' : 'Salvar ativo', 'Em andamento', 'Operação de ativo iniciada.', null, operation);
     const record = { name, alias, type, units, initialUnits: isCrypto ? (initialUnits || 0) : null, value, initialValue, price: quote, institution, rate, dueDate };
 
     let targetItem;
@@ -4446,11 +4562,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const originalLabel = btnSalvarInvest ? btnSalvarInvest.textContent : null;
     if (btnSalvarInvest) { btnSalvarInvest.disabled = true; btnSalvarInvest.textContent = 'Salvando...'; }
     try {
-      await saveInvestments();
-      logInfo('Investimentos','Salvar ativo','Sucesso','Ativo salvo com separação entre quantidade e valor em BRL.');
+      await saveInvestments(operation);
+      logInfo('Investimentos','Salvar ativo','Sucesso','Ativo salvo com separação entre quantidade e valor em BRL.', null, operation);
       closeAllPanels();
     } catch (err) {
-      logSyncError('investimento', err);
+      logSyncError('investimento', err, operation);
     } finally {
       if (btnSalvarInvest) { btnSalvarInvest.disabled = false; btnSalvarInvest.textContent = originalLabel; }
       render();
@@ -4599,6 +4715,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       if (item.type === 'Renda Fixa') syncDerivedInvestmentValue(item);
     }
+    const operation = beginLogOperation('Investimentos', `Movimentação — ${movementKindLabel(kind)}`);
+    logInfo('Investimentos', 'Movimentação', 'Em andamento', `${movementKindLabel(kind)} iniciada para ${item.name}.`, null, operation);
     if (isCrypto) {
       syncDerivedCryptoValue(item, price);
       item.price = price;
@@ -4617,18 +4735,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     render();
     try {
-      await persistAll();
-      logInfo('Investimentos','Salvar movimentação','Sucesso',`${movementKindLabel(kind)} registrada para ${item.name}.`);
+      await persistAll(operation);
+      logInfo('Investimentos','Salvar movimentação','Sucesso',`${movementKindLabel(kind)} registrada para ${item.name}.`, null, operation);
       investmentMovementTarget = null;
       closeAllPanels();
     } catch (err) {
-      logSyncError('movimentação de investimento', err);
+      logSyncError('movimentação de investimento', err, operation);
     } finally {
       render();
     }
   };
 
-  document.getElementById('pmSalvar').onclick = () => {
+  document.getElementById('pmSalvar').onclick = async () => {
     if (!pocketMovementTarget) return;
     const item = pockets.find(x => x.id === pocketMovementTarget.id);
     if (!item) return;
@@ -4645,6 +4763,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const baseBalance = pocketCurrentBalance(item) - (pocketMovementEditingId ? movementDelta(yieldsLog.find(y => y.id === pocketMovementEditingId) || {}) : 0);
     if (baseBalance + delta < 0) { alert('O resgate não pode ser maior que o saldo disponível.'); return; }
 
+    const operation = beginLogOperation('Caixinhas', `Movimentação — ${movementKindLabel(kind)}`);
+    logInfo('Caixinhas', 'Movimentação', 'Em andamento', `${movementKindLabel(kind)} iniciada para ${item.name}.`, null, operation);
     if (pocketMovementEditingId) {
       const old = yieldsLog.find(x => x.id === pocketMovementEditingId);
       if (old) {
@@ -4668,8 +4788,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    persistAll();
-    logInfo('Caixinhas','Salvar movimentação','Sucesso',`${movementKindLabel(kind)} registrada para ${item.name}.`);
+    try {
+      await persistAll(operation);
+      logInfo('Caixinhas','Salvar movimentação','Sucesso',`${movementKindLabel(kind)} registrada para ${item.name}.`, null, operation);
+    } catch (err) {
+      logSyncError('movimentação de caixinha', err, operation);
+    }
     pocketMovementTarget = null;
     closeAllPanels();
     render();
@@ -4677,7 +4801,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let pendingPricePoint = null;
 
-  async function persistInvestmentQuote(inv, quote, source='manual') {
+  async function persistInvestmentQuote(inv, quote, source='manual', operation = null) {
     if (!inv || !isCryptoType(inv.type) || !(Number(quote)>0)) return false;
     const units = cryptoCurrentUnits(inv);
     inv.price = Number(quote);
@@ -4689,7 +4813,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const latest=inv.priceHistory[inv.priceHistory.length-1];
     if(latest && latest.date===today){ latest.price=inv.price; latest.units=units; latest.value=inv.value; latest.source=source; }
     else inv.priceHistory.push({date:today,price:inv.price,units,value:inv.value,source});
-    await saveInvestments();
+    await saveInvestments(operation);
     return true;
   }
 
@@ -4697,23 +4821,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameQuery = document.getElementById('iNome').value.trim();
     const statusEl = document.getElementById('fetchPriceStatus');
     if (!nameQuery) { statusEl.textContent = 'Digite o nome do ativo primeiro (ex: Bitcoin, USDC).'; return; }
+    const operation = beginLogOperation('Cotação', 'Atualização de cotação');
+    logInfo('Cotação', 'Atualização de cotação', 'Em andamento', `Consulta iniciada para ${nameQuery}.`, null, operation);
     statusEl.textContent = 'Buscando cotação...';
     try {
       const coin = await fetchCoinMatch(nameQuery);
-      if (!coin) { statusEl.textContent = 'Ativo não encontrado. Preencha o valor manualmente.'; return; }
+      if (!coin) { logWarn('Cotação', 'Atualização de cotação', 'Parcial', 'Ativo não encontrado; cotação manual disponível.', null, operation); statusEl.textContent = 'Ativo não encontrado. Preencha o valor manualmente.'; return; }
       const price = await fetchCoinPriceBRL(coin.id);
-      if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
+      if (!price) { logWarn('Cotação', 'Atualização de cotação', 'Parcial', 'Cotação indisponível; última cotação válida preservada.', null, operation); statusEl.textContent = 'Cotação indisponível no momento.'; return; }
       setMoneyInput('iCotacao', price);
       updateInvestmentMainValue();
       pendingPricePoint = { price, units: cryptoCurrentUnits(editingInvestId ? investments.find(i=>i.id===editingInvestId) : null), value: readMoneyInput('iValor') };
       if (editingInvestId) {
         const inv=investments.find(i=>i.id===editingInvestId);
-        if(inv) { await persistInvestmentQuote(inv, price, 'api'); render(); }
+        if(inv) { await persistInvestmentQuote(inv, price, 'api', operation); render(); }
       }
       statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · ${editingInvestId?'salvo agora':'pronto para salvar'}`;
+      logInfo('Cotação', 'Atualização de cotação', 'Sucesso', `Cotação de ${coin.symbol.toUpperCase()} obtida.`, { source: 'CoinGecko' }, operation);
     } catch (err) {
       console.error(err);
-      logSyncError('cotação CoinGecko', err);
+      logSyncError('cotação CoinGecko', err, operation);
       statusEl.textContent = 'Erro ao buscar cotação. A última cotação válida foi preservada; informe uma cotação manual.';
     }
   };
@@ -4742,6 +4869,8 @@ document.addEventListener('DOMContentLoaded', () => {
       statusEl.textContent = 'Nenhum ativo com unidades cadastradas para atualizar automaticamente (ativos sem "unidades/tokens" precisam ser editados manualmente).';
       return;
     }
+    const operation = beginLogOperation('Cotação', 'Atualização em lote');
+    logInfo('Cotação', 'Atualização em lote', 'Em andamento', `Atualização de ${candidates.length} ativo(s) iniciada.`, { count: candidates.length }, operation);
     btn.disabled = true;
     let updated = 0, failed = [];
     for (let i = 0; i < candidates.length; i++) {
@@ -4766,16 +4895,16 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         console.error(err);
         failed.push(inv.name);
-        logSyncError(`cotação CoinGecko — ${inv.name}`, err);
+        logSyncError(`cotação CoinGecko — ${inv.name}`, err, operation);
       }
       if (i < candidates.length - 1) await sleep(1200); // evita limite de requisições da API
     }
-    if (updated > 0) await persistAll();
+    if (updated > 0) await persistAll(operation);
     render();
     btn.disabled = false;
     statusEl.textContent = `${updated} de ${candidates.length} cotação(ões) atualizada(s).` +
       (failed.length ? ` Não encontrados: ${failed.join(', ')}.` : '');
-    (failed.length ? logWarn : logInfo)('Cotação','Atualização em lote',failed.length ? 'Parcial' : 'Sucesso',`${updated} cotação(ões) atualizada(s).`,{failed});
+    (failed.length ? logWarn : logInfo)('Cotação','Atualização em lote',failed.length ? 'Parcial' : 'Sucesso',`${updated} cotação(ões) atualizada(s).`,{failed}, operation);
   };
 
   document.getElementById('bSalvar').onclick = async () => {
@@ -5312,10 +5441,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const pass = document.getElementById('authPass').value;
     if (!email || !pass) { setAuthError('Preencha e-mail e senha.'); return; }
     setAuthError('');
+    const operation = beginLogOperation('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar');
+    logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Em andamento', 'Solicitação de autenticação iniciada.', null, operation);
     const action = isSignupMode
       ? auth.createUserWithEmailAndPassword(email, pass)
       : auth.signInWithEmailAndPassword(email, pass);
-    action.catch(err => { logSyncError('autenticação', err); setAuthError(translateAuthError(err.code)); });
+    action.then(() => logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Sucesso', 'Solicitação de autenticação concluída.', null, operation)).catch(err => { logSyncError('autenticação', err, operation); setAuthError(translateAuthError(err.code)); });
   };
 
   document.getElementById('authPassToggle').onclick = () => {
@@ -5332,12 +5463,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('authGoogle').onclick = () => {
     setAuthError('');
+    const operation = beginLogOperation('Autenticação', 'Entrar com Google');
+    logInfo('Autenticação', 'Entrar com Google', 'Em andamento', 'Solicitação de autenticação Google iniciada.', null, operation);
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(err => {
+    auth.signInWithPopup(provider).then(() => logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation)).catch(err => {
       if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
         auth.signInWithRedirect(provider);
       } else if (err.code !== 'auth/popup-closed-by-user') {
-        logSyncError('autenticação Google', err);
+        logSyncError('autenticação Google', err, operation);
         setAuthError(translateAuthError(err.code));
       }
     });
