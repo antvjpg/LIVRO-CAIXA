@@ -1,12 +1,12 @@
 /* Livro-Caixa V18-06 PWA: cacheia apenas o App Shell; dados financeiros continuam no Firestore. */
-const CACHE_NAME = "livro-caixa-shell-v18-08c";
+const CACHE_NAME = "livro-caixa-shell-v18-10-full-test";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./manifest.webmanifest?v=18-08c",
-  "./icon-192.png?v=18-08c",
-  "./icon-512.png?v=18-08c",
-  "./icon-512-maskable.png?v=18-08c"
+  "./manifest.webmanifest?v=18-10-full-test",
+  "./icon-192.png?v=18-10-full-test",
+  "./icon-512.png?v=18-10-full-test",
+  "./icon-512-maskable.png?v=18-10-full-test"
 ];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE_NAME).then(async cache => { await Promise.allSettled(APP_SHELL.map(asset => cache.add(asset))); }).then(() => self.skipWaiting())));
 self.addEventListener("activate", event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith("livro-caixa-shell-") && k !== CACHE_NAME).map(k => caches.delete(k)))).then(() => self.clients.claim())));
