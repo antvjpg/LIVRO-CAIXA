@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Livro-Caixa">
-<link rel="manifest" href="./manifest.webmanifest?v=18-11-dashboard-test">
+<link rel="manifest" href="./manifest.webmanifest?v=18-09docx">
 <link rel="icon" href="./icon-192.png?v=13" type="image/png">
 <link rel="apple-touch-icon" href="./icon-192.png?v=13">
 <title>Livro-Caixa</title>
@@ -5490,9 +5490,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const summaryRows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],[],['Banco','Saldo Inicial','Saldo Final']];grouped.forEach(g=>summaryRows.push([g.bank.name,g.initialBalance,g.finalBalance]));summaryRows.push([],['Saldo Inicial Total',totalInitial],['Saldo Final Total',totalFinal]);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summaryRows),'Resumo');XLSX.writeFile(wb,`livro-caixa-extrato-${todayISO()}.xlsx`);logInfo('Exportação','Exportação Excel','Sucesso','Extrato Excel gerado.',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
   }
   async function exportExtractDocx() {
-    if(!window.docx){alert('A biblioteca Word ainda está carregando.');return;} const grouped=getOrganizedExportData(); const meta=getExportMeta(); const d=window.docx; const initial=grouped.reduce((s,g)=>s+g.initialBalance,0); const final=grouped.reduce((s,g)=>s+g.finalBalance,0); const children=[new d.Paragraph({text:'Livro-Caixa — Extrato',heading:d.HeadingLevel.TITLE}),new d.Paragraph(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`),new d.Paragraph(`Saldo Inicial: ${fmt(initial)}   |   Saldo Final: ${fmt(final)}`)];
-    grouped.forEach(group=>{children.push(new d.Paragraph({text:group.bank.name,heading:d.HeadingLevel.HEADING_1}),new d.Paragraph(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`));let running=group.initialBalance;const rows=[new d.TableRow({children:['Data','Descrição','Categoria','Entrada','Saída','Saldo'].map(v=>new d.TableCell({children:[new d.Paragraph({text:v})]}))})];group.entries.forEach(e=>{const cat=categories.find(c=>c.id===e.category);running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);rows.push(new d.TableRow({children:[e.date.split('-').reverse().join('/'),e.desc||'',cat?cat.name:'—',e.type==='in'?fmt(e.amount):'',e.type==='out'?fmt(e.amount):'',fmt(running)].map(v=>new d.TableCell({children:[new d.Paragraph({text:String(v)})]}))}));});children.push(new d.Table({rows,width:{size:100,type:d.WidthType.PERCENTAGE}}));});
-    const blob=await d.Packer.toBlob(new d.Document({sections:[{children}]}));downloadBlob(blob,`livro-caixa-extrato-${todayISO()}.docx`);logInfo('Exportação','Exportação DOCX','Sucesso','Extrato Word gerado.',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
+    if (!window.docx) { alert('A biblioteca Word ainda está carregando.'); return; }
+    const grouped = getOrganizedExportData();
+    const meta = getExportMeta();
+    const d = window.docx;
+    const initial = grouped.reduce((sum, group) => sum + group.initialBalance, 0);
+    const final = grouped.reduce((sum, group) => sum + group.finalBalance, 0);
+    const children = [
+      new d.Paragraph({ text: 'Livro-Caixa — Extrato', heading: d.HeadingLevel.TITLE }),
+      new d.Paragraph(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`),
+      new d.Paragraph(`Saldo Inicial: ${fmt(initial)}   |   Saldo Final: ${fmt(final)}`)
+    ];
+
+    const detailLine = (label, value, color = '1C2B24') => new d.Paragraph({
+      spacing: { after: 40 },
+      children: [
+        new d.TextRun({ text: label, bold: true }),
+        new d.TextRun({ text: String(value || '—'), color })
+      ]
+    });
+
+    grouped.forEach(group => {
+      children.push(
+        new d.Paragraph({ text: group.bank.name, heading: d.HeadingLevel.HEADING_1 }),
+        new d.Paragraph(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`)
+      );
+      let running = group.initialBalance;
+      group.entries.forEach(entry => {
+        const category = categories.find(c => c.id === entry.category);
+        running += entry.type === 'in' ? Number(entry.amount || 0) : -Number(entry.amount || 0);
+        const date = entry.date.split('-').reverse().join('/');
+        const movement = `${entry.type === 'in' ? '+' : '−'} ${fmt(Math.abs(entry.amount))}`;
+        const movementColor = entry.type === 'in' ? '2F6F4F' : 'B44D3A';
+        children.push(
+          new d.Paragraph({
+            spacing: { before: 180, after: 70 },
+            children: [new d.TextRun({ text: `${date} — ${entry.desc || 'Lançamento'}`, bold: true, size: 24 })]
+          }),
+          detailLine('Categoria: ', category ? category.name : '—'),
+          detailLine('Movimentação: ', movement, movementColor),
+          detailLine('Saldo após o lançamento: ', fmt(running)),
+          new d.Paragraph({ text: '────────────────────────', spacing: { after: 50 } })
+        );
+      });
+    });
+
+    const blob = await d.Packer.toBlob(new d.Document({ sections: [{ children }] }));
+    downloadBlob(blob, `livro-caixa-extrato-${todayISO()}.docx`);
+    logInfo('Exportação', 'Exportação DOCX', 'Sucesso', 'Extrato Word em formato vertical gerado.', { dateStart: meta.dateStart, dateEnd: meta.dateEnd, layout: 'vertical-mobile' });
   }
 
   const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
