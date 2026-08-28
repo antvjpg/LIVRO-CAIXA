@@ -20,6 +20,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -1556,11 +1557,11 @@
       <button class="quick-action" id="btnCategoria"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 5.5h8l6 6-7 7-7-7z"/><path d="M8.2 9.2h.01"/></svg></span><span>Categoria</span></button>
       <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h13"/><path d="m15 5 3 3-3 3"/><path d="M19 16H6"/><path d="m9 13-3 3 3 3"/></svg></span><span>Transferência</span></button>
       <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3H8z"/><path d="M6 7h12v13H6z"/><path d="M9 12h6M9 15h6"/></svg></span><span>Colar texto</span></button>
-      <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Importar PDF</span></button>
+      <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Importar PDF/DOCX</span></button>
       <button class="quick-action" id="btnExport"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M10 19V5M15 19v-7M20 19V7M3 19h18"/></svg></span><span>Exportar extrato</span></button>
       <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14v13H5z"/><path d="M8 6V4h8v2M8 12h8M9 16h6"/></svg></span><span>Exportar backup</span></button>
       <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19V9"/><path d="m8.5 12.5 3.5-3.5 3.5 3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Restaurar backup</span></button>
-      <input type="file" id="fileImport" accept="application/pdf">
+      <input type="file" id="fileImport" accept="application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
       <input type="file" id="fileBackupImport" accept="application/json">
     </div>
 
@@ -5579,8 +5580,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const file = ev.target.files[0];
     if (!file || pdfImportInProgress) return;
     const looksLikePdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
-    if (!looksLikePdf) { alert('Selecione um arquivo PDF válido.'); ev.target.value = ''; return; }
-    if (file.size > PDF_IMPORT_MAX_BYTES) { alert('O PDF excede o limite de 12 MB. Use um arquivo menor ou cole o texto do extrato.'); ev.target.value = ''; return; }
+    const looksLikeDocx = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || /\.docx$/i.test(file.name || '');
+    if (!looksLikePdf && !looksLikeDocx) { alert('Selecione um arquivo PDF ou DOCX válido.'); ev.target.value = ''; return; }
+    if (file.size > PDF_IMPORT_MAX_BYTES) { alert('O arquivo excede o limite de 12 MB. Use um arquivo menor ou cole o texto do extrato.'); ev.target.value = ''; return; }
+    if (looksLikeDocx) {
+      if (typeof mammoth === 'undefined') { alert('A biblioteca de leitura de DOCX ainda está carregando.'); ev.target.value = ''; return; }
+      pdfImportInProgress = true;
+      const trigger = document.getElementById('btnImportTrigger');
+      trigger.disabled = true;
+      const label = trigger.querySelector('span:last-child');
+      const originalLabel = label?.textContent || 'Importar PDF/DOCX';
+      if (label) label.textContent = 'Lendo DOCX…';
+      try {
+        const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+        if (!result.value.trim()) throw new Error('Não encontrei texto no DOCX.');
+        parseImportedText(result.value, `DOCX · ${String(file.name || 'fechamento').slice(0, 80)}`);
+        logInfo('Importação','Ler DOCX','Sucesso','Texto extraído do DOCX para revisão; nenhum lançamento foi salvo automaticamente.',{messages: result.messages?.length || 0});
+      } catch (err) {
+        logSyncError('importação de DOCX', err);
+        alert(err?.message || 'Não foi possível ler o arquivo DOCX.');
+      } finally {
+        pdfImportInProgress = false;
+        trigger.disabled = false;
+        if (label) label.textContent = originalLabel;
+        ev.target.value = '';
+      }
+      return;
+    }
     if (typeof pdfjsLib === 'undefined') { alert('A biblioteca de leitura de PDF ainda está carregando.'); ev.target.value = ''; return; }
     pdfImportInProgress = true;
     const trigger = document.getElementById('btnImportTrigger');
@@ -5635,13 +5661,26 @@ document.addEventListener('DOMContentLoaded', () => {
     return Number.isFinite(amount) ? amount : NaN;
   }
   function normalizeImportDescription(value) {
-    return String(value || '').replace(/[\(\)\[\]\+\-\$]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90) || 'Lançamento importado';
+    return String(value || '').replace(/\s+/g, ' ').trim().slice(0, 120) || 'Lançamento importado';
+  }
+  function normalizeImportToken(value) {
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR').replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+  function findImportMatch(raw, items) {
+    const token = normalizeImportToken(raw);
+    if (!token) return { id: '', confidence: 0, raw: String(raw || '').trim() };
+    const exact = (items || []).find(item => normalizeImportToken(item.name) === token);
+    if (exact) return { id: exact.id, confidence: 1, raw: String(raw || '').trim(), name: exact.name };
+    const partial = (items || []).map(item => ({ item, key: normalizeImportToken(item.name) })).filter(x => x.key && (x.key.includes(token) || token.includes(x.key) || token.split(' ').some(part => part.length > 3 && x.key.split(' ').includes(part)))).sort((a, b) => b.key.length - a.key.length)[0];
+    if (partial) return { id: partial.item.id, confidence: 0.7, raw: String(raw || '').trim(), name: partial.item.name };
+    return { id: '', confidence: 0, raw: String(raw || '').trim() };
   }
   function importSignature(row) {
-    return [row.date, String(row.bank || ''), String(row.type || ''), Number(row.amount || 0).toFixed(2), normalizeImportDescription(row.desc).toLocaleLowerCase('pt-BR')].join('|');
+    const descriptionKey = normalizeImportDescription(row.desc).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR').replace(/[^a-z0-9]+/g, ' ').trim();
+    return [row.date, String(row.bank || ''), String(row.type || ''), Number(row.amount || 0).toFixed(2), descriptionKey].join('|');
   }
   function isValidImportRow(row) {
-    return isValidImportDate(row.date) && Number.isFinite(Number(row.amount)) && Number(row.amount) > 0 && String(row.desc || '').trim().length > 0;
+    return isValidImportDate(row.date) && Number.isFinite(Number(row.amount)) && Number(row.amount) > 0 && String(row.desc || '').trim().length > 0 && String(row.bank || '').trim().length > 0 && String(row.category || '').trim().length > 0;
   }
   function refreshImportFlags() {
     const existing = new Set(entries.map(importSignature));
@@ -5653,39 +5692,82 @@ document.addEventListener('DOMContentLoaded', () => {
       seen.add(signature);
     });
   }
-  function parseImportedText(text, source = 'Importação') {
-    const normalizedText = String(text || '').replace(/\r/g, '\n').replace(/\u00A0/g, ' ').trim();
-    if (!normalizedText) { alert('Não encontrei texto para importar.'); return false; }
-    if (normalizedText.length > IMPORT_MAX_TEXT_LENGTH) { alert('O conteúdo é muito extenso. Importe um trecho menor, de até 120 mil caracteres.'); return false; }
-    const ignoreKeywords = ['considerando', 'extrato', 'período', 'periodo', 'relatório', 'relatorio', 'página', 'pagina', 'saldo anterior', 'saldo final'];
+  function importHeaderLine(value) {
+    return ['data', 'descrição', 'descricao', 'categoria', 'entrada', 'saída', 'saida', 'saldo'].includes(normalizeImportToken(value));
+  }
+  function parseClosingImportText(text, source) {
+    const lines = String(text || '').replace(/\r/g, '\n').replace(/\t/g, '\n').replace(/\u00A0/g, ' ').split('\n').map(line => line.replace(/\s+/g, ' ').trim()).filter(Boolean);
     const rows = [];
-    normalizedText.split('\n').forEach(line => {
-      if (rows.length >= IMPORT_MAX_ROWS) return;
-      const rawLine = line.replace(/\s+/g, ' ').trim();
-      if (!rawLine) return;
-      const lower = rawLine.toLocaleLowerCase('pt-BR');
-      if (ignoreKeywords.some(keyword => lower.includes(keyword))) return;
-      const dateMatch = rawLine.match(/(\d{1,2})[\/\.-](\d{1,2})(?:[\/\.-](\d{2,4}))?/);
-      if (!dateMatch) return;
+    let currentBank = { id: '', name: '', raw: '' };
+    let previousBalance = NaN;
+    const generalIgnore = ['considerando', 'extrato', 'período', 'periodo', 'relatório', 'relatorio', 'página', 'pagina', 'saldo final', 'saldo inicial total', 'saldo final total'];
+    const datePattern = /(\d{1,2})[\/\.\-](\d{1,2})(?:[\/\.\-](\d{2,4}))?/;
+    const moneyPattern = /(?:R\$\s*)?[+\-−]?\s*(?:(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{2})|(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2}))/gi;
+    const cleanLabel = value => String(value || '').replace(/^(categoria|movimenta[cç][aã]o|saldo(?: após o lan[cç]amento)?|banco)\s*:\s*/i, '').trim();
+    const isBankLine = value => { const raw = String(value || '').replace(/^banco\s*:\s*/i, '').trim(); moneyPattern.lastIndex = 0; const hasMoney = moneyPattern.test(raw); moneyPattern.lastIndex = 0; const match = findImportMatch(raw, banks); return !datePattern.test(raw) && !hasMoney && match.confidence === 1 ? { ...match, raw } : null; };
+
+    for (let i = 0; i < lines.length; i++) {
+      const raw = lines[i];
+      const lower = raw.toLocaleLowerCase('pt-BR');
+      if (generalIgnore.some(keyword => lower.includes(keyword)) || importHeaderLine(raw)) continue;
+
+      const initialMatch = lower.match(/^saldo\s+inicial\s*:\s*(.*)$/i);
+      if (initialMatch && currentBank.id) {
+        const values = [...initialMatch[1].matchAll(moneyPattern)].map(match => parseImportMoney(match[0])).filter(Number.isFinite);
+        if (values.length) previousBalance = values[values.length - 1];
+        continue;
+      }
+      const bankMatch = !datePattern.test(raw) && !moneyPattern.test(raw) ? isBankLine(raw) : null;
+      moneyPattern.lastIndex = 0;
+      if (bankMatch) { currentBank = { id: bankMatch.id, name: bankMatch.name, raw: bankMatch.raw }; previousBalance = NaN; continue; }
+
+      const dateMatch = raw.match(datePattern);
+      if (!dateMatch) continue;
       let [, day, month, year] = dateMatch;
       day = day.padStart(2, '0'); month = month.padStart(2, '0');
       if (!year) year = String(new Date().getFullYear());
       else if (year.length === 2) year = `20${year}`;
       const date = `${year}-${month}-${day}`;
-      if (!isValidImportDate(date)) return;
-      const withoutDate = rawLine.replace(dateMatch[0], ' ');
-      const moneyMatches = [...withoutDate.matchAll(/(?:R\$\s*)?[+\-]?\s*(?:(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{2})|(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2}))/gi)];
-      const moneyMatch = moneyMatches.find(match => /[+\-]/.test(match[0])) || moneyMatches[0];
-      if (!moneyMatch) return;
-      const amount = parseImportMoney(moneyMatch[0]);
-      if (!Number.isFinite(amount) || amount <= 0) return;
-      const negative = moneyMatch[0].includes('-') || /sa[ií]da|pix enviado|pagamento|d[eé]bito|compra/.test(lower);
-      const positive = moneyMatch[0].includes('+') || /entrada|pix recebido|cr[eé]dito|recebimento/.test(lower);
-      const type = positive && !negative ? 'in' : (negative ? 'out' : 'in');
-      const desc = normalizeImportDescription(withoutDate.replace(moneyMatch[0], ' '));
-      rows.push({ date, desc, amount, type, bank: banks[0] ? banks[0].id : '', category: categories[0] ? categories[0].id : '', source });
-    });
-    if (!rows.length) { alert('Não encontrei linhas com data e valor válidos. Tente colar um trecho mais detalhado do extrato.'); return false; }
+      if (!isValidImportDate(date)) continue;
+
+      let j = i + 1;
+      const chunk = [];
+      while (j < lines.length && !datePattern.test(lines[j]) && !isBankLine(lines[j]) && !importHeaderLine(lines[j])) { chunk.push(lines[j]); j++; }
+      const inlineRemainder = raw.replace(dateMatch[0], ' ').trim();
+      const combined = [inlineRemainder, ...chunk].filter(Boolean);
+      const moneyLines = combined.filter(line => { moneyPattern.lastIndex = 0; return moneyPattern.test(line); });
+      const moneyValues = [];
+      moneyLines.forEach(line => { moneyPattern.lastIndex = 0; [...line.matchAll(moneyPattern)].forEach(match => { const amount = parseImportMoney(match[0]); if (Number.isFinite(amount)) moneyValues.push({ amount, raw: match[0], line }); }); });
+      if (moneyValues.length < 1) { i = j - 1; continue; }
+
+      const descLabel = combined.find(line => /^descri[cç][aã]o\s*:/i.test(line));
+      const categoryLabel = combined.find(line => /^categoria\s*:/i.test(line));
+      const movementLabel = combined.find(line => /^(movimenta[cç][aã]o|entrada|sa[ií]da)\s*:/i.test(line));
+      const textParts = combined.filter(line => { moneyPattern.lastIndex = 0; return !moneyPattern.test(line) && !/^(data|descri[cç][aã]o|categoria|entrada|sa[ií]da|saldo|movimenta[cç][aã]o|banco)\s*:?[\s]*/i.test(line); }).map(cleanLabel).filter(Boolean);
+      const desc = normalizeImportDescription(descLabel ? cleanLabel(descLabel) : (inlineRemainder && !moneyLines.includes(inlineRemainder) ? cleanLabel(inlineRemainder) : textParts[0]));
+      const rawCategory = categoryLabel ? cleanLabel(categoryLabel) : (textParts.length > 1 ? textParts[1] : '');
+      const categoryMatch = findImportMatch(rawCategory, categories);
+      const bankMatchForRow = currentBank.id ? { id: currentBank.id, confidence: 1, raw: currentBank.raw, name: currentBank.name } : { id: '', confidence: 0, raw: '' };
+      const movementValue = moneyValues[0]?.amount || NaN;
+      const balanceValue = moneyValues.length >= 2 ? moneyValues[moneyValues.length - 1].amount : NaN;
+      const movementRaw = movementLabel ? movementLabel.toLocaleLowerCase('pt-BR') : combined.join(' ').toLocaleLowerCase('pt-BR');
+      const explicitOut = /(^|[^a-z])(sa[ií]da|d[eé]bito|pagamento|compra|−|-)\b/.test(movementRaw) || moneyValues[0]?.raw.includes('-') || moneyValues[0]?.raw.includes('−');
+      const explicitIn = /(^|[^a-z])(entrada|cr[eé]dito|recebimento|\+)\b/.test(movementRaw) || moneyValues[0]?.raw.includes('+');
+      let type = explicitOut && !explicitIn ? 'out' : (explicitIn && !explicitOut ? 'in' : 'in');
+      if (Number.isFinite(balanceValue) && Number.isFinite(previousBalance) && Math.abs(balanceValue - previousBalance) > 0.000001) type = balanceValue < previousBalance ? 'out' : 'in';
+      const row = { date, desc, amount: movementValue, type, bank: bankMatchForRow.id, category: categoryMatch.id, rawBank: bankMatchForRow.raw || '', rawCategory, matchStatus: `${bankMatchForRow.id ? (bankMatchForRow.confidence === 1 ? 'Banco reconhecido' : 'Banco sugerido') : 'Banco não encontrado'} · ${categoryMatch.id ? (categoryMatch.confidence === 1 ? 'Categoria reconhecida' : 'Categoria sugerida') : 'Categoria não encontrada'}`, balance: Number.isFinite(balanceValue) ? balanceValue : null, source };
+      rows.push(row);
+      if (Number.isFinite(balanceValue)) previousBalance = balanceValue;
+      i = j - 1;
+    }
+    return rows;
+  }
+  function parseImportedText(text, source = 'Importação') {
+    const normalizedText = String(text || '').replace(/\r/g, '\n').replace(/\u00A0/g, ' ').trim();
+    if (!normalizedText) { alert('Não encontrei texto para importar.'); return false; }
+    if (normalizedText.length > IMPORT_MAX_TEXT_LENGTH) { alert('O conteúdo é muito extenso. Importe um trecho menor, de até 120 mil caracteres.'); return false; }
+    const rows = parseClosingImportText(normalizedText, source).slice(0, IMPORT_MAX_ROWS);
+    if (!rows.length) { alert('Não encontrei lançamentos estruturados. Use o texto do fechamento com data, descrição, categoria e valor.'); return false; }
     pendingImport = rows;
     pendingImportSource = source;
     refreshImportFlags();
@@ -5705,12 +5787,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="import-row ${row.duplicate ? 'is-duplicate' : ''}">
         <input type="date" value="${row.date}" onchange="updateImportRow(${i}, 'date', this.value)">
         <input type="text" value="${escapeHTML(row.desc)}" onchange="updateImportRow(${i}, 'desc', this.value)">
-        <select onchange="updateImportRow(${i}, 'bank', this.value)">${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}</select>
-        <select onchange="updateImportRow(${i}, 'category', this.value)">${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select>
+        <select onchange="updateImportRow(${i}, 'bank', this.value)"><option value="">Selecione o banco</option>${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}</select>
+        <select onchange="updateImportRow(${i}, 'category', this.value)"><option value="">Selecione a categoria</option>${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select>
         <input type="number" step="0.01" min="0.01" value="${row.amount}" onchange="updateImportRow(${i}, 'amount', this.value)">
         <select onchange="updateImportRow(${i}, 'type', this.value)"><option value="in" ${row.type === 'in' ? 'selected' : ''}>Entrada</option><option value="out" ${row.type === 'out' ? 'selected' : ''}>Saída</option></select>
         <button class="action-btn del" onclick="removeImportRow(${i})" aria-label="Remover">×</button>
-        <div class="import-status">${row.duplicate ? 'Possível duplicidade: esta linha será ignorada até que você a edite ou remova.' : (row.valid ? 'Pronta para importar.' : 'Linha inválida: revise data, descrição e valor.')}</div>
+        <div class="import-status">${row.duplicate ? 'Possível duplicidade: esta linha será ignorada até que você a edite ou remova.' : (row.valid ? `${escapeHTML(row.matchStatus || 'Banco e categoria conferidos.')}. Pronta para importar.` : `${escapeHTML(row.matchStatus || 'Revise banco, categoria, data, descrição e valor.')}. Corrija antes de confirmar.`)}</div>
       </div>
     `).join('');
     const confirm = document.getElementById('importConfirm');
@@ -5727,7 +5809,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('importConfirm').onclick = () => {
     refreshImportFlags();
-    const rowsToSave = pendingImport.filter(row => row.valid && !row.duplicate).map(({ source, valid, duplicate, ...row }) => row);
+    const rowsToSave = pendingImport.filter(row => row.valid && !row.duplicate).map(({ source, valid, duplicate, rawBank, rawCategory, matchStatus, balance, ...row }) => row);
     if (!rowsToSave.length) { alert('Não há lançamentos válidos e inéditos para confirmar.'); return; }
     rowsToSave.forEach(row => entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), ...row }));
     saveEntries();
