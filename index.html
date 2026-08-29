@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Livro-Caixa">
-<link rel="manifest" href="./manifest.webmanifest?v=18-10">
+<link rel="manifest" href="./manifest.webmanifest?v=18-08">
 <link rel="icon" href="./icon-192.png?v=13" type="image/png">
 <link rel="apple-touch-icon" href="./icon-192.png?v=13">
 <title>Livro-Caixa</title>
@@ -285,6 +285,42 @@
   .balance-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
   .invest-summary-card .balance-symbol{background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--gold);}
   .cat-legend-head{display:none;}
+
+  /* V18-08 — Sistema de Períodos e Histórico */
+  .period-bar{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    margin:0 0 18px; padding:10px 12px; border:1px solid var(--line);
+    border-radius:14px; background:var(--surface); box-shadow:0 3px 10px var(--shadow);
+  }
+  .period-bar-copy{min-width:0;}
+  .period-eyebrow{display:block; color:var(--accent); font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:3px;}
+  .period-active-label{font-size:13px; font-weight:750; letter-spacing:-.02em;}
+  .period-controls{display:flex; align-items:center; gap:6px; flex-shrink:0;}
+  .period-nav,.period-all,.period-picker-button{
+    min-width:36px; height:36px; padding:0 9px; border:1px solid var(--line); border-radius:10px;
+    background:var(--paper); color:var(--ink); font-size:13px; font-weight:700; text-transform:none; letter-spacing:0;
+  }
+  .period-picker-wrap{position:relative;}
+  .period-picker-button{min-width:138px; font-size:11px; font-family:var(--font-ui)!important;}
+  .period-picker-input{position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer;}
+  .period-all.is-active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .period-nav:hover,.period-picker-button:hover,.period-all:hover{background:var(--green-soft); color:var(--ink);}
+  .period-hint{margin-top:4px; color:var(--ink-soft); font-size:9.5px;}
+  .period-summary{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:-4px 0 18px;}
+  .period-summary-card{padding:11px 12px; border:1px solid var(--line); border-radius:11px; background:var(--paper-2); min-width:0;}
+  .period-summary-card small{display:block; color:var(--ink-soft); font-size:9px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px;}
+  .period-summary-card strong{display:block; font-size:14px; font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .period-summary-card .positive{color:var(--green);}
+  .period-summary-card .negative{color:var(--red);}
+  @media (max-width:680px){
+    .period-bar{align-items:stretch; flex-direction:column; gap:8px; padding:11px;}
+    .period-controls{width:100%;}
+    .period-picker-wrap{flex:1;}
+    .period-picker-button{width:100%; min-width:0;}
+    .period-nav,.period-all{width:42px;}
+    .period-summary{grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin-bottom:14px;}
+    .period-summary-card{padding:10px;}
+  }
 
   .toolbar{
     display:grid;
@@ -1544,6 +1580,24 @@
 
   <div class="balance-strip" id="balanceStrip"></div>
 
+  <!-- V18-08: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
+  <section class="period-bar" id="universalPeriodBar" aria-label="Período de visualização">
+    <div class="period-bar-copy">
+      <span class="period-eyebrow">Período ativo</span>
+      <strong class="period-active-label" id="periodActiveLabel">Agosto / 2026</strong>
+      <div class="period-hint" id="periodActiveHint">O filtro afeta somente os históricos e lançamentos exibidos.</div>
+    </div>
+    <div class="period-controls">
+      <button type="button" class="period-nav" id="btnPeriodPrev" aria-label="Mês anterior" title="Mês anterior">‹</button>
+      <div class="period-picker-wrap">
+        <button type="button" class="period-picker-button" id="btnPeriodPicker">Agosto / 2026 ▾</button>
+        <input class="period-picker-input" type="month" id="periodMonthInput" aria-label="Escolher mês">
+      </div>
+      <button type="button" class="period-nav" id="btnPeriodNext" aria-label="Próximo mês" title="Próximo mês">›</button>
+      <button type="button" class="period-all" id="btnPeriodAll" aria-pressed="false">Todos</button>
+    </div>
+  </section>
+
   <!-- ABA 1: VISÃO GERAL -->
   <div id="viewDashboard" class="tab-content">
     <div id="advancedDashboard"></div>
@@ -1566,7 +1620,7 @@
     </div>
 
     <div id="categorySummary"></div>
-    <div id="cashflowMiniSummary"></div>
+    <div id="caixaPeriodSummary" class="period-summary" aria-label="Resumo do período"></div>
 
     <div class="ledger">
       <div class="ledger-month">
@@ -1613,6 +1667,7 @@
       <button type="button" id="btnUpdateAllPrices">🔄 Atualizar Cotações</button>
     </div>
     <div id="updateAllStatus" style="font-size:12px; margin-bottom:16px; opacity:0.75;"></div>
+    <div id="investPeriodSummary" class="period-summary" aria-label="Resumo de investimentos no período"></div>
 
     <div id="investGrid" class="invest-grid"></div>
   </div>
@@ -1622,6 +1677,7 @@
     <div class="toolbar" style="grid-template-columns: minmax(200px, 260px);">
       <button class="primary" id="btnNovoPocket">+ Nova Caixinha</button>
     </div>
+    <div id="pocketPeriodSummary" class="period-summary" aria-label="Resumo das caixinhas no período"></div>
 
     <div id="pocketGrid" class="invest-grid"></div>
   </div>
@@ -2582,6 +2638,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('viewBills').classList.toggle('active', tabName === 'bills');
     document.getElementById('viewProfile').classList.toggle('active', tabName === 'profile');
     document.getElementById('balanceStrip').classList.toggle('section-hidden', tabName !== 'caixa');
+    document.getElementById('universalPeriodBar')?.classList.toggle('section-hidden', !['caixa','invest','pockets'].includes(tabName));
     if (tabName === 'bills') renderBills();
     if (tabName === 'dashboard') renderAdvancedDashboard();
     document.querySelectorAll('.mobile-bottom-nav button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === tabName));
@@ -3067,6 +3124,108 @@ document.addEventListener('DOMContentLoaded', () => {
     return pockets.reduce((sum, p) => sum + pocketCurrentBalance(p), 0);
   }
 
+  const VIEW_PERIOD_KEY = 'livrocaixa_view_period_v18_08';
+  let viewPeriod = { mode: 'month', month: currentMonthYM() };
+
+  function loadViewPeriod() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(VIEW_PERIOD_KEY) || 'null');
+      if (saved && (saved.mode === 'all' || /^\d{4}-\d{2}$/.test(String(saved.month || '')))) {
+        viewPeriod = { mode: saved.mode === 'all' ? 'all' : 'month', month: saved.month || currentMonthYM() };
+      }
+    } catch (err) { viewPeriod = { mode:'month', month:currentMonthYM() }; }
+  }
+  function saveViewPeriod() { try { localStorage.setItem(VIEW_PERIOD_KEY, JSON.stringify(viewPeriod)); } catch (err) {} }
+  function activePeriodRange() {
+    if (viewPeriod.mode === 'all') return { start: null, end: null };
+    return { start: `${viewPeriod.month}-01`, end: monthEndDate(viewPeriod.month) };
+  }
+  function periodLabel() {
+    if (viewPeriod.mode === 'all') return 'Todos / Todo o histórico';
+    const [year, month] = viewPeriod.month.split('-').map(Number);
+    const name = new Date(year, month - 1, 1).toLocaleDateString('pt-BR', { month:'long' });
+    return `${name.charAt(0).toUpperCase()}${name.slice(1)} / ${year}`;
+  }
+  function periodMatchesDate(date) {
+    if (viewPeriod.mode === 'all') return true;
+    const value = String(date || '');
+    const range = activePeriodRange();
+    return value >= range.start && value <= range.end;
+  }
+  function periodMatchesMovement(y) {
+    if (viewPeriod.mode === 'all') return true;
+    const start = String(y?.date || '');
+    const end = String(y?.dateEnd || y?.date || '');
+    const range = activePeriodRange();
+    return start <= range.end && end >= range.start;
+  }
+  function updatePeriodUI() {
+    const label = periodLabel();
+    const active = document.getElementById('periodActiveLabel');
+    const button = document.getElementById('btnPeriodPicker');
+    const input = document.getElementById('periodMonthInput');
+    const all = document.getElementById('btnPeriodAll');
+    const prev = document.getElementById('btnPeriodPrev');
+    const next = document.getElementById('btnPeriodNext');
+    if (active) active.textContent = label;
+    if (button) button.textContent = viewPeriod.mode === 'all' ? 'Escolher mês ▾' : `${label} ▾`;
+    if (input) input.value = viewPeriod.mode === 'all' ? '' : viewPeriod.month;
+    if (all) { all.classList.toggle('is-active', viewPeriod.mode === 'all'); all.setAttribute('aria-pressed', viewPeriod.mode === 'all' ? 'true' : 'false'); }
+    if (prev) prev.disabled = viewPeriod.mode === 'all';
+    if (next) next.disabled = viewPeriod.mode === 'all';
+  }
+  function setViewPeriod(mode, month = currentMonthYM(), rerender = true) {
+    viewPeriod = { mode: mode === 'all' ? 'all' : 'month', month: String(month || currentMonthYM()).slice(0,7) };
+    saveViewPeriod(); updatePeriodUI();
+    if (rerender) { renderCategorySummary(); renderLedger(); renderInvestments(); renderPocketBalances(); renderPockets(); renderPeriodSummaries(); }
+  }
+  function shiftViewPeriod(delta) {
+    if (viewPeriod.mode === 'all') return;
+    const [year, month] = viewPeriod.month.split('-').map(Number);
+    const date = new Date(year, month - 1 + delta, 1);
+    setViewPeriod('month', `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`);
+  }
+  function periodSummaryHTML(items) {
+    return items.map(item => `<div class="period-summary-card"><small>${escapeHTML(item.label)}</small><strong class="${item.tone || ''}">${escapeHTML(item.value)}</strong></div>`).join('');
+  }
+  function renderPeriodSummaries() {
+    const entryItems = entries.filter(e => periodMatchesDate(e.date));
+    const income = entryItems.filter(e => e.type === 'in').reduce((s,e)=>s+Number(e.amount||0),0);
+    const expense = entryItems.filter(e => e.type === 'out').reduce((s,e)=>s+Number(e.amount||0),0);
+    const net = income - expense;
+    const caixa = document.getElementById('caixaPeriodSummary');
+    if (caixa) caixa.innerHTML = periodSummaryHTML([
+      {label:'Movimentações', value:String(entryItems.length)},
+      {label:'Entradas', value:fmt(income), tone:'positive'},
+      {label:'Saídas', value:fmt(expense), tone:'negative'},
+      {label:'Resultado', value:fmt(net), tone:net >= 0 ? 'positive' : 'negative'}
+    ]);
+
+    const investMoves = yieldsLog.filter(y => y.targetType === 'invest' && periodMatchesMovement(y));
+    const investAportes = investMoves.filter(y => (y.kind||'rendimento') === 'aporte').reduce((s,y)=>s+Math.abs(Number(y.amount||0)),0);
+    const investResgates = investMoves.filter(y => y.kind === 'resgate').reduce((s,y)=>s+Math.abs(Number(y.amount||0)),0);
+    const investYields = investMoves.filter(y => (y.kind||'rendimento') === 'rendimento').reduce((s,y)=>s+Number(y.amount||0),0);
+    const investSummary = document.getElementById('investPeriodSummary');
+    if (investSummary) investSummary.innerHTML = periodSummaryHTML([
+      {label:'Movimentações', value:String(investMoves.length)},
+      {label:'Aportes', value:fmt(investAportes), tone:'positive'},
+      {label:'Resgates', value:fmt(investResgates), tone:'negative'},
+      {label:'Rendimentos', value:fmt(investYields), tone:investYields >= 0 ? 'positive' : 'negative'}
+    ]);
+
+    const pocketMoves = yieldsLog.filter(y => y.targetType === 'pocket' && periodMatchesMovement(y));
+    const pocketAportes = pocketMoves.filter(y => (y.kind||'rendimento') === 'aporte').reduce((s,y)=>s+Math.abs(Number(y.amount||0)),0);
+    const pocketResgates = pocketMoves.filter(y => y.kind === 'resgate').reduce((s,y)=>s+Math.abs(Number(y.amount||0)),0);
+    const pocketYields = pocketMoves.filter(y => (y.kind||'rendimento') === 'rendimento').reduce((s,y)=>s+Number(y.amount||0),0);
+    const pocketSummary = document.getElementById('pocketPeriodSummary');
+    if (pocketSummary) pocketSummary.innerHTML = periodSummaryHTML([
+      {label:'Movimentações', value:String(pocketMoves.length)},
+      {label:'Aportes', value:fmt(pocketAportes), tone:'positive'},
+      {label:'Resgates', value:fmt(pocketResgates), tone:'negative'},
+      {label:'Rendimentos', value:fmt(pocketYields), tone:pocketYields >= 0 ? 'positive' : 'negative'}
+    ]);
+  }
+
   function monthKeyOffset(offset) {
     const base = new Date();
     base.setDate(1);
@@ -3482,14 +3641,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function movementHistoryRows(targetType, targetId) {
     const item = (targetType === 'invest' ? investments : pockets).find(x => x.id === targetId);
-    const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId).sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')) || String(a.id || '').localeCompare(String(b.id || '')));
+    // Calcula o saldo auditável usando TODO o histórico e só depois aplica o período visualizado.
+    // Assim, um lançamento de agosto continua mostrando corretamente o saldo anterior,
+    // mesmo quando julho ou meses anteriores estiverem ocultos pela interface.
+    const allItems = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId)
+      .sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')) || String(a.id || '').localeCompare(String(b.id || '')));
     let running = item && targetType === 'invest' && isCryptoType(item.type) ? cryptoInitialUnits(item) : (item && targetType === 'invest' ? fixedIncomeInitialValue(item) : Number(item?.initial ?? item?.value ?? 0) || 0);
-    return items.map(y => {
+    const rows = [];
+    allItems.forEach(y => {
       const before = running;
       const delta = y.units != null && item && targetType === 'invest' && isCryptoType(item.type) ? (y.kind === 'resgate' ? -1 : 1) * Number(y.units || 0) : movementDelta(y);
       running += delta;
-      return { y, before, delta, after: running, item };
+      if (periodMatchesMovement(y)) rows.push({ y, before, delta, after: running, item });
     });
+    return rows;
   }
   function yieldHistoryHTML(targetType, targetId) {
     const rowsData = movementHistoryRows(targetType, targetId);
@@ -3521,7 +3686,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function rentabilityHTML(targetType, targetId, currentValue) {
-    const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId && (y.kind || 'rendimento') === 'rendimento');
+    const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId && periodMatchesMovement(y) && (y.kind || 'rendimento') === 'rendimento');
     if (items.length === 0) return '';
     const totalYield = items.reduce((s, y) => s + y.amount, 0);
     const baseValue = currentValue - totalYield;
@@ -3682,6 +3847,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const query = (document.getElementById('filterText')?.value || '').trim().toLocaleLowerCase('pt-BR');
 
     return entries.filter(e => {
+      if (!periodMatchesDate(e.date)) return false;
       if (flow && e.type !== flow) return false;
       if (dateStart && e.date < dateStart) return false;
       if (dateEnd && e.date > dateEnd) return false;
@@ -3883,6 +4049,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function unlockWithLocalPin(pin) { const record = getLocalPinRecord(); if (!record) { pinUnlocked = true; hidePinOverlay(); return true; } const valid = (await hashLocalPin(pin)) === record.hash; if (!valid) return false; pinUnlocked = true; hidePinOverlay(); return true; }
   function checkLocalPinLock() { pinUnlocked = !hasLocalPin(); if (!pinUnlocked) showPinOverlay(); }
   loadFeatureSettings();
+  loadViewPeriod();
 
   function budgetFor(categoryId, month = currentMonthYM()) {
     return budgets.find(item => item.categoryId === categoryId && item.month === month) || null;
@@ -3932,13 +4099,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderAdvancedDashboard() {
     const wrap = document.getElementById('advancedDashboard');
     const mini = document.getElementById('cashflowMiniSummary');
-    const month = currentMonthYM();
+    if (!wrap) return;
+
+    const dashboardMonth = currentMonthYM();
+    const month = dashboardMonth;
     const monthIncome = entries.filter(entry => entry.type === 'in' && String(entry.date || '').startsWith(month)).reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
     const monthExpense = entries.filter(entry => entry.type === 'out' && String(entry.date || '').startsWith(month)).reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
     const monthNet = monthIncome - monthExpense;
-    if (mini) mini.innerHTML = `<section class="cashflow-mini-summary"><div class="cashflow-mini-head"><div><span class="eyebrow">Resumo do mês</span><strong>${formatMonthLabel(month)}</strong></div><button type="button" class="cashflow-mini-link" onclick="switchTab('dashboard')">Ver análise completa <span aria-hidden="true">→</span></button></div><div class="cashflow-mini-metrics"><div><small>Entradas</small><strong class="positive">${fmt(monthIncome)}</strong></div><div><small>Saídas</small><strong class="negative">${fmt(monthExpense)}</strong></div><div><small>Fluxo líquido</small><strong class="${monthNet >= 0 ? 'positive' : 'negative'}">${fmt(monthNet)}</strong></div></div></section>`;
-    if (!wrap) return;
-
     const series = dashboardMonthSeries(6);
     const current = series.at(-1) || { income: monthIncome, expense: monthExpense, net: monthNet, patrimony: totalBankBalance() + totalPocketBalance() + totalInvestBalance() };
     const maxFlow = Math.max(1, ...series.flatMap(item => [item.income, item.expense]));
@@ -4023,6 +4190,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function render() {
+    updatePeriodUI();
     renderBalances();
     renderBankSelects();
     renderBankManageList();
@@ -4034,6 +4202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderInvestments();
     renderPocketBalances();
     renderPockets();
+    renderPeriodSummaries();
     renderNotifications();
   }
 
@@ -4066,6 +4235,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function openDiagnostics() { renderDiagnosticLog(); openModal('panelDiagnostico'); }
   ['logFilterType','logFilterModule','logFilterText'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
   document.getElementById('filterText')?.addEventListener('input', refreshFilteredViews);
+  document.getElementById('btnPeriodPrev')?.addEventListener('click', () => shiftViewPeriod(-1));
+  document.getElementById('btnPeriodNext')?.addEventListener('click', () => shiftViewPeriod(1));
+  document.getElementById('btnPeriodAll')?.addEventListener('click', () => setViewPeriod('all'));
+  document.getElementById('periodMonthInput')?.addEventListener('change', event => { if (event.target.value) setViewPeriod('month', event.target.value); });
+  document.getElementById('btnPeriodPicker')?.addEventListener('click', () => { const input=document.getElementById('periodMonthInput'); if (!input) return; if (typeof input.showPicker === 'function') { try { input.showPicker(); } catch (err) { input.focus(); } } else input.focus(); });
   document.getElementById('btnCopyDiagnostico').onclick = () => {
     const text = diagnosticLog.map(item => `[${item.type}] ${item.sequence != null ? '#' + item.sequence + ' ' : ''}${formatLogTimestamp(item.timestamp || Date.now())} | ${item.module} | ${item.action} | ${item.status}${item.correlationId ? ' | op=' + item.correlationId : ''}${item.durationMs != null ? ' | duração=' + item.durationMs + 'ms' : ''}${item.synced === false ? ' | sincronização pendente' : ''} | ${item.description}${item.details ? ' | ' + JSON.stringify(item.details) : ''}`).join('\n') || 'Nenhum evento registrado.';
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(()=>alert('LOG copiado.')).catch(()=>alert(text)); else alert(text);
