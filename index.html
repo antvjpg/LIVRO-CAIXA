@@ -1340,6 +1340,77 @@
   .bill-status{font-size:10px;font-weight:800;padding:4px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,var(--surface));}
   @media(max-width:700px){.bill-calendar{gap:3px}.bill-day{min-height:62px;padding:5px}.bill-event{font-size:8px}.bill-list-item{grid-template-columns:1fr auto;}.bill-list-item .bill-actions{grid-column:1/-1;display:flex;gap:6px;}}
 
+
+  /* V18-12 — redesign visual do painel Recursos completos (Labs). Apenas apresentação; IDs e lógica existentes preservados. */
+  .feature-lab-panel{max-width:680px;padding:0;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:var(--paper);box-shadow:0 24px 70px var(--shadow);}
+  .feature-lab-panel.open{display:block;}
+  .feature-lab-header{display:flex;justify-content:space-between;gap:18px;padding:24px 26px 20px;background:linear-gradient(135deg,var(--surface),var(--paper));border-bottom:1px solid var(--line);}
+  .feature-lab-title-wrap{min-width:0;}
+  .feature-lab-kicker{display:block;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:800;letter-spacing:.12em;color:var(--accent);margin-bottom:6px;}
+  .feature-lab-panel .feature-lab-header h3{margin:0;font-size:24px;line-height:1.15;display:flex;align-items:center;gap:8px;}
+  .feature-lab-status-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 12%,transparent);}
+  .feature-lab-intro{margin:7px 0 0;max-width:560px;color:var(--ink-soft);font-size:12px;line-height:1.5;}
+  .feature-lab-close{flex:0 0 auto;align-self:flex-start;border-radius:9px;font-size:22px!important;line-height:1;}
+  .feature-lab-warning{display:flex;gap:11px;align-items:flex-start;margin:18px 26px 4px;padding:12px 13px;border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--gold) 8%,var(--paper));}
+  .feature-lab-warning-icon{font-size:18px;line-height:1.1;}
+  .feature-lab-warning strong,.feature-lab-warning span{display:block;}
+  .feature-lab-warning strong{font-size:12px;margin-bottom:2px;}
+  .feature-lab-warning span{font-size:10.5px;color:var(--ink-soft);line-height:1.4;}
+  .feature-lab-section{margin:18px 26px 0;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--paper-2);}
+  .feature-lab-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+  .feature-lab-section-head>div{display:flex;align-items:center;gap:9px;min-width:0;}
+  .feature-lab-section-number{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:var(--accent-soft);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:800;}
+  .feature-lab-panel .feature-lab-section h4{margin:0;font-size:14px;color:var(--ink);}
+  .feature-lab-section-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:800;letter-spacing:.08em;color:var(--ink-soft);white-space:nowrap;}
+  .feature-lab-section-desc{margin:0 0 12px;color:var(--ink-soft);font-size:11px;line-height:1.45;}
+  .feature-lab-option-list{margin:0;padding:0;border:0;background:transparent;gap:7px;}
+  .feature-lab-toggle{position:relative;display:flex!important;align-items:center!important;gap:11px!important;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:var(--paper);cursor:pointer;}
+  .feature-lab-toggle input{position:absolute;opacity:0;pointer-events:none;}
+  .feature-lab-toggle-copy{flex:1;min-width:0;}
+  .feature-lab-toggle-copy strong,.feature-lab-toggle-copy small{display:block;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif;}
+  .feature-lab-toggle-copy strong{font-size:12px;color:var(--ink);margin-bottom:2px;}
+  .feature-lab-toggle-copy small{font-size:10.5px;color:var(--ink-soft);line-height:1.35;}
+  .feature-lab-switch{width:36px;height:20px;border-radius:20px;background:var(--line);position:relative;flex:0 0 auto;transition:.18s;}
+  .feature-lab-switch:after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--paper);box-shadow:0 1px 3px var(--shadow);transition:.18s;}
+  .feature-lab-toggle:has(input:checked){border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--paper));}
+  .feature-lab-toggle:has(input:checked) .feature-lab-switch{background:var(--accent);}
+  .feature-lab-toggle:has(input:checked) .feature-lab-switch:after{left:19px;}
+  .feature-lab-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .feature-lab-fields label,.feature-lab-pin-row label{margin-bottom:5px;}
+  .feature-lab-input-suffix{position:relative;}
+  .feature-lab-input-suffix input{padding-right:52px;}
+  .feature-lab-input-suffix span{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink-soft);} 
+  .feature-lab-budget{}
+  .feature-budget-rows{max-height:250px;padding-right:3px;gap:6px;}
+  .feature-budget-row{grid-template-columns:minmax(0,1fr) 130px auto;padding:7px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);}
+  .feature-budget-row:last-child{border-bottom:0;}
+  .feature-budget-row label{font-size:10px;margin:0;}
+  .feature-budget-row input{padding:7px 8px;font-size:12px;}
+  .feature-budget-row span{font-size:9px;}
+  .feature-lab-primary-actions,.feature-lab-actions{display:flex;gap:8px;margin-top:12px;}
+  .feature-lab-primary-actions{margin:18px 26px 0;}
+  .feature-lab-primary-actions button{min-height:42px;}
+  .feature-lab-primary-actions .primary{flex:1.25;}
+  .feature-lab-primary-actions button:not(.primary){flex:1;}
+  .feature-lab-feedback{min-height:0;margin:8px 26px 0;color:var(--ink-soft);font-size:10.5px;line-height:1.4;}
+  .feature-lab-section .feature-lab-feedback{margin:9px 0 0;}
+  .feature-lab-security{margin-bottom:26px;}
+  .feature-lab-pin-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;}
+  .feature-lab-pin-actions{display:flex;gap:7px;}
+  .feature-lab-pin-actions button{min-height:39px;}
+  @media(max-width:600px){
+    .feature-lab-panel{max-width:100%;max-height:92vh;border-radius:15px;}
+    .feature-lab-header{padding:20px 17px 16px;}
+    .feature-lab-panel .feature-lab-header h3{font-size:20px;}
+    .feature-lab-warning{margin:14px 17px 0;}
+    .feature-lab-section{margin:14px 17px 0;padding:13px;}
+    .feature-lab-primary-actions{margin:14px 17px 0;flex-direction:column;}
+    .feature-lab-feedback{margin-left:17px;margin-right:17px;}
+    .feature-lab-fields,.feature-lab-pin-row{grid-template-columns:1fr;}
+    .feature-lab-pin-actions{display:grid;grid-template-columns:1fr 1fr;}
+    .feature-budget-row{grid-template-columns:minmax(0,1fr) 105px;}
+    .feature-budget-row span{grid-column:1/-1;}
+  }
 </style>
 <style>
     .emoji-float-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(13,42,30,.56);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
@@ -1830,30 +1901,67 @@
       </div>
     </div>
 
-    <div class="panel" id="panelFeatureLab">
-      <h3>Recursos completos — modo de teste <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <p class="hint">Ative os recursos automáticos para testar. A geração recorrente grava lançamentos reais apenas quando habilitada; por segurança, começa desligada.</p>
-      <div class="feature-lab-options">
-        <label><input type="checkbox" id="featureAutoBills"> Gerar contas recorrentes automaticamente no mês atual</label>
-        <label><input type="checkbox" id="featureReminders" checked> Exibir lembretes de contas pendentes e atrasadas</label>
-        <label><input type="checkbox" id="featureAutoQuotes"> Atualizar cotações automaticamente enquanto o app estiver aberto</label>
+    <div class="panel feature-lab-panel" id="panelFeatureLab">
+      <div class="feature-lab-header">
+        <div class="feature-lab-title-wrap">
+          <span class="feature-lab-kicker">LABS · EXPERIMENTAL</span>
+          <h3>Recursos completos — modo de teste <span class="feature-lab-status-dot" aria-hidden="true"></span></h3>
+          <p class="feature-lab-intro">Ferramentas avançadas para testar automações e recursos antes de incorporá-los ao fluxo principal.</p>
+        </div>
+        <button type="button" class="modal-close feature-lab-close" onclick="closeAllPanels()" aria-label="Fechar recursos completos">×</button>
       </div>
-      <div class="form-grid">
-        <div><label for="featureQuoteInterval">Intervalo de cotação (minutos)</label><input type="number" id="featureQuoteInterval" min="1" max="1440" step="1" value="15"></div>
-        <div><label for="featureProjectionMonths">Meses de projeção</label><input type="number" id="featureProjectionMonths" min="1" max="24" step="1" value="6"></div>
+
+      <div class="feature-lab-warning">
+        <span class="feature-lab-warning-icon" aria-hidden="true">🧪</span>
+        <div><strong>Área de testes</strong><span>Algumas opções podem executar ações reais no seu Livro-Caixa. Recursos automáticos começam desativados.</span></div>
       </div>
-      <h4 class="feature-lab-heading">Orçamento por categoria no mês atual</h4>
-      <div id="featureBudgetRows" class="feature-budget-rows"></div>
-      <div class="feature-lab-actions"><button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button><button type="button" id="btnRunFeatureCycle">Executar ciclo agora</button></div>
-      <div id="featureLabStatus" class="hint" aria-live="polite"></div>
-      <h4 class="feature-lab-heading">Conciliação de banco</h4>
-      <div class="form-grid"><div><label for="reconcileBank">Banco</label><select id="reconcileBank"></select></div><div><label for="reconcileReported">Saldo informado (R$)</label><input type="text" id="reconcileReported" data-money="true" placeholder="R$ 0,00"></div></div>
-      <div class="feature-lab-actions"><button type="button" id="btnRunReconciliation">Comparar saldos</button><button type="button" id="btnApplyReconciliation" hidden>Aplicar ajuste sugerido</button></div>
-      <div id="reconciliationResult" class="hint" aria-live="polite"></div>
-      <h4 class="feature-lab-heading">Proteção local por PIN</h4>
-      <div class="form-grid"><div><label for="featurePin">PIN local</label><input type="password" id="featurePin" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="4 a 8 dígitos"></div><div style="display:flex;align-items:end;gap:8px;"><button type="button" id="btnSaveLocalPin" class="primary" style="flex:1;">Ativar / alterar</button><button type="button" id="btnClearLocalPin" style="flex:1;">Remover</button></div></div>
-      <div class="feature-lab-actions"><button type="button" id="btnLockNow">Bloquear agora</button></div>
-      <div id="pinSettingsStatus" class="hint" aria-live="polite"></div>
+
+      <div class="feature-lab-section">
+        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">01</span><h4>Automações</h4></div><span class="feature-lab-section-tag">AUTOMÁTICO</span></div>
+        <div class="feature-lab-options feature-lab-option-list">
+          <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoBills"><span class="feature-lab-toggle-copy"><strong>Contas recorrentes</strong><small>Gerar contas recorrentes automaticamente no mês atual.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
+          <label class="feature-lab-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-lab-toggle-copy"><strong>Lembretes</strong><small>Exibir avisos de contas pendentes e atrasadas.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
+          <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoQuotes"><span class="feature-lab-toggle-copy"><strong>Cotações automáticas</strong><small>Atualizar cotações enquanto o aplicativo estiver aberto.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
+        </div>
+        <div class="feature-lab-fields">
+          <div><label for="featureQuoteInterval">Intervalo de cotação</label><div class="feature-lab-input-suffix"><input type="number" id="featureQuoteInterval" min="1" max="1440" step="1" value="15"><span>min</span></div></div>
+          <div><label for="featureProjectionMonths">Meses de projeção</label><div class="feature-lab-input-suffix"><input type="number" id="featureProjectionMonths" min="1" max="24" step="1" value="6"><span>meses</span></div></div>
+        </div>
+      </div>
+
+      <div class="feature-lab-section">
+        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">02</span><h4>Orçamento</h4></div><span class="feature-lab-section-tag">MÊS ATUAL</span></div>
+        <p class="feature-lab-section-desc">Defina limites por categoria e acompanhe quanto já foi gasto.</p>
+        <div id="featureBudgetRows" class="feature-budget-rows"></div>
+      </div>
+
+      <div class="feature-lab-primary-actions">
+        <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
+        <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
+      </div>
+      <div id="featureLabStatus" class="feature-lab-feedback" aria-live="polite"></div>
+
+      <div class="feature-lab-section">
+        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">03</span><h4>Conciliação bancária</h4></div><span class="feature-lab-section-tag">VERIFICAÇÃO</span></div>
+        <p class="feature-lab-section-desc">Compare o saldo informado pelo banco com o saldo calculado no Livro-Caixa.</p>
+        <div class="feature-lab-fields">
+          <div><label for="reconcileBank">Banco</label><select id="reconcileBank"></select></div>
+          <div><label for="reconcileReported">Saldo informado</label><input type="text" id="reconcileReported" data-money="true" placeholder="R$ 0,00"></div>
+        </div>
+        <div class="feature-lab-actions"><button type="button" id="btnRunReconciliation">Comparar saldos</button><button type="button" id="btnApplyReconciliation" hidden>Aplicar ajuste sugerido</button></div>
+        <div id="reconciliationResult" class="feature-lab-feedback" aria-live="polite"></div>
+      </div>
+
+      <div class="feature-lab-section feature-lab-security">
+        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">04</span><h4>Proteção local</h4></div><span class="feature-lab-section-tag">SEGURANÇA</span></div>
+        <p class="feature-lab-section-desc">Proteja o acesso local ao aplicativo com um PIN de 4 a 8 dígitos.</p>
+        <div class="feature-lab-pin-row">
+          <div><label for="featurePin">PIN local</label><input type="password" id="featurePin" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="4 a 8 dígitos"></div>
+          <div class="feature-lab-pin-actions"><button type="button" id="btnSaveLocalPin" class="primary">Ativar / alterar</button><button type="button" id="btnClearLocalPin">Remover</button></div>
+        </div>
+        <div class="feature-lab-actions"><button type="button" id="btnLockNow">🔒 Bloquear agora</button></div>
+        <div id="pinSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
+      </div>
     </div>
 
     <div class="panel" id="panelDiagnostico">
