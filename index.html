@@ -286,7 +286,7 @@
   .invest-summary-card .balance-symbol{background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--gold);}
   .cat-legend-head{display:none;}
 
-  /* V18-08 — Sistema de Períodos e Histórico */
+  /* V18-12 — Sistema de Períodos e Histórico */
   .period-bar{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
     margin:0 0 18px; padding:10px 12px; border:1px solid var(--line);
@@ -1580,7 +1580,7 @@
 
   <div class="balance-strip" id="balanceStrip"></div>
 
-  <!-- V18-08: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
+  <!-- V18-12: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
   <section class="period-bar" id="universalPeriodBar" aria-label="Período de visualização">
     <div class="period-bar-copy">
       <span class="period-eyebrow">Período ativo</span>
@@ -1905,6 +1905,7 @@
       <h3 id="panelBillTitle">Nova Conta / Fatura <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <div class="form-grid">
         <div><label for="billNome">Nome da conta / fatura</label><input id="billNome" type="text" placeholder="Ex: Netflix, Energia, Cartão"></div>
+        <div><label for="billTitular">Titular da conta</label><input id="billTitular" type="text" placeholder="Opcional · Ex: Mãe"></div>
         <div><label for="billValor">Valor (R$)</label><input id="billValor" type="text" data-money="true" placeholder="R$ 0,00"></div>
         <div><label for="billDia">Dia do vencimento</label><input id="billDia" type="number" min="1" max="31" step="1" placeholder="Ex: 10"></div>
         <div><label for="billTipoOcorrencia">Tipo de ocorrência</label><select id="billTipoOcorrencia"><option value="recorrente">Recorrente</option><option value="nao_recorrente">Não recorrente</option></select></div>
@@ -2142,9 +2143,11 @@
 
     <div class="panel" id="panelPaste">
       <h3>Colar texto do extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <label for="pasteArea">Cole abaixo o texto do seu extrato bancário ou relatório:</label>
-      <textarea id="pasteArea" placeholder="Cole as linhas do extrato aqui..."></textarea>
-      <p id="pasteStatus" class="hint" aria-live="polite">A prévia busca linhas com data e valor. Revise banco, categoria, valor e sentido antes de confirmar qualquer lançamento.</p>
+      <label for="pasteArea">Cole as movimentações no formato: DD/MM/AAAA / VALOR / BANCO / CATEGORIA / OBSERVAÇÃO</label>
+      <textarea id="pasteArea" placeholder="15/08/2026 / -12,50 / Nubank / Alimentação / Almoço
+16/08/2026 / +50,00 / PagBank / / TikTok
+17/08/2026 / -20,00 / Dinheiro"></textarea>
+      <p id="pasteStatus" class="hint" aria-live="polite">Categoria e observação são opcionais. Linhas inválidas serão destacadas antes da importação e não serão salvas silenciosamente.</p>
       <button type="button" id="btnReadClipboard" class="emoji-native-toggle" style="margin-top:10px;">⌘ Ler área de transferência</button>
       <div style="display:flex; gap:10px; margin-top:12px;">
         <button class="primary" id="btnProcessPaste" style="flex:1;">Gerar Prévia</button>
@@ -2640,6 +2643,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('balanceStrip').classList.toggle('section-hidden', tabName !== 'caixa');
     document.getElementById('universalPeriodBar')?.classList.toggle('section-hidden', !['caixa','invest','pockets'].includes(tabName));
     if (tabName === 'bills') renderBills();
+    if (tabName === 'invest') { renderInvestments(); refreshStaleInvestmentQuotes(); }
     if (tabName === 'dashboard') renderAdvancedDashboard();
     document.querySelectorAll('.mobile-bottom-nav button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === tabName));
     if (tabName === 'profile') renderProfile();
@@ -4163,6 +4167,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pinUnlockInput')?.addEventListener('keydown', event => { if (event.key === 'Enter') document.getElementById('btnPinUnlock')?.click(); });
   document.getElementById('btnPinLogout')?.addEventListener('click', () => auth.signOut());
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && currentUser && hasLocalPin()) { pinUnlocked = false; showPinOverlay(); } });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && currentUser) refreshStaleInvestmentQuotes(); });
   document.getElementById('btnRunReconciliation')?.addEventListener('click', () => { const bankId = document.getElementById('reconcileBank')?.value; const reported = readMoneyInput('reconcileReported'); const calculated = bankBalance(bankId); const difference = reported - calculated; pendingReconciliation = Math.abs(difference) > 0.005 ? { bankId, reported, calculated, difference } : null; const result = document.getElementById('reconciliationResult'); if (result) result.textContent = Math.abs(difference) <= 0.005 ? `Conciliação conferida: ${fmt(calculated)}. Nenhum ajuste necessário.` : `Saldo calculado: ${fmt(calculated)} · informado: ${fmt(reported)} · diferença sugerida: ${fmt(difference)}.`; const apply = document.getElementById('btnApplyReconciliation'); if (apply) apply.hidden = !pendingReconciliation; logInfo('Conciliação', 'Comparar saldos', 'Sucesso', 'Comparação entre saldo calculado e informado concluída.', { bankId, difference }); });
   document.getElementById('btnApplyReconciliation')?.addEventListener('click', async () => { if (!pendingReconciliation) return; const bank = banks.find(item => item.id === pendingReconciliation.bankId); if (!bank) return; const amount = Math.abs(pendingReconciliation.difference); const category = categories.find(item => item.name === 'Outros') || categories[0]; entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), date: todayISO(), desc: 'Ajuste de conciliação', bank: bank.id, category: category?.id || '', amount, type: pendingReconciliation.difference > 0 ? 'in' : 'out', isReconciliationAdjustment: true }); try { await persistAll(); logInfo('Conciliação', 'Aplicar ajuste', 'Sucesso', `Ajuste de ${fmt(amount)} aplicado em ${bank.name}.`); } catch (err) { logSyncError('ajuste de conciliação', err); } pendingReconciliation = null; document.getElementById('btnApplyReconciliation').hidden = true; document.getElementById('reconciliationResult').textContent = 'Ajuste aplicado e incorporado ao Livro-Caixa.'; render(); });
 
@@ -4184,9 +4189,8 @@ document.addEventListener('DOMContentLoaded', () => {
     renderNotifications(); renderAdvancedDashboard(); return { generated };
   }
   function startFeatureAutomation() {
-    if (featureAutomationTimer) clearInterval(featureAutomationTimer);
-    const interval = Math.max(60000, featureSettings.quoteRefreshMinutes * 60000);
-    featureAutomationTimer = setInterval(() => { if (currentUser) runFeatureAutomation({ manual: false }); }, interval);
+    if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
+    // V18-12: cotações não dependem de timer dos Labs.
   }
 
   function render() {
@@ -4717,6 +4721,7 @@ document.addEventListener('DOMContentLoaded', () => {
     editingBillId=id; populateBillForm();
     const bill=id?recurringBills.find(x=>x.id===id):null;
     document.getElementById('billNome').value=bill?.name||'';
+    document.getElementById('billTitular').value=bill?.titular||'';
     setMoneyInput('billValor', bill?.amount||0);
     document.getElementById('billDia').value=bill?.dueDay||'';
     document.getElementById('billTipoOcorrencia').value=bill?.recurrenceType==='nao_recorrente'?'nao_recorrente':'recorrente';
@@ -4785,7 +4790,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(b=>`<button type="button" class="bill-event ${billGeneratedForMonth(b,key)?'paid':''}" onclick="launchBill('${b.id}','${key}')" title="${escapeHTML(b.name)} · ${fmt(b.amount)}">${escapeHTML(b.name)} · ${fmt(b.amount)}</button>`).join('')}</div>`;
     }
     document.getElementById('billCalendar').innerHTML=html;
-    document.getElementById('billList').innerHTML=active.length?active.sort((a,b)=>Number(a.dueDay)-Number(b.dueDay)).map(b=>{const status=billStatus(b,key); const launched=billGeneratedForMonth(b,key); return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':'Recorrente'} · ${b.bank==='a-definir'?'Banco: A definir':escapeHTML(banks.find(x=>x.id===b.bank)?.name||'Banco não informado')} · ${fmt(b.amount)}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${status==='Atrasado'?'overdue':''}">${status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${launched?'disabled':''}>${launched?'Já lançada':'Lançar no Livro-Caixa'}</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join(''):`<div class="empty">Nenhuma conta/fatura cadastrada para este mês.</div>`;
+    document.getElementById('billList').innerHTML=active.length?active.sort((a,b)=>Number(a.dueDay)-Number(b.dueDay)).map(b=>{const status=billStatus(b,key); const launched=billGeneratedForMonth(b,key); return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':'Recorrente'} · ${b.bank==='a-definir'?'Banco: A definir':escapeHTML(banks.find(x=>x.id===b.bank)?.name||'Banco não informado')} · ${fmt(b.amount)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${status==='Atrasado'?'overdue':''}">${status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${launched?'disabled':''}>${launched?'Já lançada':'Lançar no Livro-Caixa'}</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join(''):`<div class="empty">Nenhuma conta/fatura cadastrada para este mês.</div>`;
   }
 
   document.getElementById('btnNovo').onclick = () => {
@@ -5024,7 +5029,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!(amount>0)){alert('Informe um valor válido.');return;}
     if(!(dueDay>=1&&dueDay<=31)){alert('Informe um dia de vencimento entre 1 e 31.');return;}
     const recurrenceType=document.getElementById('billTipoOcorrencia').value; const startDate=document.getElementById('billInicio').value||todayISO();
-    const record={name,amount,dueDay,bank:document.getElementById('billBanco').value,category:document.getElementById('billCategoria').value,startDate,endDate:recurrenceType==='nao_recorrente'?'':document.getElementById('billFim').value||'',active:document.getElementById('billAtiva').value==='1',desc:document.getElementById('billObs').value.trim(),frequency:recurrenceType==='nao_recorrente'?'once':'monthly',recurrenceType};
+    const titular=document.getElementById('billTitular').value.trim(); const record={name,titular,amount,dueDay,bank:document.getElementById('billBanco').value,category:document.getElementById('billCategoria').value,startDate,endDate:recurrenceType==='nao_recorrente'?'':document.getElementById('billFim').value||'',active:document.getElementById('billAtiva').value==='1',desc:document.getElementById('billObs').value.trim(),frequency:recurrenceType==='nao_recorrente'?'once':'monthly',recurrenceType};
     if(editingBillId){ const idx=recurringBills.findIndex(b=>b.id===editingBillId); if(idx>=0) recurringBills[idx]={...recurringBills[idx],...record}; } else recurringBills.push({id:'bill'+Date.now()+Math.random().toString(36).slice(2,7),createdAt:todayISO(),generatedMonths:[],...record});
     await persistAll(); editingBillId=null; logInfo('Calendário','Salvar conta','Sucesso',`Conta ${name} salva como ${recurrenceType==='nao_recorrente'?'não recorrente':'recorrente'}.`); closeAllPanels(); renderBills();
   };
@@ -5316,10 +5321,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
-  async function updateAllInvestmentPrices({ auto = false } = {}) {
+  const QUOTE_STALE_MS = 15 * 60 * 1000;
+  function investmentQuoteIsStale(inv) {
+    if (!inv || !isCryptoType(inv.type) || cryptoCurrentUnits(inv) <= 0) return false;
+    const ts = Date.parse(inv.lastQuoteAt || '');
+    return !Number.isFinite(ts) || Date.now() - ts >= QUOTE_STALE_MS;
+  }
+  async function refreshStaleInvestmentQuotes() {
+    if (!currentUser) return;
+    const stale = investments.filter(investmentQuoteIsStale);
+    if (!stale.length) return;
+    try { await updateAllInvestmentPrices({ auto:true, requestedCandidates:stale }); } catch (err) { logSyncError('atualização de cotações desatualizadas', err); }
+  }
+
+  async function updateAllInvestmentPrices({ auto = false, requestedCandidates = null } = {}) {
     const statusEl = document.getElementById('updateAllStatus');
     const btn = document.getElementById('btnUpdateAllPrices');
-    const candidates = investments.filter(inv => isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0);
+    const candidates = Array.isArray(requestedCandidates) ? requestedCandidates : investments.filter(inv => isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0);
     if (candidates.length === 0) {
       statusEl.textContent = 'Nenhum ativo com unidades cadastradas para atualizar automaticamente (ativos sem "unidades/tokens" precisam ser editados manualmente).';
       return;
@@ -5335,8 +5353,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const coin = inv.coinGeckoId ? { id: inv.coinGeckoId, symbol: inv.name } : await fetchCoinMatch(inv.name);
         if (!coin) { failed.push(inv.name); continue; }
         const price = await fetchCoinPriceBRL(coin.id);
-        if (!price) { failed.push(inv.name); continue; }
-        inv.price = price;
+        if (!(Number(price) > 0)) { failed.push(inv.name); logWarn('Cotação','Atualização de cotação','Parcial',`Retorno inválido para ${inv.name}; última cotação válida preservada.`,null,operation); continue; }
+        inv.price = Number(price);
         const currentUnits = cryptoCurrentUnits(inv);
         inv.value = cryptoValueFromUnits(inv.type, currentUnits, price);
         inv.lastQuoteAt = new Date().toISOString();
@@ -5854,7 +5872,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return [row.date, String(row.bank || ''), String(row.type || ''), Number(row.amount || 0).toFixed(2), descriptionKey].join('|');
   }
   function isValidImportRow(row) {
-    return isValidImportDate(row.date) && Number.isFinite(Number(row.amount)) && Number(row.amount) > 0 && String(row.desc || '').trim().length > 0 && String(row.bank || '').trim().length > 0 && String(row.category || '').trim().length > 0;
+    return Boolean(row && /^\d{4}-\d{2}-\d{2}$/.test(String(row.date || '')) && isValidImportDate(row.date) && Number(row.amount) > 0 && (row.type === 'in' || row.type === 'out') && row.bank && (!row.category || categories.some(c => c.id === row.category)));
   }
   function refreshImportFlags() {
     const existing = new Set(entries.map(importSignature));
@@ -5870,70 +5888,31 @@ document.addEventListener('DOMContentLoaded', () => {
     return ['data', 'descrição', 'descricao', 'categoria', 'entrada', 'saída', 'saida', 'saldo'].includes(normalizeImportToken(value));
   }
   function parseClosingImportText(text, source) {
-    const lines = String(text || '').replace(/\r/g, '\n').replace(/\t/g, '\n').replace(/\u00A0/g, ' ').split('\n').map(line => line.replace(/\s+/g, ' ').trim()).filter(Boolean);
+    const lines = String(text || '').replace(/\r/g, '').split('\n').map(line => line.trim()).filter(Boolean);
     const rows = [];
-    let currentBank = { id: '', name: '', raw: '' };
-    let previousBalance = NaN;
-    const generalIgnore = ['considerando', 'extrato', 'período', 'periodo', 'relatório', 'relatorio', 'página', 'pagina', 'saldo final', 'saldo inicial total', 'saldo final total'];
-    const datePattern = /(\d{1,2})[\/\.\-](\d{1,2})(?:[\/\.\-](\d{2,4}))?/;
-    const moneyPattern = /(?:R\$\s*)?[+\-−]?\s*(?:(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{2})|(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2}))/gi;
-    const cleanLabel = value => String(value || '').replace(/^(categoria|movimenta[cç][aã]o|saldo(?: após o lan[cç]amento)?|banco)\s*:\s*/i, '').trim();
-    const isBankLine = value => { const raw = String(value || '').replace(/^banco\s*:\s*/i, '').trim(); moneyPattern.lastIndex = 0; const hasMoney = moneyPattern.test(raw); moneyPattern.lastIndex = 0; const match = findImportMatch(raw, banks); return !datePattern.test(raw) && !hasMoney && match.confidence === 1 ? { ...match, raw } : null; };
-
-    for (let i = 0; i < lines.length; i++) {
-      const raw = lines[i];
-      const lower = raw.toLocaleLowerCase('pt-BR');
-      if (generalIgnore.some(keyword => lower.includes(keyword)) || importHeaderLine(raw)) continue;
-
-      const initialMatch = lower.match(/^saldo\s+inicial\s*:\s*(.*)$/i);
-      if (initialMatch && currentBank.id) {
-        const values = [...initialMatch[1].matchAll(moneyPattern)].map(match => parseImportMoney(match[0])).filter(Number.isFinite);
-        if (values.length) previousBalance = values[values.length - 1];
-        continue;
-      }
-      const bankMatch = !datePattern.test(raw) && !moneyPattern.test(raw) ? isBankLine(raw) : null;
-      moneyPattern.lastIndex = 0;
-      if (bankMatch) { currentBank = { id: bankMatch.id, name: bankMatch.name, raw: bankMatch.raw }; previousBalance = NaN; continue; }
-
-      const dateMatch = raw.match(datePattern);
-      if (!dateMatch) continue;
-      let [, day, month, year] = dateMatch;
-      day = day.padStart(2, '0'); month = month.padStart(2, '0');
-      if (!year) year = String(new Date().getFullYear());
-      else if (year.length === 2) year = `20${year}`;
-      const date = `${year}-${month}-${day}`;
-      if (!isValidImportDate(date)) continue;
-
-      let j = i + 1;
-      const chunk = [];
-      while (j < lines.length && !datePattern.test(lines[j]) && !isBankLine(lines[j]) && !importHeaderLine(lines[j])) { chunk.push(lines[j]); j++; }
-      const inlineRemainder = raw.replace(dateMatch[0], ' ').trim();
-      const combined = [inlineRemainder, ...chunk].filter(Boolean);
-      const moneyLines = combined.filter(line => { moneyPattern.lastIndex = 0; return moneyPattern.test(line); });
-      const moneyValues = [];
-      moneyLines.forEach(line => { moneyPattern.lastIndex = 0; [...line.matchAll(moneyPattern)].forEach(match => { const amount = parseImportMoney(match[0]); if (Number.isFinite(amount)) moneyValues.push({ amount, raw: match[0], line }); }); });
-      if (moneyValues.length < 1) { i = j - 1; continue; }
-
-      const descLabel = combined.find(line => /^descri[cç][aã]o\s*:/i.test(line));
-      const categoryLabel = combined.find(line => /^categoria\s*:/i.test(line));
-      const movementLabel = combined.find(line => /^(movimenta[cç][aã]o|entrada|sa[ií]da)\s*:/i.test(line));
-      const textParts = combined.filter(line => { moneyPattern.lastIndex = 0; return !moneyPattern.test(line) && !/^(data|descri[cç][aã]o|categoria|entrada|sa[ií]da|saldo|movimenta[cç][aã]o|banco)\s*:?[\s]*/i.test(line); }).map(cleanLabel).filter(Boolean);
-      const desc = normalizeImportDescription(descLabel ? cleanLabel(descLabel) : (inlineRemainder && !moneyLines.includes(inlineRemainder) ? cleanLabel(inlineRemainder) : textParts[0]));
-      const rawCategory = categoryLabel ? cleanLabel(categoryLabel) : (textParts.length > 1 ? textParts[1] : '');
-      const categoryMatch = findImportMatch(rawCategory, categories);
-      const bankMatchForRow = currentBank.id ? { id: currentBank.id, confidence: 1, raw: currentBank.raw, name: currentBank.name } : { id: '', confidence: 0, raw: '' };
-      const movementValue = moneyValues[0]?.amount || NaN;
-      const balanceValue = moneyValues.length >= 2 ? moneyValues[moneyValues.length - 1].amount : NaN;
-      const movementRaw = movementLabel ? movementLabel.toLocaleLowerCase('pt-BR') : combined.join(' ').toLocaleLowerCase('pt-BR');
-      const explicitOut = /(^|[^a-z])(sa[ií]da|d[eé]bito|pagamento|compra|−|-)\b/.test(movementRaw) || moneyValues[0]?.raw.includes('-') || moneyValues[0]?.raw.includes('−');
-      const explicitIn = /(^|[^a-z])(entrada|cr[eé]dito|recebimento|\+)\b/.test(movementRaw) || moneyValues[0]?.raw.includes('+');
-      let type = explicitOut && !explicitIn ? 'out' : (explicitIn && !explicitOut ? 'in' : 'in');
-      if (Number.isFinite(balanceValue) && Number.isFinite(previousBalance) && Math.abs(balanceValue - previousBalance) > 0.000001) type = balanceValue < previousBalance ? 'out' : 'in';
-      const row = { date, desc, amount: movementValue, type, bank: bankMatchForRow.id, category: categoryMatch.id, rawBank: bankMatchForRow.raw || '', rawCategory, matchStatus: `${bankMatchForRow.id ? (bankMatchForRow.confidence === 1 ? 'Banco reconhecido' : 'Banco sugerido') : 'Banco não encontrado'} · ${categoryMatch.id ? (categoryMatch.confidence === 1 ? 'Categoria reconhecida' : 'Categoria sugerida') : 'Categoria não encontrada'}`, balance: Number.isFinite(balanceValue) ? balanceValue : null, source };
-      rows.push(row);
-      if (Number.isFinite(balanceValue)) previousBalance = balanceValue;
-      i = j - 1;
-    }
+    const dateRe = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const amountRe = /^[+\-−]?\s*(?:\d{1,3}(?:\.\d{3})*|\d+)(?:,\d{1,2})?$/;
+    const makeInvalid = (line, reason) => ({ date:'', desc:'', amount:0, type:'out', bank:'', category:'', rawBank:'', rawCategory:'', matchStatus:`Linha inválida: ${reason}`, balance:null, source, valid:false, duplicate:false, rawLine:line });
+    const parseAmountStrict = value => {
+      const raw=String(value||'').trim().replace(/^R\$\s*/i,'').replace(/\s/g,'');
+      if(!amountRe.test(raw)) return NaN;
+      const sign=(raw.startsWith('-')||raw.startsWith('−'))?-1:1;
+      const n=Number(raw.replace(/^[+\-−]/,'').replace(/\./g,'').replace(',','.'));
+      return Number.isFinite(n)&&n>0 ? sign*n : NaN;
+    };
+    lines.forEach(line=>{
+      const structure=line.match(/^(\d{2}\/\d{2}\/\d{4})\s*\/\s*(.*)$/);
+      const fields=structure ? [structure[1], ...structure[2].split('/').map(v=>v.trim())] : [];
+      if(fields.length<3 || fields.length>5){ rows.push(makeInvalid(line,'use DATA / VALOR / BANCO / CATEGORIA / OBSERVAÇÃO; categoria e observação são opcionais')); return; }
+      const [dateRaw,amountRaw,bankRaw,categoryRaw='',...obsParts]=fields; const obs=obsParts.join(' / ').trim();
+      const dm=dateRaw.match(dateRe); if(!dm){rows.push(makeInvalid(line,'data deve estar no formato DD/MM/AAAA'));return;}
+      const date=`${dm[3]}-${dm[2]}-${dm[1]}`; if(!isValidImportDate(date)){rows.push(makeInvalid(line,'data inválida'));return;}
+      const amount=parseAmountStrict(amountRaw); if(!Number.isFinite(amount)){rows.push(makeInvalid(line,'valor inválido'));return;}
+      const bankMatch=findImportMatch(bankRaw,banks); if(!bankMatch.id){rows.push({...makeInvalid(line,`banco não reconhecido: ${bankRaw||'(vazio)'}`),rawBank:bankRaw});return;}
+      let categoryId='';
+      if(categoryRaw){const cm=findImportMatch(categoryRaw,categories);if(!cm.id){rows.push({...makeInvalid(line,`categoria não reconhecida: ${categoryRaw}`),bank:bankMatch.id,rawBank:bankRaw,rawCategory:categoryRaw});return;}categoryId=cm.id;}
+      rows.push({date,desc:obs,amount:Math.abs(amount),type:amount>=0?'in':'out',bank:bankMatch.id,category:categoryId,rawBank:bankRaw,rawCategory:categoryRaw,matchStatus:`Banco reconhecido${categoryRaw?' · Categoria reconhecida':' · Categoria opcional'}`,balance:null,source,valid:true,duplicate:false,rawLine:line});
+    });
     return rows;
   }
   function parseImportedText(text, source = 'Importação') {
@@ -5962,7 +5941,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="date" value="${row.date}" onchange="updateImportRow(${i}, 'date', this.value)">
         <input type="text" value="${escapeHTML(row.desc)}" onchange="updateImportRow(${i}, 'desc', this.value)">
         <select onchange="updateImportRow(${i}, 'bank', this.value)"><option value="">Selecione o banco</option>${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}</select>
-        <select onchange="updateImportRow(${i}, 'category', this.value)"><option value="">Selecione a categoria</option>${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select>
+        <select onchange="updateImportRow(${i}, 'category', this.value)"><option value="">Sem categoria</option>${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select>
         <input type="number" step="0.01" min="0.01" value="${row.amount}" onchange="updateImportRow(${i}, 'amount', this.value)">
         <select onchange="updateImportRow(${i}, 'type', this.value)"><option value="in" ${row.type === 'in' ? 'selected' : ''}>Entrada</option><option value="out" ${row.type === 'out' ? 'selected' : ''}>Saída</option></select>
         <button class="action-btn del" onclick="removeImportRow(${i})" aria-label="Remover">×</button>
@@ -6080,7 +6059,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   document.getElementById('fabAdd').onclick = () => {
-    if (currentTab === 'invest') {
+    if (currentTab === 'bills') {
+      openBillModal();
+    } else if (currentTab === 'invest') {
       document.getElementById('btnNovoInvest').click();
     } else if (currentTab === 'pockets') {
       document.getElementById('btnNovoPocket').click();
