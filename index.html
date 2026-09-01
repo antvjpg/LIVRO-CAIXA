@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.18-17 (MANUS) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.18-18 (MANUS) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Livro-Caixa">
-<link rel="manifest" href="./manifest.webmanifest?v=18-17">
+<link rel="manifest" href="./manifest.webmanifest?v=18-18">
 <link rel="icon" href="./icon-192.png?v=13" type="image/png">
 <link rel="apple-touch-icon" href="./icon-192.png?v=13">
 <title>Livro-Caixa</title>
@@ -1179,25 +1179,25 @@
     .panel .type-toggle button.active-out { background:#B3432B; color:#fffefa; }
     .panel button.primary { min-height:48px; border:0; border-radius:10px; background:#327957; color:#fffefa; box-shadow:0 7px 14px rgba(50,121,87,.18); font-size:11px; letter-spacing:.07em; }
     .panel .hint { margin-top:5px; color:#66746B; font-size:10px; line-height:1.35; }
-    .panel 
+    .panel .bank-list-item,.panel .cat-list-item { margin-top:7px; padding:11px 14px; border:1px solid #E1E1D9; border-radius:10px; background:#F8F7F2; color:#19352A; }
     .category-dot { width:30px; height:30px; display:grid; place-items:center; border-radius:9px; font-size:15px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.42); }
     .panel .action-btn { color:#327957; }
     .panel .action-btn.del,.panel .action-btn.delete { color:#B3432B; }
     .bank-list-item { display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:9px; }
     .cat-list-item { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:9px; }
-    
-    
-    
+    .manage-item-copy { display:flex; flex-direction:column; min-width:0; color:#19352A; }
+    .manage-item-copy span { color:#66746B; font-family:'IBM Plex Mono',monospace; font-size:8px; margin-top:2px; }
+    .manage-item-value { color:#1E6C4B; font-family:'IBM Plex Mono',monospace; font-size:11px; white-space:nowrap; }
     .manage-item-actions,.item-action-row { display:flex; align-items:center; gap:7px; padding-right:1px; }
     .item-action-row { justify-content:flex-end; margin-top:12px; }
-    
+    .beta-icon-button { width:34px; height:34px; min-height:34px; padding:0; border:1px solid #C7DDCD; border-radius:10px; background:#E7F1E9; color:#1E6C4B; font-size:0; box-shadow:none; transition:transform .14s cubic-bezier(.23,1,.32,1),background .14s ease,color .14s ease,border-color .14s ease; }
     .beta-icon-button::after { display:block; line-height:32px; }
     .beta-icon-button.edit::after { content:"✎"; font-size:17px; font-weight:700; transform:none; }
     .beta-icon-button.move::after { content:"↕"; font-size:19px; font-weight:700; }
-    
+    .beta-icon-button.delete { border-color:#F0D8D1; background:#FFF3F0; color:#B3432B; }
     .beta-icon-button.delete::after { content:"×"; font-size:20px; font-weight:500; }
-    
-    
+    .beta-icon-button:hover,.beta-icon-button:focus-visible { background:#327957; border-color:#327957; color:#fffefa; }
+    .beta-icon-button.delete:hover,.beta-icon-button.delete:focus-visible { background:#B3432B; border-color:#B3432B; color:#fffefa; }
     .beta-icon-button:active { transform:scale(.91); }
     .export-preview { max-height:280px; overflow:auto; margin-top:12px; padding-right:2px; }
     .export-preview-bank { margin:0 0 10px; padding:10px; border:1px solid #E1E1D9; border-radius:10px; background:#F8F7F2; }
@@ -1226,8 +1226,8 @@
     body.dark-mode .toolbar .quick-action-icon { background:color-mix(in srgb,var(--accent) 13%,var(--surface-raised)); border-color:color-mix(in srgb,var(--accent) 22%,transparent); color:var(--accent); }
     body.dark-mode #btnUpdateAllPrices { background:var(--surface-accent); border-color:var(--accent); color:var(--ink); }
     body.dark-mode #btnUpdateAllPrices:hover { background:var(--accent-muted); border-color:var(--accent); color:var(--ink); }
-    body.dark-mode .panel input,body.dark-mode .panel select,body.dark-mode .panel textarea,body.dark-mode .panel 
-    body.dark-mode .panel h3,body.dark-mode 
+    body.dark-mode .panel input,body.dark-mode .panel select,body.dark-mode .panel textarea,body.dark-mode .panel .bank-list-item,body.dark-mode .panel .cat-list-item,body.dark-mode .export-preview-bank { background:var(--paper); border-color:var(--line); color:#EDF4EE; }
+    body.dark-mode .panel h3,body.dark-mode .manage-item-copy,body.dark-mode .export-preview-bank h4 { color:#EDF4EE; border-color:var(--line); }
     body.dark-mode .panel label,body.dark-mode .panel .hint,body.dark-mode .manage-item-copy span,body.dark-mode .export-preview-more { color:var(--ink-soft); }
     body.dark-mode .manage-item-value,body.dark-mode .export-preview-bank h4 small { color:var(--accent); }
     body.dark-mode .panel button.primary { background:linear-gradient(100deg,var(--accent),var(--accent-to)); color:var(--accent-ink); box-shadow:0 7px 14px rgba(0,0,0,.22); }
@@ -1272,7 +1272,7 @@
     #panelCategoria .emoji-picker.is-open{max-height:min(46dvh,330px);overflow:hidden;display:flex;flex-direction:column;}
     #panelCategoria .emoji-grid{min-height:0;max-height:none;flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
     #panelCategoria #catManageList{display:grid;gap:7px;max-height:none;overflow:visible;padding:0 2px 4px 0;}
-    #panelCategoria .bank-list-item,.panel .cat-list-item{margin-top:7px;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);}.manage-item-copy{display:flex;flex-direction:column;min-width:0;color:var(--ink);}.manage-item-copy span{color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:8px;margin-top:2px;}.manage-item-value{color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:11px;white-space:nowrap;}.beta-icon-button{width:34px;height:34px;min-height:34px;padding:0;border:1px solid var(--action-border);border-radius:10px;background:var(--green-soft);color:var(--accent);font-size:0;box-shadow:none;transition:transform .14s cubic-bezier(.23,1,.32,1),background .14s ease,color .14s ease,border-color .14s ease;}.beta-icon-button.delete{border-color:color-mix(in srgb, var(--red,#B3432B) 35%, var(--line));background:color-mix(in srgb, var(--red,#B3432B) 12%, var(--paper));color:var(--red,#B3432B);}.beta-icon-button:hover,.beta-icon-button:focus-visible{background:var(--accent);border-color:var(--accent);color:var(--accent-ink,#fffefa);}.beta-icon-button.delete:hover,.beta-icon-button.delete:focus-visible{background:var(--red,#B3432B);border-color:var(--red,#B3432B);color:#fffefa;}.cat-list-item{min-width:0;margin-top:0;}
+    #panelCategoria .cat-list-item{min-width:0;margin-top:0;}
     #panelCategoria .manage-item-copy{overflow-wrap:anywhere;}
     #panelCategoria .manage-item-actions{flex-shrink:0;}
     body:not(.dark-mode) header.app-header { background:linear-gradient(135deg,var(--header-from),var(--header-to)); color:var(--header-ink); }
@@ -1523,7 +1523,7 @@
   .bank-share-line{display:block;color:var(--accent);font-size:10px;margin-top:2px;}.bill-status.overdue{color:var(--red);font-weight:800;}
   @media(max-width:600px){.log-toolbar{grid-template-columns:1fr 1fr;}}
 
-  .feature-lab-options{display:flex;flex-direction:column;gap:9px;margin:10px 0 14px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);}.feature-lab-options label{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.35;}.feature-lab-options input{margin-top:2px;accent-color:var(--accent);}.feature-lab-heading{margin:16px 0 8px;color:var(--ink);font-size:13px;}.feature-lab-actions{display:flex;gap:8px;margin-top:10px;}.feature-lab-actions button{flex:1;min-height:40px;}.feature-budget-rows{display:flex;flex-direction:column;gap:7px;max-height:220px;overflow:auto;padding-right:2px;}.feature-budget-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,150px) auto;align-items:center;gap:8px;font-size:11px;}.feature-budget-row label{font-weight:700;overflow-wrap:anywhere;}.feature-budget-row input{margin:0!important;min-width:0;}.feature-budget-row span{color:var(--ink-soft);font-size:10px;white-space:nowrap;}.advanced-dashboard{margin:12px 0 16px;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:var(--surface);}.advanced-dashboard>summary{cursor:pointer;font-weight:800;color:var(--ink);font-size:13px;}.dashboard-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px;}.dashboard-metrics>div{display:flex;flex-direction:column;gap:4px;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);min-width:0;}.dashboard-metrics small{color:var(--ink-soft);font-size:9px;line-height:1.2;}.dashboard-metrics strong{font-family:'IBM Plex Mono',monospace;font-size:12px;overflow-wrap:anywhere;}.dashboard-metrics .positive{color:var(--green);}.dashboard-metrics .negative{color:var(--red);}.dashboard-trend{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);}.dashboard-trend-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-size:11px;}.dashboard-trend-head span{color:var(--ink-soft);font-size:10px;}.trend-list{display:flex;flex-direction:column;gap:6px;margin-top:9px;}.trend-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:end;gap:8px;min-width:0;}.trend-row>span{color:var(--ink-soft);font-size:10px;text-transform:capitalize;}.trend-row>strong{font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);font-size:10px;white-space:nowrap;}.trend-bars{display:flex;align-items:flex-end;gap:3px;height:58px;border-bottom:1px solid var(--line);min-width:0;}.trend-bars i{display:block;width:10px;min-height:3px;border-radius:3px 3px 0 0;}.trend-bars .income,.trend-legend .income{background:var(--green);}.trend-bars .expense,.trend-legend .expense{background:var(--red);}.trend-legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--ink-soft);font-size:10px;margin-top:8px;}.trend-legend span{display:inline-flex;align-items:center;gap:4px;}.trend-legend i{width:8px;height:8px;border-radius:2px;display:inline-block;}.dashboard-budgets{display:flex;flex-direction:column;gap:8px;margin-top:13px;padding-top:10px;border-top:1px dashed var(--line);font-size:11px;}.budget-summary-row{display:grid;grid-template-columns:minmax(100px,1fr) minmax(80px,2fr) 38px;align-items:center;gap:8px;}.budget-summary-row>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0;}.budget-summary-row>div:first-child span{color:var(--ink-soft);font-size:9px;}.budget-summary-track,.pocket-goal-track{height:7px;background:var(--line);border-radius:999px;overflow:hidden;}.budget-summary-track span,.pocket-goal-track span{display:block;height:100%;background:var(--accent);border-radius:999px;}.budget-summary-track span.over{background:var(--red);} .budget-summary-track span.over{background:repeating-linear-gradient(135deg,var(--red),var(--red) 6px,color-mix(in srgb,var(--red) 68%,#fff) 6px,color-mix(in srgb,var(--red) 68%,#fff) 10px);}.filter-multi-hint{display:block;margin-top:5px;color:var(--ink-soft);font-size:10px;line-height:1.3;}.ledger-filters select[multiple]{min-height:118px;padding:6px 7px;}.ledger-filters select[multiple] option{padding:5px 4px;}.filter-choice-field{min-width:0;}.filter-state-select{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important;}.filter-choice-trigger{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:58px;padding:10px 12px!important;border:1px solid var(--line)!important;border-radius:10px!important;background:var(--paper)!important;color:var(--ink)!important;text-align:left!important;box-shadow:none!important;}.filter-choice-trigger>span{display:flex;flex-direction:column;gap:4px;min-width:0;}.filter-choice-trigger strong{font-size:13px;line-height:1.2;}.filter-choice-trigger small{color:var(--ink-soft);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.filter-choice-trigger>b{flex:0 0 auto;color:var(--accent);font-size:21px;line-height:1;transform:translateY(-2px);}.filter-choice-trigger:hover,.filter-choice-trigger:focus-visible{border-color:var(--accent)!important;outline:2px solid color-mix(in srgb, var(--accent) 14%, transparent);}.filter-choice-sheet{position:absolute;z-index:5;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:11px;max-height:78%;padding:22px 16px 16px;background:var(--surface);border:1px solid var(--line);border-radius:20px 20px 0 0;box-shadow:0 -14px 34px rgba(20,48,36,.2);transform:translateY(105%);visibility:hidden;pointer-events:none;transition:transform .2s cubic-bezier(.23,1,.32,1),visibility 0s linear .2s;}.filter-choice-sheet.open{transform:translateY(0);visibility:visible;pointer-events:auto;transition:transform .2s cubic-bezier(.23,1,.32,1),visibility 0s;}.filter-choice-sheet::before{content:"";width:76px;height:5px;margin:-9px auto 2px;border-radius:99px;background:var(--ink-soft);}.filter-choice-sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}.filter-choice-sheet-head>div{display:flex;flex-direction:column;gap:4px;min-width:0;}.filter-choice-sheet-head strong{font-family:'Fraunces',serif;font-size:22px;color:var(--ink);}.filter-choice-sheet-head small{color:var(--ink-soft);font-size:10px;line-height:1.3;}.filter-choice-search{min-height:43px!important;}.filter-choice-list{display:flex;flex-direction:column;gap:7px;min-height:0;overflow:auto;padding:2px 1px 4px;}.filter-choice-option{display:flex;align-items:center;gap:11px;width:100%;min-height:54px;padding:9px 11px;border:1px solid var(--line);border-radius:11px;background:var(--paper);color:var(--ink);text-align:left;}.filter-choice-option.is-selected{border-color:var(--accent);background:var(--green-soft);}.filter-choice-option input{width:21px;height:21px;flex:0 0 auto;accent-color:var(--accent);}.filter-choice-option span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;}.filter-choice-empty{padding:18px 10px;color:var(--ink-soft);text-align:center;font-size:11px;}.filter-choice-confirm{flex:0 0 auto;width:100%;}.panel#panelFiltros{position:relative;overflow:hidden;}.panel#panelFiltros.sheet-open{overflow:hidden;}.budget-summary-row>b{font-size:10px;text-align:right;}.pocket-goal{margin:7px 0 3px;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);}.pocket-goal-head{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--ink-soft);}.pocket-goal-head span{overflow-wrap:anywhere;}.pocket-goal-head strong{color:var(--accent);white-space:nowrap;}.pocket-goal-track{margin-top:6px;height:8px;}.pocket-goal-values{margin-top:4px;color:var(--ink-soft);font-size:9px;font-family:'IBM Plex Mono',monospace;}@media(max-width:600px){.dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr));}.feature-budget-row{grid-template-columns:minmax(0,1fr) minmax(100px,125px);}.feature-budget-row span{grid-column:1/-1;}.feature-lab-actions{flex-direction:column;}.trend-row{grid-template-columns:24px minmax(0,1fr) auto;}.advanced-dashboard{padding:10px;}}
+  .feature-lab-options{display:flex;flex-direction:column;gap:9px;margin:10px 0 14px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);}.feature-lab-options label{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.35;}.feature-lab-options input{margin-top:2px;accent-color:var(--accent);}.feature-lab-heading{margin:16px 0 8px;color:var(--ink);font-size:13px;}.feature-lab-actions{display:flex;gap:8px;margin-top:10px;}.feature-lab-actions button{flex:1;min-height:40px;}.feature-budget-rows{display:flex;flex-direction:column;gap:7px;max-height:220px;overflow:auto;padding-right:2px;}.feature-budget-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(110px,150px) auto;align-items:center;gap:8px;font-size:11px;}.feature-budget-row label{font-weight:700;overflow-wrap:anywhere;}.feature-budget-row input{margin:0!important;min-width:0;}.feature-budget-row span{color:var(--ink-soft);font-size:10px;white-space:nowrap;}.advanced-dashboard{margin:12px 0 16px;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:var(--surface);}.advanced-dashboard>summary{cursor:pointer;font-weight:800;color:var(--ink);font-size:13px;}.dashboard-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px;}.dashboard-metrics>div{display:flex;flex-direction:column;gap:4px;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);min-width:0;}.dashboard-metrics small{color:var(--ink-soft);font-size:9px;line-height:1.2;}.dashboard-metrics strong{font-family:'IBM Plex Mono',monospace;font-size:12px;overflow-wrap:anywhere;}.dashboard-metrics .positive{color:var(--green);}.dashboard-metrics .negative{color:var(--red);}.dashboard-trend{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);}.dashboard-trend-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-size:11px;}.dashboard-trend-head span{color:var(--ink-soft);font-size:10px;}.trend-list{display:flex;flex-direction:column;gap:6px;margin-top:9px;}.trend-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:end;gap:8px;min-width:0;}.trend-row>span{color:var(--ink-soft);font-size:10px;text-transform:capitalize;}.trend-row>strong{font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);font-size:10px;white-space:nowrap;}.trend-bars{display:flex;align-items:flex-end;gap:3px;height:58px;border-bottom:1px solid var(--line);min-width:0;}.trend-bars i{display:block;width:10px;min-height:3px;border-radius:3px 3px 0 0;}.trend-bars .income,.trend-legend .income{background:var(--green);}.trend-bars .expense,.trend-legend .expense{background:var(--red);}.trend-legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--ink-soft);font-size:10px;margin-top:8px;}.trend-legend span{display:inline-flex;align-items:center;gap:4px;}.trend-legend i{width:8px;height:8px;border-radius:2px;display:inline-block;}.dashboard-budgets{display:flex;flex-direction:column;gap:8px;margin-top:13px;padding-top:10px;border-top:1px dashed var(--line);font-size:11px;}.budget-summary-row{display:grid;grid-template-columns:minmax(100px,1fr) minmax(80px,2fr) 38px;align-items:center;gap:8px;}.budget-summary-row>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0;}.budget-summary-row>div:first-child span{color:var(--ink-soft);font-size:9px;}.budget-summary-track,.pocket-goal-track{height:7px;background:var(--line);border-radius:999px;overflow:hidden;}.budget-summary-track span,.pocket-goal-track span{display:block;height:100%;background:var(--accent);border-radius:999px;}.budget-summary-track span.over{background:var(--red);} .budget-summary-track span.over{background:repeating-linear-gradient(135deg,var(--red),var(--red) 6px,color-mix(in srgb,var(--red) 68%,#fff) 6px,color-mix(in srgb,var(--red) 68%,#fff) 10px);}.filter-multi-hint{display:block;margin-top:5px;color:var(--ink-soft);font-size:10px;line-height:1.3;}.ledger-filters select[multiple]{min-height:118px;padding:6px 7px;}.ledger-filters select[multiple] option{padding:5px 4px;}.filter-choice-field{min-width:0;}.filter-state-select{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important;}.filter-choice-trigger{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:58px;padding:10px 12px!important;border:1px solid #E1E1D9!important;border-radius:10px!important;background:#F8F7F2!important;color:#19352A!important;text-align:left!important;box-shadow:none!important;}.filter-choice-trigger>span{display:flex;flex-direction:column;gap:4px;min-width:0;}.filter-choice-trigger strong{font-size:13px;line-height:1.2;}.filter-choice-trigger small{color:#66746B;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.filter-choice-trigger>b{flex:0 0 auto;color:#327957;font-size:21px;line-height:1;transform:translateY(-2px);}.filter-choice-trigger:hover,.filter-choice-trigger:focus-visible{border-color:#327957!important;outline:2px solid rgba(50,121,87,.14);}.filter-choice-sheet{position:absolute;z-index:5;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:11px;max-height:78%;padding:22px 16px 16px;background:#fffefa;border:1px solid #E1E1D9;border-radius:20px 20px 0 0;box-shadow:0 -14px 34px rgba(20,48,36,.2);transform:translateY(105%);visibility:hidden;pointer-events:none;transition:transform .2s cubic-bezier(.23,1,.32,1),visibility 0s linear .2s;}.filter-choice-sheet.open{transform:translateY(0);visibility:visible;pointer-events:auto;transition:transform .2s cubic-bezier(.23,1,.32,1),visibility 0s;}.filter-choice-sheet::before{content:"";width:76px;height:5px;margin:-9px auto 2px;border-radius:99px;background:#66746B;}.filter-choice-sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}.filter-choice-sheet-head>div{display:flex;flex-direction:column;gap:4px;min-width:0;}.filter-choice-sheet-head strong{font-family:'Fraunces',serif;font-size:22px;color:#19352A;}.filter-choice-sheet-head small{color:#66746B;font-size:10px;line-height:1.3;}.filter-choice-search{min-height:43px!important;}.filter-choice-list{display:flex;flex-direction:column;gap:7px;min-height:0;overflow:auto;padding:2px 1px 4px;}.filter-choice-option{display:flex;align-items:center;gap:11px;width:100%;min-height:54px;padding:9px 11px;border:1px solid #E1E1D9;border-radius:11px;background:#F8F7F2;color:#19352A;text-align:left;}.filter-choice-option.is-selected{border-color:#327957;background:#E7F1E9;}.filter-choice-option input{width:21px;height:21px;flex:0 0 auto;accent-color:#327957;}.filter-choice-option span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;}.filter-choice-empty{padding:18px 10px;color:#66746B;text-align:center;font-size:11px;}.filter-choice-confirm{flex:0 0 auto;width:100%;}.panel#panelFiltros{position:relative;overflow:hidden;}.panel#panelFiltros.sheet-open{overflow:hidden;}.budget-summary-row>b{font-size:10px;text-align:right;}.pocket-goal{margin:7px 0 3px;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);}.pocket-goal-head{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--ink-soft);}.pocket-goal-head span{overflow-wrap:anywhere;}.pocket-goal-head strong{color:var(--accent);white-space:nowrap;}.pocket-goal-track{margin-top:6px;height:8px;}.pocket-goal-values{margin-top:4px;color:var(--ink-soft);font-size:9px;font-family:'IBM Plex Mono',monospace;}@media(max-width:600px){.dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr));}.feature-budget-row{grid-template-columns:minmax(0,1fr) minmax(100px,125px);}.feature-budget-row span{grid-column:1/-1;}.feature-lab-actions{flex-direction:column;}.trend-row{grid-template-columns:24px minmax(0,1fr) auto;}.advanced-dashboard{padding:10px;}}
 
   .dashboard-health-card{display:flex;align-items:center;gap:10px;margin:12px 0;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:var(--paper);}.dashboard-health-card>div{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px;}.dashboard-health-card strong{font-size:12px;color:var(--ink);}.dashboard-health-card small{font-size:10px;color:var(--ink-soft);line-height:1.35;}.dashboard-health-card>b{padding:5px 8px;border-radius:999px;font-size:9px;white-space:nowrap;}.dashboard-health-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font-weight:900;font-size:16px;background:var(--green-soft);color:var(--accent);}.dashboard-health-card.warning{background:color-mix(in srgb,var(--red) 6%,var(--paper));border-color:color-mix(in srgb,var(--red) 20%,var(--line));}.dashboard-health-card.warning .dashboard-health-icon{background:var(--red-soft);color:var(--red);}.dashboard-health-card.warning>b{background:var(--red-soft);color:var(--red);}.dashboard-health-card.neutral .dashboard-health-icon{background:var(--line);color:var(--ink-soft);}.dashboard-health-card.neutral>b{background:var(--line);color:var(--ink-soft);}.dashboard-health-card.positive>b{background:var(--green-soft);color:var(--accent);}.dashboard-commitments,.dashboard-alerts{margin-top:13px;padding-top:11px;border-top:1px dashed var(--line);}.dashboard-commitment-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);}.dashboard-commitment-row:last-child{border-bottom:0;}.dashboard-commitment-row>div{display:flex;min-width:0;flex-direction:column;gap:3px;}.dashboard-commitment-row strong{font-size:11px;color:var(--ink);overflow-wrap:anywhere;}.dashboard-commitment-row span{font-size:9px;color:var(--ink-soft);}.dashboard-commitment-row b{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink);white-space:nowrap;}.dashboard-commitment-row.overdue b,.dashboard-commitment-row.overdue span{color:var(--red);}.dashboard-alert-row{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);}.dashboard-alert-row:last-child{border-bottom:0;}.dashboard-alert-row>span{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:900;background:var(--green-soft);color:var(--accent);}.dashboard-alert-row.warning>span{background:var(--red-soft);color:var(--red);}.dashboard-alert-row>div{display:flex;min-width:0;flex-direction:column;gap:2px;}.dashboard-alert-row strong{font-size:10px;color:var(--ink);}.dashboard-alert-row small{font-size:9px;color:var(--ink-soft);line-height:1.35;}@media(max-width:680px){.dashboard-health-card{align-items:flex-start;}.dashboard-health-card>b{margin-left:auto;}.dashboard-commitment-row{padding:8px 0;}.dashboard-alert-row{padding:8px 0;}}
   .pin-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(10,25,18,.74);backdrop-filter:blur(10px);}.pin-overlay.hidden{display:none;}.pin-box{width:min(360px,100%);padding:24px;border-radius:18px;background:var(--paper);border:1px solid var(--line);box-shadow:0 24px 70px rgba(0,0,0,.28);text-align:center;}.pin-box h2{margin:8px 0 6px;color:var(--ink);font-size:20px;}.pin-box .hint{margin:0 0 14px;}.pin-lock-icon{width:42px;height:42px;margin:0 auto;display:grid;place-items:center;border-radius:13px;background:var(--green-soft);color:var(--accent);font-size:21px;}body.is-pin-locked main,body.is-pin-locked header,body.is-pin-locked .mobile-bottom-nav{pointer-events:none;filter:blur(2px);}@media(prefers-reduced-motion:no-preference){.pin-box{animation:pinPop .18s cubic-bezier(.23,1,.32,1);}@keyframes pinPop{from{opacity:.75;transform:scale(.97)}to{opacity:1;transform:scale(1)}}}
@@ -1538,6 +1538,48 @@
 #panelFeatureLab .feature-lab-scroll, #panelFeatureLab .labs-scroll, #panelFeatureLab .panel-scroll { overflow-y:auto!important; overflow-x:hidden!important; min-height:0!important; flex:1 1 auto!important; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; }
 @media(max-width:700px){#panelFeatureLab{max-height:90vh!important;height:90vh!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;}}
 .app-drawer [data-drawer-action="lab"] .drawer-item-icon{display:inline-flex;width:20px;min-width:20px;align-items:center;justify-content:center;font-size:18px;line-height:1;font-family:"Segoe UI Symbol","Noto Sans Symbols",sans-serif;}
+</style>
+<style>
+.calendar-filter-control{display:flex;align-items:center;gap:7px;padding:0 10px;min-height:42px;border:1px solid var(--action-border);border-radius:11px;background:var(--surface-raised);color:var(--ink-soft);font-size:10px;font-weight:700;}
+.calendar-filter-control span{white-space:nowrap}.calendar-filter-control select{min-width:100px;border:0!important;background:transparent!important;color:var(--ink)!important;font-size:11px;font-weight:700;padding:0;box-shadow:none!important;}
+.bill-share-panel{max-width:520px}.bill-share-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.bill-share-head h3{margin:4px 0 0}.bill-share-message{width:100%;min-height:260px;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.55;resize:vertical}.bill-share-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.bill-share-cancel{width:100%;margin-top:8px;background:transparent;border:0;color:var(--ink-soft);font-size:11px}.bill-actions{display:flex;flex-wrap:wrap;gap:6px}.bill-actions button{font-size:10px;padding:7px 9px}.bill-event{cursor:pointer}.bill-event:hover{background:var(--accent);color:var(--accent-ink)}
+body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-color:var(--line);color:var(--ink-soft)}body.dark-mode .calendar-filter-control select{color:var(--ink)!important}body.dark-mode .bill-share-panel{background:var(--surface);color:var(--ink)}body.dark-mode .bill-share-message{background:var(--paper);border-color:var(--line);color:var(--ink)}body.dark-mode .bill-share-cancel{color:var(--ink-soft)}
+@media(max-width:680px){.calendar-filter-control{grid-column:1/-1;justify-content:space-between}.calendar-filter-control select{flex:1;text-align:right}.bill-share-actions{grid-template-columns:1fr}.bill-actions button{flex:1;min-width:118px}}
+</style>
+<style id="v18-18-theme-polish">
+  /* V.18-18 — acabamento visual editorial e compatibilidade de tema */
+  .nav-tabs{background:var(--surface);border-color:var(--line);box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 8%,transparent);}
+  .nav-tab{border:1px solid transparent;color:var(--ink-soft);background:transparent;}
+  .nav-tab:hover,.nav-tab:focus-visible{background:var(--green-soft);border-color:var(--action-border);color:var(--ink);}
+  .nav-tab.active{background:var(--surface-accent);color:var(--header-ink);border-color:var(--surface-accent);box-shadow:0 5px 12px color-mix(in srgb,var(--accent) 18%,transparent);}
+  .toolbar button:not(.primary),.period-bar button,.ledger-filter-button{border-color:var(--action-border);background:var(--surface-raised);color:var(--ink);}
+  .toolbar button:not(.primary):hover,.toolbar button:not(.primary):focus-visible,.period-bar button:hover,.period-bar button:focus-visible,.ledger-filter-button:hover,.ledger-filter-button:focus-visible{background:var(--green-soft);border-color:var(--accent);color:var(--ink);}
+  .toolbar button.primary,.panel button.primary,.feature-lab-primary-actions .primary{background:linear-gradient(110deg,var(--accent),var(--accent-to));color:var(--accent-ink);border-color:var(--accent);}
+  .quick-action-icon{background:var(--green-soft);border-color:var(--action-border);color:var(--accent);}
+  .filter-choice-trigger{background:var(--surface-raised)!important;border-color:var(--action-border)!important;color:var(--ink)!important;}
+  .filter-choice-trigger small{color:var(--ink-soft)!important}.filter-choice-trigger>b{color:var(--accent)!important;}
+  .filter-choice-sheet{background:var(--paper);border-color:var(--line);box-shadow:0 -14px 34px var(--shadow);}
+  .filter-choice-sheet::before{background:var(--ink-soft);}
+  .filter-choice-sheet-head strong{color:var(--ink);}.filter-choice-sheet-head small,.filter-choice-empty{color:var(--ink-soft);}
+  .filter-choice-option{background:var(--surface);border-color:var(--line);color:var(--ink);}.filter-choice-option.is-selected{background:var(--green-soft);border-color:var(--accent);}.filter-choice-option input{accent-color:var(--accent);}
+  .feature-lab-panel,.feature-lab-section,.feature-lab-toggle,.bill-share-panel,.bill-share-message,.calendar-filter-control{background:var(--surface);border-color:var(--line);color:var(--ink);}
+  .feature-lab-header{background:linear-gradient(135deg,var(--surface-raised),var(--surface));}.feature-lab-section{background:var(--paper-2);}.feature-lab-toggle{background:var(--paper);}.feature-lab-toggle:has(input:checked){background:color-mix(in srgb,var(--accent) 10%,var(--paper));}
+  .feature-lab-toggle-copy strong,.feature-lab-panel .feature-lab-section h4,.bill-share-head h3{color:var(--ink);}.feature-lab-toggle-copy small,.feature-lab-section-desc,.feature-lab-section-tag{color:var(--ink-soft);}
+  .feature-lab-switch{background:var(--line)}.feature-lab-switch:after{background:var(--surface-raised);}
+  .bill-day,.bill-list-item,.bill-share-message{color:var(--ink);}.bill-day{background:var(--surface);border-color:var(--line);}.bill-event{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--ink);}.bill-event.paid{color:var(--ink-soft);}.bill-actions button{background:var(--surface-raised);border-color:var(--action-border);color:var(--ink);}.bill-actions button:hover,.bill-actions button:focus-visible{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+  body.dark-mode .nav-tab.active{background:var(--accent-muted);border-color:color-mix(in srgb,var(--accent) 35%,var(--line));color:var(--ink);}
+  body.dark-mode .nav-tab:hover,body.dark-mode .nav-tab:focus-visible{background:var(--surface-accent);border-color:var(--accent);color:var(--ink);}
+  body.dark-mode .toolbar button.primary,body.dark-mode .panel button.primary,body.dark-mode .feature-lab-primary-actions .primary{color:var(--accent-ink);}
+  body.dark-mode .feature-lab-warning{background:color-mix(in srgb,var(--gold) 12%,var(--paper));}
+  body.dark-mode .bill-event{color:var(--ink);}.dark-mode .bill-event:hover{background:var(--accent);color:var(--accent-ink);}
+  @media(max-width:680px){.nav-tab{min-height:44px}.toolbar button{min-height:44px}.feature-lab-section{box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ink) 4%,transparent);}}
+  body.dark-mode .toolbar button:not(.primary),body.dark-mode .period-bar button,body.dark-mode .ledger-filter-button{background:var(--surface-raised)!important;border-color:var(--line)!important;color:var(--ink)!important;}
+  body.dark-mode .toolbar button:not(.primary):hover,body.dark-mode .toolbar button:not(.primary):focus-visible,body.dark-mode .period-bar button:hover,body.dark-mode .period-bar button:focus-visible,body.dark-mode .ledger-filter-button:hover,body.dark-mode .ledger-filter-button:focus-visible{background:var(--surface-accent)!important;border-color:var(--accent)!important;color:var(--ink)!important;}
+  body.dark-mode #btnThemeToggle,body.dark-mode #btnNotifications,body.dark-mode #btnOpenDrawer{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
+  body.dark-mode .filter-choice-sheet{color:var(--ink);}
+  body.dark-mode .filter-choice-search{background:var(--surface)!important;border-color:var(--line)!important;color:var(--ink)!important;}
+  body.dark-mode .filter-choice-option{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
+  body.dark-mode .filter-choice-option.is-selected{background:var(--green-soft);border-color:var(--accent);}
 </style>
 </head>
 <body>
@@ -1612,16 +1654,16 @@
       <button type="button" data-drawer-action="entries"><span>≡</span> Lançamentos</button>
       <button type="button" data-drawer-action="bills"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span> Contas & Calendário</button>
       <button type="button" data-drawer-action="reports"><span>◔</span> Gastos por categoria</button>
-      <button type="button" data-drawer-action="pockets"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M4 8l2.5-4h11L20 8"/><path d="M9.5 12.5h5"/></svg></span> Caixinhas</button>
+      <button type="button" data-drawer-action="pockets"><span>◌</span> Caixinhas</button>
       <button type="button" data-drawer-action="investments"><span>↗</span> Investimentos</button>
     </nav>
     <div class="drawer-divider"></div>
     <div class="drawer-nav drawer-nav-secondary">
-      <button type="button" data-drawer-action="banks"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-6 9 6M5 10h14M6.5 10v7M10 10v7M14 10v7M17.5 10v7M4 20h16"/></svg></span> Contas bancárias</button>
+      <button type="button" data-drawer-action="banks"><span>▦</span> Contas bancárias</button>
       <button type="button" data-drawer-action="categories"><span>◇</span> Categorias</button>
       <button type="button" data-drawer-action="theme"><span>◐</span> Tema e paleta</button>
       <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true">⚗</span> Recursos completos (teste)</button>
-      <button type="button" data-drawer-action="diagnostico"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 3v2h6V3"/><path d="M9 9.5h6M9 13h6M9 16.5h3.5"/></svg></span> Diagnóstico Geral (LOG)</button>
+      <button type="button" data-drawer-action="diagnostico"><span>◈</span> Diagnóstico Geral (LOG)</button>
     </div>
   </aside>
 </div>
@@ -1720,9 +1762,12 @@
   <div id="viewBills" class="tab-content">
     <div class="balance-strip section-balance-strip" id="billsSummary"></div>
     <div class="toolbar" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));">
-      <button class="primary" id="btnNovoBill"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>Nova Conta / Fatura</button>
-      <button type="button" id="btnBillsToday"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>Mês atual</button>
-      <button type="button" id="btnFeatureLab"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/><path d="M8 15h8"/></svg></span>Recursos completos</button>
+      <button class="primary" id="btnNovoBill">+ Nova Conta / Fatura</button>
+      <button type="button" id="btnBillsToday">📅 Mês atual</button>
+      <button type="button" id="btnFeatureLab">🧪 Recursos completos</button>
+      <label class="calendar-filter-control" for="billTitularFilter"><span>Titular</span><select id="billTitularFilter"><option value="">Todos</option></select></label>
+      <button type="button" id="btnExportBillsPdf">📄 Exportar PDF</button>
+      <button type="button" id="btnExportBillsXlsx">📊 Exportar Excel</button>
     </div>
     <div class="card" style="padding:16px; margin-bottom:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
@@ -1755,7 +1800,7 @@
 
   <div id="viewPockets" class="tab-content">
     <div class="balance-strip" id="pocketBalanceStrip"></div>
-    <div class="toolbar" style="grid-template-columns: 1fr;">
+    <div class="toolbar" style="grid-template-columns: minmax(200px, 260px);">
       <button class="primary" id="btnNovoPocket">+ Nova Caixinha</button>
     </div>
     <div id="pocketPeriodSummary" class="period-summary" aria-label="Resumo das caixinhas no período"></div>
@@ -1930,7 +1975,7 @@
       </div>
 
       <div class="feature-lab-warning">
-        <span class="feature-lab-warning-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/><path d="M8 15h8"/></svg></span>
+        <span class="feature-lab-warning-icon" aria-hidden="true">🧪</span>
         <div><strong>Área de testes</strong><span>Algumas opções podem executar ações reais no seu Livro-Caixa. Recursos automáticos começam desativados.</span></div>
       </div>
 
@@ -1953,6 +1998,12 @@
         <div id="featureBudgetRows" class="feature-budget-rows"></div>
       </div>
 
+      <div class="feature-lab-primary-actions">
+        <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
+        <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
+      </div>
+      <div id="featureLabStatus" class="feature-lab-feedback" aria-live="polite"></div>
+
       <div class="feature-lab-section">
         <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">03</span><h4>Conciliação bancária</h4></div><span class="feature-lab-section-tag">VERIFICAÇÃO</span></div>
         <p class="feature-lab-section-desc">Compare o saldo informado pelo banco com o saldo calculado no Livro-Caixa.</p>
@@ -1971,7 +2022,7 @@
           <div><label for="featurePin">PIN local</label><input type="password" id="featurePin" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="4 a 8 dígitos"></div>
           <div class="feature-lab-pin-actions"><button type="button" id="btnSaveLocalPin" class="primary">Ativar / alterar</button><button type="button" id="btnClearLocalPin">Remover</button></div>
         </div>
-        <div class="feature-lab-actions"><button type="button" id="btnLockNow"><span class="quick-action-icon" aria-hidden="true" style="width:15px;height:15px;display:inline-flex;vertical-align:-2px;margin-right:5px;"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>Bloquear agora</button></div>
+        <div class="feature-lab-actions"><button type="button" id="btnLockNow">🔒 Bloquear agora</button></div>
         <div id="pinSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
       </div>
 
@@ -2004,12 +2055,6 @@
         <div class="feature-lab-actions"><button type="button" id="btnRunWhatIf" class="primary">Simular “E se...?”</button><button type="button" id="btnExportPatrimonyPng">Exportar patrimônio PNG</button></div>
         <div id="labsProjectionStatus" class="feature-lab-feedback" aria-live="polite"></div>
       </div>
-
-      <div class="feature-lab-primary-actions">
-        <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
-        <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
-      </div>
-      <div id="featureLabStatus" class="feature-lab-feedback" aria-live="polite"></div>
     </div>
 
     <div class="panel" id="panelDiagnostico">
@@ -2081,6 +2126,15 @@
       <label for="billLaunchBank">Banco utilizado</label>
       <select id="billLaunchBank"></select>
       <button type="button" class="primary" id="billLaunchConfirm" style="width:100%;margin-top:12px;">Confirmar lançamento</button>
+    </div>
+
+    <div class="panel bill-share-panel" id="panelBillShare">
+      <div class="bill-share-head"><div><span class="eyebrow">COMPARTILHAMENTO INDIVIDUAL</span><h3>Mensagem da conta</h3></div><button type="button" class="modal-close" onclick="closeAllPanels()">×</button></div>
+      <p class="hint">Revise a mensagem antes de copiar ou abrir o compartilhamento do dispositivo.</p>
+      <textarea id="billShareMessage" class="bill-share-message" rows="12" spellcheck="false"></textarea>
+      <div class="bill-share-actions"><button type="button" id="btnCopyBillShare">Copiar mensagem</button><button type="button" id="btnNativeBillShare" class="primary">Compartilhar</button></div>
+      <div id="billShareStatus" class="feature-lab-feedback" aria-live="polite"></div>
+      <button type="button" id="btnCancelBillShare" class="bill-share-cancel" onclick="closeAllPanels()">Cancelar</button>
     </div>
 
     <div class="panel" id="panelInvest">
@@ -5025,27 +5079,66 @@ document.addEventListener('DOMContentLoaded', () => {
     pendingBillLaunch = null;
     if (bill) await launchBill(bill, monthKey, bankId);
   };
+  function billTitularValues() {
+    const map = new Map();
+    recurringBills.forEach(bill => { const value = String(bill.titular || '').trim(); if (value) { const key = value.toLocaleLowerCase('pt-BR'); if (!map.has(key)) map.set(key, value); } });
+    return [...map.values()].sort((a,b) => a.localeCompare(b, 'pt-BR'));
+  }
+  function populateBillTitularFilter() {
+    const select = document.getElementById('billTitularFilter'); if (!select) return;
+    const current = select.value; const values = billTitularValues();
+    select.innerHTML = '<option value="">Todos</option>' + values.map(value => `<option value="${escapeHTML(value)}">${escapeHTML(value)}</option>`).join('');
+    if (values.includes(current)) select.value = current;
+  }
+  function visibleBillsForCalendar() {
+    const titular = document.getElementById('billTitularFilter')?.value || '';
+    return recurringBills.filter(bill => billAppliesToMonth(bill, billViewDate.getFullYear(), billViewDate.getMonth()) && (!titular || String(bill.titular || '').trim() === titular));
+  }
+  function calendarBillRows() {
+    const y=billViewDate.getFullYear(), m=billViewDate.getMonth(), key=billMonthKey(billViewDate);
+    return visibleBillsForCalendar().map(bill => ({ bill, dueDate: billDueDateForMonth(bill,y,m), status: billStatus(bill,key), launched: billGeneratedForMonth(bill,key), bank: bill.bank==='a-definir' ? 'A definir' : (banks.find(x=>x.id===bill.bank)?.name || 'Banco não informado') }));
+  }
+  function billShareText(bill) {
+    const y=billViewDate.getFullYear(), m=billViewDate.getMonth();
+    const due = billDueDateForMonth(bill,y,m).split('-').reverse().join('/');
+    return `📌 HELLOUUUUUUU
+— ${String(bill.titular || '').trim() || 'Olá'}
+Passando pra lembrar do pagamento da ${bill.name || 'conta'} 📃
+
+• VENCIMENTO: ${due}
+VALOR: ${fmt(bill.amount)}
+
+📤 Enviar para a chave Pix abaixo e encaminhar comprovante:
+
+🗝️| 85981886720
+🪪| ANTONIO VINICIUS P SOBRINHO
+🏦| ITAU UNIBANCO S.A.`;
+  }
+  function openBillShare(id) { const bill = recurringBills.find(item => item.id === id); if (!bill) return; const field = document.getElementById('billShareMessage'); if (field) field.value = billShareText(bill); document.getElementById('billShareStatus').textContent = ''; openModal('panelBillShare'); }
+  window.openBillShare = openBillShare;
   function renderBills(){
     const y=billViewDate.getFullYear(), m=billViewDate.getMonth(), key=billMonthKey(billViewDate);
     document.getElementById('billMonthLabel').textContent=billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-    const active=recurringBills.filter(b=>billAppliesToMonth(b,y,m));
-    const pending=active.filter(b=>!billGeneratedForMonth(b,key));
-    const paidCount=active.length-pending.length;
-    const total=active.reduce((s,b)=>s+Number(b.amount||0),0);
-    const overdue=pending.filter(b=>billStatus(b,key)==='Atrasado').length;
-    document.getElementById('billsSummary').innerHTML=`<div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pagas</span><span class="amount">${paidCount}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pending.length}</span></div><div class="balance-card"><span class="label">Atrasadas</span><span class="amount">${overdue}</span></div>`;
-    const first=new Date(y,m,1).getDay(); const offset=first; const days=new Date(y,m+1,0).getDate();
-    const names=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']; let html=names.map(n=>`<div class="bill-weekday">${n}</div>`).join('');
-    for(let i=0;i<offset;i++) html+=`<div class="bill-day muted"></div>`;
+    populateBillTitularFilter();
+    const rows=calendarBillRows(), active=rows.map(row=>row.bill), pending=rows.filter(row=>!row.launched), total=active.reduce((sum,bill)=>sum+Number(bill.amount||0),0), overdue=pending.filter(row=>row.status==='Atrasado').length;
+    document.getElementById('billsSummary').innerHTML=`<div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pending.length}</span></div><div class="balance-card"><span class="label">Atrasadas</span><span class="amount">${overdue}</span></div>`;
+    const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate(), names=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']; let html=names.map(n=>`<div class="bill-weekday">${n}</div>`).join('');
+    for(let i=0;i<first;i++) html+=`<div class="bill-day muted"></div>`;
     const today=todayISO();
-    for(let d=1;d<=days;d++){
-      const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const events=active.filter(b=>b.recurrenceType==='nao_recorrente' || b.frequency==='once' ? billDueDateForMonth(b,y,m)===date : Number(b.dueDay)===d);
-      html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(b=>`<button type="button" class="bill-event ${billGeneratedForMonth(b,key)?'paid':''}" onclick="launchBill('${b.id}','${key}')" title="${escapeHTML(b.name)} · ${fmt(b.amount)}">${escapeHTML(b.name)} · ${fmt(b.amount)}</button>`).join('')}</div>`;
-    }
+    for(let d=1;d<=days;d++){ const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; const events=rows.filter(row=>row.bill.recurrenceType==='nao_recorrente'||row.bill.frequency==='once'?row.dueDate===date:Number(row.bill.dueDay)===d); html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(row=>`<button type="button" class="bill-event ${row.launched?'paid':''}" onclick="openBillShare('${row.bill.id}')" title="${escapeHTML(row.bill.name)} · ${fmt(row.bill.amount)}">${escapeHTML(row.bill.name)} · ${fmt(row.bill.amount)}</button>`).join('')}</div>`; }
     document.getElementById('billCalendar').innerHTML=html;
-    document.getElementById('billList').innerHTML=active.length?active.sort((a,b)=>Number(a.dueDay)-Number(b.dueDay)).map(b=>{const status=billStatus(b,key); const launched=billGeneratedForMonth(b,key); return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':'Recorrente'} · ${b.bank==='a-definir'?'Banco: A definir':escapeHTML(banks.find(x=>x.id===b.bank)?.name||'Banco não informado')} · ${fmt(b.amount)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${status==='Atrasado'?'overdue':''}">${status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${launched?'disabled':''}>${launched?'Já lançada':'Lançar no Livro-Caixa'}</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join(''):`<div class="empty">Nenhuma conta/fatura cadastrada para este mês.</div>`;
+    document.getElementById('billList').innerHTML=rows.length?rows.slice().sort((a,b)=>Number(a.bill.dueDay)-Number(b.bill.dueDay)).map(row=>{const b=row.bill; return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':'Recorrente'} · Banco: ${escapeHTML(row.bank)} · ${fmt(b.amount)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${row.status==='Atrasado'?'overdue':''}">${row.status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar no Livro-Caixa'}</button><button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join(''):`<div class="empty">Nenhuma conta/fatura cadastrada para este mês.</div>`;
   }
+
+
+  function billsExportRows() { return calendarBillRows().map(({bill,dueDate,status,launched,bank}) => ({ 'Conta/Fatura': bill.name || '', 'Titular': bill.titular || '', 'Valor': Number(bill.amount || 0), 'Vencimento': dueDate.split('-').reverse().join('/'), 'Banco': bank, 'Status': status, 'Recorrente': bill.recurrenceType === 'nao_recorrente' ? 'Não' : 'Sim', 'Periodicidade': bill.frequency === 'once' ? 'Única' : 'Mensal', 'Observação': bill.desc || '' })); }
+  function exportBillsXlsx() { const rows=billsExportRows(); if (!window.XLSX) { alert('A biblioteca de Excel não está disponível.'); return; } const sheet=XLSX.utils.json_to_sheet(rows); sheet['!cols']=[{wch:24},{wch:18},{wch:13},{wch:14},{wch:22},{wch:14},{wch:12},{wch:15},{wch:36}]; const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,sheet,'Calendário'); XLSX.writeFile(book,`calendario-${billMonthKey(billViewDate)}.xlsx`); logInfo('Calendário','Exportar Excel','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
+  function exportBillsPdf() { const rows=billsExportRows(); const Pdf=window.jspdf?.jsPDF; if (!Pdf) { alert('A biblioteca de PDF não está disponível.'); return; } const doc=new Pdf({unit:'pt',format:'a4'}); const margin=36; let y=42; doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text('Calendário financeiro',margin,y); y+=22; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(`Período: ${billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`,margin,y); doc.text(`Total de contas: ${rows.length} · Total previsto: ${fmt(rows.reduce((sum,row)=>sum+Number(row.Valor||0),0))}`,margin,y+14); y+=38; doc.setFontSize(8); rows.forEach(row=>{ if(y>760){doc.addPage();y=42;} const line=`${row['Vencimento']} · ${row['Conta/Fatura']} · ${row['Titular']||'Sem titular'} · ${fmt(row['Valor'])} · ${row['Status']}`; doc.text(doc.splitTextToSize(line,520),margin,y); y+=14; }); doc.save(`calendario-${billMonthKey(billViewDate)}.pdf`); logInfo('Calendário','Exportar PDF','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
+  document.getElementById('billTitularFilter').addEventListener('change', renderBills);
+  document.getElementById('btnExportBillsPdf').addEventListener('click', exportBillsPdf);
+  document.getElementById('btnExportBillsXlsx').addEventListener('click', exportBillsXlsx);
+  document.getElementById('btnCopyBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { await navigator.clipboard.writeText(text); } catch (err) { const field=document.getElementById('billShareMessage'); field.focus(); field.select(); document.execCommand('copy'); } document.getElementById('billShareStatus').textContent='Mensagem copiada. Nenhum envio foi realizado.'; logInfo('Calendário','Copiar compartilhamento','Sucesso','Mensagem individual copiada para revisão do usuário.'); });
+  document.getElementById('btnNativeBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { if (navigator.share) await navigator.share({title:'Lembrete de pagamento',text}); else { await navigator.clipboard.writeText(text); document.getElementById('billShareStatus').textContent='Compartilhamento nativo indisponível; mensagem copiada.'; } logInfo('Calendário','Compartilhar conta','Sucesso','Compartilhamento individual iniciado pelo usuário.'); } catch (err) { if (err?.name !== 'AbortError') document.getElementById('billShareStatus').textContent='Compartilhamento cancelado ou indisponível.'; } });
 
   document.getElementById('btnNovo').onclick = () => {
     if (banks.length === 0) {
