@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.18-19 -->
+<html lang="pt-BR"><!-- Livro-Caixa V.18-18 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +10,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Livro-Caixa">
-<link rel="manifest" href="./manifest.webmanifest?v=18-19">
-<link rel="icon" href="./icon-192.png?v=18-19" type="image/png">
-<link rel="apple-touch-icon" href="./icon-192.png?v=18-19">
+<link rel="manifest" href="./manifest.webmanifest?v=18-18">
+<link rel="icon" href="./icon-192.png?v=13" type="image/png">
+<link rel="apple-touch-icon" href="./icon-192.png?v=13">
 <title>Livro-Caixa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -5536,6 +5536,62 @@ VALOR: ${fmt(bill.amount)}
       document.getElementById('purchaseInstallmentValue').value = formatMoneyFromCents(Math.round((total / count) * 100));
     }
   }
+  // ===== Fase C — Motor de fatura (cálculo puro, sem integração com Calendário/Livro-Caixa ainda) =====
+  function invoicePeriodKeyForDate(card, dateStr) {
+    const d = new Date((dateStr || todayISO()) + 'T00:00:00');
+    const day = d.getDate();
+    const closing = Math.min(31, Math.max(1, Number(card.closingDay) || 1));
+    // Se a compra ocorre no dia de fechamento ou antes, entra na fatura que fecha nesse mesmo mês.
+    // Se ocorre depois do fechamento, entra na fatura do mês seguinte.
+    const targetMonth = day <= closing ? d.getMonth() : d.getMonth() + 1;
+    const target = new Date(d.getFullYear(), targetMonth, 1);
+    return `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}`;
+  }
+  function addMonthsToPeriodKey(periodKey, months) {
+    const [y, m] = periodKey.split('-').map(Number);
+    const d = new Date(y, (m - 1) + months, 1);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  }
+  // Retorna, para uma compra, todas as ocorrências (parcelas) já distribuídas por período de fatura.
+  function purchaseInstallmentOccurrences(purchase) {
+    const firstPeriod = invoicePeriodKeyForDateByCardId(purchase.cardId, purchase.date);
+    if (!firstPeriod) return [];
+    if (purchase.paymentType !== 'parcelado') {
+      return [{ periodKey: firstPeriod, installmentNumber: 1, totalInstallments: 1, amount: purchase.totalValue }];
+    }
+    const occurrences = [];
+    const start = purchase.initialInstallment || 1;
+    for (let n = start; n <= purchase.totalInstallments; n++) {
+      const periodKey = addMonthsToPeriodKey(firstPeriod, n - start);
+      occurrences.push({ periodKey, installmentNumber: n, totalInstallments: purchase.totalInstallments, amount: purchase.installmentValue });
+    }
+    return occurrences;
+  }
+  function invoicePeriodKeyForDateByCardId(cardId, dateStr) {
+    const card = cards.find(c => c.id === cardId);
+    if (!card) return null;
+    return invoicePeriodKeyForDate(card, dateStr);
+  }
+  // Agrega todas as compras/parcelas de um cartão que caem num período de fatura específico (formato 'AAAA-MM').
+  function cardInvoiceForPeriod(cardId, periodKey) {
+    const lines = [];
+    purchases.filter(p => p.cardId === cardId).forEach(purchase => {
+      purchaseInstallmentOccurrences(purchase).forEach(occ => {
+        if (occ.periodKey === periodKey) lines.push({ purchase, ...occ });
+      });
+    });
+    const total = lines.reduce((sum, line) => sum + Number(line.amount || 0), 0);
+    return { periodKey, cardId, lines, total, count: lines.length };
+  }
+  function currentInvoicePeriodKey() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  }
+  function invoicePeriodLabel(periodKey) {
+    const [y, m] = periodKey.split('-').map(Number);
+    return new Date(y, m - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  }
+
   function renderCards() {
     const container = document.getElementById('cardsGrid');
     if (!container) return;
@@ -5545,9 +5601,16 @@ VALOR: ${fmt(bill.amount)}
     }
     container.innerHTML = cards.map(card => {
       const cardPurchases = purchases.filter(p => p.cardId === card.id).sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')));
+      const period = currentInvoicePeriodKey();
+      const invoice = cardInvoiceForPeriod(card.id, period);
       return `<article class="credit-card-box ${card.active === false ? 'is-inactive' : ''}">
         <div class="credit-card-head"><div class="credit-card-title"><span class="credit-card-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span><div><h3>${escapeHTML(card.name)}</h3><small>${escapeHTML(cardBankName(card))}${card.titular ? ' · ' + escapeHTML(card.titular) : ''}</small></div></div><span class="credit-card-status ${card.active === false ? 'inactive' : ''}">${card.active === false ? 'Inativo' : 'Ativo'}</span></div>
         <div class="credit-card-meta"><div class="credit-card-meta-item"><span>Fechamento</span><strong>Dia ${card.closingDay}</strong></div><div class="credit-card-meta-item"><span>Vencimento</span><strong>Dia ${card.dueDay}</strong></div><div class="credit-card-meta-item"><span>Limite</span><strong>${card.limit > 0 ? fmt(card.limit) : 'Não informado'}</strong></div><div class="credit-card-meta-item"><span>Compras</span><strong>${cardPurchases.length}</strong></div></div>
+        <div class="credit-card-invoice-preview" style="margin:10px 0;padding:10px 12px;border:1px dashed var(--action-border);border-radius:11px;background:var(--green-soft);">
+          <div style="display:flex;justify-content:space-between;align-items:center;"><strong style="font-size:12px;text-transform:capitalize;">Fatura de ${invoicePeriodLabel(period)}</strong><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--accent);font-weight:700;">${fmt(invoice.total)}</span></div>
+          <div class="hint" style="margin-top:3px;">${invoice.count} compra(s)/parcela(s) neste período. Cálculo automático — ainda não lançável no Livro-Caixa (fase seguinte).</div>
+          ${invoice.lines.length ? `<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px;">${invoice.lines.map(line => `<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);"><span>${escapeHTML(line.purchase.description || 'Compra')}${line.totalInstallments>1?` (${line.installmentNumber}/${line.totalInstallments})`:''}${line.purchase.titular?' · '+escapeHTML(line.purchase.titular):''}</span><span>${fmt(line.amount)}</span></div>`).join('')}</div>` : ''}
+        </div>
         <div class="credit-card-purchases"><div class="credit-card-purchases-head"><strong>Compras vinculadas</strong><button type="button" class="action-btn" onclick="openPurchaseModal('${card.id}')" ${card.active === false ? 'disabled' : ''}>+ Compra</button></div>
           ${cardPurchases.length ? cardPurchases.map(p => { const cat=categories.find(c=>c.id===p.categoryId)?.name || 'Sem categoria'; const parcel=p.paymentType==='parcelado' ? ` · ${p.totalInstallments}x de ${fmt(p.installmentValue)}` : ' · À vista'; return `<div class="credit-card-purchase"><div class="credit-card-purchase-main"><strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong><span>${formatDisplayDate(p.date)} · ${escapeHTML(p.titular || 'Sem titular')} · ${escapeHTML(cat)}${parcel}</span></div><div class="credit-card-purchase-value">${fmt(p.totalValue)}</div><div class="credit-card-actions" style="grid-column:1/-1"><button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar compra"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir compra"></button></div></div>`; }).join('') : '<div class="credit-card-empty">Nenhuma compra vinculada a este cartão.</div>'}
         </div>
