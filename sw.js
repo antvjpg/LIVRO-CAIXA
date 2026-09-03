@@ -1,4 +1,4 @@
-/* Livro-Caixa V18-19 PWA: App Shell Caching */
+/* Livro-Caixa V.18-19 — PWA: App Shell Caching */
 const CACHE_NAME = "livro-caixa-shell-v18-19";
 const APP_SHELL = [
   "./",
@@ -9,7 +9,7 @@ const APP_SHELL = [
   "./icon-512-maskable.png?v=18-19"
 ];
 
-// Instalação: Pré-carrega os arquivos vitais (App Shell)[span_0](start_span)[span_0](end_span)
+// Instalação: pré-carrega os arquivos vitais (App Shell)
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
@@ -21,7 +21,7 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// Ativação: Remove versões antigas de cache automaticamente[span_1](start_span)[span_1](end_span)
+// Ativação: remove versões antigas de cache automaticamente
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
@@ -37,23 +37,37 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Interceptação de Requisições[span_2](start_span)[span_2](end_span)
+// Permite que a página force a ativação de uma nova versão (SKIP_WAITING)
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+// Interceptação de requisições
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Filtra requisições de outros domínios (Firebase, Chart.js, etc.) e métodos não-GET[span_3](start_span)[span_3](end_span)
+  // Filtra requisições de outros domínios (Firebase, Chart.js, etc.) e métodos não-GET
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
 
-  // Navegação: Tenta a rede primeiro, usa cache local se estiver offline[span_4](start_span)[span_4](end_span)
+  // Navegação: tenta a rede primeiro, usa cache local se estiver offline
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request).catch(() => caches.match("./index.html"))
+      fetch(request)
+        .then((networkResponse) => {
+          // Mantém o index do cache atualizado a cada acesso online
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put("./index.html", responseToCache));
+          return networkResponse;
+        })
+        .catch(() => caches.match("./index.html").then((cached) => cached || caches.match("./")))
     );
     return;
   }
 
-  // Ativos locais: Busca no cache primeiro, se não encontrar baixa e salva[span_5](start_span)[span_5](end_span)
+  // Ativos locais: busca no cache primeiro; se não encontrar, baixa e salva
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       if (cachedResponse) return cachedResponse;
