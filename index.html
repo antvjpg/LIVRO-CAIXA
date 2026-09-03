@@ -1411,6 +1411,40 @@
     .feature-budget-row{grid-template-columns:minmax(0,1fr) 105px;}
     .feature-budget-row span{grid-column:1/-1;}
   }
+
+  /* V18-19 — Cartões / Compras (Fases A+B) */
+  .cards-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+  .cards-toolbar .hint{margin:0;max-width:680px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;}
+  .credit-card-box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 7px 20px color-mix(in srgb,var(--accent) 6%,transparent);}
+  .credit-card-box.is-inactive{opacity:.72;}
+  .credit-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
+  .credit-card-title{display:flex;align-items:center;gap:10px;min-width:0;}
+  .credit-card-icon{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:0 0 auto;}
+  .credit-card-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .credit-card-title h3{margin:0;font-size:14px;color:var(--ink);overflow-wrap:anywhere;}
+  .credit-card-title small{display:block;margin-top:3px;color:var(--ink-soft);font-size:9px;}
+  .credit-card-status{font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 7px;border-radius:999px;background:var(--green-soft);color:var(--accent);white-space:nowrap;}
+  .credit-card-status.inactive{background:color-mix(in srgb,var(--red) 10%,var(--surface));color:var(--red);}
+  .credit-card-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;}
+  .credit-card-meta-item{padding:8px 9px;border:1px solid var(--line);border-radius:10px;background:var(--paper-2);min-width:0;}
+  .credit-card-meta-item span{display:block;font-size:8px;color:var(--ink-soft);margin-bottom:3px;}
+  .credit-card-meta-item strong{display:block;font-size:10px;color:var(--ink);overflow-wrap:anywhere;}
+  .credit-card-purchases{border-top:1px solid var(--line);padding-top:11px;margin-top:2px;}
+  .credit-card-purchases-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;}
+  .credit-card-purchases-head strong{font-size:10px;color:var(--ink);}
+  .credit-card-purchase{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);}
+  .credit-card-purchase:last-child{border-bottom:0;padding-bottom:2px;}
+  .credit-card-purchase-main{min-width:0;}
+  .credit-card-purchase-main strong{display:block;font-size:10px;color:var(--ink);overflow-wrap:anywhere;}
+  .credit-card-purchase-main span{display:block;margin-top:3px;font-size:8px;color:var(--ink-soft);line-height:1.35;}
+  .credit-card-purchase-value{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink);text-align:right;white-space:nowrap;}
+  .credit-card-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:10px;}
+  .credit-card-empty{padding:9px 0;color:var(--ink-soft);font-size:9px;}
+  .purchase-installment-hint{font-size:9px;color:var(--ink-soft);margin-top:4px;}
+  .purchase-readonly{background:var(--paper-2)!important;color:var(--ink-soft)!important;}
+  @media(max-width:680px){.cards-grid{grid-template-columns:1fr}.credit-card-meta{grid-template-columns:1fr 1fr}.cards-toolbar{align-items:stretch}.cards-toolbar .primary{width:100%;}.credit-card-purchase{grid-template-columns:minmax(0,1fr) auto;}}
+
 </style>
 <style>
     .emoji-float-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(13,42,30,.56);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
@@ -1652,6 +1686,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
     <nav class="drawer-nav" aria-label="Navegação principal">
       <button type="button" data-drawer-action="overview"><span>⌂</span> Visão geral</button>
       <button type="button" data-drawer-action="entries"><span>≡</span> Lançamentos</button>
+      <button type="button" data-drawer-action="cards"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span> Cartões</button>
       <button type="button" data-drawer-action="bills"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span> Contas & Calendário</button>
       <button type="button" data-drawer-action="reports"><span>◔</span> Gastos por categoria</button>
       <button type="button" data-drawer-action="pockets"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M4 8l2.5-4h11L20 8"/><path d="M9.5 12.5h5"/></svg></span> Caixinhas</button>
@@ -1681,6 +1716,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
     <button class="nav-tab" id="tabBtnDashboard" onclick="switchTab('dashboard')">📊 Visão geral</button>
     <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')">📖 Livro-Caixa</button>
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')">🐷 Caixinhas</button>
+    <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')">💳 Cartões</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">🪙 Investimentos</button>
   </div>
 
@@ -1806,6 +1842,17 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
     <div id="pocketPeriodSummary" class="period-summary" aria-label="Resumo das caixinhas no período"></div>
 
     <div id="pocketGrid" class="invest-grid"></div>
+  </div>
+
+  <div id="viewCards" class="tab-content">
+    <div class="cards-toolbar">
+      <div>
+        <h2 style="margin:0 0 4px;font-size:20px;">Cartões</h2>
+        <p class="hint">Cadastre seus cartões e registre as compras vinculadas a cada cartão. Nesta fase, compras ainda não geram faturas nem lançamentos no Livro-Caixa.</p>
+      </div>
+      <button class="primary" id="btnNovoCard">+ Novo Cartão</button>
+    </div>
+    <div id="cardsGrid" class="cards-grid"></div>
   </div>
 
   <div id="viewProfile" class="tab-content">
@@ -2159,6 +2206,40 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <button type="button" id="btnCancelBillShare" class="bill-share-cancel" onclick="closeAllPanels()">Cancelar</button>
     </div>
 
+    <div class="panel" id="panelCard">
+      <h3 id="panelCardTitle">Novo Cartão <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div><label for="cardNome">Nome do cartão</label><input id="cardNome" type="text" placeholder="Ex: Nubank" autocomplete="off"></div>
+        <div><label for="cardBanco">Banco / instituição</label><select id="cardBanco"></select></div>
+        <div><label for="cardTitular">Titular principal</label><input id="cardTitular" type="text" placeholder="Ex: Titular 01" autocomplete="off"></div>
+        <div><label for="cardFechamento">Dia de fechamento</label><input id="cardFechamento" type="number" min="1" max="31" step="1" placeholder="Ex: 10"></div>
+        <div><label for="cardVencimento">Dia de vencimento</label><input id="cardVencimento" type="number" min="1" max="31" step="1" placeholder="Ex: 17"></div>
+        <div><label for="cardLimite">Limite (opcional)</label><input id="cardLimite" type="text" data-money="true" placeholder="R$ 0,00"></div>
+        <div><label for="cardAtivo">Status</label><select id="cardAtivo"><option value="1">Ativo</option><option value="0">Inativo</option></select></div>
+        <div style="grid-column:1/-1"><label for="cardObs">Observação (opcional)</label><input id="cardObs" type="text" placeholder="Ex: cartão adicional, uso pessoal"></div>
+        <div style="grid-column:1/-1"><button class="primary" id="cardSalvar" style="width:100%">Salvar Cartão</button></div>
+      </div>
+    </div>
+
+    <div class="panel" id="panelPurchase">
+      <h3 id="panelPurchaseTitle">Nova Compra <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
+        <div><label for="purchaseCard">Cartão</label><select id="purchaseCard"></select></div>
+        <div><label for="purchaseDate">Data da compra</label><input id="purchaseDate" type="date"></div>
+        <div style="grid-column:1/-1"><label for="purchaseDesc">Descrição da compra</label><input id="purchaseDesc" type="text" placeholder="Ex: Pizza, celular, mercado" autocomplete="off"></div>
+        <div><label for="purchaseValue">Valor total (R$)</label><input id="purchaseValue" type="text" data-money="true" placeholder="R$ 0,00"></div>
+        <div><label for="purchaseTitular">Titular responsável</label><input id="purchaseTitular" type="text" placeholder="Ex: Titular 02" autocomplete="off"></div>
+        <div><label for="purchaseCategory">Categoria</label><select id="purchaseCategory"></select></div>
+        <div><label for="purchaseType">Pagamento</label><select id="purchaseType"><option value="avista">À vista</option><option value="parcelado">Parcelado</option></select></div>
+        <div id="purchaseInstallmentsField" style="display:none"><label for="purchaseInstallments">Total de parcelas</label><input id="purchaseInstallments" type="number" min="2" max="360" step="1" placeholder="Ex: 7"></div>
+        <div id="purchaseInstallmentValueField" style="display:none"><label for="purchaseInstallmentValue">Valor da parcela</label><input id="purchaseInstallmentValue" class="purchase-readonly" type="text" readonly placeholder="R$ 0,00"></div>
+        <div id="purchaseInitialInstallmentField" style="display:none"><label for="purchaseInitialInstallment">Parcela inicial</label><input id="purchaseInitialInstallment" type="number" min="1" max="360" step="1" value="1"></div>
+        <div style="grid-column:1/-1"><label for="purchaseObs">Observação (opcional)</label><input id="purchaseObs" type="text" placeholder="Ex: compra para uso pessoal"></div>
+        <div id="purchaseInstallmentHint" class="purchase-installment-hint" style="grid-column:1/-1;display:none">A compra parcelada será armazenada como um único registro. As ocorrências das parcelas serão calculadas futuramente pelo motor de faturas da Fase C.</div>
+        <div style="grid-column:1/-1"><button class="primary" id="purchaseSalvar" style="width:100%">Salvar Compra</button></div>
+      </div>
+    </div>
+
     <div class="panel" id="panelInvest">
       <h3 id="panelInvestTitle">Novo Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <div class="form-grid">
@@ -2438,7 +2519,7 @@ window.addEventListener('beforeunload', e => {
     const nav = document.querySelector('.mobile-bottom-nav');
     if (!nav) return;
     const index = ['dashboard','caixa','pockets','invest','profile'].indexOf(tabName);
-    nav.dataset.active = tabName;
+    nav.dataset.active = index >= 0 ? tabName : 'caixa';
     nav.style.setProperty('--nav-indicator-x', `${Math.max(index, 0) * 100}%`);
   }
 
@@ -2493,6 +2574,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let recurringBills = [];
   let budgets = [];
   let goals = [];
+  let cards = [];
+  let purchases = [];
+  let editingCardId = null;
+  let editingPurchaseId = null;
   let pendingImport = [];
   const FEATURE_SETTINGS_KEY = 'livrocaixa-feature-settings';
   let featureSettings = { autoLaunchRecurring: false, reminders: true, autoRefreshQuotes: false, quoteRefreshMinutes: 15, projectionMonths: 6, autoCategorization: false, reminderAdvanceDays: 3, monthlySavingsGoal: 0 };
@@ -2576,6 +2661,8 @@ document.addEventListener('DOMContentLoaded', () => {
     editingPocketId = null;
     investmentMovementTarget = null;
     investmentMovementEditingId = null;
+    editingCardId = null;
+    editingPurchaseId = null;
     pocketMovementTarget = null;
     pocketMovementEditingId = null;
     yieldTarget = null;
@@ -2637,7 +2724,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function markSingleActionButtons() {
-    ['fSalvar','bSalvar','cSalvar','tSalvar','iSalvar','pSalvar','pmSalvar','imSalvar','importConfirm','btnFetchPrice','imFetchPrice','btnUpdateAllPrices','btnExportBackup','btnNovoBill','billSalvar'].forEach(id => {
+    ['fSalvar','bSalvar','cSalvar','tSalvar','iSalvar','pSalvar','pmSalvar','imSalvar','importConfirm','btnFetchPrice','imFetchPrice','btnUpdateAllPrices','btnExportBackup','btnNovoBill','billSalvar','btnNovoCard','cardSalvar','purchaseSalvar'].forEach(id => {
       const btn = document.getElementById(id);
       if (btn) btn.dataset.singleAction = '1';
     });
@@ -2668,7 +2755,7 @@ document.addEventListener('DOMContentLoaded', () => {
       schemaVersion: BACKUP_SCHEMA_VERSION,
       app: 'livro-caixa',
       exportedAt: new Date().toISOString(),
-      data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, budgets, featureSettings, diagnosticLog: diagnosticLog.slice(0, LOG_LIMIT) }
+      data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, budgets, goals, cards, purchases, featureSettings, diagnosticLog: diagnosticLog.slice(0, LOG_LIMIT) }
     };
   }
 
@@ -2678,7 +2765,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const required = ['banks','categories','entries'];
     if (!required.every(k => Array.isArray(data[k]))) return false;
     if (payload.schemaVersion != null && (!Number.isInteger(payload.schemaVersion) || payload.schemaVersion < 1 || payload.schemaVersion > BACKUP_SCHEMA_VERSION)) return false;
-    const optional = ['investments','pockets','yieldsLog','recurringBills','budgets','goals','diagnosticLog'];
+    const optional = ['investments','pockets','yieldsLog','recurringBills','budgets','goals','cards','purchases','diagnosticLog'];
     if (optional.some(k => data[k] != null && !Array.isArray(data[k]))) return false;
     if (data.featureSettings != null && (typeof data.featureSettings !== 'object' || Array.isArray(data.featureSettings))) return false;
     return true;
@@ -2696,12 +2783,15 @@ document.addEventListener('DOMContentLoaded', () => {
       recurringBills: Array.isArray(data.recurringBills) ? data.recurringBills : [],
       budgets: Array.isArray(data.budgets) ? data.budgets : [],
       featureSettings: data.featureSettings && typeof data.featureSettings === 'object' ? data.featureSettings : null,
+      goals: Array.isArray(data.goals) ? data.goals : [],
+      cards: Array.isArray(data.cards) ? data.cards : [],
+      purchases: Array.isArray(data.purchases) ? data.purchases : [],
       diagnosticLog: Array.isArray(data.diagnosticLog) ? data.diagnosticLog : []
     };
   }
 
   function sanitizeBackupData(data) {
-    const dropped = { banks: 0, categories: 0, entries: 0, investments: 0, pockets: 0, recurringBills: 0, budgets: 0 };
+    const dropped = { banks: 0, categories: 0, entries: 0, investments: 0, pockets: 0, recurringBills: 0, budgets: 0, cards: 0, purchases: 0 };
     const banks = data.banks.filter(b => {
       const ok = b && typeof b === 'object' && typeof b.id === 'string' && b.id && typeof b.name === 'string' && b.name.trim();
       if (!ok) dropped.banks++;
@@ -2739,8 +2829,24 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!ok) dropped.budgets++;
       return ok;
     }).map(b => ({ ...b, amount: Number(b.amount) }));
+    const cards = (Array.isArray(data.cards) ? data.cards : []).filter(c => {
+      const ok = c && typeof c === 'object' && typeof c.id === 'string' && c.id && typeof c.name === 'string' && c.name.trim()
+        && Number.isInteger(Number(c.closingDay)) && Number(c.closingDay) >= 1 && Number(c.closingDay) <= 31
+        && Number.isInteger(Number(c.dueDay)) && Number(c.dueDay) >= 1 && Number(c.dueDay) <= 31;
+      if (!ok) dropped.cards++;
+      return ok;
+    });
+    const cardIds = new Set(cards.map(c => c.id));
+    const purchases = (Array.isArray(data.purchases) ? data.purchases : []).filter(p => {
+      const ok = p && typeof p === 'object' && typeof p.id === 'string' && p.id && typeof p.cardId === 'string' && cardIds.has(p.cardId)
+        && typeof p.description === 'string' && p.description.trim() && typeof p.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(p.date)
+        && Number.isFinite(Number(p.totalValue)) && Number(p.totalValue) > 0
+        && (p.paymentType === 'avista' || p.paymentType === 'parcelado');
+      if (!ok) dropped.purchases++;
+      return ok;
+    });
     const diagnosticLog = data.diagnosticLog.filter(item => item && typeof item === 'object' && typeof item.type === 'string' && typeof item.module === 'string').slice(0, LOG_LIMIT);
-    return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, budgets, featureSettings: data.featureSettings || null, diagnosticLog }, dropped };
+    return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, budgets, goals: data.goals || [], cards, purchases, featureSettings: data.featureSettings || null, diagnosticLog }, dropped };
   }
 
   // Tema Escuro / Claro
@@ -2866,16 +2972,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tabBtnCaixa')?.classList.toggle('active', tabName === 'caixa');
     document.getElementById('tabBtnInvest')?.classList.toggle('active', tabName === 'invest');
     document.getElementById('tabBtnPockets')?.classList.toggle('active', tabName === 'pockets');
+    document.getElementById('tabBtnCards')?.classList.toggle('active', tabName === 'cards');
     document.getElementById('tabBtnBills')?.classList.toggle('active', tabName === 'bills');
     document.getElementById('viewDashboard').classList.toggle('active', tabName === 'dashboard');
     document.getElementById('viewCaixa').classList.toggle('active', tabName === 'caixa');
     document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
     document.getElementById('viewPockets').classList.toggle('active', tabName === 'pockets');
+    document.getElementById('viewCards').classList.toggle('active', tabName === 'cards');
     document.getElementById('viewBills').classList.toggle('active', tabName === 'bills');
     document.getElementById('viewProfile').classList.toggle('active', tabName === 'profile');
     document.getElementById('balanceStrip').classList.toggle('section-hidden', tabName !== 'caixa');
     document.getElementById('universalPeriodBar')?.classList.toggle('section-hidden', !['caixa','invest','pockets'].includes(tabName));
     if (tabName === 'bills') renderBills();
+    if (tabName === 'cards') renderCards();
     if (tabName === 'invest') { renderInvestments(); refreshStaleInvestmentQuotes(); }
     if (tabName === 'dashboard') renderAdvancedDashboard();
     document.querySelectorAll('.mobile-bottom-nav button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === tabName));
@@ -2897,8 +3006,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return docRef().collection(name);
   }
 
-  const COLLECTIONS = ['banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog', 'recurringBills', 'budgets', 'goals'];
-  let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {} };
+  const COLLECTIONS = ['banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog', 'recurringBills', 'budgets', 'goals', 'cards', 'purchases'];
+  let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
   let realtimeUnsubscribers = [];
 
   function arrToMap(arr) {
@@ -2937,14 +3046,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.movePocket = (id, direction) => moveDisplayItem('pockets', id, direction);
 
   function currentStateSnapshot() {
-    return { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, budgets };
+    return { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, budgets, goals, cards, purchases };
   }
 
   function setLastSyncedFromCurrentState() {
     const s = currentStateSnapshot();
     lastSynced = {
       banks: arrToMap(s.banks), categories: arrToMap(s.categories), entries: arrToMap(s.entries),
-      investments: arrToMap(s.investments), pockets: arrToMap(s.pockets), yieldsLog: arrToMap(s.yieldsLog), recurringBills: arrToMap(s.recurringBills), budgets: arrToMap(s.budgets)
+      investments: arrToMap(s.investments), pockets: arrToMap(s.pockets), yieldsLog: arrToMap(s.yieldsLog), recurringBills: arrToMap(s.recurringBills), budgets: arrToMap(s.budgets), goals: arrToMap(s.goals), cards: arrToMap(s.cards), purchases: arrToMap(s.purchases)
     };
   }
 
@@ -2959,6 +3068,8 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'recurringBills': recurringBills = arr; break;
       case 'budgets': budgets = arr; break;
       case 'goals': goals = arr; break;
+      case 'cards': cards = arr; break;
+      case 'purchases': purchases = arr; break;
     }
   }
 
@@ -3019,7 +3130,10 @@ document.addEventListener('DOMContentLoaded', () => {
         yieldsLog = data.yieldsLog || [];
         recurringBills = data.recurringBills || [];
         budgets = data.budgets || [];
-        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {} };
+        goals = data.goals || [];
+        cards = data.cards || [];
+        purchases = data.purchases || [];
+        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
         if (data.banks || data.entries) {
           syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
         }
@@ -3072,6 +3186,8 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'recurringBills': return recurringBills;
       case 'budgets': return budgets;
       case 'goals': return goals;
+      case 'cards': return cards;
+      case 'purchases': return purchases;
     }
   }
 
@@ -4638,6 +4754,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderInvestments();
     renderPocketBalances();
     renderPockets();
+    renderCards();
     renderPeriodSummaries();
     renderNotifications();
   }
@@ -4694,6 +4811,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (action === 'overview') { window.switchTab('caixa'); window.scrollTo({ top:0, behavior:'smooth' }); }
     if (action === 'entries') { window.switchTab('caixa'); setTimeout(() => scrollTo('ledgerBody'), 20); }
     if (action === 'bills') window.switchTab('bills');
+    if (action === 'cards') window.switchTab('cards');
     if (action === 'diagnostico') openDiagnostics();
     if (action === 'lab') openFeatureLab();
     if (action === 'reports') { window.switchTab('caixa'); setTimeout(() => scrollTo('categorySummary'), 20); }
@@ -5319,6 +5437,171 @@ VALOR: ${fmt(bill.amount)}
     setMoneyInput('fValor', 0);
     document.getElementById('fData').value = todayISO();
     openModal('panelNovo');
+  };
+
+
+  function renderCardBankSelect(selected = '') {
+    const select = document.getElementById('cardBanco');
+    if (!select) return;
+    select.innerHTML = '<option value="">Não informado</option>' + banks.map(b => `<option value="${escapeHTML(b.id)}">${escapeHTML(b.name)}</option>`).join('');
+    select.value = selected || '';
+  }
+  function renderPurchaseSelects(selectedCard = '', selectedCategory = '') {
+    const cardSelect = document.getElementById('purchaseCard');
+    const catSelect = document.getElementById('purchaseCategory');
+    if (cardSelect) {
+      cardSelect.innerHTML = cards.filter(c => c.active !== false).map(c => `<option value="${escapeHTML(c.id)}">${escapeHTML(c.name)}</option>`).join('');
+      if (selectedCard && cards.some(c => c.id === selectedCard)) cardSelect.value = selectedCard;
+    }
+    if (catSelect) {
+      catSelect.innerHTML = categories.map(c => `<option value="${escapeHTML(c.id)}">${escapeHTML(c.name)}</option>`).join('');
+      if (selectedCategory && categories.some(c => c.id === selectedCategory)) catSelect.value = selectedCategory;
+    }
+  }
+  function cardBankName(card) { return banks.find(b => b.id === card.bankId)?.name || 'Banco não informado'; }
+  function normalizeCardRecord(record, existing = null) {
+    return {
+      id: existing?.id || record.id,
+      createdAt: existing?.createdAt || record.createdAt || new Date().toISOString(),
+      name: String(record.name || '').trim(),
+      bankId: String(record.bankId || ''),
+      titular: String(record.titular || '').trim(),
+      closingDay: Math.min(31, Math.max(1, Number(record.closingDay) || 1)),
+      dueDay: Math.min(31, Math.max(1, Number(record.dueDay) || 1)),
+      limit: Math.max(0, Number(record.limit) || 0),
+      active: record.active !== false,
+      obs: String(record.obs || '').trim()
+    };
+  }
+  function normalizePurchaseRecord(record, existing = null) {
+    const total = Math.max(0, Number(record.totalValue) || 0);
+    const type = record.paymentType === 'parcelado' ? 'parcelado' : 'avista';
+    const totalInstallments = type === 'parcelado' ? Math.max(2, Math.min(360, Number(record.totalInstallments) || 2)) : 1;
+    const installmentValue = type === 'parcelado' ? (Number(record.installmentValue) > 0 ? Number(record.installmentValue) : total / totalInstallments) : total;
+    return {
+      id: existing?.id || record.id,
+      createdAt: existing?.createdAt || record.createdAt || new Date().toISOString(),
+      cardId: String(record.cardId || ''),
+      description: String(record.description || '').trim(),
+      date: record.date || todayISO(),
+      totalValue: total,
+      titular: String(record.titular || '').trim(),
+      categoryId: String(record.categoryId || ''),
+      paymentType: type,
+      totalInstallments,
+      installmentValue,
+      initialInstallment: Math.min(totalInstallments, Math.max(1, Number(record.initialInstallment) || 1)),
+      obs: String(record.obs || '').trim()
+    };
+  }
+  function openCardModal(id = null) {
+    editingCardId = id;
+    const card = id ? cards.find(c => c.id === id) : null;
+    renderCardBankSelect(card?.bankId || '');
+    document.getElementById('cardNome').value = card?.name || '';
+    document.getElementById('cardTitular').value = card?.titular || '';
+    document.getElementById('cardFechamento').value = card?.closingDay || '';
+    document.getElementById('cardVencimento').value = card?.dueDay || '';
+    setMoneyInput('cardLimite', card?.limit || 0);
+    document.getElementById('cardAtivo').value = card?.active === false ? '0' : '1';
+    document.getElementById('cardObs').value = card?.obs || '';
+    document.getElementById('panelCardTitle').innerHTML = `${card ? 'Editar' : 'Novo'} Cartão <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    document.getElementById('cardSalvar').textContent = card ? 'Atualizar Cartão' : 'Salvar Cartão';
+    openModal('panelCard');
+  }
+  function openPurchaseModal(cardId = '', id = null) {
+    if (!cards.filter(c => c.active !== false).length && !id) { alert('Cadastre pelo menos um cartão ativo antes de registrar uma compra.'); return; }
+    editingPurchaseId = id;
+    const purchase = id ? purchases.find(p => p.id === id) : null;
+    renderPurchaseSelects(purchase?.cardId || cardId || cards.find(c => c.active !== false)?.id || '', purchase?.categoryId || categories[0]?.id || '');
+    document.getElementById('purchaseDate').value = purchase?.date || todayISO();
+    document.getElementById('purchaseDesc').value = purchase?.description || '';
+    setMoneyInput('purchaseValue', purchase?.totalValue || 0);
+    document.getElementById('purchaseTitular').value = purchase?.titular || '';
+    document.getElementById('purchaseType').value = purchase?.paymentType === 'parcelado' ? 'parcelado' : 'avista';
+    document.getElementById('purchaseInstallments').value = purchase?.totalInstallments || '';
+    document.getElementById('purchaseInitialInstallment').value = purchase?.initialInstallment || 1;
+    document.getElementById('purchaseObs').value = purchase?.obs || '';
+    updatePurchaseInstallmentFields();
+    document.getElementById('panelPurchaseTitle').innerHTML = `${purchase ? 'Editar' : 'Nova'} Compra <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    document.getElementById('purchaseSalvar').textContent = purchase ? 'Atualizar Compra' : 'Salvar Compra';
+    openModal('panelPurchase');
+  }
+  function updatePurchaseInstallmentFields() {
+    const parcelado = document.getElementById('purchaseType')?.value === 'parcelado';
+    ['purchaseInstallmentsField','purchaseInstallmentValueField','purchaseInitialInstallmentField','purchaseInstallmentHint'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display=parcelado ? '' : 'none'; });
+    if (parcelado) {
+      const total = readMoneyInput('purchaseValue');
+      const count = Math.max(2, Number(document.getElementById('purchaseInstallments').value) || 2);
+      document.getElementById('purchaseInstallmentValue').value = formatMoneyFromCents(Math.round((total / count) * 100));
+    }
+  }
+  function renderCards() {
+    const container = document.getElementById('cardsGrid');
+    if (!container) return;
+    if (!cards.length) {
+      container.innerHTML = '<div class="empty" style="grid-column:1 / -1;">Nenhum cartão cadastrado. Clique em “+ Novo Cartão” para começar.</div>';
+      return;
+    }
+    container.innerHTML = cards.map(card => {
+      const cardPurchases = purchases.filter(p => p.cardId === card.id).sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')));
+      return `<article class="credit-card-box ${card.active === false ? 'is-inactive' : ''}">
+        <div class="credit-card-head"><div class="credit-card-title"><span class="credit-card-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span><div><h3>${escapeHTML(card.name)}</h3><small>${escapeHTML(cardBankName(card))}${card.titular ? ' · ' + escapeHTML(card.titular) : ''}</small></div></div><span class="credit-card-status ${card.active === false ? 'inactive' : ''}">${card.active === false ? 'Inativo' : 'Ativo'}</span></div>
+        <div class="credit-card-meta"><div class="credit-card-meta-item"><span>Fechamento</span><strong>Dia ${card.closingDay}</strong></div><div class="credit-card-meta-item"><span>Vencimento</span><strong>Dia ${card.dueDay}</strong></div><div class="credit-card-meta-item"><span>Limite</span><strong>${card.limit > 0 ? fmt(card.limit) : 'Não informado'}</strong></div><div class="credit-card-meta-item"><span>Compras</span><strong>${cardPurchases.length}</strong></div></div>
+        <div class="credit-card-purchases"><div class="credit-card-purchases-head"><strong>Compras vinculadas</strong><button type="button" class="action-btn" onclick="openPurchaseModal('${card.id}')" ${card.active === false ? 'disabled' : ''}>+ Compra</button></div>
+          ${cardPurchases.length ? cardPurchases.map(p => { const cat=categories.find(c=>c.id===p.categoryId)?.name || 'Sem categoria'; const parcel=p.paymentType==='parcelado' ? ` · ${p.totalInstallments}x de ${fmt(p.installmentValue)}` : ' · À vista'; return `<div class="credit-card-purchase"><div class="credit-card-purchase-main"><strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong><span>${formatDisplayDate(p.date)} · ${escapeHTML(p.titular || 'Sem titular')} · ${escapeHTML(cat)}${parcel}</span></div><div class="credit-card-purchase-value">${fmt(p.totalValue)}</div><div class="credit-card-actions" style="grid-column:1/-1"><button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar compra"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir compra"></button></div></div>`; }).join('') : '<div class="credit-card-empty">Nenhuma compra vinculada a este cartão.</div>'}
+        </div>
+        <div class="credit-card-actions"><button type="button" class="action-btn" onclick="editCard('${card.id}')">Editar</button><button type="button" class="action-btn" onclick="toggleCardActive('${card.id}')">${card.active === false ? 'Ativar' : 'Desativar'}</button></div>
+      </article>`;
+    }).join('');
+  }
+  window.editCard = id => openCardModal(id);
+  window.editPurchase = id => openPurchaseModal('', id);
+  window.openPurchaseModal = openPurchaseModal;
+  window.toggleCardActive = async id => {
+    const card = cards.find(c => c.id === id); if (!card) return;
+    card.active = card.active === false;
+    try { await persistAll(); renderCards(); logInfo('Cartões','Alterar status do cartão','Sucesso',`${card.name} agora está ${card.active ? 'ativo' : 'inativo'}.`); } catch (err) { card.active = !card.active; logSyncError('status do cartão', err); renderCards(); }
+  };
+  window.deletePurchase = async id => {
+    const purchase = purchases.find(p => p.id === id); if (!purchase) return;
+    if (!confirm(`Excluir a compra “${purchase.description || 'sem descrição'}”?`)) return;
+    purchases = purchases.filter(p => p.id !== id);
+    try { await persistAll(); renderCards(); logInfo('Cartões','Excluir compra','Sucesso','Compra excluída.'); } catch (err) { purchases.push(purchase); logSyncError('exclusão de compra', err); renderCards(); }
+  };
+  document.getElementById('btnNovoCard').onclick = () => openCardModal();
+  document.getElementById('cardSalvar').onclick = async () => {
+    const name = document.getElementById('cardNome').value.trim();
+    const closingDay = Number(document.getElementById('cardFechamento').value);
+    const dueDay = Number(document.getElementById('cardVencimento').value);
+    if (!name) { alert('Informe o nome do cartão.'); return; }
+    if (!(closingDay >= 1 && closingDay <= 31) || !(dueDay >= 1 && dueDay <= 31)) { alert('Informe dias de fechamento e vencimento entre 1 e 31.'); return; }
+    const record = normalizeCardRecord({ name, bankId: document.getElementById('cardBanco').value, titular: document.getElementById('cardTitular').value, closingDay, dueDay, limit: readMoneyInput('cardLimite'), active: document.getElementById('cardAtivo').value !== '0', obs: document.getElementById('cardObs').value }, editingCardId ? cards.find(c=>c.id===editingCardId) : { id:'card_' + Date.now() + '_' + Math.random().toString(36).slice(2,8) });
+    const old = editingCardId ? cards.find(c=>c.id===editingCardId) : null;
+    if (old) cards = cards.map(c => c.id === editingCardId ? record : c); else cards.push(record);
+    try { await persistAll(); renderCards(); closeAllPanels(); logInfo('Cartões', old ? 'Editar cartão' : 'Criar cartão', 'Sucesso', `${record.name} salvo com identificador persistente.`); }
+    catch (err) { if (old) cards = cards.map(c => c.id === editingCardId ? old : c); else cards = cards.filter(c => c.id !== record.id); logSyncError('salvamento de cartão', err); renderCards(); alert('Não foi possível salvar o cartão.'); }
+  };
+  document.getElementById('purchaseType').addEventListener('change', updatePurchaseInstallmentFields);
+  document.getElementById('purchaseValue').addEventListener('input', updatePurchaseInstallmentFields);
+  document.getElementById('purchaseInstallments').addEventListener('input', updatePurchaseInstallmentFields);
+  document.getElementById('purchaseSalvar').onclick = async () => {
+    const cardId = document.getElementById('purchaseCard').value;
+    const description = document.getElementById('purchaseDesc').value.trim();
+    const totalValue = readMoneyInput('purchaseValue');
+    const date = document.getElementById('purchaseDate').value || todayISO();
+    const paymentType = document.getElementById('purchaseType').value;
+    if (!cardId || !cards.some(c => c.id === cardId)) { alert('Selecione um cartão válido.'); return; }
+    if (!description) { alert('Informe a descrição da compra.'); return; }
+    if (!(totalValue > 0)) { alert('Informe um valor total maior que zero.'); return; }
+    let totalInstallments = Number(document.getElementById('purchaseInstallments').value) || 1;
+    if (paymentType === 'parcelado' && !(totalInstallments >= 2 && totalInstallments <= 360)) { alert('Informe entre 2 e 360 parcelas.'); return; }
+    const installmentValue = paymentType === 'parcelado' ? totalValue / totalInstallments : totalValue;
+    const record = normalizePurchaseRecord({ cardId, description, totalValue, date, titular: document.getElementById('purchaseTitular').value, categoryId: document.getElementById('purchaseCategory').value, paymentType, totalInstallments, installmentValue, initialInstallment: document.getElementById('purchaseInitialInstallment').value, obs: document.getElementById('purchaseObs').value }, editingPurchaseId ? purchases.find(p=>p.id===editingPurchaseId) : { id:'purchase_' + Date.now() + '_' + Math.random().toString(36).slice(2,8) });
+    const old = editingPurchaseId ? purchases.find(p => p.id === editingPurchaseId) : null;
+    if (old) purchases = purchases.map(p => p.id === editingPurchaseId ? record : p); else purchases.push(record);
+    try { await persistAll(); renderCards(); closeAllPanels(); logInfo('Cartões',old ? 'Editar compra' : 'Criar compra','Sucesso',`${record.description} vinculada ao cartão ${cards.find(c=>c.id===record.cardId)?.name || ''}.`); }
+    catch (err) { if (old) purchases = purchases.map(p => p.id === editingPurchaseId ? old : p); else purchases = purchases.filter(p => p.id !== record.id); logSyncError('salvamento de compra', err); renderCards(); alert('Não foi possível salvar a compra.'); }
   };
 
   document.getElementById('btnNovoInvest').onclick = () => {
@@ -6114,7 +6397,7 @@ VALOR: ${fmt(bill.amount)}
   async function encryptBackupPayload(payload, password) { if (String(password || '').length < 6) throw new Error('A senha do backup deve ter pelo menos 6 caracteres.'); const salt = crypto.getRandomValues(new Uint8Array(16)); const iv = crypto.getRandomValues(new Uint8Array(12)); const key = await deriveBackupKey(password, salt); const encoded = new TextEncoder().encode(JSON.stringify(payload)); const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded); return { type: 'livro-caixa-encrypted-backup', version: 1, algorithm: 'AES-GCM/PBKDF2-SHA-256', iterations: 120000, salt: bytesToBase64(salt), iv: bytesToBase64(iv), ciphertext: bytesToBase64(new Uint8Array(cipher)), createdAt: new Date().toISOString() }; }
   async function decryptBackupPayload(envelope, password) { if (!envelope || envelope.type !== 'livro-caixa-encrypted-backup' || envelope.version !== 1) throw new Error('Envelope de backup criptografado inválido.'); const key = await deriveBackupKey(password, base64ToBytes(envelope.salt)); const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: base64ToBytes(envelope.iv) }, key, base64ToBytes(envelope.ciphertext)); return JSON.parse(new TextDecoder().decode(plain)); }
   function downloadJsonFile(payload, filename) { const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
-  async function restoreValidatedBackup(payload, sourceLabel = 'Backup') { if (!isValidBackupPayload(payload)) throw new Error('Arquivo de backup inválido ou incompatível com esta versão.'); const data = extractBackupData(payload); const { data: clean, dropped } = sanitizeBackupData(data); const totalDropped = Object.values(dropped).reduce((a, b) => a + b, 0); if (totalDropped > 0 && !confirm(`${totalDropped} registro(s) incompleto(s) serão ignorados. Deseja continuar?`)) return false; banks = clean.banks.filter(bk => bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral'); categories = clean.categories; entries = clean.entries; investments = sortDisplayOrder(clean.investments); pockets = sortDisplayOrder(clean.pockets); ensureDisplayOrder(investments); ensureDisplayOrder(pockets); yieldsLog = clean.yieldsLog; recurringBills = clean.recurringBills || []; budgets = clean.budgets || []; if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); } diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT)); persistDiagnosticLogLocally(); normalizePockets(); await persistNow(); populateFilterControls(true); render(); logInfo('Importação', 'Restaurar backup', 'Sucesso', `${sourceLabel} restaurado após validação e sanitização.`, { schemaVersion: payload.schemaVersion || 'criptografado', dropped }); return true; }
+  async function restoreValidatedBackup(payload, sourceLabel = 'Backup') { if (!isValidBackupPayload(payload)) throw new Error('Arquivo de backup inválido ou incompatível com esta versão.'); const data = extractBackupData(payload); const { data: clean, dropped } = sanitizeBackupData(data); const totalDropped = Object.values(dropped).reduce((a, b) => a + b, 0); if (totalDropped > 0 && !confirm(`${totalDropped} registro(s) incompleto(s) serão ignorados. Deseja continuar?`)) return false; banks = clean.banks.filter(bk => bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral'); categories = clean.categories; entries = clean.entries; investments = sortDisplayOrder(clean.investments); pockets = sortDisplayOrder(clean.pockets); ensureDisplayOrder(investments); ensureDisplayOrder(pockets); yieldsLog = clean.yieldsLog; recurringBills = clean.recurringBills || []; budgets = clean.budgets || []; goals = clean.goals || []; cards = clean.cards || []; purchases = clean.purchases || []; if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); } diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT)); persistDiagnosticLogLocally(); normalizePockets(); await persistNow(); populateFilterControls(true); render(); logInfo('Importação', 'Restaurar backup', 'Sucesso', `${sourceLabel} restaurado após validação e sanitização.`, { schemaVersion: payload.schemaVersion || 'criptografado', dropped }); return true; }
 
   document.getElementById('btnExportBackup').onclick = () => {
     const payload = buildBackupPayload();
@@ -6169,6 +6452,9 @@ VALOR: ${fmt(bill.amount)}
         yieldsLog = clean.yieldsLog;
         recurringBills = clean.recurringBills || [];
         budgets = clean.budgets || [];
+        goals = clean.goals || [];
+        cards = clean.cards || [];
+        purchases = clean.purchases || [];
         if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); }
         diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT));
         persistDiagnosticLogLocally();
@@ -6605,6 +6891,8 @@ VALOR: ${fmt(bill.amount)}
       document.getElementById('btnNovoInvest').click();
     } else if (currentTab === 'pockets') {
       document.getElementById('btnNovoPocket').click();
+    } else if (currentTab === 'cards') {
+      document.getElementById('btnNovoCard').click();
     } else {
       document.getElementById('btnNovo').click();
     }
@@ -6634,8 +6922,8 @@ VALOR: ${fmt(bill.amount)}
       if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
       realtimeUnsubscribers.forEach(unsub => unsub());
       realtimeUnsubscribers = [];
-      lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {} };
-      banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; budgets = [];
+      lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
+      banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; budgets = []; goals = []; cards = []; purchases = [];
       clearSessionMemory();
       syncOverlay.classList.add('hidden');
       overlay.classList.remove('hidden');
