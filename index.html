@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.18-18 fase C(CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.18-18 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2233,7 +2233,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
         <div><label for="purchaseType">Pagamento</label><select id="purchaseType"><option value="avista">À vista</option><option value="parcelado">Parcelado</option></select></div>
         <div id="purchaseInstallmentsField" style="display:none"><label for="purchaseInstallments">Total de parcelas</label><input id="purchaseInstallments" type="number" min="2" max="360" step="1" placeholder="Ex: 7"></div>
         <div id="purchaseInstallmentValueField" style="display:none"><label for="purchaseInstallmentValue">Valor da parcela</label><input id="purchaseInstallmentValue" class="purchase-readonly" type="text" readonly placeholder="R$ 0,00"></div>
-        <div id="purchaseInitialInstallmentField" style="display:none"><label for="purchaseInitialInstallment">Parcela inicial</label><input id="purchaseInitialInstallment" type="number" min="1" max="360" step="1" value="1"></div>
+        <div id="purchaseInitialInstallmentField" style="display:none"><label for="purchaseInitialInstallment">Parcela inicial</label><input id="purchaseInitialInstallment" type="number" min="1" max="360" step="1" value="1"><span class="hint">Refere-se à fatura calculada a partir da data da compra — não à fatura do mês atual. Ex: se a data da compra cai na fatura de julho, "2" significa que julho já é a parcela 2/N.</span></div>
         <div style="grid-column:1/-1"><label for="purchaseObs">Observação (opcional)</label><input id="purchaseObs" type="text" placeholder="Ex: compra para uso pessoal"></div>
         <div id="purchaseInstallmentHint" class="purchase-installment-hint" style="grid-column:1/-1;display:none">A compra parcelada será armazenada como um único registro. As ocorrências das parcelas serão calculadas futuramente pelo motor de faturas da Fase C.</div>
         <div style="grid-column:1/-1"><button class="primary" id="purchaseSalvar" style="width:100%">Salvar Compra</button></div>
@@ -5404,15 +5404,34 @@ VALOR: ${fmt(bill.amount)}
     const y=billViewDate.getFullYear(), m=billViewDate.getMonth(), key=billMonthKey(billViewDate);
     document.getElementById('billMonthLabel').textContent=billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
     populateBillTitularFilter();
-    const rows=calendarBillRows(), active=rows.map(row=>row.bill), pending=rows.filter(row=>!row.launched), paidCount=active.length-pending.length, total=active.reduce((sum,bill)=>sum+Number(bill.amount||0),0), overdue=pending.filter(row=>row.status==='Atrasado').length;
-    document.getElementById('billsSummary').innerHTML=`<div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pagas</span><span class="amount">${paidCount}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pending.length}</span></div><div class="balance-card"><span class="label">Atrasadas</span><span class="amount">${overdue}</span></div>`;
+    const titularFilter = document.getElementById('billTitularFilter')?.value || '';
+    const rows=calendarBillRows(), active=rows.map(row=>row.bill), pending=rows.filter(row=>!row.launched), paidCount=active.length-pending.length;
+    const allInvoiceRows=calendarInvoiceRows(y,m);
+    const invoiceRows=titularFilter?allInvoiceRows.map(inv=>({...inv, breakdown:inv.breakdown.filter(b=>b.titular===titularFilter)})).filter(inv=>inv.breakdown.length):allInvoiceRows;
+    const invoiceDisplayTotal=row=>titularFilter?row.breakdown.reduce((s,b)=>s+b.total,0):row.invoice.total;
+    const total=active.reduce((sum,bill)=>sum+Number(bill.amount||0),0) + invoiceRows.reduce((sum,row)=>sum+invoiceDisplayTotal(row),0);
+    const overdue=pending.filter(row=>row.status==='Atrasado').length + invoiceRows.filter(row=>row.dueDate<today_ISO_safe()).length;
+    document.getElementById('billsSummary').innerHTML=`<div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pagas</span><span class="amount">${paidCount}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pending.length}</span></div><div class="balance-card"><span class="label">Atrasadas</span><span class="amount">${overdue}</span></div><div class="balance-card"><span class="label">Faturas de cartão</span><span class="amount">${invoiceRows.length}</span></div>`;
     const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate(), names=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']; let html=names.map(n=>`<div class="bill-weekday">${n}</div>`).join('');
     for(let i=0;i<first;i++) html+=`<div class="bill-day muted"></div>`;
     const today=todayISO();
-    for(let d=1;d<=days;d++){ const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; const events=rows.filter(row=>row.bill.recurrenceType==='nao_recorrente'||row.bill.frequency==='once'?row.dueDate===date:billDueDayFromStart(row.bill)===d); html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(row=>`<button type="button" class="bill-event ${row.launched?'paid':''}" onclick="openBillShare('${row.bill.id}')" title="${escapeHTML(row.bill.name)}${row.installmentLabel?' · Parcela '+row.installmentLabel:''} · ${fmt(row.bill.amount)}">${escapeHTML(row.bill.name)}${row.installmentLabel?' '+row.installmentLabel:''} · ${fmt(row.bill.amount)}</button>`).join('')}</div>`; }
+    for(let d=1;d<=days;d++){ const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; const events=rows.filter(row=>row.bill.recurrenceType==='nao_recorrente'||row.bill.frequency==='once'?row.dueDate===date:billDueDayFromStart(row.bill)===d); const invEvents=invoiceRows.filter(row=>row.dueDate===date); html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(row=>`<button type="button" class="bill-event ${row.launched?'paid':''}" onclick="openBillShare('${row.bill.id}')" title="${escapeHTML(row.bill.name)}${row.installmentLabel?' · Parcela '+row.installmentLabel:''} · ${fmt(row.bill.amount)}">${escapeHTML(row.bill.name)}${row.installmentLabel?' '+row.installmentLabel:''} · ${fmt(row.bill.amount)}</button>`).join('')}${invEvents.map(row=>`<button type="button" class="bill-event card-invoice" onclick="toggleInvoiceDetail('${row.card.id}')" title="Fatura ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}">💳 ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}</button>`).join('')}</div>`; }
     document.getElementById('billCalendar').innerHTML=html;
-    document.getElementById('billList').innerHTML=rows.length?rows.slice().sort((a,b)=>billDueDayFromStart(a.bill)-billDueDayFromStart(b.bill)).map(row=>{const b=row.bill; return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}${row.installmentLabel?` · Parcela ${row.installmentLabel}`:''}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente')} · Banco: ${escapeHTML(row.bank)} · ${fmt(b.amount)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${row.status==='Atrasado'?'overdue':''}">${row.status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button><button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join(''):`<div class="empty">Nenhuma conta/fatura cadastrada para este mês.</div>`;
+    const billsHtml=rows.slice().sort((a,b)=>billDueDayFromStart(a.bill)-billDueDayFromStart(b.bill)).map(row=>{const b=row.bill; return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}${row.installmentLabel?` · Parcela ${row.installmentLabel}`:''}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente')} · Banco: ${escapeHTML(row.bank)} · ${fmt(b.amount)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${row.status==='Atrasado'?'overdue':''}">${row.status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button><button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join('');
+    const invoicesHtml=invoiceRows.map(row=>{
+      const dueLabel=row.dueDate.split('-').reverse().join('/');
+      const displayTotal=invoiceDisplayTotal(row);
+      const breakdown=row.breakdown.map(b=>`<div class="hint" style="display:flex;justify-content:space-between;"><span>${escapeHTML(b.titular)} (${b.count})</span><span>${fmt(b.total)}</span></div>`).join('');
+      return `<div class="bill-list-item card-invoice-row" id="invoice-${escapeHTML(row.card.id)}"><div><strong>💳 Fatura ${escapeHTML(row.card.name)}</strong><div class="hint">Vencimento: ${dueLabel} · ${row.invoice.count} compra(s)/parcela(s) · Fatura não lançada — só compromisso previsto (fase seguinte permite lançar)</div><div class="card-invoice-breakdown" id="invoice-breakdown-${escapeHTML(row.card.id)}" style="display:none;margin-top:6px;">${breakdown||'<span class="hint">Sem detalhamento por titular.</span>'}</div></div><span class="bill-status">${fmt(displayTotal)}</span><div class="bill-actions"><button type="button" onclick="toggleInvoiceDetail('${row.card.id}')">Detalhar por titular</button></div></div>`;
+    }).join('');
+    document.getElementById('billList').innerHTML=(billsHtml+invoicesHtml)||`<div class="empty">Nenhuma conta ou fatura para este mês.</div>`;
   }
+  function today_ISO_safe(){ return todayISO(); }
+  window.toggleInvoiceDetail = function(cardId){
+    const box = document.getElementById('invoice-breakdown-' + cardId);
+    if (box) box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    document.getElementById('invoice-' + cardId)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
 
 
   function billsExportRows() { return calendarBillRows().map(({bill,dueDate,status,launched,bank}) => ({ 'Conta/Fatura': bill.name || '', 'Titular': bill.titular || '', 'Valor': Number(bill.amount || 0), 'Vencimento': dueDate.split('-').reverse().join('/'), 'Banco': bank, 'Status': status, 'Recorrente': bill.recurrenceType === 'nao_recorrente' ? 'Não' : 'Sim', 'Periodicidade': bill.frequency === 'once' ? 'Única' : 'Mensal', 'Observação': bill.desc || '' })); }
@@ -5590,6 +5609,37 @@ VALOR: ${fmt(bill.amount)}
   function invoicePeriodLabel(periodKey) {
     const [y, m] = periodKey.split('-').map(Number);
     return new Date(y, m - 1, 1).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  }
+  // ===== Fase D — Vencimento da fatura + integração com o Calendário =====
+  function invoiceDueDateForPeriod(card, periodKey) {
+    const [y, m] = periodKey.split('-').map(Number);
+    const closing = Math.min(31, Math.max(1, Number(card.closingDay) || 1));
+    const due = Math.min(31, Math.max(1, Number(card.dueDay) || closing));
+    // Se o dia de vencimento é menor que o dia de fechamento, o vencimento cai no mês seguinte ao fechamento.
+    // Ex: fecha dia 29, vence dia 05 -> fecha 29/08, vence 05/09.
+    const dueMonthOffset = due < closing ? 1 : 0;
+    const dueDate = new Date(y, (m - 1) + dueMonthOffset, 1);
+    const lastDayOfDueMonth = new Date(dueDate.getFullYear(), dueDate.getMonth() + 1, 0).getDate();
+    const finalDay = Math.min(due, lastDayOfDueMonth);
+    return `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(finalDay).padStart(2, '0')}`;
+  }
+  function invoiceTitularBreakdown(invoice) {
+    const byTitular = {};
+    invoice.lines.forEach(line => {
+      const titular = (line.purchase.titular || '').trim() || 'Sem titular';
+      if (!byTitular[titular]) byTitular[titular] = { titular, total: 0, count: 0 };
+      byTitular[titular].total += Number(line.amount || 0);
+      byTitular[titular].count += 1;
+    });
+    return Object.values(byTitular).sort((a, b) => b.total - a.total);
+  }
+  function calendarInvoiceRows(year, month) {
+    const periodKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+    return cards.filter(card => card.active !== false).map(card => {
+      const invoice = cardInvoiceForPeriod(card.id, periodKey);
+      if (invoice.total <= 0) return null;
+      return { card, invoice, dueDate: invoiceDueDateForPeriod(card, periodKey), breakdown: invoiceTitularBreakdown(invoice) };
+    }).filter(Boolean);
   }
 
   function renderCards() {
