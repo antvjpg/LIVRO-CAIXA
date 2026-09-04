@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.18-18 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.18-19 fase F (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2227,12 +2227,12 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
         <div><label for="purchaseCard">Cartão</label><select id="purchaseCard"></select></div>
         <div><label for="purchaseDate">Data da compra</label><input id="purchaseDate" type="date"></div>
         <div style="grid-column:1/-1"><label for="purchaseDesc">Descrição da compra</label><input id="purchaseDesc" type="text" placeholder="Ex: Pizza, celular, mercado" autocomplete="off"></div>
-        <div><label for="purchaseValue">Valor total (R$)</label><input id="purchaseValue" type="text" data-money="true" placeholder="R$ 0,00"></div>
+        <div><label for="purchaseValue" id="purchaseValueLabel">Valor total (R$)</label><input id="purchaseValue" type="text" data-money="true" placeholder="R$ 0,00"></div>
         <div><label for="purchaseTitular">Titular responsável</label><input id="purchaseTitular" type="text" placeholder="Ex: Titular 02" autocomplete="off"></div>
         <div><label for="purchaseCategory">Categoria</label><select id="purchaseCategory"></select></div>
         <div><label for="purchaseType">Pagamento</label><select id="purchaseType"><option value="avista">À vista</option><option value="parcelado">Parcelado</option></select></div>
         <div id="purchaseInstallmentsField" style="display:none"><label for="purchaseInstallments">Total de parcelas</label><input id="purchaseInstallments" type="number" min="2" max="360" step="1" placeholder="Ex: 7"></div>
-        <div id="purchaseInstallmentValueField" style="display:none"><label for="purchaseInstallmentValue">Valor da parcela</label><input id="purchaseInstallmentValue" class="purchase-readonly" type="text" readonly placeholder="R$ 0,00"></div>
+        <div id="purchaseInstallmentValueField" style="display:none"><label for="purchaseInstallmentValue">Valor da parcela</label><input id="purchaseInstallmentValue" type="text" data-money="true" placeholder="R$ 0,00"></div>
         <div id="purchaseInitialInstallmentField" style="display:none"><label for="purchaseInitialInstallment">Parcela inicial</label><input id="purchaseInitialInstallment" type="number" min="1" max="360" step="1" value="1"><span class="hint">Refere-se à fatura calculada a partir da data da compra — não à fatura do mês atual. Ex: se a data da compra cai na fatura de julho, "2" significa que julho já é a parcela 2/N.</span></div>
         <div style="grid-column:1/-1"><label for="purchaseObs">Observação (opcional)</label><input id="purchaseObs" type="text" placeholder="Ex: compra para uso pessoal"></div>
         <div id="purchaseInstallmentHint" class="purchase-installment-hint" style="grid-column:1/-1;display:none">A compra parcelada será armazenada como um único registro. As ocorrências das parcelas serão calculadas futuramente pelo motor de faturas da Fase C.</div>
@@ -2574,6 +2574,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let recurringBills = [];
   let budgets = [];
   let goals = [];
+  let invoiceLaunches = [];
   let cards = [];
   let purchases = [];
   let editingCardId = null;
@@ -2765,7 +2766,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const required = ['banks','categories','entries'];
     if (!required.every(k => Array.isArray(data[k]))) return false;
     if (payload.schemaVersion != null && (!Number.isInteger(payload.schemaVersion) || payload.schemaVersion < 1 || payload.schemaVersion > BACKUP_SCHEMA_VERSION)) return false;
-    const optional = ['investments','pockets','yieldsLog','recurringBills','budgets','goals','cards','purchases','diagnosticLog'];
+    const optional = ['investments','pockets','yieldsLog','recurringBills','budgets','goals','cards','purchases','invoiceLaunches','diagnosticLog'];
     if (optional.some(k => data[k] != null && !Array.isArray(data[k]))) return false;
     if (data.featureSettings != null && (typeof data.featureSettings !== 'object' || Array.isArray(data.featureSettings))) return false;
     return true;
@@ -3006,7 +3007,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return docRef().collection(name);
   }
 
-  const COLLECTIONS = ['banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog', 'recurringBills', 'budgets', 'goals', 'cards', 'purchases'];
+  const COLLECTIONS = ['banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog', 'recurringBills', 'budgets', 'goals', 'cards', 'purchases', 'invoiceLaunches'];
   let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
   let realtimeUnsubscribers = [];
 
@@ -3068,6 +3069,7 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'recurringBills': recurringBills = arr; break;
       case 'budgets': budgets = arr; break;
       case 'goals': goals = arr; break;
+      case 'invoiceLaunches': invoiceLaunches = arr; break;
       case 'cards': cards = arr; break;
       case 'purchases': purchases = arr; break;
     }
@@ -3186,6 +3188,7 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'recurringBills': return recurringBills;
       case 'budgets': return budgets;
       case 'goals': return goals;
+      case 'invoiceLaunches': return invoiceLaunches;
       case 'cards': return cards;
       case 'purchases': return purchases;
     }
@@ -5421,8 +5424,20 @@ VALOR: ${fmt(bill.amount)}
     const invoicesHtml=invoiceRows.map(row=>{
       const dueLabel=row.dueDate.split('-').reverse().join('/');
       const displayTotal=invoiceDisplayTotal(row);
-      const breakdown=row.breakdown.map(b=>`<div class="hint" style="display:flex;justify-content:space-between;"><span>${escapeHTML(b.titular)} (${b.count})</span><span>${fmt(b.total)}</span></div>`).join('');
-      return `<div class="bill-list-item card-invoice-row" id="invoice-${escapeHTML(row.card.id)}"><div><strong>💳 Fatura ${escapeHTML(row.card.name)}</strong><div class="hint">Vencimento: ${dueLabel} · ${row.invoice.count} compra(s)/parcela(s) · Fatura não lançada — só compromisso previsto (fase seguinte permite lançar)</div><div class="card-invoice-breakdown" id="invoice-breakdown-${escapeHTML(row.card.id)}" style="display:none;margin-top:6px;">${breakdown||'<span class="hint">Sem detalhamento por titular.</span>'}</div></div><span class="bill-status">${fmt(displayTotal)}</span><div class="bill-actions"><button type="button" onclick="toggleInvoiceDetail('${row.card.id}')">Detalhar por titular</button></div></div>`;
+      const allPaid = row.breakdown.length>0 && row.breakdown.every(b=>b.launched);
+      const breakdown=row.breakdown.map(b=>{
+        const safeTitular = escapeHTML(b.titular).replace(/'/g,"\\'");
+        return `<div class="card-invoice-titular-row" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0;border-top:1px dashed var(--line);font-size:11px;">
+          <div><strong>${escapeHTML(b.titular)}</strong> <span class="hint">(${b.count})</span></div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-family:'IBM Plex Mono',monospace;">${fmt(b.total)}</span>
+            <span class="bill-status ${b.launched?'':'overdue'}" style="font-size:9px;padding:2px 6px;">${b.launched?'Lançado':'Pendente'}</span>
+            <button type="button" onclick="launchInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${b.total})" ${b.launched?'disabled':''} style="font-size:10px;padding:4px 8px;">${b.launched?'Já lançado':'Lançar'}</button>
+            <button type="button" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${b.total})" style="font-size:10px;padding:4px 8px;">Compartilhar</button>
+          </div>
+        </div>`;
+      }).join('');
+      return `<div class="bill-list-item card-invoice-row" id="invoice-${escapeHTML(row.card.id)}"><div style="width:100%;"><strong>💳 Fatura ${escapeHTML(row.card.name)}</strong><div class="hint">Vencimento: ${dueLabel} · ${row.invoice.count} compra(s)/parcela(s) · Fatura em si não é lançamento — cada titular é lançado separadamente abaixo</div><div class="card-invoice-breakdown" id="invoice-breakdown-${escapeHTML(row.card.id)}" style="margin-top:4px;">${breakdown||'<span class="hint">Sem detalhamento por titular.</span>'}</div></div><span class="bill-status ${allPaid?'':''}" style="align-self:flex-start;">${fmt(displayTotal)}</span></div>`;
     }).join('');
     document.getElementById('billList').innerHTML=(billsHtml+invoicesHtml)||`<div class="empty">Nenhuma conta ou fatura para este mês.</div>`;
   }
@@ -5539,6 +5554,7 @@ VALOR: ${fmt(bill.amount)}
     document.getElementById('purchaseTitular').value = purchase?.titular || '';
     document.getElementById('purchaseType').value = purchase?.paymentType === 'parcelado' ? 'parcelado' : 'avista';
     document.getElementById('purchaseInstallments').value = purchase?.totalInstallments || '';
+    setMoneyInput('purchaseInstallmentValue', purchase?.installmentValue || 0);
     document.getElementById('purchaseInitialInstallment').value = purchase?.initialInstallment || 1;
     document.getElementById('purchaseObs').value = purchase?.obs || '';
     updatePurchaseInstallmentFields();
@@ -5549,12 +5565,19 @@ VALOR: ${fmt(bill.amount)}
   function updatePurchaseInstallmentFields() {
     const parcelado = document.getElementById('purchaseType')?.value === 'parcelado';
     ['purchaseInstallmentsField','purchaseInstallmentValueField','purchaseInitialInstallmentField','purchaseInstallmentHint'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display=parcelado ? '' : 'none'; });
-    if (parcelado) {
-      const total = readMoneyInput('purchaseValue');
-      const count = Math.max(2, Number(document.getElementById('purchaseInstallments').value) || 2);
-      document.getElementById('purchaseInstallmentValue').value = formatMoneyFromCents(Math.round((total / count) * 100));
-    }
+    document.getElementById('purchaseValueLabel').textContent = parcelado ? 'Valor total (calculado)' : 'Valor total (R$)';
+    document.getElementById('purchaseValue').readOnly = parcelado;
+    if (parcelado) recalcPurchaseTotalFromInstallment();
   }
+  function recalcPurchaseTotalFromInstallment() {
+    const parcelado = document.getElementById('purchaseType')?.value === 'parcelado';
+    if (!parcelado) return;
+    const installmentValue = readMoneyInput('purchaseInstallmentValue') || 0;
+    const count = Math.max(2, Number(document.getElementById('purchaseInstallments').value) || 2);
+    setMoneyInput('purchaseValue', installmentValue * count);
+  }
+  document.getElementById('purchaseInstallmentValue').addEventListener('input', recalcPurchaseTotalFromInstallment);
+  document.getElementById('purchaseInstallments').addEventListener('input', recalcPurchaseTotalFromInstallment);
   // ===== Fase C — Motor de fatura (cálculo puro, sem integração com Calendário/Livro-Caixa ainda) =====
   function invoicePeriodKeyForDate(card, dateStr) {
     const d = new Date((dateStr || todayISO()) + 'T00:00:00');
@@ -5642,13 +5665,73 @@ VALOR: ${fmt(bill.amount)}
     });
     return Object.values(byTitular).sort((a, b) => b.total - a.total);
   }
+  // ===== Fase F — Lançamento/compartilhamento/status individual por titular dentro de cada fatura =====
+  // Vínculo por ID: cardId + período de fechamento + titular identifica de forma estável a "fatia" de um titular
+  // numa fatura, independente de nome/valor/data mudarem depois (o valor exibido é sempre recalculado ao vivo;
+  // o que fica gravado é só o vínculo de que aquele titular, naquele cartão/período, já foi lançado).
+  function invoiceLaunchId(cardId, closingPeriodKey, titular) {
+    return `invl_${cardId}_${closingPeriodKey}_${(titular || 'sem-titular').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  }
+  function invoiceLaunchFor(cardId, closingPeriodKey, titular) {
+    return invoiceLaunches.find(x => x.id === invoiceLaunchId(cardId, closingPeriodKey, titular));
+  }
+  window.launchInvoiceTitular = async function(cardId, closingPeriodKey, titular, amount) {
+    const card = cards.find(c => c.id === cardId);
+    if (!card) return;
+    const launchId = invoiceLaunchId(cardId, closingPeriodKey, titular);
+    if (invoiceLaunches.some(x => x.id === launchId)) { alert('Essa parte da fatura já foi lançada no Livro-Caixa.'); return; }
+    const dueDate = invoiceDueDateForPeriod(card, closingPeriodKey);
+    const entryId = 'e' + Date.now() + Math.random().toString(36).slice(2, 7);
+    const entry = { id: entryId, date: dueDate, desc: `Fatura ${card.name}${titular && titular !== 'Sem titular' ? ' — ' + titular : ''}`, bank: card.bank || '', category: card.category || categories[0]?.id || '', amount: Number(amount) || 0, type: 'out', invoiceLaunchId: launchId };
+    const launchRecord = { id: launchId, cardId, closingPeriodKey, titular, amount: Number(amount) || 0, entryId, launchedAt: new Date().toISOString() };
+    entries.push(entry);
+    invoiceLaunches.push(launchRecord);
+    render(); renderBills();
+    try {
+      await persistAll();
+      logInfo('Cartões', 'Lançar fatura por titular', 'Sucesso', `${card.name} — ${titular}: ${fmt(amount)} lançado.`, { cardId, closingPeriodKey, titular });
+    } catch (err) {
+      entries = entries.filter(item => item.id !== entryId);
+      invoiceLaunches = invoiceLaunches.filter(item => item.id !== launchId);
+      logSyncError('lançamento de fatura por titular', err);
+      alert('Não foi possível lançar essa parte da fatura agora. Verifique sua conexão e tente novamente.');
+    } finally {
+      render(); renderBills();
+    }
+  };
+  window.shareInvoiceTitular = function(cardId, closingPeriodKey, titular, amount) {
+    const card = cards.find(c => c.id === cardId);
+    if (!card) return;
+    const dueDate = invoiceDueDateForPeriod(card, closingPeriodKey);
+    const pseudoBill = { name: `Fatura ${card.name}`, titular: titular === 'Sem titular' ? '' : titular, amount: Number(amount) || 0 };
+    const dueLabel = dueDate.split('-').reverse().join('/');
+    const field = document.getElementById('billShareMessage');
+    if (field) field.value = `📌 HELLOUUUUUUU
+— ${pseudoBill.titular || 'Olá'}
+Passando pra lembrar do pagamento da ${pseudoBill.name} 📃
+
+• VENCIMENTO: ${dueLabel}
+VALOR: ${fmt(pseudoBill.amount)}
+
+📤 Enviar para a chave Pix abaixo e encaminhar comprovante:
+
+🗝️| 85981886720
+🪪| ANTONIO VINICIUS P SOBRINHO
+🏦| ITAU UNIBANCO S.A.`;
+    document.getElementById('billShareStatus').textContent = '';
+    openModal('panelBillShare');
+  };
   function calendarInvoiceRows(year, month) {
     const dueMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
     return cards.filter(card => card.active !== false).map(card => {
       const closingPeriodKey = closingPeriodKeyForDueMonth(card, dueMonthKey);
       const invoice = cardInvoiceForPeriod(card.id, closingPeriodKey);
       if (invoice.total <= 0) return null;
-      return { card, invoice, dueDate: invoiceDueDateForPeriod(card, closingPeriodKey), breakdown: invoiceTitularBreakdown(invoice) };
+      const breakdown = invoiceTitularBreakdown(invoice).map(item => {
+        const launch = invoiceLaunchFor(card.id, closingPeriodKey, item.titular);
+        return { ...item, launched: !!launch, launchedAmount: launch ? launch.amount : null };
+      });
+      return { card, invoice, closingPeriodKey, dueDate: invoiceDueDateForPeriod(card, closingPeriodKey), breakdown };
     }).filter(Boolean);
   }
 
@@ -5720,7 +5803,8 @@ VALOR: ${fmt(bill.amount)}
     if (!(totalValue > 0)) { alert('Informe um valor total maior que zero.'); return; }
     let totalInstallments = Number(document.getElementById('purchaseInstallments').value) || 1;
     if (paymentType === 'parcelado' && !(totalInstallments >= 2 && totalInstallments <= 360)) { alert('Informe entre 2 e 360 parcelas.'); return; }
-    const installmentValue = paymentType === 'parcelado' ? totalValue / totalInstallments : totalValue;
+    const installmentValue = paymentType === 'parcelado' ? (readMoneyInput('purchaseInstallmentValue') || (totalValue / totalInstallments)) : totalValue;
+    if (paymentType === 'parcelado' && !(installmentValue > 0)) { alert('Informe o valor da parcela.'); return; }
     const record = normalizePurchaseRecord({ cardId, description, totalValue, date, titular: document.getElementById('purchaseTitular').value, categoryId: document.getElementById('purchaseCategory').value, paymentType, totalInstallments, installmentValue, initialInstallment: document.getElementById('purchaseInitialInstallment').value, obs: document.getElementById('purchaseObs').value }, editingPurchaseId ? purchases.find(p=>p.id===editingPurchaseId) : { id:'purchase_' + Date.now() + '_' + Math.random().toString(36).slice(2,8) });
     const old = editingPurchaseId ? purchases.find(p => p.id === editingPurchaseId) : null;
     if (old) purchases = purchases.map(p => p.id === editingPurchaseId ? record : p); else purchases.push(record);
