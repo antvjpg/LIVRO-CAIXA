@@ -5556,42 +5556,70 @@ VALOR: ${fmt(bill.amount)}
     }
   }
   // ===== Fase C — Motor de fatura (cálculo puro, sem integração com Calendário/Livro-Caixa ainda) =====
+  // ===== CORREÇÃO DO MOTOR DE FATURAS =====
+  // O período da fatura representa o MÊS DO VENCIMENTO.
+  // Ex.: fechamento 29 + vencimento 05 => compras até 29/08 pertencem
+  // à fatura com vencimento em 05/09, portanto o período é 2026-09.
   function invoicePeriodKeyForDate(card, dateStr) {
     const d = new Date((dateStr || todayISO()) + 'T00:00:00');
     const day = d.getDate();
     const closing = Math.min(31, Math.max(1, Number(card.closingDay) || 1));
-    // Se a compra ocorre no dia de fechamento ou antes, entra na fatura que fecha nesse mesmo mês.
-    // Se ocorre depois do fechamento, entra na fatura do mês seguinte.
-    const targetMonth = day <= closing ? d.getMonth() : d.getMonth() + 1;
-    const target = new Date(d.getFullYear(), targetMonth, 1);
-    return `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}`;
+    const due = Math.min(31, Math.max(1, Number(card.dueDay) || closing));
+
+    // Compra até o fechamento: próxima fatura.
+    // Compra após o fechamento: fatura seguinte à próxima.
+    // O resultado final é convertido para o mês de vencimento.
+    const monthsToDue = day <= closing ? 1 : 2;
+    const dueDate = new Date(d.getFullYear(), d.getMonth() + monthsToDue, 1);
+    const dueMonthOffset = due < closing ? 0 : -1;
+
+    // Quando vencimento é menor que fechamento, a fatura fecha no mês anterior
+    // ao vencimento. Assim, 05/09 corresponde ao fechamento de 29/08.
+    const target = new Date(dueDate.getFullYear(), dueDate.getMonth() + dueMonthOffset, 1);
+    // O período usado pelo restante do sistema é o mês do vencimento.
+    const finalPeriod = due < closing ? dueDate : new Date(target.getFullYear(), target.getMonth() + 1, 1);
+    return `${finalPeriod.getFullYear()}-${String(finalPeriod.getMonth() + 1).padStart(2, '0')}`;
   }
+
   function addMonthsToPeriodKey(periodKey, months) {
     const [y, m] = periodKey.split('-').map(Number);
     const d = new Date(y, (m - 1) + months, 1);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   }
-  // Retorna, para uma compra, todas as ocorrências (parcelas) já distribuídas por período de fatura.
+
+  // Retorna as ocorrências de uma compra. O primeiro lançamento é sempre
+  // a parcela inicial na fatura em que a compra efetivamente entra.
   function purchaseInstallmentOccurrences(purchase) {
-    const firstPeriod = invoicePeriodKeyForDateByCardId(purchase.cardId, purchase.date);
+    const card = cards.find(c => c.id === purchase.cardId);
+    const firstPeriod = card ? invoicePeriodKeyForDate(card, purchase.date) : null;
     if (!firstPeriod) return [];
+
     if (purchase.paymentType !== 'parcelado') {
-      return [{ periodKey: firstPeriod, installmentNumber: 1, totalInstallments: 1, amount: purchase.totalValue }];
+      return [{ periodKey: firstPeriod, installmentNumber: 1, totalInstallments: 1, amount: Number(purchase.totalValue || 0) }];
     }
+
     const occurrences = [];
-    const start = purchase.initialInstallment || 1;
-    for (let n = start; n <= purchase.totalInstallments; n++) {
-      const periodKey = addMonthsToPeriodKey(firstPeriod, n - start);
-      occurrences.push({ periodKey, installmentNumber: n, totalInstallments: purchase.totalInstallments, amount: purchase.installmentValue });
+    const totalInstallments = Math.max(2, Number(purchase.totalInstallments) || 2);
+    const start = Math.min(totalInstallments, Math.max(1, Number(purchase.initialInstallment) || 1));
+    const amount = Number(purchase.installmentValue || 0);
+
+    for (let n = start; n <= totalInstallments; n++) {
+      occurrences.push({
+        periodKey: addMonthsToPeriodKey(firstPeriod, n - start),
+        installmentNumber: n,
+        totalInstallments,
+        amount
+      });
     }
     return occurrences;
   }
+
   function invoicePeriodKeyForDateByCardId(cardId, dateStr) {
     const card = cards.find(c => c.id === cardId);
     if (!card) return null;
     return invoicePeriodKeyForDate(card, dateStr);
   }
-  // Agrega todas as compras/parcelas de um cartão que caem num período de fatura específico (formato 'AAAA-MM').
+
   function cardInvoiceForPeriod(cardId, periodKey) {
     const lines = [];
     purchases.filter(p => p.cardId === cardId).forEach(purchase => {
@@ -5602,6 +5630,8 @@ VALOR: ${fmt(bill.amount)}
     const total = lines.reduce((sum, line) => sum + Number(line.amount || 0), 0);
     return { periodKey, cardId, lines, total, count: lines.length };
   }
+
+  // A fatura exibida no cartão é a fatura com vencimento no mês atual.
   function currentInvoicePeriodKey() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -5615,10 +5645,9 @@ VALOR: ${fmt(bill.amount)}
     const [y, m] = periodKey.split('-').map(Number);
     const closing = Math.min(31, Math.max(1, Number(card.closingDay) || 1));
     const due = Math.min(31, Math.max(1, Number(card.dueDay) || closing));
-    // Se o dia de vencimento é menor que o dia de fechamento, o vencimento cai no mês seguinte ao fechamento.
-    // Ex: fecha dia 29, vence dia 05 -> fecha 29/08, vence 05/09.
-    const dueMonthOffset = due < closing ? 1 : 0;
-    const dueDate = new Date(y, (m - 1) + dueMonthOffset, 1);
+    // O período já representa o mês do vencimento.
+    // Ex.: período 2026-09 + vencimento dia 05 = 05/09/2026.
+    const dueDate = new Date(y, m - 1, 1);
     const lastDayOfDueMonth = new Date(dueDate.getFullYear(), dueDate.getMonth() + 1, 0).getDate();
     const finalDay = Math.min(due, lastDayOfDueMonth);
     return `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(finalDay).padStart(2, '0')}`;
