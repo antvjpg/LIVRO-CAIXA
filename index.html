@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.18-19 fase F (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.18-18 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -126,6 +126,7 @@
   .dark-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.24);}
   *{box-sizing:border-box;}
   body,body *{font-family:var(--font-ui)!important;}
+  html{overflow-x:hidden;width:100%;}
   body{
     margin:0;
     background:var(--paper);
@@ -134,6 +135,7 @@
     -webkit-font-smoothing:antialiased;
     transition: background 0.2s, color 0.2s;
     overflow-x: hidden;
+    width:100%;
   }
   ::selection{background:var(--gold);color:var(--paper);}
   header{
@@ -163,7 +165,7 @@
     letter-spacing:0.08em;
   }
   main{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
-  header.app-header{position:relative;}
+  header.app-header{position:relative;overflow:hidden;}
   .header-icon-button{width:42px;min-width:42px;height:42px;min-height:42px;padding:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:20px;line-height:1;letter-spacing:0;box-shadow:0 3px 10px var(--shadow);position:relative;z-index:2;}
   .header-icon-button:hover{background:var(--green-soft);color:var(--accent);border-color:var(--accent);}
   #btnOpenDrawer{margin-right:2px;}
@@ -5427,17 +5429,17 @@ VALOR: ${fmt(bill.amount)}
       const allPaid = row.breakdown.length>0 && row.breakdown.every(b=>b.launched);
       const breakdown=row.breakdown.map(b=>{
         const safeTitular = escapeHTML(b.titular).replace(/'/g,"\\'");
-        return `<div class="card-invoice-titular-row" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0;border-top:1px dashed var(--line);font-size:11px;">
-          <div><strong>${escapeHTML(b.titular)}</strong> <span class="hint">(${b.count})</span></div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-family:'IBM Plex Mono',monospace;">${fmt(b.total)}</span>
-            <span class="bill-status ${b.launched?'':'overdue'}" style="font-size:9px;padding:2px 6px;">${b.launched?'Lançado':'Pendente'}</span>
-            <button type="button" onclick="launchInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${b.total})" ${b.launched?'disabled':''} style="font-size:10px;padding:4px 8px;">${b.launched?'Já lançado':'Lançar'}</button>
-            <button type="button" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${b.total})" style="font-size:10px;padding:4px 8px;">Compartilhar</button>
+        return `<div class="card-invoice-titular-row" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 8px;padding:6px 0;border-top:1px dashed var(--line);font-size:11px;max-width:100%;">
+          <div style="min-width:0;overflow-wrap:anywhere;"><strong>${escapeHTML(b.titular)}</strong> <span class="hint">(${b.count})</span></div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:100%;">
+            <span style="font-family:'IBM Plex Mono',monospace;white-space:nowrap;">${fmt(b.total)}</span>
+            <span class="bill-status ${b.launched?'':'overdue'}" style="font-size:9px;padding:2px 6px;white-space:nowrap;">${b.launched?'Lançado':'Pendente'}</span>
+            <button type="button" onclick="launchInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${b.total})" ${b.launched?'disabled':''} style="font-size:10px;padding:4px 8px;white-space:nowrap;">${b.launched?'Já lançado':'Lançar'}</button>
+            <button type="button" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${b.total})" style="font-size:10px;padding:4px 8px;white-space:nowrap;">Compartilhar</button>
           </div>
         </div>`;
       }).join('');
-      return `<div class="bill-list-item card-invoice-row" id="invoice-${escapeHTML(row.card.id)}"><div style="width:100%;"><strong>💳 Fatura ${escapeHTML(row.card.name)}</strong><div class="hint">Vencimento: ${dueLabel} · ${row.invoice.count} compra(s)/parcela(s) · Fatura em si não é lançamento — cada titular é lançado separadamente abaixo</div><div class="card-invoice-breakdown" id="invoice-breakdown-${escapeHTML(row.card.id)}" style="margin-top:4px;">${breakdown||'<span class="hint">Sem detalhamento por titular.</span>'}</div></div><span class="bill-status ${allPaid?'':''}" style="align-self:flex-start;">${fmt(displayTotal)}</span></div>`;
+      return `<div class="bill-list-item card-invoice-row" id="invoice-${escapeHTML(row.card.id)}" style="min-width:0;"><div style="min-width:0;max-width:100%;overflow-wrap:anywhere;"><strong>💳 Fatura ${escapeHTML(row.card.name)}</strong><div class="hint">Vencimento: ${dueLabel} · ${row.invoice.count} compra(s)/parcela(s) · Fatura em si não é lançamento — cada titular é lançado separadamente abaixo</div><div class="card-invoice-breakdown" id="invoice-breakdown-${escapeHTML(row.card.id)}" style="margin-top:4px;min-width:0;">${breakdown||'<span class="hint">Sem detalhamento por titular.</span>'}</div></div><span class="bill-status" style="align-self:flex-start;white-space:nowrap;">${fmt(displayTotal)}</span></div>`;
     }).join('');
     document.getElementById('billList').innerHTML=(billsHtml+invoicesHtml)||`<div class="empty">Nenhuma conta ou fatura para este mês.</div>`;
   }
