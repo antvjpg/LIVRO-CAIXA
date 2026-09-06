@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.18-20 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-01 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -127,6 +127,8 @@
   *{box-sizing:border-box;}
   body,body *{font-family:var(--font-ui)!important;}
   html{overflow-x:hidden;width:100%;}
+  body.balances-hidden .balance-card .amount{filter:blur(7px);user-select:none;transition:filter .15s ease;}
+  body.balances-hidden .balance-card .amount:active{filter:blur(0);}
   body{
     margin:0;
     background:var(--paper);
@@ -1260,7 +1262,7 @@
     body.dark-mode .mobile-bottom-nav button.is-active{background:color-mix(in srgb,var(--accent) 21%,var(--surface));color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 38%,transparent),0 4px 14px rgba(0,0,0,.22);}body.dark-mode .mobile-bottom-nav button.is-active .nav-icon{color:var(--accent);}
     .fab-add{bottom:calc(96px + env(safe-area-inset-bottom));}
     @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.mobile-bottom-nav{background:var(--surface);}.mobile-bottom-nav{box-shadow:0 13px 30px rgba(20,35,28,.22);}.dark-mode .mobile-bottom-nav{background:var(--paper);}}
-    .profile-shell{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:19px 16px;}.profile-heading{display:flex;align-items:center;gap:13px;padding-bottom:17px;border-bottom:1px solid var(--line);}.profile-avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--action-border);color:var(--accent);}.profile-avatar svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-heading h2{font-size:22px;line-height:1.1;color:var(--ink);}.profile-heading p{margin-top:4px;max-width:215px;color:var(--ink-soft);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.profile-intro{margin:16px 0;color:var(--ink-soft);font-size:12px;line-height:1.5;}.profile-list{display:grid;gap:8px;}.profile-item{display:flex;align-items:center;gap:12px;min-height:59px;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--paper);}.profile-item-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--green-soft);color:var(--accent);border:1px solid var(--action-border);}.profile-item-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-item-copy{flex:1;min-width:0;}.profile-item-copy strong{display:block;color:var(--ink);font-size:12px;}.profile-item-copy span{display:block;margin-top:3px;color:var(--ink-soft);font-size:10px;}.profile-item-arrow{color:var(--ink-soft);font-size:16px;}.profile-roadmap{margin-top:14px;padding:11px 12px;border-radius:13px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--ink-soft);font-size:10px;line-height:1.4;}.profile-roadmap b{color:var(--accent);}
+    .profile-shell{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:19px 16px;}.profile-heading{display:flex;align-items:center;gap:13px;padding-bottom:17px;border-bottom:1px solid var(--line);}.profile-avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--action-border);color:var(--accent);}.profile-avatar svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-heading h2{font-size:22px;line-height:1.1;color:var(--ink);}.profile-heading p{margin-top:4px;max-width:215px;color:var(--ink-soft);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.profile-intro{margin:16px 0;color:var(--ink-soft);font-size:12px;line-height:1.5;}.profile-group{margin-top:18px;}.profile-group-title{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;padding-left:2px;}.profile-list{display:grid;gap:8px;}.profile-item{display:flex;align-items:center;gap:12px;min-height:59px;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--paper);}.profile-item.is-danger{border-color:color-mix(in srgb,var(--red,#B3432B) 35%,var(--line));}.profile-item.is-danger .profile-item-icon{background:color-mix(in srgb,var(--red,#B3432B) 14%,var(--paper));color:var(--red,#B3432B);border-color:color-mix(in srgb,var(--red,#B3432B) 30%,transparent);}.profile-item.is-danger .profile-item-copy strong{color:var(--red,#B3432B);}.profile-item-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--green-soft);color:var(--accent);border:1px solid var(--action-border);}.profile-item-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-item-copy{flex:1;min-width:0;}.profile-item-copy strong{display:block;color:var(--ink);font-size:12px;}.profile-item-copy span{display:block;margin-top:3px;color:var(--ink-soft);font-size:10px;}.profile-item-arrow{color:var(--ink-soft);font-size:16px;}.profile-roadmap{margin-top:14px;padding:11px 12px;border-radius:13px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--ink-soft);font-size:10px;line-height:1.4;}.profile-roadmap b{color:var(--accent);}
     body.dark-mode .profile-shell{background:var(--surface);border-color:var(--line);}body.dark-mode .profile-item{background:var(--paper);border-color:var(--line);}body.dark-mode .profile-avatar,body.dark-mode .profile-item-icon{background:color-mix(in srgb,var(--accent) 14%,var(--surface));border-color:color-mix(in srgb,var(--accent) 26%,transparent);}
     body:has(.modal-overlay.open){overflow:hidden;}
     .modal-overlay{height:100dvh;min-height:100svh;max-height:100dvh;overflow:hidden;overscroll-behavior:contain;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
@@ -1863,13 +1865,48 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
         <div class="profile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
       </div>
-      <p class="profile-intro">Esta área está pronta para centralizar suas preferências pessoais, aparência e segurança.</p>
-      <div class="profile-list">
-        <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/></svg></span><span class="profile-item-copy"><strong>Preferências financeiras</strong><span>Configurações pessoais em breve</span></span><span class="profile-item-arrow">›</span></div>
-        <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.1 2.1-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.57v.09h-3v-.09A1.7 1.7 0 0 0 10.68 18.64a1.7 1.7 0 0 0-1.88.34l-.06.06-2.1-2.1.06-.06A1.7 1.7 0 0 0 7.04 15a1.7 1.7 0 0 0-1.57-1.04h-.09v-3h.09A1.7 1.7 0 0 0 7.04 9.92 1.7 1.7 0 0 0 6.7 8.04l-.06-.06 2.1-2.1.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.04-1.57v-.09h3v.09a1.7 1.7 0 0 0 1.04 1.57 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.1 2.1-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.57 1.04h.09v3h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta já disponíveis no cabeçalho</span></span><span class="profile-item-arrow">›</span></div>
-        <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="profile-item-copy"><strong>Segurança</strong><span>Sessão e proteção de conta</span></span><span class="profile-item-arrow">›</span></div>
+
+      <div class="profile-group">
+        <div class="profile-group-title">Dados da conta</div>
+        <div class="profile-list">
+          <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h5"/></svg></span><span class="profile-item-copy"><strong>Versão do aplicativo</strong><span id="profileAppVersion">Livro-Caixa</span></span></div>
+        </div>
       </div>
-      <div class="profile-roadmap"><b>Em preparação:</b> informações da conta, preferências, aparência, segurança e outras configurações futuras.</div>
+
+      <div class="profile-group">
+        <div class="profile-group-title">Preferências gerais</div>
+        <div class="profile-list">
+          <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.1 2.1-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.57v.09h-3v-.09A1.7 1.7 0 0 0 10.68 18.64a1.7 1.7 0 0 0-1.88.34l-.06.06-2.1-2.1.06-.06A1.7 1.7 0 0 0 7.04 15a1.7 1.7 0 0 0-1.57-1.04h-.09v-3h.09A1.7 1.7 0 0 0 7.04 9.92 1.7 1.7 0 0 0 6.7 8.04l-.06-.06 2.1-2.1.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.04-1.57v-.09h3v.09a1.7 1.7 0 0 0 1.04 1.57 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.1 2.1-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.57 1.04h.09v3h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta, no cabeçalho</span></span><span class="profile-item-arrow">›</span></div>
+        </div>
+      </div>
+
+      <div class="profile-group">
+        <div class="profile-group-title">Preferências financeiras</div>
+        <div class="profile-list">
+          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/></svg></span><span class="profile-item-copy"><strong>Orçamento, automações e conciliação</strong><span>Disponível no LABS por enquanto — migração em andamento</span></span><span class="profile-item-arrow">›</span></div>
+        </div>
+      </div>
+
+      <div class="profile-group">
+        <div class="profile-group-title">Segurança</div>
+        <div class="profile-list">
+          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="profile-item-copy"><strong>PIN local</strong><span>Disponível no LABS por enquanto</span></span><span class="profile-item-arrow">›</span></div>
+          <div class="profile-item is-danger" role="button" tabindex="0" id="btnProfileLogout"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="profile-item-copy"><strong>Sair da conta</strong><span>Encerra a sessão neste aparelho — seus dados continuam salvos na nuvem</span></span><span class="profile-item-arrow">›</span></div>
+        </div>
+      </div>
+
+      <div class="profile-group">
+        <div class="profile-group-title">Privacidade</div>
+        <div class="profile-list">
+          <label class="feature-lab-toggle" style="padding:12px 0;">
+            <input type="checkbox" id="chkHideBalancesOnOpen">
+            <span class="feature-lab-toggle-copy"><strong>Ocultar saldos ao abrir</strong><small>Os valores dos cards de resumo iniciam borrados; toque no ícone de olho pra revelar</small></span>
+            <span class="feature-lab-switch" aria-hidden="true"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="profile-roadmap"><b>Em preparação:</b> ciclo financeiro personalizado, limites por categoria, alertas, lembretes e categorias migrando para cá nas próximas versões.</div>
     </section>
   </div>
 
@@ -4705,6 +4742,31 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = document.getElementById('featurePin')?.value || ''; try { await saveLocalPin(pin); document.getElementById('featurePin').value = ''; status.textContent = 'PIN ativado. Use “Bloquear agora” para testar imediatamente.'; logInfo('Segurança', 'Ativar PIN local', 'Sucesso', 'PIN local armazenado somente como hash neste dispositivo.'); } catch (err) { status.textContent = err.message; logWarn('Segurança', 'Ativar PIN local', 'Falha', err.message); } });
   document.getElementById('btnClearLocalPin')?.addEventListener('click', () => { removeLocalPin(); const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'PIN removido deste dispositivo.'; logInfo('Segurança', 'Remover PIN local', 'Sucesso', 'Proteção local removida deste dispositivo.'); });
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
+
+  // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-01 (CLAUDE)';
+  const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
+  document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
+
+  document.getElementById('btnProfileLogout')?.addEventListener('click', () => {
+    if (confirm('Deseja realmente sair da sua conta? Seus dados continuam salvos na nuvem — só a sessão neste aparelho é encerrada.')) {
+      auth.signOut();
+    }
+  });
+
+  function applyBalancesHiddenState(hidden) {
+    document.body.classList.toggle('balances-hidden', hidden);
+  }
+  const hideBalancesOnOpen = localStorage.getItem(HIDE_BALANCES_STORAGE_KEY) === '1';
+  const chkHideBalances = document.getElementById('chkHideBalancesOnOpen');
+  if (chkHideBalances) {
+    chkHideBalances.checked = hideBalancesOnOpen;
+    chkHideBalances.addEventListener('change', () => {
+      localStorage.setItem(HIDE_BALANCES_STORAGE_KEY, chkHideBalances.checked ? '1' : '0');
+      applyBalancesHiddenState(chkHideBalances.checked);
+    });
+  }
+  applyBalancesHiddenState(hideBalancesOnOpen);
   document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; logInfo('Segurança', 'Desbloquear PIN local', 'Sucesso', 'Aplicativo desbloqueado neste dispositivo.'); } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; logSyncError('desbloqueio por PIN', err); } });
   document.getElementById('pinUnlockInput')?.addEventListener('keydown', event => { if (event.key === 'Enter') document.getElementById('btnPinUnlock')?.click(); });
   document.getElementById('btnPinLogout')?.addEventListener('click', () => auth.signOut());
