@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-01 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-02 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1883,6 +1883,11 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <div class="profile-group">
         <div class="profile-group-title">Preferências financeiras</div>
         <div class="profile-list">
+          <div class="profile-item">
+            <span class="profile-item-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>
+            <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define em qual dia começa seu mês financeiro. Isso altera apenas os períodos usados no orçamento — não muda a data dos lançamentos.</span></span>
+            <input type="number" id="inputFinancialCycleDay" min="1" max="28" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);">
+          </div>
           <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/></svg></span><span class="profile-item-copy"><strong>Orçamento, automações e conciliação</strong><span>Disponível no LABS por enquanto — migração em andamento</span></span><span class="profile-item-arrow">›</span></div>
         </div>
       </div>
@@ -2674,6 +2679,48 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10);
   };
   const currentMonthYM = () => todayISO().slice(0, 7);
+  // ===== V.19 — Ciclo financeiro personalizado (aplicado por enquanto só ao Orçamento; gráficos/resumos
+  // continuam usando mês de calendário — expandir gradualmente, essa mudança em tudo de uma vez é arriscada) =====
+  const FINANCIAL_CYCLE_STORAGE_KEY = 'livrocaixa_financial_cycle_start_day';
+  function getFinancialCycleStartDay() {
+    const stored = Number(localStorage.getItem(FINANCIAL_CYCLE_STORAGE_KEY));
+    return (stored >= 1 && stored <= 28) ? stored : 1;
+  }
+  function setFinancialCycleStartDay(day) {
+    const safe = Math.min(28, Math.max(1, Number(day) || 1));
+    localStorage.setItem(FINANCIAL_CYCLE_STORAGE_KEY, String(safe));
+    return safe;
+  }
+  function financialCycleKeyForDate(dateStr) {
+    const startDay = getFinancialCycleStartDay();
+    const d = new Date((dateStr || todayISO()) + 'T00:00:00');
+    const cycleMonthIndex = d.getDate() >= startDay ? d.getMonth() : d.getMonth() - 1;
+    const cd = new Date(d.getFullYear(), cycleMonthIndex, 1);
+    return `${cd.getFullYear()}-${String(cd.getMonth() + 1).padStart(2, '0')}`;
+  }
+  function financialCycleRangeForKey(cycleKey) {
+    const startDay = getFinancialCycleStartDay();
+    const [y, m] = cycleKey.split('-').map(Number);
+    const start = new Date(y, m - 1, startDay);
+    const end = new Date(y, m, startDay - 1);
+    const toISO = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    return { start: toISO(start), end: toISO(end) };
+  }
+  function currentFinancialCycleKey() { return financialCycleKeyForDate(todayISO()); }
+  const BUDGET_ALERT_STORAGE_KEY = 'livrocaixa_budget_alerts_shown';
+  function getShownBudgetAlerts() {
+    try { return JSON.parse(localStorage.getItem(BUDGET_ALERT_STORAGE_KEY) || '{}'); } catch (err) { return {}; }
+  }
+  function markBudgetAlertShown(key) {
+    const shown = getShownBudgetAlerts();
+    shown[key] = true;
+    try { localStorage.setItem(BUDGET_ALERT_STORAGE_KEY, JSON.stringify(shown)); } catch (err) {}
+  }
+  function financialCycleLabel(cycleKey) {
+    const { start, end } = financialCycleRangeForKey(cycleKey);
+    const fmtDate = iso => iso.split('-').reverse().slice(0, 2).join('/');
+    return getFinancialCycleStartDay() === 1 ? invoicePeriodLabel(cycleKey) : `${fmtDate(start)} a ${fmtDate(end)}`;
+  }
 
   // Segurança: os dados financeiros podem conter texto fornecido pelo usuário.
   // Nunca interpolamos texto bruto em HTML.
@@ -4520,8 +4567,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!matches.length) return null;
     return matches.reduce((latest, item) => (!latest || new Date(item.updatedAt || 0) > new Date(latest.updatedAt || 0)) ? item : latest, null);
   }
-  function budgetSpent(categoryId, month = currentMonthYM()) {
-    return entries.filter(entry => entry.type === 'out' && entry.category === categoryId && String(entry.date || '').startsWith(month)).reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
+  function budgetSpent(categoryId, cycleKey = currentFinancialCycleKey()) {
+    const { start, end } = financialCycleRangeForKey(cycleKey);
+    return entries.filter(entry => entry.type === 'out' && entry.category === categoryId && entry.date >= start && entry.date <= end).reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
   }
   let editingGoalId = null;
   function goalMarkup(goal) {
@@ -4685,13 +4733,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const overdueBills = pendingBills.filter(bill => billDueDateForMonth(bill, year, monthIndex) < todayISO());
     const upcomingBills = pendingBills.slice().sort((a, b) => billDueDateForMonth(a, year, monthIndex).localeCompare(billDueDateForMonth(b, year, monthIndex))).slice(0, 3);
     const health = monthNet < 0 ? { label: 'Atenção', detail: 'As saídas superaram as entradas neste mês.', tone: 'warning', icon: '!' } : overdueBills.length ? { label: 'Revisar compromissos', detail: `${overdueBills.length} conta(s) aguardam atenção.`, tone: 'warning', icon: '!' } : (monthIncome > 0 || monthExpense > 0) ? { label: 'Equilibrado', detail: 'Fluxo positivo e compromissos sob acompanhamento.', tone: 'positive', icon: '✓' } : { label: 'Comece seu acompanhamento', detail: 'Registre movimentações para ver sua saúde financeira.', tone: 'neutral', icon: '○' };
-    const budgetRows = categories.map(cat => { const budget = budgetFor(cat.id, month); if (!budget || !(budget.amount > 0)) return ''; const spent = budgetSpent(cat.id, month); const pct = Math.max(0, spent / budget.amount * 100); const visualPct = Math.min(100, pct); const overLabel = pct >= 100 ? ' · limite excedido' : ''; return `<div class="budget-summary-row"><div><strong>${escapeHTML(cat.name)}</strong><span>${fmt(spent)} de ${fmt(budget.amount)}${overLabel}</span></div><div class="budget-summary-track"><span class="${pct >= 100 ? 'over' : ''}" style="width:${visualPct.toFixed(2)}%" data-real-percent="${pct.toFixed(2)}"></span></div><b>${pct.toFixed(0).replace('.', ',')}%</b></div>`; }).filter(Boolean).join('');
+    const budgetCycle = currentFinancialCycleKey();
+    const budgetRows = categories.map(cat => { const budget = budgetFor(cat.id); if (!budget || !(budget.amount > 0)) return ''; const spent = budgetSpent(cat.id, budgetCycle); const pct = Math.max(0, spent / budget.amount * 100); const visualPct = Math.min(100, pct); const overLabel = pct >= 100 ? ' · limite excedido' : ''; return `<div class="budget-summary-row"><div><strong>${escapeHTML(cat.name)}</strong><span>${fmt(spent)} de ${fmt(budget.amount)}${overLabel}</span></div><div class="budget-summary-track"><span class="${pct >= 100 ? 'over' : ''}" style="width:${visualPct.toFixed(2)}%" data-real-percent="${pct.toFixed(2)}"></span></div><b>${pct.toFixed(0).replace('.', ',')}%</b></div>`; }).filter(Boolean).join('');
     const commitments = upcomingBills.map(bill => { const dueDate = billDueDateForMonth(bill, year, monthIndex); const status = billStatus(bill, month); const tone = status === 'Atrasado' ? 'overdue' : ''; return `<div class="dashboard-commitment-row ${tone}"><div><strong>${escapeHTML(bill.name || 'Conta recorrente')}</strong><span>${status} · ${dueDate.split('-').reverse().join('/')}</span></div><b>${fmt(bill.amount)}</b></div>`; }).join('');
     const alerts = [];
     if (monthNet < 0) alerts.push(`<div class="dashboard-alert-row warning"><span>!</span><div><strong>Fluxo negativo</strong><small>As saídas superam as entradas em ${fmt(Math.abs(monthNet))}.</small></div></div>`);
     if (overdueBills.length) alerts.push(`<div class="dashboard-alert-row warning"><span>!</span><div><strong>${overdueBills.length} compromisso(s) atrasado(s)</strong><small>Confira os avisos antes de gerar lançamentos automáticos.</small></div></div>`);
-    const overBudgetCount = categories.filter(cat => { const budget = budgetFor(cat.id, month); return budget && budget.amount > 0 && budgetSpent(cat.id, month) > budget.amount; }).length;
-    if (overBudgetCount) alerts.push(`<div class="dashboard-alert-row warning"><span>!</span><div><strong>Orçamento ultrapassado</strong><small>${overBudgetCount} categoria(s) passaram do limite definido.</small></div></div>`);
+    const overBudgetCount = categories.filter(cat => { const budget = budgetFor(cat.id); return budget && budget.amount > 0 && budgetSpent(cat.id, budgetCycle) > budget.amount; }).length;
+    categories.forEach(cat => {
+      const budget = budgetFor(cat.id);
+      if (!budget || !(budget.amount > 0)) return;
+      const spent = budgetSpent(cat.id, budgetCycle);
+      const pct = spent / budget.amount * 100;
+      const tier = pct >= 100 ? 'over' : pct >= 80 ? '80' : null;
+      if (!tier) return;
+      const alertKey = `${cat.id}_${budgetCycle}_${tier}`;
+      if (getShownBudgetAlerts()[alertKey]) return;
+      markBudgetAlertShown(alertKey);
+      const msg = tier === 'over'
+        ? `Você ultrapassou o limite de ${cat.name} em ${fmt(spent - budget.amount)}.`
+        : `Você já utilizou ${pct.toFixed(0)}% do limite de ${cat.name}.`;
+      alerts.push(`<div class="dashboard-alert-row warning"><span>!</span><div><strong>${tier === 'over' ? 'Limite ultrapassado' : 'Limite quase no fim'}</strong><small>${escapeHTML(msg)}</small></div></div>`);
+    });
     const advanceDays = Number(featureSettings.reminderAdvanceDays) || 0; const advanceBills = advanceDays ? pendingBills.filter(bill => { const due = new Date(`${month}-${String(billDueDateForMonth(bill, year, monthIndex).slice(-2)).padStart(2, '0')}T23:59:59`); return due >= new Date() && (due - new Date()) / 86400000 <= advanceDays; }) : []; if (advanceBills.length) alerts.push(`<div class="dashboard-alert-row"><span>i</span><div><strong>Fatura próxima</strong><small>${advanceBills.length} conta(s) vencem nos próximos ${advanceDays} dia(s).</small></div></div>`);
     if (!alerts.length) alerts.push(`<div class="dashboard-alert-row positive"><span>✓</span><div><strong>Nenhum alerta importante</strong><small>Seu painel não encontrou pendências críticas neste momento.</small></div></div>`);
 
@@ -4710,8 +4773,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const whatIf = document.getElementById('featureWhatIfExpense'); if (whatIf) setMoneyInput('featureWhatIfExpense', 0);
     const pinInput = document.getElementById('featurePin'); if (pinInput) pinInput.value = '';
     const bank = document.getElementById('reconcileBank'); if (bank) { const current = bank.value; bank.innerHTML = banks.map(item => `<option value="${item.id}">${escapeHTML(item.name)}</option>`).join(''); if (banks.some(item => item.id === current)) bank.value = current; }
-    const month = currentMonthYM(); const rows = document.getElementById('featureBudgetRows');
-    if (rows) rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id, month); return `<div class="feature-budget-row"><label for="budget-${escapeHTML(cat.id)}">${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"><span>${fmt(budgetSpent(cat.id, month))} gastos</span></div>`; }).join('');
+    const month = currentMonthYM(); const budgetCycle = currentFinancialCycleKey(); const rows = document.getElementById('featureBudgetRows');
+    if (rows) rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id); const spent = budgetSpent(cat.id, budgetCycle); const pct = budget && budget.amount > 0 ? (spent / budget.amount * 100) : 0; const dot = !budget || !(budget.amount > 0) ? '' : pct >= 100 ? '🔴' : pct >= 80 ? '🟡' : '🟢'; return `<div class="feature-budget-row"><label for="budget-${escapeHTML(cat.id)}">${dot ? dot + ' ' : ''}${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"><span>${fmt(spent)} gastos${budget && budget.amount>0 ? ` (${pct.toFixed(0)}%)` : ''}</span></div>`; }).join('');
     renderGoalsList();
     initMoneyMasks();
   }
@@ -4730,7 +4793,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function applySimpleAutoCategorization(rows) { return rows.map(row => { if (!row.category && featureSettings.autoCategorization) { const suggested = suggestCategoryForDescription(row.desc); if (suggested) { row.category = suggested; row.matchStatus = 'Categoria sugerida pelo histórico · revise antes de confirmar'; } } return row; }); }
   function detectSpendingAnomalies() { const currentMonth = currentMonthYM(); const byCategory = new Map(); entries.filter(entry => entry.type === 'out').forEach(entry => { const month = String(entry.date || '').slice(0, 7); const key = `${entry.category || 'sem-categoria'}|${month}`; byCategory.set(key, (byCategory.get(key) || 0) + Number(entry.amount || 0)); }); const current = new Map(); entries.filter(entry => entry.type === 'out' && String(entry.date || '').startsWith(currentMonth)).forEach(entry => current.set(entry.category || 'sem-categoria', (current.get(entry.category || 'sem-categoria') || 0) + Number(entry.amount || 0))); const anomalies = []; current.forEach((value, categoryId) => { const history = [...byCategory.entries()].filter(([key]) => key.startsWith(`${categoryId}|`) && !key.endsWith(`|${currentMonth}`)).map(([, amount]) => amount).slice(-6); if (history.length < 2) return; const average = history.reduce((sum, amount) => sum + amount, 0) / history.length; if (value > average * 1.75 && value > average + 50) anomalies.push({ category: categories.find(cat => cat.id === categoryId)?.name || 'Sem categoria', value, average }); }); return anomalies.sort((a, b) => b.value - b.average - (a.value - a.average)); }
   function runAnomalyScan() { const anomalies = detectSpendingAnomalies(); const status = document.getElementById('labsAnalysisStatus'); status.innerHTML = anomalies.length ? anomalies.slice(0, 5).map(item => `<div><strong>${escapeHTML(item.category)}</strong>: ${fmt(item.value)} no mês atual, contra média de ${fmt(item.average)}.</div>`).join('') : 'Nenhuma anomalia estatística encontrada com pelo menos dois meses de histórico.'; logInfo('Análise', 'Detectar anomalias', 'Sucesso', `${anomalies.length} possível(is) anomalia(s) encontrada(s).`); }
-  function generateMonthlyReview() { const month = currentMonthYM(); const income = entries.filter(e => e.type === 'in' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const expense = entries.filter(e => e.type === 'out' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const over = categories.filter(cat => { const budget = budgetFor(cat.id, month); return budget && budget.amount > 0 && budgetSpent(cat.id, month) > budget.amount; }).map(cat => cat.name); const status = document.getElementById('labsAnalysisStatus'); status.innerHTML = `<strong>Revisão de ${escapeHTML(formatMonthLabel(month))}</strong><div>Entradas: ${fmt(income)} · Saídas: ${fmt(expense)} · Fluxo: ${fmt(income - expense)}</div><div>${over.length ? `Categorias acima do orçamento: ${escapeHTML(over.join(', '))}.` : 'Nenhuma categoria acima do orçamento.'}</div><small>Resumo informativo; nenhuma alteração automática foi feita.</small>`; logInfo('Análise', 'Revisão mensal guiada', 'Sucesso', 'Resumo mensal apresentado sem alterações automáticas.'); }
+  function generateMonthlyReview() { const month = currentMonthYM(); const income = entries.filter(e => e.type === 'in' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const expense = entries.filter(e => e.type === 'out' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const over = categories.filter(cat => { const budget = budgetFor(cat.id); return budget && budget.amount > 0 && budgetSpent(cat.id, currentFinancialCycleKey()) > budget.amount; }).map(cat => cat.name); const status = document.getElementById('labsAnalysisStatus'); status.innerHTML = `<strong>Revisão de ${escapeHTML(formatMonthLabel(month))}</strong><div>Entradas: ${fmt(income)} · Saídas: ${fmt(expense)} · Fluxo: ${fmt(income - expense)}</div><div>${over.length ? `Categorias acima do orçamento: ${escapeHTML(over.join(', '))}.` : 'Nenhuma categoria acima do orçamento.'}</div><small>Resumo informativo; nenhuma alteração automática foi feita.</small>`; logInfo('Análise', 'Revisão mensal guiada', 'Sucesso', 'Resumo mensal apresentado sem alterações automáticas.'); }
   function runWhatIf() { const extra = readMoneyInput(document.getElementById('featureWhatIfExpense')); const month = currentMonthYM(); const income = entries.filter(e => e.type === 'in' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const expense = entries.filter(e => e.type === 'out' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const currentNet = income - expense; const simulatedNet = currentNet - extra; const projected = (totalBankBalance() + totalPocketBalance() + totalInvestBalance()) + simulatedNet * Number(featureSettings.projectionMonths || 6); const status = document.getElementById('labsProjectionStatus'); status.innerHTML = `Com uma nova saída mensal de <strong>${fmt(extra)}</strong>, o fluxo do mês iria de <strong>${fmt(currentNet)}</strong> para <strong>${fmt(simulatedNet)}</strong>; patrimônio projetado em ${featureSettings.projectionMonths} meses: <strong>${fmt(projected)}</strong>.`; logInfo('Análise', 'Simulador E se', 'Sucesso', 'Cenário simulado sem alteração dos dados.'); }
   function exportPatrimonyChartPng() { const series = dashboardMonthSeries(6); const canvas = document.createElement('canvas'); canvas.width = 1400; canvas.height = 820; const ctx = canvas.getContext('2d'); ctx.fillStyle = '#F7F5EF'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#1C2B24'; ctx.font = '700 36px Plus Jakarta Sans, sans-serif'; ctx.fillText('Livro-Caixa · Patrimônio estimado', 80, 90); ctx.font = '20px Plus Jakarta Sans, sans-serif'; ctx.fillStyle = '#4C5A52'; ctx.fillText('Últimos seis meses · imagem gerada localmente', 80, 130); const left = 110, top = 210, width = 1160, height = 470; const values = series.map(item => Number(item.patrimony || 0)); const min = Math.min(0, ...values), max = Math.max(1, ...values); ctx.strokeStyle = '#D8D2C1'; ctx.lineWidth = 2; for (let i = 0; i <= 4; i++) { const y = top + height - (height * i / 4); ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(left + width, y); ctx.stroke(); } const xFor = i => left + (series.length <= 1 ? width / 2 : i * width / (series.length - 1)); const yFor = value => top + height - ((value - min) / (max - min || 1)) * height; ctx.strokeStyle = '#2F6F4F'; ctx.lineWidth = 7; ctx.beginPath(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); if (!i) ctx.moveTo(x, y); else ctx.lineTo(x, y); }); ctx.stroke(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); ctx.fillStyle = '#2F6F4F'; ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1C2B24'; ctx.font = '18px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.fillText(item.label, x, top + height + 42); ctx.font = '16px IBM Plex Mono, monospace'; ctx.fillText(fmt(item.patrimony), x, y - 20); }); const link = document.createElement('a'); link.download = `patrimonio-livro-caixa-${todayISO()}.png`; link.href = canvas.toDataURL('image/png'); link.click(); logInfo('Exportação', 'Exportar patrimônio PNG', 'Sucesso', 'Gráfico de patrimônio exportado como imagem.'); }
   document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnomalyScan);
@@ -4744,7 +4807,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-01 (CLAUDE)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-02 (CLAUDE)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -4767,6 +4830,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   applyBalancesHiddenState(hideBalancesOnOpen);
+
+  const inputFinancialCycleDay = document.getElementById('inputFinancialCycleDay');
+  if (inputFinancialCycleDay) {
+    inputFinancialCycleDay.value = getFinancialCycleStartDay();
+    inputFinancialCycleDay.addEventListener('change', () => {
+      setFinancialCycleStartDay(inputFinancialCycleDay.value);
+      inputFinancialCycleDay.value = getFinancialCycleStartDay();
+      renderFeatureLab();
+      renderAdvancedDashboard();
+    });
+  }
   document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; logInfo('Segurança', 'Desbloquear PIN local', 'Sucesso', 'Aplicativo desbloqueado neste dispositivo.'); } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; logSyncError('desbloqueio por PIN', err); } });
   document.getElementById('pinUnlockInput')?.addEventListener('keydown', event => { if (event.key === 'Enter') document.getElementById('btnPinUnlock')?.click(); });
   document.getElementById('btnPinLogout')?.addEventListener('click', () => auth.signOut());
