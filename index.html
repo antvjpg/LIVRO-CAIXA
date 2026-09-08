@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-02 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-03 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1084,9 +1084,9 @@
     .balance-share{width:max-content;margin-top:9px;padding:5px 8px;border:1px solid color-mix(in srgb,var(--accent) 19%,transparent);border-radius:999px;background:color-mix(in srgb,var(--accent) 11%,var(--surface));color:var(--accent);font-size:9px;font-weight:750;line-height:1;}
     .balance-insight{gap:7px;margin-top:11px;font-size:9px;}
     .balance-insight strong{font-size:11px;}
-    .bank-summary-card { cursor:pointer; position:relative; transition:transform .16s ease, box-shadow .16s ease; }
-    .bank-summary-card:active { transform:scale(.98); }
-    .bank-summary-card:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+    .bank-summary-card, .pocket-summary-card { cursor:pointer; position:relative; transition:transform .16s ease, box-shadow .16s ease; }
+    .bank-summary-card:active, .pocket-summary-card:active { transform:scale(.98); }
+    .bank-summary-card:focus-visible, .pocket-summary-card:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
     .balance-detail-link { display:block; margin-top:6px; color:var(--green); font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.02em; }
     .toolbar { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:0 0 15px; }
     .toolbar button { min-height:46px; padding:7px 5px; border:1px solid #C9D9CC; border-radius:10px; background:#FCFDF9; color:#1E4B38; font-size:9px; font-weight:700; letter-spacing:.01em; line-height:1.25; text-transform:none; box-shadow:0 2px 5px rgba(20,48,36,.055); }
@@ -1881,6 +1881,14 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       </div>
 
       <div class="profile-group">
+        <div class="profile-group-title">Lembretes</div>
+        <div class="profile-list">
+          <label class="feature-lab-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-lab-toggle-copy"><strong>Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
+          <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
+        </div>
+      </div>
+
+      <div class="profile-group">
         <div class="profile-group-title">Preferências financeiras</div>
         <div class="profile-list">
           <div class="profile-item">
@@ -2074,7 +2082,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
         <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">01</span><h4>Automações</h4></div><span class="feature-lab-section-tag">AUTOMÁTICO</span></div>
         <div class="feature-lab-options feature-lab-option-list">
           <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoBills"><span class="feature-lab-toggle-copy"><strong>Contas recorrentes</strong><small>Gerar contas recorrentes automaticamente no mês atual.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
-          <label class="feature-lab-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-lab-toggle-copy"><strong>Lembretes</strong><small>Exibir avisos de contas pendentes e atrasadas.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
           <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoQuotes"><span class="feature-lab-toggle-copy"><strong>Cotações automáticas</strong><small>Atualizar cotações enquanto o aplicativo estiver aberto.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
         </div>
         <div class="feature-lab-fields">
@@ -2116,7 +2123,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
         <p class="feature-lab-section-desc">Recursos experimentais para proteger backups e trazer fechamentos OFX ou CSV para a prévia editável.</p>
         <div class="feature-lab-fields">
           <div><label for="featureBackupPassword">Senha do backup criptografado</label><input type="password" id="featureBackupPassword" autocomplete="new-password" placeholder="Mínimo de 6 caracteres"></div>
-          <div><label for="featureReminderAdvanceDays">Avisar faturas com antecedência</label><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3"><span class="hint">dias antes do vencimento</span></div>
         </div>
         <div class="feature-lab-actions"><button type="button" id="btnExportEncryptedBackup" class="primary">Exportar backup criptografado</button><button type="button" id="btnImportEncryptedBackup">Importar backup criptografado</button></div>
         <input type="file" id="fileEncryptedBackup" accept="application/json,.json" hidden>
@@ -3147,7 +3153,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function setStateArray(name, arr) {
     switch (name) {
       case 'banks': banks = arr.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral'); break;
-      case 'categories': categories = arr; break;
+      case 'categories': categories = [...(arr || [])].sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR')); break;
       case 'entries': entries = arr; break;
       case 'investments': investments = sortDisplayOrder(arr); break;
       case 'pockets': pockets = sortDisplayOrder(arr); break;
@@ -3709,10 +3715,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const strip = document.getElementById('balanceStrip');
     const bankTotal = totalBankBalance();
     const investTotal = totalInvestBalance();
-    const totalPatrimonio = bankTotal + investTotal;
+    const pocketTotal = totalPocketBalance();
+    const totalPatrimonio = bankTotal + pocketTotal + investTotal;
     const flowInsight = monthlyFlowInsight();
     const bankShare = percentOfTotal(bankTotal, totalPatrimonio);
     const investShare = percentOfTotal(investTotal, totalPatrimonio);
+    const pocketShare = percentOfTotal(pocketTotal, totalPatrimonio);
 
     let html = `
     <div class="balance-card total">
@@ -3725,6 +3733,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="amount ${bankTotal < 0 ? 'neg' : ''}">${fmt(bankTotal)}</span>
       ${bankShare === null ? '' : `<span class="balance-share">${bankShare.toFixed(0)}% do patrimônio</span>`}
       <span class="balance-detail-link">Ver contas →</span>
+    </div>
+    <div class="balance-card pocket-summary-card" role="button" tabindex="0" aria-label="Ver caixinhas" title="Ver caixinhas">
+      <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('bank')}</span></div>
+      <span class="amount ${pocketTotal < 0 ? 'neg' : ''}">${fmt(pocketTotal)}</span>
+      ${pocketShare === null ? '' : `<span class="balance-share">${pocketShare.toFixed(0)}% do patrimônio</span>`}
+      <span class="balance-detail-link">Ver caixinhas →</span>
     </div>
     <div class="balance-card invest-summary-card">
       <div class="balance-card-head"><span class="label">Investido / Cripto</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div>
@@ -3740,6 +3754,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
         openBankPanel();
+      }
+    });
+    const pocketSummaryCard = strip.querySelector('.pocket-summary-card');
+    const openPocketsTab = () => window.switchTab('pockets');
+    pocketSummaryCard?.addEventListener('click', openPocketsTab);
+    pocketSummaryCard?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openPocketsTab();
       }
     });
   }
@@ -3835,7 +3858,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderBankManageList() {
     const container = document.getElementById('bankManageList');
     const total = totalBankBalance();
-    container.innerHTML = banks.map(b => {
+    const sortedBanks = [...banks].sort((a, b) => {
+      const diff = bankBalance(b.id) - bankBalance(a.id);
+      return diff !== 0 ? diff : String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR');
+    });
+    container.innerHTML = sortedBanks.map(b => {
       const balance = bankBalance(b.id);
       const share = percentOfTotal(balance, total);
       return `<div class="bank-list-item">
@@ -4807,7 +4834,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-02 (CLAUDE)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-03 (CLAUDE)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -4829,6 +4856,18 @@ document.addEventListener('DOMContentLoaded', () => {
       applyBalancesHiddenState(chkHideBalances.checked);
     });
   }
+  const profileReminders = document.getElementById('featureReminders');
+  profileReminders?.addEventListener('change', () => {
+    featureSettings = normalizeFeatureSettings({ ...featureSettings, reminders: profileReminders.checked });
+    persistFeatureSettings();
+    render();
+  });
+  const profileReminderAdvance = document.getElementById('featureReminderAdvanceDays');
+  profileReminderAdvance?.addEventListener('change', () => {
+    featureSettings = normalizeFeatureSettings({ ...featureSettings, reminderAdvanceDays: profileReminderAdvance.value });
+    persistFeatureSettings();
+    render();
+  });
   applyBalancesHiddenState(hideBalancesOnOpen);
 
   const inputFinancialCycleDay = document.getElementById('inputFinancialCycleDay');
@@ -5713,22 +5752,34 @@ VALOR: ${fmt(bill.amount)}
     document.getElementById('purchaseSalvar').textContent = purchase ? 'Atualizar Compra' : 'Salvar Compra';
     openModal('panelPurchase');
   }
+  let purchaseCalcMode = 'installment'; // 'installment' = parcela dirige o total; 'total' = total dirige a parcela
   function updatePurchaseInstallmentFields() {
     const parcelado = document.getElementById('purchaseType')?.value === 'parcelado';
     ['purchaseInstallmentsField','purchaseInstallmentValueField','purchaseInitialInstallmentField','purchaseInstallmentHint'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display=parcelado ? '' : 'none'; });
-    document.getElementById('purchaseValueLabel').textContent = parcelado ? 'Valor total (calculado)' : 'Valor total (R$)';
-    document.getElementById('purchaseValue').readOnly = parcelado;
-    if (parcelado) recalcPurchaseTotalFromInstallment();
+    document.getElementById('purchaseValueLabel').textContent = 'Valor total (R$)';
+    document.getElementById('purchaseValue').readOnly = false;
+    if (parcelado) recalcFromCount();
   }
-  function recalcPurchaseTotalFromInstallment() {
-    const parcelado = document.getElementById('purchaseType')?.value === 'parcelado';
-    if (!parcelado) return;
+  // A quantidade de parcelas muda: recalcula o campo OPOSTO ao que foi editado por último, preservando o que o usuário digitou.
+  function recalcFromCount() {
+    if (purchaseCalcMode === 'total') recalcInstallmentFromTotal();
+    else recalcTotalFromInstallment();
+  }
+  function recalcTotalFromInstallment() {
+    if (document.getElementById('purchaseType')?.value !== 'parcelado') return;
     const installmentValue = readMoneyInput('purchaseInstallmentValue') || 0;
     const count = Math.max(2, Number(document.getElementById('purchaseInstallments').value) || 2);
     setMoneyInput('purchaseValue', installmentValue * count);
   }
-  document.getElementById('purchaseInstallmentValue').addEventListener('input', recalcPurchaseTotalFromInstallment);
-  document.getElementById('purchaseInstallments').addEventListener('input', recalcPurchaseTotalFromInstallment);
+  function recalcInstallmentFromTotal() {
+    if (document.getElementById('purchaseType')?.value !== 'parcelado') return;
+    const total = readMoneyInput('purchaseValue') || 0;
+    const count = Math.max(2, Number(document.getElementById('purchaseInstallments').value) || 2);
+    setMoneyInput('purchaseInstallmentValue', total / count);
+  }
+  document.getElementById('purchaseInstallmentValue').addEventListener('input', () => { purchaseCalcMode = 'installment'; recalcTotalFromInstallment(); });
+  document.getElementById('purchaseValue').addEventListener('input', () => { if (document.getElementById('purchaseType')?.value === 'parcelado') { purchaseCalcMode = 'total'; recalcInstallmentFromTotal(); } });
+  document.getElementById('purchaseInstallments').addEventListener('input', recalcFromCount);
   // ===== Fase C — Motor de fatura (cálculo puro, sem integração com Calendário/Livro-Caixa ainda) =====
   function invoicePeriodKeyForDate(card, dateStr) {
     const d = new Date((dateStr || todayISO()) + 'T00:00:00');
@@ -6005,8 +6056,6 @@ VALOR: ${fmt(pseudoBill.amount)}
     catch (err) { if (old) cards = cards.map(c => c.id === editingCardId ? old : c); else cards = cards.filter(c => c.id !== record.id); logSyncError('salvamento de cartão', err); renderCards(); alert('Não foi possível salvar o cartão.'); }
   };
   document.getElementById('purchaseType').addEventListener('change', updatePurchaseInstallmentFields);
-  document.getElementById('purchaseValue').addEventListener('input', updatePurchaseInstallmentFields);
-  document.getElementById('purchaseInstallments').addEventListener('input', updatePurchaseInstallmentFields);
   document.getElementById('purchaseSalvar').onclick = async () => {
     const cardId = document.getElementById('purchaseCard').value;
     const description = document.getElementById('purchaseDesc').value.trim();
@@ -6654,6 +6703,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       savedCategoryId = 'c' + Date.now();
       categories.push({ id: savedCategoryId, name, icon });
     }
+    categories.sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'));
     await saveCategories();
     logInfo('Categorias','Salvar categoria','Sucesso',`Categoria ${name} salva.`);
     populateFilterControls();
@@ -7237,6 +7287,12 @@ VALOR: ${fmt(pseudoBill.amount)}
     const email = currentUser?.email || 'Sua conta e preferências';
     const target = document.getElementById('profileEmail');
     if (target) target.textContent = email;
+    const remindersChk = document.getElementById('featureReminders');
+    if (remindersChk) remindersChk.checked = featureSettings.reminders;
+    const remindersAdvance = document.getElementById('featureReminderAdvanceDays');
+    if (remindersAdvance) remindersAdvance.value = featureSettings.reminderAdvanceDays;
+    const cycleInput = document.getElementById('inputFinancialCycleDay');
+    if (cycleInput) cycleInput.value = getFinancialCycleStartDay();
   }
 
   function setAuthError(msg) {
