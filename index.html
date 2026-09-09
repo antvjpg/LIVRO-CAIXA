@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-05 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-06 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -4834,7 +4834,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-05 (CLAUDE)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-06 (CLAUDE)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -6974,9 +6974,9 @@ VALOR: ${fmt(pseudoBill.amount)}
   function downloadBlob(blob, filename) { const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
 
   // ===== P1.4 — Blocos adicionais de exportação: Caixinhas, Investimentos, Resumo Patrimonial =====
-  function getPocketsExportBlock() {
+  function getPocketsExportBlock(dateStart, dateEnd) {
     return pockets.map(pocket => {
-      const movs = yieldsLog.filter(y => y.targetType === 'pocket' && y.targetId === pocket.id).sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
+      const movs = yieldsLog.filter(y => y.targetType === 'pocket' && y.targetId === pocket.id && (!dateStart || y.date >= dateStart) && (!dateEnd || y.date <= dateEnd)).sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
       return {
         name: pocket.name,
         goal: pocket.goal || '',
@@ -6986,9 +6986,9 @@ VALOR: ${fmt(pseudoBill.amount)}
       };
     });
   }
-  function getInvestmentsExportBlock() {
+  function getInvestmentsExportBlock(dateStart, dateEnd) {
     return investments.map(inv => {
-      const movs = yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === inv.id).sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
+      const movs = yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === inv.id && (!dateStart || y.date >= dateStart) && (!dateEnd || y.date <= dateEnd)).sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
       const isCrypto = isCryptoType(inv.type);
       return {
         name: inv.name,
@@ -7029,7 +7029,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('Livro-Caixa — Extrato',14,y); y+=7; doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`,14,y); y+=6; doc.text(`Saldo Inicial: ${fmt(initial)}   Saldo Final: ${fmt(final)}`,14,y); y+=10;
     grouped.forEach(group=>{ if(y>260){doc.addPage();y=20;} doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(group.bank.name,14,y);y+=6;doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`,14,y);y+=6;doc.text('Data',14,y);doc.text('Descrição',38,y);doc.text('Categoria',120,y);doc.text('Valor',175,y);y+=4;doc.line(14,y,196,y);y+=6;let running=group.initialBalance;group.entries.forEach(e=>{if(y>280){doc.addPage();y=20;}const cat=categories.find(c=>c.id===e.category);const dateFmt=e.date.split('-').reverse().join('/');running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);doc.text(dateFmt,14,y);doc.text((e.desc||'').slice(0,40),38,y);doc.text(cat?cat.name.slice(0,16):'—',120,y);doc.text((e.type==='in'?'+':'-')+' '+fmt(Math.abs(e.amount)).replace('R$ ',''),160,y);doc.text(fmt(running).replace('R$ ',''),185,y);y+=6;});y+=10;});
 
-    const pocketsBlock = getPocketsExportBlock();
+    const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     if (pocketsBlock.length) {
       doc.addPage(); y = 20;
       doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('2. Caixinhas', 14, y); y += 10;
@@ -7043,7 +7043,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       });
     }
 
-    const investBlock = getInvestmentsExportBlock();
+    const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     if (investBlock.length) {
       doc.addPage(); y = 20;
       doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('3. Investimentos', 14, y); y += 10;
@@ -7073,7 +7073,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     grouped.forEach(group=>{const rows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],['Saldo Inicial',group.initialBalance],[],['Data','Descrição','Categoria','Entrada','Saída','Saldo']];let running=group.initialBalance;group.entries.forEach(e=>{const cat=categories.find(c=>c.id===e.category);running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);rows.push([e.date.split('-').reverse().join('/'),e.desc||'',cat?cat.name:'—',e.type==='in'?e.amount:'',e.type==='out'?e.amount:'',running]);});rows.push([],['','','','','Saldo Final',group.finalBalance]);const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:34},{wch:18},{wch:14},{wch:14},{wch:14}];const safeName=group.bank.name.replace(/[\/*?:\[\]]/g,'').slice(0,31)||'Banco';XLSX.utils.book_append_sheet(wb,ws,safeName);});
     const summaryRows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],[],['Banco','Saldo Inicial','Saldo Final']];grouped.forEach(g=>summaryRows.push([g.bank.name,g.initialBalance,g.finalBalance]));summaryRows.push([],['Saldo Inicial Total',totalInitial],['Saldo Final Total',totalFinal]);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summaryRows),'Resumo');
 
-    const pocketsBlock = getPocketsExportBlock();
+    const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     if (pocketsBlock.length) {
       const rows = [['2. Caixinhas'], []];
       pocketsBlock.forEach(p => {
@@ -7086,7 +7086,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       XLSX.utils.book_append_sheet(wb, ws, 'Caixinhas');
     }
 
-    const investBlock = getInvestmentsExportBlock();
+    const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     if (investBlock.length) {
       const rows = [['3. Investimentos'], []];
       investBlock.forEach(inv => {
@@ -7151,7 +7151,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       });
     });
 
-    const pocketsBlock = getPocketsExportBlock();
+    const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     if (pocketsBlock.length) {
       children.push(new d.Paragraph({ text: '2. Caixinhas', heading: d.HeadingLevel.TITLE, pageBreakBefore: true }));
       pocketsBlock.forEach(p => {
@@ -7165,7 +7165,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       });
     }
 
-    const investBlock = getInvestmentsExportBlock();
+    const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     if (investBlock.length) {
       children.push(new d.Paragraph({ text: '3. Investimentos', heading: d.HeadingLevel.TITLE, pageBreakBefore: true }));
       investBlock.forEach(inv => {
