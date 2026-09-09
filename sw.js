@@ -1,12 +1,12 @@
 /* Livro-Caixa V.18-19 — PWA: App Shell Caching */
-const CACHE_NAME = "livro-caixa-shell-v19-03";
+const CACHE_NAME = "livro-caixa-shell-v19-04";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./manifest.webmanifest?v=19-03",
-  "./icon-192.png?v=19-03",
-  "./icon-512.png?v=19-03",
-  "./icon-512-maskable.png?v=19-03"
+  "./manifest.webmanifest?v=19-04",
+  "./icon-192.png?v=19-04",
+  "./icon-512.png?v=19-04",
+  "./icon-512-maskable.png?v=19-04"
 ];
 
 // Instalação: pré-carrega os arquivos vitais (App Shell)

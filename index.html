@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-03 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-04 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -4834,7 +4834,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-03 (CLAUDE)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-04 (CLAUDE)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -6973,6 +6973,41 @@ VALOR: ${fmt(pseudoBill.amount)}
   }
   function downloadBlob(blob, filename) { const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
 
+  // ===== P1.4 — Blocos adicionais de exportação: Caixinhas, Investimentos, Resumo Patrimonial =====
+  function getPocketsExportBlock() {
+    return pockets.map(pocket => {
+      const movs = yieldsLog.filter(y => y.targetType === 'pocket' && y.targetId === pocket.id).sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
+      return {
+        name: pocket.name,
+        goal: pocket.goal || '',
+        initial: Number(pocket.initial) || 0,
+        current: pocketCurrentBalance(pocket),
+        movements: movs.map(m => ({ date: m.date, kind: m.kind === 'aporte' ? 'Aporte' : m.kind === 'resgate' ? 'Resgate' : 'Rendimento', amount: Number(m.amount) || 0, desc: m.desc || '' }))
+      };
+    });
+  }
+  function getInvestmentsExportBlock() {
+    return investments.map(inv => {
+      const movs = yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === inv.id).sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
+      const isCrypto = isCryptoType(inv.type);
+      return {
+        name: inv.name,
+        alias: inv.alias || '',
+        type: inv.type,
+        units: isCrypto && inv.units != null ? formatCryptoUnits(inv.type, inv.units) : (inv.units != null ? String(inv.units) : ''),
+        price: inv.price || null,
+        currentValue: inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : Number(inv.value || 0),
+        movements: movs.map(m => ({ date: m.date, kind: m.kind === 'aporte' ? 'Aporte' : m.kind === 'resgate' ? 'Resgate' : 'Rendimento', amount: Number(m.amount) || 0 }))
+      };
+    });
+  }
+  function getPatrimonySummaryBlock() {
+    const bankTotal = totalBankBalance();
+    const pocketTotal = totalPocketBalance();
+    const investTotal = totalInvestBalance();
+    return { bankTotal, pocketTotal, investTotal, total: bankTotal + pocketTotal + investTotal };
+  }
+
   document.getElementById('btnExport').onclick = () => {
     const activeEntries = getFilteredEntries();
     if (activeEntries.length === 0) { alert('Não há lançamentos para exportar nos filtros atuais.'); return; }
@@ -6993,12 +7028,82 @@ VALOR: ${fmt(pseudoBill.amount)}
     const grouped=getOrganizedExportData(); const meta=getExportMeta(); const {jsPDF}=window.jspdf; const doc=new jsPDF(); const initial=grouped.reduce((s,g)=>s+g.initialBalance,0); const final=grouped.reduce((s,g)=>s+g.finalBalance,0); let y=18;
     doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('Livro-Caixa — Extrato',14,y); y+=7; doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`,14,y); y+=6; doc.text(`Saldo Inicial: ${fmt(initial)}   Saldo Final: ${fmt(final)}`,14,y); y+=10;
     grouped.forEach(group=>{ if(y>260){doc.addPage();y=20;} doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(group.bank.name,14,y);y+=6;doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`,14,y);y+=6;doc.text('Data',14,y);doc.text('Descrição',38,y);doc.text('Categoria',120,y);doc.text('Valor',175,y);y+=4;doc.line(14,y,196,y);y+=6;let running=group.initialBalance;group.entries.forEach(e=>{if(y>280){doc.addPage();y=20;}const cat=categories.find(c=>c.id===e.category);const dateFmt=e.date.split('-').reverse().join('/');running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);doc.text(dateFmt,14,y);doc.text((e.desc||'').slice(0,40),38,y);doc.text(cat?cat.name.slice(0,16):'—',120,y);doc.text((e.type==='in'?'+':'-')+' '+fmt(Math.abs(e.amount)).replace('R$ ',''),160,y);doc.text(fmt(running).replace('R$ ',''),185,y);y+=6;});y+=10;});
-    doc.save(`livro-caixa-extrato-${todayISO()}.pdf`); logInfo('Exportação','Exportação PDF','Sucesso','Extrato PDF gerado.',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
+
+    const pocketsBlock = getPocketsExportBlock();
+    if (pocketsBlock.length) {
+      doc.addPage(); y = 20;
+      doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('2. Caixinhas', 14, y); y += 10;
+      pocketsBlock.forEach(p => {
+        if (y > 260) { doc.addPage(); y = 20; }
+        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text(p.name, 14, y); y += 6;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9);
+        doc.text(`${p.goal ? 'Objetivo: ' + p.goal + ' · ' : ''}Saldo inicial: ${fmt(p.initial)} · Saldo atual: ${fmt(p.current)}`, 14, y); y += 8;
+        p.movements.forEach(m => { if (y > 280) { doc.addPage(); y = 20; } doc.text(`${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}${m.desc ? ' (' + m.desc + ')' : ''}`, 18, y); y += 6; });
+        y += 8;
+      });
+    }
+
+    const investBlock = getInvestmentsExportBlock();
+    if (investBlock.length) {
+      doc.addPage(); y = 20;
+      doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('3. Investimentos', 14, y); y += 10;
+      investBlock.forEach(inv => {
+        if (y > 260) { doc.addPage(); y = 20; }
+        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text(`${inv.name}${inv.alias ? ' (' + inv.alias + ')' : ''}`, 14, y); y += 6;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9);
+        doc.text(`Tipo: ${inv.type}${inv.units ? ' · Quantidade: ' + inv.units : ''}${inv.price ? ' · Cotação: ' + fmt(inv.price) : ''} · Valor atual: ${fmt(inv.currentValue)}`, 14, y); y += 8;
+        inv.movements.forEach(m => { if (y > 280) { doc.addPage(); y = 20; } doc.text(`${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}`, 18, y); y += 6; });
+        y += 8;
+      });
+    }
+
+    const summary = getPatrimonySummaryBlock();
+    doc.addPage(); y = 20;
+    doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('4. Resumo Patrimonial', 14, y); y += 12;
+    doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    doc.text(`Total em contas: ${fmt(summary.bankTotal)}`, 14, y); y += 8;
+    doc.text(`Total em Caixinhas: ${fmt(summary.pocketTotal)}`, 14, y); y += 8;
+    doc.text(`Total investido: ${fmt(summary.investTotal)}`, 14, y); y += 10;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text(`Patrimônio Total: ${fmt(summary.total)}`, 14, y);
+
+    doc.save(`livro-caixa-extrato-${todayISO()}.pdf`); logInfo('Exportação','Exportação PDF','Sucesso','Extrato PDF completo gerado (4 blocos).',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
   }
   function exportExtractXlsx() {
     if(typeof XLSX==='undefined'){alert('A biblioteca de Excel ainda está carregando.');return;} const grouped=getOrganizedExportData(); const meta=getExportMeta(); const wb=XLSX.utils.book_new(); const totalInitial=grouped.reduce((s,g)=>s+g.initialBalance,0); const totalFinal=grouped.reduce((s,g)=>s+g.finalBalance,0);
     grouped.forEach(group=>{const rows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],['Saldo Inicial',group.initialBalance],[],['Data','Descrição','Categoria','Entrada','Saída','Saldo']];let running=group.initialBalance;group.entries.forEach(e=>{const cat=categories.find(c=>c.id===e.category);running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);rows.push([e.date.split('-').reverse().join('/'),e.desc||'',cat?cat.name:'—',e.type==='in'?e.amount:'',e.type==='out'?e.amount:'',running]);});rows.push([],['','','','','Saldo Final',group.finalBalance]);const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:34},{wch:18},{wch:14},{wch:14},{wch:14}];const safeName=group.bank.name.replace(/[\/*?:\[\]]/g,'').slice(0,31)||'Banco';XLSX.utils.book_append_sheet(wb,ws,safeName);});
-    const summaryRows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],[],['Banco','Saldo Inicial','Saldo Final']];grouped.forEach(g=>summaryRows.push([g.bank.name,g.initialBalance,g.finalBalance]));summaryRows.push([],['Saldo Inicial Total',totalInitial],['Saldo Final Total',totalFinal]);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summaryRows),'Resumo');XLSX.writeFile(wb,`livro-caixa-extrato-${todayISO()}.xlsx`);logInfo('Exportação','Exportação Excel','Sucesso','Extrato Excel gerado.',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
+    const summaryRows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],[],['Banco','Saldo Inicial','Saldo Final']];grouped.forEach(g=>summaryRows.push([g.bank.name,g.initialBalance,g.finalBalance]));summaryRows.push([],['Saldo Inicial Total',totalInitial],['Saldo Final Total',totalFinal]);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summaryRows),'Resumo');
+
+    const pocketsBlock = getPocketsExportBlock();
+    if (pocketsBlock.length) {
+      const rows = [['2. Caixinhas'], []];
+      pocketsBlock.forEach(p => {
+        rows.push([p.name, p.goal ? `Objetivo: ${p.goal}` : '', `Saldo inicial: ${p.initial}`, `Saldo atual: ${p.current}`]);
+        rows.push(['Data', 'Tipo', 'Valor', 'Observação']);
+        p.movements.forEach(m => rows.push([m.date.split('-').reverse().join('/'), m.kind, m.amount, m.desc || '']));
+        rows.push([]);
+      });
+      const ws = XLSX.utils.aoa_to_sheet(rows); ws['!cols']=[{wch:22},{wch:20},{wch:14},{wch:30}];
+      XLSX.utils.book_append_sheet(wb, ws, 'Caixinhas');
+    }
+
+    const investBlock = getInvestmentsExportBlock();
+    if (investBlock.length) {
+      const rows = [['3. Investimentos'], []];
+      investBlock.forEach(inv => {
+        rows.push([`${inv.name}${inv.alias ? ' (' + inv.alias + ')' : ''}`, `Tipo: ${inv.type}`, inv.units ? `Quantidade: ${inv.units}` : '', inv.price ? `Cotação: ${inv.price}` : '', `Valor atual: ${inv.currentValue}`]);
+        rows.push(['Data', 'Tipo', 'Valor']);
+        inv.movements.forEach(m => rows.push([m.date.split('-').reverse().join('/'), m.kind, m.amount]));
+        rows.push([]);
+      });
+      const ws = XLSX.utils.aoa_to_sheet(rows); ws['!cols']=[{wch:26},{wch:18},{wch:16},{wch:16},{wch:16}];
+      XLSX.utils.book_append_sheet(wb, ws, 'Investimentos');
+    }
+
+    const patrimony = getPatrimonySummaryBlock();
+    const patrimonyRows = [['4. Resumo Patrimonial'], [], ['Total em contas', patrimony.bankTotal], ['Total em Caixinhas', patrimony.pocketTotal], ['Total investido', patrimony.investTotal], [], ['Patrimônio Total', patrimony.total]];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(patrimonyRows), 'Patrimônio');
+
+    XLSX.writeFile(wb,`livro-caixa-extrato-${todayISO()}.xlsx`);logInfo('Exportação','Exportação Excel','Sucesso','Extrato Excel completo gerado (4 blocos).',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
   }
   async function exportExtractDocx() {
     if (!window.docx) { alert('A biblioteca Word ainda está carregando.'); return; }
@@ -7046,9 +7151,47 @@ VALOR: ${fmt(pseudoBill.amount)}
       });
     });
 
+    const pocketsBlock = getPocketsExportBlock();
+    if (pocketsBlock.length) {
+      children.push(new d.Paragraph({ text: '2. Caixinhas', heading: d.HeadingLevel.TITLE, pageBreakBefore: true }));
+      pocketsBlock.forEach(p => {
+        children.push(
+          new d.Paragraph({ text: p.name, heading: d.HeadingLevel.HEADING_1 }),
+          detailLine('Objetivo: ', p.goal || 'Não definido'),
+          detailLine('Saldo inicial: ', fmt(p.initial)),
+          detailLine('Saldo atual: ', fmt(p.current))
+        );
+        p.movements.forEach(m => children.push(new d.Paragraph({ text: `${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}${m.desc ? ' (' + m.desc + ')' : ''}`, spacing: { after: 40 } })));
+      });
+    }
+
+    const investBlock = getInvestmentsExportBlock();
+    if (investBlock.length) {
+      children.push(new d.Paragraph({ text: '3. Investimentos', heading: d.HeadingLevel.TITLE, pageBreakBefore: true }));
+      investBlock.forEach(inv => {
+        children.push(
+          new d.Paragraph({ text: `${inv.name}${inv.alias ? ' (' + inv.alias + ')' : ''}`, heading: d.HeadingLevel.HEADING_1 }),
+          detailLine('Tipo: ', inv.type),
+          detailLine('Quantidade: ', inv.units || '—'),
+          detailLine('Cotação atual: ', inv.price ? fmt(inv.price) : '—'),
+          detailLine('Valor atual: ', fmt(inv.currentValue))
+        );
+        inv.movements.forEach(m => children.push(new d.Paragraph({ text: `${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}`, spacing: { after: 40 } })));
+      });
+    }
+
+    const patrimony = getPatrimonySummaryBlock();
+    children.push(
+      new d.Paragraph({ text: '4. Resumo Patrimonial', heading: d.HeadingLevel.TITLE, pageBreakBefore: true }),
+      detailLine('Total em contas: ', fmt(patrimony.bankTotal)),
+      detailLine('Total em Caixinhas: ', fmt(patrimony.pocketTotal)),
+      detailLine('Total investido: ', fmt(patrimony.investTotal)),
+      new d.Paragraph({ spacing: { before: 120 }, children: [new d.TextRun({ text: `Patrimônio Total: ${fmt(patrimony.total)}`, bold: true, size: 28 })] })
+    );
+
     const blob = await d.Packer.toBlob(new d.Document({ sections: [{ children }] }));
     downloadBlob(blob, `livro-caixa-extrato-${todayISO()}.docx`);
-    logInfo('Exportação', 'Exportação DOCX', 'Sucesso', 'Extrato Word em formato vertical gerado.', { dateStart: meta.dateStart, dateEnd: meta.dateEnd, layout: 'vertical-mobile' });
+    logInfo('Exportação', 'Exportação DOCX', 'Sucesso', 'Extrato Word completo gerado (4 blocos).', { dateStart: meta.dateStart, dateEnd: meta.dateEnd, layout: 'vertical-mobile' });
   }
 
   const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
