@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-04 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-05 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -4834,7 +4834,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-04 (CLAUDE)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-05 (CLAUDE)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -7555,7 +7555,7 @@ VALOR: ${fmt(pseudoBill.amount)}
 });
 </script>
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
-  <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m7 15 3-3 3 2 5-6"/></svg></span><span>Visão geral</span></button>
+  <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="9" rx="1.5"/><rect x="13" y="4" width="7" height="5" rx="1.5"/><rect x="13" y="11" width="7" height="9" rx="1.5"/><rect x="4" y="15" width="7" height="5" rx="1.5"/></svg></span><span>Visão geral</span></button>
   <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h10a3 3 0 0 1 3 3V19H8a3 3 0 0 0-3 3z"/><path d="M5 5.5v15.5M8 9h6M8 13h6"/></svg></span><span>Livro-Caixa</span></button>
   <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14v9.5A2.5 2.5 0 0 1 16.5 21h-9A2.5 2.5 0 0 1 5 18.5z"/><path d="M8 9V6.8A2.8 2.8 0 0 1 10.8 4h2.4A2.8 2.8 0 0 1 16 6.8V9M9 15h6"/></svg></span><span>Caixinhas</span></button>
   <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span><span>Investimentos</span></button>
