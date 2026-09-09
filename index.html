@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-06 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-07 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1770,7 +1770,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
     <div class="toolbar">
       <button class="primary quick-primary" id="btnNovo"><span class="quick-primary-icon" aria-hidden="true"><svg class="add-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span> Novo lançamento</button>
       <button class="quick-action" id="btnBanco"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-6 9 6M5 10h14M6.5 10v7M10 10v7M14 10v7M17.5 10v7M4 20h16"/></svg></span><span>Banco</span></button>
-      <button class="quick-action" id="btnCategoria"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.5 5.5h8l6 6-7 7-7-7z"/><path d="M8.2 9.2h.01"/></svg></span><span>Categoria</span></button>
       <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h13"/><path d="m15 5 3 3-3 3"/><path d="M19 16H6"/><path d="m9 13-3 3 3 3"/></svg></span><span>Transferência</span></button>
       <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3H8z"/><path d="M6 7h12v13H6z"/><path d="M9 12h6M9 15h6"/></svg></span><span>Colar texto</span></button>
       <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Importar PDF/DOCX</span></button>
@@ -1891,6 +1890,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <div class="profile-group">
         <div class="profile-group-title">Preferências financeiras</div>
         <div class="profile-list">
+          <div class="profile-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4.5 5.5h8l6 6-7 7-7-7z"/><path d="M8.2 9.2h.01"/></svg></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamento — criar, editar, excluir</span></span><span class="profile-item-arrow">›</span></div>
           <div class="profile-item">
             <span class="profile-item-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>
             <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define em qual dia começa seu mês financeiro. Isso altera apenas os períodos usados no orçamento — não muda a data dos lançamentos.</span></span>
@@ -4834,7 +4834,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-06 (CLAUDE)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-07 (CLAUDE)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
