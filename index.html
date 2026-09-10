@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-07 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-08 (CLAUDE) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1701,7 +1701,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <button type="button" data-drawer-action="banks"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-6 9 6M5 10h14M6.5 10v7M10 10v7M14 10v7M17.5 10v7M4 20h16"/></svg></span> Contas bancárias</button>
       <button type="button" data-drawer-action="categories"><span>◇</span> Categorias</button>
       <button type="button" data-drawer-action="theme"><span>◐</span> Tema e paleta</button>
-      <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true">⚗</span> Recursos completos (teste)</button>
+      <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true">⚗</span> LABS</button>
       <button type="button" data-drawer-action="diagnostico"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 3v2h6V3"/><path d="M9 9.5h6M9 13h6M9 16.5h3.5"/></svg></span> Diagnóstico Geral (LOG)</button>
     </div>
   </aside>
@@ -1803,7 +1803,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
     <div class="toolbar" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));">
       <button class="primary" id="btnNovoBill"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>Nova Conta / Fatura</button>
       <button type="button" id="btnBillsToday"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>Mês atual</button>
-      <button type="button" id="btnFeatureLab"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/><path d="M8 15h8"/></svg></span>Recursos completos</button>
+      <button type="button" id="btnFeatureLab"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/><path d="M8 15h8"/></svg></span>LABS</button>
       <label class="calendar-filter-control" for="billTitularFilter"><span>Titular</span><select id="billTitularFilter"><option value="">Todos</option></select></label>
       <button type="button" id="btnExportBillsPdf">📄 Exportar PDF</button>
       <button type="button" id="btnExportBillsXlsx">📊 Exportar Excel</button>
@@ -1896,15 +1896,73 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
             <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define em qual dia começa seu mês financeiro. Isso altera apenas os períodos usados no orçamento — não muda a data dos lançamentos.</span></span>
             <input type="number" id="inputFinancialCycleDay" min="1" max="28" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);">
           </div>
-          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/></svg></span><span class="profile-item-copy"><strong>Orçamento, automações e conciliação</strong><span>Disponível no LABS por enquanto — migração em andamento</span></span><span class="profile-item-arrow">›</span></div>
+          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span></div>
+        </div>
+
+        <div class="feature-lab-section">
+          <div class="feature-lab-section-head"><div><h4>Automações</h4></div><span class="feature-lab-section-tag">AUTOMÁTICO</span></div>
+          <div class="feature-lab-options feature-lab-option-list">
+            <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoBills"><span class="feature-lab-toggle-copy"><strong>Contas recorrentes</strong><small>Gerar contas recorrentes automaticamente no mês atual.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
+            <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoQuotes"><span class="feature-lab-toggle-copy"><strong>Cotações automáticas</strong><small>Atualizar cotações enquanto o aplicativo estiver aberto.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
+          </div>
+          <div class="feature-lab-fields">
+            <div><label for="featureQuoteInterval">Intervalo de cotação</label><div class="feature-lab-input-suffix"><input type="number" id="featureQuoteInterval" min="1" max="1440" step="1" value="15"><span>min</span></div></div>
+            <div><label for="featureProjectionMonths">Meses de projeção</label><div class="feature-lab-input-suffix"><input type="number" id="featureProjectionMonths" min="1" max="24" step="1" value="6"><span>meses</span></div></div>
+          </div>
+        </div>
+
+        <div class="feature-lab-section">
+          <div class="feature-lab-section-head"><div><h4>Orçamento</h4></div><span class="feature-lab-section-tag">MÊS ATUAL</span></div>
+          <p class="feature-lab-section-desc">Defina limites por categoria e acompanhe quanto já foi gasto.</p>
+          <div id="featureBudgetRows" class="feature-budget-rows"></div>
+        </div>
+
+        <div class="feature-lab-section">
+          <div class="feature-lab-section-head"><div><h4>Conciliação bancária</h4></div><span class="feature-lab-section-tag">VERIFICAÇÃO</span></div>
+          <p class="feature-lab-section-desc">Compare o saldo informado pelo banco com o saldo calculado no Livro-Caixa.</p>
+          <div class="feature-lab-fields">
+            <div><label for="reconcileBank">Banco</label><select id="reconcileBank"></select></div>
+            <div><label for="reconcileReported">Saldo informado</label><input type="text" id="reconcileReported" data-money="true" placeholder="R$ 0,00"></div>
+          </div>
+          <div class="feature-lab-actions"><button type="button" id="btnRunReconciliation">Comparar saldos</button><button type="button" id="btnApplyReconciliation" hidden>Aplicar ajuste sugerido</button></div>
+          <div id="reconciliationResult" class="feature-lab-feedback" aria-live="polite"></div>
+        </div>
+
+        <div class="feature-lab-section labs-plus-section">
+          <div class="feature-lab-section-head"><div><h4>Análise assistida</h4></div><span class="feature-lab-section-tag">SEM IA</span></div>
+          <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-lab-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias usando descrições já categorizadas no seu histórico; nenhuma alteração é feita sem confirmação.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
+          <div class="feature-lab-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
+          <div id="labsAnalysisStatus" class="feature-lab-feedback" aria-live="polite"></div>
         </div>
       </div>
 
       <div class="profile-group">
         <div class="profile-group-title">Segurança</div>
         <div class="profile-list">
-          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="profile-item-copy"><strong>PIN local</strong><span>Disponível no LABS por enquanto</span></span><span class="profile-item-arrow">›</span></div>
           <div class="profile-item is-danger" role="button" tabindex="0" id="btnProfileLogout"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="profile-item-copy"><strong>Sair da conta</strong><span>Encerra a sessão neste aparelho — seus dados continuam salvos na nuvem</span></span><span class="profile-item-arrow">›</span></div>
+        </div>
+
+        <div class="feature-lab-section feature-lab-security">
+          <div class="feature-lab-section-head"><div><h4>Proteção local</h4></div><span class="feature-lab-section-tag">SEGURANÇA</span></div>
+          <p class="feature-lab-section-desc">Proteja o acesso local ao aplicativo com um PIN de 4 a 8 dígitos.</p>
+          <div class="feature-lab-pin-row">
+            <div><label for="featurePin">PIN local</label><input type="password" id="featurePin" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="4 a 8 dígitos"></div>
+            <div class="feature-lab-pin-actions"><button type="button" id="btnSaveLocalPin" class="primary">Ativar / alterar</button><button type="button" id="btnClearLocalPin">Remover</button></div>
+          </div>
+          <div class="feature-lab-actions"><button type="button" id="btnLockNow"><span class="quick-action-icon" aria-hidden="true" style="width:15px;height:15px;display:inline-flex;vertical-align:-2px;margin-right:5px;"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>Bloquear agora</button></div>
+          <div id="pinSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
+        </div>
+
+        <div class="feature-lab-section labs-plus-section">
+          <div class="feature-lab-section-head"><div><h4>Dados e segurança</h4></div><span class="feature-lab-section-tag">LABS PLUS</span></div>
+          <p class="feature-lab-section-desc">Recursos experimentais para proteger backups e trazer fechamentos OFX ou CSV para a prévia editável.</p>
+          <div class="feature-lab-fields">
+            <div><label for="featureBackupPassword">Senha do backup criptografado</label><input type="password" id="featureBackupPassword" autocomplete="new-password" placeholder="Mínimo de 6 caracteres"></div>
+          </div>
+          <div class="feature-lab-actions"><button type="button" id="btnExportEncryptedBackup" class="primary">Exportar backup criptografado</button><button type="button" id="btnImportEncryptedBackup">Importar backup criptografado</button></div>
+          <input type="file" id="fileEncryptedBackup" accept="application/json,.json" hidden>
+          <div class="feature-lab-actions"><button type="button" id="btnImportStructuredFile">Importar OFX / CSV</button><input type="file" id="fileStructuredImport" accept=".ofx,.qfx,.csv,text/csv,application/x-ofx" hidden></div>
+          <div id="labsDataStatus" class="feature-lab-feedback" aria-live="polite"></div>
         </div>
       </div>
 
@@ -2067,8 +2125,8 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <div class="feature-lab-header">
         <div class="feature-lab-title-wrap">
           <span class="feature-lab-kicker">LABS · EXPERIMENTAL</span>
-          <h3>Recursos completos — modo de teste <span class="feature-lab-status-dot" aria-hidden="true"></span></h3>
-          <p class="feature-lab-intro">Ferramentas avançadas para testar automações e recursos antes de incorporá-los ao fluxo principal.</p>
+          <h3>LABS <span class="feature-lab-status-dot" aria-hidden="true"></span></h3>
+          <p class="feature-lab-intro">Recursos experimentais e ainda em teste, antes de virarem parte definitiva do aplicativo.</p>
         </div>
         <button type="button" class="modal-close feature-lab-close" onclick="closeAllPanels()" aria-label="Fechar recursos completos">×</button>
       </div>
@@ -2076,65 +2134,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <div class="feature-lab-warning">
         <span class="feature-lab-warning-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/><path d="M8 15h8"/></svg></span>
         <div><strong>Área de testes</strong><span>Algumas opções podem executar ações reais no seu Livro-Caixa. Recursos automáticos começam desativados.</span></div>
-      </div>
-
-      <div class="feature-lab-section">
-        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">01</span><h4>Automações</h4></div><span class="feature-lab-section-tag">AUTOMÁTICO</span></div>
-        <div class="feature-lab-options feature-lab-option-list">
-          <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoBills"><span class="feature-lab-toggle-copy"><strong>Contas recorrentes</strong><small>Gerar contas recorrentes automaticamente no mês atual.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
-          <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoQuotes"><span class="feature-lab-toggle-copy"><strong>Cotações automáticas</strong><small>Atualizar cotações enquanto o aplicativo estiver aberto.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
-        </div>
-        <div class="feature-lab-fields">
-          <div><label for="featureQuoteInterval">Intervalo de cotação</label><div class="feature-lab-input-suffix"><input type="number" id="featureQuoteInterval" min="1" max="1440" step="1" value="15"><span>min</span></div></div>
-          <div><label for="featureProjectionMonths">Meses de projeção</label><div class="feature-lab-input-suffix"><input type="number" id="featureProjectionMonths" min="1" max="24" step="1" value="6"><span>meses</span></div></div>
-        </div>
-      </div>
-
-      <div class="feature-lab-section">
-        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">02</span><h4>Orçamento</h4></div><span class="feature-lab-section-tag">MÊS ATUAL</span></div>
-        <p class="feature-lab-section-desc">Defina limites por categoria e acompanhe quanto já foi gasto.</p>
-        <div id="featureBudgetRows" class="feature-budget-rows"></div>
-      </div>
-
-      <div class="feature-lab-section">
-        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">03</span><h4>Conciliação bancária</h4></div><span class="feature-lab-section-tag">VERIFICAÇÃO</span></div>
-        <p class="feature-lab-section-desc">Compare o saldo informado pelo banco com o saldo calculado no Livro-Caixa.</p>
-        <div class="feature-lab-fields">
-          <div><label for="reconcileBank">Banco</label><select id="reconcileBank"></select></div>
-          <div><label for="reconcileReported">Saldo informado</label><input type="text" id="reconcileReported" data-money="true" placeholder="R$ 0,00"></div>
-        </div>
-        <div class="feature-lab-actions"><button type="button" id="btnRunReconciliation">Comparar saldos</button><button type="button" id="btnApplyReconciliation" hidden>Aplicar ajuste sugerido</button></div>
-        <div id="reconciliationResult" class="feature-lab-feedback" aria-live="polite"></div>
-      </div>
-
-      <div class="feature-lab-section feature-lab-security">
-        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">04</span><h4>Proteção local</h4></div><span class="feature-lab-section-tag">SEGURANÇA</span></div>
-        <p class="feature-lab-section-desc">Proteja o acesso local ao aplicativo com um PIN de 4 a 8 dígitos.</p>
-        <div class="feature-lab-pin-row">
-          <div><label for="featurePin">PIN local</label><input type="password" id="featurePin" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="4 a 8 dígitos"></div>
-          <div class="feature-lab-pin-actions"><button type="button" id="btnSaveLocalPin" class="primary">Ativar / alterar</button><button type="button" id="btnClearLocalPin">Remover</button></div>
-        </div>
-        <div class="feature-lab-actions"><button type="button" id="btnLockNow"><span class="quick-action-icon" aria-hidden="true" style="width:15px;height:15px;display:inline-flex;vertical-align:-2px;margin-right:5px;"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>Bloquear agora</button></div>
-        <div id="pinSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
-      </div>
-
-      <div class="feature-lab-section labs-plus-section">
-        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">05</span><h4>Dados e segurança</h4></div><span class="feature-lab-section-tag">LABS PLUS</span></div>
-        <p class="feature-lab-section-desc">Recursos experimentais para proteger backups e trazer fechamentos OFX ou CSV para a prévia editável.</p>
-        <div class="feature-lab-fields">
-          <div><label for="featureBackupPassword">Senha do backup criptografado</label><input type="password" id="featureBackupPassword" autocomplete="new-password" placeholder="Mínimo de 6 caracteres"></div>
-        </div>
-        <div class="feature-lab-actions"><button type="button" id="btnExportEncryptedBackup" class="primary">Exportar backup criptografado</button><button type="button" id="btnImportEncryptedBackup">Importar backup criptografado</button></div>
-        <input type="file" id="fileEncryptedBackup" accept="application/json,.json" hidden>
-        <div class="feature-lab-actions"><button type="button" id="btnImportStructuredFile">Importar OFX / CSV</button><input type="file" id="fileStructuredImport" accept=".ofx,.qfx,.csv,text/csv,application/x-ofx" hidden></div>
-        <div id="labsDataStatus" class="feature-lab-feedback" aria-live="polite"></div>
-      </div>
-
-      <div class="feature-lab-section labs-plus-section">
-        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">06</span><h4>Análise assistida</h4></div><span class="feature-lab-section-tag">SEM IA</span></div>
-        <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-lab-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias usando descrições já categorizadas no seu histórico; nenhuma alteração é feita sem confirmação.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
-        <div class="feature-lab-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
-        <div id="labsAnalysisStatus" class="feature-lab-feedback" aria-live="polite"></div>
       </div>
 
       <div class="feature-lab-section labs-plus-section">
@@ -4785,7 +4784,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const advanceDays = Number(featureSettings.reminderAdvanceDays) || 0; const advanceBills = advanceDays ? pendingBills.filter(bill => { const due = new Date(`${month}-${String(billDueDateForMonth(bill, year, monthIndex).slice(-2)).padStart(2, '0')}T23:59:59`); return due >= new Date() && (due - new Date()) / 86400000 <= advanceDays; }) : []; if (advanceBills.length) alerts.push(`<div class="dashboard-alert-row"><span>i</span><div><strong>Fatura próxima</strong><small>${advanceBills.length} conta(s) vencem nos próximos ${advanceDays} dia(s).</small></div></div>`);
     if (!alerts.length) alerts.push(`<div class="dashboard-alert-row positive"><span>✓</span><div><strong>Nenhum alerta importante</strong><small>Seu painel não encontrou pendências críticas neste momento.</small></div></div>`);
 
-    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dashboard-explainer"><span class="legend-dot income"></span> Entradas <span class="legend-dot expense"></span> Saídas <span class="legend-dot patrimony"></span> Patrimônio estimado</div><div class="monthly-flow-chart">${series.map(item => { const incomePct = Math.max(item.income > 0 ? 4 : 0, item.income / maxFlow * 100); const expensePct = Math.max(item.expense > 0 ? 4 : 0, item.expense / maxFlow * 100); return `<div class="monthly-flow-row"><div class="monthly-flow-label"><strong>${escapeHTML(item.label)}</strong><span>Fluxo ${item.net >= 0 ? '+' : ''}${fmt(item.net)}</span></div><div class="monthly-flow-bars"><div class="flow-bar-line"><span>Entradas</span><div class="flow-track"><i class="income" style="width:${Math.min(100, incomePct).toFixed(2)}%"></i></div><b>${fmt(item.income)}</b></div><div class="flow-bar-line"><span>Saídas</span><div class="flow-track"><i class="expense" style="width:${Math.min(100, expensePct).toFixed(2)}%"></i></div><b>${fmt(item.expense)}</b></div></div><div class="monthly-patrimony"><small>Patrimônio estimado</small><strong>${fmt(item.patrimony)}</strong></div></div>`; }).join('')}</div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos no painel “Recursos completos” para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta recorrente pendente para este mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
+    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dashboard-explainer"><span class="legend-dot income"></span> Entradas <span class="legend-dot expense"></span> Saídas <span class="legend-dot patrimony"></span> Patrimônio estimado</div><div class="monthly-flow-chart">${series.map(item => { const incomePct = Math.max(item.income > 0 ? 4 : 0, item.income / maxFlow * 100); const expensePct = Math.max(item.expense > 0 ? 4 : 0, item.expense / maxFlow * 100); return `<div class="monthly-flow-row"><div class="monthly-flow-label"><strong>${escapeHTML(item.label)}</strong><span>Fluxo ${item.net >= 0 ? '+' : ''}${fmt(item.net)}</span></div><div class="monthly-flow-bars"><div class="flow-bar-line"><span>Entradas</span><div class="flow-track"><i class="income" style="width:${Math.min(100, incomePct).toFixed(2)}%"></i></div><b>${fmt(item.income)}</b></div><div class="flow-bar-line"><span>Saídas</span><div class="flow-track"><i class="expense" style="width:${Math.min(100, expensePct).toFixed(2)}%"></i></div><b>${fmt(item.expense)}</b></div></div><div class="monthly-patrimony"><small>Patrimônio estimado</small><strong>${fmt(item.patrimony)}</strong></div></div>`; }).join('')}</div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta recorrente pendente para este mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
   }
 
   function renderFeatureLab() {
@@ -4834,7 +4833,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-07 (CLAUDE)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-08 (CLAUDE)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -7436,6 +7435,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     if (remindersAdvance) remindersAdvance.value = featureSettings.reminderAdvanceDays;
     const cycleInput = document.getElementById('inputFinancialCycleDay');
     if (cycleInput) cycleInput.value = getFinancialCycleStartDay();
+    renderFeatureLab();
   }
 
   function setAuthError(msg) {
