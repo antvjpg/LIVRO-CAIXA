@@ -310,17 +310,28 @@
   }
   .balance-detail-link{
     display:block;
-    margin-top:8px;
-    color:var(--accent);
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;
-    letter-spacing:.02em;
+    margin-top:auto;
+    padding-top:12px;
+    color:var(--ink-soft);
+    font-family:var(--font-ui);
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0;
     word-break:normal;
     overflow-wrap:normal;
   }
   .bank-summary-card,
   .pocket-summary-card,
   .invest-summary-card{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    min-height:168px;
+    padding:16px 14px 14px;
+    border-radius:16px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    box-shadow:0 2px 8px color-mix(in srgb,var(--accent) 6%,transparent);
     cursor:pointer;
     transition:transform .16s ease, box-shadow .16s ease;
   }
@@ -336,19 +347,21 @@
     outline-offset:2px;
   }
   .balance-card .label{
-    font-family:'IBM Plex Mono',monospace;
+    font-family:var(--font-ui);
     font-size:11px;
+    font-weight:800;
     text-transform:uppercase;
     letter-spacing:0.04em;
-    opacity:0.65;
+    color:var(--ink);
+    opacity:0.92;
     display:block;
     margin-bottom:0;
     min-width:0;
     flex:1;
-    line-height:1.3;
+    line-height:1.25;
     word-break:normal;
     overflow-wrap:normal;
-    white-space:normal;
+    white-space:nowrap;
   }
   .balance-card .amount{
     font-family:'Fraunces',serif;
@@ -356,20 +369,41 @@
     font-weight:700;
     font-variant-numeric:tabular-nums;
     color:inherit;
+    margin-top:4px;
+  }
+  .bank-summary-card .amount,
+  .pocket-summary-card .amount,
+  .invest-summary-card .amount{
+    font-size:clamp(18px, 2.4vw, 24px);
+    letter-spacing:-0.02em;
+    color:var(--ink);
   }
   .balance-card .amount.neg{color:var(--red);}
   .balance-card.total .amount.neg{color:var(--red);}
-  .balance-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
-  .balance-symbol{display:grid;place-items:center;width:40px;height:40px;min-width:40px;border-radius:14px;background:color-mix(in srgb,currentColor 10%,transparent);color:inherit;line-height:1;flex-shrink:0;}
-  .balance-symbol svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .balance-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin-bottom:10px;}
+  .balance-symbol{display:grid;place-items:center;width:36px;height:36px;min-width:36px;border-radius:12px;background:var(--green-soft);color:var(--accent);line-height:1;flex-shrink:0;}
+  .balance-symbol svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
   .balance-card.total .balance-symbol{background:rgba(255,255,255,.14);}
   .balance-insight{display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:inherit;font-size:11px;font-weight:650;opacity:.92;}
   .balance-insight strong{font-size:12px;}
   .balance-insight.is-positive strong{color:#BCE8CA;}
   .balance-insight.is-negative strong{color:#FFD0C4;}
-  .balance-share{display:inline-flex;align-items:center;margin-top:9px;padding:4px 8px;border-radius:999px;background:var(--green-soft);color:var(--accent);font-size:10px;font-weight:750;line-height:1;}
+  .balance-share{
+    display:inline-flex;
+    align-items:center;
+    margin-top:10px;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));
+    background:color-mix(in srgb,var(--accent) 8%,var(--surface));
+    color:var(--accent);
+    font-size:11px;
+    font-weight:650;
+    line-height:1.2;
+    max-width:100%;
+  }
   .balance-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
-  .invest-summary-card .balance-symbol{background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--gold);}
+  .invest-summary-card .balance-symbol{background:color-mix(in srgb,var(--gold) 16%,var(--surface));color:var(--gold);}
   .cat-legend-head{display:none;}
 
   /* V18-12 — Sistema de Períodos e Histórico */
@@ -1152,32 +1186,51 @@
     .nav-tabs { margin:0 0 13px; padding:4px; gap:2px; border:1px solid var(--line); border-radius:13px; background:#fffefa; overflow:visible; box-shadow:0 4px 14px rgba(20,48,36,.04); }
     .nav-tab { flex:1; min-width:0; padding:10px 4px; border:0; border-radius:9px; color:#566258; font-size:9px; letter-spacing:.01em; text-transform:none; }
     .nav-tab.active { background:#18362A; color:#fffef9; box-shadow:0 5px 10px rgba(17,52,39,.16); }
-    /* P2.4.2 — 3 cards na principal na mesma linha quando couber; auto-fit quebra sem overflow estrutural */
+    /* P2.4.2 — formato limpo: título + ícone | valor | % | link */
     .balance-strip { gap:9px; margin-bottom:12px; }
-    #balanceStrip { grid-template-columns:repeat(auto-fit, minmax(min(100%, 108px), 1fr)); }
+    #balanceStrip { grid-template-columns:repeat(3, minmax(0, 1fr)); }
     #balanceStrip .balance-card:not(.total) { min-width:0; max-width:100%; }
-    #balanceStrip .balance-card:not(.total) .amount { font-size:clamp(13px, 4.2vw, 19px); overflow-wrap:anywhere; }
-    #balanceStrip .balance-detail-link { overflow-wrap:anywhere; }
-    .balance-card { min-height:86px; padding:14px 14px; border-radius:13px; border:1px solid var(--line); background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.035); min-width:0; max-width:100%; }
+    .balance-card { min-height:86px; padding:14px 14px; border-radius:16px; border:1px solid var(--line); background:var(--surface); box-shadow:0 2px 7px rgba(20,48,36,.035); min-width:0; max-width:100%; }
     .balance-card.total { grid-column:1/-1; min-height:142px; padding:22px 21px; background:linear-gradient(120deg,#18382C,#1E4536); border:0; border-radius:15px; box-shadow:0 8px 18px rgba(18,52,38,.14); position:relative; overflow:hidden; }
     .balance-card.total::after { display:none; }
-    .balance-card .label { font-size:9px; color:inherit; opacity:.82; margin-bottom:0; font-weight:600; letter-spacing:.03em; word-break:normal; overflow-wrap:normal; line-height:1.25; }
+    .balance-card .label { font-size:9px; color:var(--ink); opacity:.9; margin-bottom:0; font-weight:800; letter-spacing:.03em; word-break:normal; overflow-wrap:normal; line-height:1.2; white-space:nowrap; }
     .balance-card .amount { font-size:19px; letter-spacing:-.035em; }
     .balance-card.total { color:#F3FBF5; }
     .balance-card.total .label { color:#D6E9DC; opacity:1; }
     .balance-card.total .amount { color:#F3FBF5; font-size:clamp(37px,10.5vw,48px); line-height:1; font-weight:700; }
-    .balance-card-head{margin-bottom:7px;}
-    .balance-card .balance-symbol{width:43px;height:43px;border-radius:14px;background:var(--green-soft);color:var(--accent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 14%,transparent);}
-    .balance-card .balance-symbol svg{width:22px;height:22px;}
-    .balance-card.total .balance-symbol{background:rgba(255,255,255,.14);color:#F3FBF5;box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);}
+    .balance-card-head{margin-bottom:8px;align-items:center;}
+    .balance-card .balance-symbol{width:32px;height:32px;min-width:32px;border-radius:10px;background:var(--green-soft);color:var(--accent);box-shadow:none;}
+    .balance-card .balance-symbol svg{width:16px;height:16px;}
+    .balance-card.total .balance-symbol{width:43px;height:43px;min-width:43px;border-radius:14px;background:rgba(255,255,255,.14);color:#F3FBF5;box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);}
+    .balance-card.total .balance-symbol svg{width:22px;height:22px;}
     .invest-summary-card .balance-symbol{background:color-mix(in srgb,var(--gold) 15%,var(--surface));color:var(--gold);}
-    .balance-share{display:inline-block;max-width:100%;margin-top:9px;padding:5px 8px;border:1px solid color-mix(in srgb,var(--accent) 19%,transparent);border-radius:999px;background:color-mix(in srgb,var(--accent) 11%,var(--surface));color:var(--accent);font-size:9px;font-weight:750;line-height:1;overflow-wrap:anywhere;}
+    .bank-summary-card, .pocket-summary-card, .invest-summary-card {
+      display:flex; flex-direction:column; align-items:flex-start;
+      min-height:158px; padding:14px 12px 12px;
+      border-radius:16px; background:var(--surface); border:1px solid var(--line);
+      box-shadow:0 2px 8px rgba(20,48,36,.04);
+      cursor:pointer; position:relative; transition:transform .16s ease, box-shadow .16s ease;
+    }
+    .bank-summary-card .amount, .pocket-summary-card .amount, .invest-summary-card .amount {
+      font-size:clamp(15px, 4.6vw, 20px); color:var(--ink); margin-top:2px; letter-spacing:-.03em;
+    }
+    .balance-share{
+      display:inline-flex; align-items:center; max-width:100%;
+      margin-top:8px; padding:5px 8px;
+      border:1px solid color-mix(in srgb,var(--accent) 20%,var(--line));
+      border-radius:999px; background:color-mix(in srgb,var(--accent) 8%,var(--surface));
+      color:var(--accent); font-size:9px; font-weight:650; line-height:1.2;
+      white-space:normal; overflow-wrap:normal;
+    }
     .balance-insight{gap:7px;margin-top:11px;font-size:9px;}
     .balance-insight strong{font-size:11px;}
-    .bank-summary-card, .pocket-summary-card, .invest-summary-card { cursor:pointer; position:relative; transition:transform .16s ease, box-shadow .16s ease; }
     .bank-summary-card:active, .pocket-summary-card:active, .invest-summary-card:active { transform:scale(.98); }
     .bank-summary-card:focus-visible, .pocket-summary-card:focus-visible, .invest-summary-card:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
-    .balance-detail-link { display:block; margin-top:6px; color:var(--green); font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.02em; overflow-wrap:anywhere; }
+    .balance-detail-link {
+      display:block; margin-top:auto; padding-top:10px;
+      color:var(--ink-soft); font-family:var(--font-ui); font-size:10px; font-weight:600;
+      letter-spacing:0; overflow-wrap:normal; word-break:normal;
+    }
     .toolbar { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:0 0 15px; }
     .toolbar button { min-height:46px; padding:7px 5px; border:1px solid #C9D9CC; border-radius:10px; background:#FCFDF9; color:#1E4B38; font-size:9px; font-weight:700; letter-spacing:.01em; line-height:1.25; text-transform:none; box-shadow:0 2px 5px rgba(20,48,36,.055); }
     .toolbar button:hover { background:#E7EFE8; color:#163C2C; }
