@@ -1619,6 +1619,31 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   body.dark-mode .filter-choice-option{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
   body.dark-mode .filter-choice-option.is-selected{background:var(--green-soft);border-color:var(--accent);}
 </style>
+<style>
+
+/* Extrato: visualização responsiva e privacidade financeira */
+.statement-preview { width:100%; max-width:100%; overflow-x:hidden; }
+.statement-table { width:100%; max-width:100%; table-layout:fixed; border-collapse:collapse; }
+.statement-table th, .statement-table td { min-width:0; max-width:0; overflow:hidden; }
+.statement-table th:nth-child(1), .statement-table td:nth-child(1) { width:12%; }
+.statement-table th:nth-child(2), .statement-table td:nth-child(2) { width:46%; }
+.statement-table th:nth-child(3), .statement-table td:nth-child(3),
+.statement-table th:nth-child(4), .statement-table td:nth-child(4) { width:21%; }
+.statement-description { min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; word-break:break-word; }
+.statement-description.is-truncated { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; cursor:pointer; }
+.statement-amount, .statement-balance { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; font-feature-settings:"tnum"; }
+.statement-amount--income { color:var(--success,#16803c); }
+.statement-amount--expense { color:var(--danger,#b42318); }
+.privacy-toggle { cursor:pointer; }
+@media (max-width:640px) {
+  .statement-table { font-size:.8rem; }
+  .statement-table th:nth-child(1), .statement-table td:nth-child(1) { width:18%; }
+  .statement-table th:nth-child(2), .statement-table td:nth-child(2) { width:40%; }
+  .statement-table th:nth-child(3), .statement-table td:nth-child(3),
+  .statement-table th:nth-child(4), .statement-table td:nth-child(4) { width:21%; }
+}
+
+</style>
 </head>
 <body>
 
@@ -7662,5 +7687,44 @@ VALOR: ${fmt(pseudoBill.amount)}
     </div>
   </div>
 </div>
+<script>
+
+/* Extrato: utilitários compartilhados */
+window.StatementUI = (() => {
+  let balancesHidden = false;
+  const currency = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
+  const formatCurrency = value => currency.format(Number(value) || 0);
+  const formatMovement = value => {
+    const n = Number(value) || 0;
+    return (n > 0 ? '+ ' : n < 0 ? '− ' : '') + formatCurrency(Math.abs(n));
+  };
+  const displayValue = value => balancesHidden ? '••••' : formatCurrency(value);
+  const setHidden = hidden => {
+    balancesHidden = !!hidden;
+    document.documentElement.classList.toggle('balances-hidden', balancesHidden);
+    document.querySelectorAll('[data-financial-value]').forEach(el => {
+      const value = el.dataset.financialValue;
+      el.textContent = balancesHidden ? '••••' : value;
+    });
+    document.querySelectorAll('.privacy-toggle').forEach(button => {
+      button.setAttribute('aria-pressed', String(balancesHidden));
+      button.setAttribute('aria-label', balancesHidden ? 'Mostrar saldos' : 'Ocultar saldos');
+    });
+  };
+  const toggle = () => setHidden(!balancesHidden);
+  document.addEventListener('click', event => {
+    const toggleButton = event.target.closest('.privacy-toggle');
+    if (toggleButton) toggle();
+    const description = event.target.closest('.statement-description.is-truncated');
+    if (description && description.dataset.fullDescription) {
+      const full = description.dataset.fullDescription;
+      if (typeof window.showModal === 'function') window.showModal('Descrição', full);
+      else window.alert(full);
+    }
+  });
+  return { formatCurrency, formatMovement, displayValue, setHidden, toggle };
+})();
+
+</script>
 </body>
 </html>
