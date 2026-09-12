@@ -127,7 +127,7 @@
   *{box-sizing:border-box;}
   body,body *{font-family:var(--font-ui)!important;}
   html{overflow-x:hidden;width:100%;}
-  /* P2.4 — saldos ocultos com pontos fixos (sem blur) */
+  /* P2.4 / P2.4.4 — saldos ocultos com pontos fixos (sem blur), overview + contas + caixinhas + invest */
   body.balances-hidden .balance-card .amount,
   body.balances-hidden .card-amount,
   body.balances-hidden .period-summary-card strong,
@@ -135,7 +135,12 @@
   body.balances-hidden .cat-row .cat-amt,
   body.balances-hidden .cat-summary-total strong,
   body.balances-hidden .manage-item-value,
-  body.balances-hidden .dashboard-metrics strong{
+  body.balances-hidden .dashboard-metrics strong,
+  body.balances-hidden .pocket-goal-values,
+  body.balances-hidden .yield-row .yield-amount,
+  body.balances-hidden .rentability-box strong,
+  body.balances-hidden .export-preview-row b,
+  body.balances-hidden .js-money{
     color: transparent !important;
     text-shadow: none !important;
     position: relative;
@@ -149,7 +154,12 @@
   body.balances-hidden .cat-row .cat-amt::after,
   body.balances-hidden .cat-summary-total strong::after,
   body.balances-hidden .manage-item-value::after,
-  body.balances-hidden .dashboard-metrics strong::after{
+  body.balances-hidden .dashboard-metrics strong::after,
+  body.balances-hidden .pocket-goal-values::after,
+  body.balances-hidden .yield-row .yield-amount::after,
+  body.balances-hidden .rentability-box strong::after,
+  body.balances-hidden .export-preview-row b::after,
+  body.balances-hidden .js-money::after{
     content: '••••••';
     color: var(--ink);
     position: absolute;
@@ -167,8 +177,52 @@
   body.balances-hidden .balance-card.total .amount::after{color: inherit;}
   body.balances-hidden .card-amount::after,
   body.balances-hidden .cat-row .cat-amt::after,
-  body.balances-hidden .manage-item-value::after{justify-content: flex-end;}
+  body.balances-hidden .manage-item-value::after,
+  body.balances-hidden .export-preview-row b::after{justify-content: flex-end;}
   #btnToggleBalances{font-size:18px;line-height:1;}
+  /* P2.4.3 — prévia do extrato (contábil, sem overflow horizontal) */
+  .export-preview{max-height:320px;overflow:auto;margin-top:12px;padding-right:2px;min-width:0;}
+  .export-preview-bank{margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line);min-width:0;}
+  .export-preview-bank h4{margin:0 0 8px;font-size:13px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  .export-preview-bank h4 small{font-weight:500;color:var(--ink-soft);font-size:11px;}
+  .export-preview-sub{margin:8px 0 4px;font-size:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  .export-preview-sub small{color:var(--ink-soft);}
+  .export-preview-head,
+  .export-preview-row{
+    display:grid;
+    grid-template-columns:minmax(64px,72px) minmax(0,1.4fr) minmax(0,.9fr) minmax(88px,110px) minmax(72px,96px);
+    gap:6px;
+    align-items:start;
+    min-width:0;
+    font-size:11px;
+  }
+  .export-preview-head{color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;font-size:9px;}
+  .export-preview-row{padding:5px 0;border-bottom:1px dashed color-mix(in srgb,var(--line) 70%,transparent);}
+  .export-preview-row strong.export-preview-desc{
+    font-weight:600;color:var(--ink);min-width:0;
+    overflow-wrap:break-word;word-break:normal;
+    white-space:normal;line-height:1.3;
+  }
+  .export-preview-row b{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .export-preview-row b.positive{color:var(--green);}
+  .export-preview-row b.negative{color:var(--red);}
+  .export-preview-row em.export-preview-saldo{
+    font-style:normal;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--ink-soft);white-space:nowrap;
+  }
+  .export-preview-more{margin-top:6px;color:var(--ink-soft);font-size:11px;}
+  @media (max-width:560px){
+    .export-preview-head{display:none;}
+    .export-preview-row{
+      grid-template-columns:minmax(0,1fr) auto;
+      grid-template-areas:"date mov" "desc desc" "cat saldo";
+    }
+    .export-preview-row > span:first-child{grid-area:date;color:var(--ink-soft);font-size:10px;}
+    .export-preview-row > strong{grid-area:desc;}
+    .export-preview-row > span:nth-child(3){grid-area:cat;color:var(--ink-soft);font-size:10px;}
+    .export-preview-row > b{grid-area:mov;}
+    .export-preview-row > em{grid-area:saldo;font-size:10px;}
+  }
   body{
     margin:0;
     background:var(--paper);
@@ -1098,9 +1152,23 @@
     font-weight: 500;
     margin: 0;
     color: var(--ink);
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     text-overflow: ellipsis;
+    overflow-wrap: break-word;
+    word-break: normal;
+    max-width: 100%;
+    cursor: pointer;
+  }
+  .card-title.is-expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    overflow: visible;
   }
   .card-tags {
     display: flex;
@@ -5042,13 +5110,18 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleBalancesVisibility();
   });
   document.addEventListener('click', (e) => {
-    const moneyEl = e.target.closest('.balance-card .amount, .card-amount, .period-summary-card strong, .invest-box .val, .cat-row .cat-amt, .cat-summary-total strong, .manage-item-value, .dashboard-metrics strong');
+    const moneyEl = e.target.closest('.balance-card .amount, .card-amount, .period-summary-card strong, .invest-box .val, .cat-row .cat-amt, .cat-summary-total strong, .manage-item-value, .dashboard-metrics strong, .pocket-goal-values, .yield-row .yield-amount, .rentability-box strong, .js-money');
     if (!moneyEl) return;
     if (e.target.closest('button, a, input, select, textarea, .btn-action, .action-btn')) return;
     e.preventDefault();
     e.stopPropagation();
     toggleBalancesVisibility();
   }, true);
+  document.addEventListener('click', (e) => {
+    const title = e.target.closest('.card-title');
+    if (!title || e.target.closest('button, a')) return;
+    title.classList.toggle('is-expanded');
+  });
   const profileReminders = document.getElementById('featureReminders');
   profileReminders?.addEventListener('change', () => {
     featureSettings = normalizeFeatureSettings({ ...featureSettings, reminders: profileReminders.checked });
@@ -7258,15 +7331,74 @@ VALOR: ${fmt(pseudoBill.amount)}
 
   document.getElementById('btnExport').onclick = () => {
     const activeEntries = getFilteredEntries();
-    if (activeEntries.length === 0) { alert('Não há lançamentos para exportar nos filtros atuais.'); return; }
+    const meta = getExportMeta(activeEntries);
+    const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
+    const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
+    const hasAnything = activeEntries.length > 0 || pocketsBlock.length > 0 || investBlock.length > 0;
+    if (!hasAnything) { alert('Não há dados para exportar nos filtros/período atuais.'); return; }
     renderExportPreview(); openModal('panelExportFormat');
     logInfo('Exportação','Abertura da prévia','Sucesso','Prévia do extrato aberta.',{count: activeEntries.length});
   };
   function renderExportPreview() {
-    const grouped = getOrganizedExportData(); const count = grouped.reduce((sum, group) => sum + group.entries.length, 0); const meta=getExportMeta(); const initial=grouped.reduce((sum,g)=>sum+g.initialBalance,0); const final=grouped.reduce((sum,g)=>sum+g.finalBalance,0);
+    const grouped = getOrganizedExportData();
+    const count = grouped.reduce((sum, group) => sum + group.entries.length, 0);
+    const meta = getExportMeta();
+    const initial = grouped.reduce((sum, g) => sum + g.initialBalance, 0);
+    const final = grouped.reduce((sum, g) => sum + g.finalBalance, 0);
+    const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
+    const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     const preview = document.getElementById('exportPreview');
-    document.getElementById('exportPreviewCaption').textContent = `${count} movimentação(ões) · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
-    preview.innerHTML = grouped.map(group => { const rows=group.entries.slice(0,6).map(entry=>{const category=categories.find(c=>c.id===entry.category); return `<div class="export-preview-row"><span>${escapeHTML(entry.date.split('-').reverse().join('/'))}</span><strong>${escapeHTML(entry.desc||'Lançamento')}</strong><span>${escapeHTML(category?.name||'Sem categoria')}</span><b class="${entry.type==='in'?'positive':'negative'}">${entry.type==='in'?'+':'−'} ${fmt(Math.abs(entry.amount))}</b></div>`;}).join(''); const extra=group.entries.length>6?`<div class="export-preview-more">+ ${group.entries.length-6} lançamento(s)</div>`:''; return `<section class="export-preview-bank"><h4>${escapeHTML(group.bank.name)} <small>Inicial ${fmt(group.initialBalance)} · Final ${fmt(group.finalBalance)}</small></h4>${rows}${extra}</section>`; }).join('');
+    const pocketMovCount = pocketsBlock.reduce((s, p) => s + p.movements.length, 0);
+    const investMovCount = investBlock.reduce((s, i) => s + i.movements.length, 0);
+    document.getElementById('exportPreviewCaption').textContent =
+      `${count} lançamento(s) · ${pocketMovCount} mov. caixinhas · ${investMovCount} mov. investimentos · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
+
+    const bankHtml = grouped.map(group => {
+      let running = group.initialBalance;
+      const rows = group.entries.slice(0, 8).map(entry => {
+        const category = categories.find(c => c.id === entry.category);
+        running += entry.type === 'in' ? Number(entry.amount || 0) : -Number(entry.amount || 0);
+        const mov = `${entry.type === 'in' ? '+' : '−'} ${fmt(Math.abs(entry.amount))}`;
+        return `<div class="export-preview-row">
+          <span>${escapeHTML(entry.date.split('-').reverse().join('/'))}</span>
+          <strong class="export-preview-desc">${escapeHTML(entry.desc || 'Lançamento')}</strong>
+          <span>${escapeHTML(category?.name || 'Sem categoria')}</span>
+          <b class="${entry.type === 'in' ? 'positive' : 'negative'}">${mov}</b>
+          <em class="export-preview-saldo">${fmt(running)}</em>
+        </div>`;
+      }).join('');
+      const extra = group.entries.length > 8 ? `<div class="export-preview-more">+ ${group.entries.length - 8} lançamento(s)</div>` : '';
+      return `<section class="export-preview-bank">
+        <h4>${escapeHTML(group.bank.name)} <small>Inicial ${fmt(group.initialBalance)} · Final ${fmt(group.finalBalance)}</small></h4>
+        <div class="export-preview-head"><span>Data</span><span>Descrição</span><span>Categoria</span><span>Movimentação</span><span>Saldo</span></div>
+        ${rows}${extra}
+      </section>`;
+    }).join('');
+
+    const pocketsHtml = pocketsBlock.length ? `<section class="export-preview-bank">
+      <h4>Caixinhas <small>Movimentações no período</small></h4>
+      ${pocketsBlock.map(p => {
+        const movs = p.movements.slice(0, 6).map(m =>
+          `<div class="export-preview-row"><span>${escapeHTML(m.date.split('-').reverse().join('/'))}</span><strong class="export-preview-desc">${escapeHTML(p.name)} · ${escapeHTML(m.kind)}${m.desc ? ' — ' + escapeHTML(m.desc) : ''}</strong><span>—</span><b class="${m.kind === 'Resgate' ? 'negative' : 'positive'}">${m.kind === 'Resgate' ? '−' : '+'} ${fmt(Math.abs(m.amount))}</b><em class="export-preview-saldo"></em></div>`
+        ).join('');
+        const extra = p.movements.length > 6 ? `<div class="export-preview-more">+ ${p.movements.length - 6} movimento(s)</div>` : '';
+        return `<div class="export-preview-sub"><strong>${escapeHTML(p.name)}</strong> <small>Saldo atual ${fmt(p.current)}</small></div>${movs || '<div class="export-preview-more">Sem movimentos no período</div>'}${extra}`;
+      }).join('')}
+    </section>` : '';
+
+    const investHtml = investBlock.length ? `<section class="export-preview-bank">
+      <h4>Investimentos <small>Movimentações no período</small></h4>
+      ${investBlock.map(inv => {
+        const label = inv.alias ? `${inv.name} (${inv.alias})` : inv.name;
+        const movs = inv.movements.slice(0, 6).map(m =>
+          `<div class="export-preview-row"><span>${escapeHTML(m.date.split('-').reverse().join('/'))}</span><strong class="export-preview-desc">${escapeHTML(label)} · ${escapeHTML(m.kind)}</strong><span>${escapeHTML(inv.type)}</span><b class="${m.kind === 'Resgate' ? 'negative' : 'positive'}">${m.kind === 'Resgate' ? '−' : '+'} ${fmt(Math.abs(m.amount))}</b><em class="export-preview-saldo"></em></div>`
+        ).join('');
+        const extra = inv.movements.length > 6 ? `<div class="export-preview-more">+ ${inv.movements.length - 6} movimento(s)</div>` : '';
+        return `<div class="export-preview-sub"><strong>${escapeHTML(label)}</strong> <small>Valor atual ${fmt(inv.currentValue)}</small></div>${movs || '<div class="export-preview-more">Sem movimentos no período</div>'}${extra}`;
+      }).join('')}
+    </section>` : '';
+
+    preview.innerHTML = (bankHtml || '') + pocketsHtml + investHtml || '<div class="empty">Nada para pré-visualizar no período.</div>';
   }
   document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); };
   document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); };
@@ -7275,7 +7407,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     if (!window.jspdf || !window.jspdf.jsPDF) { alert('A biblioteca PDF ainda está carregando.'); return; }
     const grouped=getOrganizedExportData(); const meta=getExportMeta(); const {jsPDF}=window.jspdf; const doc=new jsPDF(); const initial=grouped.reduce((s,g)=>s+g.initialBalance,0); const final=grouped.reduce((s,g)=>s+g.finalBalance,0); let y=18;
     doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('Livro-Caixa — Extrato',14,y); y+=7; doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`,14,y); y+=6; doc.text(`Saldo Inicial: ${fmt(initial)}   Saldo Final: ${fmt(final)}`,14,y); y+=10;
-    grouped.forEach(group=>{ if(y>260){doc.addPage();y=20;} doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(group.bank.name,14,y);y+=6;doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`,14,y);y+=6;doc.text('Data',14,y);doc.text('Descrição',38,y);doc.text('Categoria',120,y);doc.text('Valor',175,y);y+=4;doc.line(14,y,196,y);y+=6;let running=group.initialBalance;group.entries.forEach(e=>{if(y>280){doc.addPage();y=20;}const cat=categories.find(c=>c.id===e.category);const dateFmt=e.date.split('-').reverse().join('/');running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);doc.text(dateFmt,14,y);doc.text((e.desc||'').slice(0,40),38,y);doc.text(cat?cat.name.slice(0,16):'—',120,y);doc.text((e.type==='in'?'+':'-')+' '+fmt(Math.abs(e.amount)).replace('R$ ',''),160,y);doc.text(fmt(running).replace('R$ ',''),185,y);y+=6;});y+=10;});
+    grouped.forEach(group=>{ if(y>260){doc.addPage();y=20;} doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(group.bank.name,14,y);y+=6;doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`,14,y);y+=6;doc.text('Data',14,y);doc.text('Descrição',38,y);doc.text('Categoria',110,y);doc.text('Movimentação',148,y);doc.text('Saldo',185,y);y+=4;doc.line(14,y,196,y);y+=6;let running=group.initialBalance;group.entries.forEach(e=>{if(y>280){doc.addPage();y=20;}const cat=categories.find(c=>c.id===e.category);const dateFmt=e.date.split('-').reverse().join('/');running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);const descLines=doc.splitTextToSize((e.desc||'Lançamento'),68);doc.text(dateFmt,14,y);doc.text(descLines[0]||'',38,y);doc.text(cat?cat.name.slice(0,14):'—',110,y);doc.text((e.type==='in'?'+':'-')+' '+fmt(Math.abs(e.amount)).replace('R$ ',''),148,y);doc.text(fmt(running).replace('R$ ',''),185,y);if(descLines.length>1){y+=5;doc.setFontSize(8);doc.text(descLines.slice(1,3).join(' '),38,y);doc.setFontSize(9);}y+=6;});y+=10;});
 
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     if (pocketsBlock.length) {
