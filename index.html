@@ -180,49 +180,30 @@
   body.balances-hidden .manage-item-value::after,
   body.balances-hidden .export-preview-row b::after{justify-content: flex-end;}
   #btnToggleBalances{font-size:18px;line-height:1;}
-  /* P2.4.3 — prévia do extrato (contábil, sem overflow horizontal) */
-  .export-preview{max-height:320px;overflow:auto;margin-top:12px;padding-right:2px;min-width:0;}
-  .export-preview-bank{margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line);min-width:0;}
-  .export-preview-bank h4{margin:0 0 8px;font-size:13px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  /* P2.4.3 — prévia do extrato (formato original + blocos extra) */
+  .export-preview{max-height:280px;overflow:auto;margin-top:12px;padding-right:2px;min-width:0;}
+  .export-preview-bank{margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);min-width:0;}
+  .export-preview-bank h4{margin:0 0 6px;font-size:13px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
   .export-preview-bank h4 small{font-weight:500;color:var(--ink-soft);font-size:11px;}
-  .export-preview-sub{margin:8px 0 4px;font-size:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  .export-preview-sub{margin:6px 0 4px;font-size:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
   .export-preview-sub small{color:var(--ink-soft);}
-  .export-preview-head,
   .export-preview-row{
     display:grid;
-    grid-template-columns:minmax(64px,72px) minmax(0,1.4fr) minmax(0,.9fr) minmax(88px,110px) minmax(72px,96px);
-    gap:6px;
+    grid-template-columns:72px minmax(0,1.2fr) minmax(0,.8fr) auto;
+    gap:8px;
     align-items:start;
     min-width:0;
     font-size:11px;
+    padding:4px 0;
   }
-  .export-preview-head{color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;font-size:9px;}
-  .export-preview-row{padding:5px 0;border-bottom:1px dashed color-mix(in srgb,var(--line) 70%,transparent);}
-  .export-preview-row strong.export-preview-desc{
+  .export-preview-row strong{
     font-weight:600;color:var(--ink);min-width:0;
-    overflow-wrap:break-word;word-break:normal;
-    white-space:normal;line-height:1.3;
+    overflow-wrap:break-word;word-break:normal;line-height:1.3;
   }
   .export-preview-row b{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
   .export-preview-row b.positive{color:var(--green);}
   .export-preview-row b.negative{color:var(--red);}
-  .export-preview-row em.export-preview-saldo{
-    font-style:normal;text-align:right;font-variant-numeric:tabular-nums;
-    color:var(--ink-soft);white-space:nowrap;
-  }
-  .export-preview-more{margin-top:6px;color:var(--ink-soft);font-size:11px;}
-  @media (max-width:560px){
-    .export-preview-head{display:none;}
-    .export-preview-row{
-      grid-template-columns:minmax(0,1fr) auto;
-      grid-template-areas:"date mov" "desc desc" "cat saldo";
-    }
-    .export-preview-row > span:first-child{grid-area:date;color:var(--ink-soft);font-size:10px;}
-    .export-preview-row > strong{grid-area:desc;}
-    .export-preview-row > span:nth-child(3){grid-area:cat;color:var(--ink-soft);font-size:10px;}
-    .export-preview-row > b{grid-area:mov;}
-    .export-preview-row > em{grid-area:saldo;font-size:10px;}
-  }
+  .export-preview-more{margin-top:4px;color:var(--ink-soft);font-size:11px;}
   body{
     margin:0;
     background:var(--paper);
@@ -816,6 +797,17 @@
     font-size: 18px;
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+  }
+  .invest-box h4 > span:first-child {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.25;
   }
   .invest-box .tag {
     font-family: 'IBM Plex Mono', monospace;
@@ -825,6 +817,11 @@
     padding: 2px 6px;
     border-radius: 2px;
     text-transform: uppercase;
+    flex-shrink: 0;
+    max-width: 42%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .invest-box .val {
     font-family: 'IBM Plex Mono', monospace;
@@ -1725,11 +1722,33 @@
   body.is-data-loading .balance-card::after,body.is-data-loading #categorySummary::after,body.is-data-loading #ledgerBody::after,body.is-data-loading #pocketBalanceStrip::after,body.is-data-loading #viewInvest .invest-grid > *::after,body.is-data-loading #pocketGrid > *::after{content:"";position:absolute;inset:16px;border-radius:10px;background:linear-gradient(100deg,color-mix(in srgb,var(--line) 35%,transparent) 20%,color-mix(in srgb,var(--surface-raised) 86%,transparent) 45%,color-mix(in srgb,var(--line) 35%,transparent) 70%);background-size:220% 100%;animation:v1616-pulse 1.2s ease-in-out infinite;}
   @media (max-width:680px){
     .card-lancamento{align-items:flex-start;}
-    .card-info{padding-top:1px;}
-    .card-title{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.3;}
-    .card-right{align-items:flex-start;gap:6px;padding-top:1px;}
+    .card-info{padding-top:1px;min-width:0;flex:1;overflow:hidden;}
+    .card-title{
+      white-space:normal;
+      overflow:hidden;
+      display:-webkit-box;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:2;
+      line-clamp:2;
+      text-overflow:ellipsis;
+      overflow-wrap:break-word;
+      word-break:normal;
+      line-height:1.3;
+      max-width:100%;
+    }
+    .card-title.is-expanded{
+      display:block;
+      -webkit-line-clamp:unset;
+      line-clamp:unset;
+      overflow:visible;
+    }
+    .card-meta{position:relative;z-index:1;margin-top:4px;}
+    .card-right{align-items:flex-start;gap:6px;padding-top:1px;flex-shrink:0;}
     .card-amount{font-size:13px;}
     .card-actions{flex-shrink:0;}
+    .invest-box h4{font-size:16px;gap:8px;}
+    .invest-box h4 > span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .invest-box .tag{max-width:38%;}
     .cat-summary-content{align-items:stretch;}
     .cat-bars-list{padding-top:2px;}
     .cat-summary-total{margin-top:16px;padding-top:11px;}
@@ -7340,6 +7359,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     logInfo('Exportação','Abertura da prévia','Sucesso','Prévia do extrato aberta.',{count: activeEntries.length});
   };
   function renderExportPreview() {
+    // P2.4.3 — formato original da prévia + blocos Caixinhas/Investimentos (período)
     const grouped = getOrganizedExportData();
     const count = grouped.reduce((sum, group) => sum + group.entries.length, 0);
     const meta = getExportMeta();
@@ -7348,55 +7368,28 @@ VALOR: ${fmt(pseudoBill.amount)}
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     const preview = document.getElementById('exportPreview');
-    const pocketMovCount = pocketsBlock.reduce((s, p) => s + p.movements.length, 0);
-    const investMovCount = investBlock.reduce((s, i) => s + i.movements.length, 0);
     document.getElementById('exportPreviewCaption').textContent =
-      `${count} lançamento(s) · ${pocketMovCount} mov. caixinhas · ${investMovCount} mov. investimentos · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
+      `${count} movimentação(ões) · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
 
     const bankHtml = grouped.map(group => {
-      let running = group.initialBalance;
-      const rows = group.entries.slice(0, 8).map(entry => {
+      const rows = group.entries.slice(0, 6).map(entry => {
         const category = categories.find(c => c.id === entry.category);
-        running += entry.type === 'in' ? Number(entry.amount || 0) : -Number(entry.amount || 0);
-        const mov = `${entry.type === 'in' ? '+' : '−'} ${fmt(Math.abs(entry.amount))}`;
-        return `<div class="export-preview-row">
-          <span>${escapeHTML(entry.date.split('-').reverse().join('/'))}</span>
-          <strong class="export-preview-desc">${escapeHTML(entry.desc || 'Lançamento')}</strong>
-          <span>${escapeHTML(category?.name || 'Sem categoria')}</span>
-          <b class="${entry.type === 'in' ? 'positive' : 'negative'}">${mov}</b>
-          <em class="export-preview-saldo">${fmt(running)}</em>
-        </div>`;
+        return `<div class="export-preview-row"><span>${escapeHTML(entry.date.split('-').reverse().join('/'))}</span><strong>${escapeHTML(entry.desc || 'Lançamento')}</strong><span>${escapeHTML(category?.name || 'Sem categoria')}</span><b class="${entry.type === 'in' ? 'positive' : 'negative'}">${entry.type === 'in' ? '+' : '−'} ${fmt(Math.abs(entry.amount))}</b></div>`;
       }).join('');
-      const extra = group.entries.length > 8 ? `<div class="export-preview-more">+ ${group.entries.length - 8} lançamento(s)</div>` : '';
-      return `<section class="export-preview-bank">
-        <h4>${escapeHTML(group.bank.name)} <small>Inicial ${fmt(group.initialBalance)} · Final ${fmt(group.finalBalance)}</small></h4>
-        <div class="export-preview-head"><span>Data</span><span>Descrição</span><span>Categoria</span><span>Movimentação</span><span>Saldo</span></div>
-        ${rows}${extra}
-      </section>`;
+      const extra = group.entries.length > 6 ? `<div class="export-preview-more">+ ${group.entries.length - 6} lançamento(s)</div>` : '';
+      return `<section class="export-preview-bank"><h4>${escapeHTML(group.bank.name)} <small>Inicial ${fmt(group.initialBalance)} · Final ${fmt(group.finalBalance)}</small></h4>${rows}${extra}</section>`;
     }).join('');
 
-    const pocketsHtml = pocketsBlock.length ? `<section class="export-preview-bank">
-      <h4>Caixinhas <small>Movimentações no período</small></h4>
-      ${pocketsBlock.map(p => {
-        const movs = p.movements.slice(0, 6).map(m =>
-          `<div class="export-preview-row"><span>${escapeHTML(m.date.split('-').reverse().join('/'))}</span><strong class="export-preview-desc">${escapeHTML(p.name)} · ${escapeHTML(m.kind)}${m.desc ? ' — ' + escapeHTML(m.desc) : ''}</strong><span>—</span><b class="${m.kind === 'Resgate' ? 'negative' : 'positive'}">${m.kind === 'Resgate' ? '−' : '+'} ${fmt(Math.abs(m.amount))}</b><em class="export-preview-saldo"></em></div>`
-        ).join('');
-        const extra = p.movements.length > 6 ? `<div class="export-preview-more">+ ${p.movements.length - 6} movimento(s)</div>` : '';
-        return `<div class="export-preview-sub"><strong>${escapeHTML(p.name)}</strong> <small>Saldo atual ${fmt(p.current)}</small></div>${movs || '<div class="export-preview-more">Sem movimentos no período</div>'}${extra}`;
-      }).join('')}
-    </section>` : '';
+    const pocketsHtml = pocketsBlock.length ? `<section class="export-preview-bank"><h4>Caixinhas <small>no período</small></h4>${pocketsBlock.map(p => {
+      const rows = p.movements.slice(0, 4).map(m => `<div class="export-preview-row"><span>${escapeHTML(m.date.split('-').reverse().join('/'))}</span><strong>${escapeHTML(p.name)} · ${escapeHTML(m.kind)}</strong><span>${escapeHTML(m.desc || '')}</span><b class="${m.kind === 'Resgate' ? 'negative' : 'positive'}">${m.kind === 'Resgate' ? '−' : '+'} ${fmt(Math.abs(m.amount))}</b></div>`).join('');
+      return `<div class="export-preview-sub"><strong>${escapeHTML(p.name)}</strong> <small>Saldo ${fmt(p.current)}</small></div>${rows || '<div class="export-preview-more">Sem movimentos no período</div>'}`;
+    }).join('')}</section>` : '';
 
-    const investHtml = investBlock.length ? `<section class="export-preview-bank">
-      <h4>Investimentos <small>Movimentações no período</small></h4>
-      ${investBlock.map(inv => {
-        const label = inv.alias ? `${inv.name} (${inv.alias})` : inv.name;
-        const movs = inv.movements.slice(0, 6).map(m =>
-          `<div class="export-preview-row"><span>${escapeHTML(m.date.split('-').reverse().join('/'))}</span><strong class="export-preview-desc">${escapeHTML(label)} · ${escapeHTML(m.kind)}</strong><span>${escapeHTML(inv.type)}</span><b class="${m.kind === 'Resgate' ? 'negative' : 'positive'}">${m.kind === 'Resgate' ? '−' : '+'} ${fmt(Math.abs(m.amount))}</b><em class="export-preview-saldo"></em></div>`
-        ).join('');
-        const extra = inv.movements.length > 6 ? `<div class="export-preview-more">+ ${inv.movements.length - 6} movimento(s)</div>` : '';
-        return `<div class="export-preview-sub"><strong>${escapeHTML(label)}</strong> <small>Valor atual ${fmt(inv.currentValue)}</small></div>${movs || '<div class="export-preview-more">Sem movimentos no período</div>'}${extra}`;
-      }).join('')}
-    </section>` : '';
+    const investHtml = investBlock.length ? `<section class="export-preview-bank"><h4>Investimentos <small>no período</small></h4>${investBlock.map(inv => {
+      const label = inv.alias || inv.name;
+      const rows = inv.movements.slice(0, 4).map(m => `<div class="export-preview-row"><span>${escapeHTML(m.date.split('-').reverse().join('/'))}</span><strong>${escapeHTML(label)} · ${escapeHTML(m.kind)}</strong><span>${escapeHTML(inv.type)}</span><b class="${m.kind === 'Resgate' ? 'negative' : 'positive'}">${m.kind === 'Resgate' ? '−' : '+'} ${fmt(Math.abs(m.amount))}</b></div>`).join('');
+      return `<div class="export-preview-sub"><strong>${escapeHTML(label)}</strong> <small>${fmt(inv.currentValue)}</small></div>${rows || '<div class="export-preview-more">Sem movimentos no período</div>'}`;
+    }).join('')}</section>` : '';
 
     preview.innerHTML = (bankHtml || '') + pocketsHtml + investHtml || '<div class="empty">Nada para pré-visualizar no período.</div>';
   }
