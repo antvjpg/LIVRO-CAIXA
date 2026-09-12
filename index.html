@@ -127,8 +127,8 @@
   *{box-sizing:border-box;}
   body,body *{font-family:var(--font-ui)!important;}
   html{overflow-x:hidden;width:100%;}
-  body.balances-hidden .balance-card .amount{filter:blur(7px);user-select:none;transition:filter .15s ease;}
-  body.balances-hidden .balance-card .amount:active{filter:blur(0);}
+  body.balances-hidden .balance-card .amount{filter:none!important;user-select:none;transition:none;color:transparent!important;position:relative;}
+  body.balances-hidden .balance-card .amount::after{content:"••••";color:var(--ink);position:absolute;inset:0;text-align:inherit;}
   body{
     margin:0;
     background:var(--paper);
@@ -1619,16 +1619,9 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   body.dark-mode .filter-choice-option{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
   body.dark-mode .filter-choice-option.is-selected{background:var(--green-soft);border-color:var(--accent);}
 </style>
-<style id="financial-privacy-no-blur">
-.balances-hidden, .balances-hidden * {
-  filter: none !important;
-  -webkit-filter: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-</style>
-<style id="statement-responsive-patch">
-.statement-preview{width:100%;max-width:100%;overflow-x:hidden}.statement-table{width:100%;max-width:100%;table-layout:fixed;border-collapse:collapse}.statement-table th,.statement-table td{min-width:0;max-width:0;overflow:hidden}.statement-description{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;word-break:break-word}.statement-description.is-truncated{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;cursor:pointer}.statement-amount,.statement-balance{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}@media(max-width:640px){.statement-table{font-size:.8rem}}
+<style id="financial-values-text-mask">
+body.balances-hidden .balance-card .amount{filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:transparent!important;text-shadow:none!important;}
+body.balances-hidden .balance-card .amount::after{content:"••••";color:var(--ink);position:absolute;inset:0;display:block;}
 </style>
 </head>
 <body>
@@ -1982,7 +1975,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
         <div class="profile-list">
           <label class="feature-lab-toggle" style="padding:12px 0;">
             <input type="checkbox" id="chkHideBalancesOnOpen">
-            <span class="feature-lab-toggle-copy"><strong>Ocultar saldos ao abrir</strong><small>Os valores dos cards de resumo iniciam borrados; toque no ícone de olho pra revelar</small></span>
+            <span class="feature-lab-toggle-copy"><strong>Ocultar saldos ao abrir</strong><small>Os valores dos cards de resumo são ocultados com ••••; toque no ícone de olho para revelar</small></span>
             <span class="feature-lab-switch" aria-hidden="true"></span>
           </label>
         </div>
@@ -4866,6 +4859,40 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnClearLocalPin')?.addEventListener('click', () => { removeLocalPin(); const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'PIN removido deste dispositivo.'; logInfo('Segurança', 'Remover PIN local', 'Sucesso', 'Proteção local removida deste dispositivo.'); });
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
+  // ===== Privacidade financeira: ocultação textual sem blur =====
+  const HIDE_BALANCES_KEY_V2 = 'livrocaixa_hide_balances_on_open_v2';
+  let balancesAreHidden = false;
+  function renderHiddenFinancialValues() {
+    document.body.classList.toggle('balances-hidden', balancesAreHidden);
+    document.querySelectorAll('.balance-card .amount, [data-balance], [data-financial-value]').forEach((el) => {
+      if (!el.dataset.originalFinancialText) el.dataset.originalFinancialText = el.textContent;
+      if (balancesAreHidden) {
+        el.textContent = '••••';
+        el.setAttribute('aria-label', 'Saldo oculto');
+      } else {
+        el.textContent = el.dataset.originalFinancialText || el.textContent;
+        el.removeAttribute('aria-label');
+      }
+    });
+    document.querySelectorAll('[data-hide-balances], .privacy-toggle').forEach((button) => {
+      button.setAttribute('aria-pressed', String(balancesAreHidden));
+      button.setAttribute('aria-label', balancesAreHidden ? 'Mostrar saldos' : 'Ocultar saldos');
+    });
+  }
+  function setBalancesHiddenV2(value) {
+    balancesAreHidden = Boolean(value);
+    localStorage.setItem(HIDE_BALANCES_KEY_V2, balancesAreHidden ? '1' : '0');
+    renderHiddenFinancialValues();
+  }
+  function toggleBalancesV2() { setBalancesHiddenV2(!balancesAreHidden); }
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-hide-balances], .privacy-toggle, [aria-label*="Ocultar saldo"], [aria-label*="Mostrar saldo"]');
+    if (button) toggleBalancesV2();
+  });
+  balancesAreHidden = localStorage.getItem(HIDE_BALANCES_KEY_V2) === '1' || localStorage.getItem('livrocaixa_hide_balances_on_open') === '1';
+  new MutationObserver(renderHiddenFinancialValues).observe(document.body, { childList: true, subtree: true });
+  setTimeout(renderHiddenFinancialValues, 0);
+
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
   const APP_VERSION_LABEL = 'Livro-Caixa V.19-08 (CLAUDE)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
@@ -7673,8 +7700,5 @@ VALOR: ${fmt(pseudoBill.amount)}
     </div>
   </div>
 </div>
-<script id="statement-privacy-patch">
-window.StatementUI=window.StatementUI||(()=>{let hidden=false;const currency=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});const formatCurrency=v=>currency.format(Number(v)||0);const formatMovement=v=>{const n=Number(v)||0;return (n>0?'+ ':n<0?'− ':'')+formatCurrency(Math.abs(n))};const setHidden=value=>{hidden=!!value;document.documentElement.classList.toggle('balances-hidden',hidden);document.querySelectorAll('[data-financial-value]').forEach(e=>{e.textContent=hidden?'••••':(e.dataset.financialValue||e.textContent)});document.querySelectorAll('.privacy-toggle').forEach(e=>{e.setAttribute('aria-pressed',String(hidden));e.setAttribute('aria-label',hidden?'Mostrar saldos':'Ocultar saldos')})};return{formatCurrency,formatMovement,setHidden,toggle:()=>setHidden(!hidden)}})();
-</script>
 </body>
 </html>
