@@ -1619,12 +1619,14 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   body.dark-mode .filter-choice-option.is-selected{background:var(--green-soft);border-color:var(--accent);}
 </style>
 <style id="balance-visibility-toggle-style">
-.balance-visibility-control{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin-left:6px;padding:2px 6px;border:1px solid var(--line,#d9ded8);border-radius:999px;background:transparent;color:inherit;cursor:pointer;font:inherit;line-height:1;vertical-align:middle}.balance-visibility-control .balance-visibility-icon{font-size:1em}.balance-visibility-control:focus-visible{outline:2px solid var(--accent,#2f7654);outline-offset:2px}.balance-visibility-value.is-hidden{color:transparent!important;position:relative;display:inline-block;min-width:5.4ch}.balance-visibility-value.is-hidden::after{content:"••••••";color:var(--ink);position:absolute;inset:0;text-align:inherit}.balance-visibility-value.is-hidden,.balance-visibility-value.is-hidden:active{filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body.balances-hidden .balance-card .amount,
+body.balances-hidden .manage-item-value,
+body.balances-hidden .invest-box .val { filter:none!important; }
+.balance-visibility-toggle{border:0;background:transparent;cursor:pointer;padding:4px 6px;margin-left:4px;font-size:1rem;line-height:1}
+.balance-visibility-toggle:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:6px}
 </style>
 </head>
 <body>
-<!-- P2.4 — Visualização rápida de saldos: toggle global, máscara fixa ••••••, sem blur financeiro. -->
-
 
 <div id="authOverlay">
   <div class="auth-box">
@@ -1975,7 +1977,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
         <div class="profile-list">
           <label class="feature-lab-toggle" style="padding:12px 0;">
             <input type="checkbox" id="chkHideBalancesOnOpen">
-            <span class="feature-lab-toggle-copy"><strong>Ocultar saldos ao abrir</strong><small>Os valores dos cards de resumo iniciam ocultos com ••••••; toque no botão para revelar</small></span>
+            <span class="feature-lab-toggle-copy"><strong>Ocultar saldos ao abrir</strong><small>Os valores dos cards de resumo iniciam borrados; toque no ícone de olho pra revelar</small></span>
             <span class="feature-lab-switch" aria-hidden="true"></span>
           </label>
         </div>
@@ -4870,64 +4872,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // P2.4 — controle único de visualização dos saldos.
   const BALANCE_MASK = '••••••';
-  let balancesHidden = false;
-  const balanceValueSelector = '.balance-card .amount, .manage-item-value, .invest-box .val, [data-financial-value]';
-
-  function ensureBalanceControls(root = document) {
-    root.querySelectorAll(balanceValueSelector).forEach((value) => {
-      if (value.dataset.balanceToggleReady === '1') return;
-      value.dataset.balanceToggleReady = '1';
-      value.classList.add('balance-visibility-value');
-      if (!value.dataset.balanceOriginal) value.dataset.balanceOriginal = value.textContent;
+  let balancesHiddenState = false;
+  function setBalancesHiddenState(hidden) {
+    balancesHiddenState = Boolean(hidden);
+    localStorage.setItem(HIDE_BALANCES_STORAGE_KEY, balancesHiddenState ? '1' : '0');
+    document.body.classList.toggle('balances-hidden', balancesHiddenState);
+    applyBalanceMaskToRenderedValues();
+  }
+  function applyBalanceMaskToRenderedValues() {
+    document.querySelectorAll('.balance-card .amount, .manage-item-value, .invest-box .val').forEach((element) => {
+      if (!element.dataset.financialOriginal) element.dataset.financialOriginal = element.textContent;
+      element.textContent = balancesHiddenState ? BALANCE_MASK : element.dataset.financialOriginal;
+      element.setAttribute('aria-label', balancesHiddenState ? 'Saldo oculto' : element.dataset.financialOriginal);
+      if (element.nextElementSibling?.classList.contains('balance-visibility-toggle')) return;
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'balance-visibility-control';
-      button.dataset.balanceToggle = '1';
-      button.setAttribute('aria-label', 'Ocultar saldo');
-      button.setAttribute('aria-pressed', 'false');
-      button.innerHTML = '<span class="balance-visibility-icon" aria-hidden="true">👁️</span>';
-      value.insertAdjacentElement('afterend', button);
+      button.className = 'balance-visibility-toggle';
+      button.setAttribute('aria-pressed', String(balancesHiddenState));
+      button.setAttribute('aria-label', balancesHiddenState ? 'Mostrar saldos' : 'Ocultar saldos');
+      button.textContent = balancesHiddenState ? '🙈' : '👁️';
+      button.addEventListener('click', (event) => { event.preventDefault(); event.stopPropagation(); setBalancesHiddenState(!balancesHiddenState); });
+      element.insertAdjacentElement('afterend', button);
     });
-    applyBalanceVisibility();
-  }
-
-  function applyBalanceVisibility() {
-    document.querySelectorAll(balanceValueSelector).forEach((value) => {
-      const original = value.dataset.balanceOriginal || value.textContent;
-      if (!value.dataset.balanceOriginal) value.dataset.balanceOriginal = original;
-      value.classList.toggle('is-hidden', balancesHidden);
-      value.textContent = balancesHidden ? BALANCE_MASK : original;
-      value.setAttribute('aria-label', balancesHidden ? 'Saldo oculto' : original);
-      const button = value.nextElementSibling?.matches('[data-balance-toggle]') ? value.nextElementSibling : null;
-      if (button) {
-        button.setAttribute('aria-pressed', String(!balancesHidden));
-        button.setAttribute('aria-label', balancesHidden ? 'Mostrar saldo' : 'Ocultar saldo');
-        button.querySelector('.balance-visibility-icon').textContent = balancesHidden ? '🙈' : '👁️';
-      }
+    document.querySelectorAll('.balance-visibility-toggle').forEach((button) => {
+      button.textContent = balancesHiddenState ? '🙈' : '👁️';
+      button.setAttribute('aria-pressed', String(balancesHiddenState));
+      button.setAttribute('aria-label', balancesHiddenState ? 'Mostrar saldos' : 'Ocultar saldos');
     });
   }
-
-  function setBalancesHidden(hidden, persist = true) {
-    balancesHidden = Boolean(hidden);
-    document.body.classList.toggle('balances-hidden', balancesHidden);
-    if (persist) localStorage.setItem(HIDE_BALANCES_STORAGE_KEY, balancesHidden ? '1' : '0');
-    applyBalanceVisibility();
-    const checkbox = document.getElementById('chkHideBalancesOnOpen');
-    if (checkbox) checkbox.checked = balancesHidden;
-  }
-
-  document.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-balance-toggle]');
-    if (button) {
-      event.preventDefault();
-      setBalancesHidden(!balancesHidden);
-    }
-  });
-
   function applyBalancesHiddenState(hidden) {
-    setBalancesHidden(hidden, false);
+    balancesHiddenState = Boolean(hidden);
+    document.body.classList.toggle('balances-hidden', balancesHiddenState);
   }
   const hideBalancesOnOpen = localStorage.getItem(HIDE_BALANCES_STORAGE_KEY) === '1';
   const chkHideBalances = document.getElementById('chkHideBalancesOnOpen');
