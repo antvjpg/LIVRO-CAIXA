@@ -4883,10 +4883,60 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   applyBalancesHiddenState(hideBalancesOnOpen);
 
-  // ===== P2.3.1 — Estrutura do diagnóstico (detecção de verdade vem na P2.3.2) =====
-  document.getElementById('btnRunDiagnostic')?.addEventListener('click', () => {
-    document.getElementById('diagnosticResults').innerHTML = '<div class="diagnostic-item is-ok"><span>ℹ️</span><div><strong>Em construção</strong><span>A verificação de inconsistências chega na próxima etapa.</span></div></div>';
-  });
+  // ===== P2.3.2 — Detecção real de inconsistências =====
+  function runDiagnostics() {
+    const issues = [];
+
+    const orphanEntryBanks = entries.filter(e => e.bank && !banks.some(b => b.id === e.bank));
+    if (orphanEntryBanks.length) issues.push({ severity: 'warning', title: 'Lançamentos com banco inexistente', detail: `${orphanEntryBanks.length} lançamento(s) referenciam um banco que não existe mais.` });
+
+    const orphanEntryCats = entries.filter(e => e.category && !categories.some(c => c.id === e.category));
+    if (orphanEntryCats.length) issues.push({ severity: 'warning', title: 'Lançamentos com categoria inexistente', detail: `${orphanEntryCats.length} lançamento(s) referenciam uma categoria que não existe mais.` });
+
+    const orphanPurchaseCards = purchases.filter(p => p.cardId && !cards.some(c => c.id === p.cardId));
+    if (orphanPurchaseCards.length) issues.push({ severity: 'warning', title: 'Compras sem cartão vinculado', detail: `${orphanPurchaseCards.length} compra(s) referenciam um cartão que não existe mais.` });
+
+    const orphanBudgets = budgets.filter(b => b.categoryId && !categories.some(c => c.id === b.categoryId));
+    if (orphanBudgets.length) issues.push({ severity: 'warning', title: 'Limites de orçamento órfãos', detail: `${orphanBudgets.length} limite(s) de orçamento apontam pra uma categoria que não existe mais.` });
+
+    const catNamesSeen = {};
+    categories.forEach(c => { const key = String(c.name || '').trim().toLowerCase(); if (key) catNamesSeen[key] = (catNamesSeen[key] || 0) + 1; });
+    const dupCatNames = Object.entries(catNamesSeen).filter(([, count]) => count > 1);
+    if (dupCatNames.length) issues.push({ severity: 'warning', title: 'Categorias com nome repetido', detail: `${dupCatNames.length} nome(s) de categoria aparecem mais de uma vez: ${dupCatNames.map(([name]) => name).join(', ')}.` });
+
+    const bankNamesSeen = {};
+    banks.forEach(b => { const key = String(b.name || '').trim().toLowerCase(); if (key) bankNamesSeen[key] = (bankNamesSeen[key] || 0) + 1; });
+    const dupBankNames = Object.entries(bankNamesSeen).filter(([, count]) => count > 1);
+    if (dupBankNames.length) issues.push({ severity: 'warning', title: 'Bancos com nome repetido', detail: `${dupBankNames.length} nome(s) de banco aparecem mais de uma vez: ${dupBankNames.map(([name]) => name).join(', ')}.` });
+
+    const negativePockets = pockets.filter(p => pocketCurrentBalance(p) < -0.005);
+    if (negativePockets.length) issues.push({ severity: 'warning', title: 'Caixinhas com saldo negativo', detail: `${negativePockets.length} caixinha(s) têm mais resgate do que aporte registrado: ${negativePockets.map(p => p.name).join(', ')}.` });
+
+    const cardsWithoutBank = cards.filter(c => c.active !== false && !c.bankId);
+    if (cardsWithoutBank.length) issues.push({ severity: 'warning', title: 'Cartões sem banco definido', detail: `${cardsWithoutBank.length} cartão(ões) ativo(s) não têm banco de pagamento vinculado.` });
+
+    const goalsPastDeadline = goals.filter(g => g.deadline && g.deadline < todayISO() && Number(g.currentAmount || 0) < Number(g.targetAmount || 0));
+    if (goalsPastDeadline.length) issues.push({ severity: 'warning', title: 'Metas com prazo vencido', detail: `${goalsPastDeadline.length} meta(s) passaram do prazo sem atingir o objetivo: ${goalsPastDeadline.map(g => g.name).join(', ')}.` });
+
+    return issues;
+  }
+  function renderDiagnosticResults() {
+    const issues = runDiagnostics();
+    const icon = document.getElementById('diagnosticSummaryIcon');
+    const label = document.getElementById('diagnosticSummaryLabel');
+    const detail = document.getElementById('diagnosticSummaryDetail');
+    if (icon) icon.textContent = issues.length ? '⚠️' : '✅';
+    if (label) label.textContent = issues.length ? `${issues.length} ponto(s) de atenção` : 'Dados consistentes';
+    if (detail) detail.textContent = issues.length ? 'Veja os detalhes abaixo — nada foi alterado automaticamente.' : 'Nenhuma inconsistência encontrada na última verificação.';
+    const results = document.getElementById('diagnosticResults');
+    if (results) {
+      results.innerHTML = issues.length
+        ? issues.map(i => `<div class="diagnostic-item is-warning"><span>⚠️</span><div><strong>${escapeHTML(i.title)}</strong><span>${escapeHTML(i.detail)}</span></div></div>`).join('')
+        : '<div class="diagnostic-item is-ok"><span>✅</span><div><strong>Tudo certo</strong><span>Nenhuma inconsistência encontrada.</span></div></div>';
+    }
+    return issues;
+  }
+  document.getElementById('btnRunDiagnostic')?.addEventListener('click', renderDiagnosticResults);
 
   const inputFinancialCycleDay = document.getElementById('inputFinancialCycleDay');
   if (inputFinancialCycleDay) {
