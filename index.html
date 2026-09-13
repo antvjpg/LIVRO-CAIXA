@@ -1457,9 +1457,8 @@
     @keyframes mobile-panel-enter { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
     body{padding-bottom:calc(106px + env(safe-area-inset-bottom));}
     .nav-tabs{display:none;}
-    .mobile-bottom-nav { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); align-items:center; position:fixed; left:50%; bottom:max(14px,env(safe-area-inset-bottom)); transform:translateX(-50%); width:min(420px,calc(100% - 20px)); z-index:70; min-height:68px; padding:6px; background:color-mix(in srgb,var(--surface) 83%,transparent); border:1px solid color-mix(in srgb,var(--line) 84%,transparent); border-radius:999px; box-shadow:0 13px 30px rgba(20,35,28,.18),inset 0 1px 0 rgba(255,255,255,.48); backdrop-filter:blur(18px) saturate(1.22); -webkit-backdrop-filter:blur(18px) saturate(1.22); }
-    .mobile-bottom-nav .nav-transfer-glass { background:color-mix(in srgb,var(--accent) 14%,transparent); color:var(--accent); border-radius:999px; }
-    .mobile-bottom-nav .nav-transfer-glass .nav-icon { color:var(--accent); }
+    /* Liquid Glass = efeito vidro (blur/transparência) da barra inferior */
+    .mobile-bottom-nav { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); align-items:center; position:fixed; left:50%; bottom:max(14px,env(safe-area-inset-bottom)); transform:translateX(-50%); width:min(390px,calc(100% - 28px)); z-index:70; min-height:68px; padding:6px; background:color-mix(in srgb,var(--surface) 83%,transparent); border:1px solid color-mix(in srgb,var(--line) 84%,transparent); border-radius:999px; box-shadow:0 13px 30px rgba(20,35,28,.18),inset 0 1px 0 rgba(255,255,255,.48); backdrop-filter:blur(18px) saturate(1.22); -webkit-backdrop-filter:blur(18px) saturate(1.22); }
     .mobile-bottom-nav button { min-height:54px; min-width:0; padding:5px 3px; border:0; border-radius:999px; background:transparent; color:var(--ink-soft); font-family:'Plus Jakarta Sans',sans-serif; font-size:9px; font-weight:700; line-height:1.12; letter-spacing:-.01em; text-transform:none; display:grid; grid-template-rows:24px auto; justify-items:center; align-content:center; gap:3px; }
     .mobile-bottom-nav button .nav-icon { width:21px; height:21px; display:grid; place-items:center; color:var(--ink); }
     .mobile-bottom-nav button .nav-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
@@ -1925,6 +1924,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <button type="button" data-drawer-action="entries"><span>≡</span> Lançamentos</button>
       <button type="button" data-drawer-action="cards"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span> Cartões</button>
       <button type="button" data-drawer-action="bills"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span> Contas & Calendário</button>
+      <button type="button" data-drawer-action="receivables"><span>↓</span> Valores a Receber</button>
       <button type="button" data-drawer-action="reports"><span>◔</span> Gastos por categoria</button>
       <button type="button" data-drawer-action="pockets"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M4 8l2.5-4h11L20 8"/><path d="M9.5 12.5h5"/></svg></span> Caixinhas</button>
       <button type="button" data-drawer-action="investments"><span>↗</span> Investimentos</button>
@@ -1954,6 +1954,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
     <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')">📖 Livro-Caixa</button>
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')">🐷 Caixinhas</button>
     <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')">💳 Cartões</button>
+    <button class="nav-tab" id="tabBtnReceivables" onclick="switchTab('receivables')">📥 A Receber</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">🪙 Investimentos</button>
   </div>
 
@@ -2055,6 +2056,22 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       </div>
       <div id="billList"></div>
     </div>
+  </div>
+
+  <!-- P3.1 — Valores a Receber (módulo independente; não mexe em caixa/patrimônio) -->
+  <div id="viewReceivables" class="tab-content">
+    <div class="balance-strip section-balance-strip" id="receivablesSummary"></div>
+    <div class="toolbar" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));">
+      <button class="primary" id="btnNovoReceivable" type="button">+ Novo valor a receber</button>
+      <select id="receivableStatusFilter" aria-label="Filtrar por status">
+        <option value="">Todos os status</option>
+        <option value="pendente">Pendentes</option>
+        <option value="recebido">Recebidos</option>
+        <option value="cancelado">Cancelados</option>
+      </select>
+    </div>
+    <p class="hint" style="margin:0 0 12px;">Módulo independente: marcar como recebido <strong>não</strong> cria lançamento no Livro-Caixa, nem altera caixinhas, investimentos ou patrimônio.</p>
+    <div id="receivablesList" class="receivables-list"></div>
   </div>
 
   <!-- ABA 2: CRIPTO E INVESTIMENTOS -->
@@ -2224,7 +2241,8 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
         </div>
       </div>
 
-      <div class="profile-roadmap"><b>Em preparação:</b> revisão de Meta/Simulação financeira e novos módulos (Valores a Receber) nas próximas versões.</div>
+      <div class="profile-roadmap"><b>Disponível:</b> Valores a Receber (menu lateral / aba desktop). <b>Em preparação:</b> revisão de Meta/Simulação financeira.</div>
+      <div class="profile-item" role="button" tabindex="0" onclick="switchTab('receivables')" style="margin-top:10px;cursor:pointer;"><span class="profile-item-icon">↓</span><span class="profile-item-copy"><strong>Valores a Receber</strong><span>Controle independente · não altera o Livro-Caixa</span></span><span class="profile-item-arrow">›</span></div>
     </section>
   </div>
 
@@ -2491,6 +2509,21 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <label for="billLaunchBank">Banco utilizado</label>
       <select id="billLaunchBank"></select>
       <button type="button" class="primary" id="billLaunchConfirm" style="width:100%;margin-top:12px;">Confirmar lançamento</button>
+    </div>
+
+    <div class="panel" id="panelReceivable">
+      <h3 id="panelReceivableTitle">Valor a receber <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <p class="hint">Registro independente. Receber aqui não gera movimento no Livro-Caixa.</p>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="grid-column:1/-1"><label for="recvPessoa">Pessoa</label><input id="recvPessoa" type="text" placeholder="Quem deve pagar" required></div>
+        <div style="grid-column:1/-1"><label for="recvDesc">Descrição</label><input id="recvDesc" type="text" placeholder="Ex: Empréstimo, reembolso…" required></div>
+        <div><label for="recvValor">Valor (R$)</label><input id="recvValor" type="text" data-money="true" placeholder="R$ 0,00"></div>
+        <div><label for="recvDataRegistro">Data do registro</label><input id="recvDataRegistro" type="date"></div>
+        <div><label for="recvDataPrevista">Data prevista (opcional)</label><input id="recvDataPrevista" type="date"></div>
+        <div><label for="recvStatus">Status</label><select id="recvStatus"><option value="pendente">Pendente</option><option value="recebido">Recebido</option><option value="cancelado">Cancelado</option></select></div>
+        <div style="grid-column:1/-1"><label for="recvObs">Observação (opcional)</label><input id="recvObs" type="text" placeholder="Detalhes opcionais"></div>
+        <div style="grid-column:1/-1"><button class="primary" id="recvSalvar" style="width:100%">Salvar</button></div>
+      </div>
     </div>
 
     <div class="panel bill-share-panel" id="panelBillShare">
@@ -2857,11 +2890,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.querySelectorAll('.mobile-bottom-nav button').forEach((button) => {
     button.addEventListener('click', () => {
-      // Liquid Glass: atalho de transferência (não é aba)
-      if (button.dataset.action === 'transfer') {
-        document.getElementById('btnTransferencia')?.click();
-        return;
-      }
       if (!button.dataset.destination) return;
       switchTab(button.dataset.destination);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2874,6 +2902,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let pockets = [];
   let yieldsLog = [];
   let recurringBills = [];
+  let receivables = [];
   let budgets = [];
   let goals = [];
   let invoiceLaunches = [];
@@ -3100,7 +3129,7 @@ document.addEventListener('DOMContentLoaded', () => {
       schemaVersion: BACKUP_SCHEMA_VERSION,
       app: 'livro-caixa',
       exportedAt: new Date().toISOString(),
-      data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, budgets, goals, cards, purchases, featureSettings, diagnosticLog: diagnosticLog.slice(0, LOG_LIMIT) }
+      data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables, budgets, goals, cards, purchases, featureSettings, diagnosticLog: diagnosticLog.slice(0, LOG_LIMIT) }
     };
   }
 
@@ -3110,7 +3139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const required = ['banks','categories','entries'];
     if (!required.every(k => Array.isArray(data[k]))) return false;
     if (payload.schemaVersion != null && (!Number.isInteger(payload.schemaVersion) || payload.schemaVersion < 1 || payload.schemaVersion > BACKUP_SCHEMA_VERSION)) return false;
-    const optional = ['investments','pockets','yieldsLog','recurringBills','budgets','goals','cards','purchases','invoiceLaunches','diagnosticLog'];
+    const optional = ['investments','pockets','yieldsLog','recurringBills','receivables','budgets','goals','cards','purchases','invoiceLaunches','diagnosticLog'];
     if (optional.some(k => data[k] != null && !Array.isArray(data[k]))) return false;
     if (data.featureSettings != null && (typeof data.featureSettings !== 'object' || Array.isArray(data.featureSettings))) return false;
     return true;
@@ -3126,6 +3155,7 @@ document.addEventListener('DOMContentLoaded', () => {
       pockets: Array.isArray(data.pockets) ? data.pockets : [],
       yieldsLog: Array.isArray(data.yieldsLog) ? data.yieldsLog : [],
       recurringBills: Array.isArray(data.recurringBills) ? data.recurringBills : [],
+      receivables: Array.isArray(data.receivables) ? data.receivables : [],
       budgets: Array.isArray(data.budgets) ? data.budgets : [],
       featureSettings: data.featureSettings && typeof data.featureSettings === 'object' ? data.featureSettings : null,
       goals: Array.isArray(data.goals) ? data.goals : [],
@@ -3191,7 +3221,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return ok;
     });
     const diagnosticLog = data.diagnosticLog.filter(item => item && typeof item === 'object' && typeof item.type === 'string' && typeof item.module === 'string').slice(0, LOG_LIMIT);
-    return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, budgets, goals: data.goals || [], cards, purchases, featureSettings: data.featureSettings || null, diagnosticLog }, dropped };
+    return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables: Array.isArray(data.receivables) ? data.receivables : [], budgets, goals: data.goals || [], cards, purchases, featureSettings: data.featureSettings || null, diagnosticLog }, dropped };
   }
 
   // Tema Escuro / Claro
@@ -3318,18 +3348,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tabBtnInvest')?.classList.toggle('active', tabName === 'invest');
     document.getElementById('tabBtnPockets')?.classList.toggle('active', tabName === 'pockets');
     document.getElementById('tabBtnCards')?.classList.toggle('active', tabName === 'cards');
+    document.getElementById('tabBtnReceivables')?.classList.toggle('active', tabName === 'receivables');
     document.getElementById('tabBtnBills')?.classList.toggle('active', tabName === 'bills');
     document.getElementById('viewDashboard').classList.toggle('active', tabName === 'dashboard');
     document.getElementById('viewCaixa').classList.toggle('active', tabName === 'caixa');
     document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
     document.getElementById('viewPockets').classList.toggle('active', tabName === 'pockets');
     document.getElementById('viewCards').classList.toggle('active', tabName === 'cards');
+    document.getElementById('viewReceivables')?.classList.toggle('active', tabName === 'receivables');
     document.getElementById('viewBills').classList.toggle('active', tabName === 'bills');
     document.getElementById('viewProfile').classList.toggle('active', tabName === 'profile');
     document.getElementById('balanceStrip').classList.toggle('section-hidden', tabName !== 'caixa');
     document.getElementById('universalPeriodBar')?.classList.toggle('section-hidden', !['caixa','invest','pockets'].includes(tabName));
     if (tabName === 'bills') renderBills();
     if (tabName === 'cards') renderCards();
+    if (tabName === 'receivables') renderReceivables();
     if (tabName === 'invest') { renderInvestments(); refreshStaleInvestmentQuotes(); }
     if (tabName === 'dashboard') renderAdvancedDashboard();
     document.querySelectorAll('.mobile-bottom-nav button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === tabName));
@@ -3351,8 +3384,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return docRef().collection(name);
   }
 
-  const COLLECTIONS = ['banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog', 'recurringBills', 'budgets', 'goals', 'cards', 'purchases', 'invoiceLaunches'];
-  let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
+  const COLLECTIONS = ['banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog', 'recurringBills', 'receivables', 'budgets', 'goals', 'cards', 'purchases', 'invoiceLaunches'];
+  let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
   let realtimeUnsubscribers = [];
 
   function arrToMap(arr) {
@@ -3391,14 +3424,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.movePocket = (id, direction) => moveDisplayItem('pockets', id, direction);
 
   function currentStateSnapshot() {
-    return { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, budgets, goals, cards, purchases };
+    return { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables, budgets, goals, cards, purchases };
   }
 
   function setLastSyncedFromCurrentState() {
     const s = currentStateSnapshot();
     lastSynced = {
       banks: arrToMap(s.banks), categories: arrToMap(s.categories), entries: arrToMap(s.entries),
-      investments: arrToMap(s.investments), pockets: arrToMap(s.pockets), yieldsLog: arrToMap(s.yieldsLog), recurringBills: arrToMap(s.recurringBills), budgets: arrToMap(s.budgets), goals: arrToMap(s.goals), cards: arrToMap(s.cards), purchases: arrToMap(s.purchases)
+      investments: arrToMap(s.investments), pockets: arrToMap(s.pockets), yieldsLog: arrToMap(s.yieldsLog), recurringBills: arrToMap(s.recurringBills), receivables: arrToMap(s.receivables), budgets: arrToMap(s.budgets), goals: arrToMap(s.goals), cards: arrToMap(s.cards), purchases: arrToMap(s.purchases)
     };
   }
 
@@ -3411,6 +3444,7 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'pockets': pockets = sortDisplayOrder(arr); break;
       case 'yieldsLog': yieldsLog = arr; break;
       case 'recurringBills': recurringBills = arr; break;
+      case 'receivables': receivables = arr; break;
       case 'budgets': budgets = arr; break;
       case 'goals': goals = arr; break;
       case 'invoiceLaunches': invoiceLaunches = arr; break;
@@ -3475,11 +3509,12 @@ document.addEventListener('DOMContentLoaded', () => {
         pockets = data.pockets || [];
         yieldsLog = data.yieldsLog || [];
         recurringBills = data.recurringBills || [];
+        receivables = data.receivables || [];
         budgets = data.budgets || [];
         goals = data.goals || [];
         cards = data.cards || [];
         purchases = data.purchases || [];
-        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
+        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
         if (data.banks || data.entries) {
           syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
         }
@@ -3530,6 +3565,7 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'pockets': return pockets;
       case 'yieldsLog': return yieldsLog;
       case 'recurringBills': return recurringBills;
+      case 'receivables': return receivables;
       case 'budgets': return budgets;
       case 'goals': return goals;
       case 'invoiceLaunches': return invoiceLaunches;
@@ -5293,6 +5329,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (action === 'overview') { window.switchTab('caixa'); window.scrollTo({ top:0, behavior:'smooth' }); }
     if (action === 'entries') { window.switchTab('caixa'); setTimeout(() => scrollTo('ledgerBody'), 20); }
     if (action === 'bills') window.switchTab('bills');
+    if (action === 'receivables') window.switchTab('receivables');
     if (action === 'cards') window.switchTab('cards');
     if (action === 'diagnostico') openDiagnostics();
     if (action === 'lab') openFeatureLab();
@@ -5794,6 +5831,162 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.markBillPaid = markBillPaid;
   window.unmarkBillPaid = unmarkBillPaid;
+
+  // ===== P3.1 — Valores a Receber (independente do Livro-Caixa) =====
+  let editingReceivableId = null;
+  const RECV_STATUS_LABEL = { pendente: 'Pendente', recebido: 'Recebido', cancelado: 'Cancelado' };
+  function normalizeReceivableStatus(s) {
+    const v = String(s || 'pendente').toLowerCase();
+    return ['pendente', 'recebido', 'cancelado'].includes(v) ? v : 'pendente';
+  }
+  function openReceivableModal(id = null) {
+    editingReceivableId = id;
+    const item = id ? receivables.find(r => r.id === id) : null;
+    document.getElementById('recvPessoa').value = item?.person || '';
+    document.getElementById('recvDesc').value = item?.desc || '';
+    setMoneyInput('recvValor', item?.amount || 0);
+    document.getElementById('recvDataRegistro').value = item?.registeredAt || todayISO();
+    document.getElementById('recvDataPrevista').value = item?.expectedAt || '';
+    document.getElementById('recvStatus').value = normalizeReceivableStatus(item?.status);
+    document.getElementById('recvObs').value = item?.notes || '';
+    document.getElementById('panelReceivableTitle').innerHTML = `${item ? 'Editar' : 'Novo'} valor a receber <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    openModal('panelReceivable');
+  }
+  function renderReceivables() {
+    const list = document.getElementById('receivablesList');
+    const summary = document.getElementById('receivablesSummary');
+    if (!list || !summary) return;
+    const filter = document.getElementById('receivableStatusFilter')?.value || '';
+    const rows = receivables
+      .filter(r => !filter || normalizeReceivableStatus(r.status) === filter)
+      .slice()
+      .sort((a, b) => String(b.registeredAt || '').localeCompare(String(a.registeredAt || '')) || String(b.id || '').localeCompare(String(a.id || '')));
+    const pending = receivables.filter(r => normalizeReceivableStatus(r.status) === 'pendente');
+    const pendingTotal = pending.reduce((s, r) => s + Number(r.amount || 0), 0);
+    const receivedTotal = receivables.filter(r => normalizeReceivableStatus(r.status) === 'recebido').reduce((s, r) => s + Number(r.amount || 0), 0);
+    summary.innerHTML = `
+      <div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pending.length}</span></div>
+      <div class="balance-card"><span class="label">A receber</span><span class="amount">${fmt(pendingTotal)}</span></div>
+      <div class="balance-card"><span class="label">Já recebidos</span><span class="amount">${fmt(receivedTotal)}</span></div>
+      <div class="balance-card"><span class="label">Registros</span><span class="amount">${receivables.length}</span></div>`;
+    if (!rows.length) {
+      list.innerHTML = `<div class="empty">Nenhum valor a receber${filter ? ' neste filtro' : ''}. Use “+ Novo valor a receber”.</div>`;
+      return;
+    }
+    list.innerHTML = rows.map(r => {
+      const st = normalizeReceivableStatus(r.status);
+      const stClass = st === 'pendente' ? 'overdue' : (st === 'recebido' ? '' : '');
+      const expected = r.expectedAt ? r.expectedAt.split('-').reverse().join('/') : '—';
+      const registered = r.registeredAt ? r.registeredAt.split('-').reverse().join('/') : '—';
+      const actions = st === 'pendente'
+        ? `<button type="button" onclick="markReceivableReceived('${r.id}')">Marcar recebido</button>
+           <button type="button" onclick="cancelReceivable('${r.id}')">Cancelar</button>`
+        : (st === 'recebido'
+          ? `<button type="button" onclick="reopenReceivable('${r.id}')">Reabrir</button>`
+          : `<button type="button" onclick="reopenReceivable('${r.id}')">Reabrir</button>`);
+      return `<div class="bill-list-item receivable-item">
+        <div>
+          <strong>${escapeHTML(r.person || 'Sem pessoa')} · ${escapeHTML(r.desc || 'Sem descrição')}</strong>
+          <div class="hint">Registro: ${registered} · Previsto: ${expected}${r.notes ? ' · ' + escapeHTML(r.notes) : ''}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="js-money" style="font-family:'IBM Plex Mono',monospace;font-weight:700;">${fmt(r.amount)}</div>
+          <span class="bill-status ${stClass}">${RECV_STATUS_LABEL[st]}</span>
+        </div>
+        <div class="bill-actions">
+          ${actions}
+          <button type="button" onclick="editReceivable('${r.id}')">Editar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  async function saveReceivableRecord() {
+    const person = document.getElementById('recvPessoa').value.trim();
+    const desc = document.getElementById('recvDesc').value.trim();
+    const amount = readMoneyInput('recvValor');
+    const registeredAt = document.getElementById('recvDataRegistro').value || todayISO();
+    const expectedAt = document.getElementById('recvDataPrevista').value || '';
+    const status = normalizeReceivableStatus(document.getElementById('recvStatus').value);
+    const notes = document.getElementById('recvObs').value.trim();
+    if (!person || !desc) { alert('Informe pessoa e descrição.'); return; }
+    if (!(amount > 0)) { alert('Informe um valor válido.'); return; }
+    const base = {
+      person, desc, amount, registeredAt, expectedAt, status, notes,
+      updatedAt: new Date().toISOString()
+    };
+    if (editingReceivableId) {
+      const idx = receivables.findIndex(r => r.id === editingReceivableId);
+      if (idx >= 0) {
+        const prev = receivables[idx];
+        receivables[idx] = {
+          ...prev,
+          ...base,
+          createdAt: prev.createdAt || registeredAt,
+          receivedAt: status === 'recebido' ? (prev.receivedAt || todayISO()) : (status === 'pendente' ? null : prev.receivedAt),
+          cancelledAt: status === 'cancelado' ? (prev.cancelledAt || todayISO()) : (status === 'pendente' ? null : prev.cancelledAt),
+          history: Array.isArray(prev.history) ? prev.history : []
+        };
+        if (prev.status !== status) {
+          receivables[idx].history = [...(receivables[idx].history || []), { at: new Date().toISOString(), from: prev.status, to: status }];
+        }
+      }
+    } else {
+      receivables.push({
+        id: 'recv' + Date.now() + Math.random().toString(36).slice(2, 7),
+        createdAt: registeredAt,
+        receivedAt: status === 'recebido' ? todayISO() : null,
+        cancelledAt: status === 'cancelado' ? todayISO() : null,
+        history: [{ at: new Date().toISOString(), from: null, to: status }],
+        ...base
+      });
+    }
+    // Não cria lançamento, evento de calendário, nem altera patrimônio
+    try {
+      await persistAll();
+      logInfo('Valores a Receber', editingReceivableId ? 'Editar' : 'Criar', 'Sucesso', `${person} · ${desc} · ${fmt(amount)} · ${status}`);
+      editingReceivableId = null;
+      closeAllPanels();
+      renderReceivables();
+    } catch (err) {
+      logSyncError('valores a receber', err);
+      alert('Não foi possível salvar. Tente novamente.');
+    }
+  }
+  async function setReceivableStatus(id, status) {
+    const idx = receivables.findIndex(r => r.id === id);
+    if (idx < 0) return;
+    const prev = receivables[idx];
+    const next = normalizeReceivableStatus(status);
+    if (normalizeReceivableStatus(prev.status) === next) return;
+    receivables[idx] = {
+      ...prev,
+      status: next,
+      updatedAt: new Date().toISOString(),
+      receivedAt: next === 'recebido' ? todayISO() : (next === 'pendente' ? null : prev.receivedAt),
+      cancelledAt: next === 'cancelado' ? todayISO() : (next === 'pendente' ? null : prev.cancelledAt),
+      history: [...(Array.isArray(prev.history) ? prev.history : []), { at: new Date().toISOString(), from: prev.status, to: next }]
+    };
+    try {
+      await persistAll();
+      logInfo('Valores a Receber', 'Alterar status', 'Sucesso', `${prev.person}: ${prev.status} → ${next}`);
+      renderReceivables();
+    } catch (err) {
+      receivables[idx] = prev;
+      logSyncError('status valores a receber', err);
+      alert('Não foi possível atualizar o status.');
+      renderReceivables();
+    }
+  }
+  window.editReceivable = id => openReceivableModal(id);
+  window.markReceivableReceived = id => setReceivableStatus(id, 'recebido');
+  window.cancelReceivable = id => {
+    if (!confirm('Cancelar este valor a receber? O registro permanece no histórico com status Cancelado.')) return;
+    setReceivableStatus(id, 'cancelado');
+  };
+  window.reopenReceivable = id => setReceivableStatus(id, 'pendente');
+  document.getElementById('btnNovoReceivable')?.addEventListener('click', () => openReceivableModal());
+  document.getElementById('recvSalvar')?.addEventListener('click', () => saveReceivableRecord());
+  document.getElementById('receivableStatusFilter')?.addEventListener('change', () => renderReceivables());
   function populateBillForm(){
     const options = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
     document.getElementById('billBanco').innerHTML = `<option value="a-definir">A definir</option>${options}`;
@@ -7227,7 +7420,7 @@ VALOR: ${fmt(pseudoBill.amount)}
   async function encryptBackupPayload(payload, password) { if (String(password || '').length < 6) throw new Error('A senha do backup deve ter pelo menos 6 caracteres.'); const salt = crypto.getRandomValues(new Uint8Array(16)); const iv = crypto.getRandomValues(new Uint8Array(12)); const key = await deriveBackupKey(password, salt); const encoded = new TextEncoder().encode(JSON.stringify(payload)); const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded); return { type: 'livro-caixa-encrypted-backup', version: 1, algorithm: 'AES-GCM/PBKDF2-SHA-256', iterations: 120000, salt: bytesToBase64(salt), iv: bytesToBase64(iv), ciphertext: bytesToBase64(new Uint8Array(cipher)), createdAt: new Date().toISOString() }; }
   async function decryptBackupPayload(envelope, password) { if (!envelope || envelope.type !== 'livro-caixa-encrypted-backup' || envelope.version !== 1) throw new Error('Envelope de backup criptografado inválido.'); const key = await deriveBackupKey(password, base64ToBytes(envelope.salt)); const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: base64ToBytes(envelope.iv) }, key, base64ToBytes(envelope.ciphertext)); return JSON.parse(new TextDecoder().decode(plain)); }
   function downloadJsonFile(payload, filename) { const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
-  async function restoreValidatedBackup(payload, sourceLabel = 'Backup') { if (!isValidBackupPayload(payload)) throw new Error('Arquivo de backup inválido ou incompatível com esta versão.'); const data = extractBackupData(payload); const { data: clean, dropped } = sanitizeBackupData(data); const totalDropped = Object.values(dropped).reduce((a, b) => a + b, 0); if (totalDropped > 0 && !confirm(`${totalDropped} registro(s) incompleto(s) serão ignorados. Deseja continuar?`)) return false; banks = clean.banks.filter(bk => bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral'); categories = clean.categories; entries = clean.entries; investments = sortDisplayOrder(clean.investments); pockets = sortDisplayOrder(clean.pockets); ensureDisplayOrder(investments); ensureDisplayOrder(pockets); yieldsLog = clean.yieldsLog; recurringBills = clean.recurringBills || []; budgets = clean.budgets || []; goals = clean.goals || []; cards = clean.cards || []; purchases = clean.purchases || []; if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); } diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT)); persistDiagnosticLogLocally(); normalizePockets(); await persistNow(); populateFilterControls(true); render(); logInfo('Importação', 'Restaurar backup', 'Sucesso', `${sourceLabel} restaurado após validação e sanitização.`, { schemaVersion: payload.schemaVersion || 'criptografado', dropped }); return true; }
+  async function restoreValidatedBackup(payload, sourceLabel = 'Backup') { if (!isValidBackupPayload(payload)) throw new Error('Arquivo de backup inválido ou incompatível com esta versão.'); const data = extractBackupData(payload); const { data: clean, dropped } = sanitizeBackupData(data); const totalDropped = Object.values(dropped).reduce((a, b) => a + b, 0); if (totalDropped > 0 && !confirm(`${totalDropped} registro(s) incompleto(s) serão ignorados. Deseja continuar?`)) return false; banks = clean.banks.filter(bk => bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral'); categories = clean.categories; entries = clean.entries; investments = sortDisplayOrder(clean.investments); pockets = sortDisplayOrder(clean.pockets); ensureDisplayOrder(investments); ensureDisplayOrder(pockets); yieldsLog = clean.yieldsLog; recurringBills = clean.recurringBills || []; receivables = clean.receivables || []; budgets = clean.budgets || []; goals = clean.goals || []; cards = clean.cards || []; purchases = clean.purchases || []; if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); } diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT)); persistDiagnosticLogLocally(); normalizePockets(); await persistNow(); populateFilterControls(true); render(); logInfo('Importação', 'Restaurar backup', 'Sucesso', `${sourceLabel} restaurado após validação e sanitização.`, { schemaVersion: payload.schemaVersion || 'criptografado', dropped }); return true; }
 
   document.getElementById('btnExportBackup').onclick = () => {
     const payload = buildBackupPayload();
@@ -7900,6 +8093,8 @@ VALOR: ${fmt(pseudoBill.amount)}
   document.getElementById('fabAdd').onclick = () => {
     if (currentTab === 'bills') {
       openBillModal();
+    } else if (currentTab === 'receivables') {
+      openReceivableModal();
     } else if (currentTab === 'invest') {
       document.getElementById('btnNovoInvest').click();
     } else if (currentTab === 'pockets') {
@@ -7935,8 +8130,8 @@ VALOR: ${fmt(pseudoBill.amount)}
       if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
       realtimeUnsubscribers.forEach(unsub => unsub());
       realtimeUnsubscribers = [];
-      lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
-      banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; budgets = []; goals = []; cards = []; purchases = [];
+      lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
+      banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
       clearSessionMemory();
       syncOverlay.classList.add('hidden');
       overlay.classList.remove('hidden');
@@ -7948,7 +8143,6 @@ VALOR: ${fmt(pseudoBill.amount)}
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="9" rx="1.5"/><rect x="13" y="4" width="7" height="5" rx="1.5"/><rect x="13" y="11" width="7" height="9" rx="1.5"/><rect x="4" y="15" width="7" height="5" rx="1.5"/></svg></span><span>Visão geral</span></button>
   <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h10a3 3 0 0 1 3 3V19H8a3 3 0 0 0-3 3z"/><path d="M5 5.5v15.5M8 9h6M8 13h6"/></svg></span><span>Livro-Caixa</span></button>
-  <button type="button" data-action="transfer" class="nav-transfer-glass" aria-label="Transferência"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h13"/><path d="m15 5 3 3-3 3"/><path d="M19 16H6"/><path d="m9 13-3 3 3 3"/></svg></span><span>Transferir</span></button>
   <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14v9.5A2.5 2.5 0 0 1 16.5 21h-9A2.5 2.5 0 0 1 5 18.5z"/><path d="M8 9V6.8A2.8 2.8 0 0 1 10.8 4h2.4A2.8 2.8 0 0 1 16 6.8V9M9 15h6"/></svg></span><span>Caixinhas</span></button>
   <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span><span>Investimentos</span></button>
   <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></span><span>Perfil</span></button>
