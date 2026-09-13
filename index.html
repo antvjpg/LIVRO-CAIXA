@@ -4426,63 +4426,18 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>`;
   }
 
-  function priceHistoryHTML(inv) {
-    if (!inv.priceHistory || inv.priceHistory.length === 0) return '';
-    return `<details class="yield-history">
-      <summary>📉 Histórico de Cotação (${inv.priceHistory.length})</summary>
-      ${inv.priceHistory.length >= 1 ? `<div style="height:160px; margin-top:8px;"><canvas id="priceChart-${inv.id}"></canvas></div>` : ''}
-    </details>`;
+  /* P2.6 — UI de histórico de cotações removida; priceHistory/upsertPriceHistory permanecem para cálculos */
+  function priceHistoryHTML(_inv) {
+    return '';
   }
 
   let priceChartInstances = {};
 
   function renderPriceCharts() {
-    if (typeof Chart === 'undefined') return;
-    investments.forEach(inv => {
-      const canvas = document.getElementById('priceChart-' + inv.id);
-      if (!canvas || !inv.priceHistory || inv.priceHistory.length === 0) return;
-      if (priceChartInstances[inv.id]) priceChartInstances[inv.id].destroy();
-      const isDark = document.body.classList.contains('dark-mode');
-      const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
-
-      // Keep only the latest quote recorded for each date, avoiding repeated points.
-      const byDate = new Map();
-      [...inv.priceHistory]
-        .sort((a, b) => (a.date || '').localeCompare(b.date || ''))
-        .forEach(p => byDate.set(p.date, p));
-      const sorted = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
-
-      priceChartInstances[inv.id] = new Chart(canvas, {
-        type: 'line',
-        data: {
-          labels: sorted.map(p => p.date.split('-').reverse().join('/')),
-          datasets: [{
-            data: sorted.map(p => p.price),
-            borderColor: '#2F6F4F',
-            backgroundColor: 'rgba(47,111,79,0.15)',
-            fill: true,
-            tension: 0.25,
-            pointRadius: 3,
-            pointHoverRadius: 5
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: ctx => fmt(ctx.parsed.y)
-              }
-            }
-          },
-          scales: {
-            x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } },
-            y: { ticks: { color: textColor, font: { size: 9 }, callback: v => compactMoney(v) }, grid: { color: 'rgba(128,128,128,0.15)' } }
-          }
-        }
-      });
+    // P2.6: gráficos de cotação não são mais exibidos na interface de Investimentos.
+    Object.keys(priceChartInstances).forEach(id => {
+      try { priceChartInstances[id]?.destroy?.(); } catch (err) {}
+      delete priceChartInstances[id];
     });
   }
 
@@ -4505,7 +4460,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ${inv.institution ? `<div class="units">${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</div>` : ''}
         ${inv.dueDate ? `<div class="units">Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</div>` : ''}
         ${rentabilityHTML('invest', inv.id, inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0))}
-        ${priceHistoryHTML(inv)}${yieldHistoryHTML('invest', inv.id)}
+        ${yieldHistoryHTML('invest', inv.id)}
         <div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',-1)" ${index===0?'disabled':''} aria-label="Mover investimento para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',1)" ${index===investments.length-1?'disabled':''} aria-label="Mover investimento para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações do investimento"></button><button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar investimento"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir investimento"></button></div>
       </div>`).join('');
     renderPriceCharts();
@@ -4986,7 +4941,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return { month, label: new Date(`${month}-01T00:00:00`).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''), income, expense, net: income - expense, patrimony: banksAt + pocketsAt + investmentsAt };
     });
   }
-  function formatMonthLabel(month) { return month.split('-').reverse().join('/'); }
+  /* formatMonthLabel canônica definida acima (mês por extenso); evita sobrescrita duplicada */
   function renderAdvancedDashboard() {
     const wrap = document.getElementById('advancedDashboard');
     const mini = document.getElementById('cashflowMiniSummary');
