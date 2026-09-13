@@ -1457,7 +1457,9 @@
     @keyframes mobile-panel-enter { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
     body{padding-bottom:calc(106px + env(safe-area-inset-bottom));}
     .nav-tabs{display:none;}
-    .mobile-bottom-nav { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); align-items:center; position:fixed; left:50%; bottom:max(14px,env(safe-area-inset-bottom)); transform:translateX(-50%); width:min(390px,calc(100% - 28px)); z-index:70; min-height:68px; padding:6px; background:color-mix(in srgb,var(--surface) 83%,transparent); border:1px solid color-mix(in srgb,var(--line) 84%,transparent); border-radius:999px; box-shadow:0 13px 30px rgba(20,35,28,.18),inset 0 1px 0 rgba(255,255,255,.48); backdrop-filter:blur(18px) saturate(1.22); -webkit-backdrop-filter:blur(18px) saturate(1.22); }
+    .mobile-bottom-nav { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); align-items:center; position:fixed; left:50%; bottom:max(14px,env(safe-area-inset-bottom)); transform:translateX(-50%); width:min(420px,calc(100% - 20px)); z-index:70; min-height:68px; padding:6px; background:color-mix(in srgb,var(--surface) 83%,transparent); border:1px solid color-mix(in srgb,var(--line) 84%,transparent); border-radius:999px; box-shadow:0 13px 30px rgba(20,35,28,.18),inset 0 1px 0 rgba(255,255,255,.48); backdrop-filter:blur(18px) saturate(1.22); -webkit-backdrop-filter:blur(18px) saturate(1.22); }
+    .mobile-bottom-nav .nav-transfer-glass { background:color-mix(in srgb,var(--accent) 14%,transparent); color:var(--accent); border-radius:999px; }
+    .mobile-bottom-nav .nav-transfer-glass .nav-icon { color:var(--accent); }
     .mobile-bottom-nav button { min-height:54px; min-width:0; padding:5px 3px; border:0; border-radius:999px; background:transparent; color:var(--ink-soft); font-family:'Plus Jakarta Sans',sans-serif; font-size:9px; font-weight:700; line-height:1.12; letter-spacing:-.01em; text-transform:none; display:grid; grid-template-rows:24px auto; justify-items:center; align-content:center; gap:3px; }
     .mobile-bottom-nav button .nav-icon { width:21px; height:21px; display:grid; place-items:center; color:var(--ink); }
     .mobile-bottom-nav button .nav-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
@@ -2855,6 +2857,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.querySelectorAll('.mobile-bottom-nav button').forEach((button) => {
     button.addEventListener('click', () => {
+      // Liquid Glass: atalho de transferência (não é aba)
+      if (button.dataset.action === 'transfer') {
+        document.getElementById('btnTransferencia')?.click();
+        return;
+      }
+      if (!button.dataset.destination) return;
       switchTab(button.dataset.destination);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -4039,7 +4047,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (featureSettings.reminders) {
       const key = billMonthKey(new Date());
-      recurringBills.filter(bill => billAppliesToMonth(bill, new Date().getFullYear(), new Date().getMonth()) && !billGeneratedForMonth(bill, key)).slice(0, 3).forEach(bill => {
+      recurringBills.filter(bill => billAppliesToMonth(bill, new Date().getFullYear(), new Date().getMonth()) && !billGeneratedForMonth(bill, key) && !billPaidForMonth(bill, key)).slice(0, 3).forEach(bill => {
         const status = billStatus(bill, key);
         alerts.push({ icon: status === 'Atrasado' ? '!' : '◷', title: `${status}: ${bill.name}`, detail: `Vencimento ${billDueDateForMonth(bill, new Date().getFullYear(), new Date().getMonth())} · ${fmt(bill.amount)}` });
       });
@@ -5741,12 +5749,51 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
   }
   function billGeneratedForMonth(bill, key){ return Array.isArray(bill.generatedMonths) && bill.generatedMonths.includes(key); }
+  function billPaidForMonth(bill, key){ return Array.isArray(bill.paidMonths) && bill.paidMonths.includes(key); }
+  // P2.4.1 — estados independentes: Lançado (livro-caixa) vs Pago — não lançado (só status)
   function billStatus(bill, key){
-    if (billGeneratedForMonth(bill,key)) return 'Lançado/Pago';
+    if (billGeneratedForMonth(bill, key)) return 'Lançado';
+    if (billPaidForMonth(bill, key)) return 'Pago — não lançado';
     const [year, month] = key.split('-').map(Number);
     const dueDate = billDueDateForMonth(bill, year, month - 1);
     return dueDate < todayISO() ? 'Atrasado' : 'Pendente';
   }
+  async function markBillPaid(id, monthKey) {
+    const bill = recurringBills.find(b => b.id === id);
+    if (!bill || billGeneratedForMonth(bill, monthKey)) return;
+    if (!Array.isArray(bill.paidMonths)) bill.paidMonths = [];
+    if (!bill.paidMonths.includes(monthKey)) bill.paidMonths.push(monthKey);
+    try {
+      await persistAll();
+      logInfo('Calendário', 'Marcar como pago', 'Sucesso', `${bill.name} marcado como pago sem lançamento (${monthKey}).`);
+    } catch (err) {
+      bill.paidMonths = bill.paidMonths.filter(k => k !== monthKey);
+      logSyncError('marcar conta como paga', err);
+      alert('Não foi possível salvar o status pago. Tente novamente.');
+    } finally {
+      renderBills();
+      renderNotifications();
+    }
+  }
+  async function unmarkBillPaid(id, monthKey) {
+    const bill = recurringBills.find(b => b.id === id);
+    if (!bill) return;
+    const previous = Array.isArray(bill.paidMonths) ? bill.paidMonths.slice() : [];
+    bill.paidMonths = previous.filter(k => k !== monthKey);
+    try {
+      await persistAll();
+      logInfo('Calendário', 'Desmarcar pago', 'Sucesso', `${bill.name}: status pago removido (${monthKey}).`);
+    } catch (err) {
+      bill.paidMonths = previous;
+      logSyncError('desmarcar conta paga', err);
+      alert('Não foi possível atualizar o status. Tente novamente.');
+    } finally {
+      renderBills();
+      renderNotifications();
+    }
+  }
+  window.markBillPaid = markBillPaid;
+  window.unmarkBillPaid = unmarkBillPaid;
   function populateBillForm(){
     const options = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
     document.getElementById('billBanco').innerHTML = `<option value="a-definir">A definir</option>${options}`;
@@ -5853,7 +5900,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function calendarBillRows() {
     const y=billViewDate.getFullYear(), m=billViewDate.getMonth(), key=billMonthKey(billViewDate);
-    return visibleBillsForCalendar().map(bill => ({ bill, dueDate: billDueDateForMonth(bill,y,m), status: billStatus(bill,key), launched: billGeneratedForMonth(bill,key), installmentLabel: billInstallmentLabel(bill,y,m), bank: bill.bank==='a-definir' ? 'A definir' : (banks.find(x=>x.id===bill.bank)?.name || 'Banco não informado') }));
+    return visibleBillsForCalendar().map(bill => {
+      const launched = billGeneratedForMonth(bill, key);
+      const paidOnly = !launched && billPaidForMonth(bill, key);
+      return {
+        bill,
+        dueDate: billDueDateForMonth(bill, y, m),
+        status: billStatus(bill, key),
+        launched,
+        paidOnly,
+        settled: launched || paidOnly,
+        installmentLabel: billInstallmentLabel(bill, y, m),
+        bank: bill.bank === 'a-definir' ? 'A definir' : (banks.find(x => x.id === bill.bank)?.name || 'Banco não informado')
+      };
+    });
   }
   function billShareText(bill) {
     const y=billViewDate.getFullYear(), m=billViewDate.getMonth();
@@ -5879,19 +5939,21 @@ VALOR: ${fmt(bill.amount)}
     document.getElementById('billMonthLabel').textContent=billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
     populateBillTitularFilter();
     const titularFilter = document.getElementById('billTitularFilter')?.value || '';
-    const rows=calendarBillRows(), active=rows.map(row=>row.bill), pending=rows.filter(row=>!row.launched), paidCount=active.length-pending.length;
+    const rows=calendarBillRows(), active=rows.map(row=>row.bill);
+    const unsettled=rows.filter(row=>!row.settled);
+    const settledCount=rows.filter(row=>row.settled).length;
     const allInvoiceRows=calendarInvoiceRows(y,m);
     const invoiceRows=titularFilter?allInvoiceRows.map(inv=>({...inv, breakdown:inv.breakdown.filter(b=>b.titular===titularFilter)})).filter(inv=>inv.breakdown.length):allInvoiceRows;
     const invoiceDisplayTotal=row=>titularFilter?row.breakdown.reduce((s,b)=>s+b.total,0):row.invoice.total;
     const total=active.reduce((sum,bill)=>sum+Number(bill.amount||0),0) + invoiceRows.reduce((sum,row)=>sum+invoiceDisplayTotal(row),0);
-    const overdue=pending.filter(row=>row.status==='Atrasado').length + invoiceRows.filter(row=>row.dueDate<today_ISO_safe()).length;
-    document.getElementById('billsSummary').innerHTML=`<div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pagas</span><span class="amount">${paidCount}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pending.length}</span></div><div class="balance-card"><span class="label">Atrasadas</span><span class="amount">${overdue}</span></div><div class="balance-card"><span class="label">Faturas de cartão</span><span class="amount">${invoiceRows.length}</span></div>`;
+    const overdue=unsettled.filter(row=>row.status==='Atrasado').length + invoiceRows.filter(row=>row.dueDate<today_ISO_safe()).length;
+    document.getElementById('billsSummary').innerHTML=`<div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pagas / Lançadas</span><span class="amount">${settledCount}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${unsettled.length}</span></div><div class="balance-card"><span class="label">Atrasadas</span><span class="amount">${overdue}</span></div><div class="balance-card"><span class="label">Faturas de cartão</span><span class="amount">${invoiceRows.length}</span></div>`;
     const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate(), names=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']; let html=names.map(n=>`<div class="bill-weekday">${n}</div>`).join('');
     for(let i=0;i<first;i++) html+=`<div class="bill-day muted"></div>`;
     const today=todayISO();
-    for(let d=1;d<=days;d++){ const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; const events=rows.filter(row=>row.bill.recurrenceType==='nao_recorrente'||row.bill.frequency==='once'?row.dueDate===date:billDueDayFromStart(row.bill)===d); const invEvents=invoiceRows.filter(row=>row.dueDate===date); html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(row=>`<button type="button" class="bill-event ${row.launched?'paid':''}" onclick="openBillShare('${row.bill.id}')" title="${escapeHTML(row.bill.name)}${row.installmentLabel?' · Parcela '+row.installmentLabel:''} · ${fmt(row.bill.amount)}">${escapeHTML(row.bill.name)}${row.installmentLabel?' '+row.installmentLabel:''} · ${fmt(row.bill.amount)}</button>`).join('')}${invEvents.map(row=>`<button type="button" class="bill-event card-invoice" onclick="toggleInvoiceDetail('${row.card.id}')" title="Fatura ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}">💳 ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}</button>`).join('')}</div>`; }
+    for(let d=1;d<=days;d++){ const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; const events=rows.filter(row=>row.bill.recurrenceType==='nao_recorrente'||row.bill.frequency==='once'?row.dueDate===date:billDueDayFromStart(row.bill)===d); const invEvents=invoiceRows.filter(row=>row.dueDate===date); html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(row=>`<button type="button" class="bill-event ${row.settled?'paid':''}" onclick="openBillShare('${row.bill.id}')" title="${escapeHTML(row.bill.name)}${row.installmentLabel?' · Parcela '+row.installmentLabel:''} · ${fmt(row.bill.amount)} · ${escapeHTML(row.status)}">${escapeHTML(row.bill.name)}${row.installmentLabel?' '+row.installmentLabel:''} · ${fmt(row.bill.amount)}</button>`).join('')}${invEvents.map(row=>`<button type="button" class="bill-event card-invoice" onclick="toggleInvoiceDetail('${row.card.id}')" title="Fatura ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}">💳 ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}</button>`).join('')}</div>`; }
     document.getElementById('billCalendar').innerHTML=html;
-    const billsHtml=rows.slice().sort((a,b)=>billDueDayFromStart(a.bill)-billDueDayFromStart(b.bill)).map(row=>{const b=row.bill; return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}${row.installmentLabel?` · Parcela ${row.installmentLabel}`:''}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente')} · Banco: ${escapeHTML(row.bank)} · ${fmt(b.amount)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${row.status==='Atrasado'?'overdue':''}">${row.status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button><button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join('');
+    const billsHtml=rows.slice().sort((a,b)=>billDueDayFromStart(a.bill)-billDueDayFromStart(b.bill)).map(row=>{const b=row.bill; const payBtn=row.launched?'':(row.paidOnly?`<button type="button" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`:`<button type="button" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`); return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}${row.installmentLabel?` · Parcela ${row.installmentLabel}`:''}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente')} · Banco: ${escapeHTML(row.bank)} · ${fmt(b.amount)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${row.status==='Atrasado'?'overdue':''}">${row.status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button>${payBtn}<button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join('');
     const invoicesHtml=invoiceRows.map(row=>{
       const dueLabel=row.dueDate.split('-').reverse().join('/');
       const displayTotal=invoiceDisplayTotal(row);
@@ -6603,7 +6665,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       endDate=`${endDateObj.getFullYear()}-${String(endDateObj.getMonth()+1).padStart(2,'0')}-${String(endDateObj.getDate()).padStart(2,'0')}`;
     }
     const titular=document.getElementById('billTitular').value.trim(); const record={name,titular,amount,bank:document.getElementById('billBanco').value,category:document.getElementById('billCategoria').value,startDate,endDate,active:document.getElementById('billAtiva').value==='1',desc:document.getElementById('billObs').value.trim(),frequency:recurrenceType==='nao_recorrente'?'once':'monthly',recurrenceType,installment:isInstallment,installmentTotal,installmentStart};
-    if(editingBillId){ const idx=recurringBills.findIndex(b=>b.id===editingBillId); if(idx>=0) recurringBills[idx]={...recurringBills[idx],...record}; } else recurringBills.push({id:'bill'+Date.now()+Math.random().toString(36).slice(2,7),createdAt:todayISO(),generatedMonths:[],...record});
+    if(editingBillId){ const idx=recurringBills.findIndex(b=>b.id===editingBillId); if(idx>=0) recurringBills[idx]={...recurringBills[idx],...record, paidMonths: Array.isArray(recurringBills[idx].paidMonths) ? recurringBills[idx].paidMonths : [], generatedMonths: Array.isArray(recurringBills[idx].generatedMonths) ? recurringBills[idx].generatedMonths : [] }; } else recurringBills.push({id:'bill'+Date.now()+Math.random().toString(36).slice(2,7),createdAt:todayISO(),generatedMonths:[],paidMonths:[],...record});
     await persistAll(); editingBillId=null; logInfo('Calendário','Salvar conta','Sucesso',`Conta ${name} salva como ${recurrenceType==='nao_recorrente'?'não recorrente':'recorrente'}.`); closeAllPanels(); renderBills();
   };
 
@@ -7886,6 +7948,7 @@ VALOR: ${fmt(pseudoBill.amount)}
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="9" rx="1.5"/><rect x="13" y="4" width="7" height="5" rx="1.5"/><rect x="13" y="11" width="7" height="9" rx="1.5"/><rect x="4" y="15" width="7" height="5" rx="1.5"/></svg></span><span>Visão geral</span></button>
   <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h10a3 3 0 0 1 3 3V19H8a3 3 0 0 0-3 3z"/><path d="M5 5.5v15.5M8 9h6M8 13h6"/></svg></span><span>Livro-Caixa</span></button>
+  <button type="button" data-action="transfer" class="nav-transfer-glass" aria-label="Transferência"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h13"/><path d="m15 5 3 3-3 3"/><path d="M19 16H6"/><path d="m9 13-3 3 3 3"/></svg></span><span>Transferir</span></button>
   <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14v9.5A2.5 2.5 0 0 1 16.5 21h-9A2.5 2.5 0 0 1 5 18.5z"/><path d="M8 9V6.8A2.8 2.8 0 0 1 10.8 4h2.4A2.8 2.8 0 0 1 16 6.8V9M9 15h6"/></svg></span><span>Caixinhas</span></button>
   <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span><span>Investimentos</span></button>
   <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></span><span>Perfil</span></button>
