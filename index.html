@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-08 (CLAUDE) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-11 (GPT) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -5104,7 +5104,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-08 (CLAUDE)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-11 (GPT)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
