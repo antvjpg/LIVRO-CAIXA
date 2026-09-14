@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-11 (GPT) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-12 (GPT) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2296,6 +2296,25 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
         <div>
           <label for="fValor">Valor (R$)</label>
           <input type="text" id="fValor" data-money="true" placeholder="R$ 0,00">
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 4px;">
+          <input
+            type="file"
+            id="receiptFile"
+            accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
+            hidden
+          >
+          <button
+            type="button"
+            id="btnReadReceipt"
+            style="width:100%;"
+          >
+            Ler comprovante com IA
+          </button>
+          <div
+            id="receiptFileStatus"
+            style="display:none; margin-top:8px; font-size:12px; opacity:.8;"
+          ></div>
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="fSalvar" style="width:100%">Salvar</button>
@@ -5104,7 +5123,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-11 (GPT)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-12 (GPT)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -6541,13 +6560,98 @@ VALOR: ${fmt(bill.amount)}
   document.getElementById('btnCopyBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { await navigator.clipboard.writeText(text); } catch (err) { const field=document.getElementById('billShareMessage'); field.focus(); field.select(); document.execCommand('copy'); } document.getElementById('billShareStatus').textContent='Mensagem copiada. Nenhum envio foi realizado.'; logInfo('Calendário','Copiar compartilhamento','Sucesso','Mensagem individual copiada para revisão do usuário.'); });
   document.getElementById('btnNativeBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { if (navigator.share) await navigator.share({title:'Lembrete de pagamento',text}); else { await navigator.clipboard.writeText(text); document.getElementById('billShareStatus').textContent='Compartilhamento nativo indisponível; mensagem copiada.'; } logInfo('Calendário','Compartilhar conta','Sucesso','Compartilhamento individual iniciado pelo usuário.'); } catch (err) { if (err?.name !== 'AbortError') document.getElementById('billShareStatus').textContent='Compartilhamento cancelado ou indisponível.'; } });
 
-  document.getElementById('btnNovo').onclick = () => {
+
+// P3.5.2 — Entrada de comprovante para leitura inteligente.
+// O arquivo permanece somente em memória nesta etapa.
+let receiptReaderState = null;
+
+const RECEIPT_MAX_SIZE = 15 * 1024 * 1024;
+const RECEIPT_ALLOWED_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'application/pdf'
+]);
+
+function clearReceiptReaderState() {
+  receiptReaderState = null;
+  const input = document.getElementById('receiptFile');
+  const status = document.getElementById('receiptFileStatus');
+
+  if (input) input.value = '';
+
+  if (status) {
+    status.textContent = '';
+    status.style.display = 'none';
+  }
+}
+
+function setReceiptFileStatus(message, isError = false) {
+  const status = document.getElementById('receiptFileStatus');
+  if (!status) return;
+
+  status.textContent = message;
+  status.style.display = message ? 'block' : 'none';
+  status.style.opacity = isError ? '1' : '.8';
+}
+
+document.getElementById('btnReadReceipt').onclick = () => {
+  document.getElementById('receiptFile')?.click();
+};
+
+document.getElementById('receiptFile').addEventListener('change', (ev) => {
+  const file = ev.target.files?.[0];
+  if (!file) return;
+
+  if (!RECEIPT_ALLOWED_TYPES.has(file.type)) {
+    clearReceiptReaderState();
+    setReceiptFileStatus(
+      'Formato não suportado. Use JPG, PNG, WEBP ou PDF.',
+      true
+    );
+    alert('Formato de comprovante não suportado. Use JPG, PNG, WEBP ou PDF.');
+    return;
+  }
+
+  if (file.size <= 0) {
+    clearReceiptReaderState();
+    setReceiptFileStatus('O arquivo está vazio.', true);
+    alert('O arquivo selecionado está vazio.');
+    return;
+  }
+
+  if (file.size > RECEIPT_MAX_SIZE) {
+    clearReceiptReaderState();
+    setReceiptFileStatus(
+      'Arquivo muito grande. O limite para comprovantes é de 15 MB.',
+      true
+    );
+    alert('O comprovante é muito grande. O limite é de 15 MB.');
+    return;
+  }
+
+  receiptReaderState = {
+    file,
+    name: file.name,
+    type: file.type,
+    size: file.size
+  };
+
+  const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+
+  setReceiptFileStatus(
+    `Comprovante selecionado: ${file.name} · ${sizeMB} MB. Pronto para análise.`
+  );
+});
+
+document.getElementById('btnNovo').onclick = () => {
     if (banks.length === 0) {
       alert('Cadastre pelo menos um banco antes de fazer lançamentos.');
       openModal('panelBanco');
       return;
     }
     editingEntryId = null;
+    clearReceiptReaderState();
     document.getElementById('panelNovoTitle').innerHTML = 'Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('fSalvar').textContent = 'Salvar';
     document.getElementById('fDesc').value = '';
