@@ -2239,6 +2239,19 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
             <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
           </div>
           <div id="diagnosticResults" class="diagnostic-results" aria-live="polite"></div>
+
+          <div class="diagnostic-summary-card" style="margin-top:10px;">
+            <div class="diagnostic-summary-head">
+              <span class="diagnostic-summary-icon" aria-hidden="true">✨</span>
+              <div>
+                <strong>Análise financeira com Gemini</strong>
+                <span id="geminiDiagnosticStatus">Análise baseada nos dados financeiros resumidos do aplicativo.</span>
+              </div>
+            </div>
+            <button type="button" id="btnGeminiDiagnostic" class="primary">Analisar com Gemini</button>
+          </div>
+
+          <div id="geminiDiagnosticResults" class="diagnostic-results" aria-live="polite"></div>
         </div>
       </div>
 
@@ -5194,6 +5207,176 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return issues;
   }
+  function buildGeminiFinancialSnapshot() {
+    const entriesSafe = Array.isArray(entries) ? entries : [];
+    const currentMonth = currentMonthYM();
+    const diagnosticIssues = runDiagnostics();
+
+    const totalIncome = entriesSafe
+      .filter(e => e.type === 'in')
+      .reduce((sum, e) => sum + Number(e.amount || 0), 0);
+
+    const totalExpense = entriesSafe
+      .filter(e => e.type === 'out')
+      .reduce((sum, e) => sum + Number(e.amount || 0), 0);
+
+    const categoryTotals = new Map();
+
+    entriesSafe
+      .filter(e => e.type === 'out')
+      .forEach(e => {
+        const categoryName =
+          categories.find(c => c.id === e.category)?.name || 'Sem categoria';
+
+        categoryTotals.set(
+          categoryName,
+          (categoryTotals.get(categoryName) || 0) + Number(e.amount || 0)
+        );
+      });
+
+    const expensesByCategory = [...categoryTotals.entries()]
+      .map(([category, amount]) => ({
+        category,
+        amount: Number(amount.toFixed(2))
+      }))
+      .sort((a, b) => b.amount - a.amount);
+
+    const monthlyFlow = [];
+    const monthsSeen = new Set();
+
+    entriesSafe.forEach(e => {
+      const month = String(e.date || '').slice(0, 7);
+      if (month) monthsSeen.add(month);
+    });
+
+    [...monthsSeen]
+      .sort()
+      .slice(-12)
+      .forEach(month => {
+        const monthEntries = entriesSafe.filter(
+          e => String(e.date || '').startsWith(month)
+        );
+
+        const income = monthEntries
+          .filter(e => e.type === 'in')
+          .reduce((sum, e) => sum + Number(e.amount || 0), 0);
+
+        const expense = monthEntries
+          .filter(e => e.type === 'out')
+          .reduce((sum, e) => sum + Number(e.amount || 0), 0);
+
+        monthlyFlow.push({
+          month,
+          income: Number(income.toFixed(2)),
+          expense: Number(expense.toFixed(2)),
+          net: Number((income - expense).toFixed(2)),
+          transactions: monthEntries.length
+        });
+      });
+
+    const patrimony = getPatrimonySummaryBlock();
+
+      const pocketSummary = pockets.map(pocket => ({
+    balance: Number(pocketCurrentBalance(pocket).toFixed(2))
+  }));
+
+  const investmentSummary = investments.map(inv => {
+    const crypto = isCryptoType(inv.type);
+    return {
+      type: String(inv.type || 'Não informado'),
+      value: Number(
+        (
+          inv.type === 'Renda Fixa'
+            ? fixedIncomeCurrentValue(inv)
+            : Number(inv.value || 0)
+        ).toFixed(2)
+      ),
+      units: crypto && inv.units != null
+        ? Number(cryptoCurrentUnits(inv))
+        : null
+    };
+  });
+
+  const budgetSummary = budgets.map(budget => {
+      const categoryName =
+        categories.find(c => c.id === budget.categoryId)?.name ||
+        'Sem categoria';
+
+      const spent = budgetSpent(budget.categoryId);
+
+      return {
+        category: categoryName,
+        limit: Number(budget.amount || 0),
+        spent: Number(spent.toFixed(2))
+      };
+    });
+
+    const goalSummary = goals.map((goal, index) => ({
+    label: `Meta ${index + 1}`,
+    target: Number(goal.targetAmount || 0),
+    current: Number(goal.currentAmount || 0),
+    deadline: goal.deadline || null
+  }));
+
+    const activeCards = cards.filter(card => card.active !== false);
+
+    return {
+      schemaVersion: 'P3.4',
+      generatedAt: new Date().toISOString(),
+      period: {
+        currentMonth,
+        monthsIncluded: monthlyFlow.length,
+        currentMonthComplete: (() => {
+          const today = todayISO();
+          const monthEnd = monthEndDate(currentMonth);
+          return today >= monthEnd;
+        })(),
+        latestEntryDate: entriesSafe
+          .map(e => String(e.date || ''))
+          .filter(Boolean)
+          .sort()
+          .pop() || null
+      },
+
+      cashFlow: {
+        totalIncome: Number(totalIncome.toFixed(2)),
+        totalExpense: Number(totalExpense.toFixed(2)),
+        net: Number((totalIncome - totalExpense).toFixed(2)),
+        transactionCount: entriesSafe.length,
+        expensesByCategory
+      },
+
+      monthlyFlow,
+
+      patrimony: {
+        banks: Number(patrimony.bankTotal.toFixed(2)),
+        pockets: Number(patrimony.pocketTotal.toFixed(2)),
+        investments: Number(patrimony.investTotal.toFixed(2)),
+        total: Number(patrimony.total.toFixed(2))
+      },
+
+      pockets: pocketSummary,
+      investments: investmentSummary,
+
+      cards: {
+        activeCount: activeCards.length,
+        purchaseCount: purchases.length,
+        invoiceLaunchCount: invoiceLaunches.length
+      },
+
+      budgets: budgetSummary,
+      goals: goalSummary,
+
+      structuralDiagnosis: {
+        issueCount: diagnosticIssues.length,
+        issues: diagnosticIssues.map(issue => ({
+        severity: issue.severity,
+        title: issue.title
+      }))
+      }
+    };
+  }
+
   function renderDiagnosticResults() {
     const issues = runDiagnostics();
     const icon = document.getElementById('diagnosticSummaryIcon');
@@ -5211,6 +5394,163 @@ document.addEventListener('DOMContentLoaded', () => {
     return issues;
   }
   document.getElementById('btnRunDiagnostic')?.addEventListener('click', renderDiagnosticResults);
+
+  async function runGeminiFinancialDiagnosis() {
+    const status = document.getElementById('geminiDiagnosticStatus');
+    const results = document.getElementById('geminiDiagnosticResults');
+    const button = document.getElementById('btnGeminiDiagnostic');
+
+    if (!results) return;
+
+    if (!window.firebaseAI?.model) {
+      if (status) status.textContent = 'Gemini indisponível no momento.';
+      results.innerHTML = `
+        <div class="diagnostic-item is-warning">
+          <span>⚠️</span>
+          <div>
+            <strong>IA não disponível</strong>
+            <span>A integração com o Firebase AI Logic não foi inicializada.</span>
+          </div>
+        </div>`;
+      return;
+    }
+
+    const previousText = button?.textContent || 'Analisar com Gemini';
+
+    try {
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Analisando...';
+      }
+
+      if (status) {
+        status.textContent = 'Preparando os dados financeiros para análise...';
+      }
+
+      results.innerHTML = `
+        <div class="diagnostic-item">
+          <span>✨</span>
+          <div>
+            <strong>Analisando sua situação financeira...</strong>
+            <span>O Gemini está interpretando os dados resumidos. Nenhum dado será alterado.</span>
+          </div>
+        </div>`;
+
+      const snapshot = buildGeminiFinancialSnapshot();
+
+      const prompt = `
+Você é um analista financeiro pessoal responsável por interpretar dados financeiros de forma clara, prudente e útil.
+
+Analise EXCLUSIVAMENTE o snapshot financeiro abaixo.
+
+OBJETIVOS:
+1. Identificar a situação geral do fluxo de caixa.
+2. Encontrar tendências relevantes de entradas, saídas e fluxo líquido.
+3. Identificar categorias de gastos que merecem atenção.
+4. Avaliar o uso dos orçamentos quando houver dados suficientes.
+5. Avaliar a evolução das metas.
+6. Considerar patrimônio, caixinhas e investimentos apenas como contexto.
+7. Considerar os problemas estruturais encontrados pelo diagnóstico determinístico.
+8. Sugerir ações práticas e realistas para melhorar a organização financeira.
+
+REGRAS IMPORTANTES:
+- Não altere nem proponha alterações automáticas nos dados do aplicativo.
+- Não invente valores que não estejam no snapshot.
+- Não trate ausência de dados como um problema confirmado.
+- Diferencie fatos observados de interpretações.
+- Verifique period.currentMonthComplete antes de tirar conclusões sobre o mês atual. Se for false, trate os valores desse mês como parciais e evite compará-los diretamente com meses completos sem deixar essa limitação explícita.
+- Use period.latestEntryDate para considerar até que data os lançamentos estão registrados.
+- Não conclua que uma tendência é estrutural quando houver poucos meses disponíveis. Indique a limitação quando a amostra for pequena.
+- Não dê recomendações de compra ou venda de investimentos específicos.
+- Não classifique automaticamente um tipo de investimento como inadequado apenas por ser mais volátil. Se houver concentração, exposição relevante ou risco aparente, descreva isso como ponto de atenção, deixando claro que é uma interpretação baseada nos dados disponíveis.
+- Não presuma que o usuário deva aumentar, reduzir ou abandonar uma classe de investimento sem evidência suficiente no snapshot.
+- Ao comentar investimentos, priorize diversificação, concentração, liquidez e relação com o patrimônio total quando esses aspectos puderem ser avaliados pelos dados.
+- Quando calcular ou citar percentuais, deixe explícito o denominador usado. Diferencie percentual dos investimentos, percentual do patrimônio total e percentual do fluxo de caixa.
+- Não apresente o percentual de uma categoria dentro dos investimentos como se fosse o percentual dessa categoria sobre o patrimônio total.
+- Ao avaliar concentração de investimentos, considere o percentual dentro do total investido e, quando relevante, também a participação no patrimônio total.
+- Não solicite dados pessoais.
+- Não mencione IDs internos, Firebase, tokens ou detalhes técnicos do aplicativo.
+- Seja objetivo e priorize os pontos mais importantes.
+- Valores monetários estão em reais (BRL).
+- A análise é informativa e não substitui orientação financeira profissional.
+
+FORMATO DA RESPOSTA:
+
+RESUMO
+Uma visão geral em 2 ou 3 frases.
+
+PONTOS POSITIVOS
+- Até 3 pontos positivos observados.
+
+PONTOS DE ATENÇÃO
+- Até 5 pontos de atenção, priorizados.
+
+TENDÊNCIAS
+- Até 4 tendências relevantes encontradas nos dados.
+
+RECOMENDAÇÕES
+- Até 5 ações práticas, começando pelas mais importantes.
+
+CONFIANÇA
+Informe se a análise tem confiança ALTA, MÉDIA ou BAIXA e explique brevemente caso existam limitações relevantes nos dados.
+
+SNAPSHOT:
+${JSON.stringify(snapshot)}
+`;
+
+      const response = await window.firebaseAI.model.generateContent(prompt);
+
+      const responseText =
+        typeof response?.response?.text === 'function'
+          ? response.response.text()
+          : typeof response?.text === 'function'
+            ? response.text()
+            : '';
+
+      if (!responseText) {
+        throw new Error('O Gemini não retornou uma resposta utilizável.');
+      }
+
+      if (status) {
+        status.textContent = 'Análise concluída. Nenhum dado financeiro foi alterado.';
+      }
+
+      results.innerHTML = `
+        <div class="diagnostic-item">
+          <span>✨</span>
+          <div style="width:100%;">
+            <strong>Diagnóstico financeiro</strong>
+            <span style="white-space:pre-wrap;">${escapeHTML(responseText)}</span>
+          </div>
+        </div>`;
+    } catch (error) {
+      console.error('[Livro-Caixa] Erro no diagnóstico Gemini:', error);
+
+      if (status) {
+        status.textContent = 'Não foi possível concluir a análise.';
+      }
+
+      results.innerHTML = `
+        <div class="diagnostic-item is-warning">
+          <span>⚠️</span>
+          <div>
+            <strong>Falha na análise</strong>
+            <span>O Gemini não conseguiu concluir a análise. Seus dados financeiros não foram alterados.</span>
+          </div>
+        </div>`;
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = previousText;
+      }
+    }
+  }
+
+  document.getElementById('btnGeminiDiagnostic')?.addEventListener(
+    'click',
+    runGeminiFinancialDiagnosis
+  );
+
 
   const inputFinancialCycleDay = document.getElementById('inputFinancialCycleDay');
   if (inputFinancialCycleDay) {
