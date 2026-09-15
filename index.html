@@ -8368,13 +8368,22 @@ function clearTransferReceiptReaderState() {
   }
 }
 
-function setTransferReceiptFileStatus(message, isError = false) {
+function setTransferReceiptFileStatus(message, isError = false, showRetry = false) {
   const status = document.getElementById('transferReceiptFileStatus');
   if (!status) return;
 
   status.textContent = message;
   status.style.display = message ? 'block' : 'none';
   status.style.opacity = isError ? '1' : '.8';
+
+  if (showRetry && transferReceiptReaderState?.file) {
+    const retry = document.createElement('button');
+    retry.type = 'button';
+    retry.textContent = 'Tentar novamente';
+    retry.style.marginLeft = '8px';
+    retry.onclick = () => runTransferReceiptAIAnalysis();
+    status.appendChild(retry);
+  }
 }
 
 document.getElementById('btnReadTransferReceipt').onclick = () => {
@@ -8558,10 +8567,37 @@ Regras:
 
     transferReceiptReaderState.aiStatus = 'error';
 
-    setTransferReceiptFileStatus(
-      error?.message || 'Não foi possível analisar o comprovante.',
-      true
-    );
+    const errorText = String(
+      error?.message || error?.status || error || ''
+    ).toLowerCase();
+
+    let userMessage =
+      'Não foi possível analisar o comprovante. Verifique o arquivo e tente novamente.';
+
+    if (
+      errorText.includes('429') ||
+      errorText.includes('quota') ||
+      errorText.includes('resource_exhausted')
+    ) {
+      userMessage =
+        'A IA atingiu o limite de uso temporariamente. Aguarde alguns segundos e tente novamente.';
+    } else if (
+      errorText.includes('500') ||
+      errorText.includes('high demand') ||
+      errorText.includes('internal')
+    ) {
+      userMessage =
+        'A IA está com alta demanda no momento. Aguarde alguns segundos e tente novamente.';
+    } else if (
+      errorText.includes('413') ||
+      errorText.includes('too large') ||
+      errorText.includes('payload')
+    ) {
+      userMessage =
+        'O comprovante é muito grande para análise. Escolha um arquivo menor.';
+    }
+
+    setTransferReceiptFileStatus(userMessage, true, true);
   } finally {
     if (button) {
       button.disabled = false;
