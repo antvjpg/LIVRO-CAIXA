@@ -84,11 +84,6 @@
     --shadow:rgba(0,0,0,0.34);
     --hover-soft:rgba(255,255,255,0.06);
   }
-  body.dark-mode[data-dark-theme="2"] {
-    --paper:#0D1117; --paper-2:#161B22; --surface:#161B22; --surface-raised:#1D252D; --surface-accent:#173E39;
-    --ink:#F0F6FC; --ink-soft:#8B949E; --green:#2DD4BF; --green-soft:#173E39; --line:#21262D; --gold:#2DD4BF;
-    --accent:#2DD4BF; --accent-to:#0D9488; --accent-ink:#04211C; --accent-muted:#183936; --header-from:#0D1117; --header-to:#12302E; --on-accent:#04211C;
-  }
   body.dark-mode[data-dark-theme="3"] {
     --paper:#141410; --paper-2:#1E1F17; --surface:#1E1F17; --surface-raised:#292A20; --surface-accent:#403126;
     --ink:#F5F1E6; --ink-soft:#A6A48F; --green:#D08860; --green-soft:#403126; --line:#33342A; --gold:#D08860;
@@ -111,8 +106,7 @@
   .dark-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
   .dark-theme-option{width:28px;min-width:28px;height:28px;min-height:28px;padding:0;border:2px solid transparent;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);}
   .dark-theme-option[data-theme="1"]{--swatch:#C9A86A;}
-  .dark-theme-option[data-theme="2"]{--swatch:linear-gradient(135deg,#2DD4BF,#0D9488);}
-  .dark-theme-option[data-theme="3"]{--swatch:#D08860;}
+    .dark-theme-option[data-theme="3"]{--swatch:#D08860;}
   .dark-theme-option[data-theme="4"]{--swatch:#22C55E;}
   .dark-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.24);}
   *{box-sizing:border-box;}
@@ -1610,7 +1604,7 @@
     display:grid;grid-template-columns:1fr;gap:10px;align-items:stretch;
   }
   #viewProfile .feature-lab-pin-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  #viewProfile .feature-budget-rows{max-height:none;display:grid;gap:8px;}
+  #viewProfile .feature-budget-rows{display:grid;gap:8px;max-height:min(280px,42vh);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-right:4px;}
   #viewProfile .feature-budget-row{
     display:grid;grid-template-columns:minmax(0,1fr) minmax(96px,120px);
     gap:10px;align-items:center;padding:12px 14px;
@@ -2138,7 +2132,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
     <span class="dark-theme-picker-label">Paleta escura</span>
     <button type="button" class="dark-theme-option" data-theme="1" aria-label="Verde e Dourado" aria-pressed="true" title="Verde + Dourado"></button>
-    <button type="button" class="dark-theme-option" data-theme="2" aria-label="Verde-azulado e Carvão" aria-pressed="false" title="Verde-azulado + Carvão"></button>
     <button type="button" class="dark-theme-option" data-theme="3" aria-label="Verde-oliva e Terracota" aria-pressed="false" title="Verde-oliva + Terracota"></button>
     <button type="button" class="dark-theme-option" data-theme="4" aria-label="Grafite neutro" aria-pressed="false" title="Grafite neutro"></button>
   </div>
@@ -3476,7 +3469,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const DARK_THEME_STORAGE_KEY = 'livro-caixa-dark-theme';
   const DARK_THEME_COLORS = {
     '1': '#0F1712',
-    '2': '#0D1117',
     '3': '#141410',
     '4': '#121212'
   };
@@ -3506,6 +3498,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function validDarkTheme(value) {
+    if (value === '2') return '1';
     return Object.prototype.hasOwnProperty.call(DARK_THEME_COLORS, value) ? value : '1';
   }
 
@@ -10194,8 +10187,8 @@ document.getElementById('tSalvar').onclick = async () => {
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="9" rx="1.5"/><rect x="13" y="4" width="7" height="5" rx="1.5"/><rect x="13" y="11" width="7" height="9" rx="1.5"/><rect x="4" y="15" width="7" height="5" rx="1.5"/></svg></span><span>Visão geral</span></button>
-  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h6.5a2 2 0 0 1 2 2V19.5H7A2 2 0 0 0 5 21.5z"/><path d="M13.5 4.5H19a2 2 0 0 1 2 2V19.5h-5.5a2 2 0 0 0-2 2"/><path d="M13.5 4.5v17"/><path d="M8 9h3M8 12.5h3"/></svg></span><span>Livro-Caixa</span></button>
   <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5 12 4l8 4.5v9.2L12 22l-8-4.3z"/><path d="M12 12.2 20 8.5M12 12.2v9.6M12 12.2 4 8.5"/><path d="M9 14.2h6"/></svg></span><span>Caixinhas</span></button>
+  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h6.5a2 2 0 0 1 2 2V19.5H7A2 2 0 0 0 5 21.5z"/><path d="M13.5 4.5H19a2 2 0 0 1 2 2V19.5h-5.5a2 2 0 0 0-2 2"/><path d="M13.5 4.5v17"/><path d="M8 9h3M8 12.5h3"/></svg></span><span>Livro-Caixa</span></button>
   <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span><span>Investimentos</span></button>
   <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></span><span>Perfil</span></button>
 </nav>
