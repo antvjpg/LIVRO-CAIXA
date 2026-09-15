@@ -6642,7 +6642,599 @@ document.getElementById('receiptFile').addEventListener('change', (ev) => {
   setReceiptFileStatus(
     `Comprovante selecionado: ${file.name} · ${sizeMB} MB. Pronto para análise.`
   );
+
+  runReceiptAIAnalysis();
 });
+
+
+// P3.5.3 — Envio multimodal do comprovante ao Gemini.
+// O Gemini interpreta o arquivo, mas não grava nenhum dado financeiro.
+let receiptAIResponseText = '';
+
+async function fileToReceiptGenerativePart(file) {
+  return await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      try {
+        const result = String(reader.result || '');
+        const base64Data = result.split(',')[1] || '';
+
+        if (!base64Data) {
+          reject(new Error('Não foi possível preparar o comprovante para análise.'));
+          return;
+        }
+
+        resolve({
+          inlineData: {
+            data: base64Data,
+            mimeType: file.type
+          }
+        });
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    reader.onerror = () => {
+      reject(reader.error || new Error('Não foi possível ler o arquivo do comprovante.'));
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
+function parseReceiptAIResult(responseText) {
+  const cleaned = String(responseText || '')
+    .trim()
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/\s*```$/i, '')
+    .trim();
+
+  let parsed;
+
+  try {
+    parsed = JSON.parse(cleaned);
+  } catch {
+    throw new Error('A IA retornou um resultado que não está em JSON válido.');
+  }
+
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new Error('A IA retornou uma estrutura de dados inválida.');
+  }
+
+  const allowedTypes = new Set([
+    'entrada',
+    'saida',
+    'transferencia',
+    'desconhecido'
+  ]);
+
+  const allowedConfidence = new Set([
+    'alta',
+    'media',
+    'baixa'
+  ]);
+
+  const data = parsed.data == null ? null : String(parsed.data).trim() || null;
+  const descricao =
+    parsed.descricao == null
+      ? null
+      : String(parsed.descricao).trim() || null;
+  const banco =
+    parsed.banco == null
+      ? null
+      : String(parsed.banco).trim() || null;
+  const observacoes =
+    parsed.observacoes == null
+      ? null
+      : String(parsed.observacoes).trim() || null;
+
+  const valor =
+    parsed.valor == null || parsed.valor === ''
+      ? null
+      : Number(parsed.valor);
+
+  if (valor !== null && !Number.isFinite(valor)) {
+    throw new Error('A IA retornou um valor financeiro inválido.');
+  }
+
+  const tipo = allowedTypes.has(parsed.tipo)
+    ? parsed.tipo
+    : 'desconhecido';
+
+  const confianca = allowedConfidence.has(parsed.confianca)
+    ? parsed.confianca
+    : 'baixa';
+
+  return {
+    data,
+    valor,
+    descricao,
+    banco,
+    tipo,
+    confianca,
+    observacoes
+  };
+}
+
+function normalizeReceiptAIData(aiData) {
+  if (!aiData || typeof aiData !== 'object' || Array.isArray(aiData)) {
+    throw new Error('Os dados do comprovante são inválidos.');
+  }
+
+  const normalizeText = (value) => {
+    if (value == null) return null;
+    const text = String(value).trim();
+    return text || null;
+  };
+
+  const normalizeDate = (value) => {
+    if (value == null || value === '') return null;
+
+    const text = String(value).trim();
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+      const [year, month, day] = text.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+
+      if (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day
+      ) {
+        return text;
+      }
+    }
+
+    const brMatch = text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+    if (brMatch) {
+      const [, day, month, year] = brMatch;
+      const iso = `${year}-${month}-${day}`;
+      return normalizeDate(iso);
+    }
+
+    return null;
+  };
+
+  const normalizeValue = (value) => {
+    if (value == null || value === '') return null;
+
+    if (typeof value === 'number') {
+      return Number.isFinite(value) && value >= 0 ? value : null;
+    }
+
+    let text = String(value).trim();
+
+    if (!text) return null;
+
+    text = text
+      .replace(/\s/g, '')
+      .replace(/R\$/gi, '');
+
+    if (text.includes(',') && text.includes('.')) {
+      text = text.replace(/\./g, '').replace(',', '.');
+    } else if (text.includes(',')) {
+      text = text.replace(',', '.');
+    }
+
+    const number = Number(text);
+
+    return Number.isFinite(number) && number >= 0 ? number : null;
+  };
+
+  const allowedTypes = new Set([
+    'entrada',
+    'saida',
+    'transferencia',
+    'desconhecido'
+  ]);
+
+  const allowedConfidence = new Set([
+    'alta',
+    'media',
+    'baixa'
+  ]);
+
+  const data = normalizeDate(aiData.data);
+  const valor = normalizeValue(aiData.valor);
+  const descricao = normalizeText(aiData.descricao);
+  const banco = normalizeText(aiData.banco);
+  const observacoes = normalizeText(aiData.observacoes);
+
+  const tipo = allowedTypes.has(aiData.tipo)
+    ? aiData.tipo
+    : 'desconhecido';
+
+  const confianca = allowedConfidence.has(aiData.confianca)
+    ? aiData.confianca
+    : 'baixa';
+
+  const missingFields = [];
+
+  if (!data) missingFields.push('data');
+  if (valor === null) missingFields.push('valor');
+  if (!descricao) missingFields.push('descricao');
+  if (!banco) missingFields.push('banco');
+
+  const warnings = [];
+
+  if (!data && aiData.data != null) {
+    warnings.push('A data identificada não pôde ser validada.');
+  }
+
+  if (valor === null && aiData.valor != null) {
+    warnings.push('O valor identificado não pôde ser validado.');
+  }
+
+  if (tipo === 'desconhecido') {
+    warnings.push('O tipo da operação não foi identificado com segurança.');
+  }
+
+  if (confianca === 'baixa') {
+    warnings.push('A leitura do comprovante possui baixa confiança.');
+  }
+
+  return {
+    data,
+    valor,
+    descricao,
+    banco,
+    tipo,
+    confianca,
+    observacoes,
+    missingFields,
+    warnings,
+    isValid: missingFields.length === 0
+  };
+}
+
+
+// P3.5.6 — Correspondência do banco identificado pela IA com uma conta local.
+// Esta função somente identifica um banco existente; não cria nem altera registros.
+function matchReceiptBank(rawBank) {
+  const raw = String(rawBank || '').trim();
+
+  if (!raw) {
+    return {
+      raw: '',
+      id: '',
+      name: '',
+      confidence: 0
+    };
+  }
+
+  const match = findImportMatch(raw, banks);
+
+  return {
+    raw,
+    id: match?.id || '',
+    name: match?.name || '',
+    confidence: Number(match?.confidence || 0)
+  };
+}
+
+
+function classifyReceiptBankMatch(bankMatch) {
+  if (!bankMatch || !bankMatch.id) {
+    return {
+      status: 'not_found',
+      label: 'Banco não encontrado',
+      canSuggest: false,
+      requiresConfirmation: true
+    };
+  }
+
+  if (bankMatch.confidence >= 1) {
+    return {
+      status: 'exact',
+      label: 'Correspondência exata',
+      canSuggest: true,
+      requiresConfirmation: false
+    };
+  }
+
+  if (bankMatch.confidence >= 0.7) {
+    return {
+      status: 'partial',
+      label: 'Correspondência parcial',
+      canSuggest: true,
+      requiresConfirmation: true
+    };
+  }
+
+  return {
+    status: 'uncertain',
+    label: 'Correspondência incerta',
+    canSuggest: false,
+    requiresConfirmation: true
+  };
+}
+
+
+function findReceiptDuplicate(normalizedData, bankMatch) {
+  if (!normalizedData || !bankMatch?.id) {
+    return {
+      found: false,
+      entry: null
+    };
+  }
+
+  const typeMap = {
+    entrada: 'in',
+    saida: 'out'
+  };
+
+  const type = typeMap[normalizedData.tipo];
+
+  if (!type || !normalizedData.data || normalizedData.valor === null) {
+    return {
+      found: false,
+      entry: null
+    };
+  }
+
+  const description = String(normalizedData.descricao || '').trim();
+
+  if (!description) {
+    return {
+      found: false,
+      entry: null
+    };
+  }
+
+  const possibleDuplicate = entries.find(entry =>
+    entry.date === normalizedData.data &&
+    entry.bank === bankMatch.id &&
+    entry.type === type &&
+    Math.abs(Number(entry.amount) - Number(normalizedData.valor)) < 0.005 &&
+    String(entry.desc || '').trim().toLocaleLowerCase('pt-BR') ===
+      description.toLocaleLowerCase('pt-BR')
+  );
+
+  return {
+    found: Boolean(possibleDuplicate),
+    entry: possibleDuplicate || null
+  };
+}
+
+function applyReceiptToLaunchForm() {
+  const data = receiptReaderState?.normalizedData;
+
+  if (!data) {
+    setReceiptFileStatus(
+      'Não há dados normalizados do comprovante para preencher o lançamento.',
+      true
+    );
+    return false;
+  }
+
+  const dateInput = document.getElementById('fData');
+  const descInput = document.getElementById('fDesc');
+  const bankSelect = document.getElementById('fBanco');
+  const categorySelect = document.getElementById('fCategoria');
+
+  if (dateInput) {
+    dateInput.value = data.data || '';
+  }
+
+  if (descInput) {
+    descInput.value = data.descricao || '';
+  }
+
+  if (data.valor !== null) {
+    setMoneyInput('fValor', data.valor);
+  } else {
+    setMoneyInput('fValor', '');
+  }
+
+  if (bankSelect) {
+    const bankMatch = receiptReaderState?.bankMatch;
+
+    if (bankMatch?.id && banks.some(bank => bank.id === bankMatch.id)) {
+      bankSelect.value = bankMatch.id;
+    } else {
+      bankSelect.value = '';
+    }
+  }
+
+  if (categorySelect) {
+    const suggestedCategoryId =
+      data.descricao
+        ? suggestCategoryForDescription(data.descricao)
+        : '';
+
+    if (
+      suggestedCategoryId &&
+      categories.some(category => category.id === suggestedCategoryId)
+    ) {
+      categorySelect.value = suggestedCategoryId;
+    } else {
+      categorySelect.value = '';
+    }
+  }
+
+  if (data.tipo === 'entrada') {
+    document.getElementById('tglIn')?.click();
+  } else if (data.tipo === 'saida') {
+    document.getElementById('tglOut')?.click();
+  }
+
+  const warnings = [...(data.warnings || [])];
+
+  if (receiptReaderState?.bankMatchStatus?.status === 'not_found') {
+    warnings.push('O banco identificado pela IA não foi encontrado nas contas cadastradas.');
+  } else if (receiptReaderState?.bankMatchStatus?.status === 'partial') {
+    warnings.push('O banco foi encontrado por correspondência parcial. Revise antes de salvar.');
+  }
+
+  if (receiptReaderState?.duplicate?.found) {
+    warnings.push('Foi encontrado um lançamento possivelmente duplicado. Revise antes de salvar.');
+  }
+
+  const warningText = warnings.length
+    ? ` · Atenção: ${warnings.join(' ')}`
+    : '';
+
+  setReceiptFileStatus(
+    `Comprovante aplicado ao formulário. Revise os dados antes de salvar.${warningText}`,
+    warnings.length > 0
+  );
+
+  return true;
+}
+
+async function runReceiptAIAnalysis() {
+  const button = document.getElementById('btnReadReceipt');
+
+  if (!receiptReaderState?.file) {
+    setReceiptFileStatus('Selecione um comprovante antes de iniciar a leitura.', true);
+    return;
+  }
+
+  if (!window.firebaseAI?.model) {
+    setReceiptFileStatus(
+      'A inteligência artificial ainda não está disponível. Tente novamente.',
+      true
+    );
+    alert('A IA do Livro-Caixa não está disponível no momento.');
+    return;
+  }
+
+  const file = receiptReaderState.file;
+
+  if (file.type.startsWith('image/') && file.size > 7 * 1024 * 1024) {
+    setReceiptFileStatus(
+      'Imagem muito grande para leitura multimodal. Use uma imagem de até 7 MB.',
+      true
+    );
+    alert('Para imagens, use um arquivo de até 7 MB.');
+    return;
+  }
+
+  const originalButtonText = button?.textContent || 'Ler comprovante com IA';
+
+  try {
+    receiptAIResponseText = '';
+
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Lendo comprovante…';
+    }
+
+    setReceiptFileStatus(
+      `Enviando ${file.name} para análise inteligente…`
+    );
+
+    const filePart = await fileToReceiptGenerativePart(file);
+
+    const prompt = `
+Analise o comprovante financeiro anexado.
+
+Nesta etapa, faça somente a leitura e interpretação do documento.
+NÃO grave, altere ou execute nenhum lançamento financeiro.
+NÃO invente informações ausentes.
+NÃO presuma dados que não estejam visíveis no comprovante.
+Quando um campo não puder ser identificado com segurança, use null.
+
+Retorne SOMENTE um objeto JSON válido, sem markdown, sem blocos de código e sem texto antes ou depois.
+
+Use exatamente esta estrutura:
+
+{
+  "data": null,
+  "valor": null,
+  "descricao": null,
+  "banco": null,
+  "tipo": null,
+  "confianca": null,
+  "observacoes": null
+}
+
+Regras:
+- "data": data da operação no formato YYYY-MM-DD, quando identificável.
+- "valor": valor numérico da operação, sem símbolo de moeda, quando identificável.
+- "descricao": estabelecimento, pessoa ou descrição principal do comprovante.
+- "banco": banco ou instituição identificada no documento.
+- "tipo": use somente "entrada", "saida", "transferencia" ou "desconhecido".
+- "confianca": use somente "alta", "media" ou "baixa".
+- "observacoes": informações relevantes que não caibam nos demais campos.
+- Se houver dúvida relevante sobre qualquer campo, prefira null.
+- Não transforme a interpretação em um lançamento financeiro.
+- Não execute nenhuma ação no aplicativo.
+`;
+
+    const response = await window.firebaseAI.model.generateContent({
+      contents: [{
+        role: 'user',
+        parts: [
+          { text: prompt },
+          filePart
+        ]
+      }]
+    });
+
+    const responseText =
+      typeof response?.response?.text === 'function'
+        ? response.response.text()
+        : typeof response?.text === 'function'
+          ? response.text()
+          : '';
+
+    if (!responseText) {
+      throw new Error('O Gemini não retornou uma resposta utilizável.');
+    }
+
+    const receiptAIData = parseReceiptAIResult(responseText);
+    const normalizedReceiptData = normalizeReceiptAIData(receiptAIData);
+    const matchedReceiptBank = matchReceiptBank(normalizedReceiptData.banco);
+    const receiptBankMatch = classifyReceiptBankMatch(matchedReceiptBank);
+    const receiptDuplicate = findReceiptDuplicate(
+      normalizedReceiptData,
+      matchedReceiptBank
+    );
+
+    receiptAIResponseText = responseText;
+
+    if (receiptReaderState) {
+      receiptReaderState.aiText = responseText;
+      receiptReaderState.aiData = receiptAIData;
+      receiptReaderState.normalizedData = normalizedReceiptData;
+      receiptReaderState.bankMatch = matchedReceiptBank;
+      receiptReaderState.bankMatchStatus = receiptBankMatch;
+      receiptReaderState.duplicate = receiptDuplicate;
+      receiptReaderState.aiStatus = 'completed';
+    }
+
+    if (applyReceiptToLaunchForm()) {
+      openModal('panelNovo');
+    }
+
+
+
+  } catch (error) {
+    receiptAIResponseText = '';
+
+    if (receiptReaderState) {
+      receiptReaderState.aiText = '';
+      receiptReaderState.aiStatus = 'error';
+    }
+
+    console.error('P3.5.3 — Erro na leitura inteligente do comprovante:', error);
+
+    setReceiptFileStatus(
+      `Não foi possível ler o comprovante: ${error?.message || 'erro desconhecido'}`,
+      true
+    );
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = originalButtonText;
+    }
+  }
+}
 
 document.getElementById('btnNovo').onclick = () => {
     if (banks.length === 0) {
