@@ -1878,10 +1878,10 @@
   .profile-avatar svg{display:block;width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
   .beta-icon-button{display:inline-grid;place-items:center;min-width:34px;min-height:34px;line-height:1;vertical-align:middle;}
   .mobile-bottom-nav::before{content:"";position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/5);border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),0 5px 13px color-mix(in srgb,var(--accent) 10%,transparent);transform:translateX(0%);transition:transform 220ms var(--v1616-ease),background-color 220ms ease,box-shadow 220ms ease;pointer-events:none;}
-  .mobile-bottom-nav[data-active="caixa"]::before{transform:translateX(100%);}
-  .mobile-bottom-nav[data-active="pockets"]::before{transform:translateX(200%);}
-  .mobile-bottom-nav[data-active="invest"]::before{transform:translateX(300%);}
-  .mobile-bottom-nav[data-active="profile"]::before{transform:translateX(400%);}
+  .mobile-bottom-nav[data-active="caixa"]::before{transform:translateX(var(--nav-indicator-x,0%));}
+  .mobile-bottom-nav[data-active="pockets"]::before{transform:translateX(var(--nav-indicator-x,0%));}
+  .mobile-bottom-nav[data-active="invest"]::before{transform:translateX(var(--nav-indicator-x,0%));}
+  .mobile-bottom-nav[data-active="profile"]::before{transform:translateX(var(--nav-indicator-x,0%));}
   .mobile-bottom-nav button{position:relative;z-index:1;background:transparent!important;transition:color 220ms ease,transform 160ms var(--v1616-ease);}
   .mobile-bottom-nav button.is-active{background:transparent!important;box-shadow:none!important;}
   .mobile-bottom-nav button:active{transform:scale(.94);}
