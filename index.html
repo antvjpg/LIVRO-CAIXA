@@ -170,7 +170,6 @@
   body.balances-hidden .cat-row .cat-amt::after,
   body.balances-hidden .manage-item-value::after,
   body.balances-hidden .export-preview-row b::after{justify-content: flex-end;}
-  #btnToggleBalances{font-size:18px;line-height:1;}
   /* P2.4.3 — prévia do extrato (formato original + blocos extra) */
   .export-preview{max-height:280px;overflow:auto;margin-top:12px;padding-right:2px;min-width:0;}
   .export-preview-bank{margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);min-width:0;}
@@ -1236,9 +1235,8 @@
     .app-header-actions { position:absolute; top:33px; right:18px; z-index:3; display:flex; flex-direction:column; align-items:center; gap:10px; }
     #userBar { display:none; }
     #btnOpenDrawer{position:absolute;top:33px;left:18px;z-index:3;}
-    #btnOpenDrawer,#btnNotifications,#btnToggleBalances,#btnThemeToggle,#btnInstallPWA { width:44px; min-width:44px; height:44px; min-height:44px; padding:0!important; border:1px solid rgba(248,247,242,.48); color:#FFFFFF; background:rgba(9,30,21,.42); border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,.12); text-shadow:0 1px 2px rgba(0,0,0,.24); }
+    #btnOpenDrawer,#btnNotifications,#btnThemeToggle,#btnInstallPWA { width:44px; min-width:44px; height:44px; min-height:44px; padding:0!important; border:1px solid rgba(248,247,242,.48); color:#FFFFFF; background:rgba(9,30,21,.42); border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,.12); text-shadow:0 1px 2px rgba(0,0,0,.24); }
     #btnNotifications{font-size:17px;}
-    #btnToggleBalances{font-size:18px;}
     #btnOpenDrawer{font-size:23px;}
     #btnNotifications .notification-badge{box-shadow:0 0 0 2px #18362A;}
     #btnInstallPWA { position:absolute; top:106px; right:0; width:auto; min-width:auto; height:34px; min-height:34px; padding:0 11px!important; font-size:9px!important; }
@@ -1468,6 +1466,191 @@
     @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.mobile-bottom-nav{background:var(--surface);}.mobile-bottom-nav{box-shadow:0 13px 30px rgba(20,35,28,.22);}.dark-mode .mobile-bottom-nav{background:var(--paper);}}
     .profile-shell{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:19px 16px;}.profile-heading{display:flex;align-items:center;gap:13px;padding-bottom:17px;border-bottom:1px solid var(--line);}.profile-avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--action-border);color:var(--accent);}.profile-avatar svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-heading h2{font-size:22px;line-height:1.1;color:var(--ink);}.profile-heading p{margin-top:4px;max-width:215px;color:var(--ink-soft);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.profile-intro{margin:16px 0;color:var(--ink-soft);font-size:12px;line-height:1.5;}.profile-group{margin-top:18px;}.profile-group-title{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;padding-left:2px;}.profile-list{display:grid;gap:12px;}.profile-item{display:flex;align-items:center;gap:12px;min-height:59px;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--paper);}.profile-item.is-danger{border-color:color-mix(in srgb,var(--red,#B3432B) 35%,var(--line));}.profile-item.is-danger .profile-item-icon{background:color-mix(in srgb,var(--red,#B3432B) 14%,var(--paper));color:var(--red,#B3432B);border-color:color-mix(in srgb,var(--red,#B3432B) 30%,transparent);}.profile-item.is-danger .profile-item-copy strong{color:var(--red,#B3432B);}.profile-item-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--green-soft);color:var(--accent);border:1px solid var(--action-border);}.profile-item-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-item-copy{flex:1;min-width:0;}.profile-item-copy strong{display:block;color:var(--ink);font-size:12px;}.profile-item-copy span{display:block;margin-top:3px;color:var(--ink-soft);font-size:10px;}.profile-item-arrow{color:var(--ink-soft);font-size:16px;}.profile-roadmap{margin-top:14px;padding:11px 12px;border-radius:13px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--ink-soft);font-size:10px;line-height:1.4;}.profile-roadmap b{color:var(--accent);}.diagnostic-summary-card{padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--paper);display:flex;flex-direction:column;gap:10px;}.diagnostic-summary-head{display:flex;align-items:center;gap:12px;}.diagnostic-summary-icon{font-size:22px;width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--green-soft);flex:0 0 auto;}.diagnostic-summary-head strong{display:block;color:var(--ink);font-size:12px;}.diagnostic-summary-head span{display:block;margin-top:2px;color:var(--ink-soft);font-size:10px;}.diagnostic-results{display:flex;flex-direction:column;gap:8px;}.diagnostic-item{display:flex;gap:10px;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:11px;}.diagnostic-item.is-warning{border-color:color-mix(in srgb,var(--gold) 40%,var(--line));background:color-mix(in srgb,var(--gold) 8%,var(--paper));}.diagnostic-item.is-ok{border-color:color-mix(in srgb,var(--green) 35%,var(--line));background:color-mix(in srgb,var(--green) 8%,var(--paper));}.diagnostic-item strong{display:block;color:var(--ink);}.diagnostic-item span{display:block;margin-top:2px;color:var(--ink-soft);}
     body.dark-mode .profile-shell{background:var(--surface);border-color:var(--line);}body.dark-mode .profile-item{background:var(--paper);border-color:var(--line);}body.dark-mode .profile-avatar,body.dark-mode .profile-item-icon{background:color-mix(in srgb,var(--accent) 14%,var(--surface));border-color:color-mix(in srgb,var(--accent) 26%,transparent);}
+
+  /* V.19-13 — Perfil estilo painel de configurações (claro/escuro/temas) */
+  #viewProfile .profile-shell{
+    background:transparent;
+    border:0;
+    border-radius:0;
+    padding:4px 0 28px;
+    max-width:480px;
+    margin:0 auto;
+  }
+  #viewProfile .profile-heading{
+    padding:8px 4px 18px;
+    border-bottom:0;
+    gap:14px;
+  }
+  #viewProfile .profile-avatar{
+    width:52px;height:52px;border-radius:16px;
+    background:color-mix(in srgb,var(--accent) 14%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));
+    color:var(--accent);
+    flex-shrink:0;
+  }
+  #viewProfile .profile-group{margin-top:22px;}
+  #viewProfile .profile-group-title{
+    font-size:10px;font-weight:800;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-soft);
+    margin:0 4px 10px;
+  }
+  #viewProfile .profile-list{display:grid;gap:10px;}
+  #viewProfile .profile-item{
+    display:flex;align-items:center;gap:14px;
+    min-height:64px;padding:14px 16px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:var(--surface);
+    box-shadow:0 1px 0 color-mix(in srgb,var(--ink) 4%,transparent);
+  }
+  #viewProfile .profile-item[role="button"],
+  #viewProfile .profile-item[tabindex]{cursor:pointer;}
+  #viewProfile .profile-item-icon{
+    width:40px;height:40px;min-width:40px;
+    border-radius:12px;
+    display:grid;place-items:center;
+    background:color-mix(in srgb,var(--accent) 12%,var(--paper));
+    color:var(--accent);
+    border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));
+    flex-shrink:0;
+  }
+  #viewProfile .profile-item-icon svg{
+    width:20px;height:20px;display:block;
+    fill:none;stroke:currentColor;stroke-width:1.85;
+    stroke-linecap:round;stroke-linejoin:round;
+  }
+  #viewProfile .profile-item-copy{flex:1;min-width:0;}
+  #viewProfile .profile-item-copy strong{
+    display:block;font-size:13px;font-weight:700;color:var(--ink);line-height:1.25;
+  }
+  #viewProfile .profile-item-copy span,
+  #viewProfile .profile-item-copy small{
+    display:block;margin-top:4px;font-size:11px;line-height:1.4;color:var(--ink-soft);
+  }
+  #viewProfile .profile-item-arrow{color:var(--ink-soft);font-size:18px;flex-shrink:0;opacity:.7;}
+  #viewProfile .profile-item input[type="number"],
+  #viewProfile .profile-item input[type="text"],
+  #viewProfile .profile-item input[type="password"]{
+    flex-shrink:0;width:64px;text-align:center;
+    padding:10px 8px;border-radius:12px;
+    border:1px solid var(--line);
+    background:var(--paper);color:var(--ink);
+  }
+  #viewProfile .feature-lab-toggle{
+    gap:14px!important;padding:14px 16px!important;
+    border-radius:18px!important;background:var(--surface)!important;
+    border:1px solid var(--line)!important;
+    min-height:64px;
+  }
+  #viewProfile .feature-lab-toggle:has(input:checked){
+    border-color:color-mix(in srgb,var(--accent) 45%,var(--line))!important;
+    background:color-mix(in srgb,var(--accent) 10%,var(--surface))!important;
+  }
+  #viewProfile .feature-lab-switch{
+    width:44px;height:26px;border-radius:999px;background:var(--line);flex:0 0 auto;
+  }
+  #viewProfile .feature-lab-switch:after{
+    top:3px;left:3px;width:20px;height:20px;
+  }
+  #viewProfile .feature-lab-toggle:has(input:checked) .feature-lab-switch{background:var(--accent);}
+  #viewProfile .feature-lab-toggle:has(input:checked) .feature-lab-switch:after{left:21px;}
+  #viewProfile .feature-lab-section{
+    margin:12px 0 0;padding:16px;
+    border-radius:18px;border:1px solid var(--line);
+    background:var(--surface);
+  }
+  #viewProfile .feature-lab-section-head:not([hidden]) h4{
+    margin:0;font-size:12px;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-soft);
+  }
+  #viewProfile .feature-lab-section-head[hidden]{display:none!important;}
+  #viewProfile .feature-lab-section-tag{display:none;}
+  #viewProfile .feature-lab-section-desc{
+    margin:0 0 14px;font-size:11px;line-height:1.45;color:var(--ink-soft);
+  }
+  #viewProfile .feature-lab-fields{
+    display:grid;grid-template-columns:1fr;gap:10px;
+  }
+  @media(min-width:480px){
+    #viewProfile .feature-lab-fields{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  #viewProfile .feature-lab-fields label,
+  #viewProfile .feature-lab-pin-row label{
+    display:block;margin-bottom:6px;
+    font-size:10px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-soft);
+  }
+  #viewProfile .feature-lab-fields input,
+  #viewProfile .feature-lab-fields select,
+  #viewProfile .feature-lab-pin-row input,
+  #viewProfile .feature-lab-input-suffix input{
+    width:100%;min-height:44px;padding:12px 14px;
+    border-radius:14px;border:1px solid var(--line);
+    background:var(--paper);color:var(--ink);font-size:13px;
+  }
+  #viewProfile .feature-lab-actions{
+    display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px;
+  }
+  #viewProfile .feature-lab-actions button,
+  #viewProfile .feature-lab-pin-actions button,
+  #viewProfile .diagnostic-summary-card > button{
+    width:100%;min-height:46px;border-radius:14px;
+    border:1px solid var(--line);background:var(--paper);
+    color:var(--ink);font-weight:650;font-size:12px;
+    letter-spacing:.02em;
+  }
+  #viewProfile .feature-lab-actions button.primary,
+  #viewProfile .feature-lab-pin-actions button.primary,
+  #viewProfile .diagnostic-summary-card > button.primary{
+    background:color-mix(in srgb,var(--accent) 16%,var(--surface));
+    border-color:color-mix(in srgb,var(--accent) 40%,var(--line));
+    color:var(--accent);
+  }
+  #viewProfile .feature-lab-pin-row{
+    display:grid;grid-template-columns:1fr;gap:10px;align-items:stretch;
+  }
+  #viewProfile .feature-lab-pin-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  #viewProfile .feature-budget-rows{max-height:none;display:grid;gap:8px;}
+  #viewProfile .feature-budget-row{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(96px,120px);
+    gap:10px;align-items:center;padding:12px 14px;
+    border:1px solid var(--line);border-radius:14px;background:var(--paper);
+  }
+  #viewProfile .feature-budget-row label{font-size:11px;font-weight:700;color:var(--ink);text-transform:none;letter-spacing:0;}
+  #viewProfile .feature-budget-row span{font-size:10px;color:var(--ink-soft);}
+  #viewProfile .feature-budget-row input{
+    min-height:40px;border-radius:12px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink);text-align:right;padding:8px 10px;
+  }
+  #viewProfile .diagnostic-summary-card{
+    padding:14px 16px;border-radius:18px;border:1px solid var(--line);
+    background:var(--surface);gap:12px;
+  }
+  #viewProfile .diagnostic-summary-icon{
+    width:40px;height:40px;border-radius:12px;flex-shrink:0;
+    background:color-mix(in srgb,var(--accent) 12%,var(--paper));
+    color:var(--accent);display:grid;place-items:center;font-size:18px;
+  }
+  #viewProfile .profile-roadmap{
+    margin-top:18px;padding:14px 16px;border-radius:16px;
+    background:color-mix(in srgb,var(--accent) 10%,var(--surface));
+    border:1px solid color-mix(in srgb,var(--accent) 18%,var(--line));
+    color:var(--ink-soft);font-size:11px;line-height:1.45;
+  }
+  #viewProfile .profile-feedback,
+  #viewProfile .feature-lab-feedback{margin:8px 0 0;font-size:11px;color:var(--ink-soft);}
+  body.dark-mode #viewProfile .profile-item,
+  body.dark-mode #viewProfile .feature-lab-section,
+  body.dark-mode #viewProfile .feature-lab-toggle,
+  body.dark-mode #viewProfile .diagnostic-summary-card{
+    background:var(--surface);border-color:var(--line);
+  }
+  body.dark-mode #viewProfile .profile-item-icon,
+  body.dark-mode #viewProfile .diagnostic-summary-icon{
+    background:color-mix(in srgb,var(--accent) 16%,var(--surface));
+    border-color:color-mix(in srgb,var(--accent) 28%,transparent);
+    color:var(--accent);
+  }
     body:has(.modal-overlay.open){overflow:hidden;}
     .modal-overlay{height:100dvh;min-height:100svh;max-height:100dvh;overflow:hidden;overscroll-behavior:contain;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
     .panel{max-height:calc(100dvh - 32px);max-width:calc(100vw - 32px);overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
@@ -1487,7 +1670,7 @@
     body:not(.dark-mode) header.app-header h1 { color:var(--header-ink); }
     body:not(.dark-mode) header.app-header .subtitle { color:color-mix(in srgb,var(--header-ink) 84%,transparent); }
     body:not(.dark-mode) header.app-header .subtitle::before { color:color-mix(in srgb,var(--header-ink) 74%,transparent); }
-    body:not(.dark-mode) #btnThemeToggle,body:not(.dark-mode) #btnToggleBalances,body:not(.dark-mode) #btnInstallPWA { background:var(--header-control-bg); border-color:color-mix(in srgb,var(--header-ink) 45%,transparent); color:var(--header-ink); }
+    body:not(.dark-mode) #btnThemeToggle,body:not(.dark-mode) #btnInstallPWA { background:var(--header-control-bg); border-color:color-mix(in srgb,var(--header-ink) 45%,transparent); color:var(--header-ink); }
     body:not(.dark-mode) .nav-tabs,body:not(.dark-mode) .balance-card,body:not(.dark-mode) .cat-summary,body:not(.dark-mode) .ledger,body:not(.dark-mode) .invest-box { background:var(--surface); border-color:var(--line); }
     body:not(.dark-mode) .nav-tab { color:var(--ink-soft); }
     body:not(.dark-mode) .nav-tab.active { background:var(--surface-accent); color:var(--header-ink); }
@@ -1839,7 +2022,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   @media(max-width:680px){.nav-tab{min-height:44px}.toolbar button{min-height:44px}.feature-lab-section{box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ink) 4%,transparent);}}
   body.dark-mode .toolbar button:not(.primary),body.dark-mode .period-bar button,body.dark-mode .ledger-filter-button{background:var(--surface-raised)!important;border-color:var(--line)!important;color:var(--ink)!important;}
   body.dark-mode .toolbar button:not(.primary):hover,body.dark-mode .toolbar button:not(.primary):focus-visible,body.dark-mode .period-bar button:hover,body.dark-mode .period-bar button:focus-visible,body.dark-mode .ledger-filter-button:hover,body.dark-mode .ledger-filter-button:focus-visible{background:var(--surface-accent)!important;border-color:var(--accent)!important;color:var(--ink)!important;}
-  body.dark-mode #btnThemeToggle,body.dark-mode #btnToggleBalances,body.dark-mode #btnNotifications,body.dark-mode #btnOpenDrawer{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
+  body.dark-mode #btnThemeToggle,body.dark-mode #btnNotifications,body.dark-mode #btnOpenDrawer{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
   body.dark-mode .filter-choice-sheet{color:var(--ink);}
   body.dark-mode .filter-choice-search{background:var(--surface)!important;border-color:var(--line)!important;color:var(--ink)!important;}
   body.dark-mode .filter-choice-option{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
@@ -1903,7 +2086,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   </div>
   <div class="app-header-actions">
     <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9.5a5 5 0 0 1 10 0c0 4.2 1.5 5.5 1.5 5.5H5.5S7 13.7 7 9.5z"/><path d="M10 17.5a2 2 0 0 0 4 0"/></svg><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
-    <button type="button" id="btnToggleBalances" class="header-icon-button" title="Mostrar/ocultar saldos" aria-label="Mostrar ou ocultar saldos" aria-pressed="false">👁️</button>
     <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v1.5M12 19.5V21M4.9 4.9l1.1 1.1M18 18l1.1 1.1M3 12h1.5M19.5 12H21M4.9 19.1 6 18M18 6l1.1-1.1"/><circle cx="12" cy="12" r="4"/></svg></button>
     <button id="btnInstallPWA" title="Instalar Livro-Caixa" aria-label="Instalar Livro-Caixa" style="padding:6px 10px; font-size:12px; display:none;">📲 Instalar</button>
     <div id="userBar"></div>
@@ -2125,19 +2307,22 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title">Preferências financeiras</div>
+        <div class="profile-group-title">Geral</div>
         <div class="profile-list">
-          <div class="profile-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4.5 5.5h8l6 6-7 7-7-7z"/><path d="M8.2 9.2h.01"/></svg></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamento — criar, editar, excluir</span></span><span class="profile-item-arrow">›</span></div>
+          <div class="profile-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4.5 5.5h8l6 6-7 7-7-7z"/><path d="M8.2 9.2h.01"/></svg></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamentos — criar, editar e excluir.</span></span><span class="profile-item-arrow">›</span></div>
           <div class="profile-item">
             <span class="profile-item-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>
             <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define em qual dia começa seu mês financeiro. Isso altera apenas os períodos usados no orçamento — não muda a data dos lançamentos.</span></span>
-            <input type="number" id="inputFinancialCycleDay" min="1" max="28" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);">
+            <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
           </div>
-          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span></div>
+          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v3H9z"/><path d="M8 6h8l1.5 12.5a2 2 0 0 1-2 2.5H8.5a2 2 0 0 1-2-2.5L8 6z"/><path d="M10 10v6M14 10v6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span></div>
         </div>
+      </div>
 
+      <div class="profile-group">
+        <div class="profile-group-title">Automações</div>
         <div class="feature-lab-section">
-          <div class="feature-lab-section-head"><div><h4>Automações</h4></div><span class="feature-lab-section-tag">AUTOMÁTICO</span></div>
+          <div class="feature-lab-section-head" hidden><div><h4>Automações</h4></div></div>
           <div class="feature-lab-options feature-lab-option-list">
             <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoBills"><span class="feature-lab-toggle-copy"><strong>Contas recorrentes</strong><small>Gerar contas recorrentes automaticamente no mês atual.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
             <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoQuotes"><span class="feature-lab-toggle-copy"><strong>Cotações automáticas</strong><small>Atualizar cotações enquanto o aplicativo estiver aberto.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
@@ -2148,15 +2333,18 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
           </div>
         </div>
 
+      </div>
+
+      <div class="profile-group">
+        <div class="profile-group-title">Orçamento</div>
         <div class="feature-lab-section">
-          <div class="feature-lab-section-head"><div><h4>Orçamento</h4></div><span class="feature-lab-section-tag">MÊS ATUAL</span></div>
-          <p class="feature-lab-section-desc">Defina limites por categoria e acompanhe quanto já foi gasto.</p>
           <div id="featureBudgetRows" class="feature-budget-rows"></div>
         </div>
+      </div>
 
+      <div class="profile-group">
+        <div class="profile-group-title">Conciliação bancária</div>
         <div class="feature-lab-section">
-          <div class="feature-lab-section-head"><div><h4>Conciliação bancária</h4></div><span class="feature-lab-section-tag">VERIFICAÇÃO</span></div>
-          <p class="feature-lab-section-desc">Compare o saldo informado pelo banco com o saldo calculado no Livro-Caixa.</p>
           <div class="feature-lab-fields">
             <div><label for="reconcileBank">Banco</label><select id="reconcileBank"></select></div>
             <div><label for="reconcileReported">Saldo informado</label><input type="text" id="reconcileReported" data-money="true" placeholder="R$ 0,00"></div>
@@ -2165,8 +2353,11 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
           <div id="reconciliationResult" class="feature-lab-feedback" aria-live="polite"></div>
         </div>
 
+      </div>
+
+      <div class="profile-group">
+        <div class="profile-group-title">Análise assistida</div>
         <div class="feature-lab-section labs-plus-section">
-          <div class="feature-lab-section-head"><div><h4>Análise assistida</h4></div><span class="feature-lab-section-tag">SEM IA</span></div>
           <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-lab-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias usando descrições já categorizadas no seu histórico; nenhuma alteração é feita sem confirmação.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
           <div class="feature-lab-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
           <div id="labsAnalysisStatus" class="feature-lab-feedback" aria-live="polite"></div>
@@ -2174,13 +2365,16 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title">Segurança</div>
+        <div class="profile-group-title">Conta</div>
         <div class="profile-list">
           <div class="profile-item is-danger" role="button" tabindex="0" id="btnProfileLogout"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="profile-item-copy"><strong>Sair da conta</strong><span>Encerra a sessão neste aparelho — seus dados continuam salvos na nuvem</span></span><span class="profile-item-arrow">›</span></div>
         </div>
 
+      </div>
+
+      <div class="profile-group">
+        <div class="profile-group-title">Proteção local</div>
         <div class="feature-lab-section feature-lab-security">
-          <div class="feature-lab-section-head"><div><h4>Proteção local</h4></div><span class="feature-lab-section-tag">SEGURANÇA</span></div>
           <p class="feature-lab-section-desc">Proteja o acesso local ao aplicativo com um PIN de 4 a 8 dígitos.</p>
           <div class="feature-lab-pin-row">
             <div><label for="featurePin">PIN local</label><input type="password" id="featurePin" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="4 a 8 dígitos"></div>
@@ -2190,8 +2384,11 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
           <div id="pinSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
         </div>
 
+      </div>
+
+      <div class="profile-group">
+        <div class="profile-group-title">Dados e segurança</div>
         <div class="feature-lab-section labs-plus-section">
-          <div class="feature-lab-section-head"><div><h4>Dados e segurança</h4></div><span class="feature-lab-section-tag">LABS PLUS</span></div>
           <p class="feature-lab-section-desc">Recursos experimentais para proteger backups e trazer fechamentos OFX ou CSV para a prévia editável.</p>
           <div class="feature-lab-fields">
             <div><label for="featureBackupPassword">Senha do backup criptografado</label><input type="password" id="featureBackupPassword" autocomplete="new-password" placeholder="Mínimo de 6 caracteres"></div>
@@ -2206,9 +2403,9 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <div class="profile-group">
         <div class="profile-group-title">Privacidade</div>
         <div class="profile-list">
-          <label class="feature-lab-toggle" style="padding:12px 0;">
+          <label class="feature-lab-toggle">
             <input type="checkbox" id="chkHideBalancesOnOpen">
-            <span class="feature-lab-toggle-copy"><strong>Ocultar saldos ao abrir</strong><small>Os valores iniciam como ••••••. Toque no ícone 👁️ do cabeçalho (ou no próprio valor) para alternar.</small></span>
+            <span class="feature-lab-toggle-copy"><strong>Ocultar saldos ao abrir</strong><small>Os valores iniciam como ••••••. Toque em qualquer saldo/valor na tela para alternar a visualização.</small></span>
             <span class="feature-lab-switch" aria-hidden="true"></span>
           </label>
         </div>
@@ -2242,7 +2439,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       </div>
 
       <div class="profile-roadmap"><b>Disponível:</b> Valores a Receber (menu lateral / aba desktop). <b>Em preparação:</b> revisão de Meta/Simulação financeira.</div>
-      <div class="profile-item" role="button" tabindex="0" onclick="switchTab('receivables')" style="margin-top:10px;cursor:pointer;"><span class="profile-item-icon">↓</span><span class="profile-item-copy"><strong>Valores a Receber</strong><span>Controle independente · não altera o Livro-Caixa</span></span><span class="profile-item-arrow">›</span></div>
+      <div class="profile-item" role="button" tabindex="0" onclick="switchTab('receivables')" style="margin-top:10px;cursor:pointer;"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 19h14"/></svg></span><span class="profile-item-copy"><strong>Valores a Receber</strong><span>Controle independente · não altera o Livro-Caixa</span></span><span class="profile-item-arrow">›</span></div>
     </section>
   </div>
 
@@ -5144,12 +5341,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function syncBalancesToggleButton(hidden) {
-    const btn = document.getElementById('btnToggleBalances');
-    if (!btn) return;
-    btn.textContent = hidden ? '🙈' : '👁️';
-    btn.setAttribute('aria-pressed', hidden ? 'true' : 'false');
-    btn.title = hidden ? 'Mostrar saldos' : 'Ocultar saldos';
-    btn.setAttribute('aria-label', hidden ? 'Mostrar saldos' : 'Ocultar saldos');
+    /* Botão do olho removido: alternância só pelo toque no valor/saldo. */
   }
   function applyBalancesHiddenState(hidden) {
     document.body.classList.toggle('balances-hidden', !!hidden);
@@ -5167,11 +5359,6 @@ document.addEventListener('DOMContentLoaded', () => {
       applyBalancesHiddenState(chkHideBalances.checked);
     });
   }
-  document.getElementById('btnToggleBalances')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleBalancesVisibility();
-  });
   document.addEventListener('click', (e) => {
     const moneyEl = e.target.closest('.balance-card .amount, .card-amount, .period-summary-card strong, .invest-box .val, .cat-row .cat-amt, .cat-summary-total strong, .manage-item-value, .dashboard-metrics strong, .pocket-goal-values, .yield-row .yield-amount, .rentability-box strong, .js-money');
     if (!moneyEl) return;
