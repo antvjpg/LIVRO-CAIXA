@@ -7739,7 +7739,14 @@ VALOR: ${fmt(pseudoBill.amount)}
 
   document.getElementById('fSalvar').onclick = async () => {
     const btn = document.getElementById('fSalvar');
-    const date = document.getElementById('fData').value || todayISO();
+    const dateInput = document.getElementById('fData').value;
+
+    if (receiptReaderState?.aiStatus === 'completed' && !dateInput) {
+      alert('A data do comprovante não foi identificada. Informe a data antes de salvar.');
+      return;
+    }
+
+    const date = dateInput || todayISO();
     const desc = document.getElementById('fDesc').value.trim();
     const bank = document.getElementById('fBanco').value;
     const category = document.getElementById('fCategoria').value;
@@ -7783,6 +7790,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     try {
       await saveEntries(operation);
       logInfo('Livro-Caixa','Salvar lançamento','Sucesso','Movimentação registrada.',{type: currentType}, operation);
+      clearReceiptReaderState();
       document.getElementById('fDesc').value = '';
       setMoneyInput('fValor', 0);
       closeAllPanels();
