@@ -1877,11 +1877,8 @@
   .quick-action-icon svg,.profile-item-icon svg,.nav-icon svg{display:block;width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;}
   .profile-avatar svg{display:block;width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
   .beta-icon-button{display:inline-grid;place-items:center;min-width:34px;min-height:34px;line-height:1;vertical-align:middle;}
-  .mobile-bottom-nav::before{content:"";position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/5);border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),0 5px 13px color-mix(in srgb,var(--accent) 10%,transparent);transform:translateX(0%);transition:transform 220ms var(--v1616-ease),background-color 220ms ease,box-shadow 220ms ease;pointer-events:none;}
-  .mobile-bottom-nav[data-active="caixa"]::before{transform:translateX(var(--nav-indicator-x,0%));}
-  .mobile-bottom-nav[data-active="pockets"]::before{transform:translateX(var(--nav-indicator-x,0%));}
-  .mobile-bottom-nav[data-active="invest"]::before{transform:translateX(var(--nav-indicator-x,0%));}
-  .mobile-bottom-nav[data-active="profile"]::before{transform:translateX(var(--nav-indicator-x,0%));}
+  .mobile-bottom-nav{--nav-indicator-x:0%;}
+  .mobile-bottom-nav::before{content:"";position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/5);border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),0 5px 13px color-mix(in srgb,var(--accent) 10%,transparent);transform:translateX(var(--nav-indicator-x));transition:transform 220ms var(--v1616-ease),background-color 220ms ease,box-shadow 220ms ease;pointer-events:none;}
   .mobile-bottom-nav button{position:relative;z-index:1;background:transparent!important;transition:color 220ms ease,transform 160ms var(--v1616-ease);}
   .mobile-bottom-nav button.is-active{background:transparent!important;box-shadow:none!important;}
   .mobile-bottom-nav button:active{transform:scale(.94);}
@@ -3077,9 +3074,15 @@ window.addEventListener('beforeunload', e => {
   function updateNavIndicator(tabName) {
     const nav = document.querySelector('.mobile-bottom-nav');
     if (!nav) return;
-    const index = ['dashboard','caixa','pockets','invest','profile'].indexOf(tabName);
-    nav.dataset.active = index >= 0 ? tabName : 'caixa';
-    nav.style.setProperty('--nav-indicator-x', `${Math.max(index, 0) * 100}%`);
+    const buttons = Array.from(nav.querySelectorAll('button[data-destination]'));
+    let index = buttons.findIndex(btn => btn.dataset.destination === tabName);
+    if (index < 0) {
+      index = buttons.findIndex(btn => btn.dataset.destination === 'caixa');
+      tabName = 'caixa';
+    }
+    if (index < 0) index = 0;
+    nav.dataset.active = tabName || 'caixa';
+    nav.style.setProperty('--nav-indicator-x', `${index * 100}%`);
   }
 
   function markValueRefresh(root = document) {
