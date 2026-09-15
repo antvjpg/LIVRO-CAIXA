@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-12 (GPT) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-13 (GROK) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,14 +55,6 @@
     --header-control-bg:rgba(9,30,21,.42);
     --action-border:#C9D9CC;
   }
-  body:not(.dark-mode)[data-light-theme="2"] {
-    --paper:#F3F8FA; --paper-2:#E7F1F4; --ink:#173B4D; --ink-soft:#627882; --green:#247C88; --green-soft:#DDF0F1; --line:#C9DCE1; --gold:#E97865;
-    --surface:#FFFFFF; --surface-raised:#FBFDFE; --surface-accent:#1E5360; --accent:#247C88; --accent-to:#3A97A1; --accent-ink:#FFFFFF; --header-from:#1E5360; --header-to:#2A6F7B; --header-ink:#FFFFFF; --header-control-bg:rgba(14,54,64,.34); --action-border:#BFD9DF;
-  }
-  body:not(.dark-mode)[data-light-theme="3"] {
-    --paper:#F7F4FA; --paper-2:#EEE8F3; --ink:#37253F; --ink-soft:#796A7F; --green:#78538E; --green-soft:#EEE4F2; --line:#D8CEDF; --gold:#E89A68;
-    --surface:#FFFEFF; --surface-raised:#FCFAFD; --surface-accent:#593B68; --accent:#78538E; --accent-to:#9268A9; --accent-ink:#FFFFFF; --header-from:#593B68; --header-to:#78538E; --header-ink:#FFFFFF; --header-control-bg:rgba(47,27,59,.34); --action-border:#D4C6DD;
-  }
   body:not(.dark-mode)[data-light-theme="4"] {
     --paper:#FBF6EF; --paper-2:#F2E8DC; --ink:#342C25; --ink-soft:#81766B; --green:#5F8A70; --green-soft:#E0ECE2; --line:#E2D3C0; --gold:#C66F50;
     --surface:#FFFDF8; --surface-raised:#FFFBF5; --surface-accent:#8F4F3C; --accent:#C66F50; --accent-to:#D88766; --accent-ink:#FFFFFF; --header-from:#8F4F3C; --header-to:#BD7657; --header-ink:#FFFFFF; --header-control-bg:rgba(74,37,27,.30); --action-border:#E1C8B5;
@@ -112,9 +104,7 @@
   .light-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
   .light-theme-option{width:28px;min-width:28px;height:28px;min-height:28px;padding:0;border:2px solid transparent;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);}
   .light-theme-option[data-theme="1"]{--swatch:#327957;}
-  .light-theme-option[data-theme="2"]{--swatch:linear-gradient(135deg,#247C88,#E97865);}
-  .light-theme-option[data-theme="3"]{--swatch:linear-gradient(135deg,#78538E,#E89A68);}
-  .light-theme-option[data-theme="4"]{--swatch:linear-gradient(135deg,#C66F50,#5F8A70);}
+      .light-theme-option[data-theme="4"]{--swatch:linear-gradient(135deg,#C66F50,#5F8A70);}
   .light-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.36);}
   .dark-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:-12px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
   body.dark-mode .dark-theme-picker{display:flex;}
@@ -439,7 +429,7 @@
     max-width:100%;
   }
   .balance-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
-  .invest-summary-card .balance-symbol{background:color-mix(in srgb,var(--gold) 16%,var(--surface));color:var(--gold);}
+  .invest-summary-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
   .cat-legend-head{display:none;}
 
   /* V18-12 — Sistema de Períodos e Histórico */
@@ -888,8 +878,8 @@
     width:56px;
     height:56px;
     border-radius:50%;
-    background:var(--green);
-    color:var(--on-accent);
+    background:var(--accent);
+    color:var(--accent-ink);
     border:none;
     padding:0;
     font-size:0;
@@ -899,10 +889,10 @@
     box-shadow:0 4px 14px var(--shadow);
     cursor:pointer;
     z-index:60;
-    transition:transform 0.15s ease;
+    transition:transform 0.15s ease, background 0.2s ease, color 0.2s ease;
   }
   .fab-add .add-icon{width:31px;height:31px;display:block;fill:none;stroke:currentColor;stroke-width:2.35;stroke-linecap:round;}
-  .fab-add:hover{background:var(--green);filter:brightness(0.92); transform:scale(1.06);}
+  .fab-add:hover{background:var(--accent-to);filter:brightness(0.96); transform:scale(1.06);}
   .fab-add:active{transform:scale(0.95);}
 
   .empty{
@@ -1145,6 +1135,10 @@
     color: var(--ink-soft);
   }
   .card-title {
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    white-space:normal;
+    max-width:100%;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 500;
@@ -1269,7 +1263,7 @@
     .balance-card .balance-symbol svg{width:16px;height:16px;}
     .balance-card.total .balance-symbol{width:43px;height:43px;min-width:43px;border-radius:14px;background:rgba(255,255,255,.14);color:#F3FBF5;box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);}
     .balance-card.total .balance-symbol svg{width:22px;height:22px;}
-    .invest-summary-card .balance-symbol{background:color-mix(in srgb,var(--gold) 15%,var(--surface));color:var(--gold);}
+    .invest-summary-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
     .bank-summary-card, .pocket-summary-card, .invest-summary-card {
       display:flex; flex-direction:column; align-items:flex-start;
       min-height:158px; padding:14px 12px 12px;
@@ -1373,7 +1367,7 @@
     .yield-row > span:first-child { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:normal; overflow-wrap:anywhere; line-height:1.3; }
     .yield-actions { flex:0 0 auto; }
     .yield-history canvas { max-width:100%!important; }
-    .fab-add { width:54px; height:54px; right:18px; bottom:104px; z-index:72; background:#2F7654; box-shadow:0 9px 20px rgba(22,65,45,.28); }
+    .fab-add { width:54px; height:54px; right:18px; bottom:104px; z-index:72; background:var(--accent); color:var(--accent-ink); box-shadow:0 9px 20px color-mix(in srgb,var(--accent) 35%,transparent); }
     main:has(.modal-overlay.open) { z-index:100; }
     .modal-overlay { z-index:300; align-items:center; padding:16px; background:rgba(13,42,30,.56); backdrop-filter:blur(7px); }
     .panel { width:100%; max-width:560px; max-height:86svh; margin:0 auto; padding:18px 16px; background:#fffefa; color:#19352A; border:1px solid #E1E1D9; border-radius:18px; box-shadow:0 14px 34px rgba(20,48,36,.20); }
@@ -1472,7 +1466,7 @@
     body.dark-mode .mobile-bottom-nav button.is-active{background:color-mix(in srgb,var(--accent) 21%,var(--surface));color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 38%,transparent),0 4px 14px rgba(0,0,0,.22);}body.dark-mode .mobile-bottom-nav button.is-active .nav-icon{color:var(--accent);}
     .fab-add{bottom:calc(96px + env(safe-area-inset-bottom));}
     @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.mobile-bottom-nav{background:var(--surface);}.mobile-bottom-nav{box-shadow:0 13px 30px rgba(20,35,28,.22);}.dark-mode .mobile-bottom-nav{background:var(--paper);}}
-    .profile-shell{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:19px 16px;}.profile-heading{display:flex;align-items:center;gap:13px;padding-bottom:17px;border-bottom:1px solid var(--line);}.profile-avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--action-border);color:var(--accent);}.profile-avatar svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-heading h2{font-size:22px;line-height:1.1;color:var(--ink);}.profile-heading p{margin-top:4px;max-width:215px;color:var(--ink-soft);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.profile-intro{margin:16px 0;color:var(--ink-soft);font-size:12px;line-height:1.5;}.profile-group{margin-top:18px;}.profile-group-title{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;padding-left:2px;}.profile-list{display:grid;gap:8px;}.profile-item{display:flex;align-items:center;gap:12px;min-height:59px;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--paper);}.profile-item.is-danger{border-color:color-mix(in srgb,var(--red,#B3432B) 35%,var(--line));}.profile-item.is-danger .profile-item-icon{background:color-mix(in srgb,var(--red,#B3432B) 14%,var(--paper));color:var(--red,#B3432B);border-color:color-mix(in srgb,var(--red,#B3432B) 30%,transparent);}.profile-item.is-danger .profile-item-copy strong{color:var(--red,#B3432B);}.profile-item-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--green-soft);color:var(--accent);border:1px solid var(--action-border);}.profile-item-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-item-copy{flex:1;min-width:0;}.profile-item-copy strong{display:block;color:var(--ink);font-size:12px;}.profile-item-copy span{display:block;margin-top:3px;color:var(--ink-soft);font-size:10px;}.profile-item-arrow{color:var(--ink-soft);font-size:16px;}.profile-roadmap{margin-top:14px;padding:11px 12px;border-radius:13px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--ink-soft);font-size:10px;line-height:1.4;}.profile-roadmap b{color:var(--accent);}.diagnostic-summary-card{padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--paper);display:flex;flex-direction:column;gap:10px;}.diagnostic-summary-head{display:flex;align-items:center;gap:12px;}.diagnostic-summary-icon{font-size:22px;width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--green-soft);flex:0 0 auto;}.diagnostic-summary-head strong{display:block;color:var(--ink);font-size:12px;}.diagnostic-summary-head span{display:block;margin-top:2px;color:var(--ink-soft);font-size:10px;}.diagnostic-results{display:flex;flex-direction:column;gap:8px;}.diagnostic-item{display:flex;gap:10px;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:11px;}.diagnostic-item.is-warning{border-color:color-mix(in srgb,var(--gold) 40%,var(--line));background:color-mix(in srgb,var(--gold) 8%,var(--paper));}.diagnostic-item.is-ok{border-color:color-mix(in srgb,var(--green) 35%,var(--line));background:color-mix(in srgb,var(--green) 8%,var(--paper));}.diagnostic-item strong{display:block;color:var(--ink);}.diagnostic-item span{display:block;margin-top:2px;color:var(--ink-soft);}
+    .profile-shell{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:19px 16px;}.profile-heading{display:flex;align-items:center;gap:13px;padding-bottom:17px;border-bottom:1px solid var(--line);}.profile-avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--action-border);color:var(--accent);}.profile-avatar svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-heading h2{font-size:22px;line-height:1.1;color:var(--ink);}.profile-heading p{margin-top:4px;max-width:215px;color:var(--ink-soft);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.profile-intro{margin:16px 0;color:var(--ink-soft);font-size:12px;line-height:1.5;}.profile-group{margin-top:18px;}.profile-group-title{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;padding-left:2px;}.profile-list{display:grid;gap:12px;}.profile-item{display:flex;align-items:center;gap:12px;min-height:59px;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--paper);}.profile-item.is-danger{border-color:color-mix(in srgb,var(--red,#B3432B) 35%,var(--line));}.profile-item.is-danger .profile-item-icon{background:color-mix(in srgb,var(--red,#B3432B) 14%,var(--paper));color:var(--red,#B3432B);border-color:color-mix(in srgb,var(--red,#B3432B) 30%,transparent);}.profile-item.is-danger .profile-item-copy strong{color:var(--red,#B3432B);}.profile-item-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--green-soft);color:var(--accent);border:1px solid var(--action-border);}.profile-item-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-item-copy{flex:1;min-width:0;}.profile-item-copy strong{display:block;color:var(--ink);font-size:12px;}.profile-item-copy span{display:block;margin-top:3px;color:var(--ink-soft);font-size:10px;}.profile-item-arrow{color:var(--ink-soft);font-size:16px;}.profile-roadmap{margin-top:14px;padding:11px 12px;border-radius:13px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--ink-soft);font-size:10px;line-height:1.4;}.profile-roadmap b{color:var(--accent);}.diagnostic-summary-card{padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--paper);display:flex;flex-direction:column;gap:10px;}.diagnostic-summary-head{display:flex;align-items:center;gap:12px;}.diagnostic-summary-icon{font-size:22px;width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--green-soft);flex:0 0 auto;}.diagnostic-summary-head strong{display:block;color:var(--ink);font-size:12px;}.diagnostic-summary-head span{display:block;margin-top:2px;color:var(--ink-soft);font-size:10px;}.diagnostic-results{display:flex;flex-direction:column;gap:8px;}.diagnostic-item{display:flex;gap:10px;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:11px;}.diagnostic-item.is-warning{border-color:color-mix(in srgb,var(--gold) 40%,var(--line));background:color-mix(in srgb,var(--gold) 8%,var(--paper));}.diagnostic-item.is-ok{border-color:color-mix(in srgb,var(--green) 35%,var(--line));background:color-mix(in srgb,var(--green) 8%,var(--paper));}.diagnostic-item strong{display:block;color:var(--ink);}.diagnostic-item span{display:block;margin-top:2px;color:var(--ink-soft);}
     body.dark-mode .profile-shell{background:var(--surface);border-color:var(--line);}body.dark-mode .profile-item{background:var(--paper);border-color:var(--line);}body.dark-mode .profile-avatar,body.dark-mode .profile-item-icon{background:color-mix(in srgb,var(--accent) 14%,var(--surface));border-color:color-mix(in srgb,var(--accent) 26%,transparent);}
     body:has(.modal-overlay.open){overflow:hidden;}
     .modal-overlay{height:100dvh;min-height:100svh;max-height:100dvh;overflow:hidden;overscroll-behavior:contain;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
@@ -1908,9 +1902,9 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
     <div class="subtitle" id="todayLabel">—</div>
   </div>
   <div class="app-header-actions">
-    <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos">🔔<span id="notificationBadge" class="notification-badge" hidden>0</span></button>
+    <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9.5a5 5 0 0 1 10 0c0 4.2 1.5 5.5 1.5 5.5H5.5S7 13.7 7 9.5z"/><path d="M10 17.5a2 2 0 0 0 4 0"/></svg><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
     <button type="button" id="btnToggleBalances" class="header-icon-button" title="Mostrar/ocultar saldos" aria-label="Mostrar ou ocultar saldos" aria-pressed="false">👁️</button>
-    <button id="btnThemeToggle" title="Alternar Tema Escuro/Claro" style="padding:6px 10px; font-size:14px;">🌙</button>
+    <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v1.5M12 19.5V21M4.9 4.9l1.1 1.1M18 18l1.1 1.1M3 12h1.5M19.5 12H21M4.9 19.1 6 18M18 6l1.1-1.1"/><circle cx="12" cy="12" r="4"/></svg></button>
     <button id="btnInstallPWA" title="Instalar Livro-Caixa" aria-label="Instalar Livro-Caixa" style="padding:6px 10px; font-size:12px; display:none;">📲 Instalar</button>
     <div id="userBar"></div>
   </div>
@@ -1921,20 +1915,14 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
     <div class="drawer-heading"><span>Livro-Caixa</span><button type="button" class="drawer-close" data-close-drawer aria-label="Fechar menu">×</button></div>
     <p class="drawer-caption">Navegação e configurações rápidas</p>
     <nav class="drawer-nav" aria-label="Navegação principal">
-      <button type="button" data-drawer-action="overview"><span>⌂</span> Visão geral</button>
-      <button type="button" data-drawer-action="entries"><span>≡</span> Lançamentos</button>
       <button type="button" data-drawer-action="cards"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span> Cartões</button>
       <button type="button" data-drawer-action="bills"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span> Contas & Calendário</button>
       <button type="button" data-drawer-action="receivables"><span>↓</span> Valores a Receber</button>
-      <button type="button" data-drawer-action="reports"><span>◔</span> Gastos por categoria</button>
-      <button type="button" data-drawer-action="pockets"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M4 8l2.5-4h11L20 8"/><path d="M9.5 12.5h5"/></svg></span> Caixinhas</button>
-      <button type="button" data-drawer-action="investments"><span>↗</span> Investimentos</button>
+      <button type="button" data-drawer-action="pockets"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5 12 4l8 4.5v9.2L12 22l-8-4.3z"/><path d="M12 12.2 20 8.5M12 12.2v9.6M12 12.2 4 8.5"/><path d="M9 14.2h6"/></svg></span> Caixinhas</button>
+      <button type="button" data-drawer-action="investments"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span> Investimentos</button>
     </nav>
     <div class="drawer-divider"></div>
     <div class="drawer-nav drawer-nav-secondary">
-      <button type="button" data-drawer-action="banks"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-6 9 6M5 10h14M6.5 10v7M10 10v7M14 10v7M17.5 10v7M4 20h16"/></svg></span> Contas bancárias</button>
-      <button type="button" data-drawer-action="categories"><span>◇</span> Categorias</button>
-      <button type="button" data-drawer-action="theme"><span>◐</span> Tema e paleta</button>
       <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true">⚗</span> LABS</button>
       <button type="button" data-drawer-action="diagnostico"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 3v2h6V3"/><path d="M9 9.5h6M9 13h6M9 16.5h3.5"/></svg></span> Diagnóstico Geral (LOG)</button>
     </div>
@@ -1962,8 +1950,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
     <span class="light-theme-picker-label">Paleta clara</span>
     <button type="button" class="light-theme-option" data-theme="1" aria-label="Verde original" aria-pressed="true" title="Verde original"></button>
-    <button type="button" class="light-theme-option" data-theme="2" aria-label="Coastal Ledger" aria-pressed="false" title="Coastal Ledger"></button>
-    <button type="button" class="light-theme-option" data-theme="3" aria-label="Lilac Paper" aria-pressed="false" title="Lilac Paper"></button>
     <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracotta e Sage" aria-pressed="false" title="Terracotta & Sage"></button>
   </div>
 
@@ -2009,8 +1995,8 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3H8z"/><path d="M6 7h12v13H6z"/><path d="M9 12h6M9 15h6"/></svg></span><span>Colar texto</span></button>
       <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Importar PDF/DOCX</span></button>
       <button class="quick-action" id="btnExport"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M10 19V5M15 19v-7M20 19V7M3 19h18"/></svg></span><span>Exportar extrato</span></button>
-      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14v13H5z"/><path d="M8 6V4h8v2M8 12h8M9 16h6"/></svg></span><span>Exportar backup</span></button>
-      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19V9"/><path d="m8.5 12.5 3.5-3.5 3.5 3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Restaurar backup</span></button>
+      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m8 11 4 4 4-4"/><path d="M5 19h14"/></svg></span><span>Exportar backup</span></button>
+      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4"/><path d="m8 8 4-4 4 4"/><path d="M5 19h14"/></svg></span><span>Restaurar backup</span></button>
       <input type="file" id="fileImport" accept="application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
       <input type="file" id="fileBackupImport" accept="application/json">
     </div>
@@ -3286,8 +3272,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const LIGHT_THEME_STORAGE_KEY = 'livro-caixa-light-theme';
   const LIGHT_THEME_COLORS = {
     '1': '#F8F7F2',
-    '2': '#F3F8FA',
-    '3': '#F7F4FA',
     '4': '#FBF6EF'
   };
   const darkThemePicker = document.getElementById('darkThemePicker');
@@ -3301,6 +3285,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function validLightTheme(value) {
+    if (value === '2' || value === '3') return '1';
     return Object.prototype.hasOwnProperty.call(LIGHT_THEME_COLORS, value) ? value : '1';
   }
 
@@ -3348,7 +3333,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
-    themeBtn.textContent = '☀️';
+    setThemeToggleIcon(true);
     applyDarkTheme(getSavedDarkTheme());
   } else applyLightTheme(getSavedLightTheme());
   lightThemeOptions.forEach(option => {
@@ -3371,10 +3356,15 @@ document.addEventListener('DOMContentLoaded', () => {
       renderPocketBalances();
     });
   });
+
+  function setThemeToggleIcon(isDark) {
+    if (!themeBtn) return;
+    themeBtn.innerHTML = isDark ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v1.5M12 19.5V21M4.9 4.9l1.1 1.1M18 18l1.1 1.1M3 12h1.5M19.5 12H21M4.9 19.1 6 18M18 6l1.1-1.1"/><circle cx="12" cy="12" r="4"/></svg>` : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A7.5 7.5 0 0 1 9.5 4 7.8 7.8 0 0 0 12 19.5 7.6 7.6 0 0 0 20 14.5z"/></svg>`;
+  }
   themeBtn.onclick = () => {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
-    themeBtn.textContent = isDark ? '☀️' : '🌙';
+    setThemeToggleIcon(isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     if (isDark) applyDarkTheme(getSavedDarkTheme());
     else applyLightTheme(getSavedLightTheme());
@@ -4048,6 +4038,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const icons = {
       wallet: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18a2 2 0 0 1 2 2v2H6a2 2 0 0 0-2 2v6.5A2.5 2.5 0 0 0 6.5 20H18a2 2 0 0 0 2-2v-7"/><path d="M16 14h.01"/><path d="M4.5 7.5 15.2 4"/></svg>',
       bank: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-6 9 6"/><path d="M5 10h14"/><path d="M6.5 10v7M10 10v7M14 10v7M17.5 10v7"/><path d="M4 20h16"/></svg>',
+      box: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5 12 4l8 4.5v9.2L12 22l-8-4.3z"/><path d="M12 12.2 20 8.5M12 12.2v9.6M12 12.2 4 8.5"/><path d="M9 14.2h6"/></svg>',
       growth: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19v-5"/><path d="M16 19v-9"/><path d="M4 19h16"/><path d="m13 6 3-3 3 3"/><path d="M16 3v7"/></svg>'
     };
     return icons[kind] || icons.wallet;
@@ -4077,7 +4068,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="balance-detail-link">Ver contas →</span>
     </div>
     <div class="balance-card pocket-summary-card" role="button" tabindex="0" aria-label="Ver caixinhas" title="Ver caixinhas">
-      <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('bank')}</span></div>
+      <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('box')}</span></div>
       <span class="amount ${pocketTotal < 0 ? 'neg' : ''}">${fmt(pocketTotal)}</span>
       ${pocketShare === null ? '' : `<span class="balance-share">${pocketShare.toFixed(0)}% do patrimônio</span>`}
       <span class="balance-detail-link">Ver caixinhas →</span>
@@ -4568,7 +4559,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const strip = document.getElementById('pocketBalanceStrip');
     const total = totalPocketBalance();
     let html = `<div class="balance-card total">
-      <div class="balance-card-head"><span class="label">Total em Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('wallet')}</span></div>
+      <div class="balance-card-head"><span class="label">Total em Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('box')}</span></div>
       <span class="amount">${fmt(total)}</span>
     </div>`;
     pockets.forEach(p => {
@@ -4746,7 +4737,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <canvas id="catPieChart"></canvas>
         </div>
         <div class="cat-bars-list">
-          <div class="cat-legend-head"><span>Categoria</span><span>Valor</span><span>%</span></div>
+          <div class="cat-legend-head"><span>Categoria</span><span>Movimentação</span><span>%</span></div>
           ${chartSpend.map(x => `
             <div class="cat-row" style="--category-color:${categoryColor(x.cat)}">
               <span class="cat-name">${escapeHTML(x.cat.name)}</span>
@@ -4845,7 +4836,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="card-border-line"><span class="movement-category-icon">${escapeHTML(categoryIcon(cat, e.type))}</span></div>
             <div class="card-info">
               <span class="card-date">${dateFmt}</span>
-              <h3 class="card-title">${escapeHTML(e.desc)}</h3>
+              <h3 class="card-title" title="${escapeHTML(e.desc)}" onclick="this.classList.toggle('is-expanded')">${escapeHTML(e.desc)}</h3>
               <span class="card-meta"><span class="card-badge">${bank ? escapeHTML(bank.name) : 'Banco não informado'}</span><span class="card-category" style="--category-color:${categoryColor(cat)}">${cat ? escapeHTML(cat.name) : 'Sem categoria'}</span></span>
             </div>
           </div>
@@ -5142,7 +5133,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-12 (GPT)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-13 (GROK)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -10016,8 +10007,8 @@ document.getElementById('tSalvar').onclick = async () => {
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="9" rx="1.5"/><rect x="13" y="4" width="7" height="5" rx="1.5"/><rect x="13" y="11" width="7" height="9" rx="1.5"/><rect x="4" y="15" width="7" height="5" rx="1.5"/></svg></span><span>Visão geral</span></button>
-  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h10a3 3 0 0 1 3 3V19H8a3 3 0 0 0-3 3z"/><path d="M5 5.5v15.5M8 9h6M8 13h6"/></svg></span><span>Livro-Caixa</span></button>
-  <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14v9.5A2.5 2.5 0 0 1 16.5 21h-9A2.5 2.5 0 0 1 5 18.5z"/><path d="M8 9V6.8A2.8 2.8 0 0 1 10.8 4h2.4A2.8 2.8 0 0 1 16 6.8V9M9 15h6"/></svg></span><span>Caixinhas</span></button>
+  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h6.5a2 2 0 0 1 2 2V19.5H7A2 2 0 0 0 5 21.5z"/><path d="M13.5 4.5H19a2 2 0 0 1 2 2V19.5h-5.5a2 2 0 0 0-2 2"/><path d="M13.5 4.5v17"/><path d="M8 9h3M8 12.5h3"/></svg></span><span>Livro-Caixa</span></button>
+  <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5 12 4l8 4.5v9.2L12 22l-8-4.3z"/><path d="M12 12.2 20 8.5M12 12.2v9.6M12 12.2 4 8.5"/><path d="M9 14.2h6"/></svg></span><span>Caixinhas</span></button>
   <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span><span>Investimentos</span></button>
   <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></span><span>Perfil</span></button>
 </nav>
