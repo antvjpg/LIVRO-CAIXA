@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-13 (GROK) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-14 (GROK) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1461,7 +1461,7 @@
     .profile-shell{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:19px 16px;}.profile-heading{display:flex;align-items:center;gap:13px;padding-bottom:17px;border-bottom:1px solid var(--line);}.profile-avatar{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--green-soft);border:1px solid var(--action-border);color:var(--accent);}.profile-avatar svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-heading h2{font-size:22px;line-height:1.1;color:var(--ink);}.profile-heading p{margin-top:4px;max-width:215px;color:var(--ink-soft);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.profile-intro{margin:16px 0;color:var(--ink-soft);font-size:12px;line-height:1.5;}.profile-group{margin-top:18px;}.profile-group-title{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;padding-left:2px;}.profile-list{display:grid;gap:12px;}.profile-item{display:flex;align-items:center;gap:12px;min-height:59px;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--paper);}.profile-item.is-danger{border-color:color-mix(in srgb,var(--red,#B3432B) 35%,var(--line));}.profile-item.is-danger .profile-item-icon{background:color-mix(in srgb,var(--red,#B3432B) 14%,var(--paper));color:var(--red,#B3432B);border-color:color-mix(in srgb,var(--red,#B3432B) 30%,transparent);}.profile-item.is-danger .profile-item-copy strong{color:var(--red,#B3432B);}.profile-item-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--green-soft);color:var(--accent);border:1px solid var(--action-border);}.profile-item-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}.profile-item-copy{flex:1;min-width:0;}.profile-item-copy strong{display:block;color:var(--ink);font-size:12px;}.profile-item-copy span{display:block;margin-top:3px;color:var(--ink-soft);font-size:10px;}.profile-item-arrow{color:var(--ink-soft);font-size:16px;}.profile-roadmap{margin-top:14px;padding:11px 12px;border-radius:13px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--ink-soft);font-size:10px;line-height:1.4;}.profile-roadmap b{color:var(--accent);}.diagnostic-summary-card{padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--paper);display:flex;flex-direction:column;gap:10px;}.diagnostic-summary-head{display:flex;align-items:center;gap:12px;}.diagnostic-summary-icon{font-size:22px;width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:var(--green-soft);flex:0 0 auto;}.diagnostic-summary-head strong{display:block;color:var(--ink);font-size:12px;}.diagnostic-summary-head span{display:block;margin-top:2px;color:var(--ink-soft);font-size:10px;}.diagnostic-results{display:flex;flex-direction:column;gap:8px;}.diagnostic-item{display:flex;gap:10px;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:var(--paper);font-size:11px;}.diagnostic-item.is-warning{border-color:color-mix(in srgb,var(--gold) 40%,var(--line));background:color-mix(in srgb,var(--gold) 8%,var(--paper));}.diagnostic-item.is-ok{border-color:color-mix(in srgb,var(--green) 35%,var(--line));background:color-mix(in srgb,var(--green) 8%,var(--paper));}.diagnostic-item strong{display:block;color:var(--ink);}.diagnostic-item span{display:block;margin-top:2px;color:var(--ink-soft);}
     body.dark-mode .profile-shell{background:var(--surface);border-color:var(--line);}body.dark-mode .profile-item{background:var(--paper);border-color:var(--line);}body.dark-mode .profile-avatar,body.dark-mode .profile-item-icon{background:color-mix(in srgb,var(--accent) 14%,var(--surface));border-color:color-mix(in srgb,var(--accent) 26%,transparent);}
 
-  /* V.19-13 — Perfil estilo painel de configurações (claro/escuro/temas) */
+  /* V.19-14 — Perfil estilo painel de configurações (claro/escuro/temas) */
   #viewProfile .profile-shell{
     background:transparent;
     border:0;
@@ -2201,6 +2201,12 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
       <button type="button" id="btnExportBillsPdf">📄 Exportar PDF</button>
       <button type="button" id="btnExportBillsXlsx">📊 Exportar Excel</button>
     </div>
+    <div class="bills-status-filter" id="billsStatusFilter" role="group" aria-label="Filtrar por estado">
+      <button type="button" data-bills-status="" class="is-active">Todos</button>
+      <button type="button" data-bills-status="pendente">Pendentes</button>
+      <button type="button" data-bills-status="atrasado">Atrasadas</button>
+      <button type="button" data-bills-status="pago">Pagas</button>
+    </div>
     <div class="card" style="padding:16px; margin-bottom:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
         <button type="button" id="btnBillPrev">‹</button>
@@ -2260,7 +2266,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
     <div class="cards-toolbar">
       <div>
         <h2 style="margin:0 0 4px;font-size:20px;">Cartões</h2>
-        <p class="hint">Cadastre seus cartões e registre as compras vinculadas a cada cartão. Nesta fase, compras ainda não geram faturas nem lançamentos no Livro-Caixa.</p>
+        <p class="hint">Cadastre cartões e compras. Faturas do ciclo aparecem aqui e no Calendário. Marcar como pago não lança no Livro-Caixa; Lançar registra a saída.</p>
       </div>
       <button class="primary" id="btnNovoCard">+ Novo Cartão</button>
     </div>
@@ -5326,7 +5332,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-13 (GROK)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-14 (GROK)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -6321,6 +6327,7 @@ ${JSON.stringify(snapshot)}
 
   let editingBillId = null;
   let billViewDate = new Date();
+  let billsStatusFilter = ''; // ""|pendente|atrasado|pago
   function billMonthKey(date){ return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`; }
   function billAppliesToMonth(bill, year, month){
     if (!bill.active) return false;
@@ -6687,67 +6694,112 @@ VALOR: ${fmt(bill.amount)}
     document.getElementById('billMonthLabel').textContent=billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
     populateBillTitularFilter();
     const titularFilter = document.getElementById('billTitularFilter')?.value || '';
-    const rows=calendarBillRows(), active=rows.map(row=>row.bill);
-    const unsettled=rows.filter(row=>!row.settled);
-    const settledCount=rows.filter(row=>row.settled).length;
+    const statusFilter = billsStatusFilter || '';
+    document.querySelectorAll('#billsStatusFilter [data-bills-status]').forEach(btn => {
+      btn.classList.toggle('is-active', (btn.getAttribute('data-bills-status') || '') === statusFilter);
+    });
+    const rows=calendarBillRows();
     const allInvoiceRows=calendarInvoiceRows(y,m);
     const invoiceRows=titularFilter?allInvoiceRows.map(inv=>({...inv, breakdown:inv.breakdown.filter(b=>b.titular===titularFilter)})).filter(inv=>inv.breakdown.length):allInvoiceRows;
     const invoiceDisplayTotal=row=>titularFilter?row.breakdown.reduce((s,b)=>s+b.total,0):row.invoice.total;
-    const total=active.reduce((sum,bill)=>sum+Number(bill.amount||0),0) + invoiceRows.reduce((sum,row)=>sum+invoiceDisplayTotal(row),0);
-    const overdue=unsettled.filter(row=>row.status==='Atrasado').length + invoiceRows.filter(row=>row.dueDate<today_ISO_safe()).length;
-    document.getElementById('billsSummary').innerHTML=`<div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pagas / Lançadas</span><span class="amount">${settledCount}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${unsettled.length}</span></div><div class="balance-card"><span class="label">Atrasadas</span><span class="amount">${overdue}</span></div><div class="balance-card"><span class="label">Faturas de cartão</span><span class="amount">${invoiceRows.length}</span></div>`;
+    const invoiceSettled = row => row.breakdown.length>0 && row.breakdown.every(b => b.status==='Pago');
+    const invoiceOverdue = row => !invoiceSettled(row) && row.dueDate < todayISO();
+    const invoicePending = row => !invoiceSettled(row) && !invoiceOverdue(row);
+
+    const matchBillStatus = (row) => {
+      if (!statusFilter) return true;
+      if (statusFilter === 'pago') return !!row.settled;
+      if (statusFilter === 'atrasado') return !row.settled && row.status === 'Atrasado';
+      if (statusFilter === 'pendente') return !row.settled && row.status === 'Pendente';
+      return true;
+    };
+    const matchInvStatus = (row) => {
+      if (!statusFilter) return true;
+      if (statusFilter === 'pago') return invoiceSettled(row);
+      if (statusFilter === 'atrasado') return invoiceOverdue(row);
+      if (statusFilter === 'pendente') return invoicePending(row);
+      return true;
+    };
+
+    const openBillRows = rows.filter(r => !r.settled && matchBillStatus(r));
+    const paidBillRows = rows.filter(r => r.settled && (statusFilter === '' || statusFilter === 'pago'));
+    const openInvoiceRows = invoiceRows.filter(r => !invoiceSettled(r) && matchInvStatus(r));
+    const paidInvoiceRows = invoiceRows.filter(r => invoiceSettled(r) && (statusFilter === '' || statusFilter === 'pago'));
+
+    const unsettled=rows.filter(row=>!row.settled);
+    const settledCount=rows.filter(row=>row.settled).length + invoiceRows.filter(invoiceSettled).length;
+    const total=rows.reduce((sum,row)=>sum+Number(row.bill.amount||0),0) + invoiceRows.reduce((sum,row)=>sum+invoiceDisplayTotal(row),0);
+    const overdue=unsettled.filter(row=>row.status==='Atrasado').length + invoiceRows.filter(invoiceOverdue).length;
+    const pendingCount = unsettled.filter(row=>row.status==='Pendente').length + invoiceRows.filter(invoicePending).length;
+    document.getElementById('billsSummary').innerHTML=`<div class="bills-summary-grid"><div class="balance-card"><span class="label">Contas do mês</span><span class="amount">${fmt(total)}</span></div><div class="balance-card"><span class="label">Pagas</span><span class="amount">${settledCount}</span></div><div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pendingCount}</span></div><div class="balance-card"><span class="label">Atrasadas</span><span class="amount">${overdue}</span></div><div class="balance-card"><span class="label">Faturas de cartão</span><span class="amount">${invoiceRows.length}</span></div></div>`;
+
     const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate(), names=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']; let html=names.map(n=>`<div class="bill-weekday">${n}</div>`).join('');
     for(let i=0;i<first;i++) html+=`<div class="bill-day muted"></div>`;
     const today=todayISO();
-    for(let d=1;d<=days;d++){ const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; const events=rows.filter(row=>row.bill.recurrenceType==='nao_recorrente'||row.bill.frequency==='once'?row.dueDate===date:billDueDayFromStart(row.bill)===d); const invEvents=invoiceRows.filter(row=>row.dueDate===date); html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(row=>`<button type="button" class="bill-event ${row.settled?'paid':''}" onclick="openBillShare('${row.bill.id}')" title="${escapeHTML(row.bill.name)}${row.installmentLabel?' · Parcela '+row.installmentLabel:''} · ${fmt(row.bill.amount)} · ${escapeHTML(row.status)}">${escapeHTML(row.bill.name)}${row.installmentLabel?' '+row.installmentLabel:''} · ${fmt(row.bill.amount)}</button>`).join('')}${invEvents.map(row=>`<button type="button" class="bill-event card-invoice" onclick="toggleInvoiceDetail('${row.card.id}')" title="Fatura ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}">💳 ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}</button>`).join('')}</div>`; }
+    for(let d=1;d<=days;d++){
+      const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const events=rows.filter(row=>row.bill.recurrenceType==='nao_recorrente'||row.bill.frequency==='once'?row.dueDate===date:billDueDayFromStart(row.bill)===d);
+      const invEvents=invoiceRows.filter(row=>row.dueDate===date);
+      html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(row=>`<button type="button" class="bill-event ${row.settled?'paid':''}" onclick="openBillShare('${row.bill.id}')" title="${escapeHTML(row.bill.name)}${row.installmentLabel?' · Parcela '+row.installmentLabel:''} · ${fmt(row.bill.amount)} · ${escapeHTML(row.status)}">${escapeHTML(row.bill.name)}${row.installmentLabel?' '+row.installmentLabel:''} · ${fmt(row.bill.amount)}</button>`).join('')}${invEvents.map(row=>`<button type="button" class="bill-event card-invoice ${invoiceSettled(row)?'paid':''}" onclick="toggleInvoiceDetail('${row.card.id}')" title="Fatura ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}">💳 ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}</button>`).join('')}</div>`;
+    }
     document.getElementById('billCalendar').innerHTML=html;
-    const billsHtml=rows.slice().sort((a,b)=>billDueDayFromStart(a.bill)-billDueDayFromStart(b.bill)).map(row=>{const b=row.bill; const payBtn=row.launched?'':(row.paidOnly?`<button type="button" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`:`<button type="button" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`); return `<div class="bill-list-item"><div><strong>${escapeHTML(b.name)}${row.installmentLabel?` · Parcela ${row.installmentLabel}`:''}</strong><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente')} · Banco: ${escapeHTML(row.bank)} · ${fmt(b.amount)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}${b.desc?' · '+escapeHTML(b.desc):''}</div></div><span class="bill-status ${row.status==='Atrasado'?'overdue':''}">${row.status}</span><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button>${payBtn}<button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;}).join('');
-    const invoicesHtml=invoiceRows.map(row=>{
+
+    const renderBillItem = (row) => {
+      const b=row.bill;
+      const statusClass = row.settled ? 'is-paid' : (row.status==='Atrasado'?'overdue':'');
+      const statusLabel = row.status==='Pago — não lançado' ? 'Pago' : (row.status==='Lançado' ? 'Lançado' : row.status);
+      const payBtn=row.launched?'':(row.paidOnly?`<button type="button" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`:`<button type="button" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`);
+      return `<div class="bill-list-item"><div class="bill-list-item-top"><div><strong>${escapeHTML(b.name)}${row.installmentLabel?` · Parcela ${row.installmentLabel}`:''}</strong><div class="hint">${fmt(b.amount)} · ${b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente')} · Banco: ${escapeHTML(row.bank)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}</div></div><span class="bill-status ${statusClass}">${statusLabel}</span></div><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button>${payBtn}<button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;
+    };
+
+    const renderInvoiceItem = (row) => {
       const dueLabel=row.dueDate.split('-').reverse().join('/');
       const displayTotal=invoiceDisplayTotal(row);
-      const allPaid = row.breakdown.length>0 && row.breakdown.every(b=>b.status==='Pago');
+      const settled = invoiceSettled(row);
+      const statusLabel = settled ? 'Pago' : (invoiceOverdue(row) ? 'Atrasado' : 'Pendente');
+      const statusClass = settled ? 'is-paid' : (invoiceOverdue(row)?'overdue':'');
       const breakdown=row.breakdown.map(b=>{
         const safeTitular = escapeHTML(b.titular).replace(/'/g,"\\'");
         const rowId = `${escapeHTML(row.card.id)}-${safeTitular.replace(/[^a-zA-Z0-9]/g,'')}`;
-        const inputId = `partial-amount-${rowId}`;
-        const statusClass = b.status==='Pago' ? 'is-paid' : (b.status==='Parcial' ? 'is-partial' : 'overdue');
-        return `<div class="card-invoice-titular-row" style="display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px dashed var(--line);font-size:11px;max-width:100%;">
-          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 8px;max-width:100%;">
-            <div style="min-width:0;overflow-wrap:anywhere;"><strong>${escapeHTML(b.titular)}</strong> <span class="hint">(${b.count})</span></div>
-            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:100%;">
-              <span style="font-family:'IBM Plex Mono',monospace;white-space:nowrap;">${fmt(b.total)}</span>
-              <span class="bill-status ${statusClass}" style="font-size:9px;padding:2px 6px;white-space:nowrap;">${b.status}</span>
-            </div>
-          </div>
-          ${b.status!=='Pago' ? `<div class="hint" style="width:100%;">Restante: ${fmt(b.remaining)}${b.paid>0?` · Já pago: ${fmt(b.paid)}`:''}</div>` : ''}
-          <div style="display:flex;flex-wrap:wrap;gap:6px;">
-            ${b.status!=='Pago' ? `<button type="button" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${b.total},${b.remaining})" style="font-size:10px;padding:4px 8px;white-space:nowrap;">Lançar tudo (${fmt(b.remaining)})</button>
-            <button type="button" onclick="toggleInvoicePartialForm('${rowId}')" style="font-size:10px;padding:4px 8px;white-space:nowrap;">Lançar valor parcial</button>` : `<span class="hint">Quitado.</span>`}
-            <button type="button" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${b.total})" style="font-size:10px;padding:4px 8px;white-space:nowrap;">Compartilhar</button>
-          </div>
-          ${b.status!=='Pago' ? `<div id="partial-form-${rowId}" style="display:none;gap:6px;align-items:center;flex-wrap:wrap;">
-            <input type="text" id="${inputId}" data-money="true" placeholder="R$ 0,00" style="flex:1;min-width:120px;font-size:11px;padding:6px 8px;">
-            <button type="button" class="primary" onclick="confirmInvoicePartial('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${b.total},'${inputId}')" style="font-size:10px;padding:6px 10px;white-space:nowrap;">Confirmar</button>
-          </div>` : ''}
+        const markBtn = b.status==='Pago'
+          ? (b.paidOnly ? `<button type="button" onclick="unmarkInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}')">Desmarcar pago</button>` : `<span class="hint">Quitado no caixa</span>`)
+          : `<button type="button" onclick="markInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)})">Marcar pago</button>
+             <button type="button" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)},${Number(b.remaining||b.total||0)})">Lançar (${fmt(b.remaining||b.total)})</button>`;
+        return `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px dashed var(--line);font-size:11px;">
+          <div><strong>${escapeHTML(b.titular||'Sem titular')}</strong><div class="hint">${fmt(b.total)} · ${escapeHTML(b.status)}${b.paidOnly?' (sem lançamento)':''}</div></div>
+          <div class="bill-actions">${markBtn}<button type="button" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)})">Compartilhar</button></div>
         </div>`;
       }).join('');
-      return `<div class="bill-list-item card-invoice-row" id="invoice-${escapeHTML(row.card.id)}" style="min-width:0;"><div style="min-width:0;max-width:100%;overflow-wrap:anywhere;"><strong>💳 Fatura ${escapeHTML(row.card.name)}</strong><div class="hint">Vencimento: ${dueLabel} · ${row.invoice.count} compra(s)/parcela(s) · Fatura em si não é lançamento — cada titular é lançado separadamente abaixo</div><div class="card-invoice-breakdown" id="invoice-breakdown-${escapeHTML(row.card.id)}" style="margin-top:4px;min-width:0;">${breakdown||'<span class="hint">Sem detalhamento por titular.</span>'}</div></div><span class="bill-status ${allPaid?'is-paid':''}" style="align-self:flex-start;white-space:nowrap;">${fmt(displayTotal)}</span></div>`;
-    }).join('');
-    document.getElementById('billList').innerHTML=(billsHtml+invoicesHtml)||`<div class="empty">Nenhuma conta ou fatura para este mês.</div>`;
-    initMoneyMasks();
-  }
-  function today_ISO_safe(){ return todayISO(); }
-  window.toggleInvoiceDetail = function(cardId){
-    const box = document.getElementById('invoice-breakdown-' + cardId);
-    if (box) box.style.display = box.style.display === 'none' ? 'block' : 'none';
-    document.getElementById('invoice-' + cardId)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
+      return `<div class="bill-list-item" id="invoice-detail-${escapeHTML(row.card.id)}"><div class="bill-list-item-top"><div><strong>Fatura ${escapeHTML(row.card.name)}</strong><div class="hint">Venc. ${dueLabel} · ${fmt(displayTotal)} · Cartão</div></div><span class="bill-status ${statusClass}">${statusLabel}</span></div>${breakdown}</div>`;
+    };
 
+    let listHtml = '';
+    if (statusFilter === 'pago') {
+      const paidItems = paidBillRows.map(renderBillItem).join('') + paidInvoiceRows.map(renderInvoiceItem).join('');
+      listHtml = paidItems || '<div class="empty">Nenhuma conta paga neste período.</div>';
+    } else {
+      const main = openBillRows.slice().sort((a,b)=>billDueDayFromStart(a.bill)-billDueDayFromStart(b.bill)).map(renderBillItem).join('')
+        + openInvoiceRows.map(renderInvoiceItem).join('');
+      listHtml = main || (statusFilter ? '<div class="empty">Nenhum item neste filtro.</div>' : '<div class="empty">Nenhuma conta pendente neste mês.</div>');
+      if (statusFilter === '' && (paidBillRows.length || paidInvoiceRows.length)) {
+        const paidInner = paidBillRows.map(renderBillItem).join('') + paidInvoiceRows.map(renderInvoiceItem).join('');
+        listHtml += `<details class="bills-paid-accordion"><summary>Pagas (${paidBillRows.length + paidInvoiceRows.length})</summary><div class="bills-paid-body">${paidInner}</div></details>`;
+      }
+    }
+    const listEl = document.getElementById('billList');
+    if (listEl) listEl.innerHTML = listHtml;
+  }
 
   function billsExportRows() { return calendarBillRows().map(({bill,dueDate,status,launched,bank}) => ({ 'Conta/Fatura': bill.name || '', 'Titular': bill.titular || '', 'Valor': Number(bill.amount || 0), 'Vencimento': dueDate.split('-').reverse().join('/'), 'Banco': bank, 'Status': status, 'Recorrente': bill.recurrenceType === 'nao_recorrente' ? 'Não' : 'Sim', 'Periodicidade': bill.frequency === 'once' ? 'Única' : 'Mensal', 'Observação': bill.desc || '' })); }
   function exportBillsXlsx() { const rows=billsExportRows(); if (!window.XLSX) { alert('A biblioteca de Excel não está disponível.'); return; } const sheet=XLSX.utils.json_to_sheet(rows); sheet['!cols']=[{wch:24},{wch:18},{wch:13},{wch:14},{wch:22},{wch:14},{wch:12},{wch:15},{wch:36}]; const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,sheet,'Calendário'); XLSX.writeFile(book,`calendario-${billMonthKey(billViewDate)}.xlsx`); logInfo('Calendário','Exportar Excel','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
   function exportBillsPdf() { const rows=billsExportRows(); const Pdf=window.jspdf?.jsPDF; if (!Pdf) { alert('A biblioteca de PDF não está disponível.'); return; } const doc=new Pdf({unit:'pt',format:'a4'}); const margin=36; let y=42; doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text('Calendário financeiro',margin,y); y+=22; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(`Período: ${billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`,margin,y); doc.text(`Total de contas: ${rows.length} · Total previsto: ${fmt(rows.reduce((sum,row)=>sum+Number(row.Valor||0),0))}`,margin,y+14); y+=38; doc.setFontSize(8); rows.forEach(row=>{ if(y>760){doc.addPage();y=42;} const line=`${row['Vencimento']} · ${row['Conta/Fatura']} · ${row['Titular']||'Sem titular'} · ${fmt(row['Valor'])} · ${row['Status']}`; doc.text(doc.splitTextToSize(line,520),margin,y); y+=14; }); doc.save(`calendario-${billMonthKey(billViewDate)}.pdf`); logInfo('Calendário','Exportar PDF','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
   document.getElementById('billTitularFilter').addEventListener('change', renderBills);
+  document.getElementById('billsStatusFilter')?.addEventListener('click', (ev) => {
+    const btn = ev.target.closest('[data-bills-status]');
+    if (!btn) return;
+    billsStatusFilter = btn.getAttribute('data-bills-status') || '';
+    renderBills();
+  });
   document.getElementById('btnExportBillsPdf').addEventListener('click', exportBillsPdf);
   document.getElementById('btnExportBillsXlsx').addEventListener('click', exportBillsXlsx);
   document.getElementById('btnCopyBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { await navigator.clipboard.writeText(text); } catch (err) { const field=document.getElementById('billShareMessage'); field.focus(); field.select(); document.execCommand('copy'); } document.getElementById('billShareStatus').textContent='Mensagem copiada. Nenhum envio foi realizado.'; logInfo('Calendário','Copiar compartilhamento','Sucesso','Mensagem individual copiada para revisão do usuário.'); });
@@ -7681,6 +7733,7 @@ document.getElementById('btnNovo').onclick = () => {
     return Number(launch.amount || 0); // formato antigo (lançamento único, tudo ou nada)
   }
   function invoiceLaunchStatus(launch, totalAmount) {
+    if (launch && launch.markedPaidOnly) return 'Pago';
     const paid = invoiceLaunchAmountPaid(launch);
     if (paid <= 0.004) return 'Pendente';
     if (paid + 0.004 < Number(totalAmount || 0)) return 'Parcial';
@@ -7767,6 +7820,85 @@ VALOR: ${fmt(pseudoBill.amount)}
     document.getElementById('billShareStatus').textContent = '';
     openModal('panelBillShare');
   };
+
+  // V.19-14 — marcar fatura de cartão como paga SEM lançar no Livro-Caixa
+  function invoiceMarkedPaidOnly(cardId, closingPeriodKey, titular) {
+    const launch = invoiceLaunchFor(cardId, closingPeriodKey, titular);
+    return !!(launch && launch.markedPaidOnly);
+  }
+  async function markInvoicePaidOnly(cardId, closingPeriodKey, titular, totalAmount) {
+    const card = cards.find(c => c.id === cardId);
+    if (!card) return;
+    const id = invoiceLaunchId(cardId, closingPeriodKey, titular);
+    const existing = invoiceLaunches.find(x => x.id === id);
+    if (existing && invoiceLaunchStatus(existing, totalAmount) === 'Pago' && !existing.markedPaidOnly) {
+      alert('Esta fatura já foi lançada no Livro-Caixa.');
+      return;
+    }
+    const prev = existing ? JSON.parse(JSON.stringify(existing)) : null;
+    const record = {
+      id,
+      cardId,
+      closingPeriodKey,
+      titular: titular || '',
+      markedPaidOnly: true,
+      amount: 0,
+      payments: Array.isArray(existing?.payments) ? existing.payments : [],
+      updatedAt: todayISO()
+    };
+    if (existing) {
+      const idx = invoiceLaunches.findIndex(x => x.id === id);
+      invoiceLaunches[idx] = { ...existing, ...record };
+    } else {
+      invoiceLaunches.push(record);
+    }
+    try {
+      await persistAll();
+      logInfo('Cartões', 'Marcar fatura como paga', 'Sucesso', `Fatura ${card.name} (${closingPeriodKey}) marcada como paga sem lançamento.`);
+    } catch (err) {
+      if (prev) {
+        const idx = invoiceLaunches.findIndex(x => x.id === id);
+        if (idx >= 0) invoiceLaunches[idx] = prev;
+      } else {
+        invoiceLaunches = invoiceLaunches.filter(x => x.id !== id);
+      }
+      logSyncError('marcar fatura como paga', err);
+      alert('Não foi possível salvar. Tente novamente.');
+    } finally {
+      renderBills();
+      renderCards();
+      renderNotifications();
+    }
+  }
+  async function unmarkInvoicePaidOnly(cardId, closingPeriodKey, titular) {
+    const id = invoiceLaunchId(cardId, closingPeriodKey, titular);
+    const existing = invoiceLaunches.find(x => x.id === id);
+    if (!existing || !existing.markedPaidOnly) return;
+    const prev = JSON.parse(JSON.stringify(existing));
+    // se não há payments, remove o registro; senão só tira a flag
+    if (!Array.isArray(existing.payments) || existing.payments.length === 0) {
+      invoiceLaunches = invoiceLaunches.filter(x => x.id !== id);
+    } else {
+      existing.markedPaidOnly = false;
+    }
+    try {
+      await persistAll();
+      logInfo('Cartões', 'Desmarcar fatura paga', 'Sucesso', `Status pago removido (${closingPeriodKey}).`);
+    } catch (err) {
+      const idx = invoiceLaunches.findIndex(x => x.id === id);
+      if (idx >= 0) invoiceLaunches[idx] = prev;
+      else invoiceLaunches.push(prev);
+      logSyncError('desmarcar fatura paga', err);
+      alert('Não foi possível atualizar. Tente novamente.');
+    } finally {
+      renderBills();
+      renderCards();
+      renderNotifications();
+    }
+  }
+  window.markInvoicePaidOnly = markInvoicePaidOnly;
+  window.unmarkInvoicePaidOnly = unmarkInvoicePaidOnly;
+
   function calendarInvoiceRows(year, month) {
     const dueMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
     return cards.filter(card => card.active !== false).map(card => {
@@ -7777,7 +7909,9 @@ VALOR: ${fmt(pseudoBill.amount)}
         const launch = invoiceLaunchFor(card.id, closingPeriodKey, item.titular);
         const paid = invoiceLaunchAmountPaid(launch);
         const status = invoiceLaunchStatus(launch, item.total);
-        return { ...item, paid, remaining: Math.max(0, item.total - paid), status, launched: status === 'Pago' };
+        const paidOnly = !!(launch && launch.markedPaidOnly);
+        const launched = status === 'Pago' && !paidOnly && paid > 0.004;
+        return { ...item, paid: paidOnly ? item.total : paid, remaining: paidOnly ? 0 : Math.max(0, item.total - paid), status, launched, paidOnly };
       });
       return { card, invoice, closingPeriodKey, dueDate: invoiceDueDateForPeriod(card, closingPeriodKey), breakdown };
     }).filter(Boolean);
@@ -7806,7 +7940,7 @@ VALOR: ${fmt(pseudoBill.amount)}
         <div class="credit-card-purchases"><div class="credit-card-purchases-head"><strong>Compras vinculadas</strong><button type="button" class="action-btn" onclick="openPurchaseModal('${card.id}')" ${card.active === false ? 'disabled' : ''}>+ Compra</button></div>
           ${cardPurchases.length ? cardPurchases.map(p => { const cat=categories.find(c=>c.id===p.categoryId)?.name || 'Sem categoria'; const parcel=p.paymentType==='parcelado' ? ` · ${p.totalInstallments}x de ${fmt(p.installmentValue)}` : ' · À vista'; return `<div class="credit-card-purchase"><div class="credit-card-purchase-main"><strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong><span>${(p.date || '').split('-').reverse().join('/')} · ${escapeHTML(p.titular || 'Sem titular')} · ${escapeHTML(cat)}${parcel}</span></div><div class="credit-card-purchase-value">${fmt(p.totalValue)}</div><div class="credit-card-actions" style="grid-column:1/-1"><button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar compra"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir compra"></button></div></div>`; }).join('') : '<div class="credit-card-empty">Nenhuma compra vinculada a este cartão.</div>'}
         </div>
-        <div class="credit-card-actions"><button type="button" class="action-btn" onclick="editCard('${card.id}')">Editar</button><button type="button" class="action-btn" onclick="toggleCardActive('${card.id}')">${card.active === false ? 'Ativar' : 'Desativar'}</button></div>
+        <div class="credit-card-actions"><button type="button" class="action-btn" onclick="editCard('${card.id}')">Editar</button><button type="button" class="action-btn" onclick="toggleCardActive('${card.id}')">${card.active === false ? 'Ativar' : 'Desativar'}</button><button type="button" class="action-btn danger" onclick="deleteCard('${card.id}')">Excluir</button></div>
       </article>`;
     }).join('');
   }
@@ -7817,6 +7951,31 @@ VALOR: ${fmt(pseudoBill.amount)}
     const card = cards.find(c => c.id === id); if (!card) return;
     card.active = card.active === false;
     try { await persistAll(); renderCards(); logInfo('Cartões','Alterar status do cartão','Sucesso',`${card.name} agora está ${card.active ? 'ativo' : 'inativo'}.`); } catch (err) { card.active = !card.active; logSyncError('status do cartão', err); renderCards(); }
+  };
+  window.deleteCard = async id => {
+    const card = cards.find(c => c.id === id);
+    if (!card) return;
+    const linked = purchases.filter(p => p.cardId === id);
+    const msg = linked.length
+      ? `Excluir o cartão "${card.name}" e ${linked.length} compra(s) vinculada(s)?\n\nLançamentos já feitos no Livro-Caixa não serão apagados.`
+      : `Excluir o cartão "${card.name}"? Esta ação não pode ser desfeita.`;
+    if (!confirm(msg)) return;
+    const prevCards = cards.slice();
+    const prevPurchases = purchases.slice();
+    cards = cards.filter(c => c.id !== id);
+    purchases = purchases.filter(p => p.cardId !== id);
+    try {
+      await persistAll();
+      renderCards();
+      renderBills();
+      logInfo('Cartões', 'Excluir cartão', 'Sucesso', `${card.name} excluído (${linked.length} compra(s) removida(s)).`);
+    } catch (err) {
+      cards = prevCards;
+      purchases = prevPurchases;
+      logSyncError('exclusão de cartão', err);
+      renderCards();
+      alert('Não foi possível excluir o cartão.');
+    }
   };
   window.deletePurchase = async id => {
     const purchase = purchases.find(p => p.id === id); if (!purchase) return;
