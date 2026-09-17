@@ -3765,3 +3765,203 @@ body.dark-mode #panelNovo #btnQuickCat{
   margin-top:4px;
 }
 
+
+/* V19-17 — Remodelação visual da modal Transferência universal */
+#panelTransferencia{
+  width:min(100%,640px);
+  max-width:640px;
+  max-height:100svh;
+  margin:0 auto;
+  padding:14px 16px calc(12px + env(safe-area-inset-bottom,0px));
+  background:var(--paper);
+  color:var(--ink);
+  border:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+  border-radius:28px;
+  box-shadow:0 -18px 50px rgba(20,48,36,.20);
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+
+#panelTransferencia::before{
+  content:"";
+  display:block;
+  width:42px;
+  height:4px;
+  margin:-4px auto 10px;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--ink-soft) 28%,transparent);
+}
+
+#panelTransferencia h3{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 0 12px;
+  padding:0 0 4px;
+  border:0;
+  color:var(--ink);
+  font-size:18px;
+  font-weight:800;
+  letter-spacing:-.035em;
+}
+
+#panelTransferencia .modal-close{
+  flex:0 0 auto;
+  width:36px;
+  height:36px;
+  min-width:36px;
+  border:0;
+  border-radius:50%;
+  background:var(--paper-2);
+  color:var(--ink-soft);
+  font-size:22px;
+  box-shadow:none;
+}
+
+#panelTransferencia .modal-close:hover{
+  background:var(--green-soft);
+  color:var(--accent);
+}
+
+#panelTransferencia .form-grid{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+#panelTransferencia .form-grid > div{
+  width:100%;
+  margin:0!important;
+}
+
+/* Ordem visual: Valor → Origem → Destino → Data → Observação → IA → Transferir */
+#panelTransferencia .form-grid > div:nth-child(4){order:-10;}
+#panelTransferencia .form-grid > div:nth-child(2){order:-9;}
+#panelTransferencia .form-grid > div:nth-child(3){order:-8;}
+#panelTransferencia .form-grid > div:nth-child(1){order:-7;}
+#panelTransferencia .form-grid > div:nth-child(5){order:-6;}
+#panelTransferencia .form-grid > div:nth-child(6){order:5;}
+#panelTransferencia .form-grid > div:nth-child(7){order:6;}
+
+#panelTransferencia .form-grid > div:nth-child(4) label{
+  display:none;
+}
+
+#panelTransferencia #tValor{
+  width:100%;
+  height:52px;
+  padding:0 2px 5px;
+  border:0;
+  border-bottom:2px solid var(--accent);
+  border-radius:0;
+  background:transparent;
+  color:var(--ink);
+  font-size:32px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:.6px;
+  box-shadow:none;
+}
+
+#panelTransferencia #tValor::placeholder{
+  color:color-mix(in srgb,var(--ink-soft) 52%,transparent);
+  opacity:1;
+}
+
+#panelTransferencia label{
+  display:block;
+  margin:0 0 4px;
+  color:var(--green);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+
+#panelTransferencia input:not(#tValor),
+#panelTransferencia select{
+  width:100%;
+  min-height:42px;
+  padding:9px 12px;
+  border:1px solid color-mix(in srgb,var(--line) 78%,transparent);
+  border-radius:13px;
+  background:var(--surface);
+  color:var(--ink);
+  box-shadow:0 2px 8px rgba(20,48,36,.035);
+}
+
+#panelTransferencia input:not(#tValor):focus,
+#panelTransferencia select:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent);
+  outline:none;
+}
+
+#panelTransferencia #tValor:focus,
+#panelTransferencia #tValor:focus-visible{
+  outline:none!important;
+  box-shadow:none!important;
+}
+
+#panelTransferencia #btnReadTransferReceipt{
+  width:100%;
+  min-height:40px;
+  border:1px solid color-mix(in srgb,var(--accent) 38%,var(--line));
+  border-radius:999px;
+  background:transparent;
+  color:var(--green);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+#panelTransferencia #btnReadTransferReceipt:hover{
+  background:var(--green-soft);
+  border-color:var(--accent);
+}
+
+#panelTransferencia #transferReceiptFileStatus{
+  color:var(--ink-soft);
+  text-align:center;
+  line-height:1.35;
+}
+
+#panelTransferencia #tSalvar{
+  width:100%;
+  min-height:44px;
+  border:0;
+  border-radius:999px;
+  background:var(--surface-accent);
+  color:var(--accent-ink);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  box-shadow:0 8px 18px color-mix(in srgb,var(--surface-accent) 22%,transparent);
+}
+
+#panelTransferencia #tSalvar:hover{
+  transform:translateY(-1px);
+}
+
+@media (min-width:700px){
+  #panelTransferencia{
+    margin:auto;
+    padding:24px;
+  }
+  #panelTransferencia::before{
+    display:none;
+  }
+}
+
+body.dark-mode #panelTransferencia{
+  box-shadow:0 -18px 50px rgba(0,0,0,.42);
+}
+
+body.dark-mode #panelTransferencia input:not(#tValor),
+body.dark-mode #panelTransferencia select{
+  box-shadow:none;
+}
+
