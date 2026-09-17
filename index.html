@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-17">
+  <link rel="stylesheet" href="./styles.css?v=19-16b">
 </head>
 <body>
 
@@ -4778,8 +4778,36 @@ VALOR: ${fmt(bill.amount)}
       const b=row.bill;
       const statusClass = row.settled ? 'is-paid' : (row.status==='Atrasado'?'overdue':'');
       const statusLabel = row.status==='Pago — não lançado' ? 'Pago' : (row.status==='Lançado' ? 'Lançado' : row.status);
-      const payBtn=row.launched?'':(row.paidOnly?`<button type="button" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`:`<button type="button" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`);
-      return `<div class="bill-list-item"><div class="bill-list-item-top"><div><strong>${escapeHTML(b.name)}${row.installmentLabel?` · Parcela ${row.installmentLabel}`:''}</strong><div class="bill-list-item-amount">${fmt(b.amount)}</div><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente')} · Banco: ${escapeHTML(row.bank)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}</div></div><span class="bill-status ${statusClass}">${statusLabel}</span></div><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button>${payBtn}<button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><div class="bill-more-wrap"><button type="button" class="bill-more-button" aria-label="Mais opções" aria-expanded="false" onclick="toggleBillMenu('${b.id}')">•••</button><div class="bill-more-menu" id="bill-more-${b.id}" hidden><button type="button" onclick="editBill('${b.id}');closeBillMenus()">Editar</button><button type="button" onclick="deleteBill('${b.id}');closeBillMenus()">Excluir</button></div></div></div></div>`;
+      const payBtn=row.launched?'':(row.paidOnly
+        ? `<button type="button" class="bill-action-btn" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`
+        : `<button type="button" class="bill-action-btn" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`);
+      const meta = [
+        b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente'),
+        'Banco: '+escapeHTML(row.bank),
+        b.titular ? 'Titular: '+escapeHTML(b.titular) : ''
+      ].filter(Boolean).join(' · ');
+      return `<div class="bill-list-item bill-account-card">
+        <div class="invoice-card-header">
+          <div class="invoice-card-title">
+            <strong>${escapeHTML(b.name)}${row.installmentLabel?` · ${escapeHTML(row.installmentLabel)}`:''}</strong>
+            <div class="bill-list-item-amount">${fmt(b.amount)}</div>
+            <div class="hint">${meta}</div>
+          </div>
+          <span class="bill-status ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="bill-actions invoice-titular-actions">
+          <button type="button" class="bill-action-btn primary-outline" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button>
+          ${payBtn}
+          <button type="button" class="bill-action-btn" onclick="openBillShare('${b.id}')">Compartilhar</button>
+          <div class="bill-more-wrap">
+            <button type="button" class="bill-action-btn bill-more-button" aria-label="Mais opções" aria-expanded="false" onclick="toggleBillMenu('${b.id}')">•••</button>
+            <div class="bill-more-menu" id="bill-more-${b.id}" hidden>
+              <button type="button" onclick="editBill('${b.id}');closeBillMenus()">Editar</button>
+              <button type="button" onclick="deleteBill('${b.id}');closeBillMenus()">Excluir</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
     };
 
     const renderInvoiceItem = (row) => {

@@ -2903,16 +2903,26 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
 }
 
 
-/* V.19-17 — cards de fatura legíveis no mobile */
-.invoice-card-item{
+
+/* V.19-16 — cards de contas e faturas (compactos + espaçados) */
+#billList{
   display:flex;
   flex-direction:column;
-  gap:12px;
-  padding:14px;
+  gap:14px;
+}
+.bill-list-item,
+.invoice-card-item,
+.bill-account-card{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:12px 14px;
   border:1px solid var(--line);
   border-radius:16px;
   background:var(--surface);
   min-width:0;
+  margin:0;
+  box-shadow:0 1px 3px color-mix(in srgb, var(--shadow) 40%, transparent);
 }
 .invoice-card-header{
   display:flex;
@@ -2926,30 +2936,47 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
 }
 .invoice-card-title strong{
   display:block;
-  font-size:15px;
+  font-size:14px;
   line-height:1.25;
+  font-weight:800;
+}
+.bill-list-item-amount{
+  margin-top:2px;
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+  line-height:1.15;
+}
+.invoice-card-title .hint,
+.bill-list-item .hint{
+  margin-top:2px;
+  font-size:11px;
+  line-height:1.35;
+  color:var(--ink-soft);
 }
 .invoice-card-breakdown{
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:8px;
   border-top:1px solid var(--line);
-  padding-top:10px;
+  padding-top:8px;
 }
 .invoice-titular-block{
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:6px;
   min-width:0;
 }
 .invoice-titular-head{
   display:flex;
   flex-direction:column;
-  gap:2px;
+  gap:1px;
   min-width:0;
 }
 .invoice-titular-head strong{
-  font-size:13px;
+  font-size:12px;
+  font-weight:800;
 }
 .invoice-titular-actions,
 .bill-actions{
@@ -2961,9 +2988,9 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
 .bill-action-btn,
 .bill-actions > button{
   flex:1 1 calc(50% - 8px);
-  min-width:min(100%, 140px);
-  min-height:40px;
-  padding:8px 12px;
+  min-width:min(100%, 132px);
+  min-height:36px;
+  padding:6px 10px;
   border:1px solid var(--line);
   border-radius:999px;
   background:var(--paper);
@@ -2974,17 +3001,27 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   white-space:nowrap;
   box-sizing:border-box;
 }
-.bill-action-btn.primary-outline{
+.bill-action-btn.primary-outline,
+.bill-actions > button.primary-outline{
   border-color:var(--accent);
   color:var(--accent);
 }
-.bill-list-item-amount{
-  margin-top:4px;
-  font-size:22px;
-  font-weight:800;
-  letter-spacing:-.02em;
-  font-variant-numeric:tabular-nums;
+.bill-action-btn:disabled,
+.bill-actions > button:disabled{
+  opacity:.55;
+}
+.bill-more-wrap{
+  flex:1 1 calc(50% - 8px);
+  min-width:min(100%, 132px);
+  position:relative;
+}
+.bill-more-wrap .bill-more-button{
+  width:100%;
 }
 .bill-list-item .bill-status{
   flex-shrink:0;
+  margin-top:2px;
+}
+.bills-paid-accordion{
+  margin-top:4px;
 }
