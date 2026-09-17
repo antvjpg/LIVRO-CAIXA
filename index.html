@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-16-ui2">
+  <link rel="stylesheet" href="./styles.css?v=19-16-fs2">
 </head>
 <body>
 
@@ -146,18 +146,6 @@
   </div>
 
   <div class="balance-strip" id="balanceStrip"></div>
-  <section class="daily-insight-card" id="dailyInsightCard" aria-label="Insight financeiro">
-    <div class="daily-insight-head">
-      <div>
-        <span class="daily-insight-kicker">Insight do dia</span>
-        <strong>Análise assistida</strong>
-      </div>
-      <button type="button" id="btnDailyInsight" class="daily-insight-btn">Gerar insight</button>
-    </div>
-    <div id="dailyInsightBody" class="daily-insight-body">
-      <p class="hint">Uma leitura objetiva da sua situação financeira, gerada no máximo uma vez por dia. Nenhum dado é alterado.</p>
-    </div>
-  </section>
 
   <!-- V18-12: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
   <section class="period-bar" id="universalPeriodBar" aria-label="Período de visualização">
@@ -366,6 +354,40 @@
         </div>
 
       </div>
+
+      
+      <div class="profile-group">
+        <div class="profile-group-title">Sugestões de automação</div>
+        <div class="feature-lab-section">
+
+          <div class="automation-recs" id="automationRecs">
+            <div class="automation-recs-title">Sugestões úteis</div>
+            <div class="automation-rec-item">
+              <div>
+                <strong>Cotação automática</strong>
+                <small>Atualiza preços de criptos periodicamente. Ative “Atualizar cotações automaticamente” acima se quiser.</small>
+              </div>
+              <button type="button" class="bill-action-btn" id="btnRecEnableQuotes">Ver opção</button>
+            </div>
+            <div class="automation-rec-item">
+              <div>
+                <strong>Lembretes de contas</strong>
+                <small>Avisa vencimentos próximos. Não cria lançamentos sozinho.</small>
+              </div>
+              <button type="button" class="bill-action-btn" id="btnRecEnableReminders">Ver opção</button>
+            </div>
+            <div class="automation-rec-item">
+              <div>
+                <strong>Lançar recorrências</strong>
+                <small>Sugere registrar contas do mês. Continua exigindo sua confirmação conforme as regras do app.</small>
+              </div>
+              <button type="button" class="bill-action-btn" id="btnRecEnableBills">Ver opção</button>
+            </div>
+          </div>
+
+          <p class="hint" style="margin:8px 0 0;">Nenhuma sugestão é ativada sozinha — só você liga a automação.</p>
+        </div>
+      </div>
 <div class="profile-group">
         <div class="profile-group-title">Orçamento</div>
         <div class="feature-lab-section">
@@ -415,11 +437,6 @@
           <div class="feature-lab-actions" style="margin-top:8px;flex-wrap:wrap;gap:8px;">
             <button type="button" id="btnEnableBiometric">Usar biometria neste aparelho</button>
             <button type="button" id="btnDisableBiometric">Desativar biometria</button>
-          </div>
-          <div class="feature-lab-fields" style="margin-top:10px;">
-            <div><label for="featurePinIdleMinutes">Pedir PIN após inatividade (minutos)</label>
-            <input type="number" id="featurePinIdleMinutes" min="0" max="240" step="1" value="5" title="0 = pedir sempre ao voltar">
-            </div>
           </div>
           <p class="hint" id="biometricHint" style="margin-top:6px;">A biometria desbloqueia o app no lugar do PIN, quando o aparelho permitir. O PIN continua como reserva.</p>
           <div id="pinSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
@@ -487,15 +504,12 @@
   <button type="button" id="fabAdd" class="fab-add" title="Adicionar" aria-label="Adicionar"><svg class="add-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
 
   <div class="modal-overlay" id="modalOverlay">
-    <div class="panel panel-beta" id="panelNovo">
-      <h3 id="panelNovoTitle" class="beta-modal-title">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="beta-amount-block">
-        <input type="text" id="fValor" data-money="true" class="beta-amount-input" placeholder="R$ 0,00" aria-label="Valor">
-      </div>
-      <div class="form-grid beta-form">
+    <div class="panel" id="panelNovo">
+      <h3 id="panelNovoTitle">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
         <div>
           <label>Tipo</label>
-          <div class="type-toggle beta-seg">
+          <div class="type-toggle">
             <button type="button" id="tglIn" class="active-in">Entrada</button>
             <button type="button" id="tglOut">Saída</button>
           </div>
@@ -514,17 +528,35 @@
         </div>
         <div>
           <label for="fCategoria">Categoria</label>
-          <div class="beta-inline-field">
-            <select id="fCategoria"></select>
-            <button type="button" id="btnQuickCat" class="beta-plus" title="Cadastrar Nova Categoria" aria-label="Nova categoria">+</button>
+          <div style="display:flex; gap:6px;">
+            <select id="fCategoria" style="flex:1;"></select>
+            <button type="button" id="btnQuickCat" title="Cadastrar Nova Categoria" style="padding:0 12px; font-weight:bold; font-size:14px;">+</button>
           </div>
         </div>
-        <div class="beta-full">
-          <input type="file" id="receiptFile" accept="image/jpeg,image/png,image/webp,application/pdf,.pdf" hidden>
-          <button type="button" id="btnReadReceipt" class="beta-secondary-btn">Ler comprovante com IA</button>
-          <div id="receiptFileStatus" class="hint" style="display:none;margin-top:6px;"></div>
+        <div>
+          <label for="fValor">Valor (R$)</label>
+          <input type="text" id="fValor" data-money="true" placeholder="R$ 0,00">
         </div>
-        <div class="beta-full">
+        <div style="grid-column: 1 / -1; margin-top: 4px;">
+          <input
+            type="file"
+            id="receiptFile"
+            accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
+            hidden
+          >
+          <button
+            type="button"
+            id="btnReadReceipt"
+            style="width:100%;"
+          >
+            Ler comprovante com IA
+          </button>
+          <div
+            id="receiptFileStatus"
+            style="display:none; margin-top:8px; font-size:12px; opacity:.8;"
+          ></div>
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="fSalvar" style="width:100%">Salvar</button>
         </div>
       </div>
@@ -581,9 +613,9 @@
       </div>
     </div>
 
-    <div class="panel panel-beta panel-filters" id="panelFiltros">
-      <h3 class="beta-modal-title">Filtrar movimentações <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid beta-form filter-form-grid">
+    <div class="panel" id="panelFiltros">
+      <h3>Filtrar movimentações <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
         <div>
           <label for="filterFlow">Movimentação</label>
           <select id="filterFlow">
@@ -690,41 +722,49 @@
       </div>
     </div>
 
-    <div class="panel panel-beta" id="panelTransferencia">
-      <h3 class="beta-modal-title">Transferir <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="beta-amount-block">
-        <input type="text" id="tValor" data-money="true" class="beta-amount-input" placeholder="R$ 0,00" aria-label="Valor da transferência">
-        <div class="beta-transfer-route" id="transferRouteHint">Origem → Destino</div>
-        <div class="hint" id="transferBalanceHint">Saldo da origem ao escolher as contas</div>
-      </div>
-      <div class="beta-transfer-accounts">
-        <div class="beta-transfer-side">
-          <span class="beta-transfer-label">De</span>
-          <label class="sr-only" for="tDe">Origem</label>
-          <select id="tDe"></select>
-        </div>
-        <button type="button" class="beta-transfer-swap" id="btnSwapTransfer" aria-label="Inverter origem e destino">↑↓</button>
-        <div class="beta-transfer-side">
-          <span class="beta-transfer-label">Para</span>
-          <label class="sr-only" for="tPara">Destino</label>
-          <select id="tPara"></select>
-        </div>
-      </div>
-      <div class="form-grid beta-form">
+    <div class="panel" id="panelTransferencia">
+      <h3>Transferência universal <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <div class="form-grid">
         <div>
           <label for="tData">Data</label>
           <input type="date" id="tData">
         </div>
         <div>
-          <label for="tDesc">Observação (opcional)</label>
+          <label for="tDe">Origem (Sai de)</label>
+          <select id="tDe"></select>
+        </div>
+        <div>
+          <label for="tPara">Destino (Vai para)</label>
+          <select id="tPara"></select>
+        </div>
+        <div>
+          <label for="tValor">Valor (R$)</label>
+          <input type="text" id="tValor" data-money="true" placeholder="R$ 0,00">
+        </div>
+        <div>
+          <label for="tDesc">Observação (Opcional)</label>
           <input type="text" id="tDesc" placeholder="Ex: Reserva mensal">
         </div>
-        <div class="beta-full">
-          <input type="file" id="transferReceiptFile" accept="image/jpeg,image/png,image/webp,application/pdf,.pdf" hidden>
-          <button type="button" id="btnReadTransferReceipt" class="beta-secondary-btn">Ler comprovante com IA</button>
-          <div id="transferReceiptStatus" class="hint" style="display:none;margin-top:6px;"></div>
+        <div style="grid-column: 1 / -1; margin-top: 4px;">
+          <input
+            type="file"
+            id="transferReceiptFile"
+            accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
+            hidden
+          >
+          <button
+            type="button"
+            id="btnReadTransferReceipt"
+            style="width:100%;"
+          >
+            Ler comprovante com IA
+          </button>
+          <div
+            id="transferReceiptFileStatus"
+            style="display:none; margin-top:8px; font-size:12px; opacity:.8;"
+          ></div>
         </div>
-        <div class="beta-full">
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="tSalvar" style="width:100%">Transferir</button>
         </div>
       </div>
@@ -944,7 +984,7 @@
       </div>
     </div>
 
-    <div class="panel panel-beta" id="panelPocketMovement">
+    <div class="panel" id="panelPocketMovement">
       <h3 id="panelPocketMovementTitle">Registrar Movimentação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <div class="type-toggle movement-tabs" style="margin-bottom:14px;">
         <button type="button" id="pmAporte" class="active-in">Aporte</button>
@@ -1122,10 +1162,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-16-auth2').then(reg => {
-      try { reg.update(); } catch (e) {}
-      if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-
+    navigator.serviceWorker.register('./sw.js').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -2297,19 +2334,19 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="balance-card-head"><span class="label">Bancos</span><span class="balance-symbol" aria-hidden="true">${financialIcon('bank')}</span></div>
       <span class="amount ${bankTotal < 0 ? 'neg' : ''}">${fmt(bankTotal)}</span>
       ${bankShare === null ? '' : `<span class="balance-share">${bankShare.toFixed(0)}% do patrimônio</span>`}
-      <span class="balance-detail-link">Contas →</span>
+      <span class="balance-detail-link">Ver contas →</span>
     </div>
     <div class="balance-card pocket-summary-card" role="button" tabindex="0" aria-label="Ver caixinhas" title="Ver caixinhas">
       <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('box')}</span></div>
       <span class="amount ${pocketTotal < 0 ? 'neg' : ''}">${fmt(pocketTotal)}</span>
       ${pocketShare === null ? '' : `<span class="balance-share">${pocketShare.toFixed(0)}% do patrimônio</span>`}
-      <span class="balance-detail-link">Caixinhas →</span>
+      <span class="balance-detail-link">Ver caixinhas →</span>
     </div>
     <div class="balance-card invest-summary-card" role="button" tabindex="0" aria-label="Ver investimentos" title="Ver investimentos">
       <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div>
       <span class="amount">${fmt(investTotal)}</span>
       ${investShare === null ? '' : `<span class="balance-share">${investShare.toFixed(0)}% do patrimônio</span>`}
-      <span class="balance-detail-link">Invest. →</span>
+      <span class="balance-detail-link">Ver investimentos →</span>
     </div>`;
     strip.innerHTML = html;
     markValueRefresh(strip);
@@ -3178,7 +3215,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (!assertion) return false;
     pinUnlocked = true;
-    try { touchPinActivity(); } catch (e) {}
     hidePinOverlay();
     return true;
   }
@@ -3471,20 +3507,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   document.getElementById('btnClearLocalPin')?.addEventListener('click', () => { removeLocalPin(); const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'PIN removido deste dispositivo.'; logInfo('Segurança', 'Remover PIN local', 'Sucesso', 'Proteção local removida deste dispositivo.'); });
-  
-  (function initPinIdleSetting(){
-    const input = document.getElementById('featurePinIdleMinutes');
-    if (!input) return;
-    const ms = getPinIdleMs();
-    input.value = String(Math.round(ms / 60000));
-    input.addEventListener('change', () => {
-      const mins = Math.max(0, Math.min(240, Number(input.value) || 0));
-      localStorage.setItem(PIN_IDLE_MS_KEY, String(mins * 60 * 1000));
-      const status = document.getElementById('pinSettingsStatus');
-      if (status) status.textContent = mins === 0 ? 'PIN será pedido sempre que o app voltar ao primeiro plano.' : `PIN será pedido após ${mins} min fora do app.`;
-    });
-  })();
-
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
@@ -3945,69 +3967,6 @@ ${JSON.stringify(snapshot)}
     }
   }
 
-  
-  const DAILY_INSIGHT_KEY = 'livrocaixa_daily_insight_v1';
-  function loadDailyInsightCache() {
-    try { return JSON.parse(localStorage.getItem(DAILY_INSIGHT_KEY) || 'null'); } catch (e) { return null; }
-  }
-  function saveDailyInsightCache(payload) {
-    try { localStorage.setItem(DAILY_INSIGHT_KEY, JSON.stringify(payload)); } catch (e) {}
-  }
-  function renderDailyInsightFromCache() {
-    const body = document.getElementById('dailyInsightBody');
-    const btn = document.getElementById('btnDailyInsight');
-    if (!body) return;
-    const cache = loadDailyInsightCache();
-    const today = todayISO();
-    if (cache && cache.date === today && cache.text) {
-      body.innerHTML = `<div class="daily-insight-text">${escapeHTML(cache.text).replace(/\n/g, '<br>')}</div><div class="hint">Gerado hoje · não altera seus lançamentos</div>`;
-      if (btn) btn.textContent = 'Atualizar (limite diário)';
-    }
-  }
-  async function runDailyInsight() {
-    const body = document.getElementById('dailyInsightBody');
-    const btn = document.getElementById('btnDailyInsight');
-    const cache = loadDailyInsightCache();
-    const today = todayISO();
-    if (cache && cache.date === today && cache.text && btn?.dataset.force !== '1') {
-      renderDailyInsightFromCache();
-      if (body) {
-        const note = document.createElement('div');
-        note.className = 'hint';
-        note.textContent = 'Já existe insight de hoje. Toque de novo para tentar regenerar.';
-        body.appendChild(note);
-      }
-      if (btn) btn.dataset.force = '1';
-      return;
-    }
-    if (btn) { btn.disabled = true; btn.textContent = 'Gerando…'; }
-    if (body) body.innerHTML = '<p class="hint">Consultando a análise assistida…</p>';
-    try {
-      if (typeof runGeminiFinancialDiagnosis === 'function') {
-        // Prefer lightweight path if Gemini diagnostic exists
-        await runGeminiFinancialDiagnosis();
-        const statusEl = document.getElementById('labsAnalysisStatus') || document.getElementById('diagnosticGeminiResult');
-        let text = statusEl?.innerText || statusEl?.textContent || '';
-        if (!text || text.length < 20) {
-          text = 'Resumo local: patrimônio e fluxo do período atual foram considerados. Ative a análise Gemini no Perfil se a resposta não aparecer aqui.';
-        }
-        // Try to read from a known result container
-        const gemOut = document.getElementById('geminiDiagnosticOutput') || document.getElementById('labsAnalysisStatus');
-        if (gemOut && gemOut.innerText && gemOut.innerText.length > 40) text = gemOut.innerText.trim();
-        saveDailyInsightCache({ date: today, text: text.slice(0, 2500) });
-        renderDailyInsightFromCache();
-      } else {
-        throw new Error('Análise assistida indisponível neste build.');
-      }
-    } catch (err) {
-      if (body) body.innerHTML = `<p class="hint">${escapeHTML(err.message || 'Falha ao gerar insight.')}</p>`;
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Gerar insight'; btn.dataset.force = ''; }
-    }
-  }
-  document.getElementById('btnDailyInsight')?.addEventListener('click', () => runDailyInsight());
-  try { renderDailyInsightFromCache(); } catch (e) {}
-
   document.getElementById('btnGeminiDiagnostic')?.addEventListener(
     'click',
     runGeminiFinancialDiagnosis
@@ -4024,42 +3983,10 @@ ${JSON.stringify(snapshot)}
       renderAdvancedDashboard();
     });
   }
-  document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (ok) { try { touchPinActivity(); } catch(e) {} } if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; logInfo('Segurança', 'Desbloquear PIN local', 'Sucesso', 'Aplicativo desbloqueado neste dispositivo.'); } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; logSyncError('desbloqueio por PIN', err); } });
+  document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; logInfo('Segurança', 'Desbloquear PIN local', 'Sucesso', 'Aplicativo desbloqueado neste dispositivo.'); } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; logSyncError('desbloqueio por PIN', err); } });
   document.getElementById('pinUnlockInput')?.addEventListener('keydown', event => { if (event.key === 'Enter') document.getElementById('btnPinUnlock')?.click(); });
   document.getElementById('btnPinLogout')?.addEventListener('click', () => auth.signOut());
-  const PIN_IDLE_MS_KEY = 'livrocaixa_pin_idle_ms';
-  const PIN_LAST_ACTIVE_KEY = 'livrocaixa_pin_last_active';
-  function getPinIdleMs() {
-    const v = Number(localStorage.getItem(PIN_IDLE_MS_KEY));
-    return Number.isFinite(v) && v >= 0 ? v : 5 * 60 * 1000; // padrão 5 min
-  }
-  function touchPinActivity() {
-    try { localStorage.setItem(PIN_LAST_ACTIVE_KEY, String(Date.now())); } catch (e) {}
-  }
-  function shouldLockByIdle() {
-    if (!hasLocalPin()) return false;
-    const last = Number(localStorage.getItem(PIN_LAST_ACTIVE_KEY) || 0);
-    if (!last) return true;
-    return (Date.now() - last) >= getPinIdleMs();
-  }
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      touchPinActivity();
-      return;
-    }
-    if (document.visibilityState === 'visible' && currentUser && hasLocalPin()) {
-      if (shouldLockByIdle()) {
-        pinUnlocked = false;
-        showPinOverlay();
-      } else {
-        pinUnlocked = true;
-        hidePinOverlay();
-      }
-    }
-  });
-  ['pointerdown','keydown','touchstart'].forEach(ev => document.addEventListener(ev, () => {
-    if (pinUnlocked && hasLocalPin()) touchPinActivity();
-  }, { passive: true }));
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && currentUser && hasLocalPin()) { pinUnlocked = false; showPinOverlay(); } });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && currentUser) refreshStaleInvestmentQuotes(); });
   document.getElementById('btnRunReconciliation')?.addEventListener('click', () => { const bankId = document.getElementById('reconcileBank')?.value; const reported = readMoneyInput('reconcileReported'); const calculated = bankBalance(bankId); const difference = reported - calculated; pendingReconciliation = Math.abs(difference) > 0.005 ? { bankId, reported, calculated, difference } : null; const result = document.getElementById('reconciliationResult'); if (result) result.textContent = Math.abs(difference) <= 0.005 ? `Conciliação conferida: ${fmt(calculated)}. Nenhum ajuste necessário.` : `Saldo calculado: ${fmt(calculated)} · informado: ${fmt(reported)} · diferença sugerida: ${fmt(difference)}.`; const apply = document.getElementById('btnApplyReconciliation'); if (apply) apply.hidden = !pendingReconciliation; logInfo('Conciliação', 'Comparar saldos', 'Sucesso', 'Comparação entre saldo calculado e informado concluída.', { bankId, difference }); });
   document.getElementById('btnApplyReconciliation')?.addEventListener('click', async () => { if (!pendingReconciliation) return; const bank = banks.find(item => item.id === pendingReconciliation.bankId); if (!bank) return; const amount = Math.abs(pendingReconciliation.difference); const category = categories.find(item => item.name === 'Outros') || categories[0]; entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), date: todayISO(), desc: 'Ajuste de conciliação', bank: bank.id, category: category?.id || '', amount, type: pendingReconciliation.difference > 0 ? 'in' : 'out', isReconciliationAdjustment: true }); try { await persistAll(); logInfo('Conciliação', 'Aplicar ajuste', 'Sucesso', `Ajuste de ${fmt(amount)} aplicado em ${bank.name}.`); } catch (err) { logSyncError('ajuste de conciliação', err); } pendingReconciliation = null; document.getElementById('btnApplyReconciliation').hidden = true; document.getElementById('reconciliationResult').textContent = 'Ajuste aplicado e incorporado ao Livro-Caixa.'; render(); });
@@ -6517,32 +6444,6 @@ VALOR: ${fmt(pseudoBill.amount)}
     openModal('panelCategoria');
   };
 
-  
-  function updateTransferRouteHint() {
-    const de = document.getElementById('tDe');
-    const para = document.getElementById('tPara');
-    const route = document.getElementById('transferRouteHint');
-    const bal = document.getElementById('transferBalanceHint');
-    if (!de || !para) return;
-    const deName = de.options[de.selectedIndex]?.text || 'Origem';
-    const paraName = para.options[para.selectedIndex]?.text || 'Destino';
-    if (route) route.textContent = `${deName} → ${paraName}`;
-    if (bal) {
-      const bank = banks.find(b => b.id === de.value);
-      if (bank) bal.textContent = `Saldo disponível: ${fmt(bankBalance(bank.id))}`;
-      else bal.textContent = 'Saldo da origem ao escolher as contas';
-    }
-  }
-  document.getElementById('btnSwapTransfer')?.addEventListener('click', () => {
-    const de = document.getElementById('tDe');
-    const para = document.getElementById('tPara');
-    if (!de || !para) return;
-    const a = de.value; de.value = para.value; para.value = a;
-    updateTransferRouteHint();
-  });
-  document.getElementById('tDe')?.addEventListener('change', updateTransferRouteHint);
-  document.getElementById('tPara')?.addEventListener('change', updateTransferRouteHint);
-
   document.getElementById('btnTransferencia').onclick = () => {
     if (banks.length + pockets.length + investments.length < 2) {
       alert('Você precisa ter pelo menos dois destinos cadastrados para realizar transferências.');
@@ -8702,58 +8603,17 @@ document.getElementById('tSalvar').onclick = async () => {
     btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
   };
 
-  function isInstalledPwa() {
-    try {
-      return window.matchMedia('(display-mode: standalone)').matches
-        || window.matchMedia('(display-mode: fullscreen)').matches
-        || window.navigator.standalone === true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  // Conclui login Google iniciado via redirect (necessário no PWA instalado)
-  auth.getRedirectResult().then(result => {
-    if (result && result.user) {
-      logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google via redirect concluída.');
-    }
-  }).catch(err => {
-    if (err && err.code && err.code !== 'auth/popup-closed-by-user') {
-      logSyncError('autenticação Google (redirect)', err);
-      setAuthError(translateAuthError(err.code));
-    }
-  });
-
   document.getElementById('authGoogle').onclick = () => {
     setAuthError('');
     const operation = beginLogOperation('Autenticação', 'Entrar com Google');
     logInfo('Autenticação', 'Entrar com Google', 'Em andamento', 'Solicitação de autenticação Google iniciada.', null, operation);
     const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    const useRedirect = isInstalledPwa();
-    const start = useRedirect
-      ? auth.signInWithRedirect(provider)
-      : auth.signInWithPopup(provider);
-    start.then(() => {
-      if (!useRedirect) logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation);
-    }).catch(err => {
-      const code = err && err.code ? err.code : '';
-      const shouldRedirect = !useRedirect && (
-        code === 'auth/popup-blocked'
-        || code === 'auth/cancelled-popup-request'
-        || code === 'auth/operation-not-supported-in-this-environment'
-        || code === 'auth/unauthorized-domain'
-      );
-      if (shouldRedirect) {
-        auth.signInWithRedirect(provider).catch(redirectErr => {
-          logSyncError('autenticação Google', redirectErr, operation);
-          setAuthError(translateAuthError(redirectErr.code));
-        });
-        return;
-      }
-      if (code !== 'auth/popup-closed-by-user') {
+    auth.signInWithPopup(provider).then(() => logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation)).catch(err => {
+      if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
+        auth.signInWithRedirect(provider);
+      } else if (err.code !== 'auth/popup-closed-by-user') {
         logSyncError('autenticação Google', err, operation);
-        setAuthError(translateAuthError(code) || (err.message || 'Falha ao entrar com Google.'));
+        setAuthError(translateAuthError(err.code));
       }
     });
   };
