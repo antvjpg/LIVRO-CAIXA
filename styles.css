@@ -3742,3 +3742,6 @@ body.dark-mode #panelNovo #btnQuickCat{
   color:var(--accent-ink)!important;
 }
 
+
+/* V19-17 — ajuste de espaçamento dos dígitos do valor */
+#panelNovo #fValor{letter-spacing:.6px;}
