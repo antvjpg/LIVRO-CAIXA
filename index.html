@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-16-fs">
+  <link rel="stylesheet" href="./styles.css?v=19-16-fs2">
 </head>
 <body>
 
@@ -65,10 +65,11 @@
   <section class="pin-box" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
     <div class="pin-lock-icon">▣</div>
     <h2 id="pinTitle">Aplicativo bloqueado</h2>
-    <p class="hint">Digite seu PIN local para continuar. O PIN não substitui o login da conta.</p>
+    <p class="hint">Use a biometria ou digite o PIN local para continuar. Isso não substitui o login da conta.</p>
     <input type="password" id="pinUnlockInput" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="PIN de 4 a 8 dígitos" aria-label="PIN local">
     <div id="pinUnlockError" class="auth-error" aria-live="polite"></div>
-    <button type="button" class="primary" id="btnPinUnlock" style="width:100%;margin-top:12px;">Desbloquear</button>
+    <button type="button" class="primary" id="btnPinUnlock" style="width:100%;margin-top:12px;">Desbloquear com PIN</button>
+    <button type="button" id="btnBiometricUnlock" style="width:100%;margin-top:8px;">Usar biometria</button>
     <button type="button" id="btnPinLogout" style="width:100%;margin-top:8px;">Sair da conta</button>
   </section>
 </div>
@@ -433,6 +434,11 @@
             <div class="feature-lab-pin-actions"><button type="button" id="btnSaveLocalPin" class="primary">Ativar / alterar</button><button type="button" id="btnClearLocalPin">Remover</button></div>
           </div>
           <div class="feature-lab-actions"><button type="button" id="btnLockNow"><span class="quick-action-icon" aria-hidden="true" style="width:15px;height:15px;display:inline-flex;vertical-align:-2px;margin-right:5px;"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>Bloquear agora</button></div>
+          <div class="feature-lab-actions" style="margin-top:8px;flex-wrap:wrap;gap:8px;">
+            <button type="button" id="btnEnableBiometric">Usar biometria neste aparelho</button>
+            <button type="button" id="btnDisableBiometric">Desativar biometria</button>
+          </div>
+          <p class="hint" id="biometricHint" style="margin-top:6px;">A biometria desbloqueia o app no lugar do PIN, quando o aparelho permitir. O PIN continua como reserva.</p>
           <div id="pinSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
         </div>
 
@@ -2337,7 +2343,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="balance-detail-link">Ver caixinhas →</span>
     </div>
     <div class="balance-card invest-summary-card" role="button" tabindex="0" aria-label="Ver investimentos" title="Ver investimentos">
-      <div class="balance-card-head"><span class="label">Investimentos</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div>
+      <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div>
       <span class="amount">${fmt(investTotal)}</span>
       ${investShare === null ? '' : `<span class="balance-share">${investShare.toFixed(0)}% do patrimônio</span>`}
       <span class="balance-detail-link">Ver investimentos →</span>
@@ -3142,9 +3148,89 @@ document.addEventListener('DOMContentLoaded', () => {
   async function hashLocalPin(pin) { const bytes = new TextEncoder().encode(String(pin)); const digest = await crypto.subtle.digest('SHA-256', bytes); return Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join(''); }
   function validLocalPin(pin) { return /^\d{4,8}$/.test(String(pin || '')); }
   async function saveLocalPin(pin) { if (!validLocalPin(pin)) throw new Error('O PIN deve ter entre 4 e 8 dígitos.'); localStorage.setItem(localPinKey(), JSON.stringify({ hash: await hashLocalPin(pin), createdAt: new Date().toISOString() })); pinUnlocked = true; }
-  function removeLocalPin() { localStorage.removeItem(localPinKey()); pinUnlocked = true; hidePinOverlay(); }
+  function removeLocalPin() { localStorage.removeItem(localPinKey()); removeBiometric(); pinUnlocked = true; hidePinOverlay(); }
   function hasLocalPin() { const record = getLocalPinRecord(); return Boolean(record && typeof record.hash === 'string' && record.hash.length === 64); }
-  function showPinOverlay() { if (!currentUser || !hasLocalPin() || pinUnlocked) return; const overlay = document.getElementById('pinOverlay'); overlay?.classList.remove('hidden'); overlay?.setAttribute('aria-hidden', 'false'); document.body.classList.add('is-pin-locked'); setTimeout(() => document.getElementById('pinUnlockInput')?.focus(), 0); }
+  function biometricKey() { return `livrocaixa-webauthn-${currentUser?.uid || 'anonymous'}`; }
+  function getBiometricRecord() {
+    try { return JSON.parse(localStorage.getItem(biometricKey()) || 'null'); } catch (e) { return null; }
+  }
+  function hasBiometric() {
+    const rec = getBiometricRecord();
+    return Boolean(rec && rec.credentialId);
+  }
+  function bufferToBase64Url(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let str = '';
+    bytes.forEach(b => { str += String.fromCharCode(b); });
+    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+  }
+  function base64UrlToBuffer(value) {
+    const pad = '='.repeat((4 - (value.length % 4)) % 4);
+    const base64 = (value + pad).replace(/-/g, '+').replace(/_/g, '/');
+    const raw = atob(base64);
+    const bytes = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    return bytes.buffer;
+  }
+  function supportsWebAuthn() {
+    return typeof window !== 'undefined' && window.PublicKeyCredential && typeof navigator.credentials?.create === 'function';
+  }
+  async function registerBiometric() {
+    if (!currentUser) throw new Error('Faça login antes de ativar a biometria.');
+    if (!hasLocalPin()) throw new Error('Ative um PIN local antes de vincular a biometria.');
+    if (!supportsWebAuthn()) throw new Error('Este aparelho/navegador não oferece biometria via WebAuthn.');
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    const userId = new TextEncoder().encode(String(currentUser.uid || 'user').slice(0, 64));
+    const cred = await navigator.credentials.create({
+      publicKey: {
+        challenge,
+        rp: { name: 'Livro-Caixa', id: location.hostname },
+        user: { id: userId, name: currentUser.email || 'usuario', displayName: currentUser.displayName || 'Livro-Caixa' },
+        pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+        authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'preferred' },
+        timeout: 60000,
+        attestation: 'none'
+      }
+    });
+    if (!cred) throw new Error('Registro biométrico cancelado.');
+    const credentialId = bufferToBase64Url(cred.rawId);
+    localStorage.setItem(biometricKey(), JSON.stringify({ credentialId, createdAt: new Date().toISOString() }));
+    return true;
+  }
+  function removeBiometric() {
+    localStorage.removeItem(biometricKey());
+  }
+  async function unlockWithBiometric() {
+    if (!hasBiometric() || !supportsWebAuthn()) return false;
+    const rec = getBiometricRecord();
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge,
+        rpId: location.hostname,
+        allowCredentials: [{ type: 'public-key', id: base64UrlToBuffer(rec.credentialId) }],
+        userVerification: 'required',
+        timeout: 60000
+      }
+    });
+    if (!assertion) return false;
+    pinUnlocked = true;
+    hidePinOverlay();
+    return true;
+  }
+  async function tryBiometricUnlockOnShow() {
+    const btn = document.getElementById('btnBiometricUnlock');
+    if (btn) btn.hidden = !(hasBiometric() && supportsWebAuthn());
+    if (!(hasBiometric() && supportsWebAuthn())) return;
+    try {
+      await unlockWithBiometric();
+      logInfo('Segurança', 'Desbloquear biometria', 'Sucesso', 'Aplicativo desbloqueado por biometria neste dispositivo.');
+    } catch (err) {
+      /* usuário cancelou ou falhou — permanece no PIN */
+    }
+  }
+
+  function showPinOverlay() { if (!currentUser || !hasLocalPin() || pinUnlocked) return; const overlay = document.getElementById('pinOverlay'); overlay?.classList.remove('hidden'); overlay?.setAttribute('aria-hidden', 'false'); document.body.classList.add('is-pin-locked'); const bioBtn = document.getElementById('btnBiometricUnlock'); if (bioBtn) bioBtn.hidden = !(hasBiometric() && supportsWebAuthn()); setTimeout(() => { document.getElementById('pinUnlockInput')?.focus(); tryBiometricUnlockOnShow(); }, 0); }
   function hidePinOverlay() { const overlay = document.getElementById('pinOverlay'); overlay?.classList.add('hidden'); overlay?.setAttribute('aria-hidden', 'true'); document.body.classList.remove('is-pin-locked'); }
   async function unlockWithLocalPin(pin) { const record = getLocalPinRecord(); if (!record) { pinUnlocked = true; hidePinOverlay(); return true; } const valid = (await hashLocalPin(pin)) === record.hash; if (!valid) return false; pinUnlocked = true; hidePinOverlay(); return true; }
   function checkLocalPinLock() { pinUnlocked = !hasLocalPin(); if (!pinUnlocked) showPinOverlay(); }
@@ -3391,7 +3477,35 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnExportPatrimonyPng')?.addEventListener('click', exportPatrimonyChartPng);
 
   let pendingReconciliation = null;
-  document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = document.getElementById('featurePin')?.value || ''; try { await saveLocalPin(pin); document.getElementById('featurePin').value = ''; status.textContent = 'PIN ativado. Use “Bloquear agora” para testar imediatamente.'; logInfo('Segurança', 'Ativar PIN local', 'Sucesso', 'PIN local armazenado somente como hash neste dispositivo.'); } catch (err) { status.textContent = err.message; logWarn('Segurança', 'Ativar PIN local', 'Falha', err.message); } });
+  document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = document.getElementById('featurePin')?.value || ''; try { await saveLocalPin(pin); document.getElementById('featurePin').value = ''; status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.'; logInfo('Segurança', 'Ativar PIN local', 'Sucesso', 'PIN local armazenado somente como hash neste dispositivo.'); } catch (err) { status.textContent = err.message; logWarn('Segurança', 'Ativar PIN local', 'Falha', err.message); } });
+  document.getElementById('btnEnableBiometric')?.addEventListener('click', async () => {
+    const status = document.getElementById('pinSettingsStatus');
+    try {
+      await registerBiometric();
+      if (status) status.textContent = 'Biometria ativada neste aparelho. No bloqueio, o sistema pedirá digital/rosto.';
+      logInfo('Segurança', 'Ativar biometria', 'Sucesso', 'Credencial WebAuthn de plataforma registrada neste dispositivo.');
+    } catch (err) {
+      if (status) status.textContent = err.message || 'Não foi possível ativar a biometria.';
+      logWarn('Segurança', 'Ativar biometria', 'Falha', err.message || String(err));
+    }
+  });
+  document.getElementById('btnDisableBiometric')?.addEventListener('click', () => {
+    removeBiometric();
+    const status = document.getElementById('pinSettingsStatus');
+    if (status) status.textContent = 'Biometria desativada neste aparelho. O PIN continua ativo.';
+    logInfo('Segurança', 'Desativar biometria', 'Sucesso', 'Credencial biométrica removida deste dispositivo.');
+  });
+  document.getElementById('btnBiometricUnlock')?.addEventListener('click', async () => {
+    const error = document.getElementById('pinUnlockError');
+    try {
+      const ok = await unlockWithBiometric();
+      if (!ok) { if (error) error.textContent = 'Biometria não disponível. Use o PIN.'; return; }
+      if (error) error.textContent = '';
+      logInfo('Segurança', 'Desbloquear biometria', 'Sucesso', 'Aplicativo desbloqueado por biometria.');
+    } catch (err) {
+      if (error) error.textContent = 'Biometria cancelada ou falhou. Use o PIN.';
+    }
+  });
   document.getElementById('btnClearLocalPin')?.addEventListener('click', () => { removeLocalPin(); const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'PIN removido deste dispositivo.'; logInfo('Segurança', 'Remover PIN local', 'Sucesso', 'Proteção local removida deste dispositivo.'); });
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
