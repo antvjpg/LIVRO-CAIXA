@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-16b">
+  <link rel="stylesheet" href="./styles.css?v=19-16c">
 </head>
 <body>
 
@@ -178,8 +178,8 @@
       <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3H8z"/><path d="M6 7h12v13H6z"/><path d="M9 12h6M9 15h6"/></svg></span><span>Colar texto</span></button>
       <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Importar PDF/DOCX</span></button>
       <button class="quick-action" id="btnExport"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M10 19V5M15 19v-7M20 19V7M3 19h18"/></svg></span><span>Exportar extrato</span></button>
-      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m8 11 4 4 4-4"/><path d="M5 19h14"/></svg></span><span>Exportar backup</span></button>
-      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4"/><path d="m8 8 4-4 4 4"/><path d="M5 19h14"/></svg></span><span>Restaurar backup</span></button>
+      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4"/><path d="m8 8 4-4 4 4"/><path d="M5 19h14"/></svg></span><span>Exportar backup</span></button>
+      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m8 11 4 4 4-4"/><path d="M5 19h14"/></svg></span><span>Restaurar backup</span></button>
       <input type="file" id="fileImport" accept="application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
       <input type="file" id="fileBackupImport" accept="application/json">
     </div>
@@ -295,6 +295,13 @@
         <div class="profile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
       </div>
+      <div class="profile-user-card" id="profileUserCard" aria-label="Conta conectada">
+        <div class="profile-user-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
+        <div class="profile-user-copy">
+          <strong id="profileUserName">Conta</strong>
+          <span id="profileUserEmail">—</span>
+        </div>
+      </div>
 
       <div class="profile-group">
         <div class="profile-group-title">Dados da conta</div>
@@ -347,7 +354,40 @@
 
       </div>
 
+      
       <div class="profile-group">
+        <div class="profile-group-title">Sugestões de automação</div>
+        <div class="feature-lab-section">
+
+          <div class="automation-recs" id="automationRecs">
+            <div class="automation-recs-title">Sugestões úteis</div>
+            <div class="automation-rec-item">
+              <div>
+                <strong>Cotação automática</strong>
+                <small>Atualiza preços de criptos periodicamente. Ative “Atualizar cotações automaticamente” acima se quiser.</small>
+              </div>
+              <button type="button" class="bill-action-btn" id="btnRecEnableQuotes">Ver opção</button>
+            </div>
+            <div class="automation-rec-item">
+              <div>
+                <strong>Lembretes de contas</strong>
+                <small>Avisa vencimentos próximos. Não cria lançamentos sozinho.</small>
+              </div>
+              <button type="button" class="bill-action-btn" id="btnRecEnableReminders">Ver opção</button>
+            </div>
+            <div class="automation-rec-item">
+              <div>
+                <strong>Lançar recorrências</strong>
+                <small>Sugere registrar contas do mês. Continua exigindo sua confirmação conforme as regras do app.</small>
+              </div>
+              <button type="button" class="bill-action-btn" id="btnRecEnableBills">Ver opção</button>
+            </div>
+          </div>
+
+          <p class="hint" style="margin:8px 0 0;">Nenhuma sugestão é ativada sozinha — só você liga a automação.</p>
+        </div>
+      </div>
+<div class="profile-group">
         <div class="profile-group-title">Orçamento</div>
         <div class="feature-lab-section">
           <div id="featureBudgetRows" class="feature-budget-rows"></div>
@@ -450,9 +490,8 @@
         </div>
       </div>
 
-      <div class="profile-roadmap"><b>Disponível:</b> Valores a Receber (menu lateral / aba desktop). <b>Em preparação:</b> revisão de Meta/Simulação financeira.</div>
-      <div class="profile-item" role="button" tabindex="0" onclick="switchTab('receivables')" style="margin-top:10px;cursor:pointer;"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M5 19h14"/></svg></span><span class="profile-item-copy"><strong>Valores a Receber</strong><span>Controle independente · não altera o Livro-Caixa</span></span><span class="profile-item-arrow">›</span></div>
-    </section>
+      <div class="profile-roadmap"><b>Em preparação:</b> revisão de Meta/Simulação financeira.</div>
+</section>
   </div>
 
   <!-- Modais -->
@@ -1180,7 +1219,16 @@ document.addEventListener('DOMContentLoaded', () => {
   let investmentMovementTarget = null; // { kind: 'aporte'|'resgate'|'rendimento', id }
   let catChartInstance = null;
 
-  const fmt = (n) => (n < 0 ? '-' : '') + 'R$ ' + Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const normalizeMoney = (n) => {
+    const v = Number(n);
+    if (!Number.isFinite(v)) return 0;
+    // evita -0,00 por resíduo de ponto flutuante; não mascara déficits reais
+    return Math.abs(v) < 0.005 ? 0 : v;
+  };
+  const fmt = (n) => {
+    const v = normalizeMoney(n);
+    return (v < 0 ? '-' : '') + 'R$ ' + Math.abs(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
   const MONEY_FORMATTER = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   function moneyDigits(value) {
@@ -3348,9 +3396,23 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-16 (GPT)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-16';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
+  function syncProfileUserCard() {
+    const user = (typeof auth !== 'undefined' && auth.currentUser) ? auth.currentUser : null;
+    const email = user?.email || document.getElementById('profileEmail')?.textContent || '—';
+    const name = user?.displayName || (email && email.includes('@') ? email.split('@')[0] : 'Conta');
+    const elName = document.getElementById('profileUserName');
+    const elEmail = document.getElementById('profileUserEmail');
+    const elLegacy = document.getElementById('profileEmail');
+    if (elName) elName.textContent = name;
+    if (elEmail) elEmail.textContent = email;
+    if (elLegacy && user?.email) elLegacy.textContent = user.email;
+  }
+  syncProfileUserCard();
+  try { auth?.onAuthStateChanged?.(() => syncProfileUserCard()); } catch (e) {}
+
 
   document.getElementById('btnProfileLogout')?.addEventListener('click', () => {
     if (confirm('Deseja realmente sair da sua conta? Seus dados continuam salvos na nuvem — só a sessão neste aparelho é encerrada.')) {
@@ -3378,7 +3440,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   document.addEventListener('click', (e) => {
-    const moneyEl = e.target.closest('.balance-card .amount, .card-amount, .period-summary-card strong, .invest-box .val, .cat-row .cat-amt, .cat-summary-total strong, .manage-item-value, .dashboard-metrics strong, .pocket-goal-values, .yield-row .yield-amount, .rentability-box strong, .js-money');
+    // AD-03: ocultar/mostrar saldos somente ao tocar no valor do card Patrimônio Total
+    const moneyEl = e.target.closest('.balance-card.total .amount');
     if (!moneyEl) return;
     if (e.target.closest('button, a, input, select, textarea, .btn-action, .action-btn')) return;
     e.preventDefault();
@@ -3403,6 +3466,16 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   });
   applyBalancesHiddenState(hideBalancesOnOpen);
+  document.getElementById('btnRecEnableQuotes')?.addEventListener('click', () => {
+    document.getElementById('featureAutoQuotes')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('featureAutoQuotes')?.focus?.();
+  });
+  document.getElementById('btnRecEnableReminders')?.addEventListener('click', () => {
+    document.getElementById('featureReminders')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  document.getElementById('btnRecEnableBills')?.addEventListener('click', () => {
+    document.getElementById('featureAutoBills')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
 
   // ===== P2.3.2 — Detecção real de inconsistências =====
   function runDiagnostics() {

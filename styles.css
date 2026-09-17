@@ -3025,3 +3025,110 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
 .bills-paid-accordion{
   margin-top:4px;
 }
+
+
+/* === Brief V.19-16 ajustes: perfil, filtros, faturas, orçamento === */
+.profile-user-card{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;margin:0 0 12px;
+  border:1px solid var(--line);border-radius:16px;
+  background:var(--surface);
+  box-shadow:0 1px 3px color-mix(in srgb,var(--shadow) 35%,transparent);
+}
+.profile-user-avatar{
+  width:44px;height:44px;min-width:44px;border-radius:14px;
+  display:grid;place-items:center;
+  background:color-mix(in srgb,var(--accent) 12%,var(--paper));
+  color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+}
+.profile-user-avatar svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.profile-user-copy{min-width:0;flex:1;}
+.profile-user-copy strong{display:block;font-size:14px;color:var(--ink);line-height:1.2;}
+.profile-user-copy span{display:block;margin-top:2px;font-size:12px;color:var(--ink-soft);overflow-wrap:anywhere;}
+
+#viewProfile .profile-shell{padding:14px 12px 20px;}
+#viewProfile .profile-heading{margin-bottom:10px;gap:10px;}
+#viewProfile .profile-group{margin-bottom:12px;}
+#viewProfile .profile-group-title{margin:0 0 6px;font-size:11px;}
+#viewProfile .profile-list{gap:6px;}
+#viewProfile .profile-item{padding:10px 12px;border-radius:12px;}
+#viewProfile .feature-lab-section{padding:10px 12px;border-radius:12px;}
+#viewProfile .profile-roadmap{margin-top:10px;padding:10px 12px;}
+
+.automation-recs{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.automation-recs-title{font-size:11px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+.automation-rec-item{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);
+}
+.automation-rec-item strong{display:block;font-size:12px;color:var(--ink);}
+.automation-rec-item small{display:block;margin-top:2px;font-size:10px;color:var(--ink-soft);line-height:1.35;}
+.automation-rec-item .bill-action-btn{flex:0 0 auto;min-width:88px;min-height:34px;}
+
+/* BUG-02: sem borda branca artificial — usa --line do tema */
+.bills-status-filter button{
+  border:1px solid var(--line)!important;
+  background:var(--surface);
+  color:var(--ink-soft);
+  box-shadow:none;
+}
+.bills-status-filter button.is-active{
+  background:var(--accent);
+  color:var(--accent-ink);
+  border-color:var(--accent)!important;
+}
+.calendar-filter-control,
+.calendar-filter-control select{
+  border-color:var(--line)!important;
+  background:var(--surface);
+  color:var(--ink);
+  box-shadow:none;
+}
+#btnNovoBill,
+button#btnNovoBill,
+.bills-toolbar .primary,
+#viewBills .primary{
+  border:1px solid var(--accent)!important;
+  box-shadow:none;
+}
+.bill-more-button,
+.bill-action-btn.bill-more-button{
+  border:1px solid var(--line)!important;
+  background:var(--paper);
+  color:var(--ink);
+  box-shadow:none;
+}
+body.dark-mode .bills-status-filter button,
+body.dark-mode .calendar-filter-control,
+body.dark-mode .bill-more-button{
+  border-color:var(--line)!important;
+  background:var(--surface);
+}
+
+/* BUG-01: fatura mais compacta */
+.invoice-card-item,
+.bill-account-card,
+.bill-list-item{
+  padding:10px 12px!important;
+  gap:8px!important;
+}
+.invoice-card-breakdown{padding-top:6px;gap:6px;}
+.invoice-titular-block{gap:5px;}
+.bill-list-item-amount{font-size:18px!important;margin-top:1px;}
+#billList{gap:12px!important;}
+
+/* BUG-08: orçamento mais fino */
+#viewProfile .feature-budget-row{
+  padding:8px 10px!important;
+  min-height:0!important;
+  gap:4px!important;
+  border-radius:10px;
+}
+#viewProfile .feature-budget-rows{gap:6px!important;max-height:min(240px,38vh);}
+#viewProfile .feature-budget-row label{font-size:11px;margin:0;}
+#viewProfile .feature-budget-row span{font-size:10px;}
+#viewProfile .feature-budget-row input{
+  min-height:32px!important;
+  padding:6px 8px!important;
+  font-size:12px;
+}
