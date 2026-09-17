@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=19-16">
 </head>
 <body>
 
@@ -204,13 +204,18 @@
   <!-- ÁREA INTEGRADA: CONTAS RECORRENTES E CALENDÁRIO -->
   <div id="viewBills" class="tab-content">
     <div class="balance-strip section-balance-strip" id="billsSummary"></div>
-    <div class="toolbar" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));">
-      <button class="primary" id="btnNovoBill"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>Nova Conta / Fatura</button>
-      <button type="button" id="btnBillsToday"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>Mês atual</button>
-      <button type="button" id="btnFeatureLab"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/><path d="M8 15h8"/></svg></span>LABS</button>
-      <label class="calendar-filter-control" for="billTitularFilter"><span>Titular</span><select id="billTitularFilter"><option value="">Todos</option></select></label>
-      <button type="button" id="btnExportBillsPdf">📄 Exportar PDF</button>
-      <button type="button" id="btnExportBillsXlsx">📊 Exportar Excel</button>
+    <div class="toolbar bills-toolbar-v19-16">
+      <div class="bills-toolbar-main">
+        <button class="primary" id="btnNovoBill"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>Nova Conta / Fatura</button>
+      </div>
+      <div class="bills-toolbar-actions">
+        <button type="button" id="btnBillsToday"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>Mês atual</button>
+        <button type="button" id="btnExportBillsPdf">📄 Exportar PDF</button>
+        <button type="button" id="btnExportBillsXlsx">📊 Exportar Excel</button>
+      </div>
+      <div class="bills-toolbar-titular">
+        <label class="calendar-filter-control" for="billTitularFilter"><span>Titular</span><select id="billTitularFilter"><option value="">Todos</option></select></label>
+      </div>
     </div>
     <div class="bills-status-filter" id="billsStatusFilter" role="group" aria-label="Filtrar por estado">
       <button type="button" data-bills-status="" class="is-active">Todos</button>
@@ -4751,7 +4756,7 @@ VALOR: ${fmt(bill.amount)}
       const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const events=rows.filter(row=>row.bill.recurrenceType==='nao_recorrente'||row.bill.frequency==='once'?row.dueDate===date:billDueDayFromStart(row.bill)===d);
       const invEvents=invoiceRows.filter(row=>row.dueDate===date);
-      html+=`<div class="bill-day ${date===today?'today':''}"><div class="bill-day-num">${d}</div>${events.map(row=>`<button type="button" class="bill-event ${row.settled?'paid':''}" onclick="openBillShare('${row.bill.id}')" title="${escapeHTML(row.bill.name)}${row.installmentLabel?' · Parcela '+row.installmentLabel:''} · ${fmt(row.bill.amount)} · ${escapeHTML(row.status)}">${escapeHTML(row.bill.name)}${row.installmentLabel?' '+row.installmentLabel:''} · ${fmt(row.bill.amount)}</button>`).join('')}${invEvents.map(row=>`<button type="button" class="bill-event card-invoice ${invoiceSettled(row)?'paid':''}" onclick="toggleInvoiceDetail('${row.card.id}')" title="Fatura ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}">💳 ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}</button>`).join('')}</div>`;
+      html+=`<div class="bill-day ${date===today?'today':''}" onclick="window.openBillDayPanel('${date}')"><div class="bill-day-num" role="button" tabindex="0" onclick="event.stopPropagation();window.openBillDayPanel('${date}')" aria-label="Ver compromissos de ${d}">${d}</div>${events.map(row=>`<div class="bill-event ${row.settled?'paid':''}" title="${escapeHTML(row.bill.name)}${row.installmentLabel?' · Parcela '+row.installmentLabel:''} · ${fmt(row.bill.amount)} · ${escapeHTML(row.status)}"></div>`).join('')}${invEvents.map(row=>`<div class="bill-event card-invoice ${invoiceSettled(row)?'paid':''}" title="Fatura ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}"></div>`).join('')}</div>`;
     }
     document.getElementById('billCalendar').innerHTML=html;
 
@@ -4760,7 +4765,7 @@ VALOR: ${fmt(bill.amount)}
       const statusClass = row.settled ? 'is-paid' : (row.status==='Atrasado'?'overdue':'');
       const statusLabel = row.status==='Pago — não lançado' ? 'Pago' : (row.status==='Lançado' ? 'Lançado' : row.status);
       const payBtn=row.launched?'':(row.paidOnly?`<button type="button" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`:`<button type="button" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`);
-      return `<div class="bill-list-item"><div class="bill-list-item-top"><div><strong>${escapeHTML(b.name)}${row.installmentLabel?` · Parcela ${row.installmentLabel}`:''}</strong><div class="hint">${fmt(b.amount)} · ${b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente')} · Banco: ${escapeHTML(row.bank)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}</div></div><span class="bill-status ${statusClass}">${statusLabel}</span></div><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button>${payBtn}<button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><button type="button" onclick="editBill('${b.id}')">Editar</button><button type="button" onclick="deleteBill('${b.id}')">Excluir</button></div></div>`;
+      return `<div class="bill-list-item"><div class="bill-list-item-top"><div><strong>${escapeHTML(b.name)}${row.installmentLabel?` · Parcela ${row.installmentLabel}`:''}</strong><div class="bill-list-item-amount">${fmt(b.amount)}</div><div class="hint">${b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente')} · Banco: ${escapeHTML(row.bank)}${b.titular?' · Titular: '+escapeHTML(b.titular):''}</div></div><span class="bill-status ${statusClass}">${statusLabel}</span></div><div class="bill-actions"><button type="button" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button>${payBtn}<button type="button" onclick="openBillShare('${b.id}')">Compartilhar</button><div class="bill-more-wrap"><button type="button" class="bill-more-button" aria-label="Mais opções" aria-expanded="false" onclick="toggleBillMenu('${b.id}')">•••</button><div class="bill-more-menu" id="bill-more-${b.id}" hidden><button type="button" onclick="editBill('${b.id}');closeBillMenus()">Editar</button><button type="button" onclick="deleteBill('${b.id}');closeBillMenus()">Excluir</button></div></div></div></div>`;
     };
 
     const renderInvoiceItem = (row) => {
@@ -4781,7 +4786,7 @@ VALOR: ${fmt(bill.amount)}
           <div class="bill-actions">${markBtn}<button type="button" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)})">Compartilhar</button></div>
         </div>`;
       }).join('');
-      return `<div class="bill-list-item" id="invoice-detail-${escapeHTML(row.card.id)}"><div class="bill-list-item-top"><div><strong>Fatura ${escapeHTML(row.card.name)}</strong><div class="hint">Venc. ${dueLabel} · ${fmt(displayTotal)} · Cartão</div></div><span class="bill-status ${statusClass}">${statusLabel}</span></div>${breakdown}</div>`;
+      return `<div class="bill-list-item" id="invoice-detail-${escapeHTML(row.card.id)}"><div class="bill-list-item-top"><div><strong>Fatura ${escapeHTML(row.card.name)}</strong><div class="bill-list-item-amount">${fmt(displayTotal)}</div><div class="hint">Venc. ${dueLabel} · Cartão</div></div><span class="bill-status ${statusClass}">${statusLabel}</span></div>${breakdown}</div>`;
     };
 
     let listHtml = '';
@@ -4801,7 +4806,94 @@ VALOR: ${fmt(bill.amount)}
     if (listEl) listEl.innerHTML = listHtml;
   }
 
-  function billsExportRows() { return calendarBillRows().map(({bill,dueDate,status,launched,bank}) => ({ 'Conta/Fatura': bill.name || '', 'Titular': bill.titular || '', 'Valor': Number(bill.amount || 0), 'Vencimento': dueDate.split('-').reverse().join('/'), 'Banco': bank, 'Status': status, 'Recorrente': bill.recurrenceType === 'nao_recorrente' ? 'Não' : 'Sim', 'Periodicidade': bill.frequency === 'once' ? 'Única' : 'Mensal', 'Observação': bill.desc || '' })); }
+  
+  function closeBillDayPanel() {
+    document.getElementById('bill-day-panel-v19-16')?.remove();
+  }
+
+  window.closeBillDayPanel = closeBillDayPanel;
+
+  function openBillDayPanel(date) {
+    const parts = String(date).split('-');
+    const y = Number(parts[0]);
+    const m = Number(parts[1]) - 1;
+
+    const billRows = calendarBillRows().filter(row => row.dueDate === date);
+    const allInvoices = calendarInvoiceRows(y, m);
+    const titularFilter = document.getElementById('billTitularFilter')?.value || '';
+    const invoiceRows = titularFilter
+      ? allInvoices.map(inv => ({
+          ...inv,
+          breakdown: inv.breakdown.filter(b => b.titular === titularFilter)
+        })).filter(inv => inv.breakdown.length)
+      : allInvoices;
+
+    const dayInvoices = invoiceRows.filter(row => row.dueDate === date);
+
+    const dayLabel = new Date(`${date}T00:00:00`).toLocaleDateString('pt-BR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    const billItems = billRows.map(row => {
+      const status = row.status === 'Pago — não lançado' ? 'Pago' : row.status;
+      const installment = row.installmentLabel
+        ? ` · Parcela ${escapeHTML(row.installmentLabel)}`
+        : '';
+
+      return `<div class="bill-day-panel-item">
+        <div>
+          <strong>${escapeHTML(row.bill.name)}${installment}</strong>
+          <span>${fmt(row.bill.amount)} · ${escapeHTML(status)}</span>
+        </div>
+        <span class="bill-day-panel-type">Conta</span>
+      </div>`;
+    }).join('');
+
+    const invoiceItems = dayInvoices.map(row => {
+      const settled = invoiceSettled(row);
+      const status = settled
+        ? 'Pago'
+        : (invoiceOverdue(row) ? 'Atrasado' : 'Pendente');
+      const total = invoiceDisplayTotal(row);
+
+      return `<div class="bill-day-panel-item">
+        <div>
+          <strong>Fatura ${escapeHTML(row.card.name)}</strong>
+          <span>${fmt(total)} · ${status}</span>
+        </div>
+        <span class="bill-day-panel-type">Cartão</span>
+      </div>`;
+    }).join('');
+
+    const items = billItems + invoiceItems;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'bill-day-panel-v19-16';
+    overlay.className = 'modal-overlay open';
+
+    overlay.innerHTML = `
+      <div class="panel bill-day-panel-card open" role="dialog" aria-modal="true" aria-label="Compromissos do dia">
+        <h3>
+          <div>
+            <span class="bill-day-panel-kicker">Contas e faturas</span>
+            <div class="bill-day-panel-date">${dayLabel}</div>
+          </div>
+          <button type="button" class="modal-close" onclick="closeBillDayPanel()" aria-label="Fechar">×</button>
+        </h3>
+
+        <div class="bill-day-panel-body">
+          ${items || '<div class="bill-day-panel-empty">Nenhuma conta ou fatura neste dia.</div>'}
+        </div>
+      </div>`;
+
+    document.body.appendChild(overlay);
+  }
+
+  window.openBillDayPanel = openBillDayPanel;
+
+function billsExportRows() { return calendarBillRows().map(({bill,dueDate,status,launched,bank}) => ({ 'Conta/Fatura': bill.name || '', 'Titular': bill.titular || '', 'Valor': Number(bill.amount || 0), 'Vencimento': dueDate.split('-').reverse().join('/'), 'Banco': bank, 'Status': status, 'Recorrente': bill.recurrenceType === 'nao_recorrente' ? 'Não' : 'Sim', 'Periodicidade': bill.frequency === 'once' ? 'Única' : 'Mensal', 'Observação': bill.desc || '' })); }
   function exportBillsXlsx() { const rows=billsExportRows(); if (!window.XLSX) { alert('A biblioteca de Excel não está disponível.'); return; } const sheet=XLSX.utils.json_to_sheet(rows); sheet['!cols']=[{wch:24},{wch:18},{wch:13},{wch:14},{wch:22},{wch:14},{wch:12},{wch:15},{wch:36}]; const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,sheet,'Calendário'); XLSX.writeFile(book,`calendario-${billMonthKey(billViewDate)}.xlsx`); logInfo('Calendário','Exportar Excel','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
   function exportBillsPdf() { const rows=billsExportRows(); const Pdf=window.jspdf?.jsPDF; if (!Pdf) { alert('A biblioteca de PDF não está disponível.'); return; } const doc=new Pdf({unit:'pt',format:'a4'}); const margin=36; let y=42; doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text('Calendário financeiro',margin,y); y+=22; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(`Período: ${billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`,margin,y); doc.text(`Total de contas: ${rows.length} · Total previsto: ${fmt(rows.reduce((sum,row)=>sum+Number(row.Valor||0),0))}`,margin,y+14); y+=38; doc.setFontSize(8); rows.forEach(row=>{ if(y>760){doc.addPage();y=42;} const line=`${row['Vencimento']} · ${row['Conta/Fatura']} · ${row['Titular']||'Sem titular'} · ${fmt(row['Valor'])} · ${row['Status']}`; doc.text(doc.splitTextToSize(line,520),margin,y); y+=14; }); doc.save(`calendario-${billMonthKey(billViewDate)}.pdf`); logInfo('Calendário','Exportar PDF','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
   document.getElementById('billTitularFilter').addEventListener('change', renderBills);
@@ -8388,5 +8480,39 @@ document.getElementById('tSalvar').onclick = async () => {
     </div>
   </div>
 </div>
+
+
+
+<script>
+function closeBillMenus(){
+  document.querySelectorAll('.bill-more-menu').forEach(menu => {
+    menu.hidden = true;
+  });
+  document.querySelectorAll('.bill-more-button').forEach(button => {
+    button.setAttribute('aria-expanded','false');
+  });
+}
+
+function toggleBillMenu(id){
+  const menu = document.getElementById(`bill-more-${id}`);
+  if(!menu) return;
+
+  const wasHidden = menu.hidden;
+  closeBillMenus();
+
+  if(wasHidden){
+    menu.hidden = false;
+    const button = menu.parentElement?.querySelector('.bill-more-button');
+    if(button) button.setAttribute('aria-expanded','true');
+  }
+}
+
+document.addEventListener('click', (event) => {
+  if(!event.target.closest('.bill-more-wrap')){
+    closeBillMenus();
+  }
+});
+</script>
+
 </body>
 </html>
