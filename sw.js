@@ -1,16 +1,15 @@
-/* Livro-Caixa V.19-16 fullscreen — PWA: App Shell Caching */
-const CACHE_NAME = "livro-caixa-shell-v19-16-fs";
+/* Livro-Caixa V.19-16 — PWA shell (network-first HTML, force update) */
+const CACHE_NAME = "livro-caixa-shell-v19-16-auth2";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
-  "./manifest.webmanifest?v=19-16-fs",
-  "./icon-192.png?v=19-16-fs",
-  "./icon-512.png?v=19-16-fs",
-  "./icon-512-maskable.png?v=19-16-fs"
+  "./manifest.webmanifest",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon-512-maskable.png"
 ];
 
-// Instalação: pré-carrega os arquivos vitais (App Shell)
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
@@ -22,7 +21,6 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// Ativação: remove versões antigas de cache automaticamente
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
@@ -30,7 +28,7 @@ self.addEventListener("activate", (event) => {
       .then((keys) =>
         Promise.all(
           keys
-            .filter((key) => key.startsWith("livro-caixa-shell-") && key !== CACHE_NAME)
+            .filter((key) => key !== CACHE_NAME)
             .map((key) => caches.delete(key))
         )
       )
@@ -38,48 +36,88 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Permite que a página force a ativação de uma nova versão (SKIP_WAITING)
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
+  if (event.data && event.data.type === "CLEAR_CACHES") {
+    event.waitUntil(
+      caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+    );
+  }
 });
 
-// Interceptação de requisições
+function isHtmlRequest(request, url) {
+  if (request.mode === "navigate") return true;
+  if (request.destination === "document") return true;
+  if (url.pathname.endsWith(".html")) return true;
+  if (url.pathname.endsWith("/") || url.pathname.endsWith("/LIVRO-CAIXA")) return true;
+  return false;
+}
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Filtra requisições de outros domínios (Firebase, Chart.js, etc.) e métodos não-GET
+  // Não intercepta Firebase, Google Auth, CDNs, etc.
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
 
-  // Navegação: tenta a rede primeiro, usa cache local se estiver offline
-  if (request.mode === "navigate") {
+  // HTML / navegação: SEMPRE rede primeiro (evita login/auth preso em cache)
+  if (isHtmlRequest(request, url)) {
     event.respondWith(
       fetch(request)
         .then((networkResponse) => {
-          // Mantém o index do cache atualizado a cada acesso online
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put("./index.html", responseToCache));
+          if (networkResponse && networkResponse.ok) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put("./index.html", copy);
+              cache.put(request, networkResponse.clone()).catch(() => {});
+            });
+          }
           return networkResponse;
         })
-        .catch(() => caches.match("./index.html").then((cached) => cached || caches.match("./")))
+        .catch(() =>
+          caches.match(request).then(
+            (cached) =>
+              cached ||
+              caches.match("./index.html").then((c) => c || caches.match("./"))
+          )
+        )
     );
     return;
   }
 
-  // Ativos locais: busca no cache primeiro; se não encontrar, baixa e salva
+  // CSS/JS/manifest versionados: network-first para não travar UI antiga
+  if (
+    url.pathname.endsWith(".css") ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".webmanifest") ||
+    url.pathname.includes("manifest.webmanifest")
+  ) {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.ok) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // Demais assets (ícones): cache-first
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       if (cachedResponse) return cachedResponse;
-
       return fetch(request).then((networkResponse) => {
         if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== "basic") {
           return networkResponse;
         }
-
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, responseToCache));
+        const copy = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
         return networkResponse;
       });
     })
