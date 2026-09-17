@@ -3132,3 +3132,99 @@ body.dark-mode .bill-more-button{
   padding:6px 8px!important;
   font-size:12px;
 }
+
+
+/* Unificação visual: conta e fatura = mesmo card */
+.commitment-card,
+.bill-list-item.commitment-card,
+.invoice-card-item{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:10px !important;
+  padding:12px 14px !important;
+  margin:0 !important;
+  border:1px solid var(--line) !important;
+  border-radius:16px !important;
+  background:var(--surface) !important;
+  text-align:left !important;
+  box-shadow:0 1px 3px color-mix(in srgb, var(--shadow) 35%, transparent);
+}
+.commitment-card-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  text-align:left;
+}
+.commitment-card-main{
+  min-width:0;
+  flex:1;
+  text-align:left !important;
+}
+.commitment-card-main strong{
+  display:block;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.25;
+  text-align:left !important;
+  color:var(--ink);
+}
+.commitment-card .bill-list-item-amount,
+.bill-list-item-amount{
+  margin-top:4px !important;
+  font-size:22px !important;
+  font-weight:800 !important;
+  line-height:1.15 !important;
+  letter-spacing:-0.02em;
+  text-align:left !important;
+  color:var(--ink) !important;
+}
+.commitment-card .hint{
+  margin-top:4px;
+  font-size:11px;
+  line-height:1.35;
+  color:var(--ink-soft);
+  text-align:left !important;
+}
+.commitment-card .bill-status{
+  flex-shrink:0;
+  margin-top:0;
+}
+.commitment-actions,
+.bill-actions.commitment-actions{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:8px !important;
+  width:100% !important;
+}
+.commitment-actions .bill-action-btn,
+.commitment-actions > button,
+.commitment-actions .bill-more-wrap{
+  width:100% !important;
+  min-width:0 !important;
+  flex:none !important;
+  min-height:40px !important;
+}
+.commitment-actions .bill-more-wrap{
+  display:block;
+}
+.commitment-actions .bill-more-wrap .bill-more-button{
+  width:100%;
+}
+.commitment-subblocks{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  border-top:1px solid var(--line);
+  padding-top:8px;
+}
+.commitment-subblock{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+#billList{
+  display:flex;
+  flex-direction:column;
+  gap:14px !important;
+}

@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-16c">
+  <link rel="stylesheet" href="./styles.css?v=19-16d">
 </head>
 <body>
 
@@ -4848,28 +4848,28 @@ VALOR: ${fmt(bill.amount)}
     document.getElementById('billCalendar').innerHTML=html;
 
     const renderBillItem = (row) => {
-      const b=row.bill;
-      const statusClass = row.settled ? 'is-paid' : (row.status==='Atrasado'?'overdue':'');
-      const statusLabel = row.status==='Pago — não lançado' ? 'Pago' : (row.status==='Lançado' ? 'Lançado' : row.status);
-      const payBtn=row.launched?'':(row.paidOnly
+      const b = row.bill;
+      const statusClass = row.settled ? 'is-paid' : (row.status === 'Atrasado' ? 'overdue' : '');
+      const statusLabel = row.status === 'Pago — não lançado' ? 'Pago' : (row.status === 'Lançado' ? 'Lançado' : row.status);
+      const payBtn = row.launched ? '' : (row.paidOnly
         ? `<button type="button" class="bill-action-btn" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`
         : `<button type="button" class="bill-action-btn" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`);
       const meta = [
-        b.recurrenceType==='nao_recorrente'?'Não recorrente':(row.installmentLabel?'Parcelada':'Recorrente'),
-        'Banco: '+escapeHTML(row.bank),
-        b.titular ? 'Titular: '+escapeHTML(b.titular) : ''
+        b.recurrenceType === 'nao_recorrente' ? 'Não recorrente' : (row.installmentLabel ? 'Parcelada' : 'Recorrente'),
+        'Banco: ' + escapeHTML(row.bank),
+        b.titular ? 'Titular: ' + escapeHTML(b.titular) : ''
       ].filter(Boolean).join(' · ');
-      return `<div class="bill-list-item bill-account-card">
-        <div class="invoice-card-header">
-          <div class="invoice-card-title">
-            <strong>${escapeHTML(b.name)}${row.installmentLabel?` · ${escapeHTML(row.installmentLabel)}`:''}</strong>
+      return `<div class="bill-list-item commitment-card">
+        <div class="commitment-card-head">
+          <div class="commitment-card-main">
+            <strong>${escapeHTML(b.name)}${row.installmentLabel ? ` · ${escapeHTML(row.installmentLabel)}` : ''}</strong>
             <div class="bill-list-item-amount">${fmt(b.amount)}</div>
             <div class="hint">${meta}</div>
           </div>
           <span class="bill-status ${statusClass}">${statusLabel}</span>
         </div>
-        <div class="bill-actions invoice-titular-actions">
-          <button type="button" class="bill-action-btn primary-outline" onclick="launchBill('${b.id}','${key}')" ${row.launched?'disabled':''}>${row.launched?'Já lançada':'Lançar'}</button>
+        <div class="bill-actions commitment-actions">
+          <button type="button" class="bill-action-btn primary-outline" onclick="launchBill('${b.id}','${key}')" ${row.launched ? 'disabled' : ''}>${row.launched ? 'Já lançada' : 'Lançar'}</button>
           ${payBtn}
           <button type="button" class="bill-action-btn" onclick="openBillShare('${b.id}')">Compartilhar</button>
           <div class="bill-more-wrap">
@@ -4889,34 +4889,89 @@ VALOR: ${fmt(bill.amount)}
       const settled = invoiceSettled(row);
       const statusLabel = settled ? 'Pago' : (invoiceOverdue(row) ? 'Atrasado' : 'Pendente');
       const statusClass = settled ? 'is-paid' : (invoiceOverdue(row) ? 'overdue' : '');
-      const breakdown = row.breakdown.map(b => {
+      const titulars = row.breakdown || [];
+      const single = titulars.length === 1 ? titulars[0] : null;
+
+      // Mesmo esqueleto da conta: cabeçalho + ações em grade 2x2
+      let actionsHtml = '';
+      let extraTitulares = '';
+      if (single) {
+        const b = single;
         const safeTitular = escapeHTML(b.titular).replace(/'/g, "\\'");
-        const markBtn = b.status === 'Pago'
+        const payOrUnmark = b.status === 'Pago'
           ? (b.paidOnly
               ? `<button type="button" class="bill-action-btn" onclick="unmarkInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}')">Desmarcar pago</button>`
-              : `<span class="hint">Quitado no caixa</span>`)
-          : `<button type="button" class="bill-action-btn" onclick="markInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)})">Marcar pago</button>
-             <button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)},${Number(b.remaining||b.total||0)})">Lançar (${fmt(b.remaining||b.total)})</button>`;
-        return `<div class="invoice-titular-block">
-          <div class="invoice-titular-head">
-            <strong>${escapeHTML(b.titular || 'Sem titular')}</strong>
-            <span class="hint">${fmt(b.total)} · ${escapeHTML(b.status)}${b.paidOnly ? ' (sem lançamento)' : ''}</span>
-          </div>
-          <div class="bill-actions invoice-titular-actions">${markBtn}
-            <button type="button" class="bill-action-btn" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)})">Compartilhar</button>
-          </div>
-        </div>`;
-      }).join('');
-      return `<div class="bill-list-item invoice-card-item" id="invoice-detail-${escapeHTML(row.card.id)}">
-        <div class="invoice-card-header">
-          <div class="invoice-card-title">
+              : `<button type="button" class="bill-action-btn" disabled>Quitado</button>`)
+          : `<button type="button" class="bill-action-btn" onclick="markInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)})">Marcar pago</button>`;
+        const launchBtn = b.status === 'Pago' && !b.paidOnly
+          ? ''
+          : (b.status === 'Pago'
+              ? ''
+              : `<button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)},${Number(b.remaining || b.total || 0)})">Lançar</button>`);
+        actionsHtml = `
+          ${launchBtn || (b.status === 'Pago' && !b.paidOnly ? '<button type="button" class="bill-action-btn primary-outline" disabled>Já lançada</button>' : launchBtn)}
+          ${payOrUnmark}
+          <button type="button" class="bill-action-btn" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)})">Compartilhar</button>
+          <button type="button" class="bill-action-btn bill-more-button" disabled aria-hidden="true">•••</button>`;
+        // fix launch when pending
+        if (b.status !== 'Pago') {
+          actionsHtml = `
+          <button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)},${Number(b.remaining || b.total || 0)})">Lançar</button>
+          <button type="button" class="bill-action-btn" onclick="markInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)})">Marcar pago</button>
+          <button type="button" class="bill-action-btn" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)})">Compartilhar</button>
+          <button type="button" class="bill-action-btn bill-more-button" disabled aria-hidden="true">•••</button>`;
+        } else if (b.paidOnly) {
+          actionsHtml = `
+          <button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)},${Number(b.total || 0)})">Lançar</button>
+          <button type="button" class="bill-action-btn" onclick="unmarkInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}')">Desmarcar pago</button>
+          <button type="button" class="bill-action-btn" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)})">Compartilhar</button>
+          <button type="button" class="bill-action-btn bill-more-button" disabled aria-hidden="true">•••</button>`;
+        } else {
+          actionsHtml = `
+          <button type="button" class="bill-action-btn primary-outline" disabled>Já lançada</button>
+          <button type="button" class="bill-action-btn" disabled>Pago</button>
+          <button type="button" class="bill-action-btn" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)})">Compartilhar</button>
+          <button type="button" class="bill-action-btn bill-more-button" disabled aria-hidden="true">•••</button>`;
+        }
+      } else {
+        // múltiplos titulares: ações por bloco, mas mesmo visual de botões
+        extraTitulares = titulars.map(b => {
+          const safeTitular = escapeHTML(b.titular).replace(/'/g, "\\'");
+          let acts;
+          if (b.status === 'Pago' && !b.paidOnly) {
+            acts = `<button type="button" class="bill-action-btn primary-outline" disabled>Já lançada</button>
+              <button type="button" class="bill-action-btn" disabled>Pago</button>`;
+          } else if (b.status === 'Pago' && b.paidOnly) {
+            acts = `<button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)},${Number(b.total || 0)})">Lançar</button>
+              <button type="button" class="bill-action-btn" onclick="unmarkInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}')">Desmarcar pago</button>`;
+          } else {
+            acts = `<button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)},${Number(b.remaining || b.total || 0)})">Lançar</button>
+              <button type="button" class="bill-action-btn" onclick="markInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)})">Marcar pago</button>`;
+          }
+          return `<div class="commitment-subblock">
+            <div class="hint"><strong>${escapeHTML(b.titular || 'Sem titular')}</strong> · ${fmt(b.total)} · ${escapeHTML(b.status)}</div>
+            <div class="bill-actions commitment-actions">${acts}
+              <button type="button" class="bill-action-btn" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total || 0)})">Compartilhar</button>
+              <button type="button" class="bill-action-btn bill-more-button" disabled aria-hidden="true">•••</button>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      const titularMeta = single
+        ? ` · Titular: ${escapeHTML(single.titular || 'Sem titular')}`
+        : (titulars.length > 1 ? ` · ${titulars.length} titulares` : '');
+
+      return `<div class="bill-list-item commitment-card" id="invoice-detail-${escapeHTML(row.card.id)}">
+        <div class="commitment-card-head">
+          <div class="commitment-card-main">
             <strong>Fatura ${escapeHTML(row.card.name)}</strong>
             <div class="bill-list-item-amount">${fmt(displayTotal)}</div>
-            <div class="hint">Venc. ${dueLabel} · Cartão</div>
+            <div class="hint">Venc. ${dueLabel} · Cartão${titularMeta}</div>
           </div>
           <span class="bill-status ${statusClass}">${statusLabel}</span>
         </div>
-        <div class="invoice-card-breakdown">${breakdown}</div>
+        ${single ? `<div class="bill-actions commitment-actions">${actionsHtml}</div>` : `<div class="commitment-subblocks">${extraTitulares}</div>`}
       </div>`;
     };
 
