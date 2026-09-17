@@ -3865,7 +3865,7 @@ body.dark-mode #panelNovo #btnQuickCat{
 }
 
 #panelTransferencia #tValor::placeholder{
-  color:color-mix(in srgb,var(--ink-soft) 52%,transparent);
+  color:var(--ink);
   opacity:1;
 }
 
@@ -3965,3 +3965,21 @@ body.dark-mode #panelTransferencia select{
   box-shadow:none;
 }
 
+
+/* V19-17 — contraste dos botões das modais no Dark Mode */
+body.dark-mode #panelNovo .type-toggle button.active-in,
+body.dark-mode #panelNovo #fSalvar,
+body.dark-mode #panelTransferencia #tSalvar{
+  background:var(--accent)!important;
+  color:var(--accent-ink)!important;
+  border-color:var(--accent)!important;
+}
+
+body.dark-mode #panelNovo .type-toggle button.active-in{
+  box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 24%,transparent)!important;
+}
+
+body.dark-mode #panelNovo #fSalvar,
+body.dark-mode #panelTransferencia #tSalvar{
+  box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 22%,transparent)!important;
+}
