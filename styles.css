@@ -3228,3 +3228,70 @@ body.dark-mode .bill-more-button{
   flex-direction:column;
   gap:14px !important;
 }
+
+
+/* Preenchimento uniforme: conta e fatura (mesma “caixa”) */
+#billList .commitment-card{
+  padding:12px 14px !important;
+  gap:10px !important;
+  text-align:left !important;
+  align-items:stretch !important;
+}
+#billList .commitment-card-head,
+#billList .commitment-card-main,
+#billList .commitment-card-main strong,
+#billList .commitment-card .hint,
+#billList .commitment-card .bill-list-item-amount{
+  text-align:left !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+  width:auto;
+  max-width:100%;
+}
+#billList .commitment-card-main{
+  width:100%;
+  flex:1 1 auto;
+}
+#billList .commitment-actions{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  gap:8px !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  box-sizing:border-box;
+}
+#billList .commitment-actions > .bill-action-btn,
+#billList .commitment-actions > button,
+#billList .commitment-actions > .bill-more-wrap{
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+  justify-self:stretch;
+}
+#billList .commitment-subblocks{
+  margin:0 !important;
+  padding:8px 0 0 !important;
+  border-top:1px solid var(--line);
+  width:100%;
+}
+#billList .commitment-subblock{
+  margin:0 !important;
+  padding:0 !important;
+  width:100%;
+}
+/* anula restos do layout antigo de fatura */
+#billList .invoice-card-header,
+#billList .invoice-card-title,
+#billList .invoice-card-breakdown,
+#billList .invoice-titular-block,
+#billList .invoice-titular-head,
+#billList .invoice-titular-actions{
+  text-align:left !important;
+  margin:0 !important;
+  padding:0 !important;
+  width:100% !important;
+  max-width:100% !important;
+}
