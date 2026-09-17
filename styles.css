@@ -3745,3 +3745,23 @@ body.dark-mode #panelNovo #btnQuickCat{
 
 /* V19-17 — ajuste de espaçamento dos dígitos do valor */
 #panelNovo #fValor{letter-spacing:.6px;}
+
+/* V19-17 — ajuste visual dos cards de saldos após remoção dos links */
+#balanceStrip .bank-summary-card,
+#balanceStrip .pocket-summary-card,
+#balanceStrip .invest-summary-card{
+  min-height:128px;
+  padding-bottom:14px;
+  justify-content:flex-start;
+}
+
+#balanceStrip .balance-share{
+  margin-top:8px;
+}
+
+#balanceStrip .bank-summary-card .amount,
+#balanceStrip .pocket-summary-card .amount,
+#balanceStrip .invest-summary-card .amount{
+  margin-top:4px;
+}
+

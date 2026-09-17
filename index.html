@@ -2334,19 +2334,16 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="balance-card-head"><span class="label">Bancos</span><span class="balance-symbol" aria-hidden="true">${financialIcon('bank')}</span></div>
       <span class="amount ${bankTotal < 0 ? 'neg' : ''}">${fmt(bankTotal)}</span>
       ${bankShare === null ? '' : `<span class="balance-share">${bankShare.toFixed(0)}% do patrimônio</span>`}
-      <span class="balance-detail-link">Ver contas →</span>
     </div>
     <div class="balance-card pocket-summary-card" role="button" tabindex="0" aria-label="Ver caixinhas" title="Ver caixinhas">
       <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('box')}</span></div>
       <span class="amount ${pocketTotal < 0 ? 'neg' : ''}">${fmt(pocketTotal)}</span>
       ${pocketShare === null ? '' : `<span class="balance-share">${pocketShare.toFixed(0)}% do patrimônio</span>`}
-      <span class="balance-detail-link">Ver caixinhas →</span>
     </div>
     <div class="balance-card invest-summary-card" role="button" tabindex="0" aria-label="Ver investimentos" title="Ver investimentos">
       <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div>
       <span class="amount">${fmt(investTotal)}</span>
       ${investShare === null ? '' : `<span class="balance-share">${investShare.toFixed(0)}% do patrimônio</span>`}
-      <span class="balance-detail-link">Ver investimentos →</span>
     </div>`;
     strip.innerHTML = html;
     markValueRefresh(strip);
