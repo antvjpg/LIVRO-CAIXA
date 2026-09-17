@@ -3611,3 +3611,109 @@ body.dark-mode #panelNovo #btnQuickCat{
   box-shadow:none;
 }
 
+
+/* V19-17 — Compactação vertical da modal Novo lançamento */
+#panelNovo{
+  max-height:100svh;
+  padding:14px 16px calc(12px + env(safe-area-inset-bottom,0px));
+}
+
+#panelNovo::before{
+  margin:-4px auto 10px;
+}
+
+#panelNovo h3{
+  margin-bottom:12px;
+  font-size:18px;
+}
+
+#panelNovo .form-grid{
+  gap:9px;
+}
+
+#panelNovo label{
+  margin-bottom:4px;
+  font-size:9px;
+}
+
+#panelNovo #fValor{
+  height:52px;
+  padding-bottom:5px;
+  font-size:32px;
+}
+
+#panelNovo input:not(#fValor),
+#panelNovo select{
+  min-height:42px;
+  padding:9px 12px;
+  border-radius:13px;
+}
+
+#panelNovo .type-toggle{
+  padding:3px;
+  border-radius:13px;
+}
+
+#panelNovo .type-toggle button{
+  min-height:36px;
+  border-radius:10px;
+  font-size:11px;
+}
+
+#panelNovo #btnQuickCat{
+  min-height:42px;
+  width:42px;
+  min-width:42px;
+  border-radius:13px!important;
+}
+
+#panelNovo #btnReadReceipt{
+  min-height:40px;
+  font-size:10px;
+}
+
+#panelNovo #fSalvar{
+  min-height:44px;
+}
+
+@media (max-height:700px){
+  #panelNovo{
+    padding-top:10px;
+  }
+
+  #panelNovo::before{
+    margin:-2px auto 7px;
+  }
+
+  #panelNovo h3{
+    margin-bottom:8px;
+    font-size:17px;
+  }
+
+  #panelNovo .form-grid{
+    gap:7px;
+  }
+
+  #panelNovo #fValor{
+    height:46px;
+    font-size:29px;
+  }
+
+  #panelNovo input:not(#fValor),
+  #panelNovo select{
+    min-height:38px;
+    padding:7px 11px;
+  }
+
+  #panelNovo .type-toggle button{
+    min-height:33px;
+  }
+
+  #panelNovo #btnReadReceipt{
+    min-height:36px;
+  }
+
+  #panelNovo #fSalvar{
+    min-height:42px;
+  }
+}
