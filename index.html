@@ -8699,17 +8699,58 @@ document.getElementById('tSalvar').onclick = async () => {
     btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
   };
 
+  function isInstalledPwa() {
+    try {
+      return window.matchMedia('(display-mode: standalone)').matches
+        || window.matchMedia('(display-mode: fullscreen)').matches
+        || window.navigator.standalone === true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Conclui login Google iniciado via redirect (necessário no PWA instalado)
+  auth.getRedirectResult().then(result => {
+    if (result && result.user) {
+      logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google via redirect concluída.');
+    }
+  }).catch(err => {
+    if (err && err.code && err.code !== 'auth/popup-closed-by-user') {
+      logSyncError('autenticação Google (redirect)', err);
+      setAuthError(translateAuthError(err.code));
+    }
+  });
+
   document.getElementById('authGoogle').onclick = () => {
     setAuthError('');
     const operation = beginLogOperation('Autenticação', 'Entrar com Google');
     logInfo('Autenticação', 'Entrar com Google', 'Em andamento', 'Solicitação de autenticação Google iniciada.', null, operation);
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(() => logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation)).catch(err => {
-      if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
-        auth.signInWithRedirect(provider);
-      } else if (err.code !== 'auth/popup-closed-by-user') {
+    provider.setCustomParameters({ prompt: 'select_account' });
+    const useRedirect = isInstalledPwa();
+    const start = useRedirect
+      ? auth.signInWithRedirect(provider)
+      : auth.signInWithPopup(provider);
+    start.then(() => {
+      if (!useRedirect) logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation);
+    }).catch(err => {
+      const code = err && err.code ? err.code : '';
+      const shouldRedirect = !useRedirect && (
+        code === 'auth/popup-blocked'
+        || code === 'auth/cancelled-popup-request'
+        || code === 'auth/operation-not-supported-in-this-environment'
+        || code === 'auth/unauthorized-domain'
+      );
+      if (shouldRedirect) {
+        auth.signInWithRedirect(provider).catch(redirectErr => {
+          logSyncError('autenticação Google', redirectErr, operation);
+          setAuthError(translateAuthError(redirectErr.code));
+        });
+        return;
+      }
+      if (code !== 'auth/popup-closed-by-user') {
         logSyncError('autenticação Google', err, operation);
-        setAuthError(translateAuthError(err.code));
+        setAuthError(translateAuthError(code) || (err.message || 'Falha ao entrar com Google.'));
       }
     });
   };
