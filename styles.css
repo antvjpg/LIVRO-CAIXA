@@ -3717,3 +3717,28 @@ body.dark-mode #panelNovo #btnQuickCat{
     min-height:42px;
   }
 }
+
+/* V19-17 — Ajustes finais da modal Novo lançamento */
+#panelNovo{
+  border-radius:28px;
+}
+
+#panelNovo #fValor:focus,
+#panelNovo #fValor:focus-visible{
+  outline:none!important;
+  box-shadow:none!important;
+}
+
+#panelNovo .type-toggle button.active-out,
+#panelNovo .type-toggle button[class*="active-out"]{
+  background:var(--red)!important;
+  color:#fff!important;
+  border-color:var(--red)!important;
+  box-shadow:0 4px 12px color-mix(in srgb,var(--red) 22%,transparent)!important;
+}
+
+#panelNovo .type-toggle button.active-in{
+  background:var(--surface-accent)!important;
+  color:var(--accent-ink)!important;
+}
+
