@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-15 (GPT) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-16 (GROK) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-16">
+  <link rel="stylesheet" href="./styles.css?v=19-17">
 </head>
 <body>
 
@@ -3348,7 +3348,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-15 (GPT)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-16 (GPT)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
 
@@ -4705,6 +4705,23 @@ VALOR: ${fmt(bill.amount)}
   }
   function openBillShare(id) { const bill = recurringBills.find(item => item.id === id); if (!bill) return; const field = document.getElementById('billShareMessage'); if (field) field.value = billShareText(bill); document.getElementById('billShareStatus').textContent = ''; openModal('panelBillShare'); }
   window.openBillShare = openBillShare;
+
+  // Helpers de fatura no escopo global (usados por renderBills E openBillDayPanel)
+  function invoiceDisplayTotalFor(row, titularFilter) {
+    const tf = titularFilter != null ? titularFilter : (document.getElementById('billTitularFilter')?.value || '');
+    if (tf) return (row.breakdown || []).reduce((sum, b) => sum + Number(b.total || 0), 0);
+    return Number(row.invoice?.total || 0);
+  }
+  function invoiceSettled(row) {
+    return Array.isArray(row.breakdown) && row.breakdown.length > 0 && row.breakdown.every(b => b.status === 'Pago');
+  }
+  function invoiceOverdue(row) {
+    return !invoiceSettled(row) && row.dueDate < todayISO();
+  }
+  function invoicePending(row) {
+    return !invoiceSettled(row) && !invoiceOverdue(row);
+  }
+
   function renderBills(){
     const y=billViewDate.getFullYear(), m=billViewDate.getMonth(), key=billMonthKey(billViewDate);
     document.getElementById('billMonthLabel').textContent=billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
@@ -4717,10 +4734,7 @@ VALOR: ${fmt(bill.amount)}
     const rows=calendarBillRows();
     const allInvoiceRows=calendarInvoiceRows(y,m);
     const invoiceRows=titularFilter?allInvoiceRows.map(inv=>({...inv, breakdown:inv.breakdown.filter(b=>b.titular===titularFilter)})).filter(inv=>inv.breakdown.length):allInvoiceRows;
-    const invoiceDisplayTotal=row=>titularFilter?row.breakdown.reduce((s,b)=>s+b.total,0):row.invoice.total;
-    const invoiceSettled = row => row.breakdown.length>0 && row.breakdown.every(b => b.status==='Pago');
-    const invoiceOverdue = row => !invoiceSettled(row) && row.dueDate < todayISO();
-    const invoicePending = row => !invoiceSettled(row) && !invoiceOverdue(row);
+    const invoiceDisplayTotal = (row) => invoiceDisplayTotalFor(row, titularFilter);
 
     const matchBillStatus = (row) => {
       if (!statusFilter) return true;
@@ -4769,24 +4783,40 @@ VALOR: ${fmt(bill.amount)}
     };
 
     const renderInvoiceItem = (row) => {
-      const dueLabel=row.dueDate.split('-').reverse().join('/');
-      const displayTotal=invoiceDisplayTotal(row);
+      const dueLabel = row.dueDate.split('-').reverse().join('/');
+      const displayTotal = invoiceDisplayTotal(row);
       const settled = invoiceSettled(row);
       const statusLabel = settled ? 'Pago' : (invoiceOverdue(row) ? 'Atrasado' : 'Pendente');
-      const statusClass = settled ? 'is-paid' : (invoiceOverdue(row)?'overdue':'');
-      const breakdown=row.breakdown.map(b=>{
-        const safeTitular = escapeHTML(b.titular).replace(/'/g,"\\'");
-        const rowId = `${escapeHTML(row.card.id)}-${safeTitular.replace(/[^a-zA-Z0-9]/g,'')}`;
-        const markBtn = b.status==='Pago'
-          ? (b.paidOnly ? `<button type="button" onclick="unmarkInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}')">Desmarcar pago</button>` : `<span class="hint">Quitado no caixa</span>`)
-          : `<button type="button" onclick="markInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)})">Marcar pago</button>
-             <button type="button" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)},${Number(b.remaining||b.total||0)})">Lançar (${fmt(b.remaining||b.total)})</button>`;
-        return `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px dashed var(--line);font-size:11px;">
-          <div><strong>${escapeHTML(b.titular||'Sem titular')}</strong><div class="hint">${fmt(b.total)} · ${escapeHTML(b.status)}${b.paidOnly?' (sem lançamento)':''}</div></div>
-          <div class="bill-actions">${markBtn}<button type="button" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)})">Compartilhar</button></div>
+      const statusClass = settled ? 'is-paid' : (invoiceOverdue(row) ? 'overdue' : '');
+      const breakdown = row.breakdown.map(b => {
+        const safeTitular = escapeHTML(b.titular).replace(/'/g, "\\'");
+        const markBtn = b.status === 'Pago'
+          ? (b.paidOnly
+              ? `<button type="button" class="bill-action-btn" onclick="unmarkInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}')">Desmarcar pago</button>`
+              : `<span class="hint">Quitado no caixa</span>`)
+          : `<button type="button" class="bill-action-btn" onclick="markInvoicePaidOnly('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)})">Marcar pago</button>
+             <button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)},${Number(b.remaining||b.total||0)})">Lançar (${fmt(b.remaining||b.total)})</button>`;
+        return `<div class="invoice-titular-block">
+          <div class="invoice-titular-head">
+            <strong>${escapeHTML(b.titular || 'Sem titular')}</strong>
+            <span class="hint">${fmt(b.total)} · ${escapeHTML(b.status)}${b.paidOnly ? ' (sem lançamento)' : ''}</span>
+          </div>
+          <div class="bill-actions invoice-titular-actions">${markBtn}
+            <button type="button" class="bill-action-btn" onclick="shareInvoiceTitular('${row.card.id}','${row.closingPeriodKey}','${safeTitular}',${Number(b.total||0)})">Compartilhar</button>
+          </div>
         </div>`;
       }).join('');
-      return `<div class="bill-list-item" id="invoice-detail-${escapeHTML(row.card.id)}"><div class="bill-list-item-top"><div><strong>Fatura ${escapeHTML(row.card.name)}</strong><div class="bill-list-item-amount">${fmt(displayTotal)}</div><div class="hint">Venc. ${dueLabel} · Cartão</div></div><span class="bill-status ${statusClass}">${statusLabel}</span></div>${breakdown}</div>`;
+      return `<div class="bill-list-item invoice-card-item" id="invoice-detail-${escapeHTML(row.card.id)}">
+        <div class="invoice-card-header">
+          <div class="invoice-card-title">
+            <strong>Fatura ${escapeHTML(row.card.name)}</strong>
+            <div class="bill-list-item-amount">${fmt(displayTotal)}</div>
+            <div class="hint">Venc. ${dueLabel} · Cartão</div>
+          </div>
+          <span class="bill-status ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="invoice-card-breakdown">${breakdown}</div>
+      </div>`;
     };
 
     let listHtml = '';
@@ -4856,7 +4886,7 @@ VALOR: ${fmt(bill.amount)}
       const status = settled
         ? 'Pago'
         : (invoiceOverdue(row) ? 'Atrasado' : 'Pendente');
-      const total = invoiceDisplayTotal(row);
+      const total = invoiceDisplayTotalFor(row, titularFilter);
 
       return `<div class="bill-day-panel-item">
         <div>
