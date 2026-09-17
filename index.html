@@ -4854,7 +4854,9 @@ VALOR: ${fmt(bill.amount)}
       const payBtn = row.launched ? '' : (row.paidOnly
         ? `<button type="button" class="bill-action-btn" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`
         : `<button type="button" class="bill-action-btn" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`);
+      const dueLabel = row.dueDate.split('-').reverse().join('/');
       const meta = [
+        `Venc. ${dueLabel}`,
         b.recurrenceType === 'nao_recorrente' ? 'Não recorrente' : (row.installmentLabel ? 'Parcelada' : 'Recorrente'),
         'Banco: ' + escapeHTML(row.bank),
         b.titular ? 'Titular: ' + escapeHTML(b.titular) : ''
