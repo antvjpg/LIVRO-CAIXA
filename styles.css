@@ -5137,7 +5137,7 @@ body.dark-mode{
 }
 @media (max-width:700px){
   .modal-overlay .panel{
-    border-radius:28px 28px 0 0 !important;
+    border-radius:22px !important;
   }
 }
 
@@ -5755,7 +5755,7 @@ body:not([data-tab="profile"]) .profile-shell{
 @media (max-width:700px){
   .modal-overlay .panel.open,
   .modal-overlay .panel{
-    border-radius:22px 22px 0 0 !important;
+    border-radius:22px !important;
   }
 }
 
@@ -6120,7 +6120,7 @@ body:not([data-tab="profile"]) .profile-shell{
   .modal-overlay .panel,
   .modal-overlay .panel.open,
   #modalOverlay .panel{
-    border-radius:22px !important; /* não 22px 22px 0 0 */
+    border-radius:22px !important; /* all corners */
   }
 }
 
@@ -6182,4 +6182,172 @@ body:not([data-tab="profile"]) .profile-shell{
 }
 .card-actions .btn-action.edit{
   color:var(--accent) !important;
+}
+
+/* ========== V.19-18 FINAL GUARD ========== */
+#cashflowMiniSummary,.cashflow-mini-summary{display:none!important;}
+.modal-overlay .panel,.panel,#modalOverlay .panel,.filter-choice-sheet{
+  border-radius:22px!important;
+}
+@media (max-width:900px){
+  .modal-overlay .panel,.modal-overlay .panel.open,#modalOverlay .panel{
+    border-radius:22px!important;
+  }
+}
+.card-actions .btn-action.edit::after,
+.card-actions .btn-action.delete::after,
+.btn-action.edit::after,
+.btn-action.delete::after{content:none!important;display:none!important;}
+
+
+/* ========== V.19-18 ui6 — isolamento perfil + caixinhas + espaçamento ========== */
+
+/* Isolamento absoluto: nada do perfil fora da aba profile */
+.tab-content:not(.active){
+  display:none !important;
+}
+#viewProfile:not(.active){
+  display:none !important;
+  visibility:hidden !important;
+  height:0 !important;
+  max-height:0 !important;
+  overflow:hidden !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+}
+body:not([data-tab="profile"]) #viewProfile,
+body:not([data-tab="profile"]) #viewProfile .profile-shell,
+body:not([data-tab="profile"]) #viewProfile .profile-group,
+body:not([data-tab="profile"]) #viewProfile .profile-heading,
+body:not([data-tab="profile"]) #viewProfile .profile-roadmap{
+  display:none !important;
+}
+body[data-tab="profile"] #viewProfile.active{
+  display:block !important;
+  visibility:visible !important;
+  height:auto !important;
+  max-height:none !important;
+  overflow:visible !important;
+}
+
+/* Perfil: largura total, cards alinhados */
+#viewProfile .profile-shell{
+  max-width:none !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:8px 0 24px !important;
+  box-sizing:border-box;
+}
+#viewProfile .profile-group{
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box;
+  margin:0 0 14px !important;
+}
+#viewProfile .profile-list,
+#viewProfile .feature-lab-section,
+#viewProfile .diagnostic-summary-card,
+#viewProfile .feature-lab-toggle,
+#viewProfile .profile-item{
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box;
+}
+#viewProfile .feature-lab-section{
+  padding:14px !important;
+  border-radius:16px !important;
+  border:1px solid var(--line);
+  background:var(--surface);
+}
+#viewProfile .feature-lab-actions{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  width:100%;
+}
+#viewProfile .feature-lab-actions button{
+  width:100% !important;
+}
+
+/* Visão geral: espaçamento Gemini ↔ Insight */
+#viewDashboard{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+#viewDashboard #dashboardNextPayment{
+  margin:0 !important;
+}
+#viewDashboard #dashboardGeminiHost{
+  margin:0 !important;
+}
+#viewDashboard #dailyInsightCard{
+  margin:0 !important;
+}
+#viewDashboard .dashboard-gemini-host .diagnostic-summary-card{
+  margin:0 !important;
+  padding:14px 16px !important;
+  border-radius:16px !important;
+}
+#viewDashboard .daily-insight-card{
+  padding:14px 16px !important;
+  border-radius:16px !important;
+  border:1px solid var(--line);
+  background:var(--surface);
+}
+
+/* Caixinhas: total no padrão dos demais cards de saldo */
+#viewPockets .balance-strip,
+#pocketBalanceStrip{
+  display:grid !important;
+  grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+  gap:8px !important;
+  margin-bottom:12px !important;
+}
+#viewPockets .balance-strip .balance-card.total,
+#pocketBalanceStrip .balance-card.total{
+  grid-column:1 / -1 !important;
+  padding:14px 16px !important;
+  min-height:0 !important;
+  border-radius:16px !important;
+}
+#viewPockets .balance-strip .balance-card.total .label,
+#pocketBalanceStrip .balance-card.total .label,
+#viewPockets .balance-strip .balance-card.total .balance-card-head .label,
+#pocketBalanceStrip .balance-card.total .balance-card-head .label{
+  font-size:10px !important;
+  font-weight:800 !important;
+  letter-spacing:.06em !important;
+  text-transform:uppercase !important;
+  opacity:.85;
+}
+#viewPockets .balance-strip .balance-card.total .amount,
+#pocketBalanceStrip .balance-card.total .amount{
+  font-size:28px !important;
+  font-weight:800 !important;
+  line-height:1.15 !important;
+  letter-spacing:-.03em !important;
+  margin-top:6px !important;
+  display:block !important;
+}
+#viewPockets .balance-strip .balance-card:not(.total),
+#pocketBalanceStrip .balance-card:not(.total){
+  padding:12px !important;
+  border-radius:14px !important;
+  min-height:0 !important;
+}
+#viewPockets .balance-strip .balance-card:not(.total) .label,
+#pocketBalanceStrip .balance-card:not(.total) .label{
+  font-size:10px !important;
+  font-weight:800 !important;
+  letter-spacing:.04em !important;
+  text-transform:uppercase !important;
+}
+#viewPockets .balance-strip .balance-card:not(.total) .amount,
+#pocketBalanceStrip .balance-card:not(.total) .amount{
+  font-size:18px !important;
+  font-weight:800 !important;
+  margin-top:6px !important;
+  display:block !important;
 }
