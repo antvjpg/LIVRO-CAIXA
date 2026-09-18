@@ -4340,17 +4340,17 @@ body.dark-mode #panelBill #billParcelasFields{
 
   .modal-overlay:has(.bill-form-sheet){
     align-items:flex-end;
-    padding:0;
+    padding:0 12px 12px;
     background:rgba(13,42,30,.56);
     backdrop-filter:blur(7px);
   }
 
   .bill-form-sheet{
     width:100%;
-    max-width:none;
+    max-width:720px;
     max-height:92svh;
     padding:18px 16px 20px;
-    border-radius:24px 24px 0 0;
+    border-radius:24px;
     overflow-y:auto;
     box-shadow:0 -18px 55px rgba(18,38,29,.22);
   }
