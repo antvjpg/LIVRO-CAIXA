@@ -5328,3 +5328,365 @@ body.dark-mode{
     width:auto;
   }
 }
+
+
+
+/* ========== V.19-18 UI2 — refinamento Visão Geral / Perfil / Cards ========== */
+
+/* Insight only visible on dashboard tab */
+body:not([data-tab="dashboard"]) #dailyInsightCard,
+body:not([data-tab="dashboard"]) #dashboardGeminiHost,
+body:not([data-tab="dashboard"]) #dashboardNextPayment{
+  display:none !important;
+}
+#viewDashboard #dailyInsightCard,
+#viewDashboard #dashboardGeminiHost,
+#viewDashboard #dashboardNextPayment{
+  display:block;
+  margin-top:12px;
+}
+#viewDashboard .daily-insight-card{
+  margin-top:16px;
+  margin-bottom:8px;
+}
+#viewDashboard .dashboard-gemini-host .diagnostic-summary-card{
+  margin-top:12px;
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--surface);
+}
+#viewDashboard .dashboard-gemini-host .diagnostic-summary-head{
+  display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;
+}
+#viewDashboard .dashboard-gemini-host #btnGeminiDiagnostic{
+  width:100%;min-height:44px;border-radius:999px;
+}
+
+/* Próximo pagamento */
+.dashboard-next-payment-card .next-pay-inner{
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--surface);
+}
+.dashboard-next-payment-card .next-pay-kicker{
+  display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;
+}
+.dashboard-next-payment-card .next-pay-row{
+  display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+}
+.dashboard-next-payment-card .next-pay-row strong{font-size:14px;color:var(--ink);}
+.dashboard-next-payment-card .next-pay-row b{font-size:14px;font-weight:800;color:var(--ink);}
+.dashboard-next-payment-card .next-pay-inner.empty strong{font-size:13px;font-weight:650;color:var(--ink-soft);}
+
+/* Período ativo mais fino */
+.period-bar,
+#periodBar,
+.period-picker-wrap{
+  padding-top:6px !important;
+  padding-bottom:6px !important;
+}
+.period-bar{
+  gap:6px !important;
+  min-height:0 !important;
+}
+.period-bar button,
+.period-nav,
+.period-all,
+.period-picker-button{
+  min-height:34px !important;
+  padding:6px 10px !important;
+}
+.period-summary-card,
+.card.period-summary{
+  padding:10px 12px !important;
+}
+
+/* Resumo do fluxo compacto */
+.cashflow-mini-summary,
+#cashflowMiniSummary{
+  padding:10px 12px !important;
+  gap:8px !important;
+  border-radius:14px !important;
+}
+.cashflow-mini-head{
+  margin-bottom:6px !important;
+}
+.cashflow-mini-metrics{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:6px !important;
+}
+.cashflow-mini-metrics > div{
+  padding:8px 8px !important;
+  border-radius:12px !important;
+  min-height:0 !important;
+}
+.cashflow-mini-metrics small{
+  font-size:9px !important;
+  letter-spacing:.04em;
+}
+.cashflow-mini-metrics strong{
+  font-size:13px !important;
+  line-height:1.2 !important;
+}
+
+/* Lançamentos */
+.card-lancamento{
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  padding:12px !important;
+  margin:0 0 8px !important;
+  border:1px solid var(--line) !important;
+  border-radius:14px !important;
+  background:var(--surface) !important;
+  box-shadow:none !important;
+}
+.card-lancamento .card-left{
+  display:flex !important;
+  gap:10px !important;
+  min-width:0 !important;
+  flex:1 !important;
+}
+.card-lancamento .card-info{
+  min-width:0;
+}
+.card-lancamento .card-title{
+  margin:2px 0 4px !important;
+  font-size:13px !important;
+  font-weight:750 !important;
+  line-height:1.3 !important;
+  color:var(--ink) !important;
+  overflow-wrap:anywhere;
+}
+.card-lancamento .card-date{
+  font-size:10px !important;
+  color:var(--ink-soft) !important;
+  font-weight:700;
+}
+.card-lancamento .card-meta{
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+}
+.card-lancamento .card-amount{
+  font-size:14px !important;
+  font-weight:800 !important;
+  white-space:nowrap;
+}
+.card-lancamento .card-right{
+  display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;
+}
+.card-lancamento .card-actions{
+  display:flex;gap:4px;
+}
+
+/* Patrimônio oculto = •••••• (não sumir) */
+body.balances-hidden .balance-card .amount,
+body.balances-hidden .balance-card.total .amount{
+  color: transparent !important;
+  position: relative !important;
+  user-select: none;
+}
+body.balances-hidden .balance-card .amount::after,
+body.balances-hidden .balance-card.total .amount::after,
+body.balances-hidden .card-amount::after,
+body.balances-hidden .dashboard-metrics strong::after,
+body.balances-hidden .cashflow-mini-metrics strong::after{
+  content: "••••••" !important;
+  position: absolute !important;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink) !important;
+  opacity: .85;
+  letter-spacing: .12em;
+  font-size: .95em;
+  font-weight: 800;
+  pointer-events: none;
+}
+body.balances-hidden .balance-card.total .amount::after{
+  color: var(--ink) !important;
+  opacity: 1 !important;
+}
+
+/* % dos cards de saldo — secundário */
+#balanceStrip .balance-share,
+.balance-strip .balance-share{
+  display:inline-flex !important;
+  margin-top:4px !important;
+  padding:2px 7px !important;
+  border-radius:999px !important;
+  font-size:9px !important;
+  font-weight:700 !important;
+  letter-spacing:.02em !important;
+  line-height:1.2 !important;
+  max-width:100%;
+  opacity:.9;
+  background:color-mix(in srgb, var(--accent) 12%, transparent) !important;
+  color:var(--ink-soft) !important;
+}
+
+/* Perfil: ocultar proteção local; sair no fim */
+.profile-group-hidden,
+.profile-group[hidden]{
+  display:none !important;
+}
+.profile-group:has(#btnProfileLogout){
+  margin-top:18px;
+  padding-top:8px;
+  border-top:1px solid var(--line);
+  margin-bottom:calc(18px + env(safe-area-inset-bottom,0px));
+}
+
+/* FAB contorno fino */
+.fab-add,
+#fabAdd{
+  border:1.5px solid color-mix(in srgb, var(--ink) 22%, transparent) !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.18), 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent) !important;
+}
+body.dark-mode .fab-add,
+body.dark-mode #fabAdd{
+  border-color: color-mix(in srgb, #fff 28%, transparent) !important;
+}
+
+/* Mini cards caixinhas ≈ investimentos */
+.pocket-mini,
+.invest-mini,
+.section-balance-strip .balance-card,
+#investBalanceStrip .balance-card,
+#pocketsStrip .balance-card{
+  min-height:0 !important;
+  padding:10px 12px !important;
+  border-radius:14px !important;
+}
+.pocket-item,
+.invest-item,
+.manage-item.pocket,
+.manage-item.invest{
+  padding:12px 12px !important;
+  border-radius:14px !important;
+  border:1px solid var(--line) !important;
+  background:var(--surface) !important;
+  box-shadow:none !important;
+  margin-bottom:8px !important;
+}
+.pocket-item strong,
+.invest-item strong{
+  font-size:13px !important;
+  font-weight:800 !important;
+}
+.pocket-item .val,
+.invest-item .val,
+.manage-item-value{
+  font-size:16px !important;
+  font-weight:800 !important;
+}
+
+/* Edit icon moderno (mask) */
+.btn-action.edit::before,
+.action-btn.edit::before,
+.beta-icon-button.edit::after,
+button.edit.btn-action::before{
+  content:"" !important;
+  display:block !important;
+  width:15px;height:15px;
+  background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.45 3.55a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.45 3.55a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.beta-icon-button.edit::after{font-size:0 !important;}
+
+/* Aba cartões */
+#viewCards .card,
+#viewCards .manage-item,
+#viewCards .commitment-card{
+  border-radius:14px !important;
+  border:1px solid var(--line) !important;
+  box-shadow:none !important;
+  padding:12px !important;
+}
+#viewCards .toolbar button{
+  border:1px solid var(--line) !important;
+  box-shadow:none !important;
+}
+
+/* Ícone investimento — stroke chart */
+.nav-tab[data-tab="invest"] svg,
+.quick-action[data-invest] svg,
+.invest-icon svg{
+  /* hint for stroke consistency */
+}
+
+/* Dashboard metrics more compact */
+.advanced-dashboard .dashboard-metrics{
+  gap:8px !important;
+}
+.advanced-dashboard .dashboard-metrics > div{
+  padding:10px 10px !important;
+  border-radius:12px !important;
+}
+.advanced-dashboard .dashboard-page-heading h2{
+  margin:4px 0 !important;
+  font-size:22px !important;
+}
+.advanced-dashboard .dashboard-health-card{
+  padding:10px 12px !important;
+  margin-bottom:10px !important;
+}
+
+
+/* === V.19-18 UI2 critical (idempotent overrides) === */
+#viewDashboard #dailyInsightCard{display:block;margin-top:16px;}
+#viewDashboard #dashboardGeminiHost{display:block;margin-top:12px;}
+#viewDashboard #dashboardNextPayment{display:block;margin-top:12px;}
+body:not([data-tab="dashboard"]) #dailyInsightCard,
+body:not([data-tab="dashboard"]) #dashboardGeminiHost,
+body:not([data-tab="dashboard"]) #dashboardNextPayment{display:none!important;}
+/* when dashboard tab content is shown via .active, also show children */
+#viewDashboard.active #dailyInsightCard,
+#viewDashboard.active #dashboardGeminiHost,
+#viewDashboard.active #dashboardNextPayment{display:block!important;}
+#viewDashboard:not(.active) #dailyInsightCard,
+#viewDashboard:not(.active) #dashboardGeminiHost,
+#viewDashboard:not(.active) #dashboardNextPayment{display:none!important;}
+
+.profile-group-hidden,[hidden].profile-group{display:none!important;}
+.profile-group:has(#btnProfileLogout){margin-top:18px;padding-top:10px;border-top:1px solid var(--line);margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));}
+
+.dashboard-next-payment-card .next-pay-inner{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);}
+.dashboard-next-payment-card .next-pay-kicker{display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+.dashboard-next-payment-card .next-pay-row{display:flex;justify-content:space-between;gap:10px;}
+.dashboard-gemini-host .diagnostic-summary-card{padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);}
+.dashboard-gemini-host #btnGeminiDiagnostic{width:100%;min-height:44px;border-radius:999px;margin-top:10px;}
+
+.period-bar{gap:6px!important;}
+.period-bar button,.period-nav,.period-all,.period-picker-button{min-height:34px!important;padding:6px 10px!important;}
+#cashflowMiniSummary,.cashflow-mini-summary{padding:10px 12px!important;}
+.cashflow-mini-metrics{gap:6px!important;}
+.cashflow-mini-metrics>div{padding:8px!important;}
+.cashflow-mini-metrics strong{font-size:13px!important;}
+
+.card-lancamento{padding:12px!important;border-radius:14px!important;border:1px solid var(--line)!important;margin-bottom:8px!important;box-shadow:none!important;}
+
+body.balances-hidden .balance-card .amount,
+body.balances-hidden .balance-card.total .amount{color:transparent!important;position:relative!important;}
+body.balances-hidden .balance-card .amount::after,
+body.balances-hidden .balance-card.total .amount::after{content:"••••••"!important;position:absolute!important;left:0;top:50%;transform:translateY(-50%);color:var(--ink)!important;opacity:1!important;letter-spacing:.12em;font-weight:800;pointer-events:none;}
+
+#balanceStrip .balance-share{font-size:9px!important;padding:2px 7px!important;margin-top:4px!important;opacity:.9;}
+
+.fab-add,#fabAdd{border:1.5px solid color-mix(in srgb,var(--ink) 22%,transparent)!important;}
+body.dark-mode .fab-add{border-color:color-mix(in srgb,#fff 28%,transparent)!important;}
+
+.pocket-item,.invest-item{padding:12px!important;border-radius:14px!important;border:1px solid var(--line)!important;background:var(--surface)!important;box-shadow:none!important;margin-bottom:8px!important;}
+#viewCards .card,#viewCards .manage-item{border-radius:14px!important;border:1px solid var(--line)!important;box-shadow:none!important;}
+
+.beta-icon-button.edit::after,.btn-action.edit::before{content:""!important;display:block!important;width:15px;height:15px;background:currentColor;
+-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.45 3.55a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;
+mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.45 3.55a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;}
+
+#viewBills .bills-status-filter button,
+#viewBills .bills-toolbar-actions button,
+#viewBills .calendar-filter-control,
+#viewBills .bill-more-button{border-color:var(--line)!important;box-shadow:none!important;}

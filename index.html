@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-18">
+  <link rel="stylesheet" href="./styles.css?v=19-18-ui2">
 </head>
 <body>
 
@@ -129,7 +129,7 @@
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')">🐷 Caixinhas</button>
     <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')">💳 Cartões</button>
     <button class="nav-tab" id="tabBtnReceivables" onclick="switchTab('receivables')">📥 A Receber</button>
-    <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">🪙 Investimentos</button>
+    <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">📈 Investimentos</button>
   </div>
 
   <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
@@ -146,18 +146,6 @@
   </div>
 
   <div class="balance-strip" id="balanceStrip"></div>
-  <section class="daily-insight-card" id="dailyInsightCard" aria-label="Insight financeiro do dia">
-    <div class="daily-insight-head">
-      <div>
-        <span class="daily-insight-kicker">Insight do dia</span>
-        <strong>Análise assistida</strong>
-      </div>
-      <button type="button" id="btnDailyInsight" class="daily-insight-btn">Gerar insight</button>
-    </div>
-    <div id="dailyInsightBody" class="daily-insight-body">
-      <p class="hint">Uma leitura objetiva da sua situação financeira, no máximo uma vez por dia. Nenhum lançamento é alterado.</p>
-    </div>
-  </section>
 
   <!-- V18-12: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
   <section class="period-bar" id="universalPeriodBar" aria-label="Período de visualização">
@@ -180,6 +168,33 @@
   <!-- ABA 1: VISÃO GERAL -->
   <div id="viewDashboard" class="tab-content">
     <div id="advancedDashboard"></div>
+    <div id="dashboardNextPayment" class="dashboard-next-payment-card" aria-live="polite"></div>
+    <div id="dashboardGeminiHost" class="dashboard-gemini-host">
+<div class="diagnostic-summary-card" style="margin-top:10px;">
+            <div class="diagnostic-summary-head">
+              <span class="diagnostic-summary-icon" aria-hidden="true">✨</span>
+              <div>
+                <strong>Análise financeira com Gemini</strong>
+                <span id="geminiDiagnosticStatus">Análise baseada nos dados financeiros resumidos do aplicativo.</span>
+              </div>
+            </div>
+            <button type="button" id="btnGeminiDiagnostic" class="primary">Analisar com Gemini</button>
+          </div>
+
+          <div id="geminiDiagnosticResults" class="diagnostic-results" aria-live="polite"></div>
+    </div>
+    <section class="daily-insight-card" id="dailyInsightCard" aria-label="Insight financeiro do dia">
+      <div class="daily-insight-head">
+        <div>
+          <span class="daily-insight-kicker">Insight do dia</span>
+          <strong>Análise assistida</strong>
+        </div>
+        <button type="button" id="btnDailyInsight" class="daily-insight-btn">Gerar insight</button>
+      </div>
+      <div id="dailyInsightBody" class="daily-insight-body">
+        <p class="hint">Uma leitura objetiva da sua situação financeira, no máximo uma vez por dia. Nenhum lançamento é alterado.</p>
+      </div>
+    </section>
   </div>
 
   <!-- ABA 2: LIVRO CAIXA -->
@@ -395,16 +410,9 @@
         </div>
       </div>
 
-      <div class="profile-group">
-        <div class="profile-group-title">Conta</div>
-        <div class="profile-list">
-          <div class="profile-item is-danger" role="button" tabindex="0" id="btnProfileLogout"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="profile-item-copy"><strong>Sair da conta</strong><span>Encerra a sessão neste aparelho — seus dados continuam salvos na nuvem</span></span><span class="profile-item-arrow">›</span></div>
-        </div>
-
       </div>
 
-      <div class="profile-group">
-        <div class="profile-group-title">Proteção local</div>
+      <div class="profile-group profile-group-hidden" hidden aria-hidden="true"><div class="profile-group-title">Proteção local</div>
         <div class="feature-lab-section feature-lab-security">
           <p class="feature-lab-section-desc">Proteja o acesso local ao aplicativo com um PIN de 4 a 8 dígitos.</p>
           <div class="feature-lab-pin-row">
@@ -458,22 +466,16 @@
             <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
           </div>
           <div id="diagnosticResults" class="diagnostic-results" aria-live="polite"></div>
-
-          <div class="diagnostic-summary-card" style="margin-top:10px;">
-            <div class="diagnostic-summary-head">
-              <span class="diagnostic-summary-icon" aria-hidden="true">✨</span>
-              <div>
-                <strong>Análise financeira com Gemini</strong>
-                <span id="geminiDiagnosticStatus">Análise baseada nos dados financeiros resumidos do aplicativo.</span>
-              </div>
-            </div>
-            <button type="button" id="btnGeminiDiagnostic" class="primary">Analisar com Gemini</button>
-          </div>
-
-          <div id="geminiDiagnosticResults" class="diagnostic-results" aria-live="polite"></div>
         </div>
       </div>
 
+      
+
+      <div class="profile-group">
+        <div class="profile-group-title">Conta</div>
+        <div class="profile-list">
+          <div class="profile-item is-danger" role="button" tabindex="0" id="btnProfileLogout"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="profile-item-copy"><strong>Sair da conta</strong><span>Encerra a sessão neste aparelho — seus dados continuam salvos na nuvem</span></span><span class="profile-item-arrow">›</span></div>
+        </div>
       <div class="profile-roadmap"><b>Em preparação:</b> revisão de Meta/Simulação financeira.</div>
 </section>
   </div>
@@ -1288,7 +1290,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-18').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-18-ui2').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -1779,6 +1781,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.switchTab = function(tabName) {
     currentTab = tabName;
+    try { document.body.dataset.tab = tabName || 'caixa'; } catch (e) {}
     document.body.classList.add('tab-changing');
     window.setTimeout(() => document.body.classList.remove('tab-changing'), 240);
     updateNavIndicator(tabName);
@@ -3533,6 +3536,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const health = monthNet < 0 ? { label: 'Atenção', detail: 'As saídas superaram as entradas neste mês.', tone: 'warning', icon: '!' } : overdueBills.length ? { label: 'Revisar compromissos', detail: `${overdueBills.length} conta(s) aguardam atenção.`, tone: 'warning', icon: '!' } : (monthIncome > 0 || monthExpense > 0) ? { label: 'Equilibrado', detail: 'Fluxo positivo e compromissos sob acompanhamento.', tone: 'positive', icon: '✓' } : { label: 'Comece seu acompanhamento', detail: 'Registre movimentações para ver sua saúde financeira.', tone: 'neutral', icon: '○' };
     const budgetCycle = currentFinancialCycleKey();
     const budgetRows = categories.map(cat => { const budget = budgetFor(cat.id); if (!budget || !(budget.amount > 0)) return ''; const spent = budgetSpent(cat.id, budgetCycle); const pct = Math.max(0, spent / budget.amount * 100); const visualPct = Math.min(100, pct); const overLabel = pct >= 100 ? ' · limite excedido' : ''; return `<div class="budget-summary-row"><div><strong>${escapeHTML(cat.name)}</strong><span>${fmt(spent)} de ${fmt(budget.amount)}${overLabel}</span></div><div class="budget-summary-track"><span class="${pct >= 100 ? 'over' : ''}" style="width:${visualPct.toFixed(2)}%" data-real-percent="${pct.toFixed(2)}"></span></div><b>${pct.toFixed(0).replace('.', ',')}%</b></div>`; }).filter(Boolean).join('');
+    
+    (function updateNextPaymentCard(){
+      const host = document.getElementById('dashboardNextPayment');
+      if (!host) return;
+      const list = (typeof pendingBills !== 'undefined' && Array.isArray(pendingBills)) ? pendingBills.slice() : [];
+      list.sort((a,b) => String(billDueDateForMonth(a, year, monthIndex)).localeCompare(String(billDueDateForMonth(b, year, monthIndex))));
+      const next = list[0];
+      if (!next) {
+        host.innerHTML = '<div class="next-pay-inner empty"><span class="next-pay-kicker">Próximo pagamento</span><strong>Nenhum pagamento pendente</strong></div>';
+        return;
+      }
+      const due = billDueDateForMonth(next, year, monthIndex);
+      const dueFmt = String(due).split('-').reverse().join('/');
+      host.innerHTML = '<div class="next-pay-inner"><span class="next-pay-kicker">Próximo pagamento</span><div class="next-pay-row"><strong>' + escapeHTML(next.name || 'Conta') + '</strong><b>' + fmt(next.amount) + '</b></div><span class="hint">Vence em ' + dueFmt + '</span></div>';
+    })();
+    
     const commitments = upcomingBills.map(bill => { const dueDate = billDueDateForMonth(bill, year, monthIndex); const status = billStatus(bill, month); const tone = status === 'Atrasado' ? 'overdue' : ''; return `<div class="dashboard-commitment-row ${tone}"><div><strong>${escapeHTML(bill.name || 'Conta recorrente')}</strong><span>${status} · ${dueDate.split('-').reverse().join('/')}</span></div><b>${fmt(bill.amount)}</b></div>`; }).join('');
     const alerts = [];
     if (monthNet < 0) alerts.push(`<div class="dashboard-alert-row warning"><span>!</span><div><strong>Fluxo negativo</strong><small>As saídas superam as entradas em ${fmt(Math.abs(monthNet))}.</small></div></div>`);
