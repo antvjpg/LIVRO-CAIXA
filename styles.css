@@ -6351,3 +6351,281 @@ body[data-tab="profile"] #viewProfile.active{
   margin-top:6px !important;
   display:block !important;
 }
+
+
+/* ========== V.19-18 — Total investido no padrão dos totais (Caixinhas/Patrimônio compacto) ========== */
+#viewInvest .balance-strip,
+#investBalanceStrip{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:8px !important;
+  margin-bottom:12px !important;
+}
+#viewInvest .balance-strip .balance-card.total,
+#investBalanceStrip .balance-card.total{
+  grid-column:1 / -1 !important;
+  padding:14px 16px !important;
+  min-height:0 !important;
+  border-radius:16px !important;
+  box-shadow:none !important;
+}
+#viewInvest .balance-strip .balance-card.total .balance-card-head,
+#investBalanceStrip .balance-card.total .balance-card-head{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  margin:0 !important;
+}
+#viewInvest .balance-strip .balance-card.total .label,
+#investBalanceStrip .balance-card.total .label,
+#viewInvest .balance-strip .balance-card.total .balance-card-head .label,
+#investBalanceStrip .balance-card.total .balance-card-head .label{
+  font-size:10px !important;
+  font-weight:800 !important;
+  letter-spacing:.06em !important;
+  text-transform:uppercase !important;
+  opacity:.9 !important;
+  line-height:1.2 !important;
+}
+#viewInvest .balance-strip .balance-card.total .amount,
+#investBalanceStrip .balance-card.total .amount{
+  font-size:28px !important;
+  font-weight:800 !important;
+  line-height:1.15 !important;
+  letter-spacing:-.03em !important;
+  margin-top:6px !important;
+  display:block !important;
+}
+#viewInvest .balance-strip .balance-card.total .balance-symbol,
+#investBalanceStrip .balance-card.total .balance-symbol{
+  width:36px !important;
+  height:36px !important;
+  min-width:36px !important;
+  border-radius:12px !important;
+}
+
+
+/* ========== V.19-18 ui7 — invest total + asset cards + cartões sheet + quotes ========== */
+
+/* Total investido no mesmo padrão de Caixinhas / Bancos */
+#viewInvest .balance-strip,
+#investBalanceStrip{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:8px !important;
+  margin-bottom:12px !important;
+}
+#investBalanceStrip .balance-card.total,
+#viewInvest .balance-card.total{
+  grid-column:1 / -1 !important;
+  padding:14px 16px !important;
+  border-radius:16px !important;
+  min-height:0 !important;
+}
+#investBalanceStrip .balance-card.total .label,
+#investBalanceStrip .balance-card.total .balance-card-head .label{
+  font-size:10px !important;
+  font-weight:800 !important;
+  letter-spacing:.06em !important;
+  text-transform:uppercase !important;
+  opacity:.85;
+}
+#investBalanceStrip .balance-card.total .amount{
+  font-size:28px !important;
+  font-weight:800 !important;
+  line-height:1.15 !important;
+  letter-spacing:-.03em !important;
+  margin-top:6px !important;
+  display:block !important;
+}
+
+/* Asset / pocket cards */
+.asset-card.invest-box,
+.pocket-box.asset-card,
+.invest-box.asset-card{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--surface);
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.asset-card-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+}
+.asset-card-title h4{
+  margin:0;font-size:16px;font-weight:800;color:var(--ink);
+}
+.asset-card-sub{
+  display:block;margin-top:2px;font-size:11px;color:var(--ink-soft);
+}
+.asset-card-tag{
+  flex:0 0 auto;font-size:10px;font-weight:700;text-transform:uppercase;
+  padding:4px 8px;border-radius:999px;border:1px solid var(--line);
+  background:color-mix(in srgb,var(--accent) 12%,var(--surface));color:var(--accent);
+}
+.asset-card-value{
+  font-size:28px;font-weight:800;letter-spacing:-.03em;color:var(--ink);line-height:1.1;
+}
+.asset-card-meta{
+  display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink-soft);
+}
+.asset-card-actions{
+  display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:4px;
+}
+
+/* Credit card sheet (mockup) */
+.credit-card-box.credit-card-sheet{
+  border-radius:22px !important;
+  border:1px solid var(--line) !important;
+  background:var(--surface) !important;
+  padding:18px 16px 14px !important;
+  box-shadow:0 8px 28px color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.credit-card-sheet .credit-card-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;
+}
+.credit-card-sheet .credit-card-title{
+  display:flex;align-items:center;gap:12px;min-width:0;
+}
+.credit-card-sheet .credit-card-icon{
+  width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  border:1px solid var(--line);background:var(--paper);flex:0 0 40px;
+}
+.credit-card-sheet .credit-card-icon svg{
+  width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;
+}
+.credit-card-sheet .credit-card-title h3{
+  margin:0;font-size:16px;font-weight:800;color:var(--ink);
+}
+.credit-card-sheet .credit-card-title small{
+  display:block;margin-top:2px;font-size:11px;color:var(--ink-soft);
+}
+.credit-card-sheet .credit-card-status.active{
+  font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:5px 10px;border-radius:999px;
+  background:color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color:var(--accent);border:1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.credit-card-sheet .credit-card-status.inactive{
+  font-size:10px;font-weight:800;padding:5px 10px;border-radius:999px;
+  background:color-mix(in srgb, var(--ink) 8%, var(--surface));color:var(--ink-soft);
+}
+.credit-card-meta-row{
+  display:grid !important;
+  grid-template-columns:repeat(4, minmax(0,1fr)) !important;
+  gap:0 !important;
+  border:1px solid var(--line);
+  border-radius:14px;
+  overflow:hidden;
+  margin-bottom:12px;
+  background:var(--paper);
+}
+.credit-card-meta-row .credit-card-meta-item{
+  padding:10px 8px;
+  text-align:center;
+  border-right:1px solid var(--line);
+}
+.credit-card-meta-row .credit-card-meta-item:last-child{border-right:0;}
+.credit-card-meta-row .credit-card-meta-item span{
+  display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:4px;
+}
+.credit-card-meta-row .credit-card-meta-item strong{
+  display:block;font-size:12px;font-weight:800;color:var(--ink);
+}
+.credit-card-invoice-block{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
+  background:var(--paper);
+}
+.credit-card-invoice-head{
+  display:flex;align-items:flex-start;gap:10px;
+}
+.credit-card-invoice-icon{font-size:18px;line-height:1;flex:0 0 auto;margin-top:2px;}
+.credit-card-invoice-copy{flex:1;min-width:0;}
+.credit-card-invoice-copy strong{display:block;font-size:13px;color:var(--ink);}
+.credit-card-invoice-copy .hint{display:block;margin-top:3px;font-size:11px;color:var(--ink-soft);line-height:1.35;}
+.credit-card-invoice-total{
+  font-size:15px;font-weight:800;color:var(--accent);white-space:nowrap;
+}
+.credit-card-invoice-toggle{
+  margin-top:10px;border:0;background:transparent;color:var(--accent);
+  font-size:12px;font-weight:700;cursor:pointer;padding:0;
+}
+.credit-card-invoice-lines{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);flex-direction:column;gap:6px;}
+.credit-card-invoice-block.is-open .credit-card-invoice-lines{display:flex;}
+.credit-card-invoice-line{
+  display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--ink-soft);
+}
+.credit-card-invoice-line span:last-child{font-weight:700;color:var(--ink);white-space:nowrap;}
+.credit-card-purchases-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;
+}
+.credit-card-purchases-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.credit-card-pill{
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  border-radius:999px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;
+}
+.credit-card-pill.primary{
+  background:color-mix(in srgb, var(--accent) 14%, var(--surface));
+  border-color:color-mix(in srgb, var(--accent) 30%, var(--line));
+  color:var(--accent);
+}
+.credit-card-purchase-row{
+  display:grid;
+  grid-template-columns:10px 1fr auto auto;
+  gap:10px;
+  align-items:center;
+  padding:10px 8px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin-bottom:8px;
+  background:var(--surface);
+}
+.credit-card-purchase-dot{
+  width:10px;height:10px;border-radius:3px;background:#F08A24;
+}
+.credit-card-purchase-main{min-width:0;}
+.credit-card-purchase-main strong{display:block;font-size:12px;color:var(--ink);}
+.credit-card-purchase-main span{display:block;font-size:10px;color:var(--ink-soft);margin-top:2px;}
+.credit-card-purchase-parcel{color:var(--ink-soft)!important;}
+.credit-card-purchase-value{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;}
+.credit-card-purchase-menu{display:flex;gap:4px;}
+.credit-card-purchases:not(.is-expanded) .credit-card-purchase-row:nth-child(n+4){
+  display:none;
+}
+.credit-card-footer-actions{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  margin-top:8px;border:1px solid var(--line);border-radius:999px;overflow:hidden;
+}
+.credit-card-footer-btn{
+  border:0;background:var(--surface);color:var(--ink);
+  padding:12px 10px;font-size:13px;font-weight:700;cursor:pointer;
+}
+.credit-card-footer-btn + .credit-card-footer-btn{
+  border-left:1px solid var(--line);
+}
+@media (max-width:420px){
+  .credit-card-meta-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  .credit-card-meta-row .credit-card-meta-item:nth-child(2){border-right:0;}
+  .credit-card-meta-row .credit-card-meta-item:nth-child(1),
+  .credit-card-meta-row .credit-card-meta-item:nth-child(2){border-bottom:1px solid var(--line);}
+}
+
+body.dark-mode .credit-card-box.credit-card-sheet{
+  background:var(--surface)!important;
+}
+
+#viewPockets .pocket-box{
+  border-radius:18px!important;
+  padding:16px!important;
+  border:1px solid var(--line)!important;
+}
+#viewPockets .pocket-box .val,
+#viewPockets .pocket-box .amount{
+  font-size:24px!important;font-weight:800!important;letter-spacing:-.03em;
+}

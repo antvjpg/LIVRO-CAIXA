@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-18-ui6b">
+  <link rel="stylesheet" href="./styles.css?v=19-18-ui7">
 </head>
 <body>
 
@@ -1293,7 +1293,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-18-ui6b').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-18-ui7').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -2305,7 +2305,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function totalInvestBalance() {
-    return investments.reduce((sum, i) => sum + (i.type === 'Renda Fixa' ? fixedIncomeCurrentValue(i) : (i.value || 0)), 0);
+    return investments.reduce((sum, i) => {
+      if (i.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(i);
+      let v = Number(i.value);
+      if (!(v >= 0) || (v === 0 && isCryptoType(i.type) && cryptoCurrentUnits(i) > 0 && Number(i.price) > 0)) {
+        v = cryptoValueFromUnits(i.type, cryptoCurrentUnits(i), i.price || 0);
+      }
+      return sum + (Number(v) || 0);
+    }, 0);
   }
 
   function pocketMovementTotal(pocketId, excludeId = null) {
@@ -2956,6 +2963,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderInvestments() {
+    applyCachedQuotesToInvestments();
     const container = document.getElementById('investGrid');
     const summary = document.getElementById('investBalanceStrip');
     const total = totalInvestBalance();
@@ -2964,19 +2972,39 @@ document.addEventListener('DOMContentLoaded', () => {
       container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhum ativo ou investimento cadastrado. Clique em "+ Novo Ativo / Cripto" para registrar.</div>`;
       return;
     }
-    container.innerHTML = investments.map((inv, index) => `
-      <div class="invest-box">
-        <h4><span>${escapeHTML(inv.alias || inv.name)}</span> <span class="tag">${escapeHTML(inv.type)}</span></h4>
-        ${inv.alias ? `<div class="units investment-name-secondary">${escapeHTML(inv.name)}</div>` : ''}
-        <div class="val">${fmt(inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0))}</div>
-        ${isCryptoType(inv.type) ? `<div class="units">Quantidade: ${formatCryptoUnits(inv.type, cryptoCurrentUnits(inv), inv.name)}</div>` : ''}
-        ${isCryptoType(inv.type) ? `<div class="units">Cotação: ${fmt(inv.price || 0)} · ${inv.quoteSource === 'api' ? 'Automática' : 'Manual'} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</div>` : ''}
-        ${inv.institution ? `<div class="units">${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</div>` : ''}
-        ${inv.dueDate ? `<div class="units">Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</div>` : ''}
-        ${rentabilityHTML('invest', inv.id, inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : (inv.value || 0))}
+    container.innerHTML = investments.map((inv, index) => {
+      const displayVal = inv.type === 'Renda Fixa'
+        ? fixedIncomeCurrentValue(inv)
+        : (Number(inv.value) > 0 ? inv.value : cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0));
+      return `
+      <article class="invest-box asset-card">
+        <header class="asset-card-head">
+          <div class="asset-card-title">
+            <h4>${escapeHTML(inv.alias || inv.name)}</h4>
+            ${inv.alias ? `<span class="asset-card-sub">${escapeHTML(inv.name)}</span>` : ''}
+          </div>
+          <span class="asset-card-tag tag">${escapeHTML(inv.type)}</span>
+        </header>
+        <div class="asset-card-value">${fmt(displayVal)}</div>
+        <div class="asset-card-meta">
+          ${isCryptoType(inv.type) ? `<span>Quantidade: ${formatCryptoUnits(inv.type, cryptoCurrentUnits(inv), inv.name)}</span>` : ''}
+          ${isCryptoType(inv.type) ? `<span>Cotação: ${fmt(inv.price || 0)} · ${inv.quoteSource === 'api' ? 'Automática' : 'Manual'} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</span>` : ''}
+          ${inv.institution ? `<span>${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</span>` : ''}
+          ${inv.dueDate ? `<span>Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</span>` : ''}
+        </div>
+        ${rentabilityHTML('invest', inv.id, displayVal)}
         ${yieldHistoryHTML('invest', inv.id)}
-        <div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',-1)" ${index===0?'disabled':''} aria-label="Mover investimento para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',1)" ${index===investments.length-1?'disabled':''} aria-label="Mover investimento para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações do investimento"></button><button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar investimento"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir investimento"></button></div>
-      </div>`).join('');
+        <footer class="asset-card-actions item-action-row">
+          <div class="reorder-actions">
+            <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',-1)" ${index===0?'disabled':''} aria-label="Mover para cima">↑</button>
+            <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',1)" ${index===investments.length-1?'disabled':''} aria-label="Mover para baixo">↓</button>
+          </div>
+          <button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações"></button>
+          <button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar"></button>
+          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir"></button>
+        </footer>
+      </article>`;
+    }).join('');
     renderPriceCharts();
   }
 
@@ -6570,18 +6598,68 @@ VALOR: ${fmt(pseudoBill.amount)}
       const dueMonth = currentInvoicePeriodKey();
       const period = closingPeriodKeyForDueMonth(card, dueMonth);
       const invoice = cardInvoiceForPeriod(card.id, period);
-      return `<article class="credit-card-box ${card.active === false ? 'is-inactive' : ''}">
-        <div class="credit-card-head"><div class="credit-card-title"><span class="credit-card-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span><div><h3>${escapeHTML(card.name)}</h3><small>${escapeHTML(cardBankName(card))}${card.titular ? ' · ' + escapeHTML(card.titular) : ''}</small></div></div><span class="credit-card-status ${card.active === false ? 'inactive' : ''}">${card.active === false ? 'Inativo' : 'Ativo'}</span></div>
-        <div class="credit-card-meta"><div class="credit-card-meta-item"><span>Fechamento</span><strong>Dia ${card.closingDay}</strong></div><div class="credit-card-meta-item"><span>Vencimento</span><strong>Dia ${card.dueDay}</strong></div><div class="credit-card-meta-item"><span>Limite total</span><strong>${card.limit > 0 ? fmt(card.limit) : 'Não informado'}</strong></div><div class="credit-card-meta-item"><span>Limite disponível</span><strong>${(() => { const avail = cardAvailableLimit(card); return avail === null ? 'Sem limite cadastrado' : fmt(avail); })()}</strong></div><div class="credit-card-meta-item"><span>Compras</span><strong>${cardPurchases.length}</strong></div></div>
-        <div class="credit-card-invoice-preview" style="margin:14px 0;padding:16px 16px;border:1px dashed var(--action-border);border-radius:12px;background:var(--green-soft);">
-          <div style="display:flex;justify-content:space-between;align-items:center;"><strong style="font-size:12px;text-transform:capitalize;">Fatura de ${invoicePeriodLabel(dueMonth)}</strong><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--accent);font-weight:700;">${fmt(invoice.total)}</span></div>
-          <div class="hint" style="margin-top:3px;">${invoice.count} compra(s)/parcela(s) neste período. Cálculo automático — ainda não lançável no Livro-Caixa (fase seguinte).</div>
-          ${invoice.lines.length ? `<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px;">${invoice.lines.map(line => `<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft);"><span>${escapeHTML(line.purchase.description || 'Compra')}${line.totalInstallments>1?` (${line.installmentNumber}/${line.totalInstallments})`:''}${line.purchase.titular?' · '+escapeHTML(line.purchase.titular):''}</span><span>${fmt(line.amount)}</span></div>`).join('')}</div>` : ''}
+      return `<article class="credit-card-box credit-card-sheet ${card.active === false ? 'is-inactive' : ''}">
+        <div class="credit-card-head">
+          <div class="credit-card-title">
+            <span class="credit-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span>
+            <div>
+              <h3>${escapeHTML(card.name)}</h3>
+              <small>${escapeHTML(cardBankName(card) || 'Banco não informado')}${card.titular ? ' · ' + escapeHTML(card.titular) : ''}</small>
+            </div>
+          </div>
+          <span class="credit-card-status ${card.active === false ? 'inactive' : 'active'}">${card.active === false ? 'Inativo' : 'Ativo'}</span>
         </div>
-        <div class="credit-card-purchases"><div class="credit-card-purchases-head"><strong>Compras vinculadas</strong><button type="button" class="action-btn" onclick="openPurchaseModal('${card.id}')" ${card.active === false ? 'disabled' : ''}>+ Compra</button></div>
-          ${cardPurchases.length ? cardPurchases.map(p => { const cat=categories.find(c=>c.id===p.categoryId)?.name || 'Sem categoria'; const parcel=p.paymentType==='parcelado' ? ` · ${p.totalInstallments}x de ${fmt(p.installmentValue)}` : ' · À vista'; return `<div class="credit-card-purchase"><div class="credit-card-purchase-main"><strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong><span>${(p.date || '').split('-').reverse().join('/')} · ${escapeHTML(p.titular || 'Sem titular')} · ${escapeHTML(cat)}${parcel}</span></div><div class="credit-card-purchase-value">${fmt(p.totalValue)}</div><div class="credit-card-actions" style="grid-column:1/-1"><button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar compra"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir compra"></button></div></div>`; }).join('') : '<div class="credit-card-empty">Nenhuma compra vinculada a este cartão.</div>'}
+        <div class="credit-card-meta credit-card-meta-row">
+          <div class="credit-card-meta-item"><span>Vencimento</span><strong>Dia ${card.dueDay}</strong></div>
+          <div class="credit-card-meta-item"><span>Limite total</span><strong>${card.limit > 0 ? fmt(card.limit) : '—'}</strong></div>
+          <div class="credit-card-meta-item"><span>Limite disponível</span><strong>${(() => { const avail = cardAvailableLimit(card); return avail === null ? '—' : fmt(avail); })()}</strong></div>
+          <div class="credit-card-meta-item"><span>Compras</span><strong>${cardPurchases.length}</strong></div>
         </div>
-        <div class="credit-card-actions"><button type="button" class="action-btn" onclick="editCard('${card.id}')">Editar</button><button type="button" class="action-btn" onclick="toggleCardActive('${card.id}')">${card.active === false ? 'Ativar' : 'Desativar'}</button><button type="button" class="action-btn danger" onclick="deleteCard('${card.id}')">Excluir</button></div>
+        <div class="credit-card-invoice-block">
+          <div class="credit-card-invoice-head">
+            <span class="credit-card-invoice-icon" aria-hidden="true">📄</span>
+            <div class="credit-card-invoice-copy">
+              <strong>Fatura de ${invoicePeriodLabel(dueMonth)}</strong>
+              <span class="hint">${invoice.count} compra(s)/parcela(s) neste período. Cálculo automático</span>
+            </div>
+            <strong class="credit-card-invoice-total">${fmt(invoice.total)}</strong>
+          </div>
+          ${invoice.lines.length ? `
+          <button type="button" class="credit-card-invoice-toggle" onclick="this.closest('.credit-card-invoice-block').classList.toggle('is-open')">Ver parcelas</button>
+          <div class="credit-card-invoice-lines">
+            ${invoice.lines.map(line => `<div class="credit-card-invoice-line"><span>${escapeHTML(line.purchase.description || 'Compra')}${line.totalInstallments>1?` (${line.installmentNumber}/${line.totalInstallments})`:''}${line.purchase.titular?' · '+escapeHTML(line.purchase.titular):''}</span><span>${fmt(line.amount)}</span></div>`).join('')}
+          </div>` : ''}
+        </div>
+        <div class="credit-card-purchases">
+          <div class="credit-card-purchases-head">
+            <strong>Compras vinculadas</strong>
+            <div class="credit-card-purchases-actions">
+              <button type="button" class="credit-card-pill" onclick="this.closest('.credit-card-purchases').classList.toggle('is-expanded')">Detalhar</button>
+              <button type="button" class="credit-card-pill primary" onclick="openPurchaseModal('${card.id}')" ${card.active === false ? 'disabled' : ''}>+ Compra</button>
+            </div>
+          </div>
+          ${cardPurchases.length ? cardPurchases.map(p => {
+            const cat = categories.find(c => c.id === p.categoryId)?.name || 'Sem categoria';
+            const parcel = p.paymentType === 'parcelado' ? `Parcela ${p.installmentNumber || 1}/${p.totalInstallments} de ${fmt(p.installmentValue)}` : 'À vista';
+            return `<div class="credit-card-purchase-row">
+              <span class="credit-card-purchase-dot" aria-hidden="true"></span>
+              <div class="credit-card-purchase-main">
+                <strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong>
+                <span>${(p.date || '').split('-').reverse().join('/')} · ${escapeHTML(p.titular || 'Sem titular')}</span>
+                <span class="credit-card-purchase-parcel">${parcel}</span>
+              </div>
+              <strong class="credit-card-purchase-value">${fmt(p.totalValue)}</strong>
+              <div class="credit-card-purchase-menu">
+                <button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar"></button>
+                <button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir"></button>
+              </div>
+            </div>`;
+          }).join('') : '<div class="credit-card-empty">Nenhuma compra vinculada a este cartão.</div>'}
+        </div>
+        <div class="credit-card-footer-actions">
+          <button type="button" class="credit-card-footer-btn" onclick="editCard('${card.id}')">✎ Editar</button>
+          <button type="button" class="credit-card-footer-btn" onclick="toggleCardActive('${card.id}')">${card.active === false ? 'Ativar' : '⊘ Desativar'}</button>
+        </div>
       </article>`;
     }).join('');
   }
@@ -7189,7 +7267,7 @@ VALOR: ${fmt(pseudoBill.amount)}
 
   const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
-  const QUOTE_STALE_MS = 15 * 60 * 1000;
+  const QUOTE_STALE_MS = 6 * 60 * 60 * 1000; // 6h — saldo usa última cotação salva até então
   function investmentQuoteIsStale(inv) {
     if (!inv || !isCryptoType(inv.type) || cryptoCurrentUnits(inv) <= 0) return false;
     const ts = Date.parse(inv.lastQuoteAt || '');
@@ -7200,6 +7278,32 @@ VALOR: ${fmt(pseudoBill.amount)}
     const stale = investments.filter(investmentQuoteIsStale);
     if (!stale.length) return;
     try { await updateAllInvestmentPrices({ auto:true, requestedCandidates:stale }); } catch (err) { logSyncError('atualização de cotações desatualizadas', err); }
+  }
+
+  
+  function applyCachedQuotesToInvestments() {
+    try {
+      const raw = localStorage.getItem('lc_last_quotes');
+      if (!raw) return;
+      const snap = JSON.parse(raw);
+      if (!snap || !Array.isArray(snap.items)) return;
+      const byId = Object.fromEntries(snap.items.map(x => [x.id, x]));
+      investments.forEach(inv => {
+        if (!isCryptoType(inv.type)) return;
+        const c = byId[inv.id];
+        if (!c) return;
+        const remoteTs = Date.parse(inv.lastQuoteAt || '') || 0;
+        const cacheTs = Date.parse(c.lastQuoteAt || '') || 0;
+        // usa cache se não tem cotação remota ou se cache é mais recente
+        if (!inv.lastQuoteAt || cacheTs >= remoteTs) {
+          if (Number(c.price) > 0) inv.price = Number(c.price);
+          if (Number(c.value) >= 0) inv.value = Number(c.value);
+          if (c.lastQuoteAt) inv.lastQuoteAt = c.lastQuoteAt;
+          if (c.quoteSource) inv.quoteSource = c.quoteSource;
+          if (c.coinGeckoId) inv.coinGeckoId = c.coinGeckoId;
+        }
+      });
+    } catch (_) {}
   }
 
   async function updateAllInvestmentPrices({ auto = false, requestedCandidates = null } = {}) {
@@ -7237,7 +7341,15 @@ VALOR: ${fmt(pseudoBill.amount)}
       }
       if (i < candidates.length - 1) await sleep(1200); // evita limite de requisições da API
     }
-    if (updated > 0) await persistAll(operation);
+    if (updated > 0) {
+      try {
+        const quoteSnap = investments.filter(i => isCryptoType(i.type)).map(i => ({
+          id: i.id, price: i.price, value: i.value, lastQuoteAt: i.lastQuoteAt, quoteSource: i.quoteSource, coinGeckoId: i.coinGeckoId
+        }));
+        localStorage.setItem('lc_last_quotes', JSON.stringify({ at: Date.now(), items: quoteSnap }));
+      } catch (_) {}
+      await persistAll(operation);
+    }
     render();
     btn.disabled = false;
     statusEl.textContent = `${updated} de ${candidates.length} cotação(ões) atualizada(s).` +
