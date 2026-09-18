@@ -6738,3 +6738,97 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   border-top:0 !important;
   gap:6px !important;
 }
+
+
+/* ========== V.19-18 ui9 — ícones editar/excluir unificados ========== */
+/* Padrão único: mesmo dos cards de ativo em Investimentos */
+.action-btn.beta-icon-button.edit,
+.action-btn.beta-icon-button.delete,
+.btn-action.edit,
+.btn-action.delete,
+.card-actions .btn-action.edit,
+.card-actions .btn-action.delete,
+.card-lancamento .action-btn.edit,
+.card-lancamento .action-btn.delete,
+.ledger-list .action-btn.edit,
+.ledger-list .action-btn.delete{
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  padding:0 !important;
+  margin:0 !important;
+  display:inline-grid !important;
+  place-items:center !important;
+  border-radius:12px !important;
+  border:1px solid var(--line) !important;
+  background:var(--surface) !important;
+  box-shadow:none !important;
+  font-size:0 !important;
+  line-height:0 !important;
+  color:var(--ink-soft) !important;
+  position:relative;
+  overflow:hidden;
+}
+.action-btn.beta-icon-button.edit,
+.btn-action.edit,
+.card-actions .btn-action.edit,
+.card-lancamento .action-btn.edit{
+  color:var(--accent) !important;
+  border-color:color-mix(in srgb, var(--accent) 30%, var(--line)) !important;
+  background:color-mix(in srgb, var(--accent) 10%, var(--surface)) !important;
+}
+.action-btn.beta-icon-button.delete,
+.btn-action.delete,
+.card-actions .btn-action.delete,
+.card-lancamento .action-btn.delete{
+  color:var(--red, #B3432B) !important;
+  border-color:color-mix(in srgb, var(--red, #B3432B) 28%, var(--line)) !important;
+  background:color-mix(in srgb, var(--red, #B3432B) 10%, var(--surface)) !important;
+}
+/* remove glyphs antigos */
+.action-btn.beta-icon-button.edit::after,
+.action-btn.beta-icon-button.delete::after,
+.btn-action.edit::after,
+.btn-action.delete::after,
+.card-actions .btn-action.edit::after,
+.card-actions .btn-action.delete::after{
+  content:none !important;
+  display:none !important;
+}
+/* SVG mask único (lápis / lixeira) — ::before nos btn-action, ::after nos beta quando necessário */
+.action-btn.beta-icon-button.edit::before,
+.btn-action.edit::before,
+.card-actions .btn-action.edit::before{
+  content:"" !important;
+  display:block !important;
+  width:16px !important;
+  height:16px !important;
+  background:currentColor !important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+.action-btn.beta-icon-button.delete::before,
+.btn-action.delete::before,
+.card-actions .btn-action.delete::before{
+  content:"" !important;
+  display:block !important;
+  width:16px !important;
+  height:16px !important;
+  background:currentColor !important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3Cpath d='M10 11v6M14 11v6'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3Cpath d='M10 11v6M14 11v6'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+/* beta-icon usava ::after — alinhar para ::before também e limpar ::after conflitante */
+.action-btn.beta-icon-button.edit::after,
+.action-btn.beta-icon-button.delete::after{
+  content:none !important;
+  display:none !important;
+}
+.card-actions,
+.card-lancamento .card-actions{
+  display:flex !important;
+  align-items:center !important;
+  gap:6px !important;
+  flex-shrink:0 !important;
+}
