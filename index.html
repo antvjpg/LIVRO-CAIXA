@@ -504,62 +504,67 @@
   <button type="button" id="fabAdd" class="fab-add" title="Adicionar" aria-label="Adicionar"><svg class="add-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
 
   <div class="modal-overlay" id="modalOverlay">
-    <div class="panel" id="panelNovo">
-      <h3 id="panelNovoTitle">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div>
-          <label>Tipo</label>
-          <div class="type-toggle">
-            <button type="button" id="tglIn" class="active-in">Entrada</button>
-            <button type="button" id="tglOut">Saída</button>
-          </div>
-        </div>
-        <div>
-          <label for="fData">Data</label>
-          <input type="date" id="fData">
-        </div>
-        <div>
-          <label for="fDesc">Descrição</label>
-          <input type="text" id="fDesc" placeholder="Ex: Salário, Mercado...">
-        </div>
-        <div>
-          <label for="fBanco">Banco</label>
-          <select id="fBanco"></select>
-        </div>
-        <div>
-          <label for="fCategoria">Categoria</label>
-          <div style="display:flex; gap:6px;">
-            <select id="fCategoria" style="flex:1;"></select>
-            <button type="button" id="btnQuickCat" title="Cadastrar Nova Categoria" style="padding:0 12px; font-weight:bold; font-size:14px;">+</button>
-          </div>
-        </div>
-        <div>
-          <label for="fValor">Valor (R$)</label>
-          <input type="text" id="fValor" data-money="true" placeholder="R$ 0,00">
-        </div>
-        <div style="grid-column: 1 / -1; margin-top: 4px;">
-          <input
-            type="file"
-            id="receiptFile"
-            accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
-            hidden
-          >
-          <button
-            type="button"
-            id="btnReadReceipt"
-            style="width:100%;"
-          >
-            Ler comprovante com IA
-          </button>
-          <div
-            id="receiptFileStatus"
-            style="display:none; margin-top:8px; font-size:12px; opacity:.8;"
-          ></div>
-        </div>
-        <div style="grid-column: 1 / -1; margin-top: 8px;">
-          <button class="primary" id="fSalvar" style="width:100%">Salvar</button>
+    <div class="panel launch-form-sheet" id="panelNovo">
+      <h3 id="panelNovoTitle">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
+
+      <div class="launch-value-block">
+        <label for="fValor">Valor</label>
+        <input type="text" id="fValor" data-money="true" inputmode="decimal" placeholder="R$ 0,00">
+      </div>
+
+      <div class="launch-section launch-type-card">
+        <div class="launch-section-title">Movimentação</div>
+        <div class="launch-type-toggle">
+          <button type="button" id="tglIn" class="active-in"><span aria-hidden="true">↑</span> Entrada</button>
+          <button type="button" id="tglOut"><span aria-hidden="true">↓</span> Saída</button>
         </div>
       </div>
+
+      <div class="launch-section launch-identification-card">
+        <div class="launch-section-title">Identificação</div>
+        <div class="launch-section-grid">
+          <div>
+            <label for="fDesc">Descrição</label>
+            <input type="text" id="fDesc" placeholder="Ex: Salário, Mercado...">
+          </div>
+          <div>
+            <label for="fData">Data</label>
+            <div class="launch-date-field">
+              <span aria-hidden="true">◷</span>
+              <input type="date" id="fData">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="launch-section launch-classification-card">
+        <div class="launch-section-title">Classificação</div>
+        <div class="launch-section-grid">
+          <div>
+            <label for="fBanco">Banco</label>
+            <div class="launch-select-row">
+              <span class="launch-bank-mark" aria-hidden="true">P</span>
+              <select id="fBanco"></select>
+            </div>
+          </div>
+          <div>
+            <label for="fCategoria">Categoria</label>
+            <div class="launch-category-row">
+              <select id="fCategoria"></select>
+              <button type="button" id="btnQuickCat" title="Cadastrar Nova Categoria" aria-label="Cadastrar nova categoria">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="launch-section launch-receipt-card">
+        <div class="launch-section-title">Comprovante</div>
+        <input type="file" id="receiptFile" accept="image/jpeg,image/png,image/webp,application/pdf,.pdf" hidden>
+        <button type="button" id="btnReadReceipt">Ler comprovante com IA</button>
+        <div id="receiptFileStatus" aria-live="polite"></div>
+      </div>
+
+      <button class="primary launch-save-cta" id="fSalvar">Salvar lançamento</button>
     </div>
 
     <div class="panel" id="panelBanco">
