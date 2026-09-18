@@ -3983,3 +3983,89 @@ body.dark-mode #panelNovo #fSalvar,
 body.dark-mode #panelTransferencia #tSalvar{
   box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 22%,transparent)!important;
 }
+
+/* V19-17 — Nova Conta / Fatura
+   Acabamento visual específico; estrutura, IDs e lógica preservados. */
+
+#panelBill{
+  width:min(100%,640px);
+  max-width:640px;
+  padding:22px;
+  border-radius:22px;
+}
+
+#panelBill h3{
+  margin:0 0 18px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:21px;
+  font-weight:800;
+  letter-spacing:-.035em;
+}
+
+#panelBill .form-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+#panelBill .form-grid > div{
+  min-width:0;
+}
+
+#panelBill label{
+  margin-bottom:6px;
+  font-weight:800;
+}
+
+#panelBill input,
+#panelBill select{
+  width:100%;
+  min-height:46px;
+  border-radius:12px;
+}
+
+#panelBill #billParcelasFields{
+  padding:13px;
+  border:1px solid color-mix(in srgb,var(--accent) 18%,var(--line));
+  border-radius:16px;
+  background:color-mix(in srgb,var(--accent) 5%,var(--paper));
+}
+
+#panelBill #billParcelasFields .form-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+#panelBill #billObs{
+  min-height:46px;
+}
+
+#panelBill #billSalvar{
+  min-height:50px;
+  margin-top:2px;
+  border-radius:13px;
+}
+
+body.dark-mode #panelBill #billParcelasFields{
+  background:color-mix(in srgb,var(--accent) 8%,var(--paper));
+  border-color:color-mix(in srgb,var(--accent) 22%,var(--line));
+}
+
+@media(max-width:700px){
+  #panelBill{
+    width:100%;
+    max-width:560px;
+    padding:18px 16px;
+    border-radius:18px;
+  }
+
+  #panelBill .form-grid,
+  #panelBill #billParcelasFields .form-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  #panelBill #billParcelasFields{
+    padding:10px;
+    border-radius:14px;
+  }
+}
