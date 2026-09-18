@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-18-ui7">
+  <link rel="stylesheet" href="./styles.css?v=19-18-ui8">
 </head>
 <body>
 
@@ -1293,7 +1293,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-18-ui7').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-18-ui8').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -2976,25 +2976,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const displayVal = inv.type === 'Renda Fixa'
         ? fixedIncomeCurrentValue(inv)
         : (Number(inv.value) > 0 ? inv.value : cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0));
+      const typeShort = ({
+        'Stablecoin':'STABLE', 'Bitcoin':'BTC', 'Cripto':'CRIPTO', 'Ações':'AÇÕES',
+        'Renda Fixa':'RF', 'FII':'FII', 'ETF':'ETF', 'Tesouro':'TESOURO'
+      })[inv.type] || String(inv.type || '').slice(0, 10);
       return `
       <article class="invest-box asset-card">
-        <header class="asset-card-head">
+        <div class="asset-card-head">
           <div class="asset-card-title">
-            <h4>${escapeHTML(inv.alias || inv.name)}</h4>
+            <strong class="asset-card-name">${escapeHTML(inv.alias || inv.name)}</strong>
             ${inv.alias ? `<span class="asset-card-sub">${escapeHTML(inv.name)}</span>` : ''}
           </div>
-          <span class="asset-card-tag tag">${escapeHTML(inv.type)}</span>
-        </header>
+          <span class="asset-card-tag">${escapeHTML(typeShort)}</span>
+        </div>
         <div class="asset-card-value">${fmt(displayVal)}</div>
         <div class="asset-card-meta">
-          ${isCryptoType(inv.type) ? `<span>Quantidade: ${formatCryptoUnits(inv.type, cryptoCurrentUnits(inv), inv.name)}</span>` : ''}
-          ${isCryptoType(inv.type) ? `<span>Cotação: ${fmt(inv.price || 0)} · ${inv.quoteSource === 'api' ? 'Automática' : 'Manual'} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</span>` : ''}
+          ${isCryptoType(inv.type) ? `<span>Qtd: ${formatCryptoUnits(inv.type, cryptoCurrentUnits(inv), inv.name)}</span>` : ''}
+          ${isCryptoType(inv.type) ? `<span>${fmt(inv.price || 0)} · ${inv.quoteSource === 'api' ? 'Auto' : 'Manual'} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</span>` : ''}
           ${inv.institution ? `<span>${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</span>` : ''}
-          ${inv.dueDate ? `<span>Vencimento: ${inv.dueDate.split('-').reverse().join('/')}</span>` : ''}
+          ${inv.dueDate ? `<span>Venc.: ${inv.dueDate.split('-').reverse().join('/')}</span>` : ''}
         </div>
         ${rentabilityHTML('invest', inv.id, displayVal)}
         ${yieldHistoryHTML('invest', inv.id)}
-        <footer class="asset-card-actions item-action-row">
+        <div class="asset-card-actions item-action-row">
           <div class="reorder-actions">
             <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',-1)" ${index===0?'disabled':''} aria-label="Mover para cima">↑</button>
             <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',1)" ${index===investments.length-1?'disabled':''} aria-label="Mover para baixo">↓</button>
@@ -3002,7 +3006,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações"></button>
           <button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar"></button>
           <button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir"></button>
-        </footer>
+        </div>
       </article>`;
     }).join('');
     renderPriceCharts();

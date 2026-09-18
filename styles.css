@@ -6629,3 +6629,112 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 #viewPockets .pocket-box .amount{
   font-size:24px!important;font-weight:800!important;letter-spacing:-.03em;
 }
+
+
+/* ========== V.19-18 ui8 — invest cards compactos ========== */
+#investGrid{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:10px !important;
+  margin-top:10px !important;
+}
+#investGrid .invest-box,
+#investGrid .invest-box.asset-card{
+  padding:12px 14px !important;
+  border-radius:16px !important;
+  border:1px solid var(--line) !important;
+  background:var(--surface) !important;
+  gap:6px !important;
+  min-height:0 !important;
+  box-shadow:none !important;
+}
+/* mata estilos antigos de h4 flex que quebravam o layout */
+#investGrid .invest-box h4,
+#investGrid .invest-box .asset-card-name{
+  display:block !important;
+  margin:0 !important;
+  font-size:15px !important;
+  font-weight:800 !important;
+  font-family:inherit !important;
+  line-height:1.25 !important;
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:unset !important;
+  border:0 !important;
+  padding:0 !important;
+  color:var(--ink) !important;
+}
+#investGrid .asset-card-head{
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:8px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+}
+#investGrid .asset-card-title{
+  min-width:0;
+  flex:1;
+}
+#investGrid .asset-card-sub{
+  display:block;
+  margin-top:2px;
+  font-size:11px;
+  color:var(--ink-soft);
+  border:0 !important;
+}
+#investGrid .asset-card-tag,
+#investGrid .invest-box .tag{
+  flex:0 0 auto !important;
+  max-width:none !important;
+  width:auto !important;
+  overflow:visible !important;
+  text-overflow:unset !important;
+  white-space:nowrap !important;
+  font-size:9px !important;
+  font-weight:800 !important;
+  letter-spacing:.04em !important;
+  padding:3px 8px !important;
+  border-radius:999px !important;
+  border:1px solid color-mix(in srgb, var(--accent) 28%, var(--line)) !important;
+  background:color-mix(in srgb, var(--accent) 12%, var(--surface)) !important;
+  color:var(--accent) !important;
+}
+#investGrid .asset-card-value,
+#investGrid .invest-box .val{
+  font-size:22px !important;
+  font-weight:800 !important;
+  line-height:1.15 !important;
+  margin:2px 0 0 !important;
+  padding:0 !important;
+  border:0 !important;
+  letter-spacing:-.02em !important;
+  color:var(--ink) !important;
+}
+#investGrid .asset-card-meta{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  font-size:11px;
+  color:var(--ink-soft);
+  margin:0;
+  padding:0;
+  border:0;
+}
+#investGrid .asset-card-meta span{
+  line-height:1.35;
+}
+#investGrid .rentability-block,
+#investGrid .yield-history{
+  margin-top:4px !important;
+  padding:8px 10px !important;
+  border-radius:12px !important;
+}
+#investGrid .asset-card-actions,
+#investGrid .item-action-row{
+  margin-top:6px !important;
+  padding-top:0 !important;
+  border-top:0 !important;
+  gap:6px !important;
+}
