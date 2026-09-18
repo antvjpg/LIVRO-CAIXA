@@ -4672,3 +4672,404 @@ body.dark-mode #panelBill #billParcelasFields{
     gap:12px;
   }
 }
+
+
+
+/* =========================================================
+   V.19-16 — Modal sheet unificado (demais painéis)
+   Padrão visual de Novo lançamento / Transferência / Conta / Cartão
+   ========================================================= */
+
+#panelBanco,
+#panelCategoria,
+#panelFiltros,
+#panelReceivable,
+#panelPurchase,
+#panelInvest,
+#panelPocket,
+#panelPocketMovement,
+#panelInvestMovement,
+#panelBillLaunch,
+#panelPaste,
+#panelExportFormat,
+#panelDiagnostico,
+#panelFeatureLab{
+  width:min(100%,640px);
+  max-width:640px;
+  max-height:min(92svh,820px);
+  margin:0 auto;
+  padding:22px 18px calc(18px + env(safe-area-inset-bottom,0px));
+  background:var(--paper);
+  color:var(--ink);
+  border:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+  border-radius:28px 28px 0 0;
+  box-shadow:0 -18px 50px rgba(20,48,36,.20);
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+
+#panelBanco::before,
+#panelCategoria::before,
+#panelFiltros::before,
+#panelReceivable::before,
+#panelPurchase::before,
+#panelInvest::before,
+#panelPocket::before,
+#panelPocketMovement::before,
+#panelInvestMovement::before,
+#panelBillLaunch::before,
+#panelPaste::before,
+#panelExportFormat::before{
+  content:"";
+  display:block;
+  width:42px;
+  height:4px;
+  margin:-8px auto 18px;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--ink-soft) 28%,transparent);
+}
+
+#panelBanco h3,
+#panelCategoria h3,
+#panelFiltros h3,
+#panelReceivable h3,
+#panelPurchase h3,
+#panelInvest h3,
+#panelPocket h3,
+#panelPocketMovement h3,
+#panelInvestMovement h3,
+#panelBillLaunch h3,
+#panelPaste h3,
+#panelExportFormat h3,
+#panelDiagnostico h3{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 0 18px;
+  padding:0 0 4px;
+  border:0;
+  color:var(--ink);
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.035em;
+}
+
+#panelBanco .modal-close,
+#panelCategoria .modal-close,
+#panelFiltros .modal-close,
+#panelReceivable .modal-close,
+#panelPurchase .modal-close,
+#panelInvest .modal-close,
+#panelPocket .modal-close,
+#panelPocketMovement .modal-close,
+#panelInvestMovement .modal-close,
+#panelBillLaunch .modal-close,
+#panelPaste .modal-close,
+#panelExportFormat .modal-close,
+#panelDiagnostico .modal-close{
+  flex:0 0 auto;
+  width:36px;
+  height:36px;
+  min-width:36px;
+  border:0;
+  border-radius:50%;
+  background:var(--paper-2, var(--surface));
+  color:var(--ink-soft);
+  font-size:22px;
+  box-shadow:none;
+}
+
+#panelBanco .form-grid,
+#panelCategoria .form-grid,
+#panelFiltros .form-grid,
+#panelReceivable .form-grid,
+#panelPurchase .form-grid,
+#panelInvest .form-grid,
+#panelPocket .form-grid,
+#panelPocketMovement .form-grid,
+#panelInvestMovement .form-grid{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+#panelBanco .form-grid > div,
+#panelCategoria .form-grid > div,
+#panelFiltros .form-grid > div,
+#panelReceivable .form-grid > div,
+#panelPurchase .form-grid > div,
+#panelInvest .form-grid > div,
+#panelPocket .form-grid > div,
+#panelPocketMovement .form-grid > div,
+#panelInvestMovement .form-grid > div{
+  width:100%;
+  margin:0!important;
+}
+
+#panelBanco label,
+#panelCategoria label,
+#panelFiltros label,
+#panelReceivable label,
+#panelPurchase label,
+#panelInvest label,
+#panelPocket label,
+#panelPocketMovement label,
+#panelInvestMovement label,
+#panelPaste label,
+#panelBillLaunch label{
+  display:block;
+  margin:0 0 6px;
+  color:var(--green, var(--accent));
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+
+#panelBanco input:not([data-money]),
+#panelBanco select,
+#panelCategoria input,
+#panelCategoria select,
+#panelFiltros input,
+#panelFiltros select,
+#panelReceivable input:not([data-money]),
+#panelReceivable select,
+#panelReceivable textarea,
+#panelPurchase input:not([data-money]),
+#panelPurchase select,
+#panelInvest input:not([data-money]),
+#panelInvest select,
+#panelPocket input:not([data-money]),
+#panelPocket select,
+#panelPocketMovement input:not([data-money]),
+#panelPocketMovement select,
+#panelInvestMovement input:not([data-money]),
+#panelInvestMovement select,
+#panelPaste textarea{
+  width:100%;
+  min-height:48px;
+  padding:12px 14px;
+  border:1px solid color-mix(in srgb,var(--line) 78%,transparent);
+  border-radius:15px;
+  background:var(--surface);
+  color:var(--ink);
+  box-shadow:0 2px 8px rgba(20,48,36,.035);
+}
+
+#panelPaste textarea{
+  min-height:160px;
+  resize:vertical;
+}
+
+/* Valor em destaque (mesma linguagem do lançamento) */
+#panelBanco #bSaldo,
+#panelReceivable #recvValor,
+#panelPurchase #purchaseValue,
+#panelPocket #pInicial,
+#panelPocketMovement #pmValor,
+#panelInvestMovement #imValor,
+#panelInvest #iValor,
+#panelInvest #iValorSimples{
+  width:100%;
+  height:56px;
+  padding:0 2px 8px;
+  border:0!important;
+  border-bottom:2px solid var(--accent)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--ink)!important;
+  font-size:34px!important;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:-.05em;
+  box-shadow:none!important;
+}
+
+#panelBanco .form-grid > div:has(#bSaldo) label,
+#panelReceivable .form-grid > div:has(#recvValor) label,
+#panelPurchase .form-grid > div:has(#purchaseValue) label,
+#panelPocket .form-grid > div:has(#pInicial) label,
+#panelPocketMovement .form-grid > div:has(#pmValor) label,
+#panelInvestMovement .form-grid > div:has(#imValor) label{
+  display:none;
+}
+
+/* Ordem: valor primeiro quando aplicável */
+#panelBanco .form-grid > div:has(#bSaldo){ order:-20; }
+#panelReceivable .form-grid > div:has(#recvValor){ order:-20; }
+#panelPurchase .form-grid > div:has(#purchaseValue){ order:-20; }
+#panelPocket .form-grid > div:has(#pInicial){ order:-20; }
+#panelPocketMovement .form-grid > div:has(#pmValor){ order:-20; }
+#panelInvestMovement .form-grid > div:has(#imValor){ order:-20; }
+
+/* Toggles de movimento */
+#panelPocketMovement .type-toggle,
+#panelInvestMovement .type-toggle{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px;
+  padding:5px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--surface);
+}
+#panelPocketMovement .type-toggle button,
+#panelInvestMovement .type-toggle button{
+  min-height:40px;
+  border:0;
+  border-radius:11px;
+  background:transparent;
+  color:var(--ink-soft);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+#panelPocketMovement .type-toggle button.active-in,
+#panelInvestMovement .type-toggle button.active-in{
+  background:var(--accent);
+  color:var(--on-accent, #fff);
+}
+#panelPocketMovement .type-toggle button.active-yield,
+#panelInvestMovement .type-toggle button.active-yield{
+  background:var(--gold)!important;
+  color:#1a1408!important;
+}
+
+/* Botões primários dos sheets */
+#panelBanco button.primary,
+#panelCategoria button.primary,
+#panelFiltros button.primary,
+#panelReceivable button.primary,
+#panelPurchase button.primary,
+#panelInvest button.primary,
+#panelPocket button.primary,
+#panelPocketMovement button.primary,
+#panelInvestMovement button.primary,
+#panelBillLaunch button.primary,
+#panelPaste button.primary,
+#panelExportFormat button.primary{
+  min-height:52px;
+  border:0;
+  border-radius:999px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+/* Filtros: coluna limpa */
+#panelFiltros .form-grid{
+  gap:12px;
+}
+#panelFiltros .filter-choice-field > label{
+  display:none;
+}
+#panelFiltros .filter-choice-trigger{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-height:52px;
+  padding:12px 14px;
+  border:1px solid color-mix(in srgb,var(--line) 78%,transparent);
+  border-radius:15px;
+  background:var(--surface);
+  color:var(--ink);
+  text-align:left;
+  box-shadow:0 2px 8px rgba(20,48,36,.035);
+}
+#panelFiltros .filter-choice-trigger strong{
+  display:block;
+  font-size:10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--green, var(--accent));
+  font-weight:800;
+}
+#panelFiltros .filter-choice-trigger small{
+  display:block;
+  margin-top:3px;
+  font-size:13px;
+  color:var(--ink);
+  font-weight:650;
+}
+#panelFiltros #btnClearFilters{
+  min-height:48px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:transparent;
+  color:var(--ink);
+  font-weight:700;
+}
+#panelFiltros #btnApplyFilters{
+  min-height:48px;
+  border-radius:999px;
+}
+
+/* Seções estilo cartão/conta para cadastros longos */
+.modal-section{
+  padding:14px 14px 12px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:color-mix(in srgb,var(--surface) 92%,var(--paper));
+  margin-bottom:12px;
+}
+.modal-section-title{
+  margin:0 0 10px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted, var(--ink-soft));
+}
+
+/* Card panel — reforço do padrão já usado */
+#panelCard{
+  width:min(100%,640px);
+  max-width:640px;
+  max-height:min(92svh,820px);
+  border-radius:28px 28px 0 0;
+  padding:22px 18px calc(18px + env(safe-area-inset-bottom,0px));
+}
+#panelCard::before{
+  content:"";
+  display:block;
+  width:42px;
+  height:4px;
+  margin:-8px auto 18px;
+  border-radius:999px;
+  background:color-mix(in srgb,var(--ink-soft) 28%,transparent);
+}
+
+/* Dark mode: sheets usam tokens */
+body.dark-mode #panelBanco,
+body.dark-mode #panelCategoria,
+body.dark-mode #panelFiltros,
+body.dark-mode #panelReceivable,
+body.dark-mode #panelPurchase,
+body.dark-mode #panelInvest,
+body.dark-mode #panelPocket,
+body.dark-mode #panelPocketMovement,
+body.dark-mode #panelInvestMovement,
+body.dark-mode #panelBillLaunch,
+body.dark-mode #panelPaste,
+body.dark-mode #panelExportFormat,
+body.dark-mode #panelCard{
+  background:var(--paper);
+  color:var(--ink);
+  border-color:var(--line);
+}
+
+@supports not (selector(:has(*))){
+  /* fallback sem :has — labels de valor permanecem visíveis */
+  #panelBanco #bSaldo,
+  #panelReceivable #recvValor,
+  #panelPurchase #purchaseValue,
+  #panelPocket #pInicial,
+  #panelPocketMovement #pmValor,
+  #panelInvestMovement #imValor{
+    margin-top:4px;
+  }
+}
