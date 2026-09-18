@@ -4069,3 +4069,336 @@ body.dark-mode #panelBill #billParcelasFields{
     border-radius:14px;
   }
 }
+
+
+/* ============================================================
+   V19-17 — NOVA CONTA / FATURA
+   Redesign estrutural: editorial + bottom-sheet mobile
+   ============================================================ */
+
+.bill-form-sheet{
+  width:min(94vw,720px);
+  max-width:720px;
+  max-height:min(92vh,900px);
+  padding:24px;
+  border:1px solid color-mix(in srgb,var(--ink) 12%,transparent);
+  border-radius:26px 26px 20px 20px;
+  background:var(--paper);
+  box-shadow:0 28px 80px rgba(18,38,29,.24);
+}
+
+.bill-modal-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.bill-modal-kicker{
+  display:block;
+  margin-bottom:4px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.14em;
+  color:var(--accent);
+  text-transform:uppercase;
+}
+
+.bill-form-sheet #panelBillTitle{
+  margin:0;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:23px;
+  font-weight:800;
+  letter-spacing:-.04em;
+}
+
+.bill-form-sheet .modal-close{
+  flex:0 0 auto;
+  width:38px;
+  height:38px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--green-soft);
+  color:var(--accent);
+  font-size:21px;
+  line-height:1;
+}
+
+.bill-value-block{
+  padding:4px 0 18px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:16px;
+}
+
+.bill-value-block label,
+.bill-section-title{
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.bill-value-block input{
+  display:block;
+  width:100%;
+  margin-top:4px;
+  padding:0;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--ink);
+  font-size:42px;
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:-.055em;
+  outline:none!important;
+}
+
+.bill-value-block input::placeholder{
+  color:color-mix(in srgb,var(--ink) 35%,transparent);
+}
+
+.bill-section{
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:color-mix(in srgb,var(--surface) 92%,var(--paper));
+  margin-bottom:12px;
+}
+
+.bill-section-title{
+  margin-bottom:11px;
+}
+
+.bill-section-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.bill-form-sheet label{
+  display:block;
+  margin-bottom:5px;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.06em;
+  color:var(--muted);
+}
+
+.bill-form-sheet input,
+.bill-form-sheet select{
+  width:100%;
+  min-height:44px;
+  padding:10px 11px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:var(--paper);
+  color:var(--ink);
+  font-size:12px;
+}
+
+.bill-form-sheet input:focus,
+.bill-form-sheet select:focus{
+  border-color:var(--accent);
+  outline:2px solid color-mix(in srgb,var(--accent) 15%,transparent);
+  outline-offset:1px;
+}
+
+.bill-config-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.bill-config-grid .bill-section{
+  margin-bottom:12px;
+}
+
+.bill-choice-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.bill-choice-icon,
+.bill-bank-mark{
+  display:grid;
+  place-items:center;
+  flex:0 0 36px;
+  width:36px;
+  height:36px;
+  border-radius:11px;
+  background:var(--green-soft);
+  color:var(--accent);
+  font-size:18px;
+  font-weight:800;
+}
+
+.bill-choice-row select{
+  flex:1;
+}
+
+.bill-installments-card{
+  border-color:color-mix(in srgb,var(--accent) 22%,var(--line));
+  background:color-mix(in srgb,var(--accent) 5%,var(--paper));
+}
+
+.bill-payment-row{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.bill-payment-main{
+  min-width:0;
+  flex:1;
+}
+
+.bill-payment-main label{
+  margin-bottom:4px;
+}
+
+.bill-category-row{
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+
+.bill-category-row select{
+  font-weight:800;
+}
+
+.bill-timeline-card .bill-section-grid{
+  align-items:end;
+}
+
+.bill-date-field{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+
+.bill-date-field>span{
+  position:absolute;
+  left:11px;
+  z-index:1;
+  color:var(--accent);
+  font-size:16px;
+  pointer-events:none;
+}
+
+.bill-date-field input{
+  padding-left:34px;
+}
+
+.bill-status-row{
+  display:flex;
+  justify-content:flex-start;
+  margin:2px 0 12px;
+}
+
+.bill-status-row>div{
+  min-width:150px;
+}
+
+.bill-status-pill{
+  min-height:38px!important;
+  padding:7px 13px!important;
+  border-radius:999px!important;
+  background:var(--green-soft)!important;
+  border-color:var(--action-border)!important;
+  color:var(--accent)!important;
+  font-weight:800;
+}
+
+.bill-observation{
+  margin-bottom:14px;
+}
+
+.bill-observation label span{
+  font-weight:500;
+  opacity:.7;
+}
+
+.bill-save-cta{
+  width:100%;
+  min-height:52px;
+  border:0;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  box-shadow:0 10px 22px color-mix(in srgb,var(--accent) 22%,transparent);
+}
+
+@media(max-width:700px){
+
+  .modal-overlay:has(.bill-form-sheet){
+    align-items:flex-end;
+    padding:0;
+    background:rgba(13,42,30,.56);
+    backdrop-filter:blur(7px);
+  }
+
+  .bill-form-sheet{
+    width:100%;
+    max-width:none;
+    max-height:92svh;
+    padding:18px 16px 20px;
+    border-radius:24px 24px 0 0;
+    overflow-y:auto;
+    box-shadow:0 -18px 55px rgba(18,38,29,.22);
+  }
+
+  .bill-form-sheet:before{
+    content:"";
+    display:block;
+    width:42px;
+    height:4px;
+    margin:-7px auto 14px;
+    border-radius:99px;
+    background:var(--line);
+  }
+
+  .bill-modal-head{
+    margin-bottom:14px;
+  }
+
+  .bill-form-sheet #panelBillTitle{
+    font-size:21px;
+  }
+
+  .bill-value-block{
+    padding-bottom:14px;
+    margin-bottom:12px;
+  }
+
+  .bill-value-block input{
+    font-size:36px;
+  }
+
+  .bill-section{
+    padding:13px;
+    border-radius:15px;
+    margin-bottom:10px;
+  }
+
+  .bill-section-grid,
+  .bill-config-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  .bill-config-grid .bill-section{
+    margin-bottom:10px;
+  }
+
+  .bill-save-cta{
+    min-height:50px;
+  }
+}

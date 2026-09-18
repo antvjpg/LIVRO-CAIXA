@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-16-fs2">
+  <link rel="stylesheet" href="./styles.css?v=19-17-modal-sheet">
 </head>
 <body>
 
@@ -771,31 +771,129 @@
     </div>
 
 
-    <div class="panel" id="panelBill">
-      <h3 id="panelBillTitle">Nova Conta / Fatura <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div><label for="billNome">Nome da conta / fatura</label><input id="billNome" type="text" placeholder="Ex: Netflix, Energia, Cartão"></div>
-        <div><label for="billTitular">Titular da conta</label><input id="billTitular" type="text" placeholder="Opcional · Ex: Mãe"></div>
-        <div><label for="billValor">Valor (R$)</label><input id="billValor" type="text" data-money="true" placeholder="R$ 0,00"></div>
-        <div><label for="billTipoOcorrencia">Tipo de ocorrência</label><select id="billTipoOcorrencia"><option value="recorrente">Recorrente</option><option value="nao_recorrente">Não recorrente</option></select></div>
-        <div><label for="billParcelado">Parcelado</label><select id="billParcelado"><option value="0">Não</option><option value="1">Sim</option></select></div>
-        <div id="billParcelasFields" style="display:none;grid-column:1/-1;">
-          <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
-            <div><label for="billParcelasTotal">Número total de parcelas</label><input id="billParcelasTotal" type="number" min="2" max="360" step="1" placeholder="Ex: 6"></div>
-            <div><label for="billParcelaInicial">Parcela inicial</label><input id="billParcelaInicial" type="number" min="1" max="360" step="1" value="1"></div>
-          </div>
-        </div>
-        <div><label for="billBanco">Conta de pagamento</label><select id="billBanco"></select></div>
-        <div><label for="billCategoria">Categoria</label><select id="billCategoria"></select></div>
-        <div><label for="billInicio">Data de início/vencimento</label><input id="billInicio" type="date"></div>
-        <div id="billFimField"><label for="billFim">Fim (opcional)</label><input id="billFim" type="date"></div>
-        <div><label for="billAtiva">Status</label><select id="billAtiva"><option value="1">Ativa</option><option value="0">Pausada</option></select></div>
-        <div style="grid-column:1/-1"><label for="billObs">Observação (opcional)</label><input id="billObs" type="text" placeholder="Ex: cobrança mensal automática"></div>
-        <div style="grid-column:1/-1"><button class="primary" id="billSalvar" style="width:100%">Salvar Conta / Fatura</button></div>
+    <div class="panel bill-form-sheet" id="panelBill">
+  <div class="bill-modal-head">
+    <div>
+      <span class="bill-modal-kicker">CONTAS & FATURAS</span>
+      <h3 id="panelBillTitle">Nova Conta / Fatura</h3>
+    </div>
+    <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button>
+  </div>
+
+  <div class="bill-value-block">
+    <label for="billValor">Valor</label>
+    <input id="billValor" type="text" data-money="true" inputmode="decimal" placeholder="R$ 0,00">
+  </div>
+
+  <div class="bill-section bill-identity-card">
+    <div class="bill-section-title">Identificação</div>
+    <div class="bill-section-grid">
+      <div>
+        <label for="billNome">Nome da conta / fatura</label>
+        <input id="billNome" type="text" placeholder="Ex: Netflix, Energia, Cartão">
+      </div>
+      <div>
+        <label for="billTitular">Titular</label>
+        <input id="billTitular" type="text" placeholder="Opcional · Ex: Mãe">
+      </div>
+    </div>
+  </div>
+
+  <div class="bill-config-grid">
+    <div class="bill-section bill-choice-card">
+      <div class="bill-section-title">Tipo de ocorrência</div>
+      <div class="bill-choice-row">
+        <span class="bill-choice-icon" aria-hidden="true">↻</span>
+        <select id="billTipoOcorrencia">
+          <option value="recorrente">Recorrente</option>
+          <option value="nao_recorrente">Não recorrente</option>
+        </select>
       </div>
     </div>
 
-    <div class="panel" id="panelBillLaunch">
+    <div class="bill-section bill-choice-card">
+      <div class="bill-section-title">Parcelado</div>
+      <div class="bill-choice-row">
+        <span class="bill-choice-icon" aria-hidden="true">▤</span>
+        <select id="billParcelado">
+          <option value="0">Não</option>
+          <option value="1">Sim</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="billParcelasFields" class="bill-section bill-installments-card" style="display:none;">
+    <div class="bill-section-title">Parcelamento</div>
+    <div class="bill-section-grid">
+      <div>
+        <label for="billParcelasTotal">Número total de parcelas</label>
+        <input id="billParcelasTotal" type="number" min="2" max="360" step="1" placeholder="Ex: 6">
+      </div>
+      <div>
+        <label for="billParcelaInicial">Parcela inicial</label>
+        <input id="billParcelaInicial" type="number" min="1" max="360" step="1" value="1">
+      </div>
+    </div>
+  </div>
+
+  <div class="bill-section bill-payment-card">
+    <div class="bill-section-title">Pagamento</div>
+
+    <div class="bill-payment-row">
+      <span class="bill-bank-mark" aria-hidden="true">P</span>
+      <div class="bill-payment-main">
+        <label for="billBanco">Conta de pagamento</label>
+        <select id="billBanco"></select>
+      </div>
+    </div>
+
+    <div class="bill-category-row">
+      <label for="billCategoria">Categoria</label>
+      <select id="billCategoria"></select>
+    </div>
+  </div>
+
+  <div class="bill-section bill-timeline-card">
+    <div class="bill-section-title">Timeline</div>
+
+    <div class="bill-section-grid">
+      <div>
+        <label for="billInicio">Início / vencimento</label>
+        <div class="bill-date-field">
+          <span aria-hidden="true">◷</span>
+          <input id="billInicio" type="date">
+        </div>
+      </div>
+
+      <div id="billFimField">
+        <label for="billFim">Fim (opcional)</label>
+        <div class="bill-date-field">
+          <span aria-hidden="true">◷</span>
+          <input id="billFim" type="date">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bill-status-row">
+    <div>
+      <label for="billAtiva">Status</label>
+      <select id="billAtiva" class="bill-status-pill">
+        <option value="1">Ativa</option>
+        <option value="0">Pausada</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="bill-observation">
+    <label for="billObs">Observação <span>(opcional)</span></label>
+    <input id="billObs" type="text" placeholder="Ex: cobrança mensal automática">
+  </div>
+
+  <button class="primary bill-save-cta" id="billSalvar">Salvar Conta / Fatura</button>
+</div>
+<div class="panel" id="panelBillLaunch">
       <h3>Lançar no Livro-Caixa <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <p id="billLaunchDescription" class="hint">Escolha o banco que será utilizado para esta despesa.</p>
       <label for="billLaunchBank">Banco utilizado</label>
