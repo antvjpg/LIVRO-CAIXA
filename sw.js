@@ -1,5 +1,5 @@
 /* Livro-Caixa V.19-18 — PWA shell (network-first HTML, force update) */
-const CACHE_NAME = "livro-caixa-shell-v19-18-ui9";
+const CACHE_NAME = "livro-caixa-shell-v19-18-ui10";
 const APP_SHELL = [
   "./",
   "./index.html",
