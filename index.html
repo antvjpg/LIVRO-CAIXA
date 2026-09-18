@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-18-ui2">
+  <link rel="stylesheet" href="./styles.css?v=19-18-ui3">
 </head>
 <body>
 
@@ -148,7 +148,12 @@
   <div class="balance-strip" id="balanceStrip"></div>
 
   <!-- V18-12: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
-  <section class="period-bar" id="universalPeriodBar" aria-label="Período de visualização">
+  <section class="period-bar is-collapsed" id="universalPeriodBar" aria-label="Período de visualização">
+    <button type="button" class="period-bar-toggle" id="btnTogglePeriodBar" aria-expanded="false" aria-controls="periodBarBody">
+      <span class="period-bar-toggle-copy"><span class="period-eyebrow">Período ativo</span><strong class="period-active-label" id="periodActiveLabelTop">—</strong></span>
+      <span class="period-bar-chevron" aria-hidden="true">▾</span>
+    </button>
+    <div class="period-bar-body" id="periodBarBody">
     <div class="period-bar-copy">
       <span class="period-eyebrow">Período ativo</span>
       <strong class="period-active-label" id="periodActiveLabel">Agosto / 2026</strong>
@@ -163,6 +168,7 @@
       <button type="button" class="period-nav" id="btnPeriodNext" aria-label="Próximo mês" title="Próximo mês">›</button>
       <button type="button" class="period-all" id="btnPeriodAll" aria-pressed="false">Todos</button>
     </div>
+  </div>
   </section>
 
   <!-- ABA 1: VISÃO GERAL -->
@@ -172,7 +178,7 @@
     <div id="dashboardGeminiHost" class="dashboard-gemini-host">
 <div class="diagnostic-summary-card" style="margin-top:10px;">
             <div class="diagnostic-summary-head">
-              <span class="diagnostic-summary-icon" aria-hidden="true">✨</span>
+              <span class="diagnostic-summary-icon" aria-hidden="true">🤖</span>
               <div>
                 <strong>Análise financeira com Gemini</strong>
                 <span id="geminiDiagnosticStatus">Análise baseada nos dados financeiros resumidos do aplicativo.</span>
@@ -319,11 +325,11 @@
 
   <div id="viewProfile" class="tab-content">
     <section class="profile-shell" aria-label="Área de perfil">
-      <div class="profile-heading">
+      <div class="profile-heading profile-heading-integrated">
         <div class="profile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
       </div>
-      <div class="profile-user-card" id="profileUserCard" aria-label="Conta conectada">
+      <div class="profile-user-card profile-user-card-legacy" hidden id="profileUserCard" aria-label="Conta conectada">
         <div class="profile-user-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
         <div class="profile-user-copy">
           <strong id="profileUserName">Conta</strong>
@@ -345,12 +351,7 @@
         </div>
       </div>
 
-      <div class="profile-group">
-        <div class="profile-group-title">Lembretes</div>
-        <div class="profile-list">
-          <label class="feature-lab-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-lab-toggle-copy"><strong>Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
-          <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
-        </div>
+      
       </div>
 
       <div class="profile-group">
@@ -362,7 +363,11 @@
             <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define em qual dia começa seu mês financeiro. Isso altera apenas os períodos usados no orçamento — não muda a data dos lançamentos.</span></span>
             <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
           </div>
-          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v3H9z"/><path d="M8 6h8l1.5 12.5a2 2 0 0 1-2 2.5H8.5a2 2 0 0 1-2-2.5L8 6z"/><path d="M10 10v6M14 10v6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span></div>
+          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v3H9z"/><path d="M8 6h8l1.5 12.5a2 2 0 0 1-2 2.5H8.5a2 2 0 0 1-2-2.5L8 6z"/><path d="M10 10v6M14 10v6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span>
+          <!-- Lembretes (dentro de Geral) -->
+          <label class="feature-lab-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-lab-toggle-copy"><strong>Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
+          <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);">
+        </div>
         </div>
       </div>
 
@@ -449,7 +454,7 @@
         <div class="profile-list">
           <label class="feature-lab-toggle">
             <input type="checkbox" id="chkHideBalancesOnOpen">
-            <span class="feature-lab-toggle-copy"><strong>Ocultar saldos ao abrir</strong><small>Os valores iniciam como ••••••. Toque em qualquer saldo/valor na tela para alternar a visualização.</small></span>
+            <span class="feature-lab-toggle-copy"><strong><span class="profile-inline-icon" aria-hidden="true">👁</span> Ocultar saldos ao abrir</strong><small>Os valores iniciam como ••••••. Toque em qualquer saldo/valor na tela para alternar a visualização.</small></span>
             <span class="feature-lab-switch" aria-hidden="true"></span>
           </label>
         </div>
@@ -460,7 +465,7 @@
         <div class="profile-list">
           <div class="diagnostic-summary-card">
             <div class="diagnostic-summary-head">
-              <span class="diagnostic-summary-icon" id="diagnosticSummaryIcon" aria-hidden="true">🔎</span>
+              <span class="diagnostic-summary-icon" id="diagnosticSummaryIcon" aria-hidden="true">🩺</span>
               <div><strong id="diagnosticSummaryLabel">Consistência dos dados</strong><span id="diagnosticSummaryDetail">Toque em "Executar diagnóstico" para verificar</span></div>
             </div>
             <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
@@ -1290,7 +1295,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-18-ui2').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-18-ui3').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -1779,6 +1784,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Alternância de Abas
   let currentTab = 'caixa';
 
+  document.getElementById('btnTogglePeriodBar')?.addEventListener('click', () => {
+    const bar = document.getElementById('universalPeriodBar');
+    const btn = document.getElementById('btnTogglePeriodBar');
+    if (!bar || !btn) return;
+    const open = bar.classList.toggle('is-collapsed') === false;
+    // class is-collapsed means collapsed; toggle returns true if class now present
+    const collapsed = bar.classList.contains('is-collapsed');
+    btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  });
+  // sync top label with main period label when updated
+  (function syncPeriodTopLabel(){
+    const src = document.getElementById('periodActiveLabel');
+    const top = document.getElementById('periodActiveLabelTop');
+    if (!src || !top) return;
+    const mo = new MutationObserver(() => { top.textContent = src.textContent; });
+    mo.observe(src, { childList:true, characterData:true, subtree:true });
+    top.textContent = src.textContent;
+  })();
   window.switchTab = function(tabName) {
     currentTab = tabName;
     try { document.body.dataset.tab = tabName || 'caixa'; } catch (e) {}
@@ -3531,7 +3554,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const monthIndex = now.getMonth();
     const activeBills = recurringBills.filter(bill => bill.active !== false && billAppliesToMonth(bill, year, monthIndex));
     const pendingBills = activeBills.filter(bill => !billGeneratedForMonth(bill, month));
-    const overdueBills = pendingBills.filter(bill => billDueDateForMonth(bill, year, monthIndex) < todayISO());
+    const overdueBills = pendingBills.filter(bill => String(billDueDateForMonth(bill, year, monthIndex)) < todayISO());
     const upcomingBills = pendingBills.slice().sort((a, b) => billDueDateForMonth(a, year, monthIndex).localeCompare(billDueDateForMonth(b, year, monthIndex))).slice(0, 3);
     const health = monthNet < 0 ? { label: 'Atenção', detail: 'As saídas superaram as entradas neste mês.', tone: 'warning', icon: '!' } : overdueBills.length ? { label: 'Revisar compromissos', detail: `${overdueBills.length} conta(s) aguardam atenção.`, tone: 'warning', icon: '!' } : (monthIncome > 0 || monthExpense > 0) ? { label: 'Equilibrado', detail: 'Fluxo positivo e compromissos sob acompanhamento.', tone: 'positive', icon: '✓' } : { label: 'Comece seu acompanhamento', detail: 'Registre movimentações para ver sua saúde financeira.', tone: 'neutral', icon: '○' };
     const budgetCycle = currentFinancialCycleKey();
@@ -3540,8 +3563,17 @@ document.addEventListener('DOMContentLoaded', () => {
     (function updateNextPaymentCard(){
       const host = document.getElementById('dashboardNextPayment');
       if (!host) return;
-      const list = (typeof pendingBills !== 'undefined' && Array.isArray(pendingBills)) ? pendingBills.slice() : [];
-      list.sort((a,b) => String(billDueDateForMonth(a, year, monthIndex)).localeCompare(String(billDueDateForMonth(b, year, monthIndex))));
+      const today = todayISO();
+      const list = (typeof pendingBills !== 'undefined' && Array.isArray(pendingBills) ? pendingBills : [])
+        .filter(bill => {
+          if (billPaidForMonth && billPaidForMonth(bill, month)) return false;
+          if (billGeneratedForMonth && billGeneratedForMonth(bill, month)) return false;
+          const due = String(billDueDateForMonth(bill, year, monthIndex) || '');
+          // Próxima conta: vencimento hoje ou futuro (nunca atrasada)
+          return due >= today;
+        })
+        .slice()
+        .sort((a,b) => String(billDueDateForMonth(a, year, monthIndex)).localeCompare(String(billDueDateForMonth(b, year, monthIndex))));
       const next = list[0];
       if (!next) {
         host.innerHTML = '<div class="next-pay-inner empty"><span class="next-pay-kicker">Próximo pagamento</span><strong>Nenhum pagamento pendente</strong></div>';
@@ -4757,12 +4789,18 @@ ${JSON.stringify(snapshot)}
   function billGeneratedForMonth(bill, key){ return Array.isArray(bill.generatedMonths) && bill.generatedMonths.includes(key); }
   function billPaidForMonth(bill, key){ return Array.isArray(bill.paidMonths) && bill.paidMonths.includes(key); }
   // P2.4.1 — estados independentes: Lançado (livro-caixa) vs Pago — não lançado (só status)
+  function billIsOverdue(dueDateISO) {
+    // Atrasada somente a partir do dia SEGUINTE ao vencimento (due < hoje).
+    // No dia do vencimento permanece pendente/vencendo hoje.
+    if (!dueDateISO) return false;
+    return String(dueDateISO) < todayISO();
+  }
   function billStatus(bill, key){
     if (billGeneratedForMonth(bill, key)) return 'Lançado';
     if (billPaidForMonth(bill, key)) return 'Pago — não lançado';
     const [year, month] = key.split('-').map(Number);
     const dueDate = billDueDateForMonth(bill, year, month - 1);
-    return dueDate < todayISO() ? 'Atrasado' : 'Pendente';
+    return billIsOverdue(dueDate) ? 'Atrasado' : 'Pendente';
   }
   async function markBillPaid(id, monthKey) {
     const bill = recurringBills.find(b => b.id === id);
@@ -5107,7 +5145,7 @@ VALOR: ${fmt(bill.amount)}
     return Array.isArray(row.breakdown) && row.breakdown.length > 0 && row.breakdown.every(b => b.status === 'Pago');
   }
   function invoiceOverdue(row) {
-    return !invoiceSettled(row) && row.dueDate < todayISO();
+    return !invoiceSettled(row) && String(row.dueDate) < todayISO();
   }
   function invoicePending(row) {
     return !invoiceSettled(row) && !invoiceOverdue(row);

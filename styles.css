@@ -5690,3 +5690,266 @@ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='
 #viewBills .bills-toolbar-actions button,
 #viewBills .calendar-filter-control,
 #viewBills .bill-more-button{border-color:var(--line)!important;box-shadow:none!important;}
+
+
+
+/* ========== V.19-18 UI3 — especificação F01–F15 / B01–B02 ========== */
+
+/* F01 — seções de perfil só na aba Perfil */
+.tab-content:not(.active) {
+  display: none !important;
+}
+#viewProfile:not(.active) .profile-shell,
+#viewProfile:not(.active) .profile-group {
+  display: none !important;
+}
+
+/* F06 — heading integrado; card legado oculto */
+.profile-user-card-legacy {
+  display: none !important;
+}
+.profile-heading-integrated {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
+  margin-bottom: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.profile-heading-integrated .profile-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--accent);
+}
+.profile-heading-integrated h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.profile-heading-integrated p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+/* F10 — ícones de perfil padronizados */
+.profile-item-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+}
+.profile-item-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+}
+.profile-inline-icon {
+  margin-right: 4px;
+}
+
+/* F13 — período retrátil */
+.period-bar-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 4px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.period-bar-toggle-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.period-bar-chevron {
+  font-size: 14px;
+  opacity: .7;
+  transition: transform .2s ease;
+}
+.period-bar.is-collapsed .period-bar-chevron {
+  transform: rotate(-90deg);
+}
+.period-bar.is-collapsed .period-bar-body {
+  display: none;
+}
+.period-bar:not(.is-collapsed) .period-bar-body {
+  display: block;
+  padding-top: 6px;
+}
+.period-bar .period-bar-copy .period-eyebrow {
+  /* original eyebrow inside body still ok */
+}
+.period-bar {
+  padding: 8px 12px !important;
+  border-radius: 14px !important;
+  margin-bottom: 10px !important;
+}
+
+/* F03 — métricas só 2x2; sem faixa 3x1 */
+.advanced-dashboard .dashboard-metrics {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin: 12px 0 !important;
+}
+.advanced-dashboard .dashboard-metrics > div {
+  padding: 12px !important;
+  border-radius: 14px !important;
+}
+/* esconde qualquer faixa 3 colunas residual sob métricas */
+.advanced-dashboard .dashboard-metrics + .cashflow-mini-metrics,
+.advanced-dashboard .metrics-row-3 {
+  display: none !important;
+}
+
+/* F15 — espaçamento Visão Geral */
+.advanced-dashboard.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.advanced-dashboard .dashboard-page-heading {
+  margin-bottom: 0 !important;
+}
+.advanced-dashboard .dashboard-health-card,
+.advanced-dashboard .dashboard-projection-card,
+.advanced-dashboard .dashboard-trend,
+.advanced-dashboard .dashboard-budgets,
+.advanced-dashboard .dashboard-commitments,
+.advanced-dashboard .dashboard-alerts {
+  margin: 0 !important;
+}
+#viewDashboard #dashboardNextPayment,
+#viewDashboard #dashboardGeminiHost,
+#viewDashboard #dailyInsightCard {
+  margin-top: 12px;
+}
+
+/* F04 — cards 2x2 caixinhas mais compactos */
+#viewPockets .balance-strip,
+#pocketBalanceStrip {
+  gap: 8px !important;
+}
+#viewPockets .balance-strip .balance-card,
+#pocketBalanceStrip .balance-card {
+  padding: 10px 10px !important;
+  min-height: 0 !important;
+  border-radius: 14px !important;
+}
+#viewPockets .balance-strip .balance-card .amount,
+#pocketBalanceStrip .balance-card .amount {
+  font-size: 16px !important;
+}
+#viewPockets .balance-strip .balance-card .label,
+#pocketBalanceStrip .balance-card .label {
+  font-size: 10px !important;
+}
+#pocketPeriodSummary.period-summary {
+  padding: 10px 12px !important;
+}
+
+/* F05 — border-radius único dos modais */
+:root {
+  --modal-radius: 20px;
+}
+.modal-overlay .panel,
+.panel,
+.panel.panel-beta,
+.filter-choice-sheet,
+.pin-box,
+.sync-box,
+.notification-center {
+  border-radius: var(--modal-radius) !important;
+}
+@media (max-width: 700px) {
+  .modal-overlay .panel,
+  .panel.open {
+    border-radius: 22px 22px 0 0 !important;
+  }
+}
+
+/* F14 — aba Cartões */
+#viewCards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#viewCards .cards-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+#viewCards .cards-toolbar button,
+#viewCards .toolbar button {
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  min-height: 40px;
+}
+#viewCards .card,
+#viewCards .manage-item,
+#viewCards .commitment-card,
+#viewCards .invoice-card-item {
+  border: 1px solid var(--line) !important;
+  border-radius: 16px !important;
+  padding: 14px !important;
+  box-shadow: none !important;
+  background: var(--surface) !important;
+  margin-bottom: 10px !important;
+}
+#viewCards .card strong,
+#viewCards .manage-item strong {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}
+
+/* B02 — ícone editar (lápis) em todos os botões edit */
+.btn-action.edit,
+.action-btn.edit,
+.beta-icon-button.edit {
+  position: relative;
+}
+.btn-action.edit::before,
+.btn-action.edit::after,
+.action-btn.edit::before,
+.action-btn.edit::after,
+.beta-icon-button.edit::before,
+.beta-icon-button.edit::after {
+  content: "" !important;
+  display: block !important;
+  width: 15px !important;
+  height: 15px !important;
+  margin: 0 auto;
+  background: currentColor !important;
+  font-size: 0 !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center / contain no-repeat !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center / contain no-repeat !important;
+}
+
+/* Preferências: hierarquia */
+.profile-group-title {
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 12px 0 8px;
+}
