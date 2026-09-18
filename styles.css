@@ -5073,3 +5073,258 @@ body.dark-mode #panelCard{
     margin-top:4px;
   }
 }
+
+
+
+/* =========================================================
+   Livro-Caixa V.19-18 — Contas/Faturas + Insight + Resgate + Sheets
+   ========================================================= */
+
+:root{
+  --action-border: color-mix(in srgb, var(--line) 88%, transparent);
+}
+
+body.dark-mode{
+  --action-border: color-mix(in srgb, var(--line) 92%, transparent);
+}
+
+/* Insight do dia */
+.daily-insight-card{
+  margin:0 0 14px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--surface);
+}
+.daily-insight-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;
+}
+.daily-insight-kicker{
+  display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+}
+.daily-insight-head strong{font-size:14px;color:var(--ink);}
+.daily-insight-btn{
+  flex-shrink:0;min-height:34px;padding:0 12px;border-radius:999px;
+  border:1px solid var(--line)!important;background:var(--paper);color:var(--ink);
+  font-size:11px;font-weight:700;
+}
+.daily-insight-body{font-size:12px;line-height:1.45;color:var(--ink-soft);}
+.daily-insight-text{color:var(--ink);margin-bottom:6px;}
+
+/* Resgate ativo — cor permanente */
+.type-toggle button.active-out,
+#pmResgate.active-out,
+#imResgate.active-out,
+#tglOut.active-out,
+#tglOut.active-out{
+  background:var(--red, #B3432B)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 4px 12px color-mix(in srgb, var(--red, #B3432B) 30%, transparent);
+}
+.type-toggle button.active-yield,
+#pmRendimento.active-yield,
+#imRendimento.active-yield{
+  background:var(--gold)!important;
+  color:#1a1408!important;
+  border-color:transparent!important;
+}
+
+/* Cantos dos modais (sheet) */
+.modal-overlay .panel,
+.panel.panel-beta{
+  border-radius:24px 24px 16px 16px !important;
+}
+@media (max-width:700px){
+  .modal-overlay .panel{
+    border-radius:28px 28px 0 0 !important;
+  }
+}
+
+/* —— VIEW BILLS V.19-18 —— */
+#viewBills .bills-status-filter{
+  display:flex !important;
+  flex-direction:row !important;
+  flex-wrap:wrap;
+  gap:8px !important;
+  width:100% !important;
+  max-width:100%;
+  margin:0 0 12px;
+}
+#viewBills .bills-status-filter button{
+  flex:1 1 auto;
+  min-width:calc(50% - 8px);
+  min-height:36px !important;
+  padding:8px 12px !important;
+  border:1px solid var(--line) !important;
+  border-radius:999px !important;
+  background:color-mix(in srgb, var(--surface) 80%, transparent) !important;
+  color:var(--ink-soft) !important;
+  font-size:11px !important;
+  font-weight:800 !important;
+  text-align:center !important;
+  box-shadow:none !important;
+  transition:background .15s ease, color .15s ease, border-color .15s ease, transform .12s ease;
+}
+#viewBills .bills-status-filter button:active{
+  transform:scale(.98);
+}
+#viewBills .bills-status-filter button.is-active{
+  background:var(--accent) !important;
+  border-color:var(--accent) !important;
+  color:var(--on-accent, var(--accent-ink, #fff)) !important;
+  box-shadow:0 4px 12px color-mix(in srgb, var(--accent) 28%, transparent) !important;
+}
+
+#viewBills .bills-toolbar-main #btnNovoBill,
+#viewBills #btnNovoBill{
+  border:1px solid transparent !important;
+  box-shadow:0 6px 16px color-mix(in srgb, var(--accent) 22%, transparent) !important;
+}
+#viewBills .bills-toolbar-actions button,
+#viewBills #btnBillsToday,
+#viewBills #btnExportBillsPdf,
+#viewBills #btnExportBillsXlsx{
+  border:1px solid var(--line) !important;
+  background:var(--surface) !important;
+  color:var(--ink-soft) !important;
+  box-shadow:none !important;
+}
+#viewBills .calendar-filter-control,
+#viewBills .bills-toolbar-titular .calendar-filter-control{
+  border:1px solid var(--line) !important;
+  background:var(--surface) !important;
+  box-shadow:none !important;
+  border-radius:12px !important;
+}
+
+#viewBills .bill-more-button,
+#viewBills .bill-more-wrap .bill-more-button{
+  border:1px solid var(--line) !important;
+  background:var(--surface) !important;
+  color:var(--ink-soft) !important;
+  box-shadow:none !important;
+  min-width:36px !important;
+  width:36px !important;
+  height:36px !important;
+  border-radius:10px !important;
+  font-size:14px !important;
+  letter-spacing:.05em;
+}
+#viewBills .bill-more-button:hover,
+#viewBills .bill-more-button[aria-expanded="true"]{
+  border-color:var(--accent) !important;
+  color:var(--accent) !important;
+  background:var(--green-soft, color-mix(in srgb, var(--accent) 12%, var(--surface))) !important;
+}
+
+/* Cards mais compactos e hierarquia */
+#viewBills .commitment-card,
+#viewBills .bill-list-item.commitment-card,
+#viewBills .invoice-card-item{
+  gap:8px !important;
+  padding:12px 12px !important;
+  border:1px solid var(--line) !important;
+  border-radius:14px !important;
+  background:var(--surface) !important;
+  box-shadow:none !important;
+  margin-bottom:8px !important;
+}
+#viewBills .commitment-card-head{
+  gap:8px !important;
+}
+#viewBills .commitment-card-main strong{
+  font-size:13px !important;
+  line-height:1.3 !important;
+}
+#viewBills .commitment-card .bill-list-item-amount{
+  margin-top:2px !important;
+  font-size:20px !important;
+}
+#viewBills .commitment-card .hint{
+  margin-top:2px !important;
+  font-size:11px !important;
+  line-height:1.35 !important;
+}
+#viewBills .bill-actions,
+#viewBills .commitment-card .bill-actions{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:8px !important;
+  margin-top:4px !important;
+  width:100% !important;
+}
+#viewBills .bill-actions button{
+  min-height:38px !important;
+  border-radius:11px !important;
+  border:1px solid var(--line) !important;
+  box-shadow:none !important;
+}
+#viewBills .bill-status{
+  font-size:10px !important;
+  font-weight:800 !important;
+  padding:4px 8px !important;
+  border-radius:999px !important;
+  border:1px solid transparent;
+  letter-spacing:.02em;
+}
+#viewBills .bill-status.is-pending,
+#viewBills .bill-status[data-status="pendente"]{
+  background:color-mix(in srgb, var(--gold) 18%, var(--surface));
+  color:var(--ink);
+  border-color:color-mix(in srgb, var(--gold) 35%, transparent);
+}
+#viewBills .bill-status.is-paid,
+#viewBills .bill-status[data-status="pago"]{
+  background:color-mix(in srgb, var(--accent) 16%, var(--surface));
+  color:var(--accent);
+  border-color:color-mix(in srgb, var(--accent) 30%, transparent);
+}
+#viewBills .bill-status.is-overdue,
+#viewBills .bill-status[data-status="atrasado"]{
+  background:color-mix(in srgb, var(--red, #B3432B) 14%, var(--surface));
+  color:var(--red, #B3432B);
+  border-color:color-mix(in srgb, var(--red, #B3432B) 28%, transparent);
+}
+#viewBills .bill-status.is-launched,
+#viewBills .bill-status[data-status="lancado"]{
+  background:color-mix(in srgb, var(--green, var(--accent)) 12%, var(--surface));
+  color:var(--ink);
+  border-color:var(--line);
+}
+
+/* Diferenciação visual conta x fatura (só UI) */
+#viewBills .commitment-card.is-invoice,
+#viewBills .invoice-card-item{
+  border-left:3px solid var(--gold) !important;
+}
+#viewBills .commitment-card.is-recurring{
+  border-left:3px solid var(--accent) !important;
+}
+
+/* Lista vazia */
+#viewBills .bills-empty-hint,
+#billList .hint{
+  padding:14px 12px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  text-align:center;
+}
+
+@media (min-width:720px){
+  #viewBills .bills-status-filter button{
+    flex:0 1 auto;
+    min-width:0;
+  }
+  #viewBills .bills-toolbar-v19-16{
+    display:grid !important;
+    grid-template-columns:1.2fr 1fr auto;
+    gap:10px !important;
+    align-items:center;
+  }
+  #viewBills .bills-toolbar-main,
+  #viewBills .bills-toolbar-actions,
+  #viewBills .bills-toolbar-titular{
+    width:auto;
+  }
+}

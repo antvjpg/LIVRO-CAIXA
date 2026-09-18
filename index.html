@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-17 (GPT) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-18 (GROK) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Livro-Caixa">
-<link rel="manifest" href="./manifest.webmanifest?v=19-16-fs">
+<link rel="manifest" href="./manifest.webmanifest?v=19-18">
 <link rel="icon" href="./icon-192.png?v=13" type="image/png">
 <link rel="apple-touch-icon" href="./icon-192.png?v=13">
 <title>Livro-Caixa</title>
@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-17-modal-sheet4">
+  <link rel="stylesheet" href="./styles.css?v=19-18">
 </head>
 <body>
 
@@ -146,6 +146,18 @@
   </div>
 
   <div class="balance-strip" id="balanceStrip"></div>
+  <section class="daily-insight-card" id="dailyInsightCard" aria-label="Insight financeiro do dia">
+    <div class="daily-insight-head">
+      <div>
+        <span class="daily-insight-kicker">Insight do dia</span>
+        <strong>Análise assistida</strong>
+      </div>
+      <button type="button" id="btnDailyInsight" class="daily-insight-btn">Gerar insight</button>
+    </div>
+    <div id="dailyInsightBody" class="daily-insight-body">
+      <p class="hint">Uma leitura objetiva da sua situação financeira, no máximo uma vez por dia. Nenhum lançamento é alterado.</p>
+    </div>
+  </section>
 
   <!-- V18-12: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
   <section class="period-bar" id="universalPeriodBar" aria-label="Período de visualização">
@@ -353,40 +365,6 @@
           </div>
         </div>
 
-      </div>
-
-      
-      <div class="profile-group">
-        <div class="profile-group-title">Sugestões de automação</div>
-        <div class="feature-lab-section">
-
-          <div class="automation-recs" id="automationRecs">
-            <div class="automation-recs-title">Sugestões úteis</div>
-            <div class="automation-rec-item">
-              <div>
-                <strong>Cotação automática</strong>
-                <small>Atualiza preços de criptos periodicamente. Ative “Atualizar cotações automaticamente” acima se quiser.</small>
-              </div>
-              <button type="button" class="bill-action-btn" id="btnRecEnableQuotes">Ver opção</button>
-            </div>
-            <div class="automation-rec-item">
-              <div>
-                <strong>Lembretes de contas</strong>
-                <small>Avisa vencimentos próximos. Não cria lançamentos sozinho.</small>
-              </div>
-              <button type="button" class="bill-action-btn" id="btnRecEnableReminders">Ver opção</button>
-            </div>
-            <div class="automation-rec-item">
-              <div>
-                <strong>Lançar recorrências</strong>
-                <small>Sugere registrar contas do mês. Continua exigindo sua confirmação conforme as regras do app.</small>
-              </div>
-              <button type="button" class="bill-action-btn" id="btnRecEnableBills">Ver opção</button>
-            </div>
-          </div>
-
-          <p class="hint" style="margin:8px 0 0;">Nenhuma sugestão é ativada sozinha — só você liga a automação.</p>
-        </div>
       </div>
 <div class="profile-group">
         <div class="profile-group-title">Orçamento</div>
@@ -1310,7 +1288,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-18').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -3578,7 +3556,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const advanceDays = Number(featureSettings.reminderAdvanceDays) || 0; const advanceBills = advanceDays ? pendingBills.filter(bill => { const due = new Date(`${month}-${String(billDueDateForMonth(bill, year, monthIndex).slice(-2)).padStart(2, '0')}T23:59:59`); return due >= new Date() && (due - new Date()) / 86400000 <= advanceDays; }) : []; if (advanceBills.length) alerts.push(`<div class="dashboard-alert-row"><span>i</span><div><strong>Fatura próxima</strong><small>${advanceBills.length} conta(s) vencem nos próximos ${advanceDays} dia(s).</small></div></div>`);
     if (!alerts.length) alerts.push(`<div class="dashboard-alert-row positive"><span>✓</span><div><strong>Nenhum alerta importante</strong><small>Seu painel não encontrou pendências críticas neste momento.</small></div></div>`);
 
-    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dashboard-explainer"><span class="legend-dot income"></span> Entradas <span class="legend-dot expense"></span> Saídas <span class="legend-dot patrimony"></span> Patrimônio estimado</div><div class="monthly-flow-chart">${series.map(item => { const incomePct = Math.max(item.income > 0 ? 4 : 0, item.income / maxFlow * 100); const expensePct = Math.max(item.expense > 0 ? 4 : 0, item.expense / maxFlow * 100); return `<div class="monthly-flow-row"><div class="monthly-flow-label"><strong>${escapeHTML(item.label)}</strong><span>Fluxo ${item.net >= 0 ? '+' : ''}${fmt(item.net)}</span></div><div class="monthly-flow-bars"><div class="flow-bar-line"><span>Entradas</span><div class="flow-track"><i class="income" style="width:${Math.min(100, incomePct).toFixed(2)}%"></i></div><b>${fmt(item.income)}</b></div><div class="flow-bar-line"><span>Saídas</span><div class="flow-track"><i class="expense" style="width:${Math.min(100, expensePct).toFixed(2)}%"></i></div><b>${fmt(item.expense)}</b></div></div><div class="monthly-patrimony"><small>Patrimônio estimado</small><strong>${fmt(item.patrimony)}</strong></div></div>`; }).join('')}</div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta recorrente pendente para este mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
+    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dashboard-explainer"><span class="legend-dot income"></span> Entradas <span class="legend-dot expense"></span> Saídas <span class="legend-dot patrimony"></span> Patrimônio estimado</div><div class="monthly-flow-chart">${series.map(item => { const incomePct = Math.max(item.income > 0 ? 4 : 0, item.income / maxFlow * 100); const expensePct = Math.max(item.expense > 0 ? 4 : 0, item.expense / maxFlow * 100); return `<div class="monthly-flow-row"><div class="monthly-flow-label"><strong>${escapeHTML(item.label)}</strong><span>Fluxo ${item.net >= 0 ? '+' : ''}${fmt(item.net)}</span></div><div class="monthly-flow-bars"><div class="flow-bar-line"><span>Entradas</span><div class="flow-track"><i class="income" style="width:${Math.min(100, incomePct).toFixed(2)}%"></i></div><b>${fmt(item.income)}</b></div><div class="flow-bar-line"><span>Saídas</span><div class="flow-track"><i class="expense" style="width:${Math.min(100, expensePct).toFixed(2)}%"></i></div><b>${fmt(item.expense)}</b></div></div><div class="monthly-patrimony"><small>Patrimônio estimado</small><strong>${fmt(item.patrimony)}</strong></div></div>`; }).join('')}</div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta ou fatura encontrada para o filtro/titular selecionado neste mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
   }
 
   function renderFeatureLab() {
@@ -3655,7 +3633,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.19-16';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.19-18';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
   function syncProfileUserCard() {
@@ -4111,6 +4089,68 @@ ${JSON.stringify(snapshot)}
       }
     }
   }
+
+  
+  const DAILY_INSIGHT_KEY = 'livrocaixa_daily_insight_v19_18';
+  function loadDailyInsightCache() {
+    try { return JSON.parse(localStorage.getItem(DAILY_INSIGHT_KEY) || 'null'); } catch (e) { return null; }
+  }
+  function saveDailyInsightCache(payload) {
+    try { localStorage.setItem(DAILY_INSIGHT_KEY, JSON.stringify(payload)); } catch (e) {}
+  }
+  function renderDailyInsightFromCache() {
+    const body = document.getElementById('dailyInsightBody');
+    const btn = document.getElementById('btnDailyInsight');
+    if (!body) return;
+    const cache = loadDailyInsightCache();
+    const today = typeof todayISO === 'function' ? todayISO() : new Date().toISOString().slice(0,10);
+    if (cache && cache.date === today && cache.text) {
+      body.innerHTML = `<div class="daily-insight-text">${escapeHTML(cache.text).replace(/\n/g, '<br>')}</div><div class="hint">Gerado hoje · não altera seus lançamentos</div>`;
+      if (btn) btn.textContent = 'Já gerado hoje';
+    }
+  }
+  async function runDailyInsight() {
+    const body = document.getElementById('dailyInsightBody');
+    const btn = document.getElementById('btnDailyInsight');
+    const today = typeof todayISO === 'function' ? todayISO() : new Date().toISOString().slice(0,10);
+    const cache = loadDailyInsightCache();
+    if (cache && cache.date === today && cache.text && btn?.dataset.force !== '1') {
+      renderDailyInsightFromCache();
+      if (body) {
+        const note = document.createElement('p');
+        note.className = 'hint';
+        note.textContent = 'Limite diário: toque de novo para tentar regenerar.';
+        body.appendChild(note);
+      }
+      if (btn) btn.dataset.force = '1';
+      return;
+    }
+    if (btn) { btn.disabled = true; btn.textContent = 'Gerando…'; }
+    if (body) body.innerHTML = '<p class="hint">Consultando a análise assistida…</p>';
+    try {
+      let text = '';
+      if (typeof runGeminiFinancialDiagnosis === 'function') {
+        await runGeminiFinancialDiagnosis();
+        const gemOut = document.getElementById('geminiDiagnosticOutput')
+          || document.getElementById('labsAnalysisStatus')
+          || document.getElementById('diagnosticGeminiResult');
+        if (gemOut && (gemOut.innerText || gemOut.textContent)) {
+          text = (gemOut.innerText || gemOut.textContent).trim();
+        }
+      }
+      if (!text || text.length < 24) {
+        text = 'Resumo local: use a análise Gemini no Perfil se a resposta completa não aparecer aqui. Seus saldos e lançamentos não foram alterados.';
+      }
+      saveDailyInsightCache({ date: today, text: text.slice(0, 2500) });
+      renderDailyInsightFromCache();
+    } catch (err) {
+      if (body) body.innerHTML = `<p class="hint">${escapeHTML(err.message || 'Não foi possível gerar o insight agora.')}</p>`;
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = 'Gerar insight'; btn.dataset.force = ''; }
+    }
+  }
+  document.getElementById('btnDailyInsight')?.addEventListener('click', () => runDailyInsight());
+  try { renderDailyInsightFromCache(); } catch (e) {}
 
   document.getElementById('btnGeminiDiagnostic')?.addEventListener(
     'click',
@@ -5118,7 +5158,7 @@ VALOR: ${fmt(bill.amount)}
         'Banco: ' + escapeHTML(row.bank),
         b.titular ? 'Titular: ' + escapeHTML(b.titular) : ''
       ].filter(Boolean).join(' · ');
-      return `<div class="bill-list-item commitment-card">
+      return `<div class="bill-list-item commitment-card is-recurring">
         <div class="commitment-card-head">
           <div class="commitment-card-main">
             <strong>${escapeHTML(b.name)}${row.installmentLabel ? ` · ${escapeHTML(row.installmentLabel)}` : ''}</strong>
@@ -5185,7 +5225,7 @@ VALOR: ${fmt(bill.amount)}
           'Cartão',
           b.titular ? ('Titular: ' + escapeHTML(b.titular)) : ''
         ].filter(Boolean).join(' · ');
-        return `<div class="bill-list-item commitment-card" id="invoice-detail-${escapeHTML(row.card.id)}">
+        return `<div class="bill-list-item commitment-card is-invoice" id="invoice-detail-${escapeHTML(row.card.id)}">
           <div class="commitment-card-head">
             <div class="commitment-card-main">
               <strong>Fatura ${escapeHTML(row.card.name)}</strong>
@@ -5205,7 +5245,7 @@ VALOR: ${fmt(bill.amount)}
           <div class="bill-actions commitment-actions">${actionPair(b)}</div>
         </div>`;
       }).join('');
-      return `<div class="bill-list-item commitment-card" id="invoice-detail-${escapeHTML(row.card.id)}">
+      return `<div class="bill-list-item commitment-card is-invoice" id="invoice-detail-${escapeHTML(row.card.id)}">
         <div class="commitment-card-head">
           <div class="commitment-card-main">
             <strong>Fatura ${escapeHTML(row.card.name)}</strong>
@@ -5221,11 +5261,11 @@ VALOR: ${fmt(bill.amount)}
     let listHtml = '';
     if (statusFilter === 'pago') {
       const paidItems = paidBillRows.map(renderBillItem).join('') + paidInvoiceRows.map(renderInvoiceItem).join('');
-      listHtml = paidItems || '<div class="empty">Nenhuma conta paga neste período.</div>';
+      listHtml = paidItems || '<div class="empty">Nenhuma conta paga neste período com o filtro atual.</div>';
     } else {
       const main = openBillRows.slice().sort((a,b)=>billDueDayFromStart(a.bill)-billDueDayFromStart(b.bill)).map(renderBillItem).join('')
         + openInvoiceRows.map(renderInvoiceItem).join('');
-      listHtml = main || (statusFilter ? '<div class="empty">Nenhum item neste filtro.</div>' : '<div class="empty">Nenhuma conta pendente neste mês.</div>');
+      listHtml = main || (statusFilter ? '<div class="empty">Nenhum item neste filtro.</div>' : '<div class="empty">Nenhuma conta pendente neste mês com o filtro atual.</div>');
       if (statusFilter === '' && (paidBillRows.length || paidInvoiceRows.length)) {
         const paidInner = paidBillRows.map(renderBillItem).join('') + paidInvoiceRows.map(renderInvoiceItem).join('');
         listHtml += `<details class="bills-paid-accordion"><summary>Pagas (${paidBillRows.length + paidInvoiceRows.length})</summary><div class="bills-paid-body">${paidInner}</div></details>`;
