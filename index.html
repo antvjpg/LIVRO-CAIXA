@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-18-ui3">
+  <link rel="stylesheet" href="./styles.css?v=19-18-ui5">
 </head>
 <body>
 
@@ -155,9 +155,8 @@
     </button>
     <div class="period-bar-body" id="periodBarBody">
     <div class="period-bar-copy">
-      <span class="period-eyebrow">Período ativo</span>
-      <strong class="period-active-label" id="periodActiveLabel">Agosto / 2026</strong>
       <div class="period-hint" id="periodActiveHint">O filtro afeta somente os históricos e lançamentos exibidos.</div>
+      <strong class="period-active-label" id="periodActiveLabel" hidden aria-hidden="true">Agosto / 2026</strong>
     </div>
     <div class="period-controls">
       <button type="button" class="period-nav" id="btnPeriodPrev" aria-label="Mês anterior" title="Mês anterior">‹</button>
@@ -352,7 +351,6 @@
       </div>
 
       
-      </div>
 
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">🎛️</span> Geral</div>
@@ -363,7 +361,7 @@
             <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define em qual dia começa seu mês financeiro. Isso altera apenas os períodos usados no orçamento — não muda a data dos lançamentos.</span></span>
             <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
           </div>
-          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v3H9z"/><path d="M8 6h8l1.5 12.5a2 2 0 0 1-2 2.5H8.5a2 2 0 0 1-2-2.5L8 6z"/><path d="M10 10v6M14 10v6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span>
+          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v3H9z"/><path d="M8 6h8l1.5 12.5a2 2 0 0 1-2 2.5H8.5a2 2 0 0 1-2-2.5L8 6z"/><path d="M10 10v6M14 10v6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span></div>
           <!-- Lembretes (dentro de Geral) -->
           <label class="feature-lab-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-lab-toggle-copy"><strong>Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
           <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);">
@@ -481,6 +479,7 @@
         <div class="profile-list">
           <div class="profile-item is-danger" role="button" tabindex="0" id="btnProfileLogout"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="profile-item-copy"><strong>Sair da conta</strong><span>Encerra a sessão neste aparelho — seus dados continuam salvos na nuvem</span></span><span class="profile-item-arrow">›</span></div>
         </div>
+      </div>
       <div class="profile-roadmap"><b>Em preparação:</b> revisão de Meta/Simulação financeira.</div>
 </section>
   </div>
@@ -1295,7 +1294,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-18-ui3').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-18-ui5').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -1802,6 +1801,14 @@ document.addEventListener('DOMContentLoaded', () => {
     mo.observe(src, { childList:true, characterData:true, subtree:true });
     top.textContent = src.textContent;
   })();
+  
+  function syncPeriodActiveLabels(text) {
+    const a = document.getElementById('periodActiveLabel');
+    const b = document.getElementById('periodActiveLabelTop');
+    if (a) a.textContent = text;
+    if (b) b.textContent = text;
+  }
+
   window.switchTab = function(tabName) {
     currentTab = tabName;
     try { document.body.dataset.tab = tabName || 'caixa'; } catch (e) {}
