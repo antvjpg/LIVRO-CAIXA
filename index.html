@@ -668,15 +668,27 @@
 
         <div class="feature-lab-goals-divider" style="margin:16px 0 10px;padding-top:12px;border-top:1px dashed var(--line);">
           <strong style="font-size:12px;color:var(--ink);">Metas financeiras</strong>
-          <p class="feature-lab-section-desc" style="margin:4px 0 10px;">Acompanhe objetivos específicos. Não altera saldos automaticamente — só é atualizada quando você registrar o progresso aqui.</p>
+          <p class="feature-lab-section-desc" style="margin:4px 0 10px;">Acompanhe objetivos específicos. A Meta não cria movimentações; quando vinculada, o progresso acompanha o saldo real da Caixinha.</p>
         </div>
         <div id="goalsList" class="feature-budget-rows" style="margin-bottom:12px;"></div>
         <div class="feature-lab-fields">
           <div><label for="goalNome">Nome da meta</label><input type="text" id="goalNome" placeholder="Ex: Reserva de emergência"></div>
           <div><label for="goalIcone">Ícone</label><input type="text" id="goalIcone" maxlength="4" placeholder="🎯" value="🎯"></div>
           <div><label for="goalValorObjetivo">Valor objetivo</label><input type="text" id="goalValorObjetivo" data-money="true" placeholder="R$ 0,00"></div>
-          <div><label for="goalValorAtual">Valor já acumulado</label><input type="text" id="goalValorAtual" data-money="true" placeholder="R$ 0,00"></div>
+          <div>
+            <label for="goalCaixinha">Caixinha vinculada</label>
+            <select id="goalCaixinha">
+              <option value="">Nenhuma — planejamento sem saldo</option>
+            </select>
+            <span class="hint">Quando vinculada, a Meta usa o saldo real da Caixinha.</span>
+          </div>
+          <div><label for="goalDataInicio">Data de início</label><input type="date" id="goalDataInicio"></div>
           <div><label for="goalPrazo">Prazo (opcional)</label><input type="date" id="goalPrazo"></div>
+          <div id="goalValorAtualLegacyField">
+            <label for="goalValorAtual">Valor já acumulado <span class="hint">(legado)</span></label>
+            <input type="text" id="goalValorAtual" data-money="true" placeholder="R$ 0,00">
+            <span class="hint">Usado somente em Metas antigas sem Caixinha vinculada.</span>
+          </div>
           <div><label for="goalObs">Descrição (opcional)</label><input type="text" id="goalObs" placeholder="Opcional"></div>
         </div>
         <div class="feature-lab-actions"><button type="button" id="btnSaveGoal" class="primary">Salvar meta</button><button type="button" id="btnCancelGoalEdit" hidden>Cancelar edição</button></div>
@@ -3498,6 +3510,44 @@ document.addEventListener('DOMContentLoaded', () => {
     return entries.filter(entry => entry.type === 'out' && entry.category === categoryId && entry.date >= start && entry.date <= end).reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
   }
   let editingGoalId = null;
+
+  function refreshGoalCaixinhaOptions(selectedId = '') {
+    const select = document.getElementById('goalCaixinha');
+    if (!select) return;
+
+    const selected = String(selectedId || '');
+    select.innerHTML = '<option value="">Nenhuma — planejamento sem saldo</option>' +
+      pockets
+        .slice()
+        .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'))
+        .map(pocket => `<option value="${escapeHTML(pocket.id)}">🐷 ${escapeHTML(pocket.name)} · ${fmt(pocketCurrentBalance(pocket))}</option>`)
+        .join('');
+
+    select.value = selected;
+    if (select.value !== selected) select.value = '';
+  }
+
+  function syncGoalLegacyAmountField() {
+    const select = document.getElementById('goalCaixinha');
+    const field = document.getElementById('goalValorAtualLegacyField');
+    const input = document.getElementById('goalValorAtual');
+    if (!select || !field || !input) return;
+
+    const linked = Boolean(select.value);
+    field.hidden = linked;
+    input.disabled = linked;
+  }
+
+  function activeGoalForCaixinha(caixinhaId, exceptId = null) {
+    if (!caixinhaId) return null;
+    return goals.find(goal =>
+      goal &&
+      goal.id !== exceptId &&
+      goal.caixinhaId === caixinhaId &&
+      (goal.status || 'active') === 'active'
+    ) || null;
+  }
+
   function goalMarkup(goal) {
     const target = Number(goal.targetAmount) || 0;
     const current = goalCurrentAmount(goal);
@@ -3524,6 +3574,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('goalsList');
     if (!list) return;
     list.innerHTML = goals.length ? goals.map(goalMarkup).join('') : '<p class="hint">Nenhuma meta cadastrada ainda.</p>';
+    const current = goals.find(g => g.id === editingGoalId);
+    refreshGoalCaixinhaOptions(current?.caixinhaId || document.getElementById('goalCaixinha')?.value || '');
+    syncGoalLegacyAmountField();
   }
   window.editGoal = function(id) {
     const goal = goals.find(g => g.id === id);
@@ -3532,7 +3585,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('goalNome').value = goal.name || '';
     document.getElementById('goalIcone').value = goal.icon || '🎯';
     setMoneyInput('goalValorObjetivo', goal.targetAmount || 0);
+    refreshGoalCaixinhaOptions(goal.caixinhaId || '');
+    document.getElementById('goalCaixinha').value = goal.caixinhaId || '';
+    document.getElementById('goalDataInicio').value = goal.startDate || todayISO();
     setMoneyInput('goalValorAtual', goal.currentAmount || 0);
+    syncGoalLegacyAmountField();
     document.getElementById('goalPrazo').value = goal.deadline || '';
     document.getElementById('goalObs').value = goal.desc || '';
     document.getElementById('btnSaveGoal').textContent = 'Atualizar meta';
@@ -3551,33 +3608,63 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('goalNome').value = '';
     document.getElementById('goalIcone').value = '🎯';
     setMoneyInput('goalValorObjetivo', 0);
+    refreshGoalCaixinhaOptions('');
+    document.getElementById('goalCaixinha').value = '';
+    document.getElementById('goalDataInicio').value = todayISO();
     setMoneyInput('goalValorAtual', 0);
+    syncGoalLegacyAmountField();
     document.getElementById('goalPrazo').value = '';
     document.getElementById('goalObs').value = '';
     document.getElementById('btnSaveGoal').textContent = 'Salvar meta';
     document.getElementById('btnCancelGoalEdit').hidden = true;
   }
   document.getElementById('btnCancelGoalEdit').onclick = resetGoalForm;
+  document.getElementById('goalCaixinha').addEventListener('change', syncGoalLegacyAmountField);
+  refreshGoalCaixinhaOptions('');
+  document.getElementById('goalDataInicio').value = todayISO();
+  syncGoalLegacyAmountField();
+
   document.getElementById('btnSaveGoal').onclick = async () => {
     const name = document.getElementById('goalNome').value.trim();
     const targetAmount = readMoneyInput('goalValorObjetivo');
     if (!name) { alert('Informe o nome da meta.'); return; }
     if (!(targetAmount > 0)) { alert('Informe um valor objetivo válido.'); return; }
+    const caixinhaId = document.getElementById('goalCaixinha').value || null;
+    const startDate = document.getElementById('goalDataInicio').value || todayISO();
+    const legacyCurrent = readMoneyInput('goalValorAtual');
+
+    const conflictingGoal = activeGoalForCaixinha(caixinhaId, editingGoalId);
+    if (conflictingGoal) {
+      const conflictingPocket = pockets.find(p => p.id === caixinhaId);
+      alert(`A Caixinha "${conflictingPocket?.name || 'selecionada'}" já está vinculada à Meta "${conflictingGoal.name}".`);
+      return;
+    }
+
     const record = {
       name,
       icon: document.getElementById('goalIcone').value.trim() || '🎯',
       targetAmount,
-      currentAmount: readMoneyInput('goalValorAtual'),
+      startDate,
       deadline: document.getElementById('goalPrazo').value || '',
       desc: document.getElementById('goalObs').value.trim(),
+      caixinhaId,
       updatedAt: new Date().toISOString()
     };
+
+    const existingGoal = editingGoalId ? goals.find(g => g.id === editingGoalId) : null;
+    if (!caixinhaId && existingGoal && !existingGoal.caixinhaId && Object.prototype.hasOwnProperty.call(existingGoal, 'currentAmount')) {
+      record.currentAmount = legacyCurrent;
+    }
     const btn = document.getElementById('btnSaveGoal');
     const originalLabel = btn.textContent;
     btn.disabled = true; btn.textContent = 'Salvando...';
     if (editingGoalId) {
       const idx = goals.findIndex(g => g.id === editingGoalId);
-      if (idx >= 0) goals[idx] = { ...goals[idx], ...record };
+      if (idx >= 0) {
+        const nextGoal = { ...goals[idx], ...record };
+        if (caixinhaId) delete nextGoal.currentAmount;
+        goals[idx] = nextGoal;
+      }
     } else {
       goals.push({ id: 'goal' + Date.now() + Math.random().toString(36).slice(2, 7), createdAt: todayISO(), ...record });
     }
