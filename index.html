@@ -2001,6 +2001,10 @@ document.addEventListener('DOMContentLoaded', () => {
       normalizePockets();
       if (JSON.stringify(pockets) !== beforePocketState) changed = true;
 
+      const beforeGoalState = JSON.stringify(goals);
+      normalizeGoals();
+      if (JSON.stringify(goals) !== beforeGoalState) changed = true;
+
       const filteredBanks = banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
       if (filteredBanks.length !== banks.length) changed = true;
       banks = filteredBanks;
@@ -2334,6 +2338,51 @@ document.addEventListener('DOMContentLoaded', () => {
         p.initial = currentStored - movementTotal;
       }
       if ('value' in p) delete p.value;
+    });
+  }
+
+  function normalizeGoals() {
+    const validStatuses = new Set(['active', 'completed', 'paused', 'cancelled']);
+
+    goals.forEach(goal => {
+      if (!goal || typeof goal !== 'object') return;
+
+      if (!goal.id) {
+        goal.id = 'goal' + Date.now() + Math.random().toString(36).slice(2, 7);
+      }
+
+      if (goal.name == null) goal.name = '';
+      if (goal.icon == null || !String(goal.icon).trim()) goal.icon = '🎯';
+
+      if (goal.targetAmount == null) {
+        goal.targetAmount = 0;
+      } else {
+        const target = Number(goal.targetAmount);
+        if (Number.isFinite(target)) goal.targetAmount = target;
+      }
+
+      if (!goal.startDate) {
+        const created = String(goal.createdAt || '');
+        goal.startDate = /^\d{4}-\d{2}-\d{2}/.test(created)
+          ? created.slice(0, 10)
+          : todayISO();
+      }
+
+      if (!Object.prototype.hasOwnProperty.call(goal, 'caixinhaId') || !goal.caixinhaId) {
+        goal.caixinhaId = null;
+      } else {
+        goal.caixinhaId = String(goal.caixinhaId);
+      }
+
+      if (!validStatuses.has(goal.status)) {
+        goal.status = 'active';
+      }
+
+      if (goal.deadline == null) goal.deadline = '';
+      if (goal.desc == null) goal.desc = '';
+
+      if (!goal.createdAt) goal.createdAt = todayISO();
+      if (!goal.updatedAt) goal.updatedAt = goal.createdAt;
     });
   }
 
@@ -8374,6 +8423,7 @@ document.getElementById('tSalvar').onclick = async () => {
         recurringBills = clean.recurringBills || [];
         budgets = clean.budgets || [];
         goals = clean.goals || [];
+        normalizeGoals();
         cards = clean.cards || [];
         purchases = clean.purchases || [];
         if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); }
