@@ -33,6 +33,75 @@
 </head>
 <body>
 
+
+
+  <!-- ABA: METAS -->
+  <div id="viewGoals" class="tab-content">
+    <div class="goals-page">
+<div class="panel goals-panel" id="panelGoals">
+      <div class="feature-lab-header">
+        <div class="feature-lab-title-wrap">
+          <span class="feature-lab-kicker">PLANEJAMENTO FINANCEIRO</span>
+          <h3>Metas financeiras</h3>
+          <p class="feature-lab-intro">Acompanhe seus objetivos e, quando vinculados, deixe o progresso acompanhar o saldo real da Caixinha.</p>
+        </div>
+        <button type="button" class="modal-close feature-lab-close" onclick="closeAllPanels()" aria-label="Fechar Metas">×</button>
+      </div>
+
+      <div class="feature-lab-section labs-plus-section">
+        <div class="feature-lab-section-head">
+          <div><span class="feature-lab-section-number">01</span><h4>Suas metas</h4></div>
+          <span class="feature-lab-section-tag">PLANEJAMENTO</span>
+        </div>
+
+        <div id="goalsList" class="feature-budget-rows" style="margin-bottom:12px;"></div>
+
+        <div class="feature-lab-goals-divider" style="margin:16px 0 10px;padding-top:12px;border-top:1px dashed var(--line);">
+          <strong style="font-size:12px;color:var(--ink);">Nova Meta</strong>
+          <p class="feature-lab-section-desc" style="margin:4px 0 10px;">A Meta não cria movimentações. Quando vinculada, o progresso acompanha o saldo real da Caixinha.</p>
+        </div>
+
+        <div class="feature-lab-fields">
+          <div><label for="goalNome">Nome da meta</label><input type="text" id="goalNome" placeholder="Ex: Reserva de emergência"></div>
+          <div><label for="goalIcone">Ícone</label><input type="text" id="goalIcone" maxlength="4" placeholder="🎯" value="🎯"></div>
+          <div><label for="goalValorObjetivo">Valor objetivo</label><input type="text" id="goalValorObjetivo" data-money="true" placeholder="R$ 0,00"></div>
+          <div>
+            <label for="goalCaixinha">Caixinha vinculada</label>
+            <select id="goalCaixinha">
+              <option value="">Nenhuma — planejamento sem saldo</option>
+            </select>
+            <span class="hint">Quando vinculada, a Meta usa o saldo real da Caixinha.</span>
+          </div>
+          <div><label for="goalDataInicio">Data de início</label><input type="date" id="goalDataInicio"></div>
+          <div><label for="goalPrazo">Prazo (opcional)</label><input type="date" id="goalPrazo"></div>
+          <div>
+            <label for="goalStatus">Status</label>
+            <select id="goalStatus">
+              <option value="active">Ativa</option>
+              <option value="completed">Concluída</option>
+              <option value="paused">Pausada</option>
+              <option value="cancelled">Cancelada</option>
+            </select>
+          </div>
+          <div id="goalValorAtualLegacyField">
+            <label for="goalValorAtual">Valor já acumulado <span class="hint">(legado)</span></label>
+            <input type="text" id="goalValorAtual" data-money="true" placeholder="R$ 0,00">
+            <span class="hint">Usado somente em Metas antigas sem Caixinha vinculada.</span>
+          </div>
+          <div><label for="goalObs">Descrição (opcional)</label><input type="text" id="goalObs" placeholder="Opcional"></div>
+        </div>
+
+        <div class="feature-lab-actions">
+          <button type="button" id="btnSaveGoal" class="primary">Salvar meta</button>
+          <button type="button" id="btnCancelGoalEdit" hidden>Cancelar edição</button>
+        </div>
+
+        <div id="goalsStatus" class="feature-lab-feedback" aria-live="polite"></div>
+      </div>
+    </div>
+    </div>
+  </div>
+
 <div id="authOverlay">
   <div class="auth-box">
     <h2 id="authTitle">Entrar</h2>
@@ -131,6 +200,7 @@
     <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')">💳 Cartões</button>
     <button class="nav-tab" id="tabBtnReceivables" onclick="switchTab('receivables')">📥 A Receber</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')">📈 Investimentos</button>
+    <button class="nav-tab" id="tabBtnGoals" onclick="switchTab('goals')"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><path d="m15.5 8.5 4-4"/><path d="M16.5 4.5H20v3.5"/></svg> Metas</button>
   </div>
 
   <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
@@ -351,7 +421,7 @@
         </div>
       </div>
 
-      
+
 
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">🎛️</span> Geral</div>
@@ -472,7 +542,7 @@
         </div>
       </div>
 
-      
+
 
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">🚪</span> Conta</div>
@@ -675,67 +745,7 @@
     </div>
     </div>
 
-    <div class="panel goals-panel" id="panelGoals">
-      <div class="feature-lab-header">
-        <div class="feature-lab-title-wrap">
-          <span class="feature-lab-kicker">PLANEJAMENTO FINANCEIRO</span>
-          <h3>Metas financeiras</h3>
-          <p class="feature-lab-intro">Acompanhe seus objetivos e, quando vinculados, deixe o progresso acompanhar o saldo real da Caixinha.</p>
-        </div>
-        <button type="button" class="modal-close feature-lab-close" onclick="closeAllPanels()" aria-label="Fechar Metas">×</button>
-      </div>
 
-      <div class="feature-lab-section labs-plus-section">
-        <div class="feature-lab-section-head">
-          <div><span class="feature-lab-section-number">01</span><h4>Suas metas</h4></div>
-          <span class="feature-lab-section-tag">PLANEJAMENTO</span>
-        </div>
-
-        <div id="goalsList" class="feature-budget-rows" style="margin-bottom:12px;"></div>
-
-        <div class="feature-lab-goals-divider" style="margin:16px 0 10px;padding-top:12px;border-top:1px dashed var(--line);">
-          <strong style="font-size:12px;color:var(--ink);">Nova Meta</strong>
-          <p class="feature-lab-section-desc" style="margin:4px 0 10px;">A Meta não cria movimentações. Quando vinculada, o progresso acompanha o saldo real da Caixinha.</p>
-        </div>
-
-        <div class="feature-lab-fields">
-          <div><label for="goalNome">Nome da meta</label><input type="text" id="goalNome" placeholder="Ex: Reserva de emergência"></div>
-          <div><label for="goalIcone">Ícone</label><input type="text" id="goalIcone" maxlength="4" placeholder="🎯" value="🎯"></div>
-          <div><label for="goalValorObjetivo">Valor objetivo</label><input type="text" id="goalValorObjetivo" data-money="true" placeholder="R$ 0,00"></div>
-          <div>
-            <label for="goalCaixinha">Caixinha vinculada</label>
-            <select id="goalCaixinha">
-              <option value="">Nenhuma — planejamento sem saldo</option>
-            </select>
-            <span class="hint">Quando vinculada, a Meta usa o saldo real da Caixinha.</span>
-          </div>
-          <div><label for="goalDataInicio">Data de início</label><input type="date" id="goalDataInicio"></div>
-          <div><label for="goalPrazo">Prazo (opcional)</label><input type="date" id="goalPrazo"></div>
-          <div>
-            <label for="goalStatus">Status</label>
-            <select id="goalStatus">
-              <option value="active">Ativa</option>
-              <option value="completed">Concluída</option>
-              <option value="paused">Pausada</option>
-              <option value="cancelled">Cancelada</option>
-            </select>
-          </div>
-          <div id="goalValorAtualLegacyField">
-            <label for="goalValorAtual">Valor já acumulado <span class="hint">(legado)</span></label>
-            <input type="text" id="goalValorAtual" data-money="true" placeholder="R$ 0,00">
-            <span class="hint">Usado somente em Metas antigas sem Caixinha vinculada.</span>
-          </div>
-          <div><label for="goalObs">Descrição (opcional)</label><input type="text" id="goalObs" placeholder="Opcional"></div>
-        </div>
-
-        <div class="feature-lab-actions">
-          <button type="button" id="btnSaveGoal" class="primary">Salvar meta</button>
-          <button type="button" id="btnCancelGoalEdit" hidden>Cancelar edição</button>
-        </div>
-
-        <div id="goalsStatus" class="feature-lab-feedback" aria-live="polite"></div>
-      </div>
-    </div>
 
     <div class="panel" id="panelDiagnostico">
       <h3>Diagnóstico Geral (LOG) <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
@@ -1848,7 +1858,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mo.observe(src, { childList:true, characterData:true, subtree:true });
     top.textContent = src.textContent;
   })();
-  
+
   function syncPeriodActiveLabels(text) {
     const a = document.getElementById('periodActiveLabel');
     const b = document.getElementById('periodActiveLabelTop');
@@ -1856,7 +1866,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (b) b.textContent = text;
   }
 
-  window.switchTab = function(tabName) {
+  window.switchTabOriginal = function(tabName) {
     currentTab = tabName;
     try { document.body.dataset.tab = tabName || 'caixa'; } catch (e) {}
     document.body.classList.add('tab-changing');
@@ -3273,13 +3283,13 @@ document.addEventListener('DOMContentLoaded', () => {
       total: activeEntries.filter(e => e.category === c.id && e.type === 'out').reduce((s, e) => s + e.amount, 0)
     })).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
 
-    if (spend.length === 0) { 
+    if (spend.length === 0) {
       if (catChartInstance) {
         catChartInstance.destroy();
         catChartInstance = null;
       }
-      wrap.innerHTML = ''; 
-      return; 
+      wrap.innerHTML = '';
+      return;
     }
     const totalSpend = spend.reduce((sum, item) => sum + item.total, 0);
     const leader = spend[0];
@@ -3372,7 +3382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtered = getFilteredEntries();
 
     document.getElementById('ledgerCount').textContent = filtered.length + ' lançamento(s)';
-    
+
     if (filtered.length === 0) {
       body.innerHTML = `<div class="empty">Nenhum lançamento encontrado para os filtros selecionados.</div>`;
       return;
@@ -3391,7 +3401,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const bank = banks.find(b => b.id === e.bank);
       const cat = categories.find(c => c.id === e.category);
       const dateFmt = e.date.split('-').reverse().join('/');
-      
+
       // Define as cores e sinais baseado se é entrada (in) ou saída (out)
       const tipoClasse = e.type === 'in' ? 'receita' : 'despesa';
       const sinal = e.type === 'in' ? '+' : '−';
@@ -3407,7 +3417,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="card-meta"><span class="card-badge">${bank ? escapeHTML(bank.name) : 'Banco não informado'}</span><span class="card-category" style="--category-color:${categoryColor(cat)}">${cat ? escapeHTML(cat.name) : 'Sem categoria'}</span></span>
             </div>
           </div>
-          
+
           <div class="card-right">
             <span class="card-amount ${tipoClasse}">${sinal} ${fmt(Math.abs(e.amount))}</span>
             <div class="card-actions">
@@ -3418,7 +3428,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
     });
-    
+
     body.innerHTML = html;
   }
 
@@ -3917,7 +3927,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const health = monthNet < 0 ? { label: 'Atenção', detail: 'As saídas superaram as entradas neste mês.', tone: 'warning', icon: '!' } : overdueBills.length ? { label: 'Revisar compromissos', detail: `${overdueBills.length} conta(s) aguardam atenção.`, tone: 'warning', icon: '!' } : (monthIncome > 0 || monthExpense > 0) ? { label: 'Equilibrado', detail: 'Fluxo positivo e compromissos sob acompanhamento.', tone: 'positive', icon: '✓' } : { label: 'Comece seu acompanhamento', detail: 'Registre movimentações para ver sua saúde financeira.', tone: 'neutral', icon: '○' };
     const budgetCycle = currentFinancialCycleKey();
     const budgetRows = categories.map(cat => { const budget = budgetFor(cat.id); if (!budget || !(budget.amount > 0)) return ''; const spent = budgetSpent(cat.id, budgetCycle); const pct = Math.max(0, spent / budget.amount * 100); const visualPct = Math.min(100, pct); const overLabel = pct >= 100 ? ' · limite excedido' : ''; return `<div class="budget-summary-row"><div><strong>${escapeHTML(cat.name)}</strong><span>${fmt(spent)} de ${fmt(budget.amount)}${overLabel}</span></div><div class="budget-summary-track"><span class="${pct >= 100 ? 'over' : ''}" style="width:${visualPct.toFixed(2)}%" data-real-percent="${pct.toFixed(2)}"></span></div><b>${pct.toFixed(0).replace('.', ',')}%</b></div>`; }).filter(Boolean).join('');
-    
+
     (function updateNextPaymentCard(){
       const host = document.getElementById('dashboardNextPayment');
       if (!host) return;
@@ -3944,7 +3954,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const dueFmt = due.split('-').reverse().join('/');
       host.innerHTML = '<div class="next-pay-inner"><span class="next-pay-kicker">Próximo pagamento</span><div class="next-pay-row"><strong>' + escapeHTML(next.name || 'Conta') + '</strong><b>' + fmt(next.amount) + '</b></div><span class="hint">Vence em ' + dueFmt + '</span></div>';
     })();
-    
+
     const commitments = upcomingBills.map(bill => { const dueDate = billDueDateForMonth(bill, year, monthIndex); const status = billStatus(bill, month); const tone = status === 'Atrasado' ? 'overdue' : ''; return `<div class="dashboard-commitment-row ${tone}"><div><strong>${escapeHTML(bill.name || 'Conta recorrente')}</strong><span>${status} · ${dueDate.split('-').reverse().join('/')}</span></div><b>${fmt(bill.amount)}</b></div>`; }).join('');
     const alerts = [];
     if (monthNet < 0) alerts.push(`<div class="dashboard-alert-row warning"><span>!</span><div><strong>Fluxo negativo</strong><small>As saídas superam as entradas em ${fmt(Math.abs(monthNet))}.</small></div></div>`);
@@ -4511,7 +4521,7 @@ ${JSON.stringify(snapshot)}
     }
   }
 
-  
+
   const DAILY_INSIGHT_KEY = 'livrocaixa_daily_insight_v19_18';
   function loadDailyInsightCache() {
     try { return JSON.parse(localStorage.getItem(DAILY_INSIGHT_KEY) || 'null'); } catch (e) { return null; }
@@ -4722,7 +4732,7 @@ ${JSON.stringify(snapshot)}
   document.getElementById('filterChoiceConfirm').onclick = closeFilterChoice;
   document.getElementById('filterChoiceSearch').addEventListener('input', event => { filterChoiceSearchTerm = event.target.value || ''; renderFilterChoiceList(); });
   document.getElementById('btnApplyFilters').onclick = () => { closeFilterChoice(); refreshFilteredViews(); closeAllPanels(); };
-  
+
   document.getElementById('btnClearFilters').onclick = () => {
     document.getElementById('filterFlow').value = '';
     document.getElementById('filterDateStart').value = '';
@@ -5075,7 +5085,7 @@ ${JSON.stringify(snapshot)}
     document.getElementById('fBanco').value = entry.bank;
     document.getElementById('fCategoria').value = entry.category;
     setMoneyInput('fValor', entry.amount);
-    
+
     if (entry.type === 'in') document.getElementById('tglIn').click();
     else document.getElementById('tglOut').click();
 
@@ -5716,7 +5726,7 @@ VALOR: ${fmt(bill.amount)}
     if (listEl) listEl.innerHTML = listHtml;
   }
 
-  
+
   function closeBillDayPanel() {
     document.getElementById('bill-day-panel-v19-16')?.remove();
   }
@@ -7624,7 +7634,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     try { await updateAllInvestmentPrices({ auto:true, requestedCandidates:stale }); } catch (err) { logSyncError('atualização de cotações desatualizadas', err); }
   }
 
-  
+
   function applyCachedQuotesToInvestments() {
     try {
       const raw = localStorage.getItem('lc_last_quotes');
@@ -9508,6 +9518,87 @@ document.addEventListener('click', (event) => {
   }
 });
 </script>
+
+
+<script>
+/* Metas como aba própria */
+(function () {
+  const originalSwitchTab = window.switchTabOriginal;
+
+  window.switchTab = function(tab) {
+    if (tab === 'goals') {
+      document.querySelectorAll('.tab-content').forEach(function(view) {
+        view.classList.remove('active');
+      });
+
+      document.querySelectorAll('.nav-tab').forEach(function(button) {
+        button.classList.remove('active');
+      });
+
+      const goalsView = document.getElementById('viewGoals');
+      const goalsButton = document.getElementById('tabBtnGoals');
+
+      if (goalsView) goalsView.classList.add('active');
+      if (goalsButton) goalsButton.classList.add('active');
+
+      if (typeof currentTab !== 'undefined') {
+        currentTab = 'goals';
+      }
+
+      document.querySelectorAll('.mobile-bottom-nav button').forEach(function(button) {
+        button.classList.toggle(
+          'is-active',
+          button.dataset.destination === 'goals'
+        );
+      });
+
+      return;
+    }
+
+    return originalSwitchTab.apply(this, arguments);
+  };
+
+  document.addEventListener('click', function(event) {
+    const item = event.target.closest('[data-drawer-action="goals"]');
+    if (!item) return;
+
+    event.preventDefault();
+
+    window.switchTab('goals');
+
+    const drawer = document.getElementById('appDrawerOverlay');
+    if (drawer) {
+      drawer.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+    }
+  });
+})();
+</script>
+
+
+<style>
+/* Metas — aba própria */
+#viewGoals {
+  width: 100%;
+  min-height: 420px;
+}
+
+#viewGoals .goals-page {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+#viewGoals .goals-page > #panelGoals {
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  #viewGoals .goals-page {
+    width: 100%;
+  }
+}
+</style>
 
 </body>
 </html>
