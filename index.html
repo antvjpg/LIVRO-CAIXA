@@ -684,6 +684,15 @@
           </div>
           <div><label for="goalDataInicio">Data de início</label><input type="date" id="goalDataInicio"></div>
           <div><label for="goalPrazo">Prazo (opcional)</label><input type="date" id="goalPrazo"></div>
+          <div>
+            <label for="goalStatus">Status</label>
+            <select id="goalStatus">
+              <option value="active">Ativa</option>
+              <option value="completed">Concluída</option>
+              <option value="paused">Pausada</option>
+              <option value="cancelled">Cancelada</option>
+            </select>
+          </div>
           <div id="goalValorAtualLegacyField">
             <label for="goalValorAtual">Valor já acumulado <span class="hint">(legado)</span></label>
             <input type="text" id="goalValorAtual" data-money="true" placeholder="R$ 0,00">
@@ -3548,31 +3557,140 @@ document.addEventListener('DOMContentLoaded', () => {
     ) || null;
   }
 
-  function goalMarkup(goal) {
+  function goalStatusLabel(status) {
+    return ({
+      active: 'Ativa',
+      completed: 'Concluída',
+      paused: 'Pausada',
+      cancelled: 'Cancelada'
+    })[status] || 'Ativa';
+  }
+
+  function goalPlanning(goal) {
     const target = Number(goal.targetAmount) || 0;
     const current = goalCurrentAmount(goal);
     const hasCurrent = current != null;
-    const percent = target > 0 && hasCurrent ? Math.min(100, Math.max(0, current / target * 100)) : 0;
     const remaining = hasCurrent ? Math.max(0, target - current) : null;
-    const deadline = goal.deadline ? `<span class="hint">Prazo: ${goal.deadline.split('-').reverse().join('/')}</span>` : '';
-    return `<div class="feature-budget-row" style="flex-direction:column;align-items:stretch;gap:6px;" data-goal-id="${escapeHTML(goal.id)}">
+    const today = todayISO();
+
+    let daysRemaining = null;
+    let overdue = false;
+    let periodsRemaining = null;
+    let perDay = null;
+    let perWeek = null;
+    let perMonth = null;
+
+    if (goal.deadline) {
+      const start = new Date(`${goal.startDate || today}T00:00:00`);
+      const end = new Date(`${goal.deadline}T00:00:00`);
+      const now = new Date(`${today}T00:00:00`);
+      daysRemaining = Math.ceil((end - now) / 86400000);
+      overdue = goal.deadline < today;
+
+      if (hasCurrent && remaining > 0 && daysRemaining > 0) {
+        const totalDays = Math.max(1, Math.ceil((end - start) / 86400000));
+        periodsRemaining = Math.max(1, Math.ceil(daysRemaining / 7));
+        perDay = remaining / daysRemaining;
+        perWeek = remaining / periodsRemaining;
+        perMonth = remaining / Math.max(1, Math.ceil(daysRemaining / 30));
+        void totalDays;
+      }
+    }
+
+    return {
+      target,
+      current,
+      hasCurrent,
+      remaining,
+      daysRemaining,
+      overdue,
+      periodsRemaining,
+      perDay,
+      perWeek,
+      perMonth
+    };
+  }
+
+  function normalizeGoalStatusFromProgress(goal) {
+    if (!goal || goal.status !== 'active' || !goal.caixinhaId) return false;
+    const current = goalCurrentAmount(goal);
+    const target = Number(goal.targetAmount) || 0;
+    if (current != null && target > 0 && current >= target) {
+      goal.status = 'completed';
+      goal.updatedAt = new Date().toISOString();
+      return true;
+    }
+    return false;
+  }
+
+  function normalizeAllGoalStatuses() {
+    let changed = false;
+    goals.forEach(goal => {
+      if (normalizeGoalStatusFromProgress(goal)) changed = true;
+    });
+    return changed;
+  }
+
+  function goalMarkup(goal) {
+    const plan = goalPlanning(goal);
+    const target = plan.target;
+    const current = plan.current;
+    const hasCurrent = plan.hasCurrent;
+    const percent = target > 0 && hasCurrent
+      ? Math.min(100, Math.max(0, current / target * 100))
+      : 0;
+
+    const status = goal.status || 'active';
+    const pocket = goal.caixinhaId ? pockets.find(p => p.id === goal.caixinhaId) : null;
+
+    let planningText = '';
+    if (!hasCurrent) {
+      planningText = goal.caixinhaId
+        ? 'Caixinha vinculada · saldo indisponível'
+        : 'Sem Caixinha vinculada · valor atual não informado';
+    } else if (plan.remaining <= 0) {
+      planningText = `${fmt(current)} de ${fmt(target)} · objetivo atingido`;
+    } else {
+      planningText = `${fmt(current)} de ${fmt(target)} · faltam ${fmt(plan.remaining)}`;
+    }
+
+    if (goal.deadline) {
+      if (plan.overdue && plan.remaining > 0) {
+        planningText += ` · atrasada há ${Math.abs(plan.daysRemaining)} dia(s)`;
+      } else if (plan.daysRemaining >= 0) {
+        planningText += ` · ${plan.daysRemaining} dia(s) restantes`;
+      }
+    } else {
+      planningText += ' · sem prazo';
+    }
+
+    const pace = plan.hasCurrent && plan.remaining > 0 && plan.daysRemaining > 0
+      ? `<div class="hint">Ritmo necessário: ${fmt(plan.perWeek)}/semana · ${fmt(plan.perMonth)}/mês</div>`
+      : '';
+
+    return `<div class="feature-budget-row meta-goal-row" style="flex-direction:column;align-items:stretch;gap:7px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px;background:var(--panel,#fff);" data-goal-id="${escapeHTML(goal.id)}">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-        <strong>${escapeHTML(goal.icon || '🎯')} ${escapeHTML(goal.name)}</strong>
+        <div>
+          <strong>${escapeHTML(goal.icon || '🎯')} ${escapeHTML(goal.name)}</strong>
+          <div class="hint">${escapeHTML(goalStatusLabel(status))}${pocket ? ` · 🐷 ${escapeHTML(pocket.name)}` : ' · planejamento'}</div>
+        </div>
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);">${percent.toFixed(0)}%</span>
       </div>
       <div class="pocket-goal-track"><span style="width:${percent.toFixed(2)}%"></span></div>
-      <div class="hint">${hasCurrent ? `${fmt(current)} de ${fmt(target)} · Restam ${fmt(remaining)}` : (goal.caixinhaId ? "Caixinha vinculada · saldo indisponível" : "Sem Caixinha vinculada · valor atual não informado")}</div>
-      ${deadline}
+      <div class="hint">${planningText}</div>
+      ${pace}
+      ${goal.deadline ? `<div class="hint">Prazo: ${goal.deadline.split('-').reverse().join('/')}</div>` : ''}
       ${goal.desc ? `<div class="hint">${escapeHTML(goal.desc)}</div>` : ''}
       <div style="display:flex;gap:8px;margin-top:2px;">
-        <button type="button" class="beta-icon-button" onclick="editGoal('${escapeHTML(goal.id)}')" title="Editar meta" aria-label="Editar meta"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
-        <button type="button" class="beta-icon-button delete" onclick="deleteGoal('${escapeHTML(goal.id)}')" title="Excluir meta" aria-label="Excluir meta"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+        <button type="button" class="beta-icon-button" onclick="editGoal('${escapeHTML(goal.id)}')" title="Editar meta" aria-label="Editar meta">✎</button>
+        <button type="button" class="beta-icon-button delete" onclick="deleteGoal('${escapeHTML(goal.id)}')" title="Excluir meta" aria-label="Excluir meta">×</button>
       </div>
     </div>`;
   }
   function renderGoalsList() {
     const list = document.getElementById('goalsList');
     if (!list) return;
+    normalizeAllGoalStatuses();
     list.innerHTML = goals.length ? goals.map(goalMarkup).join('') : '<p class="hint">Nenhuma meta cadastrada ainda.</p>';
     const current = goals.find(g => g.id === editingGoalId);
     refreshGoalCaixinhaOptions(current?.caixinhaId || document.getElementById('goalCaixinha')?.value || '');
@@ -3591,13 +3709,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setMoneyInput('goalValorAtual', goal.currentAmount || 0);
     syncGoalLegacyAmountField();
     document.getElementById('goalPrazo').value = goal.deadline || '';
+    document.getElementById('goalStatus').value = goal.status || 'active';
     document.getElementById('goalObs').value = goal.desc || '';
     document.getElementById('btnSaveGoal').textContent = 'Atualizar meta';
     document.getElementById('btnCancelGoalEdit').hidden = false;
     document.getElementById('goalNome').scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
   window.deleteGoal = function(id) {
-    if (!confirm('Excluir esta meta? Isso não afeta nenhum saldo ou lançamento.')) return;
+    const goal = goals.find(g => g.id === id);
+    if (!goal) return;
+    const linked = goal.caixinhaId ? ' A Caixinha continuará intacta.' : '';
+    if (!confirm(`Excluir a Meta "${goal.name}"? Isso não afeta nenhum saldo ou lançamento.${linked}`)) return;
     goals = goals.filter(g => g.id !== id);
     if (editingGoalId === id) resetGoalForm();
     renderGoalsList();
@@ -3614,6 +3736,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setMoneyInput('goalValorAtual', 0);
     syncGoalLegacyAmountField();
     document.getElementById('goalPrazo').value = '';
+    document.getElementById('goalStatus').value = 'active';
     document.getElementById('goalObs').value = '';
     document.getElementById('btnSaveGoal').textContent = 'Salvar meta';
     document.getElementById('btnCancelGoalEdit').hidden = true;
@@ -3631,9 +3754,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!(targetAmount > 0)) { alert('Informe um valor objetivo válido.'); return; }
     const caixinhaId = document.getElementById('goalCaixinha').value || null;
     const startDate = document.getElementById('goalDataInicio').value || todayISO();
+    const deadline = document.getElementById('goalPrazo').value || '';
+    const status = document.getElementById('goalStatus').value || 'active';
     const legacyCurrent = readMoneyInput('goalValorAtual');
 
-    const conflictingGoal = activeGoalForCaixinha(caixinhaId, editingGoalId);
+    if (deadline && deadline < startDate) {
+      alert('O prazo não pode ser anterior à data de início.');
+      return;
+    }
+
+    const conflictingGoal = activeGoalForCaixinha(
+      caixinhaId,
+      editingGoalId
+    );
     if (conflictingGoal) {
       const conflictingPocket = pockets.find(p => p.id === caixinhaId);
       alert(`A Caixinha "${conflictingPocket?.name || 'selecionada'}" já está vinculada à Meta "${conflictingGoal.name}".`);
@@ -3645,7 +3778,8 @@ document.addEventListener('DOMContentLoaded', () => {
       icon: document.getElementById('goalIcone').value.trim() || '🎯',
       targetAmount,
       startDate,
-      deadline: document.getElementById('goalPrazo').value || '',
+      deadline,
+      status,
       desc: document.getElementById('goalObs').value.trim(),
       caixinhaId,
       updatedAt: new Date().toISOString()
@@ -3654,6 +3788,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const existingGoal = editingGoalId ? goals.find(g => g.id === editingGoalId) : null;
     if (!caixinhaId && existingGoal && !existingGoal.caixinhaId && Object.prototype.hasOwnProperty.call(existingGoal, 'currentAmount')) {
       record.currentAmount = legacyCurrent;
+    }
+
+    if (caixinhaId && status === 'active') {
+      const linkedPocket = pockets.find(p => p.id === caixinhaId);
+      const linkedCurrent = linkedPocket ? pocketCurrentBalance(linkedPocket) : null;
+      if (linkedCurrent != null && linkedCurrent >= targetAmount) {
+        record.status = 'completed';
+      }
     }
     const btn = document.getElementById('btnSaveGoal');
     const originalLabel = btn.textContent;
@@ -4604,7 +4746,18 @@ ${JSON.stringify(snapshot)}
   window.deletePocket = function(id) {
     if (confirm('Deseja excluir esta caixinha e todo o histórico de movimentações dela?')) {
       pockets = pockets.filter(p => p.id !== id);
-      yieldsLog = yieldsLog.filter(y => !(y.targetType === 'pocket' && y.targetId === id));
+      const affectedGoals = goals.filter(goal => goal.caixinhaId === id);
+    goals = goals.map(goal =>
+      goal.caixinhaId === id
+        ? { ...goal, caixinhaId: null, updatedAt: new Date().toISOString() }
+        : goal
+    );
+
+    yieldsLog = yieldsLog.filter(y => !(y.targetType === 'pocket' && y.targetId === id));
+
+    if (affectedGoals.length) {
+      alert(`${affectedGoals.length} Meta(s) mantida(s). O vínculo com a Caixinha excluída foi removido; nenhum dinheiro foi transferido.`);
+    }
       persistAll().then(() => logInfo('Caixinhas','Excluir caixinha','Sucesso','Caixinha e seu histórico foram removidos.')).catch(err => logSyncError('exclusão de caixinha', err));
       render();
     }
