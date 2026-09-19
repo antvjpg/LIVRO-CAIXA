@@ -9480,6 +9480,18 @@ document.getElementById('tSalvar').onclick = async () => {
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="9" rx="1.5"/><rect x="13" y="4" width="7" height="5" rx="1.5"/><rect x="13" y="11" width="7" height="9" rx="1.5"/><rect x="4" y="15" width="7" height="5" rx="1.5"/></svg></span><span>Visão geral</span></button>
   <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5 12 4l8 4.5v9.2L12 22l-8-4.3z"/><path d="M12 12.2 20 8.5M12 12.2v9.6M12 12.2 4 8.5"/></svg></span><span>Caixinhas</span></button>
   <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4.5" width="14" height="17" rx="0"/><path d="M12 4.5v17"/><path d="M7.5 9.5h3"/><path d="M7.5 13h3"/></svg></span><span>Livro-Caixa</span></button>
+  <button type="button" data-destination="goals" aria-label="Metas">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="8"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+        <path d="m15.5 8.5 4-4"/>
+        <path d="M16.5 4.5H20v3.5"/>
+      </svg>
+    </span>
+    <span>Metas</span>
+  </button>
   <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span><span>Investimentos</span></button>
   <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></span><span>Perfil</span></button>
 </nav>
@@ -9548,6 +9560,8 @@ document.addEventListener('click', (event) => {
 
   window.switchTab = function(tab) {
     if (tab === 'goals') {
+      document.body.dataset.tab = 'goals';
+
       document.querySelectorAll('.tab-content').forEach(function(view) {
         view.classList.remove('active');
       });
@@ -9586,6 +9600,7 @@ document.addEventListener('click', (event) => {
       return;
     }
 
+    document.body.dataset.tab = tab;
     return originalSwitchTab.apply(this, arguments);
   };
 
@@ -9627,6 +9642,74 @@ document.addEventListener('click', (event) => {
 @media (max-width: 700px) {
   #viewGoals .goals-page {
     width: 100%;
+  }
+}
+</style>
+
+
+<style>
+/* METAS — TELA EXCLUSIVA / SEM VAZAMENTO DO APP */
+body[data-tab="goals"] {
+  overflow-x: hidden;
+}
+
+body[data-tab="goals"] > .app-header {
+  display: none !important;
+}
+
+body[data-tab="goals"] > main {
+  display: none !important;
+}
+
+body[data-tab="goals"] #viewGoals {
+  display: block !important;
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 72px);
+  min-height: calc(100dvh - 72px);
+  margin: 0;
+  padding: 24px 20px 100px;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+body[data-tab="goals"] #viewGoals .goals-page {
+  width: 100%;
+  max-width: 1180px;
+  min-height: calc(100vh - 120px);
+  min-height: calc(100dvh - 120px);
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body[data-tab="goals"] #viewGoals .goals-page > #panelGoals {
+  width: 100%;
+  max-width: 1180px;
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+body[data-tab="goals"] #viewGoals .feature-lab-close {
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  body[data-tab="goals"] #viewGoals {
+    min-height: calc(100vh - 64px);
+    min-height: calc(100dvh - 64px);
+    padding: 14px 12px 90px;
+  }
+
+  body[data-tab="goals"] #viewGoals .goals-page {
+    min-height: calc(100vh - 100px);
+    min-height: calc(100dvh - 100px);
+  }
+
+  body[data-tab="goals"] #viewGoals .goals-page > #panelGoals {
+    border-radius: 18px;
   }
 }
 </style>
