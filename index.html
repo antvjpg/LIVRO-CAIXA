@@ -104,6 +104,7 @@
       <button type="button" data-drawer-action="bills"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span> Contas & Calendário</button>
       <button type="button" data-drawer-action="receivables"><span>↓</span> Valores a Receber</button>
       <button type="button" data-drawer-action="pockets"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5 12 4l8 4.5v9.2L12 22l-8-4.3z"/><path d="M12 12.2 20 8.5M12 12.2v9.6M12 12.2 4 8.5"/><path d="M9 14.2h6"/></svg></span> Caixinhas</button>
+      <button type="button" data-drawer-action="goals"><span class="drawer-item-icon" aria-hidden="true">🎯</span> Metas</button>
       <button type="button" data-drawer-action="investments"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5M4 19h16"/><path d="m7 15 4-4 3 2 5-6"/><path d="M16 7h3v3"/></svg></span> Investimentos</button>
     </nav>
     <div class="drawer-divider"></div>
@@ -666,11 +667,36 @@
         <div class="feature-lab-actions"><button type="button" id="btnRunWhatIf" class="primary">Simular “E se...?”</button><button type="button" id="btnExportPatrimonyPng">Exportar patrimônio PNG</button></div>
         <div id="labsProjectionStatus" class="feature-lab-feedback" aria-live="polite"></div>
 
-        <div class="feature-lab-goals-divider" style="margin:16px 0 10px;padding-top:12px;border-top:1px dashed var(--line);">
-          <strong style="font-size:12px;color:var(--ink);">Metas financeiras</strong>
-          <p class="feature-lab-section-desc" style="margin:4px 0 10px;">Acompanhe objetivos específicos. A Meta não cria movimentações; quando vinculada, o progresso acompanha o saldo real da Caixinha.</p>
+      <div class="feature-lab-primary-actions">
+        <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
+        <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
+      </div>
+      <div id="featureLabStatus" class="feature-lab-feedback" aria-live="polite"></div>
+    </div>
+
+    <div class="panel goals-panel" id="panelGoals">
+      <div class="feature-lab-header">
+        <div class="feature-lab-title-wrap">
+          <span class="feature-lab-kicker">PLANEJAMENTO FINANCEIRO</span>
+          <h3>Metas financeiras</h3>
+          <p class="feature-lab-intro">Acompanhe seus objetivos e, quando vinculados, deixe o progresso acompanhar o saldo real da Caixinha.</p>
         </div>
+        <button type="button" class="modal-close feature-lab-close" onclick="closeAllPanels()" aria-label="Fechar Metas">×</button>
+      </div>
+
+      <div class="feature-lab-section labs-plus-section">
+        <div class="feature-lab-section-head">
+          <div><span class="feature-lab-section-number">01</span><h4>Suas metas</h4></div>
+          <span class="feature-lab-section-tag">PLANEJAMENTO</span>
+        </div>
+
         <div id="goalsList" class="feature-budget-rows" style="margin-bottom:12px;"></div>
+
+        <div class="feature-lab-goals-divider" style="margin:16px 0 10px;padding-top:12px;border-top:1px dashed var(--line);">
+          <strong style="font-size:12px;color:var(--ink);">Nova Meta</strong>
+          <p class="feature-lab-section-desc" style="margin:4px 0 10px;">A Meta não cria movimentações. Quando vinculada, o progresso acompanha o saldo real da Caixinha.</p>
+        </div>
+
         <div class="feature-lab-fields">
           <div><label for="goalNome">Nome da meta</label><input type="text" id="goalNome" placeholder="Ex: Reserva de emergência"></div>
           <div><label for="goalIcone">Ícone</label><input type="text" id="goalIcone" maxlength="4" placeholder="🎯" value="🎯"></div>
@@ -700,15 +726,14 @@
           </div>
           <div><label for="goalObs">Descrição (opcional)</label><input type="text" id="goalObs" placeholder="Opcional"></div>
         </div>
-        <div class="feature-lab-actions"><button type="button" id="btnSaveGoal" class="primary">Salvar meta</button><button type="button" id="btnCancelGoalEdit" hidden>Cancelar edição</button></div>
-        <div id="labsGoalsStatus" class="feature-lab-feedback" aria-live="polite"></div>
-      </div>
 
-      <div class="feature-lab-primary-actions">
-        <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
-        <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
+        <div class="feature-lab-actions">
+          <button type="button" id="btnSaveGoal" class="primary">Salvar meta</button>
+          <button type="button" id="btnCancelGoalEdit" hidden>Cancelar edição</button>
+        </div>
+
+        <div id="goalsStatus" class="feature-lab-feedback" aria-live="polite"></div>
       </div>
-      <div id="featureLabStatus" class="feature-lab-feedback" aria-live="polite"></div>
     </div>
 
     <div class="panel" id="panelDiagnostico">
@@ -3814,10 +3839,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await persistAll();
       resetGoalForm();
-      document.getElementById('labsGoalsStatus').textContent = 'Meta salva.';
+      document.getElementById('goalsStatus').textContent = 'Meta salva.';
     } catch (err) {
       logSyncError('meta', err);
-      document.getElementById('labsGoalsStatus').textContent = 'Não foi possível salvar agora — tente novamente.';
+      document.getElementById('goalsStatus').textContent = 'Não foi possível salvar agora — tente novamente.';
     } finally {
       btn.disabled = false; btn.textContent = editingGoalId ? 'Atualizar meta' : originalLabel;
     }
@@ -3959,10 +3984,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const bank = document.getElementById('reconcileBank'); if (bank) { const current = bank.value; bank.innerHTML = banks.map(item => `<option value="${item.id}">${escapeHTML(item.name)}</option>`).join(''); if (banks.some(item => item.id === current)) bank.value = current; }
     const month = currentMonthYM(); const budgetCycle = currentFinancialCycleKey(); const rows = document.getElementById('featureBudgetRows');
     if (rows) rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id); const spent = budgetSpent(cat.id, budgetCycle); const pct = budget && budget.amount > 0 ? (spent / budget.amount * 100) : 0; const dot = !budget || !(budget.amount > 0) ? '' : pct >= 100 ? '🔴' : pct >= 80 ? '🟡' : '🟢'; return `<div class="feature-budget-row"><label for="budget-${escapeHTML(cat.id)}">${dot ? dot + ' ' : ''}${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"><span>${fmt(spent)} gastos${budget && budget.amount>0 ? ` (${pct.toFixed(0)}%)` : ''}</span></div>`; }).join('');
-    renderGoalsList();
     initMoneyMasks();
   }
   function openFeatureLab() { renderFeatureLab(); openModal('panelFeatureLab'); }
+
+  function openGoalsPanel() {
+    renderGoalsList();
+    initMoneyMasks();
+    openModal('panelGoals');
+  }
+
   document.getElementById('btnFeatureLab')?.addEventListener('click', openFeatureLab);
   document.getElementById('btnSaveFeatureSettings')?.addEventListener('click', async () => {
     featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization')?.checked, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: readMoneyInput(document.getElementById('featureSavingsGoalAmount')) });
@@ -4673,6 +4704,7 @@ ${JSON.stringify(snapshot)}
     if (action === 'lab') openFeatureLab();
     if (action === 'reports') { window.switchTab('caixa'); setTimeout(() => scrollTo('categorySummary'), 20); }
     if (action === 'pockets') window.switchTab('pockets');
+    if (action === 'goals') openGoalsPanel();
     if (action === 'investments') window.switchTab('invest');
     if (action === 'banks') document.getElementById('btnBanco')?.click();
     if (action === 'categories') document.getElementById('btnCategoria')?.click();
