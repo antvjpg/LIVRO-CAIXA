@@ -38,14 +38,14 @@
   <!-- ABA: METAS -->
   <div id="viewGoals" class="tab-content">
     <div class="goals-page">
-<div class="panel goals-panel" id="panelGoals">
+<div class="goals-panel" id="panelGoals">
       <div class="feature-lab-header">
         <div class="feature-lab-title-wrap">
           <span class="feature-lab-kicker">PLANEJAMENTO FINANCEIRO</span>
           <h3>Metas financeiras</h3>
           <p class="feature-lab-intro">Acompanhe seus objetivos e, quando vinculados, deixe o progresso acompanhar o saldo real da Caixinha.</p>
         </div>
-        <button type="button" class="modal-close feature-lab-close" onclick="closeAllPanels()" aria-label="Fechar Metas">×</button>
+        <button type="button" class="modal-close feature-lab-close" onclick="switchTab('dashboard')" aria-label="Voltar para Visão geral">×</button>
       </div>
 
       <div class="feature-lab-section labs-plus-section">
@@ -4000,10 +4000,31 @@ document.addEventListener('DOMContentLoaded', () => {
   function openFeatureLab() { renderFeatureLab(); openModal('panelFeatureLab'); }
 
   function openGoalsPanel() {
+  if (typeof renderGoalsList === 'function') {
     renderGoalsList();
-    initMoneyMasks();
-    openModal('panelGoals');
   }
+
+  if (typeof initMoneyMasks === 'function') {
+    initMoneyMasks();
+  }
+
+  const goalsView = document.getElementById('viewGoals');
+
+  if (goalsView && typeof window.switchTab === 'function') {
+    const overlay = document.getElementById('modalOverlay');
+
+    if (overlay) {
+      overlay.classList.remove('open');
+    }
+
+    document.querySelectorAll('.panel.open').forEach(function(panel) {
+      panel.classList.remove('open');
+    });
+
+    window.switchTab('goals');
+    return;
+  }
+}
 
   document.getElementById('btnFeatureLab')?.addEventListener('click', openFeatureLab);
   document.getElementById('btnSaveFeatureSettings')?.addEventListener('click', async () => {
@@ -9537,6 +9558,16 @@ document.addEventListener('click', (event) => {
 
       const goalsView = document.getElementById('viewGoals');
       const goalsButton = document.getElementById('tabBtnGoals');
+
+      // Metas é uma ABA, nunca um modal.
+      const goalsOverlay = document.getElementById('modalOverlay');
+      if (goalsOverlay) {
+        goalsOverlay.classList.remove('open');
+      }
+
+      document.querySelectorAll('.panel.open').forEach(function(panel) {
+        panel.classList.remove('open');
+      });
 
       if (goalsView) goalsView.classList.add('active');
       if (goalsButton) goalsButton.classList.add('active');
