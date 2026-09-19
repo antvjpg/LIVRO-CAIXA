@@ -2386,6 +2386,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function goalCurrentAmount(goal) {
+    if (goal && goal.caixinhaId) {
+      const pocket = pockets.find(p => p.id === goal.caixinhaId);
+      return pocket ? pocketCurrentBalance(pocket) : null;
+    }
+
+    if (goal && Object.prototype.hasOwnProperty.call(goal, 'currentAmount')) {
+      const legacyCurrent = Number(goal.currentAmount);
+      return Number.isFinite(legacyCurrent) ? legacyCurrent : null;
+    }
+
+    return null;
+  }
+
   function totalPocketBalance() {
     return pockets.reduce((sum, p) => sum + pocketCurrentBalance(p), 0);
   }
@@ -3486,9 +3500,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingGoalId = null;
   function goalMarkup(goal) {
     const target = Number(goal.targetAmount) || 0;
-    const current = Number(goal.currentAmount) || 0;
-    const percent = target > 0 ? Math.min(100, Math.max(0, current / target * 100)) : 0;
-    const remaining = Math.max(0, target - current);
+    const current = goalCurrentAmount(goal);
+    const hasCurrent = current != null;
+    const percent = target > 0 && hasCurrent ? Math.min(100, Math.max(0, current / target * 100)) : 0;
+    const remaining = hasCurrent ? Math.max(0, target - current) : null;
     const deadline = goal.deadline ? `<span class="hint">Prazo: ${goal.deadline.split('-').reverse().join('/')}</span>` : '';
     return `<div class="feature-budget-row" style="flex-direction:column;align-items:stretch;gap:6px;" data-goal-id="${escapeHTML(goal.id)}">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
@@ -3496,7 +3511,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);">${percent.toFixed(0)}%</span>
       </div>
       <div class="pocket-goal-track"><span style="width:${percent.toFixed(2)}%"></span></div>
-      <div class="hint">${fmt(current)} de ${fmt(target)} · Restam ${fmt(remaining)}</div>
+      <div class="hint">${hasCurrent ? `${fmt(current)} de ${fmt(target)} · Restam ${fmt(remaining)}` : (goal.caixinhaId ? "Caixinha vinculada · saldo indisponível" : "Sem Caixinha vinculada · valor atual não informado")}</div>
       ${deadline}
       ${goal.desc ? `<div class="hint">${escapeHTML(goal.desc)}</div>` : ''}
       <div style="display:flex;gap:8px;margin-top:2px;">
@@ -3888,7 +3903,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardsWithoutBank = cards.filter(c => c.active !== false && !c.bankId);
     if (cardsWithoutBank.length) issues.push({ severity: 'warning', title: 'Cartões sem banco definido', detail: `${cardsWithoutBank.length} cartão(ões) ativo(s) não têm banco de pagamento vinculado.` });
 
-    const goalsPastDeadline = goals.filter(g => g.deadline && g.deadline < todayISO() && Number(g.currentAmount || 0) < Number(g.targetAmount || 0));
+    const goalsPastDeadline = goals.filter(g => {
+      const current = goalCurrentAmount(g);
+      return g.deadline && g.deadline < todayISO() && current != null && current < Number(g.targetAmount || 0);
+    });
     if (goalsPastDeadline.length) issues.push({ severity: 'warning', title: 'Metas com prazo vencido', detail: `${goalsPastDeadline.length} meta(s) passaram do prazo sem atingir o objetivo: ${goalsPastDeadline.map(g => g.name).join(', ')}.` });
 
     return issues;
@@ -3998,11 +4016,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const goalSummary = goals.map((goal, index) => ({
-    label: `Meta ${index + 1}`,
-    target: Number(goal.targetAmount || 0),
-    current: Number(goal.currentAmount || 0),
-    deadline: goal.deadline || null
-  }));
+      label: `Meta ${index + 1}`,
+      target: Number(goal.targetAmount || 0),
+      current: goalCurrentAmount(goal),
+      deadline: goal.deadline || null
+    }));
 
     const activeCards = cards.filter(card => card.active !== false);
 
