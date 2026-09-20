@@ -2125,6 +2125,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const beforeGoalState = JSON.stringify(goals);
       normalizeGoals();
       if (JSON.stringify(goals) !== beforeGoalState) changed = true;
+      const beforeGoalProgressState = JSON.stringify(goals);
+      if (normalizeAllGoalStatuses()) changed = true;
+      if (JSON.stringify(goals) !== beforeGoalProgressState) changed = true;
 
       const filteredBanks = banks.filter(bk => bk.id !== 'geral' && bk.name.toLowerCase() !== 'geral');
       if (filteredBanks.length !== banks.length) changed = true;
@@ -2510,16 +2513,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (goal.name == null) goal.name = '';
+      goal.name = String(goal.name).slice(0, 200);
+
       if (goal.icon == null || !String(goal.icon).trim()) goal.icon = '🎯';
+      else goal.icon = String(goal.icon).slice(0, 8);
 
       if (goal.targetAmount == null) {
         goal.targetAmount = 0;
       } else {
         const target = Number(goal.targetAmount);
-        if (Number.isFinite(target)) goal.targetAmount = target;
+        goal.targetAmount = Number.isFinite(target) ? Math.max(0, target) : 0;
       }
 
-      if (!goal.startDate) {
+      if (!goal.startDate || !/^\d{4}-\d{2}-\d{2}$/.test(String(goal.startDate))) {
         const created = String(goal.createdAt || '');
         goal.startDate = /^\d{4}-\d{2}-\d{2}/.test(created)
           ? created.slice(0, 10)
@@ -2536,8 +2542,9 @@ document.addEventListener('DOMContentLoaded', () => {
         goal.status = 'active';
       }
 
-      if (goal.deadline == null) goal.deadline = '';
+      if (goal.deadline == null || !/^\d{4}-\d{2}-\d{2}$/.test(String(goal.deadline))) goal.deadline = '';
       if (goal.desc == null) goal.desc = '';
+      else goal.desc = String(goal.desc).slice(0, 500);
 
       if (!goal.createdAt) goal.createdAt = todayISO();
       if (!goal.updatedAt) goal.updatedAt = goal.createdAt;
@@ -3844,10 +3851,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="goal-card-v2-footer">
         <span class="goal-card-v2-pace">${monthPace ? '↗ ' + escapeHTML(monthPace) : ''}</span>
         <div class="goal-card-v2-actions">
-          <button type="button" class="goal-card-v2-btn goal-edit-btn" onclick="editGoal('${escapeHTML(goal.id)}')" aria-label="Editar meta">
+          <button type="button" class="goal-card-v2-btn goal-edit-btn" onclick="editGoal(${escapeHTML(JSON.stringify(String(goal.id)))})" aria-label="Editar meta">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
           </button>
-          <button type="button" class="goal-card-v2-btn goal-delete-btn" onclick="deleteGoal('${escapeHTML(goal.id)}')" aria-label="Excluir meta">
+          <button type="button" class="goal-card-v2-btn goal-delete-btn" onclick="deleteGoal(${escapeHTML(JSON.stringify(String(goal.id)))})" aria-label="Excluir meta">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
           </button>
         </div>
@@ -3859,7 +3866,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('goalsList');
     if (!list) return;
     normalizeAllGoalStatuses();
+    const statusChanged = normalizeAllGoalStatuses();
     list.innerHTML = goals.length ? goals.map(goalMarkup).join('') : '<p class="hint">Nenhuma meta cadastrada ainda.</p>';
+    if (statusChanged && firstLoadDone && currentUser) {
+      persistAll().catch(err => logSyncError('meta', err));
+    }
     const current = goals.find(g => g.id === editingGoalId);
     refreshGoalCaixinhaOptions(current?.caixinhaId || document.getElementById('goalCaixinha')?.value || '');
     syncGoalLegacyAmountField();
@@ -3890,10 +3901,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!goal) return;
     const linked = goal.caixinhaId ? ' A Caixinha continuará intacta.' : '';
     if (!confirm(`Excluir a Meta "${goal.name}"? Isso não afeta nenhum saldo ou lançamento.${linked}`)) return;
+    const previousGoals = goals.map(item => ({ ...item }));
     goals = goals.filter(g => g.id !== id);
     if (editingGoalId === id) resetGoalForm();
     renderGoalsList();
-    persistAll().catch(err => logSyncError('meta', err));
+    persistAll().catch(err => {
+      goals = previousGoals;
+      renderGoalsList();
+      logSyncError('meta', err);
+    });
   };
   function resetGoalForm() {
     editingGoalId = null;
@@ -3937,14 +3953,21 @@ document.addEventListener('DOMContentLoaded', () => {
   btnSaveGoalEl.onclick = async () => {
     const name = document.getElementById('goalNome').value.trim();
     const targetAmount = readMoneyInput('goalValorObjetivo');
+    const legacyCurrent = Math.max(0, Number(readMoneyInput('goalValorAtual')) || 0);
     if (!name) { alert('Informe o nome da meta.'); return; }
-    if (!(targetAmount > 0)) { alert('Informe um valor objetivo válido.'); return; }
+    if (!(Number.isFinite(targetAmount) && targetAmount > 0)) { alert('Informe um valor objetivo válido.'); return; }
     const caixinhaId = document.getElementById('goalCaixinha').value || null;
     const startDate = document.getElementById('goalDataInicio').value || todayISO();
     const deadline = document.getElementById('goalPrazo').value || '';
     const status = document.getElementById('goalStatus').value || 'active';
-    const legacyCurrent = readMoneyInput('goalValorAtual');
-
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
+      alert('Informe uma data de início válida.');
+      return;
+    }
+    if (deadline && !/^\d{4}-\d{2}-\d{2}$/.test(deadline)) {
+      alert('Informe um prazo válido.');
+      return;
+    }
     if (deadline && deadline < startDate) {
       alert('O prazo não pode ser anterior à data de início.');
       return;
@@ -3973,7 +3996,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const existingGoal = editingGoalId ? goals.find(g => g.id === editingGoalId) : null;
-    if (!caixinhaId && existingGoal && !existingGoal.caixinhaId && Object.prototype.hasOwnProperty.call(existingGoal, 'currentAmount')) {
+    if (!caixinhaId) {
       record.currentAmount = legacyCurrent;
     }
 
@@ -3986,6 +4009,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const btn = document.getElementById('btnSaveGoal');
     const originalLabel = btn.textContent;
+    const previousGoals = goals.map(goal => ({ ...goal }));
     btn.disabled = true; btn.textContent = 'Salvando...';
     if (editingGoalId) {
       const idx = goals.findIndex(g => g.id === editingGoalId);
@@ -4007,6 +4031,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (st) st.textContent = 'Meta salva.';
       } catch (e) {}
     } catch (err) {
+      goals = previousGoals;
+      renderGoalsList();
       logSyncError('meta', err);
       try {
         const st = document.getElementById('goalsStatus');
