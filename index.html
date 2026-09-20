@@ -219,7 +219,12 @@
         <div class="goals-v2-section">
           <div class="goals-v2-section-head">
             <h4>Suas metas</h4>
-            <button type="button" class="goals-v2-add-btn" id="btnOpenGoalModal" aria-label="Nova meta">+ Nova meta</button>
+            <button type="button" class="goals-v2-add-btn" id="btnOpenGoalModal" aria-label="Nova meta">
+  <svg class="goals-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 5v14M5 12h14"/>
+  </svg>
+  <span>Nova meta</span>
+</button>
           </div>
           <div id="goalsList" class="goals-v2-list"></div>
         </div>
@@ -9584,20 +9589,27 @@ document.getElementById('tSalvar').onclick = async () => {
   })();
 
   document.getElementById('fabAdd').onclick = () => {
-    if (currentTab === 'bills') {
+    const activeTab = document.body.dataset.tab || currentTab;
+
+    if (activeTab === 'bills') {
       openBillModal();
-    } else if (currentTab === 'receivables') {
+    } else if (activeTab === 'receivables') {
       openReceivableModal();
-    } else if (currentTab === 'invest') {
-      document.getElementById('btnNovoInvest').click();
-    } else if (currentTab === 'pockets') {
-      document.getElementById('btnNovoPocket').click();
-    } else if (currentTab === 'cards') {
-      document.getElementById('btnNovoCard').click();
-    } else if (currentTab === 'goals') {
-      document.getElementById('btnOpenGoalModal')?.click();
+    } else if (activeTab === 'invest') {
+      document.getElementById('btnNovoInvest')?.click();
+    } else if (activeTab === 'pockets') {
+      document.getElementById('btnNovoPocket')?.click();
+    } else if (activeTab === 'cards') {
+      document.getElementById('btnNovoCard')?.click();
+    } else if (activeTab === 'goals') {
+      const goalButton = document.getElementById('btnOpenGoalModal');
+      if (goalButton) {
+        goalButton.click();
+      } else if (typeof openModal === 'function') {
+        openModal('panelGoalForm');
+      }
     } else {
-      document.getElementById('btnNovo').click();
+      document.getElementById('btnNovo')?.click();
     }
   };
 
