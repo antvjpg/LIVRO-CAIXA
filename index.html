@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas + auth onclick null-safe -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas aba normal + modais sem empilhar -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -29,35 +29,12 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-19-goals5">
+  <link rel="stylesheet" href="./styles.css?v=19-19-goals6">
 </head>
 <body>
 
 
 
-  <!-- ABA: METAS -->
-  <div id="viewGoals" class="tab-content">
-    <div class="goals-page">
-      <div class="goals-panel goals-panel-v2" id="panelGoals">
-        <div class="goals-v2-header">
-          <div class="goals-v2-title-wrap">
-            <span class="goals-v2-kicker">PLANEJAMENTO</span>
-            <h3 class="goals-v2-title">Metas financeiras</h3>
-            <p class="goals-v2-intro">Objetivos sobre dinheiro real das Caixinhas — sem criar saldo paralelo.</p>
-          </div>
-          <button type="button" class="goals-v2-close" onclick="switchTab('dashboard')" aria-label="Fechar Metas">×</button>
-        </div>
-
-        <div class="goals-v2-section">
-          <div class="goals-v2-section-head">
-            <h4>Suas metas</h4>
-            <button type="button" class="goals-v2-add-btn" id="btnOpenGoalModal" aria-label="Nova meta">+ Nova meta</button>
-          </div>
-          <div id="goalsList" class="goals-v2-list"></div>
-        </div>
-      </div>
-    </div>
-  </div>
 <header class="app-header">
   <button type="button" id="btnOpenDrawer" class="header-icon-button" aria-label="Abrir menu" title="Menu">☰</button>
   <div class="app-brand">
@@ -182,7 +159,31 @@
   </div>
 
   <!-- ABA 2: LIVRO CAIXA -->
-  <div id="viewCaixa" class="tab-content active">
+    <!-- ABA: METAS -->
+  <div id="viewGoals" class="tab-content">
+    <div class="goals-page">
+      <div class="goals-panel goals-panel-v2" id="panelGoals">
+        <div class="goals-v2-header">
+          <div class="goals-v2-title-wrap">
+            <span class="goals-v2-kicker">PLANEJAMENTO</span>
+            <h3 class="goals-v2-title">Metas financeiras</h3>
+            <p class="goals-v2-intro">Objetivos sobre dinheiro real das Caixinhas — sem criar saldo paralelo.</p>
+          </div>
+          <button type="button" class="goals-v2-close" onclick="switchTab('dashboard')" aria-label="Fechar Metas">×</button>
+        </div>
+
+        <div class="goals-v2-section">
+          <div class="goals-v2-section-head">
+            <h4>Suas metas</h4>
+            <button type="button" class="goals-v2-add-btn" id="btnOpenGoalModal" aria-label="Nova meta">+ Nova meta</button>
+          </div>
+          <div id="goalsList" class="goals-v2-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="viewCaixa" class="tab-content active">
     <div class="toolbar">
       <button class="primary quick-primary" id="btnNovo"><span class="quick-primary-icon" aria-hidden="true"><svg class="add-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span> Novo lançamento</button>
       <button class="quick-action" id="btnBanco"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-6 9 6M5 10h14M6.5 10v7M10 10v7M14 10v7M17.5 10v7M4 20h16"/></svg></span><span>Banco</span></button>
@@ -1322,7 +1323,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-19-goals5').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-19-goals6').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -1851,15 +1852,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tabBtnCards')?.classList.toggle('active', tabName === 'cards');
     document.getElementById('tabBtnReceivables')?.classList.toggle('active', tabName === 'receivables');
     document.getElementById('tabBtnBills')?.classList.toggle('active', tabName === 'bills');
-    document.getElementById('viewDashboard')?.classList.toggle('active', tabName === 'dashboard');
-    document.getElementById('viewCaixa')?.classList.toggle('active', tabName === 'caixa');
-    document.getElementById('viewInvest')?.classList.toggle('active', tabName === 'invest');
-    document.getElementById('viewPockets')?.classList.toggle('active', tabName === 'pockets');
-    document.getElementById('viewCards')?.classList.toggle('active', tabName === 'cards');
+    document.getElementById('viewDashboard').classList.toggle('active', tabName === 'dashboard');
+    document.getElementById('viewCaixa').classList.toggle('active', tabName === 'caixa');
+    document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
+    document.getElementById('viewPockets').classList.toggle('active', tabName === 'pockets');
+    document.getElementById('viewCards').classList.toggle('active', tabName === 'cards');
     document.getElementById('viewReceivables')?.classList.toggle('active', tabName === 'receivables');
-    document.getElementById('viewBills')?.classList.toggle('active', tabName === 'bills');
-    document.getElementById('viewProfile')?.classList.toggle('active', tabName === 'profile');
-    document.getElementById('balanceStrip')?.classList.toggle('section-hidden', tabName !== 'caixa');
+    document.getElementById('viewBills').classList.toggle('active', tabName === 'bills');
+    document.getElementById('viewProfile').classList.toggle('active', tabName === 'profile');
+    document.getElementById('balanceStrip').classList.toggle('section-hidden', tabName !== 'caixa');
     document.getElementById('universalPeriodBar')?.classList.toggle('section-hidden', !['caixa','invest','pockets'].includes(tabName));
     if (tabName === 'bills') renderBills();
     if (tabName === 'cards') renderCards();
@@ -1964,12 +1965,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const syncOverlay = document.getElementById('syncOverlay');
     const syncOverlayText = document.getElementById('syncOverlayText');
     document.body.classList.add('is-data-loading');
-    if (syncOverlayText) {
-      syncOverlayText.textContent = 'Sincronizando seus dados...';
-    }
-    if (syncOverlay) {
-      syncOverlay.classList.remove('hidden');
-    }
+    syncOverlayText.textContent = 'Sincronizando seus dados...';
+    syncOverlay.classList.remove('hidden');
 
     realtimeUnsubscribers.forEach(unsub => unsub());
     realtimeUnsubscribers = [];
@@ -2025,9 +2022,7 @@ document.addEventListener('DOMContentLoaded', () => {
         purchases = data.purchases || [];
         lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
         if (data.banks || data.entries) {
-          if (syncOverlayText) {
-            syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
-          }
+          syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
         }
       }
 
@@ -2065,9 +2060,7 @@ document.addEventListener('DOMContentLoaded', () => {
       logSyncError('carregamento de dados', err, operation);
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
-      if (syncOverlay) {
-        syncOverlay.classList.add('hidden');
-      }
+      syncOverlay.classList.add('hidden');
       document.body.classList.remove('is-data-loading');
       markValueRefresh();
     }
@@ -2813,13 +2806,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function openEmojiFloat() {
     emojiFloatPending = document.getElementById('cIcon').value || '📦';
-    document.getElementById('emojiFloatNativeBox')?.classList.remove('is-open');
+    document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
     document.getElementById('emojiFloatNativeInput').value = '';
     renderEmojiFloatGrid();
-    document.getElementById('emojiFloatOverlay')?.classList.add('open');
+    document.getElementById('emojiFloatOverlay').classList.add('open');
   }
   function closeEmojiFloat() {
-    document.getElementById('emojiFloatOverlay')?.classList.remove('open');
+    document.getElementById('emojiFloatOverlay').classList.remove('open');
   }
   function initCategoryEmojiPicker() {
     document.getElementById('btnEmojiCatalog').onclick = openEmojiFloat;
@@ -2831,11 +2824,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const button = event.target.closest('[data-emoji]');
       if (!button) return;
       emojiFloatPending = button.dataset.emoji;
-      document.getElementById('emojiFloatNativeBox')?.classList.remove('is-open');
+      document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
       renderEmojiFloatGrid();
     };
     document.getElementById('emojiFloatKeyboard').onclick = () => {
-      document.getElementById('emojiFloatNativeBox')?.classList.add('is-open');
+      document.getElementById('emojiFloatNativeBox').classList.add('is-open');
       requestAnimationFrame(() => document.getElementById('emojiFloatNativeInput').focus({ preventScroll: true }));
     };
     document.getElementById('emojiFloatNativeUse').onclick = () => {
@@ -5185,9 +5178,15 @@ ${JSON.stringify(snapshot)}
 
   function openModal(panelId) {
     const overlay = document.getElementById('modalOverlay');
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
-    document.getElementById(panelId).classList.add('open');
-    overlay.classList.add('open');
+    // Fecha TODOS os painéis antes de abrir um (evita modais lado a lado)
+    document.querySelectorAll('.panel.open, .panel').forEach(p => p.classList.remove('open'));
+    const panel = document.getElementById(panelId);
+    if (!panel) {
+      console.warn('[openModal] painel não encontrado:', panelId);
+      return;
+    }
+    panel.classList.add('open');
+    if (overlay) overlay.classList.add('open');
   }
 
   window.closeAllPanels = function() {
@@ -9448,7 +9447,7 @@ document.getElementById('tSalvar').onclick = async () => {
     const syncOverlay = document.getElementById('syncOverlay');
     if (user) {
       clearSessionMemory();
-      if (overlay) overlay.classList.add('hidden');
+      overlay.classList.add('hidden');
       renderUserBar();
       startSessionSecurity();
       startFeatureAutomation();
@@ -9464,8 +9463,8 @@ document.getElementById('tSalvar').onclick = async () => {
       lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
       banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
       clearSessionMemory();
-      if (syncOverlay) syncOverlay.classList.add('hidden');
-      if (overlay) overlay.classList.remove('hidden');
+      syncOverlay.classList.add('hidden');
+      overlay.classList.remove('hidden');
       renderUserBar();
     }
   });
@@ -9700,41 +9699,48 @@ document.addEventListener('click', (event) => {
 </script>
 
 
-<style>
-/* Metas — isolamento absoluto (V.19-19 GROK) */
-/* Fora de goals: esconder completamente */
-#viewGoals:not(.active),
-body:not([data-tab="goals"]) #viewGoals {
+<style id="goals-tab-isolation">
+/* Metas como aba normal — mesmo chrome das outras abas (V.19-19 GROK) */
+#viewGoals:not(.active) {
   display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
+}
+
+body[data-tab="goals"] #viewGoals,
+body[data-tab="goals"] #viewGoals.active,
+#viewGoals.active {
+  display: block !important;
+  position: relative !important;
+  inset: auto !important;
+  z-index: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
   margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  pointer-events: none !important;
+  padding: 0 0 calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+  overflow: visible !important;
+  background: transparent !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
 }
 
-/* Em goals: tela fixa full-viewport, por cima de tudo */
-body[data-tab="goals"] {
-  overflow: hidden !important;
-}
-
+/* NÃO esconder header nem main — chrome igual às outras abas */
 body[data-tab="goals"] > header.app-header,
 body[data-tab="goals"] header.app-header,
 body[data-tab="goals"] > main,
-body[data-tab="goals"] main,
+body[data-tab="goals"] main {
+  display: revert !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Esconder só FAB em Metas */
 body[data-tab="goals"] .fab-root,
 body[data-tab="goals"] #fabRoot,
 body[data-tab="goals"] .quick-fab,
 body[data-tab="goals"] #btnFabMenu {
   display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
 }
 
-/* BNI permanece visível em Metas */
 body[data-tab="goals"] .mobile-bottom-nav {
   display: flex !important;
   visibility: visible !important;
@@ -9742,65 +9748,27 @@ body[data-tab="goals"] .mobile-bottom-nav {
   z-index: 1300 !important;
 }
 
-body[data-tab="goals"] #viewGoals,
-body[data-tab="goals"] #viewGoals.active {
-  display: block !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 1200 !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-height: 100dvh !important;
-  margin: 0 !important;
-  padding: 16px 16px calc(88px + env(safe-area-inset-bottom, 0px)) !important;
-  box-sizing: border-box !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch;
-  background: var(--paper, #0f1c17) !important;
-  color: var(--ink, #edf4ee);
-}
-
-body.dark-mode[data-tab="goals"] #viewGoals,
-body.dark-mode[data-tab="goals"] #viewGoals.active {
-  background: var(--paper, #0f1c17) !important;
-}
-
 body[data-tab="goals"] #viewGoals .goals-page {
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
-  min-height: auto;
-  padding: 0;
+  padding: 0 4px;
   box-sizing: border-box;
 }
 
-body[data-tab="goals"] #viewGoals .goals-page > #panelGoals,
-body[data-tab="goals"] #viewGoals #panelGoals {
+body[data-tab="goals"] #viewGoals #panelGoals,
+body[data-tab="goals"] #viewGoals .goals-panel-v2 {
   width: 100%;
   max-width: 720px;
-  position: relative;
-  display: block;
   margin: 0 auto;
   box-sizing: border-box;
-  background: transparent;
-  box-shadow: none;
-  border: 0;
-  max-height: none;
-  overflow: visible;
 }
 
-body[data-tab="goals"] #viewGoals .feature-lab-close {
-  cursor: pointer;
-}
-
-@media (max-width: 700px) {
-  body[data-tab="goals"] #viewGoals,
-  body[data-tab="goals"] #viewGoals.active {
-    padding: 12px 12px calc(88px + env(safe-area-inset-bottom, 0px)) !important;
-  }
+/* Modal de meta acima da BNI */
+body[data-tab="goals"] .modal-overlay,
+body[data-tab="goals"] #modalOverlay,
+.modal-overlay.open {
+  z-index: 1400 !important;
 }
 </style>
 
@@ -10027,10 +9995,13 @@ body:not(.dark-mode) .goal-card-v2 {
   border-radius: 22px 22px 18px 18px;
   padding: 0;
   overflow: hidden;
-  display: flex;
+  /* display controlado por .panel / .panel.open — NÃO forçar flex aqui */
   flex-direction: column;
   background: var(--paper, #0f1c17);
   border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+}
+.goals-form-sheet.open {
+  display: flex !important;
 }
 .goals-form-head {
   display: flex;
