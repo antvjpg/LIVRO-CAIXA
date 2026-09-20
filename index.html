@@ -2065,7 +2065,13 @@ document.addEventListener('DOMContentLoaded', () => {
       await Promise.all(COLLECTIONS.map(name => new Promise((resolve, reject) => {
         let resolved = false;
         const unsub = colRef(name).onSnapshot(snap => {
-          if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
+          if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) {
+            if (!resolved) {
+              resolved = true;
+              resolve();
+            }
+            return;
+          }
           const arr = snap.docs.map(d => d.data());
           if (resolved && pendingSaveCount > 0) {
             snapshotBuffer[name] = { arr, hasPendingWrites: snap.metadata.hasPendingWrites };
@@ -2094,6 +2100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!hasSubData) {
         // Migração automática do formato antigo (documento único) para subcoleções
         const oldSnap = await docRef().get();
+        if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
         const data = oldSnap.exists ? oldSnap.data() : {};
         banks = data.banks || [];
         categories = data.categories || [];
@@ -2136,7 +2143,10 @@ document.addEventListener('DOMContentLoaded', () => {
         changed = true;
       }
 
-      if (changed) await persistNow(operation);
+      if (changed) {
+        if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
+        await persistNow(operation);
+      }
 
       if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
 
@@ -2375,36 +2385,64 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function commitDiff() {
+    const saveUserUid = currentUser?.uid || null;
+    if (!saveUserUid) return;
+
+    const userDocRef = db.collection('livrocaixa').doc(saveUserUid);
     const current = currentStateSnapshot();
     const failedCollections = [];
+    const MAX_BATCH_OPERATIONS = 400;
 
     for (const name of COLLECTIONS) {
+      if (currentUser?.uid !== saveUserUid) return;
+
       const newMap = arrToMap(current[name]);
       const oldMap = lastSynced[name] || {};
-      const batch = db.batch();
-      let opCount = 0;
+      const operations = [];
 
       Object.keys(newMap).forEach(id => {
         const newItem = newMap[id];
         const oldItem = oldMap[id];
+
         if (!oldItem || JSON.stringify(oldItem) !== JSON.stringify(newItem)) {
-          batch.set(colRef(name).doc(id), newItem);
-          opCount++;
-        }
-      });
-      Object.keys(oldMap).forEach(id => {
-        if (!newMap[id]) {
-          batch.delete(colRef(name).doc(id));
-          opCount++;
+          operations.push({
+            type: 'set',
+            ref: userDocRef.collection(name).doc(id),
+            data: newItem
+          });
         }
       });
 
-      if (opCount === 0) continue;
-      if (opCount > 450) {
-        console.warn(`Muitas alterações de uma vez em "${name}" (${opCount}); considere dividir em lotes.`);
-      }
+      Object.keys(oldMap).forEach(id => {
+        if (!newMap[id]) {
+          operations.push({
+            type: 'delete',
+            ref: userDocRef.collection(name).doc(id)
+          });
+        }
+      });
+
+      if (operations.length === 0) continue;
+
       try {
-        await batch.commit();
+        for (let i = 0; i < operations.length; i += MAX_BATCH_OPERATIONS) {
+          if (currentUser?.uid !== saveUserUid) return;
+
+          const chunk = operations.slice(i, i + MAX_BATCH_OPERATIONS);
+          const batch = db.batch();
+
+          chunk.forEach(operation => {
+            if (operation.type === 'set') {
+              batch.set(operation.ref, operation.data);
+            } else {
+              batch.delete(operation.ref);
+            }
+          });
+
+          await batch.commit();
+        }
+
+        if (currentUser?.uid !== saveUserUid) return;
         lastSynced[name] = newMap;
       } catch (err) {
         console.error(`Falha ao salvar a coleção "${name}":`, err);
