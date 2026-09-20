@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas layout + modal + BNI visível -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas modal DOM fix + BNI visível -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-19-goals3">
+  <link rel="stylesheet" href="./styles.css?v=19-19-goals4">
 </head>
 <body>
 
@@ -1187,7 +1187,15 @@
 
     <div class="panel" id="panelImport">
       <h3>Revisar importação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div id="importSummary" class="import-summary" aria-live="polite">
+      <div id="importSummary" class="import-summary" aria-live="polite"></div>
+      <div id="importList"></div>
+      <div class="hint">Possíveis duplicidades são mantidas visíveis para revisão, mas não entram na confirmação. Edite ou remova as linhas que não forem lançamentos reais.</div>
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button class="primary" id="importConfirm" style="flex:1;">Confirmar Lançamentos</button>
+        <button id="importCancel" style="flex:1;">Cancelar</button>
+      </div>
+    </div>
+
     <div class="panel goals-form-sheet" id="panelGoalForm" role="dialog" aria-modal="true" aria-labelledby="goalFormTitle">
       <div class="goals-form-head">
         <div>
@@ -1251,14 +1259,6 @@
       </div>
     </div>
 
-    </div>
-      <div id="importList"></div>
-      <div class="hint">Possíveis duplicidades são mantidas visíveis para revisão, mas não entram na confirmação. Edite ou remova as linhas que não forem lançamentos reais.</div>
-      <div style="display:flex; gap:10px; margin-top:14px;">
-        <button class="primary" id="importConfirm" style="flex:1;">Confirmar Lançamentos</button>
-        <button id="importCancel" style="flex:1;">Cancelar</button>
-      </div>
-    </div>
   </div>
 </main>
 
@@ -1322,7 +1322,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-19-goals3').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-19-goals4').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -3776,20 +3776,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const titleEl = document.getElementById('goalFormTitle');
     if (titleEl) titleEl.textContent = 'Nova Meta';
   }
-  document.getElementById('btnCancelGoalEdit').onclick = function() {
-    resetGoalForm();
-    if (typeof closeAllPanels === 'function') closeAllPanels();
-  };
+  const btnCancelGoalEdit = document.getElementById('btnCancelGoalEdit');
+  if (btnCancelGoalEdit) {
+    btnCancelGoalEdit.onclick = function() {
+      resetGoalForm();
+      if (typeof closeAllPanels === 'function') closeAllPanels();
+    };
+  }
   document.getElementById('btnOpenGoalModal')?.addEventListener('click', function() {
     resetGoalForm();
     if (typeof openModal === 'function') openModal('panelGoalForm');
   });
-  document.getElementById('goalCaixinha').addEventListener('change', syncGoalLegacyAmountField);
+  const goalCaixinhaEl = document.getElementById('goalCaixinha');
+  if (goalCaixinhaEl) {
+    goalCaixinhaEl.addEventListener('change', syncGoalLegacyAmountField);
+  }
   refreshGoalCaixinhaOptions('');
-  document.getElementById('goalDataInicio').value = todayISO();
+  const goalDataInicioEl = document.getElementById('goalDataInicio');
+  if (goalDataInicioEl) goalDataInicioEl.value = todayISO();
   syncGoalLegacyAmountField();
 
-  document.getElementById('btnSaveGoal').onclick = async () => {
+  const btnSaveGoalEl = document.getElementById('btnSaveGoal');
+  if (btnSaveGoalEl) {
+  btnSaveGoalEl.onclick = async () => {
     const name = document.getElementById('goalNome').value.trim();
     const targetAmount = readMoneyInput('goalValorObjetivo');
     if (!name) { alert('Informe o nome da meta.'); return; }
@@ -3872,6 +3881,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.textContent = originalLabel || 'SALVAR META';
     }
   };
+  } // if btnSaveGoalEl
   function pocketGoalMarkup(pocket, current) {
     const amount = Number(pocket?.goalAmount) || 0;
     if (!(amount > 0)) return pocket?.goal ? `<div class="units">${escapeHTML(pocket.goal)}</div>` : '';
