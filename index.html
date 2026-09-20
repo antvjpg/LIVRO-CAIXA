@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas aba normal + modais sem empilhar -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — authOverlay null-safe + Metas aba normal -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-19-goals6">
+  <link rel="stylesheet" href="./styles.css?v=19-19-goals7">
 </head>
 <body>
 
@@ -1323,7 +1323,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-19-goals6').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-19-goals7').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -1852,15 +1852,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tabBtnCards')?.classList.toggle('active', tabName === 'cards');
     document.getElementById('tabBtnReceivables')?.classList.toggle('active', tabName === 'receivables');
     document.getElementById('tabBtnBills')?.classList.toggle('active', tabName === 'bills');
-    document.getElementById('viewDashboard').classList.toggle('active', tabName === 'dashboard');
-    document.getElementById('viewCaixa').classList.toggle('active', tabName === 'caixa');
-    document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
-    document.getElementById('viewPockets').classList.toggle('active', tabName === 'pockets');
-    document.getElementById('viewCards').classList.toggle('active', tabName === 'cards');
+    document.getElementById('viewDashboard')?.classList.toggle('active', tabName === 'dashboard');
+    document.getElementById('viewCaixa')?.classList.toggle('active', tabName === 'caixa');
+    document.getElementById('viewInvest')?.classList.toggle('active', tabName === 'invest');
+    document.getElementById('viewPockets')?.classList.toggle('active', tabName === 'pockets');
+    document.getElementById('viewCards')?.classList.toggle('active', tabName === 'cards');
     document.getElementById('viewReceivables')?.classList.toggle('active', tabName === 'receivables');
-    document.getElementById('viewBills').classList.toggle('active', tabName === 'bills');
-    document.getElementById('viewProfile').classList.toggle('active', tabName === 'profile');
-    document.getElementById('balanceStrip').classList.toggle('section-hidden', tabName !== 'caixa');
+    document.getElementById('viewBills')?.classList.toggle('active', tabName === 'bills');
+    document.getElementById('viewProfile')?.classList.toggle('active', tabName === 'profile');
+    document.getElementById('viewGoals')?.classList.toggle('active', tabName === 'goals');
+    document.getElementById('balanceStrip')?.classList.toggle('section-hidden', tabName !== 'caixa');
     document.getElementById('universalPeriodBar')?.classList.toggle('section-hidden', !['caixa','invest','pockets'].includes(tabName));
     if (tabName === 'bills') renderBills();
     if (tabName === 'cards') renderCards();
@@ -1965,8 +1966,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const syncOverlay = document.getElementById('syncOverlay');
     const syncOverlayText = document.getElementById('syncOverlayText');
     document.body.classList.add('is-data-loading');
-    syncOverlayText.textContent = 'Sincronizando seus dados...';
-    syncOverlay.classList.remove('hidden');
+    if (syncOverlayText) syncOverlayText.textContent = 'Sincronizando seus dados...';
+    if (syncOverlay) syncOverlay.classList.remove('hidden');
 
     realtimeUnsubscribers.forEach(unsub => unsub());
     realtimeUnsubscribers = [];
@@ -2060,7 +2061,7 @@ document.addEventListener('DOMContentLoaded', () => {
       logSyncError('carregamento de dados', err, operation);
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
-      syncOverlay.classList.add('hidden');
+      if (syncOverlay) syncOverlay.classList.add('hidden');
       document.body.classList.remove('is-data-loading');
       markValueRefresh();
     }
@@ -9447,7 +9448,8 @@ document.getElementById('tSalvar').onclick = async () => {
     const syncOverlay = document.getElementById('syncOverlay');
     if (user) {
       clearSessionMemory();
-      overlay.classList.add('hidden');
+      if (overlay) overlay.classList.add('hidden');
+      if (syncOverlay) syncOverlay.classList.add('hidden');
       renderUserBar();
       startSessionSecurity();
       startFeatureAutomation();
@@ -9463,8 +9465,8 @@ document.getElementById('tSalvar').onclick = async () => {
       lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
       banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
       clearSessionMemory();
-      syncOverlay.classList.add('hidden');
-      overlay.classList.remove('hidden');
+      if (syncOverlay) syncOverlay.classList.add('hidden');
+      if (overlay) overlay.classList.remove('hidden');
       renderUserBar();
     }
   });
