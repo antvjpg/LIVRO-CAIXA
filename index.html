@@ -1964,8 +1964,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const syncOverlay = document.getElementById('syncOverlay');
     const syncOverlayText = document.getElementById('syncOverlayText');
     document.body.classList.add('is-data-loading');
-    syncOverlayText.textContent = 'Sincronizando seus dados...';
-    syncOverlay.classList.remove('hidden');
+    if (syncOverlayText) {
+      syncOverlayText.textContent = 'Sincronizando seus dados...';
+    }
+    if (syncOverlay) {
+      syncOverlay.classList.remove('hidden');
+    }
 
     realtimeUnsubscribers.forEach(unsub => unsub());
     realtimeUnsubscribers = [];
@@ -2021,7 +2025,9 @@ document.addEventListener('DOMContentLoaded', () => {
         purchases = data.purchases || [];
         lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
         if (data.banks || data.entries) {
-          syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
+          if (syncOverlayText) {
+            syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
+          }
         }
       }
 
@@ -2059,7 +2065,9 @@ document.addEventListener('DOMContentLoaded', () => {
       logSyncError('carregamento de dados', err, operation);
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
-      syncOverlay.classList.add('hidden');
+      if (syncOverlay) {
+        syncOverlay.classList.add('hidden');
+      }
       document.body.classList.remove('is-data-loading');
       markValueRefresh();
     }
@@ -9440,7 +9448,7 @@ document.getElementById('tSalvar').onclick = async () => {
     const syncOverlay = document.getElementById('syncOverlay');
     if (user) {
       clearSessionMemory();
-      overlay.classList.add('hidden');
+      if (overlay) overlay.classList.add('hidden');
       renderUserBar();
       startSessionSecurity();
       startFeatureAutomation();
@@ -9456,8 +9464,8 @@ document.getElementById('tSalvar').onclick = async () => {
       lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
       banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
       clearSessionMemory();
-      syncOverlay.classList.add('hidden');
-      overlay.classList.remove('hidden');
+      if (syncOverlay) syncOverlay.classList.add('hidden');
+      if (overlay) overlay.classList.remove('hidden');
       renderUserBar();
     }
   });
