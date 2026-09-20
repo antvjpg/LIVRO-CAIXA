@@ -2559,7 +2559,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (goal && Object.prototype.hasOwnProperty.call(goal, 'currentAmount')) {
       const legacyCurrent = Number(goal.currentAmount);
-      return Number.isFinite(legacyCurrent) ? legacyCurrent : null;
+      return Number.isFinite(legacyCurrent) ? Math.max(0, legacyCurrent) : null;
     }
 
     return null;
@@ -3833,7 +3833,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="goal-card-v2-pocket">
         <span class="goal-card-v2-pocket-ico" aria-hidden="true">📦</span>
-        Caixinha: <strong>${pocket ? escapeHTML(pocket.name) : 'Nenhuma'}</strong>
+        Caixinha: <strong>${pocket ? escapeHTML(pocket.name) : (goal.caixinhaDetached ? 'Caixinha removida' : 'Nenhuma')}</strong>
       </div>
       <div class="goal-card-v2-values">
         <span class="goal-card-v2-current">${currentTxt}</span>
@@ -3865,7 +3865,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderGoalsList() {
     const list = document.getElementById('goalsList');
     if (!list) return;
-    normalizeAllGoalStatuses();
     const statusChanged = normalizeAllGoalStatuses();
     list.innerHTML = goals.length ? goals.map(goalMarkup).join('') : '<p class="hint">Nenhuma meta cadastrada ainda.</p>';
     if (statusChanged && firstLoadDone && currentUser) {
@@ -3983,6 +3982,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const existingGoal = editingGoalId ? goals.find(g => g.id === editingGoalId) : null;
     const record = {
       name,
       icon: document.getElementById('goalIcone').value.trim() || '🎯',
@@ -3992,10 +3992,10 @@ document.addEventListener('DOMContentLoaded', () => {
       status,
       desc: document.getElementById('goalObs').value.trim(),
       caixinhaId,
+      caixinhaDetached: caixinhaId ? false : Boolean(existingGoal?.caixinhaDetached),
       updatedAt: new Date().toISOString()
     };
 
-    const existingGoal = editingGoalId ? goals.find(g => g.id === editingGoalId) : null;
     if (!caixinhaId) {
       record.currentAmount = legacyCurrent;
     }
@@ -4999,7 +4999,7 @@ ${JSON.stringify(snapshot)}
       const affectedGoals = goals.filter(goal => goal.caixinhaId === id);
     goals = goals.map(goal =>
       goal.caixinhaId === id
-        ? { ...goal, caixinhaId: null, updatedAt: new Date().toISOString() }
+        ? { ...goal, caixinhaId: null, caixinhaDetached: true, updatedAt: new Date().toISOString() }
         : goal
     );
 
