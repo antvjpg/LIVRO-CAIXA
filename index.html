@@ -3852,10 +3852,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="goal-card-v2-pace">${monthPace ? '↗ ' + escapeHTML(monthPace) : ''}</span>
         <div class="goal-card-v2-actions">
           <button type="button" class="goal-card-v2-btn goal-edit-btn" onclick="editGoal(${escapeHTML(JSON.stringify(String(goal.id)))})" aria-label="Editar meta">
-            <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
           </button>
           <button type="button" class="goal-card-v2-btn goal-delete-btn" onclick="deleteGoal(${escapeHTML(JSON.stringify(String(goal.id)))})" aria-label="Excluir meta">
-            <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
           </button>
         </div>
       </div>
@@ -10422,67 +10422,64 @@ body:not(.dark-mode) .goal-card-v2 {
   gap: 6px;
 }
 .goal-card-v2-btn {
-  width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  flex: 0 0 34px;
   padding: 0;
-  border-radius: 11px;
-  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: none;
+  font-size: 0;
+  color: var(--ink-soft);
   cursor: pointer;
   transition: transform .15s ease, background-color .15s ease, border-color .15s ease;
 }
 
 .goal-card-v2-btn svg {
-  width: 21px;
-  height: 21px;
-  flex: 0 0 21px;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
 }
 
 .goal-card-v2-btn:active {
-  transform: scale(0.94);
+  transform: scale(.96);
 }
 
 .goal-card-v2-btn.goal-edit-btn,
 .goal-card-v2-btn.goal-edit-btn svg {
-  color: #327957 !important;
-  stroke: #327957 !important;
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
 }
 
 .goal-card-v2-btn.goal-edit-btn {
-  background: color-mix(in srgb, #327957 12%, var(--paper, #fff));
-  border-color: color-mix(in srgb, #327957 24%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
 }
 
 .goal-card-v2-btn.goal-edit-btn:hover {
-  background: color-mix(in srgb, #327957 20%, var(--paper, #fff));
-  border-color: color-mix(in srgb, #327957 38%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
 }
 
 .goal-card-v2-btn.goal-delete-btn,
 .goal-card-v2-btn.goal-delete-btn svg {
-  color: #B3432B !important;
-  stroke: #B3432B !important;
+  color: var(--red) !important;
+  stroke: var(--red) !important;
 }
 
 .goal-card-v2-btn.goal-delete-btn {
-  background: color-mix(in srgb, #B3432B 11%, var(--paper, #fff));
-  border-color: color-mix(in srgb, #B3432B 23%, transparent);
+  border-color: color-mix(in srgb, var(--red) 28%, var(--line));
+  background: color-mix(in srgb, var(--red) 10%, var(--surface));
 }
 
 .goal-card-v2-btn.goal-delete-btn:hover {
-  background: color-mix(in srgb, #B3432B 19%, var(--paper, #fff));
-  border-color: color-mix(in srgb, #B3432B 36%, transparent);
-}
-
-body.dark-mode .goal-card-v2-btn.goal-edit-btn {
-  background: color-mix(in srgb, #327957 20%, var(--panel, #1a2420));
-}
-
-body.dark-mode .goal-card-v2-btn.goal-delete-btn {
-  background: color-mix(in srgb, #B3432B 18%, var(--panel, #1a2420));
+  background: color-mix(in srgb, var(--red) 16%, var(--surface));
+  border-color: color-mix(in srgb, var(--red) 38%, var(--line));
 }
 
 /* Modal formulário Nova Meta */
