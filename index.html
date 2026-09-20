@@ -2626,34 +2626,44 @@ document.addEventListener('DOMContentLoaded', () => {
   /* [JS 08] RENDERIZAÇÃO / VIEWS */
   function renderBalances() {
     const strip = document.getElementById('balanceStrip');
+    if (!strip) return;
+
+    const balancesReady = !!currentUser && !!firstLoadDone;
     const bankTotal = totalBankBalance();
     const investTotal = totalInvestBalance();
     const pocketTotal = totalPocketBalance();
     const totalPatrimonio = bankTotal + pocketTotal + investTotal;
     const flowInsight = monthlyFlowInsight();
-    const bankShare = percentOfTotal(bankTotal, totalPatrimonio);
-    const investShare = percentOfTotal(investTotal, totalPatrimonio);
-    const pocketShare = percentOfTotal(pocketTotal, totalPatrimonio);
+    const bankShare = balancesReady ? percentOfTotal(bankTotal, totalPatrimonio) : null;
+    const investShare = balancesReady ? percentOfTotal(investTotal, totalPatrimonio) : null;
+    const pocketShare = balancesReady ? percentOfTotal(pocketTotal, totalPatrimonio) : null;
+
+    const totalLabel = balancesReady ? fmt(totalPatrimonio) : '—';
+    const bankLabel = balancesReady ? fmt(bankTotal) : '—';
+    const pocketLabel = balancesReady ? fmt(pocketTotal) : '—';
+    const investLabel = balancesReady ? fmt(investTotal) : '—';
+    const insightValue = balancesReady ? flowInsight.value : '—';
+    const insightDetail = balancesReady ? flowInsight.detail : 'Aguardando dados';
 
     let html = `
     <div class="balance-card total">
       <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" aria-hidden="true">${financialIcon('wallet')}</span></div>
-      <span class="amount ${totalPatrimonio < 0 ? 'neg' : ''}">${fmt(totalPatrimonio)}</span>
-      <span class="balance-insight is-${flowInsight.kind}"><strong>${escapeHTML(flowInsight.value)}</strong><span>${escapeHTML(flowInsight.detail)}</span></span>
+      <span class="amount ${balancesReady && totalPatrimonio < 0 ? 'neg' : ''}">${totalLabel}</span>
+      <span class="balance-insight is-${balancesReady ? flowInsight.kind : 'neutral'}"><strong>${escapeHTML(insightValue)}</strong><span>${escapeHTML(insightDetail)}</span></span>
     </div>
     <div class="balance-card bank-summary-card" role="button" tabindex="0" aria-label="Ver saldos dos bancos" title="Ver saldos dos bancos">
       <div class="balance-card-head"><span class="label">Bancos</span><span class="balance-symbol" aria-hidden="true">${financialIcon('bank')}</span></div>
-      <span class="amount ${bankTotal < 0 ? 'neg' : ''}">${fmt(bankTotal)}</span>
+      <span class="amount ${balancesReady && bankTotal < 0 ? 'neg' : ''}">${bankLabel}</span>
       ${bankShare === null ? '' : `<span class="balance-share">${bankShare.toFixed(0)}% do patrimônio</span>`}
     </div>
     <div class="balance-card pocket-summary-card" role="button" tabindex="0" aria-label="Ver caixinhas" title="Ver caixinhas">
       <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('box')}</span></div>
-      <span class="amount ${pocketTotal < 0 ? 'neg' : ''}">${fmt(pocketTotal)}</span>
+      <span class="amount ${balancesReady && pocketTotal < 0 ? 'neg' : ''}">${pocketLabel}</span>
       ${pocketShare === null ? '' : `<span class="balance-share">${pocketShare.toFixed(0)}% do patrimônio</span>`}
     </div>
     <div class="balance-card invest-summary-card" role="button" tabindex="0" aria-label="Ver investimentos" title="Ver investimentos">
       <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div>
-      <span class="amount">${fmt(investTotal)}</span>
+      <span class="amount">${investLabel}</span>
       ${investShare === null ? '' : `<span class="balance-share">${investShare.toFixed(0)}% do patrimônio</span>`}
     </div>`;
     strip.innerHTML = html;
@@ -9497,6 +9507,8 @@ document.getElementById('tSalvar').onclick = async () => {
     const syncOverlay = document.getElementById('syncOverlay');
     if (user) {
       clearSessionMemory();
+      firstLoadDone = false;
+      renderBalances();
       if (overlay) overlay.classList.add('hidden');
       if (syncOverlay) syncOverlay.classList.add('hidden');
       renderUserBar();
@@ -9514,6 +9526,8 @@ document.getElementById('tSalvar').onclick = async () => {
       lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
       banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
       clearSessionMemory();
+      firstLoadDone = false;
+      renderBalances();
       if (syncOverlay) syncOverlay.classList.add('hidden');
       if (overlay) overlay.classList.remove('hidden');
       renderUserBar();
