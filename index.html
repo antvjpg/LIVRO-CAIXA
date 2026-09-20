@@ -214,7 +214,6 @@
             <h3 class="goals-v2-title">Metas financeiras</h3>
             <p class="goals-v2-intro">Objetivos sobre dinheiro real das Caixinhas — sem criar saldo paralelo.</p>
           </div>
-          <button type="button" class="goals-v2-close" onclick="switchTab('dashboard')" aria-label="Fechar Metas">×</button>
         </div>
 
         <div class="goals-v2-section">
@@ -3845,11 +3844,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="goal-card-v2-footer">
         <span class="goal-card-v2-pace">${monthPace ? '↗ ' + escapeHTML(monthPace) : ''}</span>
         <div class="goal-card-v2-actions">
-          <button type="button" class="goal-card-v2-btn" onclick="editGoal('${escapeHTML(goal.id)}')" aria-label="Editar meta">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          <button type="button" class="goal-card-v2-btn goal-edit-btn" onclick="editGoal('${escapeHTML(goal.id)}')" aria-label="Editar meta">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
           </button>
-          <button type="button" class="goal-card-v2-btn" onclick="deleteGoal('${escapeHTML(goal.id)}')" aria-label="Excluir meta">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          <button type="button" class="goal-card-v2-btn goal-delete-btn" onclick="deleteGoal('${escapeHTML(goal.id)}')" aria-label="Excluir meta">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
           </button>
         </div>
       </div>
@@ -9569,6 +9568,8 @@ document.getElementById('tSalvar').onclick = async () => {
       document.getElementById('btnNovoPocket').click();
     } else if (currentTab === 'cards') {
       document.getElementById('btnNovoCard').click();
+    } else if (currentTab === 'goals') {
+      document.getElementById('btnOpenGoalModal')?.click();
     } else {
       document.getElementById('btnNovo').click();
     }
@@ -9886,13 +9887,7 @@ body[data-tab="goals"] main {
   pointer-events: auto !important;
 }
 
-/* Esconder só FAB em Metas */
-body[data-tab="goals"] .fab-root,
-body[data-tab="goals"] #fabRoot,
-body[data-tab="goals"] .quick-fab,
-body[data-tab="goals"] #btnFabMenu {
-  display: none !important;
-}
+/* O FAB continua disponível em Metas e abre diretamente Nova Meta. */
 
 body[data-tab="goals"] #viewGoals .goals-page {
   width: 100%;
@@ -10413,6 +10408,8 @@ body:not(.dark-mode) .goal-card-v2 {
   cursor: pointer;
 }
 .goal-card-v2-btn:active { transform: scale(0.96); }
+.goal-card-v2-btn.goal-edit-btn { color: var(--accent, #2ecc71); }
+.goal-card-v2-btn.goal-delete-btn { color: #ef4444; }
 
 /* Modal formulário Nova Meta */
 .goals-form-sheet {
