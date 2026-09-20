@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas isolada full-screen -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas isolada + switchTab BNI fix -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-19-goals1">
+  <link rel="stylesheet" href="./styles.css?v=19-19-goals2">
 </head>
 <body>
 
@@ -1350,7 +1350,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-18-ui10').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-19-goals2').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -1897,6 +1897,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.mobile-bottom-nav button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === tabName));
     if (tabName === 'profile') renderProfile();
   };
+  // Base da navegação: BNI e onclick usam switchTab
+  if (typeof window.switchTab !== 'function') {
+    window.switchTab = window.switchTabOriginal;
+  }
 
   function formatMonthLabel(ym) {
     if (!ym) return 'Todos os Meses';
@@ -9542,9 +9546,21 @@ document.addEventListener('click', (event) => {
 
 
 <script>
-/* Metas como aba própria */
+/* Metas como aba própria — resolve switchTabOriginal em tempo de chamada (nunca captura undefined) */
 (function () {
-  const originalSwitchTab = window.switchTabOriginal;
+  function runOriginalSwitchTab(tab, ctx, args) {
+    var original = window.switchTabOriginal;
+    if (typeof original !== 'function') {
+      console.error('[Metas] switchTabOriginal indisponível');
+      try {
+        if (typeof logError === 'function') {
+          logError('Sistema', 'erro de interface', 'Falha', 'switchTabOriginal indefinido ao navegar para ' + tab);
+        }
+      } catch (e) {}
+      return;
+    }
+    return original.apply(ctx, args);
+  }
 
   window.switchTab = function(tab) {
     if (tab === 'goals') {
@@ -9558,14 +9574,11 @@ document.addEventListener('click', (event) => {
         button.classList.remove('active');
       });
 
-      const goalsView = document.getElementById('viewGoals');
-      const goalsButton = document.getElementById('tabBtnGoals');
+      var goalsView = document.getElementById('viewGoals');
+      var goalsButton = document.getElementById('tabBtnGoals');
 
-      // Metas é uma ABA, nunca um modal.
-      const goalsOverlay = document.getElementById('modalOverlay');
-      if (goalsOverlay) {
-        goalsOverlay.classList.remove('open');
-      }
+      var goalsOverlay = document.getElementById('modalOverlay');
+      if (goalsOverlay) goalsOverlay.classList.remove('open');
 
       document.querySelectorAll('.panel.open').forEach(function(panel) {
         panel.classList.remove('open');
@@ -9574,56 +9587,53 @@ document.addEventListener('click', (event) => {
       if (goalsView) goalsView.classList.add('active');
       if (goalsButton) goalsButton.classList.add('active');
 
-      if (typeof currentTab !== 'undefined') {
-        currentTab = 'goals';
-      }
+      if (typeof currentTab !== 'undefined') currentTab = 'goals';
 
-      // Metas fica fora da BNI: nenhuma das 5 opções fica marcada.
-      const goalsNav = document.querySelector('.mobile-bottom-nav');
       document.querySelectorAll('.mobile-bottom-nav button').forEach(function(button) {
         button.classList.remove('is-active');
       });
+      var goalsNav = document.querySelector('.mobile-bottom-nav');
       if (goalsNav) goalsNav.removeAttribute('data-active');
+
+      if (typeof renderGoalsList === 'function') {
+        try { renderGoalsList(); } catch (e) { console.warn(e); }
+      }
+      if (typeof initMoneyMasks === 'function') {
+        try { initMoneyMasks(); } catch (e) {}
+      }
 
       return;
     }
 
-    // Ao sair de Metas, desativa explicitamente a tela isolada
-    // para não vazar junto com a aba normal selecionada pela BNI.
-    const goalsView = document.getElementById('viewGoals');
-    const goalsButton = document.getElementById('tabBtnGoals');
-
+    // Saindo de Metas
+    var goalsView = document.getElementById('viewGoals');
+    var goalsButton = document.getElementById('tabBtnGoals');
     if (goalsView) goalsView.classList.remove('active');
     if (goalsButton) goalsButton.classList.remove('active');
 
-    document.body.dataset.tab = tab;
+    var result = runOriginalSwitchTab(tab, this, arguments);
 
-    const result = originalSwitchTab.apply(this, arguments);
-
-    // Reforço da BNI: somente a aba realmente selecionada recebe a pílula.
-    const nav = document.querySelector('.mobile-bottom-nav');
-
+    // Reforço da pílula BNI
+    var nav = document.querySelector('.mobile-bottom-nav');
     document.querySelectorAll('.mobile-bottom-nav button').forEach(function(button) {
-      button.classList.toggle(
-        'is-active',
-        button.dataset.destination === tab
-      );
+      button.classList.toggle('is-active', button.dataset.destination === tab);
     });
-
     if (nav) nav.dataset.active = tab || 'caixa';
+
+    // Garantir que o body não fique preso em goals
+    if (document.body.dataset.tab === 'goals') {
+      document.body.dataset.tab = tab || 'caixa';
+    }
 
     return result;
   };
 
   document.addEventListener('click', function(event) {
-    const item = event.target.closest('[data-drawer-action="goals"]');
+    var item = event.target.closest('[data-drawer-action="goals"]');
     if (!item) return;
-
     event.preventDefault();
-
     window.switchTab('goals');
-
-    const drawer = document.getElementById('appDrawerOverlay');
+    var drawer = document.getElementById('appDrawerOverlay');
     if (drawer) {
       drawer.classList.remove('open');
       drawer.setAttribute('aria-hidden', 'true');
