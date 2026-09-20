@@ -35,6 +35,10 @@
 
 
 
+<!-- =========================================================
+     [HTML 02] CHROME DA APLICAÇÃO
+     Header / usuário / notificações / tema / PWA
+     ========================================================= -->
 <header class="app-header">
   <button type="button" id="btnOpenDrawer" class="header-icon-button" aria-label="Abrir menu" title="Menu">☰</button>
   <div class="app-brand">
@@ -76,6 +80,11 @@
   </section>
 </div>
 
+<!-- =========================================================
+     [HTML 03] TELAS / VIEWS PRINCIPAIS
+     Dashboard / Livro-Caixa / Contas / Caixinhas /
+     Cartões / Recebíveis / Investimentos / Metas
+     ========================================================= -->
 <main>
   <!-- Navegação por Abas: Contas & Calendário acessível pelo menu lateral -->
   <div class="nav-tabs">
@@ -127,6 +136,7 @@
   </section>
 
   <!-- ABA 1: VISÃO GERAL -->
+  <!-- [VIEW] Dashboard / Visão geral -->
   <div id="viewDashboard" class="tab-content">
     <div id="advancedDashboard"></div>
     <div id="dashboardNextPayment" class="dashboard-next-payment-card" aria-live="polite"></div>
@@ -160,6 +170,7 @@
 
   <!-- ABA 2: LIVRO CAIXA -->
     <!-- ABA: METAS -->
+  <!-- [VIEW] Metas -->
   <div id="viewGoals" class="tab-content">
     <div class="goals-page">
       <div class="goals-panel goals-panel-v2" id="panelGoals">
@@ -183,6 +194,7 @@
     </div>
   </div>
 
+  <!-- [VIEW] Livro-Caixa -->
 <div id="viewCaixa" class="tab-content active">
     <div class="toolbar">
       <button class="primary quick-primary" id="btnNovo"><span class="quick-primary-icon" aria-hidden="true"><svg class="add-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span> Novo lançamento</button>
@@ -215,6 +227,7 @@
   </div>
 
   <!-- ÁREA INTEGRADA: CONTAS RECORRENTES E CALENDÁRIO -->
+  <!-- [VIEW] Contas & Calendário -->
   <div id="viewBills" class="tab-content">
     <div class="balance-strip section-balance-strip" id="billsSummary"></div>
     <div class="toolbar bills-toolbar-v19-16">
@@ -253,6 +266,7 @@
   </div>
 
   <!-- P3.1 — Valores a Receber (módulo independente; não mexe em caixa/patrimônio) -->
+  <!-- [VIEW] Valores a Receber -->
   <div id="viewReceivables" class="tab-content">
     <div class="balance-strip section-balance-strip" id="receivablesSummary"></div>
     <div class="toolbar" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));">
@@ -269,6 +283,7 @@
   </div>
 
   <!-- ABA 2: CRIPTO E INVESTIMENTOS -->
+  <!-- [VIEW] Investimentos -->
   <div id="viewInvest" class="tab-content">
     <div class="balance-strip section-balance-strip" id="investBalanceStrip"></div>
     <div class="toolbar">
@@ -281,6 +296,7 @@
     <div id="investGrid" class="invest-grid"></div>
   </div>
 
+  <!-- [VIEW] Caixinhas -->
   <div id="viewPockets" class="tab-content">
     <div class="balance-strip" id="pocketBalanceStrip"></div>
     <div class="toolbar" style="grid-template-columns: 1fr;">
@@ -291,6 +307,7 @@
     <div id="pocketGrid" class="invest-grid"></div>
   </div>
 
+  <!-- [VIEW] Cartões -->
   <div id="viewCards" class="tab-content">
     <div class="cards-toolbar">
       <div>
@@ -1265,6 +1282,24 @@
 
 <footer>livro-caixa · dados sincronizados com a nuvem pela sua conta</footer>
 
+<!--
+=========================================================
+LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
+
+[JS 01] CONFIGURAÇÃO / CONSTANTES
+[JS 02] ESTADO GLOBAL / COLLECTIONS
+[JS 03] UTILITÁRIOS / FORMATAÇÃO / DOM
+[JS 04] DOMÍNIO FINANCEIRO / CÁLCULOS / NORMALIZAÇÕES
+[JS 05] AUTENTICAÇÃO
+[JS 06] FIREBASE / STORAGE / SINCRONIZAÇÃO / MIGRAÇÕES
+[JS 07] BACKUP / IMPORTAÇÃO / EXPORTAÇÃO / DIAGNÓSTICOS
+[JS 08] RENDERIZAÇÃO / VIEWS
+[JS 09] EVENTOS / INTERAÇÕES / MODAIS
+[JS 10] INICIALIZAÇÃO / BOOTSTRAP
+
+[PATCH] CORREÇÕES / COMPATIBILIDADE
+=========================================================
+-->
 <script>
 if (typeof Chart !== 'undefined') {
   Chart.defaults.font.family = 'Plus Jakarta Sans';
@@ -9576,6 +9611,7 @@ document.getElementById('tSalvar').onclick = async () => {
 
 
 <script>
+// [PATCH] Contas/Faturas — menus contextuais
 function closeBillMenus(){
   document.querySelectorAll('.bill-more-menu').forEach(menu => {
     menu.hidden = true;
@@ -9608,6 +9644,7 @@ document.addEventListener('click', (event) => {
 
 
 <script>
+// [PATCH] Metas — isolamento de aba / switchTab
 /* Metas como aba própria — resolve switchTabOriginal em tempo de chamada (nunca captura undefined) */
 (function () {
   function runOriginalSwitchTab(tab, ctx, args) {
@@ -9705,6 +9742,7 @@ document.addEventListener('click', (event) => {
 </script>
 
 
+<!-- [PATCH CSS] Metas — isolamento visual -->
 <style id="goals-tab-isolation">
 /* Metas como aba normal — mesmo chrome das outras abas (V.19-19 GROK) */
 #viewGoals:not(.active) {
@@ -9780,6 +9818,7 @@ body[data-tab="goals"] #modalOverlay,
 
 </body>
 
+<!-- [PATCH CSS] Metas V2 -->
 <style id="goals-v2-css">
 
 /* Modal acima da BNI quando em Metas */
@@ -10094,9 +10133,14 @@ body:not(.dark-mode) .goals-form-body select {
 }
 </style>
 
+<!-- =========================================================
+     [END] PATCHES FINAIS / COMPATIBILIDADE
+     Não mover sem validar dependências.
+     ========================================================= -->
 </html>
 
 <style>
+/* [PATCH CSS] Cartões — modal */
 /* V19-17 — Modal Cartão */
 .card-form-sheet{
   width:min(94vw,720px);
@@ -10309,6 +10353,7 @@ body:not(.dark-mode) .goals-form-body select {
 </style>
 
 <style>
+/* [PATCH CSS] Cartões — compactação */
 /* V19-17 — Modal Cartão — compactação */
 .card-form-sheet{
   padding:20px;
