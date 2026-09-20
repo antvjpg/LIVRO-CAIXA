@@ -219,12 +219,6 @@
         <div class="goals-v2-section">
           <div class="goals-v2-section-head">
             <h4>Suas metas</h4>
-            <button hidden type="button" class="goals-v2-add-btn" id="btnOpenGoalModal" aria-label="Nova meta">
-  <svg class="goals-action-icon" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M12 5v14M5 12h14"/>
-  </svg>
-  <span>Nova meta</span>
-</button>
           </div>
           <div id="goalsList" class="goals-v2-list"></div>
         </div>
@@ -235,7 +229,6 @@
   <!-- [VIEW] Livro-Caixa -->
 <div id="viewCaixa" class="tab-content active">
     <div class="toolbar">
-      <button hidden class="primary quick-primary" id="btnNovo"><span class="quick-primary-icon" aria-hidden="true"><svg class="add-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span> Novo lançamento</button>
       <button class="quick-action" id="btnBanco"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-6 9 6M5 10h14M6.5 10v7M10 10v7M14 10v7M17.5 10v7M4 20h16"/></svg></span><span>Banco</span></button>
       <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h13"/><path d="m15 5 3 3-3 3"/><path d="M19 16H6"/><path d="m9 13-3 3 3 3"/></svg></span><span>Transferência</span></button>
       <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3H8z"/><path d="M6 7h12v13H6z"/><path d="M9 12h6M9 15h6"/></svg></span><span>Colar texto</span></button>
@@ -269,9 +262,6 @@
   <div id="viewBills" class="tab-content">
     <div class="balance-strip section-balance-strip" id="billsSummary"></div>
     <div class="toolbar bills-toolbar-v19-16">
-      <div hidden class="bills-toolbar-main">
-        <button class="primary" id="btnNovoBill"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>Nova Conta / Fatura</button>
-      </div>
       <div class="bills-toolbar-actions">
         <button type="button" id="btnBillsToday"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>Mês atual</button>
         <button type="button" id="btnExportBillsPdf">📄 Exportar PDF</button>
@@ -308,7 +298,6 @@
   <div id="viewReceivables" class="tab-content">
     <div class="balance-strip section-balance-strip" id="receivablesSummary"></div>
     <div class="toolbar" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));">
-      <button hidden class="primary" id="btnNovoReceivable" type="button">+ Novo valor a receber</button>
       <select id="receivableStatusFilter" aria-label="Filtrar por status">
         <option value="">Todos os status</option>
         <option value="pendente">Pendentes</option>
@@ -325,7 +314,6 @@
   <div id="viewInvest" class="tab-content">
     <div class="balance-strip section-balance-strip" id="investBalanceStrip"></div>
     <div class="toolbar">
-      <button hidden class="primary" id="btnNovoInvest">+ Novo Ativo / Cripto</button>
       <button type="button" id="btnUpdateAllPrices">🔄 Atualizar Cotações</button>
     </div>
     <div id="updateAllStatus" style="font-size:12px; margin-bottom:16px; opacity:0.75;"></div>
@@ -337,9 +325,6 @@
   <!-- [VIEW] Caixinhas -->
   <div id="viewPockets" class="tab-content">
     <div class="balance-strip" id="pocketBalanceStrip"></div>
-    <div hidden class="toolbar" style="grid-template-columns: 1fr;">
-      <button class="primary" id="btnNovoPocket">+ Nova Caixinha</button>
-    </div>
     <div id="pocketPeriodSummary" class="period-summary" aria-label="Resumo das caixinhas no período"></div>
 
     <div id="pocketGrid" class="invest-grid"></div>
@@ -352,7 +337,6 @@
         <h2 style="margin:0 0 4px;font-size:20px;">Cartões</h2>
         <p class="hint">Cadastre cartões e compras. Faturas do ciclo aparecem aqui e no Calendário. Marcar como pago não lança no Livro-Caixa; Lançar registra a saída.</p>
       </div>
-      <button hidden class="primary" id="btnNovoCard">+ Novo Cartão</button>
     </div>
     <div id="cardsGrid" class="cards-grid"></div>
   </div>
@@ -1630,7 +1614,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* [JS 07] BACKUP / IMPORTAÇÃO / EXPORTAÇÃO / DIAGNÓSTICOS */
   function markSingleActionButtons() {
-    ['fSalvar','bSalvar','cSalvar','tSalvar','iSalvar','pSalvar','pmSalvar','imSalvar','importConfirm','btnFetchPrice','imFetchPrice','btnUpdateAllPrices','btnExportBackup','btnNovoBill','billSalvar','btnNovoCard','cardSalvar','purchaseSalvar'].forEach(id => {
+    ['fSalvar','bSalvar','cSalvar','tSalvar','iSalvar','pSalvar','pmSalvar','imSalvar','importConfirm','btnFetchPrice','imFetchPrice','btnUpdateAllPrices','btnExportBackup','billSalvar','cardSalvar','purchaseSalvar'].forEach(id => {
       const btn = document.getElementById(id);
       if (btn) btn.dataset.singleAction = '1';
     });
@@ -3939,10 +3923,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (typeof closeAllPanels === 'function') closeAllPanels();
     };
   }
-  document.getElementById('btnOpenGoalModal')?.addEventListener('click', function() {
+  function openNewGoalModal() {
     resetGoalForm();
     if (typeof openModal === 'function') openModal('panelGoalForm');
-  });
+  }
   const goalCaixinhaEl = document.getElementById('goalCaixinha');
   if (goalCaixinhaEl) {
     goalCaixinhaEl.addEventListener('change', syncGoalLegacyAmountField);
@@ -5369,7 +5353,6 @@ ${JSON.stringify(snapshot)}
     }
   };
 
-  document.getElementById('btnNovoBill').onclick = () => openBillModal();
   document.getElementById('btnBillPrev').onclick = () => { billViewDate.setMonth(billViewDate.getMonth()-1); renderBills(); };
   document.getElementById('btnBillNext').onclick = () => { billViewDate.setMonth(billViewDate.getMonth()+1); renderBills(); };
   document.getElementById('btnBillsToday').onclick = () => { billViewDate = new Date(); renderBills(); };
@@ -5603,7 +5586,6 @@ ${JSON.stringify(snapshot)}
     setReceivableStatus(id, 'cancelado');
   };
   window.reopenReceivable = id => setReceivableStatus(id, 'pendente');
-  document.getElementById('btnNovoReceivable')?.addEventListener('click', () => openReceivableModal());
   document.getElementById('recvSalvar')?.addEventListener('click', () => saveReceivableRecord());
   document.getElementById('receivableStatusFilter')?.addEventListener('change', () => renderReceivables());
   function populateBillForm(){
@@ -6722,7 +6704,7 @@ Regras:
   }
 }
 
-document.getElementById('btnNovo').onclick = () => {
+function openNewEntryModal() {
     if (banks.length === 0) {
       alert('Cadastre pelo menos um banco antes de fazer lançamentos.');
       openModal('panelBanco');
@@ -6736,7 +6718,7 @@ document.getElementById('btnNovo').onclick = () => {
     setMoneyInput('fValor', 0);
     document.getElementById('fData').value = todayISO();
     openModal('panelNovo');
-  };
+}
 
 
   function renderCardBankSelect(selected = '') {
@@ -7274,7 +7256,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     purchases = purchases.filter(p => p.id !== id);
     try { await persistAll(); renderCards(); logInfo('Cartões','Excluir compra','Sucesso','Compra excluída.'); } catch (err) { purchases.push(purchase); logSyncError('exclusão de compra', err); renderCards(); }
   };
-  document.getElementById('btnNovoCard').onclick = () => openCardModal();
+  function openNewCardModal() { openCardModal(); }
   document.getElementById('cardSalvar').onclick = async () => {
     const name = document.getElementById('cardNome').value.trim();
     const closingDay = Number(document.getElementById('cardFechamento').value);
@@ -7308,7 +7290,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     catch (err) { if (old) purchases = purchases.map(p => p.id === editingPurchaseId ? old : p); else purchases = purchases.filter(p => p.id !== record.id); logSyncError('salvamento de compra', err); renderCards(); alert('Não foi possível salvar a compra.'); }
   };
 
-  document.getElementById('btnNovoInvest').onclick = () => {
+  function openNewInvestModal() {
     editingInvestId = null;
     pendingPricePoint = null;
     document.getElementById('iNome').value = '';
@@ -7552,7 +7534,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     await persistAll(); editingBillId=null; logInfo('Calendário','Salvar conta','Sucesso',`Conta ${name} salva como ${recurrenceType==='nao_recorrente'?'não recorrente':'recorrente'}.`); closeAllPanels(); renderBills();
   };
 
-  document.getElementById('btnNovoPocket').onclick = () => {
+  function openNewPocketModal() {
     editingPocketId = null;
     document.getElementById('pNome').value = '';
     document.getElementById('pObjetivo').value = '';
@@ -9590,27 +9572,13 @@ document.getElementById('tSalvar').onclick = async () => {
 
   document.getElementById('fabAdd').onclick = () => {
     const activeTab = document.body.dataset.tab || currentTab;
-
-    if (activeTab === 'bills') {
-      openBillModal();
-    } else if (activeTab === 'receivables') {
-      openReceivableModal();
-    } else if (activeTab === 'invest') {
-      document.getElementById('btnNovoInvest')?.click();
-    } else if (activeTab === 'pockets') {
-      document.getElementById('btnNovoPocket')?.click();
-    } else if (activeTab === 'cards') {
-      document.getElementById('btnNovoCard')?.click();
-    } else if (activeTab === 'goals') {
-      const goalButton = document.getElementById('btnOpenGoalModal');
-      if (goalButton) {
-        goalButton.click();
-      } else if (typeof openModal === 'function') {
-        openModal('panelGoalForm');
-      }
-    } else {
-      document.getElementById('btnNovo')?.click();
-    }
+    if (activeTab === 'bills') openBillModal();
+    else if (activeTab === 'receivables') openReceivableModal();
+    else if (activeTab === 'invest') openNewInvestModal();
+    else if (activeTab === 'pockets') openNewPocketModal();
+    else if (activeTab === 'cards') openNewCardModal();
+    else if (activeTab === 'goals') openNewGoalModal();
+    else openNewEntryModal();
   };
 
   initMoneyMasks();
