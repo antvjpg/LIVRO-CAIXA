@@ -83,7 +83,6 @@
   <div class="app-header-actions">
     <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9.5a5 5 0 0 1 10 0c0 4.2 1.5 5.5 1.5 5.5H5.5S7 13.7 7 9.5z"/><path d="M10 17.5a2 2 0 0 0 4 0"/></svg><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
     <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v1.5M12 19.5V21M4.9 4.9l1.1 1.1M18 18l1.1 1.1M3 12h1.5M19.5 12H21M4.9 19.1 6 18M18 6l1.1-1.1"/><circle cx="12" cy="12" r="4"/></svg></button>
-    <button id="btnInstallPWA" title="Instalar Livro-Caixa" aria-label="Instalar Livro-Caixa" style="padding:6px 10px; font-size:12px; display:none;">📲 Instalar</button>
     <div id="userBar"></div>
   </div>
 </header>
@@ -1403,33 +1402,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
   }
 
-  let deferredInstallPrompt = null;
-  const installBtn = document.getElementById('btnInstallPWA');
-  window.addEventListener('beforeinstallprompt', (event) => {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-    if (installBtn) installBtn.style.display = 'inline-flex';
-  });
-  window.addEventListener('appinstalled', () => {
-    deferredInstallPrompt = null;
-    if (installBtn) installBtn.style.display = 'none';
-  });
-  if (installBtn) {
-    installBtn.addEventListener('click', async () => {
-      if (!deferredInstallPrompt) return;
-      deferredInstallPrompt.prompt();
-      try { await deferredInstallPrompt.userChoice; } catch (_) {}
-      deferredInstallPrompt = null;
-      installBtn.style.display = 'none';
+    document.querySelectorAll('.mobile-bottom-nav button').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!button.dataset.destination) return;
+        switchTab(button.dataset.destination);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     });
-  }
-  document.querySelectorAll('.mobile-bottom-nav button').forEach((button) => {
-    button.addEventListener('click', () => {
-      if (!button.dataset.destination) return;
-      switchTab(button.dataset.destination);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  });
   /* [JS 02] ESTADO GLOBAL / COLLECTIONS */
   let banks = [];
   let categories = [];
@@ -1976,9 +1955,23 @@ document.addEventListener('DOMContentLoaded', () => {
   let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
   let realtimeUnsubscribers = [];
 
+  function cloneSyncItem(item) {
+    if (!item || typeof item !== 'object') return item;
+    try {
+      if (typeof structuredClone === 'function') return structuredClone(item);
+    } catch (_) {}
+    try {
+      return JSON.parse(JSON.stringify(item));
+    } catch (_) {
+      return Array.isArray(item) ? [...item] : { ...item };
+    }
+  }
+
   function arrToMap(arr) {
     const m = {};
-    (arr || []).forEach(it => { if (it && it.id) m[it.id] = it; });
+    (arr || []).forEach(it => {
+      if (it && it.id) m[it.id] = cloneSyncItem(it);
+    });
     return m;
   }
 
@@ -2590,7 +2583,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (viewPeriod.mode === 'all') return 'Todos / Todo o histórico';
     const [year, month] = viewPeriod.month.split('-').map(Number);
     const name = new Date(year, month - 1, 1).toLocaleDateString('pt-BR', { month:'long' });
-    return `${name.charAt(0).toUpperCase()}${name.slice(1)} / ${year}`;
+    return `${name.charAt(0).toUpperCase()}${name.slice(1)}/${year}`;
   }
   function periodMatchesDate(date) {
     if (viewPeriod.mode === 'all') return true;
@@ -9870,11 +9863,17 @@ body[data-tab="goals"] #viewGoals.active,
   height: auto !important;
   max-height: none !important;
   margin: 0 !important;
-  padding: 0 0 calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+  padding: 0 !important;
   overflow: visible !important;
   background: transparent !important;
   pointer-events: auto !important;
   visibility: visible !important;
+}
+
+/* Metas: ocultar apenas os resumos globais que não pertencem à aba. */
+body[data-tab="goals"] #balanceStrip,
+body[data-tab="goals"] #universalPeriodBar {
+  display: none !important;
 }
 
 /* NÃO esconder header nem main — chrome igual às outras abas */
@@ -9893,13 +9892,6 @@ body[data-tab="goals"] #fabRoot,
 body[data-tab="goals"] .quick-fab,
 body[data-tab="goals"] #btnFabMenu {
   display: none !important;
-}
-
-body[data-tab="goals"] .mobile-bottom-nav {
-  display: flex !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  z-index: 1300 !important;
 }
 
 body[data-tab="goals"] #viewGoals .goals-page {
