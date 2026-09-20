@@ -325,7 +325,6 @@
   <!-- [VIEW] Caixinhas -->
   <div id="viewPockets" class="tab-content">
     <div class="balance-strip" id="pocketBalanceStrip"></div>
-    <div id="pocketPeriodSummary" class="period-summary" aria-label="Resumo das caixinhas no período"></div>
 
     <div id="pocketGrid" class="invest-grid"></div>
   </div>
@@ -2647,17 +2646,6 @@ document.addEventListener('DOMContentLoaded', () => {
       {label:'Rendimentos', value:fmt(investYields), tone:investYields >= 0 ? 'positive' : 'negative'}
     ]);
 
-    const pocketMoves = yieldsLog.filter(y => y.targetType === 'pocket' && periodMatchesMovement(y));
-    const pocketAportes = pocketMoves.filter(y => (y.kind||'rendimento') === 'aporte').reduce((s,y)=>s+Math.abs(Number(y.amount||0)),0);
-    const pocketResgates = pocketMoves.filter(y => y.kind === 'resgate').reduce((s,y)=>s+Math.abs(Number(y.amount||0)),0);
-    const pocketYields = pocketMoves.filter(y => (y.kind||'rendimento') === 'rendimento').reduce((s,y)=>s+Number(y.amount||0),0);
-    const pocketSummary = document.getElementById('pocketPeriodSummary');
-    if (pocketSummary) pocketSummary.innerHTML = periodSummaryHTML([
-      {label:'Movimentações', value:String(pocketMoves.length)},
-      {label:'Aportes', value:fmt(pocketAportes), tone:'positive'},
-      {label:'Resgates', value:fmt(pocketResgates), tone:'negative'},
-      {label:'Rendimentos', value:fmt(pocketYields), tone:pocketYields >= 0 ? 'positive' : 'negative'}
-    ]);
   }
 
   function monthKeyOffset(offset) {
