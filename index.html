@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas modal DOM fix + BNI visível -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas + auth onclick null-safe -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-19-goals4">
+  <link rel="stylesheet" href="./styles.css?v=19-19-goals5">
 </head>
 <body>
 
@@ -1322,7 +1322,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-19-goals4').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-19-goals5').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -9333,56 +9333,85 @@ document.getElementById('tSalvar').onclick = async () => {
     return map[code] || 'Não foi possível concluir. Tente novamente.';
   }
 
-  document.getElementById('authToggleLink').onclick = () => {
-    isSignupMode = !isSignupMode;
-    document.getElementById('authTitle').textContent = isSignupMode ? 'Criar conta' : 'Entrar';
-    document.getElementById('authSubmit').textContent = isSignupMode ? 'Criar conta' : 'Entrar';
-    document.getElementById('authToggleWrap').innerHTML = isSignupMode
-      ? 'Já tem conta? <a id="authToggleLink2">Entrar</a>'
-      : 'Não tem conta? <a id="authToggleLink2">Criar conta</a>';
-    document.getElementById('authToggleLink2').onclick = document.getElementById('authToggleLink').onclick;
-    setAuthError('');
-  };
+  // Auth handlers — só ligam se o formulário de login existir no DOM
+  (function bindAuthHandlers() {
+    const authToggleLink = document.getElementById('authToggleLink');
+    const authSubmit = document.getElementById('authSubmit');
+    const authPassToggle = document.getElementById('authPassToggle');
+    const authGoogle = document.getElementById('authGoogle');
 
-  document.getElementById('authSubmit').onclick = () => {
-    const email = document.getElementById('authEmail').value.trim();
-    const pass = document.getElementById('authPass').value;
-    if (!email || !pass) { setAuthError('Preencha e-mail e senha.'); return; }
-    setAuthError('');
-    const operation = beginLogOperation('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar');
-    logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Em andamento', 'Solicitação de autenticação iniciada.', null, operation);
-    const action = isSignupMode
-      ? auth.createUserWithEmailAndPassword(email, pass)
-      : auth.signInWithEmailAndPassword(email, pass);
-    action.then(() => logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Sucesso', 'Solicitação de autenticação concluída.', null, operation)).catch(err => { logSyncError('autenticação', err, operation); setAuthError(translateAuthError(err.code)); });
-  };
+    if (!authToggleLink && !authSubmit && !authPassToggle && !authGoogle) {
+      return; // tela de login antiga removida / ainda não montada
+    }
 
-  document.getElementById('authPassToggle').onclick = () => {
-    const input = document.getElementById('authPass');
-    const btn = document.getElementById('authPassToggle');
-    const eyeOpen = document.getElementById('eyeOpen');
-    const eyeClosed = document.getElementById('eyeClosed');
-    const showing = input.type === 'text';
-    input.type = showing ? 'password' : 'text';
-    eyeOpen.style.display = showing ? 'block' : 'none';
-    eyeClosed.style.display = showing ? 'none' : 'block';
-    btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
-  };
+    if (authToggleLink) {
+      authToggleLink.onclick = () => {
+        isSignupMode = !isSignupMode;
+        const authTitle = document.getElementById('authTitle');
+        const authSubmitBtn = document.getElementById('authSubmit');
+        const authToggleWrap = document.getElementById('authToggleWrap');
+        if (authTitle) authTitle.textContent = isSignupMode ? 'Criar conta' : 'Entrar';
+        if (authSubmitBtn) authSubmitBtn.textContent = isSignupMode ? 'Criar conta' : 'Entrar';
+        if (authToggleWrap) {
+          authToggleWrap.innerHTML = isSignupMode
+            ? 'Já tem conta? <a id="authToggleLink2">Entrar</a>'
+            : 'Não tem conta? <a id="authToggleLink2">Criar conta</a>';
+          const link2 = document.getElementById('authToggleLink2');
+          if (link2) link2.onclick = authToggleLink.onclick;
+        }
+        setAuthError('');
+      };
+    }
 
-  document.getElementById('authGoogle').onclick = () => {
-    setAuthError('');
-    const operation = beginLogOperation('Autenticação', 'Entrar com Google');
-    logInfo('Autenticação', 'Entrar com Google', 'Em andamento', 'Solicitação de autenticação Google iniciada.', null, operation);
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(() => logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation)).catch(err => {
-      if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
-        auth.signInWithRedirect(provider);
-      } else if (err.code !== 'auth/popup-closed-by-user') {
-        logSyncError('autenticação Google', err, operation);
-        setAuthError(translateAuthError(err.code));
-      }
-    });
-  };
+    if (authSubmit) {
+      authSubmit.onclick = () => {
+        const emailEl = document.getElementById('authEmail');
+        const passEl = document.getElementById('authPass');
+        const email = emailEl ? emailEl.value.trim() : '';
+        const pass = passEl ? passEl.value : '';
+        if (!email || !pass) { setAuthError('Preencha e-mail e senha.'); return; }
+        setAuthError('');
+        const operation = beginLogOperation('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar');
+        logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Em andamento', 'Solicitação de autenticação iniciada.', null, operation);
+        const action = isSignupMode
+          ? auth.createUserWithEmailAndPassword(email, pass)
+          : auth.signInWithEmailAndPassword(email, pass);
+        action.then(() => logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Sucesso', 'Solicitação de autenticação concluída.', null, operation)).catch(err => { logSyncError('autenticação', err, operation); setAuthError(translateAuthError(err.code)); });
+      };
+    }
+
+    if (authPassToggle) {
+      authPassToggle.onclick = () => {
+        const input = document.getElementById('authPass');
+        const btn = document.getElementById('authPassToggle');
+        const eyeOpen = document.getElementById('eyeOpen');
+        const eyeClosed = document.getElementById('eyeClosed');
+        if (!input || !btn) return;
+        const showing = input.type === 'text';
+        input.type = showing ? 'password' : 'text';
+        if (eyeOpen) eyeOpen.style.display = showing ? 'block' : 'none';
+        if (eyeClosed) eyeClosed.style.display = showing ? 'none' : 'block';
+        btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+      };
+    }
+
+    if (authGoogle) {
+      authGoogle.onclick = () => {
+        setAuthError('');
+        const operation = beginLogOperation('Autenticação', 'Entrar com Google');
+        logInfo('Autenticação', 'Entrar com Google', 'Em andamento', 'Solicitação de autenticação Google iniciada.', null, operation);
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).then(() => logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation)).catch(err => {
+          if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
+            auth.signInWithRedirect(provider);
+          } else if (err.code !== 'auth/popup-closed-by-user') {
+            logSyncError('autenticação Google', err, operation);
+            setAuthError(translateAuthError(err.code));
+          }
+        });
+      };
+    }
+  })();
 
   document.getElementById('fabAdd').onclick = () => {
     if (currentTab === 'bills') {
