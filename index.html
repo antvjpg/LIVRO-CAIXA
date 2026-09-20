@@ -2025,7 +2025,7 @@ document.addEventListener('DOMContentLoaded', () => {
         purchases = data.purchases || [];
         lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
         if (data.banks || data.entries) {
-          syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
+          if (syncOverlayText) syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
         }
       }
 
