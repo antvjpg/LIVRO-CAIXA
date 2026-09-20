@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas isolada + switchTab BNI fix -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas layout + modal + BNI visível -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-19-goals2">
+  <link rel="stylesheet" href="./styles.css?v=19-19-goals3">
 </head>
 <body>
 
@@ -38,118 +38,26 @@
   <!-- ABA: METAS -->
   <div id="viewGoals" class="tab-content">
     <div class="goals-page">
-<div class="goals-panel" id="panelGoals">
-      <div class="feature-lab-header">
-        <div class="feature-lab-title-wrap">
-          <span class="feature-lab-kicker">PLANEJAMENTO FINANCEIRO</span>
-          <h3>Metas financeiras</h3>
-          <p class="feature-lab-intro">Acompanhe seus objetivos e, quando vinculados, deixe o progresso acompanhar o saldo real da Caixinha.</p>
-        </div>
-        <button type="button" class="modal-close feature-lab-close" onclick="switchTab('dashboard')" aria-label="Voltar para Visão geral">×</button>
-      </div>
-
-      <div class="feature-lab-section labs-plus-section">
-        <div class="feature-lab-section-head">
-          <div><span class="feature-lab-section-number">01</span><h4>Suas metas</h4></div>
-          <span class="feature-lab-section-tag">PLANEJAMENTO</span>
-        </div>
-
-        <div id="goalsList" class="feature-budget-rows" style="margin-bottom:12px;"></div>
-
-        <div class="feature-lab-goals-divider" style="margin:16px 0 10px;padding-top:12px;border-top:1px dashed var(--line);">
-          <strong style="font-size:12px;color:var(--ink);">Nova Meta</strong>
-          <p class="feature-lab-section-desc" style="margin:4px 0 10px;">A Meta não cria movimentações. Quando vinculada, o progresso acompanha o saldo real da Caixinha.</p>
-        </div>
-
-        <div class="feature-lab-fields">
-          <div><label for="goalNome">Nome da meta</label><input type="text" id="goalNome" placeholder="Ex: Reserva de emergência"></div>
-          <div><label for="goalIcone">Ícone</label><input type="text" id="goalIcone" maxlength="4" placeholder="🎯" value="🎯"></div>
-          <div><label for="goalValorObjetivo">Valor objetivo</label><input type="text" id="goalValorObjetivo" data-money="true" placeholder="R$ 0,00"></div>
-          <div>
-            <label for="goalCaixinha">Caixinha vinculada</label>
-            <select id="goalCaixinha">
-              <option value="">Nenhuma — planejamento sem saldo</option>
-            </select>
-            <span class="hint">Quando vinculada, a Meta usa o saldo real da Caixinha.</span>
+      <div class="goals-panel goals-panel-v2" id="panelGoals">
+        <div class="goals-v2-header">
+          <div class="goals-v2-title-wrap">
+            <span class="goals-v2-kicker">PLANEJAMENTO</span>
+            <h3 class="goals-v2-title">Metas financeiras</h3>
+            <p class="goals-v2-intro">Objetivos sobre dinheiro real das Caixinhas — sem criar saldo paralelo.</p>
           </div>
-          <div><label for="goalDataInicio">Data de início</label><input type="date" id="goalDataInicio"></div>
-          <div><label for="goalPrazo">Prazo (opcional)</label><input type="date" id="goalPrazo"></div>
-          <div>
-            <label for="goalStatus">Status</label>
-            <select id="goalStatus">
-              <option value="active">Ativa</option>
-              <option value="completed">Concluída</option>
-              <option value="paused">Pausada</option>
-              <option value="cancelled">Cancelada</option>
-            </select>
-          </div>
-          <div id="goalValorAtualLegacyField">
-            <label for="goalValorAtual">Valor já acumulado <span class="hint">(legado)</span></label>
-            <input type="text" id="goalValorAtual" data-money="true" placeholder="R$ 0,00">
-            <span class="hint">Usado somente em Metas antigas sem Caixinha vinculada.</span>
-          </div>
-          <div><label for="goalObs">Descrição (opcional)</label><input type="text" id="goalObs" placeholder="Opcional"></div>
+          <button type="button" class="goals-v2-close" onclick="switchTab('dashboard')" aria-label="Fechar Metas">×</button>
         </div>
 
-        <div class="feature-lab-actions">
-          <button type="button" id="btnSaveGoal" class="primary">Salvar meta</button>
-          <button type="button" id="btnCancelGoalEdit" hidden>Cancelar edição</button>
+        <div class="goals-v2-section">
+          <div class="goals-v2-section-head">
+            <h4>Suas metas</h4>
+            <button type="button" class="goals-v2-add-btn" id="btnOpenGoalModal" aria-label="Nova meta">+ Nova meta</button>
+          </div>
+          <div id="goalsList" class="goals-v2-list"></div>
         </div>
-
-        <div id="goalsStatus" class="feature-lab-feedback" aria-live="polite"></div>
       </div>
     </div>
-    </div>
   </div>
-
-<div id="authOverlay">
-  <div class="auth-box">
-    <h2 id="authTitle">Entrar</h2>
-    <p class="sub">Livro-Caixa · sincronizado</p>
-    <label for="authEmail">E-mail</label>
-    <input type="email" id="authEmail" placeholder="voce@email.com">
-    <label for="authPass">Senha</label>
-    <div class="pass-wrap">
-      <input type="password" id="authPass" placeholder="mínimo 6 caracteres">
-      <button type="button" class="pass-toggle" id="authPassToggle" aria-label="Mostrar senha">
-        <svg id="eyeOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <svg id="eyeClosed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-      </button>
-    </div>
-    <button class="primary" id="authSubmit" style="width:100%;margin-top:14px;">Entrar</button>
-    <div class="auth-error" id="authError"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin:16px 0;">
-      <div style="flex:1;height:1px;background:var(--line);"></div>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);">ou</span>
-      <div style="flex:1;height:1px;background:var(--line);"></div>
-    </div>
-    <button type="button" id="authGoogle" style="width:100%;">Entrar com Google</button>
-    <div class="auth-toggle" id="authToggleWrap">
-      Não tem conta? <a id="authToggleLink">Criar conta</a>
-    </div>
-  </div>
-</div>
-
-<div id="pinOverlay" class="pin-overlay hidden" aria-hidden="true">
-  <section class="pin-box" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
-    <div class="pin-lock-icon">▣</div>
-    <h2 id="pinTitle">Aplicativo bloqueado</h2>
-    <p class="hint">Use a biometria ou digite o PIN local para continuar. Isso não substitui o login da conta.</p>
-    <input type="password" id="pinUnlockInput" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="PIN de 4 a 8 dígitos" aria-label="PIN local">
-    <div id="pinUnlockError" class="auth-error" aria-live="polite"></div>
-    <button type="button" class="primary" id="btnPinUnlock" style="width:100%;margin-top:12px;">Desbloquear com PIN</button>
-    <button type="button" id="btnBiometricUnlock" style="width:100%;margin-top:8px;">Usar biometria</button>
-    <button type="button" id="btnPinLogout" style="width:100%;margin-top:8px;">Sair da conta</button>
-  </section>
-</div>
-
-<div id="syncOverlay" class="hidden">
-  <div class="sync-box">
-    <div class="sync-spinner"></div>
-    <p id="syncOverlayText">Sincronizando seus dados...</p>
-  </div>
-</div>
-
 <header class="app-header">
   <button type="button" id="btnOpenDrawer" class="header-icon-button" aria-label="Abrir menu" title="Menu">☰</button>
   <div class="app-brand">
@@ -1279,7 +1187,71 @@
 
     <div class="panel" id="panelImport">
       <h3>Revisar importação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div id="importSummary" class="import-summary" aria-live="polite"></div>
+      <div id="importSummary" class="import-summary" aria-live="polite">
+    <div class="panel goals-form-sheet" id="panelGoalForm" role="dialog" aria-modal="true" aria-labelledby="goalFormTitle">
+      <div class="goals-form-head">
+        <div>
+          <span class="goals-v2-kicker">PLANEJAMENTO</span>
+          <h3 id="goalFormTitle">Nova Meta</h3>
+        </div>
+        <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button>
+      </div>
+      <div class="goals-form-body feature-lab-fields">
+        <div>
+          <label for="goalNome">NOME DA META</label>
+          <input type="text" id="goalNome" placeholder="Ex: Reserva de emergência">
+        </div>
+        <div>
+          <label for="goalIcone">ÍCONE</label>
+          <input type="text" id="goalIcone" maxlength="4" placeholder="🎯" value="🎯">
+        </div>
+        <div>
+          <label for="goalValorObjetivo">VALOR OBJETIVO</label>
+          <input type="text" id="goalValorObjetivo" data-money="true" placeholder="R$ 0,00">
+        </div>
+        <div>
+          <label for="goalCaixinha">CAIXINHA VINCULADA</label>
+          <select id="goalCaixinha">
+            <option value="">Nenhuma — planejamento sem saldo</option>
+          </select>
+          <span class="hint">Quando vinculada, o progresso usa o saldo real da Caixinha.</span>
+        </div>
+        <div class="goals-form-row-2">
+          <div>
+            <label for="goalDataInicio">DATA DE INÍCIO</label>
+            <input type="date" id="goalDataInicio">
+          </div>
+          <div>
+            <label for="goalPrazo">PRAZO (OPCIONAL)</label>
+            <input type="date" id="goalPrazo">
+          </div>
+        </div>
+        <div>
+          <label for="goalStatus">STATUS</label>
+          <select id="goalStatus">
+            <option value="active">Ativa</option>
+            <option value="completed">Concluída</option>
+            <option value="paused">Pausada</option>
+            <option value="cancelled">Cancelada</option>
+          </select>
+        </div>
+        <div id="goalValorAtualLegacyField">
+          <label for="goalValorAtual">Valor já acumulado <span class="hint">(legado)</span></label>
+          <input type="text" id="goalValorAtual" data-money="true" placeholder="R$ 0,00">
+          <span class="hint">Usado somente em Metas antigas sem Caixinha vinculada.</span>
+        </div>
+        <div>
+          <label for="goalObs">OBSERVAÇÃO (OPCIONAL)</label>
+          <input type="text" id="goalObs" placeholder="Detalhes ou contexto sobre esta meta...">
+        </div>
+      </div>
+      <div class="goals-form-actions">
+        <button type="button" id="btnSaveGoal" class="primary goals-form-save">SALVAR META</button>
+        <button type="button" id="btnCancelGoalEdit" class="goals-form-cancel">CANCELAR</button>
+      </div>
+    </div>
+
+    </div>
       <div id="importList"></div>
       <div class="hint">Possíveis duplicidades são mantidas visíveis para revisão, mas não entram na confirmação. Edite ou remova as linhas que não forem lançamentos reais.</div>
       <div style="display:flex; gap:10px; margin-top:14px;">
@@ -1350,7 +1322,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-19-goals2').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-19-goals3').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -3682,50 +3654,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const status = goal.status || 'active';
     const pocket = goal.caixinhaId ? pockets.find(p => p.id === goal.caixinhaId) : null;
+    const statusLabel = goalStatusLabel(status);
+    const statusClass = status === 'active' ? 'is-active' : (status === 'completed' ? 'is-done' : 'is-other');
 
-    let planningText = '';
-    if (!hasCurrent) {
-      planningText = goal.caixinhaId
-        ? 'Caixinha vinculada · saldo indisponível'
-        : 'Sem Caixinha vinculada · valor atual não informado';
-    } else if (plan.remaining <= 0) {
-      planningText = `${fmt(current)} de ${fmt(target)} · objetivo atingido`;
-    } else {
-      planningText = `${fmt(current)} de ${fmt(target)} · faltam ${fmt(plan.remaining)}`;
-    }
+    const currentTxt = hasCurrent ? fmt(current) : '—';
+    const targetTxt = fmt(target);
+    const remainTxt = hasCurrent && plan.remaining > 0 ? fmt(plan.remaining) : (hasCurrent ? 'R$ 0,00' : '—');
 
+    let deadlineTxt = '';
     if (goal.deadline) {
-      if (plan.overdue && plan.remaining > 0) {
-        planningText += ` · atrasada há ${Math.abs(plan.daysRemaining)} dia(s)`;
-      } else if (plan.daysRemaining >= 0) {
-        planningText += ` · ${plan.daysRemaining} dia(s) restantes`;
-      }
-    } else {
-      planningText += ' · sem prazo';
+      const parts = String(goal.deadline).split('-');
+      deadlineTxt = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : goal.deadline;
     }
 
-    const pace = plan.hasCurrent && plan.remaining > 0 && plan.daysRemaining > 0
-      ? `<div class="hint">Ritmo necessário: ${fmt(plan.perWeek)}/semana · ${fmt(plan.perMonth)}/mês</div>`
+    let daysTxt = '';
+    if (goal.deadline && plan.daysRemaining != null) {
+      if (plan.overdue && plan.remaining > 0) {
+        daysTxt = `atrasada ${Math.abs(plan.daysRemaining)} dias`;
+      } else if (plan.daysRemaining >= 0) {
+        daysTxt = `${plan.daysRemaining} dias`;
+      }
+    }
+
+    const monthPace = plan.hasCurrent && plan.remaining > 0 && plan.perMonth > 0
+      ? `Necessário ≈ ${fmt(plan.perMonth)}/mês`
       : '';
 
-    return `<div class="feature-budget-row meta-goal-row" style="flex-direction:column;align-items:stretch;gap:7px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px;background:var(--panel,#fff);" data-goal-id="${escapeHTML(goal.id)}">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-        <div>
-          <strong>${escapeHTML(goal.icon || '🎯')} ${escapeHTML(goal.name)}</strong>
-          <div class="hint">${escapeHTML(goalStatusLabel(status))}${pocket ? ` · 🐷 ${escapeHTML(pocket.name)}` : ' · planejamento'}</div>
+    return `<article class="goal-card-v2" data-goal-id="${escapeHTML(goal.id)}">
+      <div class="goal-card-v2-top">
+        <div class="goal-card-v2-title">
+          <span class="goal-card-v2-icon" aria-hidden="true">${escapeHTML(goal.icon || '🎯')}</span>
+          <strong>${escapeHTML(goal.name || 'Meta')}</strong>
+          <span class="goal-card-v2-badge ${statusClass}">${escapeHTML(statusLabel)}</span>
         </div>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);">${percent.toFixed(0)}%</span>
       </div>
-      <div class="pocket-goal-track"><span style="width:${percent.toFixed(2)}%"></span></div>
-      <div class="hint">${planningText}</div>
-      ${pace}
-      ${goal.deadline ? `<div class="hint">Prazo: ${goal.deadline.split('-').reverse().join('/')}</div>` : ''}
-      ${goal.desc ? `<div class="hint">${escapeHTML(goal.desc)}</div>` : ''}
-      <div style="display:flex;gap:8px;margin-top:2px;">
-        <button type="button" class="beta-icon-button" onclick="editGoal('${escapeHTML(goal.id)}')" title="Editar meta" aria-label="Editar meta">✎</button>
-        <button type="button" class="beta-icon-button delete" onclick="deleteGoal('${escapeHTML(goal.id)}')" title="Excluir meta" aria-label="Excluir meta">×</button>
+      <div class="goal-card-v2-pocket">
+        <span class="goal-card-v2-pocket-ico" aria-hidden="true">📦</span>
+        Caixinha: <strong>${pocket ? escapeHTML(pocket.name) : 'Nenhuma'}</strong>
       </div>
-    </div>`;
+      <div class="goal-card-v2-values">
+        <span class="goal-card-v2-current">${currentTxt}</span>
+        <span class="goal-card-v2-of">de</span>
+        <span class="goal-card-v2-target">${targetTxt}</span>
+      </div>
+      <div class="goal-card-v2-track" role="progressbar" aria-valuenow="${percent.toFixed(0)}" aria-valuemin="0" aria-valuemax="100">
+        <span style="width:${percent.toFixed(2)}%"></span>
+      </div>
+      <div class="goal-card-v2-meta">
+        <span>Faltam ${remainTxt}</span>
+        ${daysTxt ? `<span class="goal-card-v2-dot">·</span><span>${escapeHTML(daysTxt)}</span>` : ''}
+        ${deadlineTxt ? `<span class="goal-card-v2-dot">·</span><span>Prazo ${escapeHTML(deadlineTxt)}</span>` : ''}
+      </div>
+      <div class="goal-card-v2-footer">
+        <span class="goal-card-v2-pace">${monthPace ? '↗ ' + escapeHTML(monthPace) : ''}</span>
+        <div class="goal-card-v2-actions">
+          <button type="button" class="goal-card-v2-btn" onclick="editGoal('${escapeHTML(goal.id)}')" aria-label="Editar meta">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </button>
+          <button type="button" class="goal-card-v2-btn" onclick="deleteGoal('${escapeHTML(goal.id)}')" aria-label="Excluir meta">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </article>
+    `;
   }
   function renderGoalsList() {
     const list = document.getElementById('goalsList');
@@ -3751,9 +3743,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('goalPrazo').value = goal.deadline || '';
     document.getElementById('goalStatus').value = goal.status || 'active';
     document.getElementById('goalObs').value = goal.desc || '';
-    document.getElementById('btnSaveGoal').textContent = 'Atualizar meta';
-    document.getElementById('btnCancelGoalEdit').hidden = false;
-    document.getElementById('goalNome').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('btnSaveGoal').textContent = 'ATUALIZAR META';
+    const titleEl = document.getElementById('goalFormTitle');
+    if (titleEl) titleEl.textContent = 'Editar Meta';
+    if (typeof openModal === 'function') openModal('panelGoalForm');
+    else document.getElementById('panelGoalForm')?.classList.add('open');
   };
   window.deleteGoal = function(id) {
     const goal = goals.find(g => g.id === id);
@@ -3778,10 +3772,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('goalPrazo').value = '';
     document.getElementById('goalStatus').value = 'active';
     document.getElementById('goalObs').value = '';
-    document.getElementById('btnSaveGoal').textContent = 'Salvar meta';
-    document.getElementById('btnCancelGoalEdit').hidden = true;
+    document.getElementById('btnSaveGoal').textContent = 'SALVAR META';
+    const titleEl = document.getElementById('goalFormTitle');
+    if (titleEl) titleEl.textContent = 'Nova Meta';
   }
-  document.getElementById('btnCancelGoalEdit').onclick = resetGoalForm;
+  document.getElementById('btnCancelGoalEdit').onclick = function() {
+    resetGoalForm();
+    if (typeof closeAllPanels === 'function') closeAllPanels();
+  };
+  document.getElementById('btnOpenGoalModal')?.addEventListener('click', function() {
+    resetGoalForm();
+    if (typeof openModal === 'function') openModal('panelGoalForm');
+  });
   document.getElementById('goalCaixinha').addEventListener('change', syncGoalLegacyAmountField);
   refreshGoalCaixinhaOptions('');
   document.getElementById('goalDataInicio').value = todayISO();
@@ -3854,12 +3856,20 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await persistAll();
       resetGoalForm();
-      document.getElementById('goalsStatus').textContent = 'Meta salva.';
+      if (typeof closeAllPanels === 'function') closeAllPanels();
+      try {
+        const st = document.getElementById('goalsStatus');
+        if (st) st.textContent = 'Meta salva.';
+      } catch (e) {}
     } catch (err) {
       logSyncError('meta', err);
-      document.getElementById('goalsStatus').textContent = 'Não foi possível salvar agora — tente novamente.';
+      try {
+        const st = document.getElementById('goalsStatus');
+        if (st) st.textContent = 'Não foi possível salvar agora — tente novamente.';
+      } catch (e) {}
     } finally {
-      btn.disabled = false; btn.textContent = editingGoalId ? 'Atualizar meta' : originalLabel;
+      btn.disabled = false;
+      btn.textContent = originalLabel || 'SALVAR META';
     }
   };
   function pocketGoalMarkup(pocket, current) {
@@ -9668,7 +9678,6 @@ body[data-tab="goals"] > header.app-header,
 body[data-tab="goals"] header.app-header,
 body[data-tab="goals"] > main,
 body[data-tab="goals"] main,
-body[data-tab="goals"] .mobile-bottom-nav,
 body[data-tab="goals"] .fab-root,
 body[data-tab="goals"] #fabRoot,
 body[data-tab="goals"] .quick-fab,
@@ -9676,6 +9685,14 @@ body[data-tab="goals"] #btnFabMenu {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+/* BNI permanece visível em Metas */
+body[data-tab="goals"] .mobile-bottom-nav {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 1300 !important;
 }
 
 body[data-tab="goals"] #viewGoals,
@@ -9690,7 +9707,7 @@ body[data-tab="goals"] #viewGoals.active {
   height: 100% !important;
   max-height: 100dvh !important;
   margin: 0 !important;
-  padding: 16px 16px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  padding: 16px 16px calc(88px + env(safe-area-inset-bottom, 0px)) !important;
   box-sizing: border-box !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
@@ -9735,12 +9752,324 @@ body[data-tab="goals"] #viewGoals .feature-lab-close {
 @media (max-width: 700px) {
   body[data-tab="goals"] #viewGoals,
   body[data-tab="goals"] #viewGoals.active {
-    padding: 12px 12px calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 12px 12px calc(88px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
 </style>
 
 </body>
+
+<style id="goals-v2-css">
+
+/* Modal acima da BNI quando em Metas */
+body[data-tab="goals"] .modal-overlay,
+body[data-tab="goals"] #modalOverlay {
+  z-index: 1400 !important;
+}
+
+/* ===== Metas V2 layout (V.19-19 GROK) ===== */
+.goals-panel-v2 {
+  background: color-mix(in srgb, var(--panel, #121a16) 92%, #0a100d);
+  border: 1px solid color-mix(in srgb, var(--line, #2a3a32) 80%, transparent);
+  border-radius: 22px;
+  padding: 18px 16px 20px;
+  box-shadow: 0 18px 48px rgba(0,0,0,.28);
+}
+body:not(.dark-mode) .goals-panel-v2 {
+  background: var(--paper, #fff);
+  box-shadow: 0 12px 36px rgba(18,38,29,.10);
+}
+
+.goals-v2-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.goals-v2-kicker {
+  display: block;
+  font-size: 11px;
+  letter-spacing: .14em;
+  font-weight: 700;
+  color: var(--accent, #2ecc71);
+  margin-bottom: 4px;
+}
+.goals-v2-title {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--ink, #edf4ee);
+  letter-spacing: -0.02em;
+}
+.goals-v2-intro {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--ink) 62%, transparent);
+  max-width: 34ch;
+}
+.goals-v2-close {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  background: color-mix(in srgb, var(--panel, #1a2420) 80%, transparent);
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.goals-v2-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.goals-v2-section-head h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.goals-v2-add-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--accent, #2ecc71);
+  color: #062414;
+  cursor: pointer;
+}
+.goals-v2-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Goal card */
+.goal-card-v2 {
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--line, #2a3a32) 70%, transparent);
+  border-left: 4px solid var(--accent, #2ecc71);
+  background: color-mix(in srgb, var(--panel, #15201b) 94%, #0c1411);
+  padding: 14px 14px 12px;
+}
+body:not(.dark-mode) .goal-card-v2 {
+  background: #fff;
+}
+.goal-card-v2-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.goal-card-v2-icon { font-size: 18px; line-height: 1; }
+.goal-card-v2-title strong {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.goal-card-v2-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--accent, #2ecc71);
+}
+.goal-card-v2-badge.is-done {
+  background: color-mix(in srgb, #3b82f6 22%, transparent);
+  color: #60a5fa;
+}
+.goal-card-v2-badge.is-other {
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+}
+.goal-card-v2-pocket {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+  margin-bottom: 8px;
+}
+.goal-card-v2-pocket strong {
+  color: var(--accent, #2ecc71);
+  font-weight: 700;
+}
+.goal-card-v2-values {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.goal-card-v2-current {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.goal-card-v2-of {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.goal-card-v2-target {
+  font-size: 13px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--ink) 75%, transparent);
+}
+.goal-card-v2-track {
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.goal-card-v2-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #1faa59, #2ecc71);
+}
+.goal-card-v2-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  font-size: 11.5px;
+  color: color-mix(in srgb, var(--ink) 62%, transparent);
+  margin-bottom: 8px;
+}
+.goal-card-v2-dot { opacity: .5; }
+.goal-card-v2-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.goal-card-v2-pace {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent, #2ecc71);
+}
+.goal-card-v2-actions {
+  display: flex;
+  gap: 6px;
+}
+.goal-card-v2-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  background: color-mix(in srgb, var(--panel, #1a2420) 70%, transparent);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.goal-card-v2-btn:active { transform: scale(0.96); }
+
+/* Modal formulário Nova Meta */
+.goals-form-sheet {
+  width: min(94vw, 440px);
+  max-height: min(90vh, 820px);
+  border-radius: 22px 22px 18px 18px;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper, #0f1c17);
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+}
+.goals-form-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+.goals-form-head h3 {
+  margin: 2px 0 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+.goals-form-body {
+  padding: 14px 16px 8px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.goals-form-body label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: color-mix(in srgb, var(--ink) 65%, transparent);
+  margin-bottom: 5px;
+}
+.goals-form-body input,
+.goals-form-body select {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  background: color-mix(in srgb, var(--panel, #15201b) 90%, #0a100d);
+  color: var(--ink);
+  padding: 11px 12px;
+  font-size: 14px;
+}
+body:not(.dark-mode) .goals-form-body input,
+body:not(.dark-mode) .goals-form-body select {
+  background: #fff;
+}
+.goals-form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.goals-form-actions {
+  padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+.goals-form-save {
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  background: var(--accent, #2ecc71);
+  color: #062414;
+  cursor: pointer;
+}
+.goals-form-cancel {
+  width: 100%;
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+@media (max-width: 420px) {
+  .goals-form-row-2 { grid-template-columns: 1fr; }
+}
+</style>
+
 </html>
 
 <style>
