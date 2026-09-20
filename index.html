@@ -1305,6 +1305,7 @@ if (typeof Chart !== 'undefined') {
   Chart.defaults.font.family = 'Plus Jakarta Sans';
   Chart.defaults.font.weight = '500';
 }
+/* [JS 01] CONFIGURAÇÃO / FIREBASE / BOOTSTRAP BASE */
 const firebaseConfig = {
   apiKey: "AIzaSyADRwvRCaOB0Q8QvDeDfReVeMzK_m4KqlA",
   authDomain: "livro-caixa-54357.firebaseapp.com",
@@ -1355,6 +1356,7 @@ window.addEventListener('beforeunload', e => {
     });
   }
 
+/* [JS 10] INICIALIZAÇÃO / BOOTSTRAP */
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
@@ -1391,6 +1393,7 @@ document.addEventListener('DOMContentLoaded', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
+  /* [JS 02] ESTADO GLOBAL / COLLECTIONS */
   let banks = [];
   let categories = [];
   let entries = [];
@@ -1421,6 +1424,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let investmentMovementTarget = null; // { kind: 'aporte'|'resgate'|'rendimento', id }
   let catChartInstance = null;
 
+  /* [JS 03] UTILITÁRIOS / FORMATAÇÃO / DOM */
   const normalizeMoney = (n) => {
     const v = Number(n);
     if (!Number.isFinite(v)) return 0;
@@ -1474,6 +1478,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== V.19 — Ciclo financeiro personalizado (aplicado por enquanto só ao Orçamento; gráficos/resumos
   // continuam usando mês de calendário — expandir gradualmente, essa mudança em tudo de uma vez é arriscada) =====
   const FINANCIAL_CYCLE_STORAGE_KEY = 'livrocaixa_financial_cycle_start_day';
+  /* [JS 04] DOMÍNIO FINANCEIRO / CÁLCULOS / NORMALIZAÇÕES */
   function getFinancialCycleStartDay() {
     const stored = Number(localStorage.getItem(FINANCIAL_CYCLE_STORAGE_KEY));
     return (stored >= 1 && stored <= 28) ? stored : 1;
@@ -1531,6 +1536,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let sessionLastActivity = Date.now();
   let sessionSecurityStarted = false;
 
+  /* [JS 05] AUTENTICAÇÃO / SESSÃO */
   function clearSessionMemory() {
     pendingImport = [];
     editingEntryId = null;
@@ -1602,6 +1608,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scheduleSessionTimeout();
   }
 
+  /* [JS 07] BACKUP / IMPORTAÇÃO / EXPORTAÇÃO / DIAGNÓSTICOS */
   function markSingleActionButtons() {
     ['fSalvar','bSalvar','cSalvar','tSalvar','iSalvar','pSalvar','pmSalvar','imSalvar','importConfirm','btnFetchPrice','imFetchPrice','btnUpdateAllPrices','btnExportBackup','btnNovoBill','billSalvar','btnNovoCard','cardSalvar','purchaseSalvar'].forEach(id => {
       const btn = document.getElementById(id);
@@ -1875,6 +1882,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (b) b.textContent = text;
   }
 
+  /* [JS 09] EVENTOS / INTERAÇÕES / MODAIS */
   window.switchTabOriginal = function(tabName) {
     currentTab = tabName;
     try { document.body.dataset.tab = tabName || 'caixa'; } catch (e) {}
@@ -2122,6 +2130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  /* [JS 06] FIREBASE / STORAGE / SINCRONIZAÇÃO / MIGRAÇÕES */
   function flushSnapshotBuffer() {
     const names = Object.keys(snapshotBuffer);
     if (!names.length) return;
@@ -2614,6 +2623,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return icons[kind] || icons.wallet;
   }
 
+  /* [JS 08] RENDERIZAÇÃO / VIEWS */
   function renderBalances() {
     const strip = document.getElementById('balanceStrip');
     const bankTotal = totalBankBalance();
@@ -10416,3 +10426,4 @@ body:not(.dark-mode) .goals-form-body select {
      [END] PATCHES FINAIS / COMPATIBILIDADE
      Não mover sem validar dependências.
      ========================================================= -->
+</html>
