@@ -1851,15 +1851,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tabBtnCards')?.classList.toggle('active', tabName === 'cards');
     document.getElementById('tabBtnReceivables')?.classList.toggle('active', tabName === 'receivables');
     document.getElementById('tabBtnBills')?.classList.toggle('active', tabName === 'bills');
-    document.getElementById('viewDashboard').classList.toggle('active', tabName === 'dashboard');
-    document.getElementById('viewCaixa').classList.toggle('active', tabName === 'caixa');
-    document.getElementById('viewInvest').classList.toggle('active', tabName === 'invest');
-    document.getElementById('viewPockets').classList.toggle('active', tabName === 'pockets');
-    document.getElementById('viewCards').classList.toggle('active', tabName === 'cards');
+    document.getElementById('viewDashboard')?.classList.toggle('active', tabName === 'dashboard');
+    document.getElementById('viewCaixa')?.classList.toggle('active', tabName === 'caixa');
+    document.getElementById('viewInvest')?.classList.toggle('active', tabName === 'invest');
+    document.getElementById('viewPockets')?.classList.toggle('active', tabName === 'pockets');
+    document.getElementById('viewCards')?.classList.toggle('active', tabName === 'cards');
     document.getElementById('viewReceivables')?.classList.toggle('active', tabName === 'receivables');
-    document.getElementById('viewBills').classList.toggle('active', tabName === 'bills');
-    document.getElementById('viewProfile').classList.toggle('active', tabName === 'profile');
-    document.getElementById('balanceStrip').classList.toggle('section-hidden', tabName !== 'caixa');
+    document.getElementById('viewBills')?.classList.toggle('active', tabName === 'bills');
+    document.getElementById('viewProfile')?.classList.toggle('active', tabName === 'profile');
+    document.getElementById('balanceStrip')?.classList.toggle('section-hidden', tabName !== 'caixa');
     document.getElementById('universalPeriodBar')?.classList.toggle('section-hidden', !['caixa','invest','pockets'].includes(tabName));
     if (tabName === 'bills') renderBills();
     if (tabName === 'cards') renderCards();
@@ -2805,13 +2805,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function openEmojiFloat() {
     emojiFloatPending = document.getElementById('cIcon').value || '📦';
-    document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
+    document.getElementById('emojiFloatNativeBox')?.classList.remove('is-open');
     document.getElementById('emojiFloatNativeInput').value = '';
     renderEmojiFloatGrid();
-    document.getElementById('emojiFloatOverlay').classList.add('open');
+    document.getElementById('emojiFloatOverlay')?.classList.add('open');
   }
   function closeEmojiFloat() {
-    document.getElementById('emojiFloatOverlay').classList.remove('open');
+    document.getElementById('emojiFloatOverlay')?.classList.remove('open');
   }
   function initCategoryEmojiPicker() {
     document.getElementById('btnEmojiCatalog').onclick = openEmojiFloat;
@@ -2823,11 +2823,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const button = event.target.closest('[data-emoji]');
       if (!button) return;
       emojiFloatPending = button.dataset.emoji;
-      document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
+      document.getElementById('emojiFloatNativeBox')?.classList.remove('is-open');
       renderEmojiFloatGrid();
     };
     document.getElementById('emojiFloatKeyboard').onclick = () => {
-      document.getElementById('emojiFloatNativeBox').classList.add('is-open');
+      document.getElementById('emojiFloatNativeBox')?.classList.add('is-open');
       requestAnimationFrame(() => document.getElementById('emojiFloatNativeInput').focus({ preventScroll: true }));
     };
     document.getElementById('emojiFloatNativeUse').onclick = () => {
