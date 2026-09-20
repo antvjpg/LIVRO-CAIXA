@@ -32,6 +32,41 @@
   <link rel="stylesheet" href="./styles.css?v=19-19-goals7">
 </head>
 <body>
+<div id="authOverlay">
+  <div class="auth-box">
+    <h2 id="authTitle">Entrar</h2>
+    <p class="sub">Livro-Caixa · sincronizado</p>
+    <label for="authEmail">E-mail</label>
+    <input type="email" id="authEmail" placeholder="voce@email.com">
+    <label for="authPass">Senha</label>
+    <div class="pass-wrap">
+      <input type="password" id="authPass" placeholder="mínimo 6 caracteres">
+      <button type="button" class="pass-toggle" id="authPassToggle" aria-label="Mostrar senha">
+        <svg id="eyeOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg id="eyeClosed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </button>
+    </div>
+    <button class="primary" id="authSubmit" style="width:100%;margin-top:14px;">Entrar</button>
+    <div class="auth-error" id="authError"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin:16px 0;">
+      <div style="flex:1;height:1px;background:var(--line);"></div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);">ou</span>
+      <div style="flex:1;height:1px;background:var(--line);"></div>
+    </div>
+    <button type="button" id="authGoogle" style="width:100%;">Entrar com Google</button>
+    <div class="auth-toggle" id="authToggleWrap">
+      Não tem conta? <a id="authToggleLink">Criar conta</a>
+    </div>
+  </div>
+</div>
+
+<div id="syncOverlay" class="hidden">
+  <div class="sync-box">
+    <div class="sync-spinner"></div>
+    <p id="syncOverlayText">Sincronizando seus dados...</p>
+  </div>
+</div>
+
 
 
 
@@ -2015,7 +2050,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     realtimeUnsubscribers.forEach(unsub => unsub());
     realtimeUnsubscribers = [];
-    let firstLoadDone = false;
     await loadDiagnosticLog();
     logInfo('Carregamento de dados', 'Início da sincronização', 'Em andamento', 'Leitura das coleções do Livro-Caixa iniciada.', null, operation);
 
@@ -2100,6 +2134,7 @@ document.addEventListener('DOMContentLoaded', () => {
       render();
       renderBills();
       firstLoadDone = true;
+      renderBalances();
       logInfo('Carregamento de dados', 'Sincronização concluída', 'Sucesso', `${COLLECTIONS.length} coleções carregadas.`, null, operation);
     } catch (err) {
       console.error(err);
