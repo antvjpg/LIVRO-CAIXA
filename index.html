@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GPT) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-19 (GROK) — Metas isolada full-screen -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-18-ui10">
+  <link rel="stylesheet" href="./styles.css?v=19-19-goals1">
 </head>
 <body>
 
@@ -9634,73 +9634,88 @@ document.addEventListener('click', (event) => {
 
 
 <style>
-/* Metas — aba própria */
-#viewGoals {
-  width: 100%;
-  min-height: 420px;
+/* Metas — isolamento absoluto (V.19-19 GROK) */
+/* Fora de goals: esconder completamente */
+#viewGoals:not(.active),
+body:not([data-tab="goals"]) #viewGoals {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  pointer-events: none !important;
 }
 
-#viewGoals .goals-page {
-  width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
-}
-
-#viewGoals .goals-page > #panelGoals {
-  width: 100%;
-}
-
-@media (max-width: 700px) {
-  #viewGoals .goals-page {
-    width: 100%;
-  }
-}
-</style>
-
-
-<style>
-/* METAS — TELA EXCLUSIVA / SEM VAZAMENTO DO APP */
+/* Em goals: tela fixa full-viewport, por cima de tudo */
 body[data-tab="goals"] {
-  overflow-x: hidden;
+  overflow: hidden !important;
 }
 
-body[data-tab="goals"] > .app-header {
+body[data-tab="goals"] > header.app-header,
+body[data-tab="goals"] header.app-header,
+body[data-tab="goals"] > main,
+body[data-tab="goals"] main,
+body[data-tab="goals"] .mobile-bottom-nav,
+body[data-tab="goals"] .fab-root,
+body[data-tab="goals"] #fabRoot,
+body[data-tab="goals"] .quick-fab,
+body[data-tab="goals"] #btnFabMenu {
   display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
-body[data-tab="goals"] > main {
-  display: none !important;
-}
-
-body[data-tab="goals"] #viewGoals {
+body[data-tab="goals"] #viewGoals,
+body[data-tab="goals"] #viewGoals.active {
   display: block !important;
-  position: relative;
-  width: 100%;
-  min-height: calc(100vh - 72px);
-  min-height: calc(100dvh - 72px);
-  margin: 0;
-  padding: 24px 20px 100px;
-  box-sizing: border-box;
-  overflow: visible;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1200 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 16px 16px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  background: var(--paper, #0f1c17) !important;
+  color: var(--ink, #edf4ee);
+}
+
+body.dark-mode[data-tab="goals"] #viewGoals,
+body.dark-mode[data-tab="goals"] #viewGoals.active {
+  background: var(--paper, #0f1c17) !important;
 }
 
 body[data-tab="goals"] #viewGoals .goals-page {
   width: 100%;
-  max-width: 1180px;
-  min-height: calc(100vh - 120px);
-  min-height: calc(100dvh - 120px);
+  max-width: 720px;
   margin: 0 auto;
+  min-height: auto;
   padding: 0;
   box-sizing: border-box;
 }
 
-body[data-tab="goals"] #viewGoals .goals-page > #panelGoals {
+body[data-tab="goals"] #viewGoals .goals-page > #panelGoals,
+body[data-tab="goals"] #viewGoals #panelGoals {
   width: 100%;
-  max-width: 1180px;
+  max-width: 720px;
   position: relative;
   display: block;
   margin: 0 auto;
   box-sizing: border-box;
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  max-height: none;
+  overflow: visible;
 }
 
 body[data-tab="goals"] #viewGoals .feature-lab-close {
@@ -9708,19 +9723,9 @@ body[data-tab="goals"] #viewGoals .feature-lab-close {
 }
 
 @media (max-width: 700px) {
-  body[data-tab="goals"] #viewGoals {
-    min-height: calc(100vh - 64px);
-    min-height: calc(100dvh - 64px);
-    padding: 14px 12px 90px;
-  }
-
-  body[data-tab="goals"] #viewGoals .goals-page {
-    min-height: calc(100vh - 100px);
-    min-height: calc(100dvh - 100px);
-  }
-
-  body[data-tab="goals"] #viewGoals .goals-page > #panelGoals {
-    border-radius: 18px;
+  body[data-tab="goals"] #viewGoals,
+  body[data-tab="goals"] #viewGoals.active {
+    padding: 12px 12px calc(20px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
 </style>
