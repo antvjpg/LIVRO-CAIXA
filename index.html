@@ -1360,6 +1360,8 @@ firebase.firestore().enablePersistence().catch(err => {
 const db = firebase.firestore();
 
 let currentUser = null;
+  let firstLoadDone = false;
+  let loadGeneration = 0;
 let isSignupMode = false;
 let saveTimer = null;
 let pendingSaveCount = 0;
@@ -2041,6 +2043,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadState() {
     const operation = beginLogOperation('Carregamento de dados', 'Sincronização');
+    const loadUserUid = currentUser?.uid || null;
+    const thisLoadGeneration = ++loadGeneration;
+    firstLoadDone = false;
     const defaultCats = ['Alimentação', 'Moradia', 'Transporte', 'Lazer', 'Saúde', 'Salário', 'Renda Extra', 'Transferência', 'Outros'];
     const syncOverlay = document.getElementById('syncOverlay');
     const syncOverlayText = document.getElementById('syncOverlayText');
@@ -2060,6 +2065,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await Promise.all(COLLECTIONS.map(name => new Promise((resolve, reject) => {
         let resolved = false;
         const unsub = colRef(name).onSnapshot(snap => {
+          if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
           const arr = snap.docs.map(d => d.data());
           if (resolved && pendingSaveCount > 0) {
             snapshotBuffer[name] = { arr, hasPendingWrites: snap.metadata.hasPendingWrites };
@@ -2080,6 +2086,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         realtimeUnsubscribers.push(unsub);
       })));
+
+      if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
 
       const hasSubData = COLLECTIONS.some(name => getStateArray(name).length > 0);
 
@@ -2130,6 +2138,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (changed) await persistNow(operation);
 
+      if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
+
       populateFilterControls(true);
       render();
       renderBills();
@@ -2141,9 +2151,11 @@ document.addEventListener('DOMContentLoaded', () => {
       logSyncError('carregamento de dados', err, operation);
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
-      if (syncOverlay) syncOverlay.classList.add('hidden');
-      document.body.classList.remove('is-data-loading');
-      markValueRefresh();
+      if (thisLoadGeneration === loadGeneration && currentUser?.uid === loadUserUid) {
+        if (syncOverlay) syncOverlay.classList.add('hidden');
+        document.body.classList.remove('is-data-loading');
+        markValueRefresh();
+      }
     }
   }
 
@@ -9535,6 +9547,7 @@ document.getElementById('tSalvar').onclick = async () => {
   markSingleActionButtons();
 
   auth.onAuthStateChanged(user => {
+    loadGeneration++;
     currentUser = user;
     if (user) logInfo('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
     else if (typeof diagnosticLog !== 'undefined' && diagnosticLog.length) logInfo('Autenticação','Sessão encerrada','Sucesso','Sessão atual encerrada.');
