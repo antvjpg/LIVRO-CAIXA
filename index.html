@@ -1599,7 +1599,7 @@ document.addEventListener('DOMContentLoaded', () => {
       schemaVersion: BACKUP_SCHEMA_VERSION,
       app: 'livro-caixa',
       exportedAt: new Date().toISOString(),
-      data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables, budgets, goals, cards, purchases, featureSettings, diagnosticLog: diagnosticLog.slice(0, LOG_LIMIT) }
+      data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables, budgets, goals, invoiceLaunches, cards, purchases, featureSettings, diagnosticLog: diagnosticLog.slice(0, LOG_LIMIT) }
     };
   }
 
@@ -1629,6 +1629,7 @@ document.addEventListener('DOMContentLoaded', () => {
       budgets: Array.isArray(data.budgets) ? data.budgets : [],
       featureSettings: data.featureSettings && typeof data.featureSettings === 'object' ? data.featureSettings : null,
       goals: Array.isArray(data.goals) ? data.goals : [],
+      invoiceLaunches: Array.isArray(data.invoiceLaunches) ? data.invoiceLaunches : [],
       cards: Array.isArray(data.cards) ? data.cards : [],
       purchases: Array.isArray(data.purchases) ? data.purchases : [],
       diagnosticLog: Array.isArray(data.diagnosticLog) ? data.diagnosticLog : []
@@ -1691,7 +1692,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return ok;
     });
     const diagnosticLog = data.diagnosticLog.filter(item => item && typeof item === 'object' && typeof item.type === 'string' && typeof item.module === 'string').slice(0, LOG_LIMIT);
-    return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables: Array.isArray(data.receivables) ? data.receivables : [], budgets, goals: data.goals || [], cards, purchases, featureSettings: data.featureSettings || null, diagnosticLog }, dropped };
+    return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables: Array.isArray(data.receivables) ? data.receivables : [], budgets, goals: data.goals || [], invoiceLaunches: Array.isArray(data.invoiceLaunches) ? data.invoiceLaunches : [], cards, purchases, featureSettings: data.featureSettings || null, diagnosticLog }, dropped };
   }
 
   // Tema Escuro / Claro
@@ -1892,7 +1893,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const COLLECTIONS = ['banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog', 'recurringBills', 'receivables', 'budgets', 'goals', 'cards', 'purchases', 'invoiceLaunches'];
-  let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
+  let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
   let realtimeUnsubscribers = [];
 
   function arrToMap(arr) {
@@ -1931,14 +1932,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.movePocket = (id, direction) => moveDisplayItem('pockets', id, direction);
 
   function currentStateSnapshot() {
-    return { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables, budgets, goals, cards, purchases };
+    return { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables, budgets, goals, invoiceLaunches, cards, purchases };
   }
 
   function setLastSyncedFromCurrentState() {
     const s = currentStateSnapshot();
     lastSynced = {
       banks: arrToMap(s.banks), categories: arrToMap(s.categories), entries: arrToMap(s.entries),
-      investments: arrToMap(s.investments), pockets: arrToMap(s.pockets), yieldsLog: arrToMap(s.yieldsLog), recurringBills: arrToMap(s.recurringBills), receivables: arrToMap(s.receivables), budgets: arrToMap(s.budgets), goals: arrToMap(s.goals), cards: arrToMap(s.cards), purchases: arrToMap(s.purchases)
+      investments: arrToMap(s.investments), pockets: arrToMap(s.pockets), yieldsLog: arrToMap(s.yieldsLog), recurringBills: arrToMap(s.recurringBills), receivables: arrToMap(s.receivables), budgets: arrToMap(s.budgets), goals: arrToMap(s.goals), invoiceLaunches: arrToMap(s.invoiceLaunches), cards: arrToMap(s.cards), purchases: arrToMap(s.purchases)
     };
   }
 
@@ -2019,9 +2020,10 @@ document.addEventListener('DOMContentLoaded', () => {
         receivables = data.receivables || [];
         budgets = data.budgets || [];
         goals = data.goals || [];
+        invoiceLaunches = data.invoiceLaunches || [];
         cards = data.cards || [];
         purchases = data.purchases || [];
-        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
+        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
         if (data.banks || data.entries) {
           syncOverlayText.textContent = 'Migrando seus dados para a nova estrutura (só acontece uma vez)...';
         }
@@ -8721,7 +8723,7 @@ document.getElementById('tSalvar').onclick = async () => {
   async function encryptBackupPayload(payload, password) { if (String(password || '').length < 6) throw new Error('A senha do backup deve ter pelo menos 6 caracteres.'); const salt = crypto.getRandomValues(new Uint8Array(16)); const iv = crypto.getRandomValues(new Uint8Array(12)); const key = await deriveBackupKey(password, salt); const encoded = new TextEncoder().encode(JSON.stringify(payload)); const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded); return { type: 'livro-caixa-encrypted-backup', version: 1, algorithm: 'AES-GCM/PBKDF2-SHA-256', iterations: 120000, salt: bytesToBase64(salt), iv: bytesToBase64(iv), ciphertext: bytesToBase64(new Uint8Array(cipher)), createdAt: new Date().toISOString() }; }
   async function decryptBackupPayload(envelope, password) { if (!envelope || envelope.type !== 'livro-caixa-encrypted-backup' || envelope.version !== 1) throw new Error('Envelope de backup criptografado inválido.'); const key = await deriveBackupKey(password, base64ToBytes(envelope.salt)); const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: base64ToBytes(envelope.iv) }, key, base64ToBytes(envelope.ciphertext)); return JSON.parse(new TextDecoder().decode(plain)); }
   function downloadJsonFile(payload, filename) { const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
-  async function restoreValidatedBackup(payload, sourceLabel = 'Backup') { if (!isValidBackupPayload(payload)) throw new Error('Arquivo de backup inválido ou incompatível com esta versão.'); const data = extractBackupData(payload); const { data: clean, dropped } = sanitizeBackupData(data); const totalDropped = Object.values(dropped).reduce((a, b) => a + b, 0); if (totalDropped > 0 && !confirm(`${totalDropped} registro(s) incompleto(s) serão ignorados. Deseja continuar?`)) return false; banks = clean.banks.filter(bk => bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral'); categories = clean.categories; entries = clean.entries; investments = sortDisplayOrder(clean.investments); pockets = sortDisplayOrder(clean.pockets); ensureDisplayOrder(investments); ensureDisplayOrder(pockets); yieldsLog = clean.yieldsLog; recurringBills = clean.recurringBills || []; receivables = clean.receivables || []; budgets = clean.budgets || []; goals = clean.goals || []; cards = clean.cards || []; purchases = clean.purchases || []; if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); } diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT)); persistDiagnosticLogLocally(); normalizePockets(); await persistNow(); populateFilterControls(true); render(); logInfo('Importação', 'Restaurar backup', 'Sucesso', `${sourceLabel} restaurado após validação e sanitização.`, { schemaVersion: payload.schemaVersion || 'criptografado', dropped }); return true; }
+  async function restoreValidatedBackup(payload, sourceLabel = 'Backup') { if (!isValidBackupPayload(payload)) throw new Error('Arquivo de backup inválido ou incompatível com esta versão.'); const data = extractBackupData(payload); const { data: clean, dropped } = sanitizeBackupData(data); const totalDropped = Object.values(dropped).reduce((a, b) => a + b, 0); if (totalDropped > 0 && !confirm(`${totalDropped} registro(s) incompleto(s) serão ignorados. Deseja continuar?`)) return false; banks = clean.banks.filter(bk => bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral'); categories = clean.categories; entries = clean.entries; investments = sortDisplayOrder(clean.investments); pockets = sortDisplayOrder(clean.pockets); ensureDisplayOrder(investments); ensureDisplayOrder(pockets); yieldsLog = clean.yieldsLog; recurringBills = clean.recurringBills || []; receivables = clean.receivables || []; budgets = clean.budgets || []; goals = clean.goals || []; invoiceLaunches = clean.invoiceLaunches || []; cards = clean.cards || []; purchases = clean.purchases || []; if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); } diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT)); persistDiagnosticLogLocally(); normalizePockets(); await persistNow(); populateFilterControls(true); render(); logInfo('Importação', 'Restaurar backup', 'Sucesso', `${sourceLabel} restaurado após validação e sanitização.`, { schemaVersion: payload.schemaVersion || 'criptografado', dropped }); return true; }
 
   document.getElementById('btnExportBackup').onclick = () => {
     const payload = buildBackupPayload();
@@ -8777,6 +8779,7 @@ document.getElementById('tSalvar').onclick = async () => {
         recurringBills = clean.recurringBills || [];
         budgets = clean.budgets || [];
         goals = clean.goals || [];
+        invoiceLaunches = clean.invoiceLaunches || [];
         normalizeGoals();
         cards = clean.cards || [];
         purchases = clean.purchases || [];
@@ -9325,7 +9328,8 @@ document.getElementById('tSalvar').onclick = async () => {
   }
 
   function setAuthError(msg) {
-    document.getElementById('authError').textContent = msg || '';
+    const el = document.getElementById('authError');
+    if (el) el.textContent = msg || '';
   }
 
   function translateAuthError(code) {
@@ -9462,7 +9466,7 @@ document.getElementById('tSalvar').onclick = async () => {
       if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
       realtimeUnsubscribers.forEach(unsub => unsub());
       realtimeUnsubscribers = [];
-      lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, cards: {}, purchases: {} };
+      lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
       banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
       clearSessionMemory();
       if (syncOverlay) syncOverlay.classList.add('hidden');
