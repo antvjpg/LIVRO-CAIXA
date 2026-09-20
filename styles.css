@@ -5661,7 +5661,7 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{display:none!important;}
 .dashboard-gemini-host #btnGeminiDiagnostic{width:100%;min-height:44px;border-radius:999px;margin-top:10px;}
 
 .period-bar{gap:6px!important;}
-.period-bar button,.period-nav,.period-all,.period-picker-button{min-height:34px!important;padding:6px 10px!important;}
+.period-bar button,.period-nav,.period-all,.period-picker-button{min-height:32px!important;padding:5px 10px!important;}
 #cashflowMiniSummary,.cashflow-mini-summary{padding:10px 12px!important;}
 .cashflow-mini-metrics{gap:6px!important;}
 .cashflow-mini-metrics>div{padding:8px!important;}
