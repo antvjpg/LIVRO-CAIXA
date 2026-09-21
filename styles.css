@@ -54,6 +54,7 @@
     --overlay:rgba(0,0,0,0.78);
     --shadow:rgba(0,0,0,0.34);
     --hover-soft:rgba(255,255,255,0.06);
+      --action-border:color-mix(in srgb,var(--accent) 35%,var(--line));
   }
   body.dark-mode[data-dark-theme="3"] {
     --paper:#141410; --paper-2:#1E1F17; --surface:#1E1F17; --surface-raised:#292A20; --surface-accent:#403126;
@@ -743,7 +744,7 @@
   .invest-box {
     border: 1.5px solid var(--line);
     background: var(--paper-2);
-    padding: 16px;
+    padding: 14px;
     border-radius: 2px;
   }
   .invest-box h4 {
@@ -1363,7 +1364,7 @@
     .beta-icon-button { width:28px; height:28px; min-height:28px; padding:0; border:1px solid #C7DDCD; border-radius:10px; background:#E7F1E9; color:#1E6C4B; font-size:0; box-shadow:none; transition:transform .14s cubic-bezier(.23,1,.32,1),background .14s ease,color .14s ease,border-color .14s ease; }
     .beta-icon-button::after { display:block; line-height:26px; }
     .beta-icon-button.edit::after { content:""; display:block; width:13px; height:4px; border:2px solid currentColor; border-radius:1px; transform:rotate(-45deg); box-sizing:border-box; margin:11px auto 0; }
-    .beta-icon-button.move::after { content:"↕"; font-size:19px; font-weight:700; }
+    .beta-icon-button.move { background:var(--green-soft); border-color:var(--action-border); color:var(--accent); } .beta-icon-button.move::after { content:"↕"; font-size:19px; font-weight:700; }
     .beta-icon-button.delete { border-color:#F0D8D1; background:#FFF3F0; color:#B3432B; }
     .beta-icon-button.delete::after { content:"×"; font-size:20px; font-weight:500; }
     .beta-icon-button:hover,.beta-icon-button:focus-visible { background:#327957; border-color:#327957; color:#fffefa; }
@@ -6382,7 +6383,7 @@ body[data-tab="profile"] #viewProfile.active{
   border:1px solid var(--line);
   border-radius:18px;
   background:var(--surface);
-  padding:16px;
+  padding:14px;
   display:flex;
   flex-direction:column;
   gap:10px;
@@ -7556,4 +7557,196 @@ body:not(.dark-mode) .goals-form-body select {
   display: inline-block;
   font-size: 18px;
   line-height: 1;
+}
+
+
+/* Drag-and-drop intuitivo para investimentos e caixinhas */
+.drag-handle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid color-mix(
+    in srgb,
+    var(--line) 85%,
+    transparent
+  );
+  border-radius: 9px;
+  background: color-mix(
+    in srgb,
+    var(--paper) 82%,
+    transparent
+  );
+  color: var(--muted);
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  z-index: 2;
+}
+
+.drag-handle .fi {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(
+    in srgb,
+    var(--accent) 10%,
+    var(--paper)
+  );
+}
+
+.invest-grid > .invest-box,
+.invest-grid > .asset-card {
+  position: relative;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  transition:
+    transform .18s ease,
+    opacity .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
+}
+
+.invest-grid > .invest-box:active,
+.invest-grid > .asset-card:active {
+  cursor: grabbing;
+}
+
+.invest-grid.is-dragging-active > .invest-box,
+.invest-grid.is-dragging-active > .asset-card {
+  transition: none !important;
+}
+
+.invest-grid > .invest-box.is-dragging,
+.invest-grid > .asset-card.is-dragging {
+  opacity: .96;
+  transform: scale(.985);
+  border-color: var(--accent);
+  box-shadow:
+    0 18px 36px color-mix(
+      in srgb,
+      var(--ink) 22%,
+      transparent
+    );
+  pointer-events: none;
+}
+
+.invest-grid > .invest-box.drop-target,
+.invest-grid > .asset-card.drop-target {
+  border-color: var(--accent);
+}
+
+.drag-placeholder {
+  min-width: 0;
+  border: 2px dashed var(--accent);
+  border-radius: inherit;
+  background: color-mix(
+    in srgb,
+    var(--accent) 8%,
+    transparent
+  );
+  box-sizing: border-box;
+  position: relative;
+  animation: dragPlaceholderPulse .7s ease-in-out infinite alternate;
+}
+
+.drag-placeholder::after {
+  content: 'SOLTE AQUI';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  pointer-events: none;
+}
+
+@keyframes dragPlaceholderPulse {
+  from {
+    opacity: .55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invest-grid > .invest-box,
+  .invest-grid > .asset-card,
+  .drag-placeholder {
+    transition: none;
+    animation: none;
+  }
+}
+
+
+#investGrid .asset-card-name-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
+
+#investGrid .asset-card-name-row .asset-card-name{
+  min-width:0;
+  flex:0 1 auto;
+}
+
+#investGrid .asset-card-name-row .asset-card-tag{
+  flex:0 0 auto !important;
+}
+
+
+/* Ajustes LIVRO-CAIXA: filtro e seletor múltiplo de movimentações */
+.ledger-filter-button{
+  min-width:40px!important;
+  min-height:40px!important;
+  width:40px!important;
+  height:40px!important;
+  padding:0!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:0!important;
+}
+.ledger-filter-button i{
+  font-size:18px!important;
+  line-height:1!important;
+}
+
+.panel#panelFiltros .filter-choice-sheet{
+  left:50%!important;
+  right:auto!important;
+  bottom:50%!important;
+  width:min(92%,420px)!important;
+  max-height:78%!important;
+  transform:translate(-50%,50%) scale(.98)!important;
+  border-radius:20px!important;
+}
+.panel#panelFiltros .filter-choice-sheet.open{
+  transform:translate(-50%,50%) scale(1)!important;
+}
+.panel#panelFiltros .filter-choice-option span{
+  display:block!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  color:var(--ink)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  text-align:left!important;
 }

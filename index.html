@@ -79,7 +79,7 @@
      Header / usuário / notificações / tema / PWA
      ========================================================= -->
 <header class="app-header">
-  <button type="button" id="btnOpenDrawer" class="header-icon-button" aria-label="Abrir menu" title="Menu">☰</button>
+  <button type="button" id="btnOpenDrawer" class="header-icon-button" aria-label="Abrir menu" title="Menu"><i class="fi fi-rr-menu-burger" aria-hidden="true"></i></button>
   <div class="app-brand">
     <h1>Livro-Caixa</h1>
     <div class="subtitle" id="todayLabel">—</div>
@@ -98,14 +98,14 @@
     <nav class="drawer-nav" aria-label="Navegação principal">
       <button type="button" data-drawer-action="cards"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span> Cartões</button>
       <button type="button" data-drawer-action="bills"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span> Contas & Calendário</button>
-      <button type="button" data-drawer-action="receivables"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-tr-arrow-down-small-big" aria-hidden="true"></i></span> Valores a Receber</button>
+      <button type="button" data-drawer-action="receivables"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-arrow-down-triangle-square" aria-hidden="true"></i></span> Valores a Receber</button>
       <button type="button" data-drawer-action="pockets"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span> Caixinhas</button>
-      <button type="button" data-drawer-action="goals"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><path d="m15.5 8.5 4-4"/><path d="M16.5 4.5H20v3.5"/></svg></span> Metas</button>
+      <button type="button" data-drawer-action="goals"><span><i class="fi fi-rr-bullseye-arrow" aria-hidden="true"></i></span> Metas</button>
       <button type="button" data-drawer-action="investments"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span> Investimentos</button>
     </nav>
     <div class="drawer-divider"></div>
     <div class="drawer-nav drawer-nav-secondary">
-      <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-tr-blood-test-tube" aria-hidden="true"></i></span> LABS</button>
+      <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rs-blood-test-tube" aria-hidden="true"></i></span> LABS</button>
       <button type="button" data-drawer-action="diagnostico"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 3v2h6V3"/><path d="M9 9.5h6M9 13h6M9 16.5h3.5"/></svg></span> Diagnóstico Geral (LOG)</button>
     </div>
   </aside>
@@ -130,9 +130,9 @@
     <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')"><i class="fi fi-rr-book" aria-hidden="true"></i> Livro-Caixa</button>
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i> Caixinhas</button>
     <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')">💳 Cartões</button>
-    <button class="nav-tab" id="tabBtnReceivables" onclick="switchTab('receivables')"><i class="fi fi-tr-arrow-down-small-big" aria-hidden="true"></i> A Receber</button>
+    <button class="nav-tab" id="tabBtnReceivables" onclick="switchTab('receivables')"><i class="fi fi-rr-arrow-down-triangle-square" aria-hidden="true"></i> A Receber</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i> Investimentos</button>
-    <button class="nav-tab" id="tabBtnGoals" onclick="switchTab('goals')"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><path d="m15.5 8.5 4-4"/><path d="M16.5 4.5H20v3.5"/></svg> Metas</button>
+    <button class="nav-tab" id="tabBtnGoals" onclick="switchTab('goals')"><i class="fi fi-rr-bullseye-arrow" aria-hidden="true"></i> Metas</button>
   </div>
 
   <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
@@ -252,7 +252,7 @@
       <div class="ledger-month">
         <span id="ledgerLabel">Lançamentos</span>
         <span id="ledgerCount">0</span>
-        <button type="button" id="btnOpenFilters" class="ledger-filter-button" aria-label="Filtrar movimentações">⌘ Filtros</button>
+        <button type="button" id="btnOpenFilters" class="ledger-filter-button" aria-label="Filtrar movimentações" title="Filtrar movimentações"><i class="fi fi-rr-filter-list" aria-hidden="true"></i></button>
       </div>
 
       <div class="ledger-scroll-area">
@@ -1245,11 +1245,11 @@
           <input type="text" id="goalValorObjetivo" data-money="true" placeholder="R$ 0,00">
         </div>
         <div>
-          <label for="goalCaixinha">CAIXINHA VINCULADA</label>
+          <label for="goalCaixinha">VÍNCULO FINANCEIRO</label>
           <select id="goalCaixinha">
-            <option value="">Nenhuma — planejamento sem saldo</option>
+            <option value="">Nenhum — planejamento sem saldo</option>
           </select>
-          <span class="hint">Quando vinculada, o progresso usa o saldo real da Caixinha.</span>
+          <span class="hint">Você pode vincular a uma conta, Caixinha ou investimento. O progresso usa o saldo/valor real.</span>
         </div>
         <div class="goals-form-row-2">
           <div>
@@ -1980,6 +1980,439 @@ document.addEventListener('DOMContentLoaded', () => {
   window.moveInvestment = (id, direction) => moveDisplayItem('investments', id, direction);
   window.movePocket = (id, direction) => moveDisplayItem('pockets', id, direction);
 
+  async function reorderDisplayItem(collectionName, id, targetIndex) {
+    const list = collectionName === 'investments' ? investments : pockets;
+
+    ensureDisplayOrder(list);
+
+    const ordered = sortDisplayOrder(list);
+    const fromIndex = ordered.findIndex(item => item.id === id);
+
+    if (
+      fromIndex < 0 ||
+      targetIndex < 0 ||
+      targetIndex >= ordered.length ||
+      fromIndex === targetIndex
+    ) {
+      return false;
+    }
+
+    const previousOrder = list.map(item => ({
+      id: item.id,
+      order: item.order
+    }));
+
+    const [moved] = ordered.splice(fromIndex, 1);
+    ordered.splice(targetIndex, 0, moved);
+
+    ordered.forEach((item, position) => {
+      item.order = position;
+    });
+
+    list.sort((a, b) =>
+      (Number(a.order) || 0) - (Number(b.order) || 0)
+    );
+
+    render();
+
+    try {
+      await persistAll();
+
+      logInfo(
+        'Organização',
+        collectionName === 'investments'
+          ? 'Reordenação de investimento'
+          : 'Reordenação de caixinha',
+        'Sucesso',
+        `Item movido para a posição ${targetIndex + 1}.`
+      );
+
+      return true;
+    } catch (err) {
+      previousOrder.forEach(({ id: previousId, order }) => {
+        const item = list.find(entry => entry.id === previousId);
+        if (item) item.order = order;
+      });
+
+      list.sort((a, b) =>
+        (Number(a.order) || 0) - (Number(b.order) || 0)
+      );
+
+      render();
+      logSyncError('reordenação', err);
+
+      return false;
+    }
+  }
+
+  function setupDisplayCardDrag(container, collectionName) {
+    if (!container || container.dataset.dragBound === '1') return;
+
+    container.dataset.dragBound = '1';
+
+    let state = null;
+
+    const HOLD_MS = 220;
+
+    const getCards = () =>
+      Array.from(container.children).filter(card =>
+        card.matches('.invest-box, .asset-card') &&
+        !card.classList.contains('drag-placeholder') &&
+        card !== state?.card
+      );
+
+    const removePlaceholder = () => {
+      if (state?.placeholder?.parentNode) {
+        state.placeholder.parentNode.removeChild(state.placeholder);
+      }
+    };
+
+    const clearDrag = () => {
+      if (!state) return;
+
+      if (state.timer) {
+        clearTimeout(state.timer);
+      }
+
+      if (state.card) {
+        state.card.classList.remove('is-dragging');
+        state.card.style.transform = '';
+        state.card.style.width = '';
+        state.card.style.height = '';
+        state.card.style.position = '';
+        state.card.style.left = '';
+        state.card.style.top = '';
+        state.card.style.zIndex = '';
+      }
+
+      removePlaceholder();
+
+    container.classList.remove('is-dragging-active');
+
+      getCards().forEach(card => {
+        card.classList.remove('drop-target');
+      });
+
+      state = null;
+    };
+
+    const createPlaceholder = card => {
+      const rect = card.getBoundingClientRect();
+      const placeholder = document.createElement('div');
+
+      placeholder.className = 'drag-placeholder';
+      placeholder.style.width = `${rect.width}px`;
+      placeholder.style.height = `${rect.height}px`;
+      placeholder.setAttribute('aria-hidden', 'true');
+
+      return placeholder;
+    };
+
+    const getInsertionIndex = (cards, pointerX, pointerY) => {
+      if (!cards.length) return 0;
+
+      /*
+       * O card arrastado já foi removido da lista de candidatos por getCards().
+       *
+       * O cálculo anterior escolhia o centro mais próximo. Em uma fronteira
+       * entre dois cards, pequenas variações do ponteiro podiam trocar o
+       * destino continuamente.
+       *
+       * Agora usamos zonas determinísticas:
+       * - agrupamento visual por linha;
+       * - separação vertical entre linhas;
+       * - ponto médio horizontal de cada card.
+       */
+
+      const rows = [];
+      const ROW_TOLERANCE = 12;
+
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const centerY = rect.top + rect.height / 2;
+
+        let row = rows.find(item =>
+          Math.abs(item.centerY - centerY) <= ROW_TOLERANCE
+        );
+
+        if (!row) {
+          row = {
+            centerY,
+            cards: []
+          };
+
+          rows.push(row);
+        }
+
+        row.cards.push({
+          card,
+          rect
+        });
+
+        row.centerY =
+          row.cards.reduce(
+            (sum, item) =>
+              sum + item.rect.top + item.rect.height / 2,
+            0
+          ) / row.cards.length;
+      });
+
+      rows.sort((a, b) => a.centerY - b.centerY);
+
+      rows.forEach(row => {
+        row.cards.sort((a, b) => a.rect.left - b.rect.left);
+      });
+
+      if (!rows.length) return 0;
+
+      let selectedRow = rows[0];
+
+      for (let i = 0; i < rows.length - 1; i++) {
+        const current = rows[i];
+        const next = rows[i + 1];
+        const boundary = (current.centerY + next.centerY) / 2;
+
+        if (pointerY < boundary) {
+          selectedRow = current;
+          break;
+        }
+
+        selectedRow = next;
+      }
+
+      const firstCard = selectedRow.cards[0];
+      const lastCard =
+        selectedRow.cards[selectedRow.cards.length - 1];
+
+      if (pointerY < selectedRow.centerY) {
+        const globalIndex = cards.indexOf(firstCard.card);
+        return Math.max(0, globalIndex);
+      }
+
+      for (const item of selectedRow.cards) {
+        const centerX =
+          item.rect.left + item.rect.width / 2;
+
+        if (pointerX < centerX) {
+          const globalIndex = cards.indexOf(item.card);
+          return Math.max(0, globalIndex);
+        }
+      }
+
+      const globalIndex = cards.indexOf(lastCard.card);
+
+      return Math.min(
+        cards.length,
+        globalIndex + 1
+      );
+    };
+
+    const STABLE_TARGET_MS = 70;
+
+    const applyPlaceholderTarget = insertionIndex => {
+      if (!state?.placeholder) return;
+
+      const cards = getCards();
+      const targetCard = cards[insertionIndex];
+
+      state.targetIndex = insertionIndex;
+
+      if (targetCard) {
+        targetCard.before(state.placeholder);
+        targetCard.classList.add('drop-target');
+      } else {
+        container.appendChild(state.placeholder);
+      }
+
+      cards.forEach(card => {
+        if (card !== targetCard) {
+          card.classList.remove('drop-target');
+        }
+      });
+    };
+
+    const updatePlaceholder = (pointerX, pointerY) => {
+      if (!state?.placeholder) return;
+
+      const cards = getCards();
+      const insertionIndex =
+        getInsertionIndex(cards, pointerX, pointerY);
+
+      if (insertionIndex === state.targetIndex) {
+        state.pendingTargetIndex = -1;
+
+        if (state.pendingTargetTimer) {
+          clearTimeout(state.pendingTargetTimer);
+          state.pendingTargetTimer = null;
+        }
+
+        return;
+      }
+
+      if (insertionIndex === state.pendingTargetIndex) {
+        return;
+      }
+
+      state.pendingTargetIndex = insertionIndex;
+
+      if (state.pendingTargetTimer) {
+        clearTimeout(state.pendingTargetTimer);
+      }
+
+      state.pendingTargetTimer = setTimeout(() => {
+        if (!state?.placeholder) return;
+
+        if (state.pendingTargetIndex !== insertionIndex) {
+          return;
+        }
+
+        state.pendingTargetTimer = null;
+        state.pendingTargetIndex = -1;
+
+        applyPlaceholderTarget(insertionIndex);
+      }, STABLE_TARGET_MS);
+    };
+
+    container.addEventListener('pointerdown', event => {
+      const handle = event.target.closest('.drag-handle');
+
+      if (!handle || !container.contains(handle)) return;
+      if (event.button !== 0) return;
+
+      const card = handle.closest('.invest-box, .asset-card');
+
+      if (!card || !container.contains(card)) return;
+
+      const id = card.dataset.itemId;
+
+      if (!id) return;
+
+      event.preventDefault();
+
+      const rect = card.getBoundingClientRect();
+
+      state = {
+        card,
+        handle,
+        id,
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        startLeft: rect.left,
+        startTop: rect.top,
+        width: rect.width,
+        height: rect.height,
+        active: false,
+        targetIndex: -1,
+        pendingTargetIndex: -1,
+        pendingTargetTimer: null,
+        placeholder: null,
+        timer: setTimeout(() => {
+          if (!state) return;
+
+          state.active = true;
+          container.classList.add('is-dragging-active');
+
+          state.placeholder = createPlaceholder(card);
+          card.before(state.placeholder);
+
+          card.classList.add('is-dragging');
+
+          card.style.width = `${state.width}px`;
+          card.style.height = `${state.height}px`;
+          card.style.position = 'fixed';
+          card.style.left = `${state.startLeft}px`;
+          card.style.top = `${state.startTop}px`;
+          card.style.zIndex = '9999';
+
+          try {
+            handle.setPointerCapture(event.pointerId);
+          } catch (_) {}
+
+          updatePlaceholder(
+            state.startX,
+            state.startY
+          );
+        }, HOLD_MS)
+      };
+    });
+
+    container.addEventListener('pointermove', event => {
+      if (!state || state.pointerId !== event.pointerId) return;
+
+      if (!state.active) return;
+
+      event.preventDefault();
+
+      const dx = event.clientX - state.startX;
+      const dy = event.clientY - state.startY;
+
+      state.card.style.transform =
+        `translate(${dx}px, ${dy}px) scale(.985)`;
+
+      updatePlaceholder(
+        event.clientX,
+        event.clientY
+      );
+    }, { passive: false });
+
+    container.addEventListener('pointerup', async event => {
+      if (!state || state.pointerId !== event.pointerId) return;
+
+      const current = state;
+
+      if (current.timer) {
+        clearTimeout(current.timer);
+      }
+
+      if (!current.active) {
+        clearDrag();
+        return;
+      }
+
+      event.preventDefault();
+
+      const cards = getCards();
+      const orderedWithoutDragged =
+        cards.filter(card => card !== current.card);
+
+      let targetIndex =
+        Number.isInteger(current.targetIndex)
+          ? current.targetIndex
+          : orderedWithoutDragged.length;
+
+      targetIndex = Math.max(
+        0,
+        Math.min(targetIndex, orderedWithoutDragged.length)
+      );
+
+      const currentIndex = cards.indexOf(current.card);
+
+      if (targetIndex > currentIndex) {
+        targetIndex -= 1;
+      }
+
+      clearDrag();
+
+      if (
+        targetIndex !== currentIndex &&
+        targetIndex >= 0 &&
+        targetIndex < orderedWithoutDragged.length + 1
+      ) {
+        await reorderDisplayItem(
+          collectionName,
+          current.id,
+          targetIndex
+        );
+      }
+    });
+
+    container.addEventListener(
+      'pointercancel',
+      clearDrag
+    );
+  }
+
   function currentStateSnapshot() {
     return { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables, budgets, goals, invoiceLaunches, cards, purchases };
   }
@@ -2515,6 +2948,18 @@ document.addEventListener('DOMContentLoaded', () => {
         goal.caixinhaId = String(goal.caixinhaId);
       }
 
+      if (!goal.sourceType) {
+        goal.sourceType = goal.caixinhaId ? 'pocket' : null;
+      }
+      if (!goal.sourceId) {
+        goal.sourceId = goal.caixinhaId || null;
+      }
+      if (goal.sourceType && !['bank', 'pocket', 'invest'].includes(goal.sourceType)) {
+        goal.sourceType = null;
+        goal.sourceId = null;
+      }
+      if (goal.sourceId != null) goal.sourceId = String(goal.sourceId);
+
       if (!validStatuses.has(goal.status)) {
         goal.status = 'active';
       }
@@ -2529,12 +2974,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function goalCurrentAmount(goal) {
-    if (goal && goal.caixinhaId) {
-      const pocket = pockets.find(p => p.id === goal.caixinhaId);
+    if (!goal) return null;
+
+    const sourceType = goal.sourceType || (goal.caixinhaId ? 'pocket' : null);
+    const sourceId = goal.sourceId || goal.caixinhaId || null;
+
+    if (sourceType === 'bank' && sourceId) {
+      const bank = banks.find(b => b.id === sourceId);
+      return bank ? bankBalance(sourceId) : null;
+    }
+
+    if (sourceType === 'pocket' && sourceId) {
+      const pocket = pockets.find(p => p.id === sourceId);
       return pocket ? pocketCurrentBalance(pocket) : null;
     }
 
-    if (goal && Object.prototype.hasOwnProperty.call(goal, 'currentAmount')) {
+    if (sourceType === 'invest' && sourceId) {
+      const investment = investments.find(i => i.id === sourceId);
+      return investment ? investmentValueAtDate(investment, todayISO()) : null;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(goal, 'currentAmount')) {
       const legacyCurrent = Number(goal.currentAmount);
       return Number.isFinite(legacyCurrent) ? Math.max(0, legacyCurrent) : null;
     }
@@ -2693,22 +3153,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let html = `
     <div class="balance-card total">
-      <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" aria-hidden="true">${financialIcon('wallet')}</span></div>
+      <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-wallet" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && totalPatrimonio < 0 ? 'neg' : ''}">${totalLabel}</span>
       <span class="balance-insight is-${balancesReady ? flowInsight.kind : 'neutral'}"><strong>${escapeHTML(insightValue)}</strong><span>${escapeHTML(insightDetail)}</span></span>
     </div>
     <div class="balance-card bank-summary-card" role="button" tabindex="0" aria-label="Ver saldos dos bancos" title="Ver saldos dos bancos">
-      <div class="balance-card-head"><span class="label">Bancos</span><span class="balance-symbol" aria-hidden="true">${financialIcon('bank')}</span></div>
+      <div class="balance-card-head"><span class="label">Bancos</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-bank" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && bankTotal < 0 ? 'neg' : ''}">${bankLabel}</span>
       ${bankShare === null ? '' : `<span class="balance-share">${bankShare.toFixed(0)}% do patrimônio</span>`}
     </div>
     <div class="balance-card pocket-summary-card" role="button" tabindex="0" aria-label="Ver caixinhas" title="Ver caixinhas">
-      <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('box')}</span></div>
+      <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && pocketTotal < 0 ? 'neg' : ''}">${pocketLabel}</span>
       ${pocketShare === null ? '' : `<span class="balance-share">${pocketShare.toFixed(0)}% do patrimônio</span>`}
     </div>
     <div class="balance-card invest-summary-card" role="button" tabindex="0" aria-label="Ver investimentos" title="Ver investimentos">
-      <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div>
+      <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span></div>
       <span class="amount">${investLabel}</span>
       ${investShare === null ? '' : `<span class="balance-share">${investShare.toFixed(0)}% do patrimônio</span>`}
     </div>`;
@@ -3180,13 +3640,18 @@ document.addEventListener('DOMContentLoaded', () => {
         'Renda Fixa':'RF', 'FII':'FII', 'ETF':'ETF', 'Tesouro':'TESOURO'
       })[inv.type] || String(inv.type || '').slice(0, 10);
       return `
-      <article class="invest-box asset-card">
+      <article class="invest-box asset-card" data-item-id="${inv.id}">
+        <button type="button" class="drag-handle" aria-label="Segurar para mover investimento" title="Segure para mover">
+          <i class="fi fi-rr-layers" aria-hidden="true"></i>
+        </button>
         <div class="asset-card-head">
           <div class="asset-card-title">
-            <strong class="asset-card-name">${escapeHTML(inv.alias || inv.name)}</strong>
+            <div class="asset-card-name-row">
+              <strong class="asset-card-name">${escapeHTML(inv.alias || inv.name)}</strong>
+              <span class="asset-card-tag">${escapeHTML(typeShort)}</span>
+            </div>
             ${inv.alias ? `<span class="asset-card-sub">${escapeHTML(inv.name)}</span>` : ''}
           </div>
-          <span class="asset-card-tag">${escapeHTML(typeShort)}</span>
         </div>
         <div class="asset-card-value">${fmt(displayVal)}</div>
         <div class="asset-card-meta">
@@ -3208,6 +3673,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </article>`;
     }).join('');
+      setupDisplayCardDrag(container, 'investments');
     renderPriceCharts();
   }
 
@@ -3215,12 +3681,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const strip = document.getElementById('pocketBalanceStrip');
     const total = totalPocketBalance();
     let html = `<div class="balance-card total">
-      <div class="balance-card-head"><span class="label">Total em Caixinhas</span><span class="balance-symbol" aria-hidden="true">${financialIcon('box')}</span></div>
+      <div class="balance-card-head"><span class="label">Total em Caixinhas</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span></div>
       <span class="amount">${fmt(total)}</span>
     </div>`;
     pockets.forEach(p => {
       html += `<div class="balance-card">
-        <span class="label">${escapeHTML(p.name)}</span>
+        <div class="balance-card-head">
+          <span class="label">${escapeHTML(p.name)}</span>
+          <span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-piggy-bank"></i></span>
+        </div>
         <span class="amount">${fmt(pocketCurrentBalance(p))}</span>
       </div>`;
     });
@@ -3239,8 +3708,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const goalAmount = Number(p.goalAmount) || 0;
       const goalPercent = goalAmount > 0 ? Math.min(100, Math.max(0, current / goalAmount * 100)) : null;
       const goalHTML = goalAmount > 0 ? `<div class="pocket-goal"><div class="pocket-goal-head"><span>${escapeHTML(p.goal || 'Meta da caixinha')}</span><strong>${goalPercent.toFixed(0).replace('.', ',')}%</strong></div><div class="pocket-goal-track"><span style="width:${goalPercent.toFixed(2)}%"></span></div><div class="pocket-goal-values">${fmt(current)} de ${fmt(goalAmount)}</div></div>` : (p.goal ? `<div class="units">${escapeHTML(p.goal)}</div>` : '');
-      return `<div class="invest-box"><h4><span>${escapeHTML(p.name)}</span></h4><div class="val">${fmt(current)}</div>${goalHTML}${sourceBank ? `<div class="units">Banco de origem: ${escapeHTML(sourceBank.name)}</div>` : '<div class="units">Banco de origem: A definir</div>'}${rentabilityHTML('pocket', p.id, current)}${yieldHistoryHTML('pocket', p.id)}<div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="movePocket('${p.id}',-1)" ${index===0?'disabled':''} aria-label="Mover caixinha para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="movePocket('${p.id}',1)" ${index===pockets.length-1?'disabled':''} aria-label="Mover caixinha para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn beta-icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button><button type="button" class="action-btn beta-icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button></div></div>`;
+      return `<div class="invest-box" data-item-id="${p.id}">
+        <button type="button" class="drag-handle" aria-label="Segurar para mover caixinha" title="Segure para mover">
+          <i class="fi fi-rr-layers" aria-hidden="true"></i>
+        </button><h4><span>${escapeHTML(p.name)}</span></h4><div class="val">${fmt(current)}</div>${goalHTML}${sourceBank ? `<div class="units">Banco de origem: ${escapeHTML(sourceBank.name)}</div>` : '<div class="units">Banco de origem: A definir</div>'}${rentabilityHTML('pocket', p.id, current)}${yieldHistoryHTML('pocket', p.id)}<div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="movePocket('${p.id}',-1)" ${index===0?'disabled':''} aria-label="Mover caixinha para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="movePocket('${p.id}',1)" ${index===pockets.length-1?'disabled':''} aria-label="Mover caixinha para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn beta-icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button><button type="button" class="action-btn beta-icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button></div></div>`;
     }).join('');
+      setupDisplayCardDrag(container, 'pockets');
   }
 
   function getSelectedFilterValues(id) {
@@ -3640,16 +4113,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!select) return;
 
     const selected = String(selectedId || '');
-    select.innerHTML = '<option value="">Nenhuma — planejamento sem saldo</option>' +
-      pockets
-        .slice()
-        .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'))
-        .map(pocket => `<option value="${escapeHTML(pocket.id)}">🐷 ${escapeHTML(pocket.name)} · ${fmt(pocketCurrentBalance(pocket))}</option>`)
-        .join('');
+    const bankOptions = banks
+      .slice()
+      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'))
+      .map(bank => `<option value="bank:${escapeHTML(bank.id)}">🏦 ${escapeHTML(bank.name || 'Conta')} · ${fmt(bankBalance(bank.id))}</option>`)
+      .join('');
+
+    const pocketOptions = pockets
+      .slice()
+      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'))
+      .map(pocket => `<option value="pocket:${escapeHTML(pocket.id)}">🐷 ${escapeHTML(pocket.name || 'Caixinha')} · ${fmt(pocketCurrentBalance(pocket))}</option>`)
+      .join('');
+
+    const investOptions = investments
+      .slice()
+      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'))
+      .map(inv => `<option value="invest:${escapeHTML(inv.id)}">📈 ${escapeHTML(inv.name || inv.asset || 'Investimento')} · ${fmt(investmentValueAtDate(inv, todayISO()))}</option>`)
+      .join('');
+
+    select.innerHTML =
+      '<option value="">Nenhum — planejamento sem saldo</option>' +
+      (bankOptions ? `<optgroup label="Contas">${bankOptions}</optgroup>` : '') +
+      (pocketOptions ? `<optgroup label="Caixinhas">${pocketOptions}</optgroup>` : '') +
+      (investOptions ? `<optgroup label="Investimentos">${investOptions}</optgroup>` : '');
 
     select.value = selected;
     if (select.value !== selected) select.value = '';
   }
+
 
   function syncGoalLegacyAmountField() {
     const select = document.getElementById('goalCaixinha');
@@ -3662,15 +4153,21 @@ document.addEventListener('DOMContentLoaded', () => {
     input.disabled = linked;
   }
 
-  function activeGoalForCaixinha(caixinhaId, exceptId = null) {
-    if (!caixinhaId) return null;
+  function activeGoalForSource(sourceType, sourceId, exceptId = null) {
+    if (!sourceType || !sourceId) return null;
     return goals.find(goal =>
       goal &&
       goal.id !== exceptId &&
-      goal.caixinhaId === caixinhaId &&
+      (goal.sourceType || (goal.caixinhaId ? 'pocket' : null)) === sourceType &&
+      String(goal.sourceId || goal.caixinhaId || '') === String(sourceId) &&
       (goal.status || 'active') === 'active'
     ) || null;
   }
+
+  function activeGoalForCaixinha(caixinhaId, exceptId = null) {
+    return activeGoalForSource('pocket', caixinhaId, exceptId);
+  }
+
 
   function goalStatusLabel(status) {
     return ({
@@ -3727,7 +4224,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function normalizeGoalStatusFromProgress(goal) {
-    if (!goal || goal.status !== 'active' || !goal.caixinhaId) return false;
+    if (!goal || goal.status !== 'active' || !(goal.sourceId || goal.caixinhaId)) return false;
     const current = goalCurrentAmount(goal);
     const target = Number(goal.targetAmount) || 0;
     if (current != null && target > 0 && current >= target) {
@@ -3756,7 +4253,21 @@ document.addEventListener('DOMContentLoaded', () => {
       : 0;
 
     const status = goal.status || 'active';
-    const pocket = goal.caixinhaId ? pockets.find(p => p.id === goal.caixinhaId) : null;
+    const sourceType = goal.sourceType || (goal.caixinhaId ? 'pocket' : null);
+    const sourceId = goal.sourceId || goal.caixinhaId || null;
+    const linkedSource =
+      sourceType === 'bank' ? banks.find(item => item.id === sourceId) :
+      sourceType === 'pocket' ? pockets.find(item => item.id === sourceId) :
+      sourceType === 'invest' ? investments.find(item => item.id === sourceId) :
+      null;
+    const sourceLabel =
+      sourceType === 'bank' ? 'Conta' :
+      sourceType === 'pocket' ? 'Caixinha' :
+      sourceType === 'invest' ? 'Investimento' : 'Vínculo';
+    const sourceIcon =
+      sourceType === 'bank' ? '🏦' :
+      sourceType === 'pocket' ? '🐷' :
+      sourceType === 'invest' ? '📈' : '🔗';
     const statusLabel = goalStatusLabel(status);
     const statusClass = status === 'active' ? 'is-active' : (status === 'completed' ? 'is-done' : 'is-other');
 
@@ -3792,8 +4303,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
       <div class="goal-card-v2-pocket">
-        <span class="goal-card-v2-pocket-ico" aria-hidden="true">📦</span>
-        Caixinha: <strong>${pocket ? escapeHTML(pocket.name) : (goal.caixinhaDetached ? 'Caixinha removida' : 'Nenhuma')}</strong>
+        <span class="goal-card-v2-pocket-ico" aria-hidden="true">${sourceIcon}</span>
+        ${escapeHTML(sourceLabel)}: <strong>${linkedSource ? escapeHTML(linkedSource.name || linkedSource.asset || 'Vinculado') : (sourceId ? 'Vínculo removido' : 'Nenhum')}</strong>
       </div>
       <div class="goal-card-v2-values">
         <span class="goal-card-v2-current">${currentTxt}</span>
@@ -3841,8 +4352,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('goalNome').value = goal.name || '';
     document.getElementById('goalIcone').value = goal.icon || '🎯';
     setMoneyInput('goalValorObjetivo', goal.targetAmount || 0);
-    refreshGoalCaixinhaOptions(goal.caixinhaId || '');
-    document.getElementById('goalCaixinha').value = goal.caixinhaId || '';
+    refreshGoalCaixinhaOptions(goal.sourceId ? `${goal.sourceType}:${goal.sourceId}` : (goal.caixinhaId ? `pocket:${goal.caixinhaId}` : ''));
+    document.getElementById('goalCaixinha').value = goal.sourceId ? `${goal.sourceType}:${goal.sourceId}` : (goal.caixinhaId ? `pocket:${goal.caixinhaId}` : '');
     document.getElementById('goalDataInicio').value = goal.startDate || todayISO();
     setMoneyInput('goalValorAtual', goal.currentAmount || 0);
     syncGoalLegacyAmountField();
@@ -3915,7 +4426,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const legacyCurrent = Math.max(0, Number(readMoneyInput('goalValorAtual')) || 0);
     if (!name) { alert('Informe o nome da meta.'); return; }
     if (!(Number.isFinite(targetAmount) && targetAmount > 0)) { alert('Informe um valor objetivo válido.'); return; }
-    const caixinhaId = document.getElementById('goalCaixinha').value || null;
+    const sourceValue = document.getElementById('goalCaixinha').value || '';
+    const sourceParts = sourceValue.split(':');
+    const sourceType = ['bank', 'pocket', 'invest'].includes(sourceParts[0]) ? sourceParts[0] : null;
+    const sourceId = sourceType && sourceParts[1] ? sourceParts.slice(1).join(':') : null;
+    const caixinhaId = sourceType === 'pocket' ? sourceId : null;
     const startDate = document.getElementById('goalDataInicio').value || todayISO();
     const deadline = document.getElementById('goalPrazo').value || '';
     const status = document.getElementById('goalStatus').value || 'active';
@@ -3932,13 +4447,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const conflictingGoal = activeGoalForCaixinha(
-      caixinhaId,
+    const conflictingGoal = activeGoalForSource(
+      sourceType,
+      sourceId,
       editingGoalId
     );
     if (conflictingGoal) {
-      const conflictingPocket = pockets.find(p => p.id === caixinhaId);
-      alert(`A Caixinha "${conflictingPocket?.name || 'selecionada'}" já está vinculada à Meta "${conflictingGoal.name}".`);
+      const linked =
+        sourceType === 'bank' ? banks.find(item => item.id === sourceId) :
+        sourceType === 'pocket' ? pockets.find(item => item.id === sourceId) :
+        sourceType === 'invest' ? investments.find(item => item.id === sourceId) :
+        null;
+      const kind =
+        sourceType === 'bank' ? 'Conta' :
+        sourceType === 'pocket' ? 'Caixinha' : 'Investimento';
+      alert(`${kind} "${linked?.name || linked?.asset || 'selecionado'}" já está vinculada à Meta "${conflictingGoal.name}".`);
       return;
     }
 
@@ -3951,6 +4474,8 @@ document.addEventListener('DOMContentLoaded', () => {
       deadline,
       status,
       desc: document.getElementById('goalObs').value.trim(),
+      sourceType,
+      sourceId,
       caixinhaId,
       caixinhaDetached: caixinhaId ? false : Boolean(existingGoal?.caixinhaDetached),
       updatedAt: new Date().toISOString()
@@ -3960,9 +4485,8 @@ document.addEventListener('DOMContentLoaded', () => {
       record.currentAmount = legacyCurrent;
     }
 
-    if (caixinhaId && status === 'active') {
-      const linkedPocket = pockets.find(p => p.id === caixinhaId);
-      const linkedCurrent = linkedPocket ? pocketCurrentBalance(linkedPocket) : null;
+    if (sourceType && sourceId && status === 'active') {
+      const linkedCurrent = goalCurrentAmount({ sourceType, sourceId, caixinhaId });
       if (linkedCurrent != null && linkedCurrent >= targetAmount) {
         record.status = 'completed';
       }
