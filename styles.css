@@ -780,7 +780,7 @@
   }
   .invest-box .val {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     margin: 10px 0 6px;
   }
@@ -7158,7 +7158,7 @@ body:not(.dark-mode) .goals-panel-v2 {
   border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
   background: color-mix(in srgb, var(--panel, #1a2420) 80%, transparent);
   color: var(--ink);
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
 }
@@ -7494,4 +7494,66 @@ body:not(.dark-mode) .goals-form-body select {
 }
 @media (max-width: 420px) {
   .goals-form-row-2 { grid-template-columns: 1fr; }
+}
+
+.mobile-bottom-nav [data-destination="pockets"] .nav-icon .fi-rr-piggy-bank {
+  font-size: 18px;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* TESTE LOCAL — ícones BNI Flaticon */
+.mobile-bottom-nav .nav-icon .fi {
+  font-size: 18px;
+  line-height: 1;
+  display: inline-block;
+}
+
+
+
+/* TESTE LOCAL — catálogo Flaticon */
+.mobile-bottom-nav .nav-icon .fi {
+  font-size: 18px;
+  line-height: 1;
+  display: inline-block;
+}
+
+.quick-action-icon .fi,
+.header-icon-button .fi,
+.drawer-item-icon .fi,
+.diagnostic-summary-icon .fi {
+  font-size: 18px;
+  line-height: 1;
+  display: inline-block;
+}
+
+
+/* Flaticon / Uicons — catálogo visual padronizado */
+.nav-tab .fi,
+.quick-action-icon .fi,
+.header-icon-button .fi,
+.drawer-item-icon .fi,
+.diagnostic-summary-icon .fi {
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.nav-tab .fi {
+  vertical-align: middle;
+}
+
+.quick-action-icon .fi,
+.header-icon-button .fi,
+.drawer-item-icon .fi,
+.diagnostic-summary-icon .fi {
+  width: 18px;
+  height: 18px;
+}
+
+.mobile-bottom-nav .nav-icon .fi {
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
 }
