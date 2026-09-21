@@ -7759,3 +7759,16 @@ body:not(.dark-mode) .goals-form-body select {
   visibility:visible!important;
   text-align:left!important;
 }
+
+/* V19-21 — filtro: submodal nunca permanece visível após fechamento */
+#panelFiltros .filter-choice-sheet:not(.open) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#panelFiltros .filter-choice-sheet.open {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}

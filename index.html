@@ -3766,6 +3766,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const config = filterChoiceConfig(target);
     const sheet = document.getElementById('filterChoiceSheet');
     const search = document.getElementById('filterChoiceSearch');
+    if (!sheet || !search) return;
+
+    // V19-21: submodal de filtro com fechamento determinístico.
+    sheet.style.display = 'flex';
+    sheet.style.visibility = 'visible';
+    sheet.style.pointerEvents = 'auto';
+    sheet.style.transform = '';
     document.getElementById('filterChoiceTitle').textContent = config.title;
     document.getElementById('filterChoiceSubtitle').textContent = config.subtitle;
     search.placeholder = config.placeholder;
@@ -3773,14 +3780,33 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFilterChoiceList();
     sheet.classList.add('open');
     sheet.setAttribute('aria-hidden', 'false');
-    document.getElementById('panelFiltros').classList.add('sheet-open');
+    document.getElementById('panelFiltros')?.classList.add('sheet-open');
   }
 
   function closeFilterChoice() {
     activeFilterChoice = null;
     filterChoiceSearchTerm = '';
+
     const sheet = document.getElementById('filterChoiceSheet');
-    if (sheet) { sheet.classList.remove('open'); sheet.setAttribute('aria-hidden', 'true'); }
+
+    if (sheet) {
+      sheet.classList.remove('open');
+      sheet.setAttribute('aria-hidden', 'true');
+
+      // Impede que bancos/categorias permaneçam visíveis
+      // sobre o modal ou outra camada da aplicação.
+      sheet.style.display = 'none';
+      sheet.style.visibility = 'hidden';
+      sheet.style.pointerEvents = 'none';
+      sheet.style.transform = 'translateY(105%)';
+
+      const list = document.getElementById('filterChoiceList');
+      if (list) list.replaceChildren();
+
+      const search = document.getElementById('filterChoiceSearch');
+      if (search) search.value = '';
+    }
+
     document.getElementById('panelFiltros')?.classList.remove('sheet-open');
   }
 
