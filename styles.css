@@ -7838,10 +7838,16 @@ body:not(.dark-mode) .goals-form-body select {
   box-shadow: none;
   background: var(--surface);
 }
-#viewProfile .profile-item:active,
-.profile-item[role="button"]:active {
+/* Só clicáveis animam */
+#viewProfile .profile-item[role="button"]:active,
+.profile-item[role="button"]:active,
+#viewProfile .profile-item[tabindex]:active {
   background: color-mix(in srgb, var(--accent) 8%, var(--surface)) !important;
   transform: scale(0.99);
+}
+#viewProfile .profile-item:not([role="button"]):not([tabindex]):active {
+  background: var(--surface) !important;
+  transform: none !important;
 }
 #viewProfile .feature-lab-toggle:active {
   background: color-mix(in srgb, var(--accent) 8%, var(--surface)) !important;
