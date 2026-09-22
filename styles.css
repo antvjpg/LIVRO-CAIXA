@@ -1757,6 +1757,20 @@
   .feature-lab-option-list{margin:0;padding:0;border:0;background:transparent;gap:7px;}
   .feature-lab-toggle{position:relative;display:flex!important;align-items:center!important;gap:11px!important;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:var(--paper);cursor:pointer;}
   .feature-lab-toggle input{position:absolute;opacity:0;pointer-events:none;}
+/* FIX — Automação no Perfil: impedir realce azul nativo ao tocar na card */
+#viewProfile .feature-lab-toggle {
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#viewProfile .feature-lab-toggle:focus,
+#viewProfile .feature-lab-toggle:focus-visible,
+#viewProfile .feature-lab-toggle:focus-within {
+  outline: none;
+}
+
 /* FIX — Automação no Perfil: remover contorno visual da própria card ao tocar/focar */
 .feature-lab-toggle:focus,
 .feature-lab-toggle:focus-visible {
