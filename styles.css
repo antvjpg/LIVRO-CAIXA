@@ -1632,7 +1632,6 @@
     border:1px solid color-mix(in srgb,var(--accent) 18%,var(--line));
     color:var(--ink-soft);font-size:11px;line-height:1.45;
   }
-  #viewProfile .profile-feedback,
   #viewProfile .feature-lab-feedback{margin:8px 0 0;font-size:11px;color:var(--ink-soft);}
   body.dark-mode #viewProfile .profile-item,
   body.dark-mode #viewProfile .feature-lab-section,
@@ -1752,7 +1751,7 @@
   .feature-lab-section-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:800;letter-spacing:.08em;color:var(--ink-soft);white-space:nowrap;}
   .feature-lab-section-desc{margin:0 0 12px;color:var(--ink-soft);font-size:11px;line-height:1.45;}
   .feature-lab-option-list{margin:0;padding:0;border:0;background:transparent;gap:7px;}
-  .feature-lab-toggle{position:relative;display:flex!important;align-items:center!important;gap:11px!important;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:var(--paper);cursor:pointer;}
+  .feature-lab-toggle{position:relative;display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:var(--paper);cursor:pointer;}
   .feature-lab-toggle input{position:absolute;opacity:0;pointer-events:none;}
   .feature-lab-toggle-copy{flex:1;min-width:0;}
   .feature-lab-toggle-copy strong,.feature-lab-toggle-copy small{display:block;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif;}
@@ -3013,16 +3012,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
 }
 
 
-/* === Brief V.19-16 ajustes: perfil, filtros, faturas, orçamento === */
-#viewProfile .profile-shell{padding:14px 12px 20px;}
-#viewProfile .profile-heading{margin-bottom:10px;gap:10px;}
-#viewProfile .profile-group{margin-bottom:12px;}
-#viewProfile .profile-group-title{margin:0 0 6px;font-size:11px;}
-#viewProfile .profile-list{gap:6px;}
-#viewProfile .profile-item{padding:10px 12px;border-radius:12px;}
-#viewProfile .feature-lab-section{padding:10px 12px;border-radius:12px;}
-#viewProfile .profile-roadmap{margin-top:10px;padding:10px 12px;}
-
 .automation-recs{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
 .automation-recs-title{font-size:11px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
 .automation-rec-item{
@@ -3080,17 +3069,17 @@ body.dark-mode .bill-more-button{
 
 /* BUG-08: orçamento mais fino */
 #viewProfile .feature-budget-row{
-  padding:8px 10px!important;
-  min-height:0!important;
-  gap:4px!important;
+  padding:8px 10px;
+  min-height:0;
+  gap:4px;
   border-radius:10px;
 }
-#viewProfile .feature-budget-rows{gap:6px!important;max-height:min(240px,38vh);}
+#viewProfile .feature-budget-rows{gap:6px;max-height:min(240px,38vh);}
 #viewProfile .feature-budget-row label{font-size:11px;margin:0;}
 #viewProfile .feature-budget-row span{font-size:10px;}
 #viewProfile .feature-budget-row input{
-  min-height:32px!important;
-  padding:6px 8px!important;
+  min-height:32px;
+  padding:6px 8px;
   font-size:12px;
 }
 
@@ -5669,7 +5658,7 @@ body:not([data-tab="profile"]) .profile-shell{
   display:none !important;
 }
 
-/* F03 — remove card 3x1 redundante (Resumo do fluxo mini) */
+/* Proteção do resumo compacto do fluxo */
 #cashflowMiniSummary,
 .cashflow-mini-summary{
   display:none !important;
@@ -5695,22 +5684,6 @@ body:not([data-tab="profile"]) .profile-shell{
 #pocketBalanceStrip .balance-card .label{
   font-size:9px !important;
   margin-bottom:4px !important;
-}
-
-/* F05 — border-radius único dos modais */
-.modal-overlay .panel,
-.panel,
-.filter-choice-sheet,
-.pin-box,
-.sync-box,
-.notification-center{
-  border-radius:22px !important;
-}
-@media (max-width:700px){
-  .modal-overlay .panel.open,
-  .modal-overlay .panel{
-    border-radius:22px !important;
-  }
 }
 
 /* F06 — perfil integrado */
@@ -6137,52 +6110,7 @@ body:not([data-tab="profile"]) .profile-shell{
   color:var(--accent) !important;
 }
 
-/* ========== V.19-18 FINAL GUARD ========== */
-#cashflowMiniSummary,.cashflow-mini-summary{display:none!important;}
-.modal-overlay .panel,.panel,#modalOverlay .panel,.filter-choice-sheet{
-  border-radius:22px!important;
-}
-@media (max-width:900px){
-  .modal-overlay .panel,.modal-overlay .panel.open,#modalOverlay .panel{
-    border-radius:22px!important;
-  }
-}
-.card-actions .btn-action.edit::after,
-.card-actions .btn-action.delete::after,
-.btn-action.edit::after,
-.btn-action.delete::after{content:none!important;display:none!important;}
-
-
-/* ========== V.19-18 ui6 — isolamento perfil + caixinhas + espaçamento ========== */
-
-/* Isolamento absoluto: nada do perfil fora da aba profile */
-.tab-content:not(.active){
-  display:none !important;
-}
-#viewProfile:not(.active){
-  display:none !important;
-  visibility:hidden !important;
-  height:0 !important;
-  max-height:0 !important;
-  overflow:hidden !important;
-  margin:0 !important;
-  padding:0 !important;
-  border:0 !important;
-}
-body:not([data-tab="profile"]) #viewProfile,
-body:not([data-tab="profile"]) #viewProfile .profile-shell,
-body:not([data-tab="profile"]) #viewProfile .profile-group,
-body:not([data-tab="profile"]) #viewProfile .profile-heading,
-body:not([data-tab="profile"]) #viewProfile .profile-roadmap{
-  display:none !important;
-}
-body[data-tab="profile"] #viewProfile.active{
-  display:block !important;
-  visibility:visible !important;
-  height:auto !important;
-  max-height:none !important;
-  overflow:visible !important;
-}
+/* ========== V.19-18 ui6 — perfil + caixinhas + espaçamento ========== */
 
 /* Perfil: largura total, cards alinhados */
 #viewProfile .profile-shell{
@@ -7808,14 +7736,18 @@ body:not(.dark-mode) .goals-form-body select {
 #viewProfile .profile-item,
 #viewProfile .feature-lab-toggle,
 .profile-item[role="button"] {
-  -webkit-tap-highlight-color: transparent !important;
+  -webkit-tap-highlight-color: transparent;
   outline: none;
 }
-#viewProfile .profile-item:focus,
-#viewProfile .profile-item:focus-visible,
-.profile-item[role="button"]:focus,
-.profile-item[role="button"]:focus-visible {
+#viewProfile .profile-item:focus {
   outline: none;
+  box-shadow: none;
+  background: var(--surface);
+}
+#viewProfile .profile-item:focus-visible,
+.profile-item[role="button"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
   box-shadow: none;
   background: var(--surface);
 }
@@ -7823,13 +7755,13 @@ body:not(.dark-mode) .goals-form-body select {
 #viewProfile .profile-item[role="button"]:active,
 .profile-item[role="button"]:active,
 #viewProfile .profile-item[tabindex]:active {
-  background: color-mix(in srgb, var(--accent) 8%, var(--surface)) !important;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
   transform: scale(0.99);
 }
 #viewProfile .profile-item:not([role="button"]):not([tabindex]):active {
-  background: var(--surface) !important;
-  transform: none !important;
+  background: var(--surface);
+  transform: none;
 }
 #viewProfile .feature-lab-toggle:active {
-  background: color-mix(in srgb, var(--accent) 8%, var(--surface)) !important;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
 }

@@ -377,7 +377,7 @@
             <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define em qual dia começa seu mês financeiro. Isso altera apenas os períodos usados no orçamento — não muda a data dos lançamentos.</span></span>
             <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
           </div>
-          <div class="profile-item" role="button" tabindex="0" onclick="document.getElementById('btnFeatureLab')?.click()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v3H9z"/><path d="M8 6h8l1.5 12.5a2 2 0 0 1-2 2.5H8.5a2 2 0 0 1-2-2.5L8 6z"/><path d="M10 10v6M14 10v6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span></div>
+          <div class="profile-item" role="button" tabindex="0" onclick="openFeatureLab()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v3H9z"/><path d="M8 6h8l1.5 12.5a2 2 0 0 1-2 2.5H8.5a2 2 0 0 1-2-2.5L8 6z"/><path d="M10 10v6M14 10v6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span></div>
           <!-- Lembretes (dentro de Geral) -->
           <label class="feature-lab-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-lab-toggle-copy"><strong>Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
           <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);">
@@ -4831,7 +4831,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 }
 
-  document.getElementById('btnFeatureLab')?.addEventListener('click', openFeatureLab);
   document.getElementById('btnSaveFeatureSettings')?.addEventListener('click', async () => {
     featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization') ? document.getElementById('featureAutoCategorization').checked : featureSettings.autoCategorization, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
         ? readMoneyInput(document.getElementById('featureSavingsGoalAmount'))
@@ -4944,6 +4943,15 @@ document.addEventListener('DOMContentLoaded', () => {
   syncProfileEmail();
   try { auth?.onAuthStateChanged?.(() => syncProfileEmail()); } catch (e) {}
 
+
+  // Acessibilidade: elementos com role=button precisam responder a Enter/Espaço.
+  document.querySelectorAll('#viewProfile .profile-item[role="button"]').forEach(item => {
+    item.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      item.click();
+    });
+  });
 
   document.getElementById('btnProfileLogout')?.addEventListener('click', () => {
     if (confirm('Deseja realmente sair da sua conta? Seus dados continuam salvos na nuvem — só a sessão neste aparelho é encerrada.')) {
