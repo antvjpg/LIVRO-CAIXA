@@ -6153,9 +6153,12 @@ body:not([data-tab="profile"]) .profile-shell{
 
 /* Visão geral: espaçamento Gemini ↔ Insight */
 #viewDashboard{
-  display:flex;
   flex-direction:column;
   gap:12px;
+}
+
+#viewDashboard.active{
+  display:flex;
 }
 #viewDashboard #dashboardNextPayment{
   margin:0 !important;
