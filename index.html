@@ -7588,7 +7588,7 @@ function openNewEntryModal() {
   function cardAvailableLimit(card) {
     const limit = Number(card.limit) || 0;
     if (limit <= 0) return null;
-    return Math.max(0, limit - cardCommittedAmount(card.id));
+    return limit - cardCommittedAmount(card.id);
   }
   // A fatura é nomeada pelo mês em que VENCE (como no extrato real do banco), não pelo mês em que fecha.
   // Se vencimento < fechamento, o fechamento fica um mês ANTES do mês de vencimento — precisamos "voltar" um mês
