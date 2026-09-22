@@ -998,7 +998,7 @@
     cursor:pointer;
   }
   .pass-toggle:hover{background:none;color:var(--ink);}
-  #authSubmit{min-height:48px!important;border-radius:11px!important;font-size:12px!important;font-weight:700!important;letter-spacing:.02em!important;}
+  #authSubmit{min-height:48px;border-radius:11px;font-size:12px;font-weight:700;letter-spacing:.02em;}
   #authGoogle{min-height:44px;border:1px solid var(--line);border-radius:11px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;}
   #authGoogle:hover{background:var(--green-soft);color:var(--ink);}
   body:not(.dark-mode) #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 29%),var(--paper);}
