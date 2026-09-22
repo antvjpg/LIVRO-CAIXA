@@ -3768,7 +3768,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const search = document.getElementById('filterChoiceSearch');
     if (!sheet || !search) return;
 
-    // V19-21: submodal de filtro com fechamento determinístico.
+    // V19-20: submodal de filtro com fechamento determinístico.
     sheet.style.display = 'flex';
     sheet.style.visibility = 'visible';
     sheet.style.pointerEvents = 'auto';
@@ -5812,6 +5812,7 @@ ${JSON.stringify(snapshot)}
   };
 
   function openModal(panelId) {
+    closeFilterChoice();
     const overlay = document.getElementById('modalOverlay');
     // Fecha TODOS os painéis antes de abrir um (evita modais lado a lado)
     document.querySelectorAll('.panel.open, .panel').forEach(p => p.classList.remove('open'));
