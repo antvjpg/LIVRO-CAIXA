@@ -1709,7 +1709,7 @@
   .feature-lab-panel .feature-lab-header h3{margin:0;font-size:24px;line-height:1.15;display:flex;align-items:center;gap:8px;}
   .feature-lab-status-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 12%,transparent);}
   .feature-lab-intro{margin:7px 0 0;max-width:560px;color:var(--ink-soft);font-size:12px;line-height:1.5;}
-  .feature-lab-close{flex:0 0 auto;align-self:flex-start;border-radius:9px;font-size:22px!important;line-height:1;}
+  .feature-lab-close{flex:0 0 auto;align-self:flex-start;border-radius:9px;font-size:22px;line-height:1;}
   .feature-lab-warning{display:flex;gap:11px;align-items:flex-start;margin:18px 26px 4px;padding:12px 13px;border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--gold) 8%,var(--paper));}
   .feature-lab-warning-icon{font-size:18px;line-height:1.1;}
   .feature-lab-warning strong,.feature-lab-warning span{display:block;}
