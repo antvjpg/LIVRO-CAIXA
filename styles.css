@@ -910,8 +910,8 @@
   }
   .import-row input, .import-row select{padding:6px 8px;font-size:13px;}
   .import-row .import-status{grid-column:1/-1;font-size:11px;line-height:1.35;color:var(--ink-soft);}
-  .import-row.is-duplicate{opacity:.68;}.import-row.is-duplicate .import-status{color:var(--out);font-weight:700;}
-  .import-summary{margin:9px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink-soft);font-size:12px;line-height:1.4;}.import-summary b{color:var(--ink);}.import-summary .import-ready{color:var(--green);font-weight:700;}.import-summary .import-warning{color:var(--out);font-weight:700;}
+  .import-row.is-duplicate{opacity:.68;}.import-row.is-duplicate .import-status{color:var(--gold);font-weight:700;}
+  .import-summary{margin:9px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink-soft);font-size:12px;line-height:1.4;}.import-summary b{color:var(--ink);}.import-summary .import-ready{color:var(--green);font-weight:700;}.import-summary .import-warning{color:var(--gold);font-weight:700;}
   .hint{font-size:12px;color:var(--ink-soft);margin-top:8px;}
   footer{
     text-align:center;
@@ -1750,7 +1750,7 @@
   .feature-lab-section{margin:18px 26px 0;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--paper-2);}
   .feature-lab-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
   .feature-lab-section-head>div{display:flex;align-items:center;gap:9px;min-width:0;}
-  .feature-lab-section-number{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:var(--accent-soft);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:800;}
+  .feature-lab-section-number{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:800;}
   .feature-lab-panel .feature-lab-section h4{margin:0;font-size:14px;color:var(--ink);}
   .feature-lab-section-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:800;letter-spacing:.08em;color:var(--ink-soft);white-space:nowrap;}
   .feature-lab-section-desc{margin:0 0 12px;color:var(--ink-soft);font-size:11px;line-height:1.45;}
@@ -1811,7 +1811,7 @@
   .credit-card-box.is-inactive{opacity:.72;}
   .credit-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
   .credit-card-title{display:flex;align-items:center;gap:10px;min-width:0;}
-  .credit-card-icon{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:0 0 auto;}
+  .credit-card-icon{width:38px;height:38px;border-radius:11px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--accent);display:grid;place-items:center;flex:0 0 auto;}
   .credit-card-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
   .credit-card-title h3{margin:0;font-size:14px;color:var(--ink);overflow-wrap:anywhere;}
   .credit-card-title small{display:block;margin-top:3px;color:var(--ink-soft);font-size:9px;}
@@ -4126,7 +4126,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-weight:800;
   letter-spacing:.1em;
   text-transform:uppercase;
-  color:var(--muted);
+  color:var(--ink-soft);
 }
 
 .bill-value-block input{
@@ -4174,7 +4174,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-size:9px;
   font-weight:800;
   letter-spacing:.06em;
-  color:var(--muted);
+  color:var(--ink-soft);
 }
 
 .bill-form-sheet input,
@@ -4483,7 +4483,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-weight:800;
   letter-spacing:.04em;
   text-transform:uppercase;
-  color:var(--muted);
+  color:var(--ink-soft);
 }
 
 .launch-value-block input{
@@ -4609,7 +4609,7 @@ body.dark-mode #panelBill #billParcelasFields{
 #receiptFileStatus{
   margin-top:8px;
   font-size:12px;
-  color:var(--muted);
+  color:var(--ink-soft);
 }
 
 .launch-save-cta{
@@ -5002,7 +5002,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-weight:800;
   letter-spacing:.1em;
   text-transform:uppercase;
-  color:var(--muted, var(--ink-soft));
+  color:var(--ink-soft);
 }
 
 /* Card panel — reforço do padrão já usado */
@@ -6948,7 +6948,7 @@ body[data-tab="goals"] #modalOverlay,
 
 .card-form-intro span{
   display:block;
-  color:var(--muted);
+  color:var(--ink-soft);
   font-size:12px;
   line-height:1.45;
 }
@@ -6978,7 +6978,7 @@ body[data-tab="goals"] #modalOverlay,
 .card-section label{
   display:block;
   margin-bottom:7px;
-  color:var(--muted);
+  color:var(--ink-soft);
   font-size:12px;
   font-weight:800;
   letter-spacing:.04em;
@@ -7019,7 +7019,7 @@ body[data-tab="goals"] #modalOverlay,
 
 .card-cycle-hint{
   margin-top:11px;
-  color:var(--muted);
+  color:var(--ink-soft);
   font-size:11px;
   line-height:1.45;
 }
@@ -7620,7 +7620,7 @@ body:not(.dark-mode) .goals-form-body select {
     var(--paper) 82%,
     transparent
   );
-  color: var(--muted);
+  color: var(--ink-soft);
   cursor: grab;
   touch-action: none;
   -webkit-user-select: none;
