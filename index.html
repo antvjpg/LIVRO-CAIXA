@@ -4043,13 +4043,38 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // V19-20: preferências do Perfil também acompanham a conta na nuvem.
-  function normalizeProfileSettings(raw = {}) {
+  function normalizeProfileSettings(raw = {}, base = {}) {
     const source = raw && typeof raw === 'object' ? raw : {};
-    return {
-      featureSettings: normalizeFeatureSettings(source.featureSettings || {}),
-      financialCycleStartDay: Math.min(28, Math.max(1, Number(source.financialCycleStartDay) || 1)),
-      hideBalancesOnOpen: source.hideBalancesOnOpen === true
+    const local = base && typeof base === 'object' ? base : {};
+    const remoteFeatures = source.featureSettings && typeof source.featureSettings === 'object'
+      ? source.featureSettings
+      : {};
+    const localFeatures = local.featureSettings && typeof local.featureSettings === 'object'
+      ? local.featureSettings
+      : {};
+
+    const merged = {
+      featureSettings: normalizeFeatureSettings({ ...localFeatures, ...remoteFeatures }),
+      financialCycleStartDay: Number.isFinite(Number(local.financialCycleStartDay))
+        ? Math.min(28, Math.max(1, Number(local.financialCycleStartDay)))
+        : 1,
+      hideBalancesOnOpen: local.hideBalancesOnOpen === true
     };
+
+    if (Object.prototype.hasOwnProperty.call(source, 'financialCycleStartDay')) {
+      const remoteDay = Number(source.financialCycleStartDay);
+      if (Number.isFinite(remoteDay) && remoteDay >= 1 && remoteDay <= 28) {
+        merged.financialCycleStartDay = Math.min(28, Math.max(1, remoteDay));
+      }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(source, 'hideBalancesOnOpen')) {
+      if (typeof source.hideBalancesOnOpen === 'boolean') {
+        merged.hideBalancesOnOpen = source.hideBalancesOnOpen;
+      }
+    }
+
+    return merged;
   }
 
   async function loadProfileSettingsFromCloud() {
@@ -4065,7 +4090,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const remote = normalizeProfileSettings(data.profileSettings);
+      const local = {
+        featureSettings: normalizeFeatureSettings(featureSettings || {}),
+        financialCycleStartDay: getFinancialCycleStartDay(),
+        hideBalancesOnOpen: localStorage.getItem(HIDE_BALANCES_STORAGE_KEY) === '1'
+      };
+
+      const remote = normalizeProfileSettings(data.profileSettings, local);
       featureSettings = remote.featureSettings;
       persistFeatureSettings();
 
