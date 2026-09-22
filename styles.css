@@ -1503,14 +1503,14 @@
     background:var(--paper);color:var(--ink);
   }
   #viewProfile .feature-lab-toggle{
-    gap:14px!important;padding:14px 16px!important;
-    border-radius:18px!important;background:var(--surface)!important;
-    border:1px solid var(--line)!important;
+    gap:14px;padding:14px 16px;
+    border-radius:18px;background:var(--surface);
+    border:1px solid var(--line);
     min-height:64px;
   }
   #viewProfile .feature-lab-toggle:has(input:checked){
-    border-color:color-mix(in srgb,var(--accent) 45%,var(--line))!important;
-    background:color-mix(in srgb,var(--accent) 10%,var(--surface))!important;
+    border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
+    background:color-mix(in srgb,var(--accent) 10%,var(--surface));
   }
   #viewProfile .feature-lab-switch{
     width:44px;height:26px;border-radius:999px;background:var(--line);flex:0 0 auto;
@@ -1529,7 +1529,7 @@
     margin:0;font-size:12px;font-weight:800;letter-spacing:.06em;
     text-transform:uppercase;color:var(--ink-soft);
   }
-  #viewProfile .feature-lab-section-head[hidden]{display:none!important;}
+  #viewProfile .feature-lab-section-head[hidden]{display:none;}
   #viewProfile .feature-lab-section-tag{display:none;}
   #viewProfile .feature-lab-section-desc{
     margin:0 0 14px;font-size:11px;line-height:1.45;color:var(--ink-soft);
@@ -2156,8 +2156,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
 
 #viewBills .bill-event.paid{
   opacity:.45;
-}
-  text-decoration:none;
 }
 
 #viewBills .bill-list-item{
@@ -5859,35 +5857,35 @@ body:not([data-tab="profile"]) .profile-shell{
   width:100%;
 }
 #viewProfile .profile-item{
-  display:flex !important;
-  flex-direction:row !important;
-  align-items:center !important;
-  gap:12px !important;
-  width:100% !important;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:12px;
+  width:100%;
   box-sizing:border-box;
   min-height:56px;
-  padding:12px 14px !important;
+  padding:12px 14px;
   overflow:hidden;
 }
 #viewProfile .profile-item-icon{
-  flex:0 0 40px !important;
-  width:40px !important;
-  height:40px !important;
-  min-width:40px !important;
-  max-width:40px !important;
+  flex:0 0 40px;
+  width:40px;
+  height:40px;
+  min-width:40px;
+  max-width:40px;
 }
 #viewProfile .profile-item-copy{
-  flex:1 1 auto !important;
-  min-width:0 !important;
+  flex:1 1 auto;
+  min-width:0;
   max-width:100%;
 }
 #viewProfile .profile-item-copy strong,
 #viewProfile .profile-item-copy span,
 #viewProfile .profile-item-copy small{
-  white-space:normal !important;
-  word-break:normal !important;
+  white-space:normal;
+  word-break:normal;
   overflow-wrap:anywhere;
-  writing-mode:horizontal-tb !important;
+  writing-mode:horizontal-tb;
 }
 #viewProfile .profile-item-arrow{
   flex:0 0 auto;
@@ -5897,13 +5895,13 @@ body:not([data-tab="profile"]) .profile-shell{
 #viewProfile .profile-item input[type="number"],
 #viewProfile #inputFinancialCycleDay,
 #viewProfile #featureReminderAdvanceDays{
-  flex:0 0 56px !important;
-  width:56px !important;
-  min-width:56px !important;
-  max-width:64px !important;
-  height:40px !important;
-  margin:0 !important;
-  padding:8px 6px !important;
+  flex:0 0 56px;
+  width:56px;
+  min-width:56px;
+  max-width:64px;
+  height:40px;
+  margin:0;
+  padding:8px 6px;
   text-align:center;
   border-radius:10px;
   border:1px solid var(--line);
@@ -5913,13 +5911,13 @@ body:not([data-tab="profile"]) .profile-shell{
 }
 /* toggles de lembrete alinhados como cards */
 #viewProfile .feature-lab-toggle{
-  display:flex !important;
-  align-items:center !important;
+  display:flex;
+  align-items:center;
   gap:12px;
   width:100%;
   box-sizing:border-box;
   min-height:56px;
-  padding:12px 14px !important;
+  padding:12px 14px;
   border:1px solid var(--line);
   border-radius:18px;
   background:var(--surface);
@@ -5950,28 +5948,28 @@ body:not([data-tab="profile"]) .profile-shell{
   display:flex;
   flex-direction:column;
   gap:12px;
-  padding:14px !important;
-  border-radius:18px !important;
+  padding:14px;
+  border-radius:18px;
   width:100%;
   box-sizing:border-box;
 }
 #viewProfile .diagnostic-summary-head{
-  display:flex !important;
-  flex-direction:row !important;
-  align-items:center !important;
-  gap:12px !important;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:12px;
 }
 #viewProfile .diagnostic-summary-icon{
-  flex:0 0 40px !important;
-  width:40px !important;
-  height:40px !important;
-  min-width:40px !important;
-  display:grid !important;
-  place-items:center !important;
-  border-radius:12px !important;
-  font-size:18px !important;
-  line-height:1 !important;
-  background:color-mix(in srgb, var(--accent) 12%, var(--paper)) !important;
+  flex:0 0 40px;
+  width:40px;
+  height:40px;
+  min-width:40px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-size:18px;
+  line-height:1;
+  background:color-mix(in srgb, var(--accent) 12%, var(--paper));
 }
 #viewProfile .diagnostic-summary-head > div{
   flex:1;
