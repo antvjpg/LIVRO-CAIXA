@@ -7768,3 +7768,15 @@ body:not(.dark-mode) .goals-form-body select {
 #viewProfile .feature-lab-toggle:active {
   background: color-mix(in srgb, var(--accent) 8%, var(--surface));
 }
+
+
+/* GROK: isolamento Visao geral sem !important */
+/* Esconde a aba inteira fora de dashboard (especificidade > #viewDashboard.active) */
+body:not([data-tab="dashboard"]) #viewDashboard {
+  display: none;
+}
+/* Mostra so quando a aba ativa e Visao geral */
+body[data-tab="dashboard"] #viewDashboard.active {
+  display: flex;
+}
+
