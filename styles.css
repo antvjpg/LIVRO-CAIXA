@@ -103,6 +103,16 @@
   .dark-theme-option[data-theme="4"]{--swatch:#22C55E;}
   .dark-theme-option[data-theme="5"]{--swatch:linear-gradient(135deg,#E85002,#C10801);}
   .dark-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.24);}
+
+/* FIX — paletas: hover/foco não podem sobrescrever a cor da amostra */
+.light-theme-option:hover,
+.light-theme-option:focus-visible,
+.light-theme-option:active,
+.dark-theme-option:hover,
+.dark-theme-option:focus-visible,
+.dark-theme-option:active {
+  background: var(--swatch);
+}
   *{box-sizing:border-box;}
   body,body *{font-family:var(--font-ui)!important;}
   html{overflow-x:hidden;width:100%;}
