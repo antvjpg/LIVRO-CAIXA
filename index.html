@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.19-20 (GPT) — authOverlay null-safe + Metas aba normal -->
+<html lang="pt-BR"><!-- Livro-Caixa V.19-20 (GPT) — Branding Orange themes (claro + escuro) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-20-goals7">
+  <link rel="stylesheet" href="./styles.css?v=19-20-orange">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
@@ -139,6 +139,7 @@
     <span class="light-theme-picker-label">Paleta clara</span>
     <button type="button" class="light-theme-option" data-theme="1" aria-label="Verde original" aria-pressed="true" title="Verde original"></button>
     <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracotta e Sage" aria-pressed="false" title="Terracotta & Sage"></button>
+    <button type="button" class="light-theme-option" data-theme="5" aria-label="Branding Orange" aria-pressed="false" title="Branding Orange"></button>
   </div>
 
   <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
@@ -146,6 +147,7 @@
     <button type="button" class="dark-theme-option" data-theme="1" aria-label="Verde e Dourado" aria-pressed="true" title="Verde + Dourado"></button>
     <button type="button" class="dark-theme-option" data-theme="3" aria-label="Verde-oliva e Terracota" aria-pressed="false" title="Verde-oliva + Terracota"></button>
     <button type="button" class="dark-theme-option" data-theme="4" aria-label="Grafite neutro" aria-pressed="false" title="Grafite neutro"></button>
+    <button type="button" class="dark-theme-option" data-theme="5" aria-label="Branding Orange" aria-pressed="false" title="Branding Orange"></button>
   </div>
 
   <div class="balance-strip" id="balanceStrip"></div>
@@ -1376,7 +1378,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-20-goals7').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-20-orange').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -1741,7 +1743,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const LIGHT_THEME_STORAGE_KEY = 'livro-caixa-light-theme';
   const LIGHT_THEME_COLORS = {
     '1': '#F8F7F2',
-    '4': '#FBF6EF'
+    '4': '#FBF6EF',
+    '5': '#F9F9F9'
   };
   const darkThemePicker = document.getElementById('darkThemePicker');
   const darkThemeOptions = Array.from(document.querySelectorAll('.dark-theme-option'));
@@ -1749,7 +1752,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const DARK_THEME_COLORS = {
     '1': '#0F1712',
     '3': '#141410',
-    '4': '#121212'
+    '4': '#121212',
+    '5': '#000000'
   };
 
   function validLightTheme(value) {
