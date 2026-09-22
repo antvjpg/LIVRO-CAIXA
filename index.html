@@ -685,11 +685,13 @@
           <div><label for="featureSavingsGoalAmount">Meta de economia mensal</label><input type="text" id="featureSavingsGoalAmount" data-money="true" placeholder="R$ 0,00"><span class="hint">Acompanha o saldo positivo do mês.</span></div>
           <div><label for="featureWhatIfExpense">Simular nova saída mensal</label><input type="text" id="featureWhatIfExpense" data-money="true" placeholder="R$ 0,00"><span class="hint">Usada apenas no simulador “E se?”.</span></div>
         </div>
+        <div class="feature-lab-primary-actions">
+          <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
+        </div>
         <div class="feature-lab-actions"><button type="button" id="btnRunWhatIf" class="primary">Simular “E se...?”</button><button type="button" id="btnExportPatrimonyPng">Exportar patrimônio PNG</button></div>
         <div id="labsProjectionStatus" class="feature-lab-feedback" aria-live="polite"></div>
 
-      <div class="feature-lab-primary-actions">
-        <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
+        <div class="feature-lab-primary-actions">
         <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
       </div>
       <div id="featureLabStatus" class="feature-lab-feedback" aria-live="polite"></div>
@@ -5428,6 +5430,46 @@ ${JSON.stringify(snapshot)}
     runGeminiFinancialDiagnosis
   );
 
+
+  // V19-20: meses de projeção são salvos automaticamente ao sair do campo.
+  const inputProjectionMonths = document.getElementById('featureProjectionMonths');
+  let projectionSaveTimer = null;
+
+  async function saveProjectionMonthsAutomatically() {
+    if (!inputProjectionMonths) return;
+
+    const value = Math.min(24, Math.max(1, Number(inputProjectionMonths.value) || 6));
+
+    inputProjectionMonths.value = value;
+    featureSettings = normalizeFeatureSettings({
+      ...featureSettings,
+      projectionMonths: value
+    });
+
+    // V19-20: garante persistência local mesmo sem login ou se a nuvem falhar.
+    persistFeatureSettings();
+
+    try {
+      await persistProfileSettings();
+      const status = document.getElementById('featureLabStatus');
+      if (status) status.textContent = 'Meses de projeção salvos automaticamente.';
+    } catch (err) {
+      const status = document.getElementById('featureLabStatus');
+      if (status) status.textContent = 'Projeção salva localmente; sincronização remota falhou.';
+      logSyncError('meses de projeção', err);
+    }
+  }
+
+  if (inputProjectionMonths) {
+    inputProjectionMonths.addEventListener('change', saveProjectionMonthsAutomatically);
+
+    inputProjectionMonths.addEventListener('blur', () => {
+      clearTimeout(projectionSaveTimer);
+      projectionSaveTimer = setTimeout(() => {
+        saveProjectionMonthsAutomatically();
+      }, 150);
+    });
+  }
 
   const inputFinancialCycleDay = document.getElementById('inputFinancialCycleDay');
   if (inputFinancialCycleDay) {
