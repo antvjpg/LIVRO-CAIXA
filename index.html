@@ -406,6 +406,12 @@
         </div>
 
       </div>
+
+      <div class="feature-lab-primary-actions">
+        <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
+        <div id="profileSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
+      </div>
+
 <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">📊</span> Orçamento</div>
         <div class="feature-lab-section">
@@ -684,9 +690,6 @@
         <div class="feature-lab-fields">
           <div><label for="featureSavingsGoalAmount">Meta de economia mensal</label><input type="text" id="featureSavingsGoalAmount" data-money="true" placeholder="R$ 0,00"><span class="hint">Acompanha o saldo positivo do mês.</span></div>
           <div><label for="featureWhatIfExpense">Simular nova saída mensal</label><input type="text" id="featureWhatIfExpense" data-money="true" placeholder="R$ 0,00"><span class="hint">Usada apenas no simulador “E se?”.</span></div>
-        </div>
-        <div class="feature-lab-primary-actions">
-          <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
         </div>
         <div class="feature-lab-actions"><button type="button" id="btnRunWhatIf" class="primary">Simular “E se...?”</button><button type="button" id="btnExportPatrimonyPng">Exportar patrimônio PNG</button></div>
         <div id="labsProjectionStatus" class="feature-lab-feedback" aria-live="polite"></div>
@@ -4803,17 +4806,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btnFeatureLab')?.addEventListener('click', openFeatureLab);
   document.getElementById('btnSaveFeatureSettings')?.addEventListener('click', async () => {
-    featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization')?.checked, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: readMoneyInput(document.getElementById('featureSavingsGoalAmount')) });
+    featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization')?.checked, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
+        ? readMoneyInput(document.getElementById('featureSavingsGoalAmount'))
+        : featureSettings.monthlySavingsGoal });
     budgets = budgets.filter(item => !document.getElementById(`budget-${item.categoryId}`));
     document.querySelectorAll('[data-budget-category]').forEach(input => { const amount = readMoneyInput(input); const categoryId = input.dataset.budgetCategory; if (amount > 0) budgets.push({ id: `bud_${categoryId}`, categoryId, month: currentMonthYM(), amount, updatedAt: new Date().toISOString() }); });
     persistFeatureSettings();
     try {
       await persistAll();
       await persistProfileSettings();
-      document.getElementById('featureLabStatus').textContent = 'Configurações e orçamentos salvos. Automação atualizada.';
+      document.getElementById('profileSettingsStatus').textContent = 'Configurações e orçamentos salvos. Automação atualizada.';
       logInfo('Recursos de teste', 'Salvar configurações', 'Sucesso', 'Configurações, preferências e orçamentos atualizados.');
     } catch (err) {
-      document.getElementById('featureLabStatus').textContent = 'Configuração local salva; sincronização remota falhou.';
+      document.getElementById('profileSettingsStatus').textContent = 'Configuração local salva; sincronização remota falhou.';
       logSyncError('configurações de teste', err);
     }
     startFeatureAutomation(); render();
@@ -5451,10 +5456,10 @@ ${JSON.stringify(snapshot)}
 
     try {
       await persistProfileSettings();
-      const status = document.getElementById('featureLabStatus');
+      const status = document.getElementById('profileSettingsStatus') || document.getElementById('featureLabStatus');
       if (status) status.textContent = 'Meses de projeção salvos automaticamente.';
     } catch (err) {
-      const status = document.getElementById('featureLabStatus');
+      const status = document.getElementById('profileSettingsStatus') || document.getElementById('featureLabStatus');
       if (status) status.textContent = 'Projeção salva localmente; sincronização remota falhou.';
       logSyncError('meses de projeção', err);
     }
