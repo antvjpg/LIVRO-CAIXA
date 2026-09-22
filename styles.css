@@ -3035,14 +3035,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
 .profile-user-copy strong{display:block;font-size:14px;color:var(--ink);line-height:1.2;}
 .profile-user-copy span{display:block;margin-top:2px;font-size:12px;color:var(--ink-soft);overflow-wrap:anywhere;}
 
-#viewProfile .profile-shell{padding:14px 12px 20px;}
-#viewProfile .profile-heading{margin-bottom:10px;gap:10px;}
-#viewProfile .profile-group{margin-bottom:12px;}
-#viewProfile .profile-group-title{margin:0 0 6px;font-size:11px;}
-#viewProfile .profile-list{gap:6px;}
-#viewProfile .profile-item{padding:10px 12px;border-radius:12px;}
-#viewProfile .feature-lab-section{padding:10px 12px;border-radius:12px;}
-#viewProfile .profile-roadmap{margin-top:10px;padding:10px 12px;}
+
 
 .automation-recs{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
 .automation-recs-title{font-size:11px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
@@ -5503,16 +5496,7 @@ body.balances-hidden .balance-card.total .amount::after{
 }
 
 /* Perfil: ocultar proteção local; sair no fim */
-.profile-group-hidden,
-.profile-group[hidden]{
-  display:none !important;
-}
-.profile-group:has(#btnProfileLogout){
-  margin-top:18px;
-  padding-top:8px;
-  border-top:1px solid var(--line);
-  margin-bottom:calc(18px + env(safe-area-inset-bottom,0px));
-}
+
 
 /* FAB contorno fino */
 .fab-add,
@@ -5626,7 +5610,6 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{display:none!important;}
 #viewDashboard:not(.active) #dashboardGeminiHost,
 #viewDashboard:not(.active) #dashboardNextPayment{display:none!important;}
 
-.profile-group-hidden,[hidden].profile-group{display:none!important;}
 .profile-group:has(#btnProfileLogout){margin-top:18px;padding-top:10px;border-top:1px solid var(--line);margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));}
 
 .dashboard-next-payment-card .next-pay-inner{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);}
@@ -5877,8 +5860,7 @@ body:not([data-tab="profile"]) .profile-shell{
   -webkit-mask-position:center;mask-position:center;
 }
 
-/* Preferências gerais: reforço visual */
-.profile-group-title{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 8px;}
+
 
 
 /* ========== V.19-18 — correção layout cards Perfil ========== */
