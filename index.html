@@ -368,7 +368,7 @@
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">⚙️</span> Preferências gerais</div>
         <div class="profile-list">
-          <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.1 2.1-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.57v.09h-3v-.09A1.7 1.7 0 0 0 10.68 18.64a1.7 1.7 0 0 0-1.88.34l-.06.06-2.1-2.1.06-.06A1.7 1.7 0 0 0 7.04 15a1.7 1.7 0 0 0-1.57-1.04h-.09v-3h.09A1.7 1.7 0 0 0 7.04 9.92 1.7 1.7 0 0 0 6.7 8.04l-.06-.06 2.1-2.1.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.04-1.57v-.09h3v.09a1.7 1.7 0 0 0 1.04 1.57 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.1 2.1-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.57 1.04h.09v3h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta, no cabeçalho</span></span><span class="profile-item-arrow">›</span></div>
+          <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.1 2.1-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.57v.09h-3v-.09A1.7 1.7 0 0 0 10.68 18.64a1.7 1.7 0 0 0-1.88.34l-.06.06-2.1-2.1.06-.06A1.7 1.7 0 0 0 7.04 15a1.7 1.7 0 0 0-1.57-1.04h-.09v-3h.09A1.7 1.7 0 0 0 7.04 9.92 1.7 1.7 0 0 0 6.7 8.04l-.06-.06 2.1-2.1.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.04-1.57v-.09h3v.09a1.7 1.7 0 0 0 1.04 1.57 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.1 2.1-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.57 1.04h.09v3h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta, no cabeçalho</span></span></div>
         </div>
       </div>
 
@@ -412,7 +412,7 @@
         <div id="profileSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
       </div>
 
-<div class="profile-group">
+      <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">📊</span> Orçamento</div>
         <div class="feature-lab-section">
           <div id="featureBudgetRows" class="feature-budget-rows"></div>
@@ -4806,7 +4806,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btnFeatureLab')?.addEventListener('click', openFeatureLab);
   document.getElementById('btnSaveFeatureSettings')?.addEventListener('click', async () => {
-    featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization')?.checked, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
+    featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization') ? document.getElementById('featureAutoCategorization').checked : featureSettings.autoCategorization, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
         ? readMoneyInput(document.getElementById('featureSavingsGoalAmount'))
         : featureSettings.monthlySavingsGoal });
     budgets = budgets.filter(item => !document.getElementById(`budget-${item.categoryId}`));
