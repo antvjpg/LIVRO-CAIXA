@@ -29,7 +29,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-20-orange">
+  <link rel="stylesheet" href="./styles.css?v=19-20-orange2">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
@@ -352,6 +352,14 @@
         <div class="profile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
       </div>
+      <div class="profile-user-card profile-user-card-legacy" hidden id="profileUserCard" aria-label="Conta conectada">
+        <div class="profile-user-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
+        <div class="profile-user-copy">
+          <strong id="profileUserName">Conta</strong>
+          <span id="profileUserEmail">—</span>
+        </div>
+      </div>
+
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">👤</span> Dados da conta</div>
         <div class="profile-list">
@@ -1370,7 +1378,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-20-orange').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=19-20-orange2').then(reg => {
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -4035,38 +4043,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // V19-20: preferências do Perfil também acompanham a conta na nuvem.
-  function normalizeProfileSettings(raw = {}, base = {}) {
+  function normalizeProfileSettings(raw = {}) {
     const source = raw && typeof raw === 'object' ? raw : {};
-    const local = base && typeof base === 'object' ? base : {};
-    const remoteFeatures = source.featureSettings && typeof source.featureSettings === 'object'
-      ? source.featureSettings
-      : {};
-    const localFeatures = local.featureSettings && typeof local.featureSettings === 'object'
-      ? local.featureSettings
-      : {};
-
-    const merged = {
-      featureSettings: normalizeFeatureSettings({ ...localFeatures, ...remoteFeatures }),
-      financialCycleStartDay: Number.isFinite(Number(local.financialCycleStartDay))
-        ? Math.min(28, Math.max(1, Number(local.financialCycleStartDay)))
-        : 1,
-      hideBalancesOnOpen: local.hideBalancesOnOpen === true
+    return {
+      featureSettings: normalizeFeatureSettings(source.featureSettings || {}),
+      financialCycleStartDay: Math.min(28, Math.max(1, Number(source.financialCycleStartDay) || 1)),
+      hideBalancesOnOpen: source.hideBalancesOnOpen === true
     };
-
-    if (Object.prototype.hasOwnProperty.call(source, 'financialCycleStartDay')) {
-      const remoteDay = Number(source.financialCycleStartDay);
-      if (Number.isFinite(remoteDay) && remoteDay >= 1 && remoteDay <= 28) {
-        merged.financialCycleStartDay = Math.min(28, Math.max(1, remoteDay));
-      }
-    }
-
-    if (Object.prototype.hasOwnProperty.call(source, 'hideBalancesOnOpen')) {
-      if (typeof source.hideBalancesOnOpen === 'boolean') {
-        merged.hideBalancesOnOpen = source.hideBalancesOnOpen;
-      }
-    }
-
-    return merged;
   }
 
   async function loadProfileSettingsFromCloud() {
@@ -4077,19 +4060,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = snap.data() || {};
       if (!data.profileSettings || typeof data.profileSettings !== 'object') {
-        // Conta antiga ainda sem preferências de Perfil na nuvem.
-        // Mantém as preferências locais.
+        // V19-20: conta antiga ainda sem preferências de Perfil na nuvem.
+        // Mantém as preferências locais para não sobrescrever configurações válidas.
         return;
       }
 
-      const local = {
-        featureSettings: normalizeFeatureSettings(featureSettings || {}),
-        financialCycleStartDay: getFinancialCycleStartDay(),
-        hideBalancesOnOpen: localStorage.getItem(HIDE_BALANCES_STORAGE_KEY) === '1'
-      };
-
-      const remote = normalizeProfileSettings(data.profileSettings, local);
-
+      const remote = normalizeProfileSettings(data.profileSettings);
       featureSettings = remote.featureSettings;
       persistFeatureSettings();
 
@@ -4935,6 +4911,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const APP_VERSION_LABEL = 'Livro-Caixa V.19-20 (GPT)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
+  function syncProfileUserCard() {
+    const user = (typeof auth !== 'undefined' && auth.currentUser) ? auth.currentUser : null;
+    const email = user?.email || document.getElementById('profileEmail')?.textContent || '—';
+    const name = user?.displayName || (email && email.includes('@') ? email.split('@')[0] : 'Conta');
+    const elName = document.getElementById('profileUserName');
+    const elEmail = document.getElementById('profileUserEmail');
+    const elLegacy = document.getElementById('profileEmail');
+    if (elName) elName.textContent = name;
+    if (elEmail) elEmail.textContent = email;
+    if (elLegacy && user?.email) elLegacy.textContent = user.email;
+  }
+  syncProfileUserCard();
+  try { auth?.onAuthStateChanged?.(() => syncProfileUserCard()); } catch (e) {}
+
+
   document.getElementById('btnProfileLogout')?.addEventListener('click', () => {
     if (confirm('Deseja realmente sair da sua conta? Seus dados continuam salvos na nuvem — só a sessão neste aparelho é encerrada.')) {
       auth.signOut();

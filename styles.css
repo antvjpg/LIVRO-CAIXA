@@ -103,16 +103,6 @@
   .dark-theme-option[data-theme="4"]{--swatch:#22C55E;}
   .dark-theme-option[data-theme="5"]{--swatch:linear-gradient(135deg,#E85002,#C10801);}
   .dark-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.24);}
-
-/* FIX — paletas: hover/foco não podem sobrescrever a cor da amostra */
-.light-theme-option:hover,
-.light-theme-option:focus-visible,
-.light-theme-option:active,
-.dark-theme-option:hover,
-.dark-theme-option:focus-visible,
-.dark-theme-option:active {
-  background: var(--swatch);
-}
   *{box-sizing:border-box;}
   body,body *{font-family:var(--font-ui)!important;}
   html{overflow-x:hidden;width:100%;}
@@ -497,7 +487,14 @@
     outline:2px solid var(--gold);
     outline-offset:3px;
   }
-  button,input,select,textarea{-webkit-tap-highlight-color:transparent;}
+  html,body,button,input,select,textarea,a,label,
+  [role="button"],.profile-item,.feature-lab-toggle,
+  .mobile-nav-item,.drawer-item,.nav-tabs button{
+    -webkit-tap-highlight-color:transparent;
+    -webkit-touch-callout:none;
+  }
+  /* Evita flash azul/cinza do browser em toques */
+  *{-webkit-tap-highlight-color:transparent;}
   button:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
   input[type=file]{display:none;}
 
@@ -910,8 +907,8 @@
   }
   .import-row input, .import-row select{padding:6px 8px;font-size:13px;}
   .import-row .import-status{grid-column:1/-1;font-size:11px;line-height:1.35;color:var(--ink-soft);}
-  .import-row.is-duplicate{opacity:.68;}.import-row.is-duplicate .import-status{color:var(--gold);font-weight:700;}
-  .import-summary{margin:9px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink-soft);font-size:12px;line-height:1.4;}.import-summary b{color:var(--ink);}.import-summary .import-ready{color:var(--green);font-weight:700;}.import-summary .import-warning{color:var(--gold);font-weight:700;}
+  .import-row.is-duplicate{opacity:.68;}.import-row.is-duplicate .import-status{color:var(--out);font-weight:700;}
+  .import-summary{margin:9px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink-soft);font-size:12px;line-height:1.4;}.import-summary b{color:var(--ink);}.import-summary .import-ready{color:var(--green);font-weight:700;}.import-summary .import-warning{color:var(--out);font-weight:700;}
   .hint{font-size:12px;color:var(--ink-soft);margin-top:8px;}
   footer{
     text-align:center;
@@ -1750,33 +1747,13 @@
   .feature-lab-section{margin:18px 26px 0;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--paper-2);}
   .feature-lab-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
   .feature-lab-section-head>div{display:flex;align-items:center;gap:9px;min-width:0;}
-  .feature-lab-section-number{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:800;}
+  .feature-lab-section-number{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:var(--accent-soft);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:800;}
   .feature-lab-panel .feature-lab-section h4{margin:0;font-size:14px;color:var(--ink);}
   .feature-lab-section-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:800;letter-spacing:.08em;color:var(--ink-soft);white-space:nowrap;}
   .feature-lab-section-desc{margin:0 0 12px;color:var(--ink-soft);font-size:11px;line-height:1.45;}
   .feature-lab-option-list{margin:0;padding:0;border:0;background:transparent;gap:7px;}
   .feature-lab-toggle{position:relative;display:flex!important;align-items:center!important;gap:11px!important;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:var(--paper);cursor:pointer;}
   .feature-lab-toggle input{position:absolute;opacity:0;pointer-events:none;}
-/* FIX — Automação no Perfil: impedir realce azul nativo ao tocar na card */
-#viewProfile .feature-lab-toggle {
-  -webkit-tap-highlight-color: transparent;
-  tap-highlight-color: transparent;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-#viewProfile .feature-lab-toggle:focus,
-#viewProfile .feature-lab-toggle:focus-visible,
-#viewProfile .feature-lab-toggle:focus-within {
-  outline: none;
-}
-
-/* FIX — Automação no Perfil: remover contorno visual da própria card ao tocar/focar */
-.feature-lab-toggle:focus,
-.feature-lab-toggle:focus-visible {
-  outline: none;
-}
-
   .feature-lab-toggle-copy{flex:1;min-width:0;}
   .feature-lab-toggle-copy strong,.feature-lab-toggle-copy small{display:block;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif;}
   .feature-lab-toggle-copy strong{font-size:12px;color:var(--ink);margin-bottom:2px;}
@@ -1831,7 +1808,7 @@
   .credit-card-box.is-inactive{opacity:.72;}
   .credit-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
   .credit-card-title{display:flex;align-items:center;gap:10px;min-width:0;}
-  .credit-card-icon{width:38px;height:38px;border-radius:11px;background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--accent);display:grid;place-items:center;flex:0 0 auto;}
+  .credit-card-icon{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:0 0 auto;}
   .credit-card-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
   .credit-card-title h3{margin:0;font-size:14px;color:var(--ink);overflow-wrap:anywhere;}
   .credit-card-title small{display:block;margin-top:3px;color:var(--ink-soft);font-size:9px;}
@@ -3036,6 +3013,34 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
 }
 
 
+/* === Brief V.19-16 ajustes: perfil, filtros, faturas, orçamento === */
+.profile-user-card{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;margin:0 0 12px;
+  border:1px solid var(--line);border-radius:16px;
+  background:var(--surface);
+  box-shadow:0 1px 3px color-mix(in srgb,var(--shadow) 35%,transparent);
+}
+.profile-user-avatar{
+  width:44px;height:44px;min-width:44px;border-radius:14px;
+  display:grid;place-items:center;
+  background:color-mix(in srgb,var(--accent) 12%,var(--paper));
+  color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+}
+.profile-user-avatar svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.profile-user-copy{min-width:0;flex:1;}
+.profile-user-copy strong{display:block;font-size:14px;color:var(--ink);line-height:1.2;}
+.profile-user-copy span{display:block;margin-top:2px;font-size:12px;color:var(--ink-soft);overflow-wrap:anywhere;}
+
+#viewProfile .profile-shell{padding:14px 12px 20px;}
+#viewProfile .profile-heading{margin-bottom:10px;gap:10px;}
+#viewProfile .profile-group{margin-bottom:12px;}
+#viewProfile .profile-group-title{margin:0 0 6px;font-size:11px;}
+#viewProfile .profile-list{gap:6px;}
+#viewProfile .profile-item{padding:10px 12px;border-radius:12px;}
+#viewProfile .feature-lab-section{padding:10px 12px;border-radius:12px;}
+#viewProfile .profile-roadmap{margin-top:10px;padding:10px 12px;}
+
 .automation-recs{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
 .automation-recs-title{font-size:11px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
 .automation-rec-item{
@@ -4118,7 +4123,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-weight:800;
   letter-spacing:.1em;
   text-transform:uppercase;
-  color:var(--ink-soft);
+  color:var(--muted);
 }
 
 .bill-value-block input{
@@ -4166,7 +4171,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-size:9px;
   font-weight:800;
   letter-spacing:.06em;
-  color:var(--ink-soft);
+  color:var(--muted);
 }
 
 .bill-form-sheet input,
@@ -4475,7 +4480,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-weight:800;
   letter-spacing:.04em;
   text-transform:uppercase;
-  color:var(--ink-soft);
+  color:var(--muted);
 }
 
 .launch-value-block input{
@@ -4601,7 +4606,7 @@ body.dark-mode #panelBill #billParcelasFields{
 #receiptFileStatus{
   margin-top:8px;
   font-size:12px;
-  color:var(--ink-soft);
+  color:var(--muted);
 }
 
 .launch-save-cta{
@@ -4994,7 +4999,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-weight:800;
   letter-spacing:.1em;
   text-transform:uppercase;
-  color:var(--ink-soft);
+  color:var(--muted, var(--ink-soft));
 }
 
 /* Card panel — reforço do padrão já usado */
@@ -5495,7 +5500,16 @@ body.balances-hidden .balance-card.total .amount::after{
 }
 
 /* Perfil: ocultar proteção local; sair no fim */
-
+.profile-group-hidden,
+.profile-group[hidden]{
+  display:none !important;
+}
+.profile-group:has(#btnProfileLogout){
+  margin-top:18px;
+  padding-top:8px;
+  border-top:1px solid var(--line);
+  margin-bottom:calc(18px + env(safe-area-inset-bottom,0px));
+}
 
 /* FAB contorno fino */
 .fab-add,
@@ -5609,6 +5623,7 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{display:none!important;}
 #viewDashboard:not(.active) #dashboardGeminiHost,
 #viewDashboard:not(.active) #dashboardNextPayment{display:none!important;}
 
+.profile-group-hidden,[hidden].profile-group{display:none!important;}
 .profile-group:has(#btnProfileLogout){margin-top:18px;padding-top:10px;border-top:1px solid var(--line);margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));}
 
 .dashboard-next-payment-card .next-pay-inner{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);}
@@ -5717,6 +5732,7 @@ body:not([data-tab="profile"]) .profile-shell{
 }
 
 /* F06 — perfil integrado */
+.profile-user-card-legacy[hidden]{display:none !important;}
 .profile-heading-integrated{
   display:flex;align-items:center;gap:12px;
   padding:14px;margin-bottom:14px;
@@ -5858,7 +5874,8 @@ body:not([data-tab="profile"]) .profile-shell{
   -webkit-mask-position:center;mask-position:center;
 }
 
-
+/* Preferências gerais: reforço visual */
+.profile-group-title{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 8px;}
 
 
 /* ========== V.19-18 — correção layout cards Perfil ========== */
@@ -6928,7 +6945,7 @@ body[data-tab="goals"] #modalOverlay,
 
 .card-form-intro span{
   display:block;
-  color:var(--ink-soft);
+  color:var(--muted);
   font-size:12px;
   line-height:1.45;
 }
@@ -6958,7 +6975,7 @@ body[data-tab="goals"] #modalOverlay,
 .card-section label{
   display:block;
   margin-bottom:7px;
-  color:var(--ink-soft);
+  color:var(--muted);
   font-size:12px;
   font-weight:800;
   letter-spacing:.04em;
@@ -6999,7 +7016,7 @@ body[data-tab="goals"] #modalOverlay,
 
 .card-cycle-hint{
   margin-top:11px;
-  color:var(--ink-soft);
+  color:var(--muted);
   font-size:11px;
   line-height:1.45;
 }
@@ -7600,7 +7617,7 @@ body:not(.dark-mode) .goals-form-body select {
     var(--paper) 82%,
     transparent
   );
-  color: var(--ink-soft);
+  color: var(--muted);
   cursor: grab;
   touch-action: none;
   -webkit-user-select: none;
@@ -7803,4 +7820,29 @@ body:not(.dark-mode) .goals-form-body select {
   visibility: visible;
   text-align: left;
   line-height: 1.25;
+}
+
+
+/* Profile / settings — sem highlight azul do sistema */
+#viewProfile .profile-item,
+#viewProfile .feature-lab-toggle,
+.profile-item[role="button"] {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none;
+}
+#viewProfile .profile-item:focus,
+#viewProfile .profile-item:focus-visible,
+.profile-item[role="button"]:focus,
+.profile-item[role="button"]:focus-visible {
+  outline: none;
+  box-shadow: none;
+  background: var(--surface);
+}
+#viewProfile .profile-item:active,
+.profile-item[role="button"]:active {
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface)) !important;
+  transform: scale(0.99);
+}
+#viewProfile .feature-lab-toggle:active {
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface)) !important;
 }
