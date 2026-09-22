@@ -352,14 +352,6 @@
         <div class="profile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
       </div>
-      <div class="profile-user-card profile-user-card-legacy" hidden id="profileUserCard" aria-label="Conta conectada">
-        <div class="profile-user-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
-        <div class="profile-user-copy">
-          <strong id="profileUserName">Conta</strong>
-          <span id="profileUserEmail">—</span>
-        </div>
-      </div>
-
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">👤</span> Dados da conta</div>
         <div class="profile-list">
@@ -4942,19 +4934,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const APP_VERSION_LABEL = 'Livro-Caixa V.19-20 (GPT)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
-  function syncProfileUserCard() {
+  function syncProfileEmail() {
     const user = (typeof auth !== 'undefined' && auth.currentUser) ? auth.currentUser : null;
-    const email = user?.email || document.getElementById('profileEmail')?.textContent || '—';
-    const name = user?.displayName || (email && email.includes('@') ? email.split('@')[0] : 'Conta');
-    const elName = document.getElementById('profileUserName');
-    const elEmail = document.getElementById('profileUserEmail');
-    const elLegacy = document.getElementById('profileEmail');
-    if (elName) elName.textContent = name;
-    if (elEmail) elEmail.textContent = email;
-    if (elLegacy && user?.email) elLegacy.textContent = user.email;
+    const elProfileEmail = document.getElementById('profileEmail');
+    if (elProfileEmail && user?.email) {
+      elProfileEmail.textContent = user.email;
+    }
   }
-  syncProfileUserCard();
-  try { auth?.onAuthStateChanged?.(() => syncProfileUserCard()); } catch (e) {}
+  syncProfileEmail();
+  try { auth?.onAuthStateChanged?.(() => syncProfileEmail()); } catch (e) {}
 
 
   document.getElementById('btnProfileLogout')?.addEventListener('click', () => {
