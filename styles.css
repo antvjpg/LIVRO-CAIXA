@@ -412,7 +412,7 @@
     background:var(--paper); color:var(--ink); font-size:13px; font-weight:700; text-transform:none; letter-spacing:0;
   }
   .period-picker-wrap{position:relative;}
-  .period-picker-button{min-width:138px; font-size:11px; font-family:var(--font-ui)!important;}
+  .period-picker-button{min-width:138px; font-size:11px; font-family:var(--font-ui);}
   .period-picker-input{position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer;}
   .period-all.is-active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
   .period-nav:hover,.period-picker-button:hover,.period-all:hover{background:var(--green-soft); color:var(--ink);}
@@ -1900,7 +1900,7 @@
   }
   @media (prefers-reduced-motion:reduce){button,.mobile-bottom-nav::before,.tab-content,.value-refresh,.card-lancamento{transition:none!important;animation:none!important;}}
 
-  .toolbar .quick-action{border:1px solid var(--action-border);border-radius:12px;background:var(--surface);color:var(--ink-soft);font-family:var(--font-ui)!important;font-size:11px;font-weight:700;letter-spacing:.01em;text-transform:none;gap:8px;box-shadow:none;min-height:54px;transition:background .16s ease,color .16s ease,border-color .16s ease,transform .16s ease;}
+  .toolbar .quick-action{border:1px solid var(--action-border);border-radius:12px;background:var(--surface);color:var(--ink-soft);font-family:var(--font-ui);font-size:11px;font-weight:700;letter-spacing:.01em;text-transform:none;gap:8px;box-shadow:none;min-height:54px;transition:background .16s ease,color .16s ease,border-color .16s ease,transform .16s ease;}
   .toolbar .quick-action:hover,.toolbar .quick-action:focus-visible{background:var(--green-soft);border-color:var(--accent);color:var(--accent);}
   .toolbar .quick-action:active{transform:scale(.98);}
   .yield-history-list{max-height:min(48vh,420px);gap:10px;}
@@ -3066,7 +3066,7 @@ body.dark-mode .bill-more-button{
 }
 .invoice-card-breakdown{padding-top:6px;gap:6px;}
 .invoice-titular-block{gap:5px;}
-.bill-list-item-amount{font-size:18px!important;margin-top:1px;}
+.bill-list-item-amount{font-size:18px;margin-top:1px;}
 #billList{gap:12px!important;}
 
 /* BUG-08: orçamento mais fino */
