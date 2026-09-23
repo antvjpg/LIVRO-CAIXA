@@ -10260,7 +10260,13 @@ document.getElementById('tSalvar').onclick = async () => {
       'auth/invalid-credential': 'E-mail ou senha incorretos.',
       'auth/email-already-in-use': 'Já existe uma conta com esse e-mail.',
       'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.',
-      'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente de novo.'
+      'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente de novo.',
+      'auth/unauthorized-domain': 'Este domínio não está autorizado no Firebase.',
+      'auth/popup-blocked': 'O navegador bloqueou a janela do Google. Tentando redirecionar...',
+      'auth/popup-closed-by-user': 'A janela do Google foi fechada.',
+      'auth/web-storage-unsupported': 'O navegador bloqueou o armazenamento necessário para o login Google.',
+      'auth/operation-not-supported-in-this-environment': 'Este ambiente não permite o login Google por janela.',
+      'auth/internal-error': 'O Firebase encontrou um erro interno ao iniciar o login Google.'
     };
     return map[code] || 'Não foi possível concluir. Tente novamente.';
   }
@@ -10333,14 +10339,40 @@ document.getElementById('tSalvar').onclick = async () => {
         const operation = beginLogOperation('Autenticação', 'Entrar com Google');
         logInfo('Autenticação', 'Entrar com Google', 'Em andamento', 'Solicitação de autenticação Google iniciada.', null, operation);
         const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then(() => logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation)).catch(err => {
-          if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
-            auth.signInWithRedirect(provider);
-          } else if (err.code !== 'auth/popup-closed-by-user') {
+        const useRedirect = window.matchMedia?.('(max-width: 768px)').matches
+          || window.matchMedia?.('(display-mode: standalone)').matches
+          || window.navigator.standalone === true;
+
+        const startRedirect = () => {
+          setAuthError('Abrindo o login do Google…');
+          return auth.signInWithRedirect(provider).catch(err => {
             logSyncError('autenticação Google', err, operation);
             setAuthError(translateAuthError(err.code));
-          }
-        });
+          });
+        };
+
+        if (useRedirect) {
+          startRedirect();
+          return;
+        }
+
+        auth.signInWithPopup(provider)
+          .then(() => logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation))
+          .catch(err => {
+            if (err.code === 'auth/popup-closed-by-user') {
+              return;
+            }
+            if (
+              err.code === 'auth/popup-blocked' ||
+              err.code === 'auth/cancelled-popup-request' ||
+              err.code === 'auth/web-storage-unsupported' ||
+              err.code === 'auth/operation-not-supported-in-this-environment'
+            ) {
+              return startRedirect();
+            }
+            logSyncError('autenticação Google', err, operation);
+            setAuthError(translateAuthError(err.code));
+          });
       };
     }
   })();
