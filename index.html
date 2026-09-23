@@ -1675,36 +1675,6 @@ window.loginDebugLog?.(
   }
 );
 
-auth.getRedirectResult()
-  .then(result => {
-    if (result?.user) {
-      window.loginDebugLog?.(
-        'GOOGLE',
-        'Retorno do redirect trouxe usuário',
-        {
-          provider: result.user.providerData?.map(p => p.providerId)
-        }
-      );
-    } else {
-      window.loginDebugLog?.(
-        'GOOGLE',
-        'Nenhum resultado pendente de redirect'
-      );
-    }
-  })
-  .catch(err => {
-    window.loginDebugLog?.(
-      'ERROR',
-      'getRedirectResult falhou',
-      { code: err.code, message: err.message }
-    );
-
-    logSyncError(
-      'resultado do redirect Google',
-      err
-    );
-  });
-
 firebase.firestore().enablePersistence().catch(err => {
   console.log("A persistência offline não pôde ser ativada:", err);
 });
@@ -10750,43 +10720,12 @@ document.getElementById('tSalvar').onclick = async () => {
           { authDomain: window.__firebaseConfig?.authDomain }
         );
 
-        const useRedirect = window.matchMedia?.('(max-width: 768px)').matches
-          || window.matchMedia?.('(display-mode: standalone)').matches
-          || window.navigator.standalone === true;
+        window.loginDebugLog?.(
+          'GOOGLE',
+          'Modo popup selecionado'
+        );
 
-        const startRedirect = () => {
-          window.loginDebugLog?.(
-            'GOOGLE',
-            'Iniciando signInWithRedirect'
-          );
-
-          setAuthError('Abrindo o login do Google…');
-          return auth.signInWithRedirect(provider).catch(err => {
-            window.loginDebugLog?.(
-              'ERROR',
-              'signInWithRedirect falhou',
-              { code: err.code, message: err.message }
-            );
-
-            logSyncError('autenticação Google', err, operation);
-            setAuthError(translateAuthError(err.code));
-          });
-        };
-
-          if (useRedirect) {
-            window.loginDebugLog?.(
-              'GOOGLE',
-              'Modo popup selecionado para celular/PWA',
-              { mobileOrPWA: true }
-            );
-          } else {
-            window.loginDebugLog?.(
-              'GOOGLE',
-              'Modo popup selecionado'
-            );
-          }
-
-          auth.signInWithPopup(provider)
+        auth.signInWithPopup(provider)
           .then(() => {
             window.loginDebugLog?.(
               'GOOGLE',
@@ -10815,14 +10754,6 @@ document.getElementById('tSalvar').onclick = async () => {
                 'Popup fechado pelo usuário'
               );
               return;
-            }
-            if (
-              err.code === 'auth/popup-blocked' ||
-              err.code === 'auth/cancelled-popup-request' ||
-              err.code === 'auth/web-storage-unsupported' ||
-              err.code === 'auth/operation-not-supported-in-this-environment'
-            ) {
-              return startRedirect();
             }
             logSyncError('autenticação Google', err, operation);
             setAuthError(translateAuthError(err.code));
