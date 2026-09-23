@@ -26,7 +26,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="./card-engine-v3.js"></script>
-<script src="./card-adapter.js"></script>
 
 
 
@@ -7967,7 +7966,7 @@ function openNewEntryModal() {
     if (!card) return;
     const amount = Number(paymentAmount);
     if (!(amount > 0)) { alert('Informe um valor de pagamento válido.'); return; }
-    const validation = window.LivroCaixaCardAdapter.validatePayment(
+    const validation = window.LivroCaixaCardEngineV3.validatePaymentForTitular(
       cardId,
       closingPeriodKey,
       titular,
@@ -8026,7 +8025,7 @@ function openNewEntryModal() {
     }
   };
   window.launchInvoiceTitular = function(cardId, closingPeriodKey, titular, amount) {
-    const invoiceState = window.LivroCaixaCardAdapter.invoice(
+    const invoiceState = window.LivroCaixaCardEngineV3.invoice(
       cardId,
       closingPeriodKey,
       purchases,
@@ -8059,7 +8058,7 @@ function openNewEntryModal() {
   window.shareInvoiceTitular = function(cardId, closingPeriodKey, titular, amount) {
     const card = cards.find(c => c.id === cardId);
     if (!card) return;
-    const invoiceState = window.LivroCaixaCardAdapter.invoice(
+    const invoiceState = window.LivroCaixaCardEngineV3.invoice(
       cardId,
       closingPeriodKey,
       purchases,
@@ -8100,7 +8099,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     if (!card) return;
     const id = invoiceLaunchId(cardId, closingPeriodKey, titular);
     const existing = invoiceLaunches.find(x => x.id === id);
-    const invoiceState = window.LivroCaixaCardAdapter.invoice(
+    const invoiceState = window.LivroCaixaCardEngineV3.invoice(
       cardId,
       closingPeriodKey,
       purchases,
@@ -8108,10 +8107,10 @@ VALOR: ${fmt(pseudoBill.amount)}
       invoiceLaunches
     );
 
-    const normalizedTitular = window.LivroCaixaCardAdapter.normalizeTitular(titular);
+    const normalizedTitular = window.LivroCaixaCardEngineV3.normalizeTitular(titular);
     const target = Array.isArray(invoiceState?.titulars)
       ? invoiceState.titulars.find(item =>
-          window.LivroCaixaCardAdapter.normalizeTitular(item.titular) === normalizedTitular
+          window.LivroCaixaCardEngineV3.normalizeTitular(item.titular) === normalizedTitular
         )
       : null;
 
@@ -8192,10 +8191,10 @@ VALOR: ${fmt(pseudoBill.amount)}
     const dueMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
 
     if (
-      !window.LivroCaixaCardAdapter ||
-      typeof window.LivroCaixaCardAdapter.invoice !== 'function'
+      !window.LivroCaixaCardEngineV3 ||
+      typeof window.LivroCaixaCardEngineV3.invoice !== 'function'
     ) {
-      throw new Error('CardAdapter não disponível para calendarInvoiceRows.');
+      throw new Error('CardEngine não disponível para calendarInvoiceRows.');
     }
 
     return cards
@@ -8203,7 +8202,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       .map(card => {
         const closingPeriodKey = closingPeriodKeyForDueMonth(card, dueMonthKey);
 
-        const invoiceState = window.LivroCaixaCardAdapter.invoice(
+        const invoiceState = window.LivroCaixaCardEngineV3.invoice(
           card.id,
           closingPeriodKey,
           purchases,
@@ -8265,13 +8264,13 @@ VALOR: ${fmt(pseudoBill.amount)}
       const period = closingPeriodKeyForDueMonth(card, dueMonth);
 
       if (
-        !window.LivroCaixaCardAdapter ||
-        typeof window.LivroCaixaCardAdapter.invoice !== 'function'
+        !window.LivroCaixaCardEngineV3 ||
+        typeof window.LivroCaixaCardEngineV3.invoice !== 'function'
       ) {
-        throw new Error('CardAdapter não disponível para renderCards.');
+        throw new Error('CardEngine não disponível para renderCards.');
       }
 
-      const invoice = window.LivroCaixaCardAdapter.invoice(
+      const invoice = window.LivroCaixaCardEngineV3.invoice(
         card.id,
         period,
         purchases,
@@ -8294,7 +8293,7 @@ VALOR: ${fmt(pseudoBill.amount)}
           <div class="credit-card-meta-item"><span>Limite total</span><strong>${card.limit > 0 ? fmt(card.limit) : '—'}</strong></div>
           <div class="credit-card-meta-item"><span>Limite disponível</span><strong>${(() => {
             if (Number(card.limit || 0) <= 0) return '—';
-            const limitState = window.LivroCaixaCardAdapter.calculateLimit(
+            const limitState = window.LivroCaixaCardEngineV3.calculateLimit(
               card,
               purchases,
               cards,
