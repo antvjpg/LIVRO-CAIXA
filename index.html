@@ -63,6 +63,25 @@
     <div class="auth-toggle" id="authToggleWrap">
       Não tem conta? <a id="authToggleLink">Criar conta</a>
     </div>
+    <div id="authDiagnosticWrap" style="margin-top:18px;">
+      <button type="button" id="authDiagnosticToggle" aria-expanded="false"
+        style="width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:.86;">
+        ⚙ Diagnóstico
+      </button>
+      <section id="authDiagnosticPanel" hidden aria-label="Console de diagnóstico do login"
+        style="margin-top:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.18);text-align:left;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-bottom:1px solid var(--line);">
+          <strong style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.04em;">CONSOLE DE DIAGNÓSTICO</strong>
+          <button type="button" id="authDiagnosticClear"
+            style="padding:4px 8px;font-family:'IBM Plex Mono',monospace;font-size:9px;">Limpar</button>
+        </div>
+        <pre id="authDiagnosticLog" role="log" aria-live="polite"
+          style="margin:0;padding:10px;max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-word;font:10px/1.55 'IBM Plex Mono',monospace;color:var(--ink);background:rgba(0,0,0,.08);"></pre>
+        <div style="display:flex;gap:8px;padding:9px 10px;border-top:1px solid var(--line);">
+          <button type="button" id="authDiagnosticCopy" style="flex:1;font-family:'IBM Plex Mono',monospace;font-size:9px;">Copiar diagnóstico</button>
+        </div>
+      </section>
+    </div>
   </div>
 </div>
 
@@ -1326,8 +1345,183 @@ const firebaseConfig = {
 };
 window.__firebaseConfig = firebaseConfig;
 
+/* Diagnóstico acessível na tela de login — não depende de autenticação. */
+(function initLoginDiagnostic() {
+  const maxLines = 180;
+  const state = { lines: [] };
+
+  function format(value) {
+    if (value == null) return '';
+    if (value instanceof Error) return value.message || String(value);
+    if (typeof value === 'object') {
+      try {
+        return JSON.stringify(value, (key, val) =>
+          /password|token|secret|authorization|apiKey|credential/i.test(key)
+            ? '[oculto]'
+            : val
+        );
+      } catch (_) {
+        return String(value);
+      }
+    }
+    return String(value);
+  }
+
+  function render() {
+    const el = document.getElementById('authDiagnosticLog');
+    if (!el) return;
+    el.textContent = state.lines.join('\n');
+    el.scrollTop = el.scrollHeight;
+  }
+
+  window.loginDebugLog = function(type, message, details) {
+    const stamp = new Date().toLocaleTimeString('pt-BR', { hour12:false });
+    const suffix = details === undefined ? '' : ' · ' + format(details);
+
+    state.lines.push(
+      stamp + ' [' +
+      String(type || 'INFO').toUpperCase() +
+      '] ' + message + suffix
+    );
+
+    if (state.lines.length > maxLines) {
+      state.lines.splice(0, state.lines.length - maxLines);
+    }
+
+    render();
+  };
+
+  window.getLoginDiagnosticText = () => state.lines.join('\n');
+
+  window.addEventListener('error', event => {
+    window.loginDebugLog(
+      'ERROR',
+      'Erro de JavaScript',
+      event.error?.code || event.message || 'erro desconhecido'
+    );
+  });
+
+  window.addEventListener('unhandledrejection', event => {
+    const reason = event.reason;
+
+    window.loginDebugLog(
+      'ERROR',
+      'Promise rejeitada',
+      reason?.code ||
+      reason?.message ||
+      String(reason || 'motivo desconhecido')
+    );
+  });
+
+  const toggle = document.getElementById('authDiagnosticToggle');
+  const panel = document.getElementById('authDiagnosticPanel');
+  const clear = document.getElementById('authDiagnosticClear');
+  const copy = document.getElementById('authDiagnosticCopy');
+
+  toggle?.addEventListener('click', () => {
+    const open = panel?.hasAttribute('hidden');
+
+    if (!panel) return;
+
+    if (open) {
+      panel.removeAttribute('hidden');
+    } else {
+      panel.setAttribute('hidden', '');
+    }
+
+    toggle.setAttribute('aria-expanded', String(open));
+
+    if (open) render();
+  });
+
+  clear?.addEventListener('click', () => {
+    state.lines.length = 0;
+    window.loginDebugLog('INFO', 'Console limpo');
+  });
+
+  copy?.addEventListener('click', async () => {
+    const text = window.getLoginDiagnosticText() ||
+      'Nenhum diagnóstico registrado.';
+
+    try {
+      await navigator.clipboard.writeText(text);
+      window.loginDebugLog('INFO', 'Diagnóstico copiado');
+    } catch (_) {
+      const area = document.createElement('textarea');
+
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+
+      document.body.appendChild(area);
+      area.select();
+
+      try {
+        document.execCommand('copy');
+        window.loginDebugLog('INFO', 'Diagnóstico copiado');
+      } catch (err) {
+        window.loginDebugLog(
+          'WARN',
+          'Não foi possível copiar automaticamente'
+        );
+      }
+
+      area.remove();
+    }
+  });
+
+  window.loginDebugLog('INFO', 'Tela de login carregada', {
+    host: location.hostname,
+    path: location.pathname,
+    online: navigator.onLine,
+    standalone:
+      window.matchMedia?.('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true
+  });
+})();
+
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+
+window.loginDebugLog?.(
+  'FIREBASE',
+  'Firebase Auth inicializado',
+  {
+    authDomain: firebaseConfig.authDomain,
+    projectId: firebaseConfig.projectId
+  }
+);
+
+auth.getRedirectResult()
+  .then(result => {
+    if (result?.user) {
+      window.loginDebugLog?.(
+        'GOOGLE',
+        'Retorno do redirect trouxe usuário',
+        {
+          provider: result.user.providerData?.map(p => p.providerId)
+        }
+      );
+    } else {
+      window.loginDebugLog?.(
+        'GOOGLE',
+        'Nenhum resultado pendente de redirect'
+      );
+    }
+  })
+  .catch(err => {
+    window.loginDebugLog?.(
+      'ERROR',
+      'getRedirectResult falhou',
+      { code: err.code, message: err.message }
+    );
+
+    logSyncError(
+      'resultado do redirect Google',
+      err
+    );
+  });
 
 firebase.firestore().enablePersistence().catch(err => {
   console.log("A persistência offline não pôde ser ativada:", err);
@@ -1373,6 +1567,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     navigator.serviceWorker.register('./sw.js?v=19-20-orange3').then(reg => {
+      window.loginDebugLog?.(
+        'PWA',
+        'Service Worker registrado',
+        {
+          scope: reg.scope,
+          controller: !!navigator.serviceWorker.controller
+        }
+      );
+
       console.log('[PWA] Service Worker registrado:', reg.scope);
       if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
     }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
@@ -10249,7 +10452,18 @@ document.getElementById('tSalvar').onclick = async () => {
 
   function setAuthError(msg) {
     const el = document.getElementById('authError');
-    if (el) el.textContent = msg || '';
+
+    if (el) {
+      el.textContent = msg || '';
+    }
+
+    if (msg) {
+      window.loginDebugLog?.(
+        'AUTH',
+        'Mensagem exibida na tela',
+        msg
+      );
+    }
   }
 
   function translateAuthError(code) {
@@ -10336,30 +10550,91 @@ document.getElementById('tSalvar').onclick = async () => {
     if (authGoogle) {
       authGoogle.onclick = () => {
         setAuthError('');
-        const operation = beginLogOperation('Autenticação', 'Entrar com Google');
+        window.loginDebugLog?.(
+          'GOOGLE',
+          'Clique em “Entrar com Google” detectado'
+        );
+
+        const operation = beginLogOperation(
+          'Autenticação',
+          'Entrar com Google'
+        );
         logInfo('Autenticação', 'Entrar com Google', 'Em andamento', 'Solicitação de autenticação Google iniciada.', null, operation);
         const provider = new firebase.auth.GoogleAuthProvider();
+
+        window.loginDebugLog?.(
+          'GOOGLE',
+          'GoogleAuthProvider criado',
+          { authDomain: window.__firebaseConfig?.authDomain }
+        );
+
         const useRedirect = window.matchMedia?.('(max-width: 768px)').matches
           || window.matchMedia?.('(display-mode: standalone)').matches
           || window.navigator.standalone === true;
 
         const startRedirect = () => {
+          window.loginDebugLog?.(
+            'GOOGLE',
+            'Iniciando signInWithRedirect'
+          );
+
           setAuthError('Abrindo o login do Google…');
           return auth.signInWithRedirect(provider).catch(err => {
+            window.loginDebugLog?.(
+              'ERROR',
+              'signInWithRedirect falhou',
+              { code: err.code, message: err.message }
+            );
+
             logSyncError('autenticação Google', err, operation);
             setAuthError(translateAuthError(err.code));
           });
         };
 
         if (useRedirect) {
+          window.loginDebugLog?.(
+            'GOOGLE',
+            'Modo redirect selecionado',
+            { mobileOrPWA: true }
+          );
+
           startRedirect();
           return;
         }
 
+        window.loginDebugLog?.(
+          'GOOGLE',
+          'Modo popup selecionado'
+        );
+
         auth.signInWithPopup(provider)
-          .then(() => logInfo('Autenticação', 'Entrar com Google', 'Sucesso', 'Autenticação Google concluída.', null, operation))
+          .then(() => {
+            window.loginDebugLog?.(
+              'GOOGLE',
+              'signInWithPopup concluído com sucesso'
+            );
+
+            logInfo(
+              'Autenticação',
+              'Entrar com Google',
+              'Sucesso',
+              'Autenticação Google concluída.',
+              null,
+              operation
+            );
+          })
           .catch(err => {
+            window.loginDebugLog?.(
+              'ERROR',
+              'signInWithPopup falhou',
+              { code: err.code, message: err.message }
+            );
+
             if (err.code === 'auth/popup-closed-by-user') {
+              window.loginDebugLog?.(
+                'WARN',
+                'Popup fechado pelo usuário'
+              );
               return;
             }
             if (
@@ -10394,6 +10669,16 @@ document.getElementById('tSalvar').onclick = async () => {
   auth.onAuthStateChanged(user => {
     loadGeneration++;
     currentUser = user;
+
+    window.loginDebugLog?.(
+      'AUTH',
+      user
+        ? 'Firebase informou usuário autenticado'
+        : 'Firebase informou que não há usuário autenticado',
+      user
+        ? { provider: user.providerData?.map(p => p.providerId) }
+        : undefined
+    );
     if (user) logInfo('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
     else if (typeof diagnosticLog !== 'undefined' && diagnosticLog.length) logInfo('Autenticação','Sessão encerrada','Sucesso','Sessão atual encerrada.');
     const overlay = document.getElementById('authOverlay');
