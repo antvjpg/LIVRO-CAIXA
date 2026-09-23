@@ -1,0 +1,5 @@
+
+# Backups locais de desenvolvimento
+*.backup*
+*.bak*
+backup-card-engine-legacy-*/
