@@ -274,6 +274,127 @@
     );
   }
 
+
+  /*
+   * Navegação de faturas:
+   *
+   * current = primeiro período futuro/atual que possui
+   *           saldo em aberto ou lançamentos.
+   *
+   * previous = período imediatamente anterior ao current.
+   *
+   * next = período imediatamente posterior ao current.
+   *
+   * O histórico nunca é apagado quando uma fatura é paga.
+   */
+  function invoicePeriods(
+    card,
+    purchases,
+    cards,
+    invoiceLaunches,
+    referenceDate
+  ) {
+    const today =
+      referenceDate ||
+      new Date().toISOString().slice(0, 10);
+
+    const referencePeriod = invoicePeriodKeyForDate(
+      card,
+      today
+    );
+
+    if (!referencePeriod) {
+      return {
+        current: null,
+        previous: null,
+        next: null,
+        periods: []
+      };
+    }
+
+    const periods = new Set();
+
+    for (const purchase of purchases || []) {
+      if (purchase?.cardId !== card?.id) continue;
+
+      const occurrences = purchaseInstallmentOccurrences(
+        purchase,
+        new Map((cards || []).map(c => [c.id, c]))
+      );
+
+      for (const occurrence of occurrences) {
+        if (occurrence.periodKey) {
+          periods.add(occurrence.periodKey);
+        }
+      }
+    }
+
+    for (const launch of invoiceLaunches || []) {
+      if (
+        launch?.cardId === card?.id &&
+        launch?.closingPeriodKey
+      ) {
+        periods.add(launch.closingPeriodKey);
+      }
+    }
+
+    /*
+     * A fatura do período de referência sempre precisa
+     * ser considerada, mesmo quando ainda não possui compras.
+     */
+    periods.add(referencePeriod);
+
+    const sorted = Array.from(periods)
+      .filter(Boolean)
+      .sort();
+
+    /*
+     * A fatura atual é o período de referência.
+     * Caso ela esteja totalmente paga e exista uma fatura
+     * posterior com lançamentos, promovemos essa próxima
+     * fatura para atual.
+     */
+    let current = referencePeriod;
+
+    const laterOpen = sorted
+      .filter(period => period >= referencePeriod)
+      .find(period => {
+        const state = invoiceState(
+          card.id,
+          period,
+          purchases,
+          cards,
+          invoiceLaunches
+        );
+
+        return state.total > EPSILON &&
+          state.remaining > EPSILON;
+      });
+
+    if (laterOpen) {
+      current = laterOpen;
+    }
+
+    const currentIndex = sorted.indexOf(current);
+
+    const previous =
+      currentIndex > 0
+        ? sorted[currentIndex - 1]
+        : addMonthsToPeriodKey(current, -1);
+
+    const next =
+      currentIndex >= 0 && currentIndex < sorted.length - 1
+        ? sorted[currentIndex + 1]
+        : addMonthsToPeriodKey(current, 1);
+
+    return {
+      current,
+      previous,
+      next,
+      periods: sorted
+    };
+  }
+
   function invoiceStatus(
     paid,
     totalAmount,
@@ -322,35 +443,81 @@
       invoiceLaunches
     );
 
-    const paid = invoiceAmountPaid(
+    /*
+     * O estado da fatura é agregado por titular.
+     *
+     * markedPaidOnly é um estado INDIVIDUAL do titular.
+     * Portanto, um único titular marcado como pago
+     * nunca pode quitar a fatura inteira.
+     */
+    const titulars = invoiceByTitular(
       cardId,
       periodKey,
-      invoice.total,
-      invoiceLaunches
+      purchases,
+      cards
+    ).map(group =>
+      titularInvoice(
+        cardId,
+        periodKey,
+        group.titular,
+        purchases,
+        cards,
+        invoiceLaunches
+      )
     );
 
-    const markedPaidOnly = (invoiceLaunches || [])
-      .some(launch =>
-        launch.cardId === cardId &&
-        launch.closingPeriodKey === periodKey &&
-        launch.markedPaidOnly
+    /*
+     * Soma somente dinheiro efetivamente pago.
+     * markedPaidOnly não vira pagamento financeiro.
+     */
+    const paid = titulars.reduce(
+      (sum, titular) =>
+        sum + Math.max(0, number(titular.paid)),
+      0
+    );
+
+    /*
+     * O saldo restante respeita tanto pagamentos financeiros
+     * quanto titulares marcados manualmente como pagos.
+     */
+    const remaining = titulars.reduce(
+      (sum, titular) =>
+        sum + Math.max(0, number(titular.remaining)),
+      0
+    );
+
+    /*
+     * Só é "markedPaidOnly" no nível da fatura quando
+     * todos os titulares existentes foram marcados assim.
+     */
+    const markedPaidOnly =
+      titulars.length > 0 &&
+      titulars.every(
+        titular => titular.markedPaidOnly === true
       );
 
-    const remaining = Math.max(
-      0,
-      invoice.total - paid
-    );
+    let status = 'Pendente';
+
+    if (invoice.total > EPSILON) {
+      if (remaining <= EPSILON) {
+        status = 'Pago';
+      } else if (paid > EPSILON) {
+        status = 'Parcial';
+      }
+    }
 
     return {
       ...invoice,
-      paid,
-      remaining,
-      markedPaidOnly,
-      status: invoiceStatus(
-        paid,
-        invoice.total,
-        markedPaidOnly
+      paid: Math.min(
+        Math.max(0, number(invoice.total)),
+        paid
       ),
+      remaining: Math.min(
+        Math.max(0, number(invoice.total)),
+        Math.max(0, remaining)
+      ),
+      markedPaidOnly,
+      status,
       paymentCount: launches.length
     };
   }
@@ -659,7 +826,11 @@
       launchPaidAmount(launch)
     );
 
-    const remaining = Math.max(0, total - paid);
+    const markedPaidOnly = launch?.markedPaidOnly === true;
+
+    const remaining = markedPaidOnly
+      ? 0
+      : Math.max(0, total - paid);
 
     return {
       cardId,
@@ -669,14 +840,14 @@
       paid,
       remaining,
       count: group?.count || group?.lines?.length || 0,
-      status: launch?.markedPaidOnly === true
+      status: markedPaidOnly
         ? 'Pago'
         : paid <= EPSILON
           ? 'Pendente'
           : paid + EPSILON < total
             ? 'Parcial'
             : 'Pago',
-      markedPaidOnly: launch?.markedPaidOnly === true,
+      markedPaidOnly,
       launchId: launch?.id || id,
       lines: group?.lines || []
     };
@@ -730,7 +901,7 @@
     return {
       ...base,
       paid: number(state?.paid),
-      remaining: Math.max(0, number(base?.total) - number(state?.paid)),
+      remaining: Math.max(0, number(state?.remaining)),
       status: state?.status || 'open',
       markedPaidOnly: state?.markedPaidOnly === true,
       count: lines.length,
@@ -803,6 +974,7 @@
     EPSILON,
     addMonthsToPeriodKey,
     invoicePeriodKeyForDate,
+    invoicePeriods,
     purchaseInstallmentOccurrences,
     buildInstallments,
     cardInvoiceForPeriod,

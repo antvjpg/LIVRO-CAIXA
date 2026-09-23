@@ -7922,6 +7922,15 @@ function openNewEntryModal() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   }
+
+  // Converte o período de fechamento da fatura no mês em que ela vence.
+  // Mantém o mesmo critério usado por closingPeriodKeyForDueMonth().
+  function dueMonthKeyForClosingPeriod(card, closingPeriodKey) {
+    const closing = Math.min(31, Math.max(1, Number(card.closingDay) || 1));
+    const due = Math.min(31, Math.max(1, Number(card.dueDay) || closing));
+    const offset = due < closing ? 1 : 0;
+    return addMonthsToPeriodKey(closingPeriodKey, offset);
+  }
   // Limite usado = soma de todas as compras/parcelas ainda não pagas do cartão (total comprometido, não só a fatura atual).
   // Limite disponível = limite total - limite usado. Aproximação baseada só no que está cadastrado no app —
   // não reflete o extrato real do banco, apenas o que foi lançado aqui.
@@ -8260,8 +8269,6 @@ VALOR: ${fmt(pseudoBill.amount)}
     }
     container.innerHTML = cards.map(card => {
       const cardPurchases = purchases.filter(p => p.cardId === card.id).sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')));
-      const dueMonth = currentInvoicePeriodKey();
-      const period = closingPeriodKeyForDueMonth(card, dueMonth);
 
       if (
         !window.LivroCaixaCardEngineV3 ||
@@ -8269,6 +8276,20 @@ VALOR: ${fmt(pseudoBill.amount)}
       ) {
         throw new Error('CardEngine não disponível para renderCards.');
       }
+
+      const referencePeriod = currentInvoicePeriodKey();
+      const periodState = typeof window.LivroCaixaCardEngineV3.invoicePeriods === 'function'
+        ? window.LivroCaixaCardEngineV3.invoicePeriods(
+            card,
+            purchases,
+            cards,
+            invoiceLaunches,
+            referencePeriod
+          )
+        : null;
+
+      const period = periodState?.current || closingPeriodKeyForDueMonth(card, referencePeriod);
+      const dueMonth = dueMonthKeyForClosingPeriod(card, period);
 
       const invoice = window.LivroCaixaCardEngineV3.invoice(
         card.id,
@@ -8318,6 +8339,80 @@ VALOR: ${fmt(pseudoBill.amount)}
             ${invoice.lines.map(line => `<div class="credit-card-invoice-line"><span>${escapeHTML(line.purchase.description || 'Compra')}${line.totalInstallments>1?` (${line.installmentNumber}/${line.totalInstallments})`:''}${line.purchase.titular?' · '+escapeHTML(line.purchase.titular):''}</span><span>${fmt(line.amount)}</span></div>`).join('')}
           </div>` : ''}
         </div>
+
+        <div class="credit-card-engine-summary">
+          ${(() => {
+            if (Number(card.limit || 0) <= 0) return '';
+            const limitState = window.LivroCaixaCardEngineV3.calculateLimit(
+              card,
+              purchases,
+              cards,
+              invoiceLaunches
+            );
+            const total = Math.max(0, Number(limitState.total || 0));
+            const used = Math.max(0, Number(limitState.used || 0));
+            const available = Math.max(0, Number(limitState.available || 0));
+            const percent = total > 0
+              ? Math.min(100, Math.max(0, (used / total) * 100))
+              : 0;
+            const excess = Math.max(0, Number(limitState.excess || 0));
+
+            return `
+              <div class="credit-card-limit-summary">
+                <div class="credit-card-summary-head">
+                  <div>
+                    <span>Utilização do limite</span>
+                    <strong>${percent.toLocaleString('pt-BR', {maximumFractionDigits: 1})}%</strong>
+                  </div>
+                  <span>${fmt(used)} usados · ${fmt(available)} disponíveis</span>
+                </div>
+
+                <div
+                  class="credit-card-limit-track"
+                  role="progressbar"
+                  aria-label="Utilização do limite"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow="${percent.toFixed(1)}"
+                >
+                  <span style="width:${percent.toFixed(1)}%"></span>
+                </div>
+
+                ${excess > 0
+                  ? `<div class="credit-card-limit-warning">Limite excedido em ${fmt(excess)}.</div>`
+                  : ''}
+              </div>
+            `;
+          })()}
+
+          ${Array.isArray(invoice.titulars) && invoice.titulars.length ? `
+            <div class="credit-card-titular-summary">
+              <div class="credit-card-summary-title">Resumo por titular</div>
+
+              <div class="credit-card-titular-list">
+                ${invoice.titulars.map(t => `
+                  <div class="credit-card-titular-row">
+                    <div class="credit-card-titular-main">
+                      <strong>${escapeHTML(t.titular)}</strong>
+                      <span>${t.count || 0} lançamento(s)</span>
+                    </div>
+
+                    <div class="credit-card-titular-values">
+                      <span>Total <b>${fmt(t.total)}</b></span>
+                      <span>Pago <b>${fmt(t.paid)}</b></span>
+                      <span>Restante <b>${fmt(t.remaining)}</b></span>
+                    </div>
+
+                    <span class="credit-card-titular-status is-${String(t.status || 'Pendente').toLowerCase().replace(/[^a-z]+/g, '-')}">
+                      ${escapeHTML(t.status || 'Pendente')}
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
         <div class="credit-card-purchases">
           <div class="credit-card-purchases-head">
             <strong>Compras vinculadas</strong>
