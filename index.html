@@ -25,6 +25,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="./card-engine-v3.js"></script>
+<script src="./card-adapter.js"></script>
 
 
 
@@ -7562,16 +7564,6 @@ function openNewEntryModal() {
     return invoicePeriodKeyForDate(card, dateStr);
   }
   // Agrega todas as compras/parcelas de um cartão que caem num período de fatura específico (formato 'AAAA-MM').
-  function cardInvoiceForPeriod(cardId, periodKey) {
-    const lines = [];
-    purchases.filter(p => p.cardId === cardId).forEach(purchase => {
-      purchaseInstallmentOccurrences(purchase).forEach(occ => {
-        if (occ.periodKey === periodKey) lines.push({ purchase, ...occ });
-      });
-    });
-    const total = lines.reduce((sum, line) => sum + Number(line.amount || 0), 0);
-    return { periodKey, cardId, lines, total, count: lines.length };
-  }
   function currentInvoicePeriodKey() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -7579,17 +7571,6 @@ function openNewEntryModal() {
   // Limite usado = soma de todas as compras/parcelas ainda não pagas do cartão (total comprometido, não só a fatura atual).
   // Limite disponível = limite total - limite usado. Aproximação baseada só no que está cadastrado no app —
   // não reflete o extrato real do banco, apenas o que foi lançado aqui.
-  function cardCommittedAmount(cardId) {
-    const committed = purchases.filter(p => p.cardId === cardId)
-      .reduce((sum, purchase) => sum + purchaseInstallmentOccurrences(purchase).reduce((s, occ) => s + Number(occ.amount || 0), 0), 0);
-    const paid = invoiceLaunches.filter(x => x.cardId === cardId).reduce((sum, x) => sum + (Number(x.amount) || 0), 0);
-    return Math.max(0, committed - paid);
-  }
-  function cardAvailableLimit(card) {
-    const limit = Number(card.limit) || 0;
-    if (limit <= 0) return null;
-    return limit - cardCommittedAmount(card.id);
-  }
   // A fatura é nomeada pelo mês em que VENCE (como no extrato real do banco), não pelo mês em que fecha.
   // Se vencimento < fechamento, o fechamento fica um mês ANTES do mês de vencimento — precisamos "voltar" um mês
   // pra achar o período de fechamento certo que corresponde à fatura que vence no mês pedido.
@@ -7616,16 +7597,6 @@ function openNewEntryModal() {
     const finalDay = Math.min(due, lastDayOfDueMonth);
     return `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(finalDay).padStart(2, '0')}`;
   }
-  function invoiceTitularBreakdown(invoice) {
-    const byTitular = {};
-    invoice.lines.forEach(line => {
-      const titular = (line.purchase.titular || '').trim() || 'Sem titular';
-      if (!byTitular[titular]) byTitular[titular] = { titular, total: 0, count: 0 };
-      byTitular[titular].total += Number(line.amount || 0);
-      byTitular[titular].count += 1;
-    });
-    return Object.values(byTitular).sort((a, b) => b.total - a.total);
-  }
   // ===== Fase F — Lançamento/compartilhamento/status individual por titular dentro de cada fatura =====
   // Vínculo por ID: cardId + período de fechamento + titular identifica de forma estável a "fatia" de um titular
   // numa fatura, independente de nome/valor/data mudarem depois (o valor exibido é sempre recalculado ao vivo;
@@ -7636,30 +7607,38 @@ function openNewEntryModal() {
   function invoiceLaunchFor(cardId, closingPeriodKey, titular) {
     return invoiceLaunches.find(x => x.id === invoiceLaunchId(cardId, closingPeriodKey, titular));
   }
-  // amountPaid é a soma de tudo que já foi lançado no Livro-Caixa pra essa fatia (compatível com registros
-  // antigos, que só tinham "amount" representando um lançamento único e total).
-  function invoiceLaunchAmountPaid(launch) {
-    if (!launch) return 0;
-    if (Array.isArray(launch.payments)) return launch.payments.reduce((sum, p) => sum + Number(p.amount || 0), 0);
-    return Number(launch.amount || 0); // formato antigo (lançamento único, tudo ou nada)
-  }
-  function invoiceLaunchStatus(launch, totalAmount) {
-    if (launch && launch.markedPaidOnly) return 'Pago';
-    const paid = invoiceLaunchAmountPaid(launch);
-    if (paid <= 0.004) return 'Pendente';
-    if (paid + 0.004 < Number(totalAmount || 0)) return 'Parcial';
-    return 'Pago';
-  }
   window.recordInvoicePayment = async function(cardId, closingPeriodKey, titular, totalAmount, paymentAmount) {
     const card = cards.find(c => c.id === cardId);
     if (!card) return;
     const amount = Number(paymentAmount);
     if (!(amount > 0)) { alert('Informe um valor de pagamento válido.'); return; }
+    const validation = window.LivroCaixaCardAdapter.validatePayment(
+      cardId,
+      closingPeriodKey,
+      titular,
+      amount,
+      purchases,
+      cards,
+      invoiceLaunches
+    );
+
+    if (!validation.valid) {
+      if (validation.reason === 'invalid_amount') {
+        alert('Informe um valor de pagamento válido.');
+      } else if (validation.reason === 'empty_invoice') {
+        alert('Não há saldo de fatura para este titular.');
+      } else if (validation.reason === 'payment_exceeds_titular_invoice') {
+        alert(`O valor não pode ser maior que o restante (${fmt(validation.remaining)}).`);
+      } else {
+        alert('Não foi possível validar este pagamento.');
+      }
+      return;
+    }
+
     const launchId = invoiceLaunchId(cardId, closingPeriodKey, titular);
     const existing = invoiceLaunches.find(x => x.id === launchId);
-    const alreadyPaid = invoiceLaunchAmountPaid(existing);
-    const remaining = Number(totalAmount || 0) - alreadyPaid;
-    if (amount > remaining + 0.01) { alert(`O valor não pode ser maior que o restante (${fmt(remaining)}).`); return; }
+    const alreadyPaid = validation.alreadyPaid;
+    const remaining = validation.remaining;
     const dueDate = invoiceDueDateForPeriod(card, closingPeriodKey);
     const entryId = 'e' + Date.now() + Math.random().toString(36).slice(2, 7);
     const willBeFullyPaid = amount + 0.004 >= remaining;
@@ -7692,9 +7671,24 @@ function openNewEntryModal() {
     }
   };
   window.launchInvoiceTitular = function(cardId, closingPeriodKey, titular, amount) {
-    const launch = invoiceLaunchFor(cardId, closingPeriodKey, titular);
-    const remaining = Number(amount) - invoiceLaunchAmountPaid(launch);
-    window.recordInvoicePayment(cardId, closingPeriodKey, titular, amount, remaining);
+    const invoiceState = window.LivroCaixaCardAdapter.invoice(
+      cardId,
+      closingPeriodKey,
+      purchases,
+      cards,
+      invoiceLaunches
+    );
+    const target = Array.isArray(invoiceState?.titulars)
+      ? invoiceState.titulars.find(item => item.titular === titular)
+      : null;
+    const remaining = Number(target?.remaining ?? amount);
+    window.recordInvoicePayment(
+      cardId,
+      closingPeriodKey,
+      titular,
+      amount,
+      remaining
+    );
   };
   window.toggleInvoicePartialForm = function(rowId) {
     const box = document.getElementById('partial-form-' + rowId);
@@ -7710,8 +7704,17 @@ function openNewEntryModal() {
   window.shareInvoiceTitular = function(cardId, closingPeriodKey, titular, amount) {
     const card = cards.find(c => c.id === cardId);
     if (!card) return;
-    const launch = invoiceLaunchFor(cardId, closingPeriodKey, titular);
-    const remaining = Number(amount) - invoiceLaunchAmountPaid(launch);
+    const invoiceState = window.LivroCaixaCardAdapter.invoice(
+      cardId,
+      closingPeriodKey,
+      purchases,
+      cards,
+      invoiceLaunches
+    );
+    const target = Array.isArray(invoiceState?.titulars)
+      ? invoiceState.titulars.find(item => item.titular === titular)
+      : null;
+    const remaining = Number(target?.remaining ?? amount);
     const dueDate = invoiceDueDateForPeriod(card, closingPeriodKey);
     const pseudoBill = { name: `Fatura ${card.name}`, titular: titular === 'Sem titular' ? '' : titular, amount: remaining > 0.004 ? remaining : Number(amount) };
     const dueLabel = dueDate.split('-').reverse().join('/');
@@ -7742,7 +7745,27 @@ VALOR: ${fmt(pseudoBill.amount)}
     if (!card) return;
     const id = invoiceLaunchId(cardId, closingPeriodKey, titular);
     const existing = invoiceLaunches.find(x => x.id === id);
-    if (existing && invoiceLaunchStatus(existing, totalAmount) === 'Pago' && !existing.markedPaidOnly) {
+    const invoiceState = window.LivroCaixaCardAdapter.invoice(
+      cardId,
+      closingPeriodKey,
+      purchases,
+      cards,
+      invoiceLaunches
+    );
+
+    const normalizedTitular = window.LivroCaixaCardAdapter.normalizeTitular(titular);
+    const target = Array.isArray(invoiceState?.titulars)
+      ? invoiceState.titulars.find(item =>
+          window.LivroCaixaCardAdapter.normalizeTitular(item.titular) === normalizedTitular
+        )
+      : null;
+
+    if (
+      existing &&
+      target &&
+      target.status === 'Pago' &&
+      target.markedPaidOnly !== true
+    ) {
       alert('Esta fatura já foi lançada no Livro-Caixa.');
       return;
     }
@@ -7811,21 +7834,67 @@ VALOR: ${fmt(pseudoBill.amount)}
   window.unmarkInvoicePaidOnly = unmarkInvoicePaidOnly;
 
   function calendarInvoiceRows(year, month) {
-    const dueMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
-    return cards.filter(card => card.active !== false).map(card => {
-      const closingPeriodKey = closingPeriodKeyForDueMonth(card, dueMonthKey);
-      const invoice = cardInvoiceForPeriod(card.id, closingPeriodKey);
-      if (invoice.total <= 0) return null;
-      const breakdown = invoiceTitularBreakdown(invoice).map(item => {
-        const launch = invoiceLaunchFor(card.id, closingPeriodKey, item.titular);
-        const paid = invoiceLaunchAmountPaid(launch);
-        const status = invoiceLaunchStatus(launch, item.total);
-        const paidOnly = !!(launch && launch.markedPaidOnly);
-        const launched = status === 'Pago' && !paidOnly && paid > 0.004;
-        return { ...item, paid: paidOnly ? item.total : paid, remaining: paidOnly ? 0 : Math.max(0, item.total - paid), status, launched, paidOnly };
-      });
-      return { card, invoice, closingPeriodKey, dueDate: invoiceDueDateForPeriod(card, closingPeriodKey), breakdown };
-    }).filter(Boolean);
+    const dueMonthKey = \`${year}-${String(month + 1).padStart(2, '0')}\`;
+
+    if (
+      !window.LivroCaixaCardAdapter ||
+      typeof window.LivroCaixaCardAdapter.invoice !== 'function'
+    ) {
+      throw new Error('CardAdapter não disponível para calendarInvoiceRows.');
+    }
+
+    return cards
+      .filter(card => card.active !== false)
+      .map(card => {
+        const closingPeriodKey = closingPeriodKeyForDueMonth(card, dueMonthKey);
+
+        const invoiceState = window.LivroCaixaCardAdapter.invoice(
+          card.id,
+          closingPeriodKey,
+          purchases,
+          cards,
+          invoiceLaunches
+        );
+
+        if (!invoiceState || Number(invoiceState.total || 0) <= 0) {
+          return null;
+        }
+
+        const breakdown = Array.isArray(invoiceState.titulars)
+          ? invoiceState.titulars.map(item => ({
+              titular: item.titular,
+              total: Number(item.total || 0),
+              count: Number(item.count || 0),
+              paid: Number(item.paid || 0),
+              remaining: Number(item.remaining || 0),
+              status: item.status || 'Pendente',
+              launched: item.status === 'Pago' &&
+                        item.markedPaidOnly !== true &&
+                        Number(item.paid || 0) > 0.004,
+              paidOnly: item.markedPaidOnly === true
+            }))
+          : [];
+
+        const invoice = {
+          cardId: invoiceState.cardId,
+          periodKey: invoiceState.periodKey,
+          lines: [],
+          total: Number(invoiceState.total || 0),
+          count: invoiceState.titulars.reduce(
+            (sum, item) => sum + Number(item.count || 0),
+            0
+          )
+        };
+
+        return {
+          card,
+          invoice,
+          closingPeriodKey,
+          dueDate: invoiceDueDateForPeriod(card, closingPeriodKey),
+          breakdown
+        };
+      })
+      .filter(Boolean);
   }
 
   function renderCards() {
@@ -7839,7 +7908,21 @@ VALOR: ${fmt(pseudoBill.amount)}
       const cardPurchases = purchases.filter(p => p.cardId === card.id).sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')));
       const dueMonth = currentInvoicePeriodKey();
       const period = closingPeriodKeyForDueMonth(card, dueMonth);
-      const invoice = cardInvoiceForPeriod(card.id, period);
+
+      if (
+        !window.LivroCaixaCardAdapter ||
+        typeof window.LivroCaixaCardAdapter.invoice !== 'function'
+      ) {
+        throw new Error('CardAdapter não disponível para renderCards.');
+      }
+
+      const invoice = window.LivroCaixaCardAdapter.invoice(
+        card.id,
+        period,
+        purchases,
+        cards,
+        invoiceLaunches
+      );
       return `<article class="credit-card-box credit-card-sheet ${card.active === false ? 'is-inactive' : ''}">
         <div class="credit-card-head">
           <div class="credit-card-title">
@@ -7854,7 +7937,16 @@ VALOR: ${fmt(pseudoBill.amount)}
         <div class="credit-card-meta credit-card-meta-row">
           <div class="credit-card-meta-item"><span>Vencimento</span><strong>Dia ${card.dueDay}</strong></div>
           <div class="credit-card-meta-item"><span>Limite total</span><strong>${card.limit > 0 ? fmt(card.limit) : '—'}</strong></div>
-          <div class="credit-card-meta-item"><span>Limite disponível</span><strong>${(() => { const avail = cardAvailableLimit(card); return avail === null ? '—' : fmt(avail); })()}</strong></div>
+          <div class="credit-card-meta-item"><span>Limite disponível</span><strong>${(() => {
+            if (Number(card.limit || 0) <= 0) return '—';
+            const limitState = window.LivroCaixaCardAdapter.calculateLimit(
+              card,
+              purchases,
+              cards,
+              invoiceLaunches
+            );
+            return fmt(limitState.available);
+          })()}</strong></div>
           <div class="credit-card-meta-item"><span>Compras</span><strong>${cardPurchases.length}</strong></div>
         </div>
         <div class="credit-card-invoice-block">
