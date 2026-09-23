@@ -69,7 +69,7 @@
         ⚙ Diagnóstico
       </button>
       <section id="authDiagnosticPanel" hidden aria-label="Console de diagnóstico do login"
-        style="position:fixed;inset:18px;z-index:1000;margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface);color:var(--ink);text-align:left;box-shadow:0 20px 60px rgba(0,0,0,.45);display:flex;flex-direction:column;max-width:760px;max-height:calc(100vh - 36px);margin-left:auto;margin-right:auto;">
+        style="position:fixed;inset:18px;z-index:1000;margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface);color:var(--ink);text-align:left;box-shadow:0 20px 60px rgba(0,0,0,.45);display:none;flex-direction:column;max-width:760px;max-height:calc(100vh - 36px);margin-left:auto;margin-right:auto;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-bottom:1px solid var(--line);">
           <strong style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.04em;">CONSOLE DE DIAGNÓSTICO</strong>
           <button type="button" id="authDiagnosticClose" aria-label="Fechar console" title="Fechar" style="padding:4px 8px;font-family:'IBM Plex Mono',monospace;font-size:9px;">Fechar</button>
@@ -1346,14 +1346,16 @@ const firebaseConfig = {
 };
 window.__firebaseConfig = firebaseConfig;
 
-/* Diagnóstico acessível na tela de login — não depende de autenticação. */
+/* Diagnóstico acessível na tela de login — robusto contra ordem de carregamento do DOM. */
 (function initLoginDiagnostic() {
   const maxLines = 180;
   const state = { lines: [] };
+  let initialized = false;
 
   function format(value) {
     if (value == null) return '';
     if (value instanceof Error) return value.message || String(value);
+
     if (typeof value === 'object') {
       try {
         return JSON.stringify(value, (key, val) =>
@@ -1365,137 +1367,302 @@ window.__firebaseConfig = firebaseConfig;
         return String(value);
       }
     }
+
     return String(value);
   }
 
+  function getEl(id) {
+    return document.getElementById(id);
+  }
+
   function render() {
-    const el = document.getElementById('authDiagnosticLog');
+    const el = getEl('authDiagnosticLog');
     if (!el) return;
+
     el.textContent = state.lines.join('\n');
     el.scrollTop = el.scrollHeight;
   }
 
   window.loginDebugLog = function(type, message, details) {
-    const stamp = new Date().toLocaleTimeString('pt-BR', { hour12:false });
-    const suffix = details === undefined ? '' : ' · ' + format(details);
+    const stamp = new Date().toLocaleTimeString('pt-BR', {
+      hour12: false
+    });
+
+    const suffix =
+      details === undefined ? '' : ' · ' + format(details);
 
     state.lines.push(
-      stamp + ' [' +
+      stamp +
+      ' [' +
       String(type || 'INFO').toUpperCase() +
-      '] ' + message + suffix
+      '] ' +
+      message +
+      suffix
     );
 
     if (state.lines.length > maxLines) {
-      state.lines.splice(0, state.lines.length - maxLines);
+      state.lines.splice(
+        0,
+        state.lines.length - maxLines
+      );
     }
 
     render();
   };
 
-  window.getLoginDiagnosticText = () => state.lines.join('\n');
+  window.getLoginDiagnosticText = () =>
+    state.lines.join('\n');
 
-  window.addEventListener('error', event => {
-    window.loginDebugLog(
-      'ERROR',
-      'Erro de JavaScript',
-      event.error?.code || event.message || 'erro desconhecido'
-    );
-  });
+  function setDiagnosticOpen(open) {
+    const toggle = getEl('authDiagnosticToggle');
+    const panel = getEl('authDiagnosticPanel');
 
-  window.addEventListener('unhandledrejection', event => {
-    const reason = event.reason;
+    if (!panel || !toggle) {
+      window.loginDebugLog?.(
+        'WARN',
+        'Painel de diagnóstico ainda não está disponível no DOM'
+      );
 
-    window.loginDebugLog(
-      'ERROR',
-      'Promise rejeitada',
-      reason?.code ||
-      reason?.message ||
-      String(reason || 'motivo desconhecido')
-    );
-  });
-
-  const toggle = document.getElementById('authDiagnosticToggle');
-  const panel = document.getElementById('authDiagnosticPanel');
-  const close = document.getElementById('authDiagnosticClose');
-  const clear = document.getElementById('authDiagnosticClear');
-  const copy = document.getElementById('authDiagnosticCopy');
-
-  window.toggleLoginDiagnostic = function(event) {
-    if (event) event.preventDefault();
-
-    if (!panel || !toggle) return;
-
-    const open = panel.hasAttribute('hidden');
+      return false;
+    }
 
     if (open) {
       panel.removeAttribute('hidden');
       panel.style.display = 'flex';
-      toggle.setAttribute('aria-expanded', 'true');
+
+      toggle.setAttribute(
+        'aria-expanded',
+        'true'
+      );
+
       render();
-      window.loginDebugLog('INFO', 'Console de diagnóstico aberto');
-    } else {
-      panel.setAttribute('hidden', '');
-      panel.style.display = 'none';
-      toggle.setAttribute('aria-expanded', 'false');
+      return true;
+    }
+
+    panel.setAttribute('hidden', '');
+    panel.style.display = 'none';
+
+    toggle.setAttribute(
+      'aria-expanded',
+      'false'
+    );
+
+    return true;
+  }
+
+  window.toggleLoginDiagnostic = function(event) {
+    event?.preventDefault?.();
+
+    const panel = getEl('authDiagnosticPanel');
+
+    if (!panel) {
+      window.loginDebugLog?.(
+        'ERROR',
+        'Painel de diagnóstico não encontrado'
+      );
+
+      return;
+    }
+
+    const opening = panel.hasAttribute('hidden');
+
+    if (
+      setDiagnosticOpen(opening) &&
+      opening
+    ) {
+      window.loginDebugLog?.(
+        'INFO',
+        'Console de diagnóstico aberto'
+      );
     }
   };
 
-  toggle?.addEventListener('click', window.toggleLoginDiagnostic);
-  close?.addEventListener('click', () => window.toggleLoginDiagnostic?.());
+  function bindControls() {
+    if (initialized) return true;
 
-  clear?.addEventListener('click', () => {
-    state.lines.length = 0;
-    window.loginDebugLog('INFO', 'Console limpo');
-  });
+    const toggle = getEl('authDiagnosticToggle');
+    const panel = getEl('authDiagnosticPanel');
+    const close = getEl('authDiagnosticClose');
+    const clear = getEl('authDiagnosticClear');
+    const copy = getEl('authDiagnosticCopy');
 
-  copy?.addEventListener('click', async () => {
-    const text = window.getLoginDiagnosticText() ||
-      'Nenhum diagnóstico registrado.';
+    if (
+      !toggle ||
+      !panel ||
+      !close ||
+      !clear ||
+      !copy
+    ) {
+      return false;
+    }
 
-    try {
-      await navigator.clipboard.writeText(text);
-      window.loginDebugLog('INFO', 'Diagnóstico copiado');
-    } catch (_) {
-      const area = document.createElement('textarea');
+    toggle.addEventListener(
+      'click',
+      window.toggleLoginDiagnostic
+    );
 
-      area.value = text;
-      area.setAttribute('readonly', '');
-      area.style.position = 'fixed';
-      area.style.opacity = '0';
+    close.addEventListener(
+      'click',
+      event =>
+        window.toggleLoginDiagnostic(event)
+    );
 
-      document.body.appendChild(area);
-      area.select();
+    clear.addEventListener(
+      'click',
+      event => {
+        event.preventDefault();
 
-      try {
-        document.execCommand('copy');
-        window.loginDebugLog('INFO', 'Diagnóstico copiado');
-      } catch (err) {
+        state.lines.length = 0;
+
         window.loginDebugLog(
-          'WARN',
-          'Não foi possível copiar automaticamente'
+          'INFO',
+          'Console limpo'
         );
       }
+    );
 
-      area.remove();
+    copy.addEventListener(
+      'click',
+      async event => {
+        event.preventDefault();
+
+        const text =
+          window.getLoginDiagnosticText() ||
+          'Nenhum diagnóstico registrado.';
+
+        try {
+          await navigator.clipboard.writeText(text);
+
+          window.loginDebugLog(
+            'INFO',
+            'Diagnóstico copiado'
+          );
+        } catch (_) {
+          const area =
+            document.createElement('textarea');
+
+          area.value = text;
+          area.setAttribute(
+            'readonly',
+            ''
+          );
+
+          area.style.position = 'fixed';
+          area.style.left = '-9999px';
+          area.style.opacity = '0';
+
+          document.body.appendChild(area);
+          area.select();
+
+          try {
+            document.execCommand('copy');
+
+            window.loginDebugLog(
+              'INFO',
+              'Diagnóstico copiado'
+            );
+          } catch (err) {
+            window.loginDebugLog(
+              'WARN',
+              'Não foi possível copiar automaticamente',
+              err?.message
+            );
+          }
+
+          area.remove();
+        }
+      }
+    );
+
+    initialized = true;
+
+    window.loginDebugLog(
+      'INFO',
+      'Controles do diagnóstico conectados'
+    );
+
+    return true;
+  }
+
+  function ensureInitialized() {
+    if (bindControls()) {
+      render();
+      return;
     }
-  });
 
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && panel && !panel.hasAttribute('hidden')) {
-      window.toggleLoginDiagnostic?.(event);
+    if (document.readyState === 'loading') {
+      document.addEventListener(
+        'DOMContentLoaded',
+        bindControls,
+        { once: true }
+      );
+    } else {
+      queueMicrotask(bindControls);
     }
-  });
+  }
 
-  window.loginDebugLog('INFO', 'Tela de login carregada', {
-    host: location.hostname,
-    path: location.pathname,
-    online: navigator.onLine,
-    standalone:
-      window.matchMedia?.('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true
-  });
+  window.addEventListener(
+    'error',
+    event => {
+      window.loginDebugLog(
+        'ERROR',
+        'Erro de JavaScript',
+        event.error?.code ||
+        event.message ||
+        'erro desconhecido'
+      );
+    }
+  );
+
+  window.addEventListener(
+    'unhandledrejection',
+    event => {
+      const reason = event.reason;
+
+      window.loginDebugLog(
+        'ERROR',
+        'Promise rejeitada',
+        reason?.code ||
+        reason?.message ||
+        String(
+          reason ||
+          'motivo desconhecido'
+        )
+      );
+    }
+  );
+
+  document.addEventListener(
+    'keydown',
+    event => {
+      const panel =
+        getEl('authDiagnosticPanel');
+
+      if (
+        event.key === 'Escape' &&
+        panel &&
+        !panel.hasAttribute('hidden')
+      ) {
+        window.toggleLoginDiagnostic?.(
+          event
+        );
+      }
+    }
+  );
+
+  window.loginDebugLog(
+    'INFO',
+    'Sistema de diagnóstico iniciado',
+    {
+      host: location.hostname,
+      path: location.pathname,
+      online: navigator.onLine,
+      readyState: document.readyState
+    }
+  );
+
+  ensureInitialized();
 })();
-
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
@@ -8052,7 +8219,7 @@ VALOR: ${fmt(pseudoBill.amount)}
   window.unmarkInvoicePaidOnly = unmarkInvoicePaidOnly;
 
   function calendarInvoiceRows(year, month) {
-    const dueMonthKey = \`${year}-${String(month + 1).padStart(2, '0')}\`;
+    const dueMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
 
     if (
       !window.LivroCaixaCardAdapter ||
@@ -10606,23 +10773,20 @@ document.getElementById('tSalvar').onclick = async () => {
           });
         };
 
-        if (useRedirect) {
-          window.loginDebugLog?.(
-            'GOOGLE',
-            'Modo redirect selecionado',
-            { mobileOrPWA: true }
-          );
+          if (useRedirect) {
+            window.loginDebugLog?.(
+              'GOOGLE',
+              'Modo popup selecionado para celular/PWA',
+              { mobileOrPWA: true }
+            );
+          } else {
+            window.loginDebugLog?.(
+              'GOOGLE',
+              'Modo popup selecionado'
+            );
+          }
 
-          startRedirect();
-          return;
-        }
-
-        window.loginDebugLog?.(
-          'GOOGLE',
-          'Modo popup selecionado'
-        );
-
-        auth.signInWithPopup(provider)
+          auth.signInWithPopup(provider)
           .then(() => {
             window.loginDebugLog?.(
               'GOOGLE',
