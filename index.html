@@ -120,8 +120,8 @@
     <div class="drawer-heading"><span>Livro-Caixa</span><button type="button" class="drawer-close" data-close-drawer aria-label="Fechar menu">×</button></div>
     <p class="drawer-caption">Navegação e configurações rápidas</p>
     <nav class="drawer-nav" aria-label="Navegação principal">
-      <button type="button" data-drawer-action="cards"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span> Cartões</button>
-      <button type="button" data-drawer-action="bills"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span> Contas & Calendário</button>
+      <button type="button" data-drawer-action="cards"><span><i class="fi fi-rr-credit-card" aria-hidden="true"></i></span> Cartões</button>
+      <button type="button" data-drawer-action="bills"><span><i class="fi fi-rr-calendar-day" aria-hidden="true"></i></span> Contas & Calendário</button>
       <button type="button" data-drawer-action="receivables"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-arrow-down-triangle-square" aria-hidden="true"></i></span> Valores a Receber</button>
       <button type="button" data-drawer-action="pockets"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span> Caixinhas</button>
       <button type="button" data-drawer-action="goals"><span><i class="fi fi-rr-bullseye-arrow" aria-hidden="true"></i></span> Metas</button>
@@ -153,7 +153,7 @@
     <button class="nav-tab" id="tabBtnDashboard" onclick="switchTab('dashboard')"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i> Visão geral</button>
     <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')"><i class="fi fi-rr-book" aria-hidden="true"></i> Livro-Caixa</button>
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i> Caixinhas</button>
-    <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')">💳 Cartões</button>
+    <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')"><i class="fi fi-rr-credit-card" aria-hidden="true"></i> Cartões</button>
     <button class="nav-tab" id="tabBtnReceivables" onclick="switchTab('receivables')"><i class="fi fi-rr-arrow-down-triangle-square" aria-hidden="true"></i> A Receber</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i> Investimentos</button>
     <button class="nav-tab" id="tabBtnGoals" onclick="switchTab('goals')"><i class="fi fi-rr-bullseye-arrow" aria-hidden="true"></i> Metas</button>
@@ -260,8 +260,8 @@
 <div id="viewCaixa" class="tab-content active">
     <div class="toolbar">
       <button class="quick-action" id="btnBanco"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-bank" aria-hidden="true"></i></span><span>Banco</span></button>
-      <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h13"/><path d="m15 5 3 3-3 3"/><path d="M19 16H6"/><path d="m9 13-3 3 3 3"/></svg></span><span>Transferência</span></button>
-      <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3H8z"/><path d="M6 7h12v13H6z"/><path d="M9 12h6M9 15h6"/></svg></span><span>Colar texto</span></button>
+      <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-money-bill-transfer" aria-hidden="true"></i></span><span>Transferência</span></button>
+      <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-paste" aria-hidden="true"></i></span><span>Colar texto</span></button>
       <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Importar PDF/DOCX</span></button>
       <button class="quick-action" id="btnExport"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M10 19V5M15 19v-7M20 19V7M3 19h18"/></svg></span><span>Exportar extrato</span></button>
       <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4"/><path d="m8 8 4-4 4 4"/><path d="M5 19h14"/></svg></span><span>Exportar backup</span></button>
@@ -293,7 +293,7 @@
     <div class="balance-strip section-balance-strip" id="billsSummary"></div>
     <div class="toolbar bills-toolbar-v19-16">
       <div class="bills-toolbar-actions">
-        <button type="button" id="btnBillsToday"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>Mês atual</button>
+        <button type="button" id="btnBillsToday"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><i class="fi fi-rr-calendar-day" aria-hidden="true"></i></span>Mês atual</button>
         <button type="button" id="btnExportBillsPdf">📄 Exportar PDF</button>
         <button type="button" id="btnExportBillsXlsx">📊 Exportar Excel</button>
       </div>
@@ -8303,7 +8303,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       return `<article class="credit-card-box credit-card-sheet ${card.active === false ? 'is-inactive' : ''}">
         <div class="credit-card-head">
           <div class="credit-card-title">
-            <span class="credit-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.5 10h17M7 15h4"/></svg></span>
+            <span class="credit-card-icon" aria-hidden="true"><i class="fi fi-rr-credit-card" aria-hidden="true"></i></span>
             <div>
               <h3>${escapeHTML(card.name)}</h3>
               <small>${escapeHTML(cardBankName(card) || 'Banco não informado')}${card.titular ? ' · ' + escapeHTML(card.titular) : ''}</small>
