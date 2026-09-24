@@ -228,11 +228,23 @@
     invoiceLaunches
   ) {
     return (invoiceLaunches || [])
-      .filter(launch =>
-        launch.cardId === cardId &&
-        launch.closingPeriodKey === periodKey &&
-        !launch.markedPaidOnly
-      );
+      .filter(launch => {
+        if (
+          launch.cardId !== cardId ||
+          launch.closingPeriodKey !== periodKey
+        ) {
+          return false;
+        }
+
+        const hasFinancialPayments =
+          Array.isArray(launch.payments)
+            ? launch.payments.some(
+                payment => number(payment.amount) > EPSILON
+              )
+            : number(launch.amount) > EPSILON;
+
+        return !launch.markedPaidOnly || hasFinancialPayments;
+      });
   }
 
   function invoiceAmountPaid(
@@ -534,47 +546,75 @@
     cardId,
     purchases,
     cards,
-    invoiceLaunches
+    invoiceLaunches,
+    referencePeriodInput
   ) {
+    const card = (cards || []).find(
+      item => item?.id === cardId
+    );
+
+    if (!card) {
+      return 0;
+    }
+
+    const suppliedReference =
+      String(referencePeriodInput || '').trim();
+
+    const referencePeriod =
+      /^\d{4}-\d{2}$/.test(suppliedReference)
+        ? suppliedReference
+        : invoicePeriodKeyForDate(
+            card,
+            suppliedReference ||
+              new Date().toISOString().slice(0, 10)
+          );
+
+    if (!referencePeriod) {
+      return 0;
+    }
+
+    /*
+     * Limite comprometido:
+     *
+     * 1. período imediatamente anterior;
+     * 2. período de referência atual;
+     * 3. todos os períodos futuros.
+     *
+     * O período anterior continua consumindo limite
+     * enquanto não houver pagamento financeiro real.
+     *
+     * markedPaidOnly NÃO libera limite.
+     */
     const installments = buildInstallments(
       purchases,
       cards
     );
 
-    const cardInstallments = installments.filter(
-      item => {
-        const purchase = (purchases || [])
-          .find(p => p.id === item.purchaseId);
-
-        return purchase?.cardId === cardId;
-      }
-    );
-
-    const grossCommitted = cardInstallments.reduce(
-      (sum, installment) =>
-        sum + Math.max(
-          0,
-          number(installment.amount)
-        ),
-      0
-    );
-
-    /*
-     * Para liberar limite corretamente,
-     * precisamos considerar somente o valor
-     * realmente pago dentro das respectivas faturas.
-     */
     const periodKeys = [
       ...new Set(
-        cardInstallments.map(
-          item => item.periodKey
-        )
+        installments
+          .filter(item => item.cardId === cardId)
+          .map(item => item.periodKey)
+          .filter(Boolean)
       )
     ];
 
-    let released = 0;
+    const previousPeriod =
+      addMonthsToPeriodKey(referencePeriod, -1);
 
-    for (const periodKey of periodKeys) {
+    const relevantPeriods = new Set([
+      previousPeriod,
+      referencePeriod,
+      ...periodKeys.filter(
+        period => period > referencePeriod
+      )
+    ]);
+
+    let committed = 0;
+
+    for (const periodKey of relevantPeriods) {
+      if (!periodKey) continue;
+
       const invoice = cardInvoiceForPeriod(
         cardId,
         periodKey,
@@ -582,25 +622,37 @@
         cards
       );
 
-      released += invoiceAmountPaid(
+      const total = Math.max(
+        0,
+        number(invoice.total)
+      );
+
+      if (total <= EPSILON) {
+        continue;
+      }
+
+      const paid = invoiceAmountPaid(
         cardId,
         periodKey,
-        invoice.total,
+        total,
         invoiceLaunches
+      );
+
+      committed += Math.max(
+        0,
+        total - paid
       );
     }
 
-    return Math.max(
-      0,
-      grossCommitted - released
-    );
+    return Math.max(0, committed);
   }
 
   function calculateLimit(
     card,
     purchases,
     cards,
-    invoiceLaunches
+    invoiceLaunches,
+    referencePeriod
   ) {
     const total = number(card?.limit);
 
@@ -617,7 +669,8 @@
       card.id,
       purchases,
       cards,
-      invoiceLaunches
+      invoiceLaunches,
+      referencePeriod
     );
 
     const available = Math.max(

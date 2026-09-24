@@ -7897,21 +7897,6 @@ function openNewEntryModal() {
     const d = new Date(y, (m - 1) + months, 1);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   }
-  // Retorna, para uma compra, todas as ocorrências (parcelas) já distribuídas por período de fatura.
-  function purchaseInstallmentOccurrences(purchase) {
-    const firstPeriod = invoicePeriodKeyForDateByCardId(purchase.cardId, purchase.date);
-    if (!firstPeriod) return [];
-    if (purchase.paymentType !== 'parcelado') {
-      return [{ periodKey: firstPeriod, installmentNumber: 1, totalInstallments: 1, amount: purchase.totalValue }];
-    }
-    const occurrences = [];
-    const start = purchase.initialInstallment || 1;
-    for (let n = start; n <= purchase.totalInstallments; n++) {
-      const periodKey = addMonthsToPeriodKey(firstPeriod, n - start);
-      occurrences.push({ periodKey, installmentNumber: n, totalInstallments: purchase.totalInstallments, amount: purchase.installmentValue });
-    }
-    return occurrences;
-  }
   function invoicePeriodKeyForDateByCardId(cardId, dateStr) {
     const card = cards.find(c => c.id === cardId);
     if (!card) return null;
@@ -8318,7 +8303,8 @@ VALOR: ${fmt(pseudoBill.amount)}
               card,
               purchases,
               cards,
-              invoiceLaunches
+              invoiceLaunches,
+              referencePeriod
             );
             return fmt(limitState.available);
           })()}</strong></div>
@@ -8347,7 +8333,8 @@ VALOR: ${fmt(pseudoBill.amount)}
               card,
               purchases,
               cards,
-              invoiceLaunches
+              invoiceLaunches,
+              referencePeriod
             );
             const total = Math.max(0, Number(limitState.total || 0));
             const used = Math.max(0, Number(limitState.used || 0));
@@ -8423,7 +8410,7 @@ VALOR: ${fmt(pseudoBill.amount)}
           </div>
           ${cardPurchases.length ? cardPurchases.map(p => {
             const cat = categories.find(c => c.id === p.categoryId)?.name || 'Sem categoria';
-            const parcel = p.paymentType === 'parcelado' ? `Parcela ${p.installmentNumber || 1}/${p.totalInstallments} de ${fmt(p.installmentValue)}` : 'À vista';
+            const parcel = p.paymentType === 'parcelado' ? `Parcela ${p.initialInstallment || 1}/${p.totalInstallments} de ${fmt(p.installmentValue)}` : 'À vista';
             return `<div class="credit-card-purchase-row">
               <span class="credit-card-purchase-dot" aria-hidden="true"></span>
               <div class="credit-card-purchase-main">
