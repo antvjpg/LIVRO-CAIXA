@@ -8329,7 +8329,7 @@ VALOR: ${fmt(pseudoBill.amount)}
         </div>
         <div class="credit-card-chips">
           <span class="credit-card-chip">Venc. dia ${card.dueDay}</span>
-          <span class="credit-card-chip">\( {cardPurchases.length} compra \){cardPurchases.length === 1 ? '' : 's'}</span>
+          <span class="credit-card-chip">(${cardPurchases.length} compra${cardPurchases.length === 1 ? '' : 's'})</span>
         </div>
         <div class="credit-card-invoice-block">
           <div class="credit-card-invoice-head">
