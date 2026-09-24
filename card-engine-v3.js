@@ -583,7 +583,8 @@
      * O período anterior continua consumindo limite
      * enquanto não houver pagamento financeiro real.
      *
-     * markedPaidOnly NÃO libera limite.
+     * markedPaidOnly zera remaining daquele titular e LIBERA limite
+     *   (caso de uso: ja lancou no Livro-Caixa e so sincronizou o status).
      */
     const installments = buildInstallments(
       purchases,
@@ -615,33 +616,28 @@
     for (const periodKey of relevantPeriods) {
       if (!periodKey) continue;
 
-      const invoice = cardInvoiceForPeriod(
+      const groups = invoiceByTitular(
         cardId,
         periodKey,
         purchases,
         cards
       );
 
-      const total = Math.max(
-        0,
-        number(invoice.total)
-      );
-
-      if (total <= EPSILON) {
+      if (!groups.length) {
         continue;
       }
 
-      const paid = invoiceAmountPaid(
-        cardId,
-        periodKey,
-        total,
-        invoiceLaunches
-      );
-
-      committed += Math.max(
-        0,
-        total - paid
-      );
+      for (const group of groups) {
+        const state = titularInvoice(
+          cardId,
+          periodKey,
+          group.titular,
+          purchases,
+          cards,
+          invoiceLaunches
+        );
+        committed += Math.max(0, number(state.remaining));
+      }
     }
 
     return Math.max(0, committed);
