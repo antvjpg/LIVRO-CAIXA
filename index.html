@@ -8403,7 +8403,7 @@ VALOR: ${fmt(pseudoBill.amount)}
           </div>
           ${cardPurchases.length ? cardPurchases.map(p => {
             const cat = categories.find(c => c.id === p.categoryId)?.name || 'Sem categoria';
-            const parcel = p.paymentType === 'parcelado' ? `Parcela ${p.initialInstallment || 1}/${p.totalInstallments} de ${fmt(p.installmentValue)}` : 'À vista';
+            const parcel = p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
             return `<div class="credit-card-purchase-row">
               <span class="credit-card-purchase-dot" aria-hidden="true"></span>
               <div class="credit-card-purchase-main">
