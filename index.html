@@ -8294,21 +8294,25 @@ VALOR: ${fmt(pseudoBill.amount)}
           </div>
           <span class="credit-card-status ${card.active === false ? 'inactive' : 'active'}">${card.active === false ? 'Inativo' : 'Ativo'}</span>
         </div>
-        <div class="credit-card-meta credit-card-meta-row">
-          <div class="credit-card-meta-item"><span>Vencimento</span><strong>Dia ${card.dueDay}</strong></div>
-          <div class="credit-card-meta-item"><span>Limite total</span><strong>${card.limit > 0 ? fmt(card.limit) : '—'}</strong></div>
-          <div class="credit-card-meta-item"><span>Limite disponível</span><strong>${(() => {
-            if (Number(card.limit || 0) <= 0) return '—';
-            const limitState = window.LivroCaixaCardEngineV3.calculateLimit(
-              card,
-              purchases,
-              cards,
-              invoiceLaunches,
-              referencePeriod
-            );
-            return fmt(limitState.available);
-          })()}</strong></div>
-          <div class="credit-card-meta-item"><span>Compras</span><strong>${cardPurchases.length}</strong></div>
+        <div class="credit-card-limits-row">
+          <div class="credit-card-limit-cell">
+            <span>Limite disponível</span>
+            <strong class="is-available">${(() => {
+              if (Number(card.limit || 0) <= 0) return '—';
+              const limitState = window.LivroCaixaCardEngineV3.calculateLimit(
+                card, purchases, cards, invoiceLaunches, referencePeriod
+              );
+              return fmt(limitState.available);
+            })()}</strong>
+          </div>
+          <div class="credit-card-limit-cell">
+            <span>Limite total</span>
+            <strong>${card.limit > 0 ? fmt(card.limit) : '—'}</strong>
+          </div>
+        </div>
+        <div class="credit-card-chips">
+          <span class="credit-card-chip">Venc. dia ${card.dueDay}</span>
+          <span class="credit-card-chip">\( {cardPurchases.length} compra \){cardPurchases.length === 1 ? '' : 's'}</span>
         </div>
         <div class="credit-card-invoice-block">
           <div class="credit-card-invoice-head">
@@ -8345,15 +8349,7 @@ VALOR: ${fmt(pseudoBill.amount)}
             const excess = Math.max(0, Number(limitState.excess || 0));
 
             return `
-              <div class="credit-card-limit-summary">
-                <div class="credit-card-summary-head">
-                  <div>
-                    <span>Utilização do limite</span>
-                    <strong>${percent.toLocaleString('pt-BR', {maximumFractionDigits: 1})}%</strong>
-                  </div>
-                  <span>${fmt(used)} usados · ${fmt(available)} disponíveis</span>
-                </div>
-
+              <div class="credit-card-limit-summary is-compact">
                 <div
                   class="credit-card-limit-track"
                   role="progressbar"
@@ -8364,10 +8360,7 @@ VALOR: ${fmt(pseudoBill.amount)}
                 >
                   <span style="width:${percent.toFixed(1)}%"></span>
                 </div>
-
-                ${excess > 0
-                  ? `<div class="credit-card-limit-warning">Limite excedido em ${fmt(excess)}.</div>`
-                  : ''}
+                <div class="credit-card-limit-caption">${fmt(used)} de \( {fmt(total)} \){excess > 0 ? ` · excedido ${fmt(excess)}` : ''}</div>
               </div>
             `;
           })()}
@@ -8402,7 +8395,7 @@ VALOR: ${fmt(pseudoBill.amount)}
 
         <div class="credit-card-purchases">
           <div class="credit-card-purchases-head">
-            <strong>Compras vinculadas</strong>
+            <strong>Compras</strong>
             <div class="credit-card-purchases-actions">
               <button type="button" class="credit-card-pill" onclick="this.closest('.credit-card-purchases').classList.toggle('is-expanded')">Detalhar</button>
               <button type="button" class="credit-card-pill primary" onclick="openPurchaseModal('${card.id}')" ${card.active === false ? 'disabled' : ''}>+ Compra</button>
