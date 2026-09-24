@@ -67,6 +67,12 @@
         style="width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:.86;">
         ⚙ Diagnóstico
       </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Console técnico global de diagnóstico -->
       <section id="authDiagnosticPanel" hidden aria-label="Console de diagnóstico do login"
         style="position:fixed;inset:18px;z-index:1000;margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface);color:var(--ink);text-align:left;box-shadow:0 20px 60px rgba(0,0,0,.45);display:none;flex-direction:column;max-width:760px;max-height:calc(100vh - 36px);margin-left:auto;margin-right:auto;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-bottom:1px solid var(--line);">
@@ -81,9 +87,6 @@
           <button type="button" id="authDiagnosticCopy" style="flex:1;font-family:'IBM Plex Mono',monospace;font-size:9px;">Copiar diagnóstico</button>
         </div>
       </section>
-    </div>
-  </div>
-</div>
 
 <div id="syncOverlay" class="hidden">
   <div class="sync-box">
@@ -509,6 +512,10 @@
               <div><strong id="diagnosticSummaryLabel">Consistência dos dados</strong><span id="diagnosticSummaryDetail">Toque em "Executar diagnóstico" para verificar</span></div>
             </div>
             <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
+            <button type="button" id="btnOpenTechnicalDiagnostic"
+              style="margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;">
+              ⚙ Abrir console técnico
+            </button>
           </div>
           <div id="diagnosticResults" class="diagnostic-results" aria-live="polite"></div>
         </div>
@@ -5604,6 +5611,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.getElementById('btnRunDiagnostic')?.addEventListener('click', renderDiagnosticResults);
 
+  // Console técnico global: o Perfil reutiliza exatamente o mesmo
+  // painel e o mesmo histórico usado durante a autenticação.
+  document.getElementById('btnOpenTechnicalDiagnostic')?.addEventListener('click', event => {
+    event.preventDefault();
+
+    if (typeof window.toggleLoginDiagnostic === 'function') {
+      window.toggleLoginDiagnostic(event);
+    }
+  });
+
   async function runGeminiFinancialDiagnosis() {
     const status = document.getElementById('geminiDiagnosticStatus');
     const results = document.getElementById('geminiDiagnosticResults');
@@ -8360,7 +8377,7 @@ VALOR: ${fmt(pseudoBill.amount)}
                 >
                   <span style="width:${percent.toFixed(1)}%"></span>
                 </div>
-                <div class="credit-card-limit-caption">${fmt(used)} de \( {fmt(total)} \){excess > 0 ? ` · excedido ${fmt(excess)}` : ''}</div>
+                <div class="credit-card-limit-caption">${fmt(used)} de ${fmt(total)}${excess > 0 ? ` · excedido ${fmt(excess)}` : ''}</div>
               </div>
             `;
           })()}
