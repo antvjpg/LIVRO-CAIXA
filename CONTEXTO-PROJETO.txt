@@ -1,0 +1,183 @@
+CONTEXTO DO PROJETO — LIVRO-CAIXA
+Gerado em: 2026-09-24
+Último commit pushado: c30f40a
+Repo: https://github.com/antvjpg/LIVRO-CAIXA (branch main)
+
+==============================================================================
+1. OBJETIVO ATUAL
+==============================================================================
+Substituir todas as chamadas de IA (antes Gemini via Firebase AI Logic) por
+um cliente único OpenRouter, usando modelo FREE multimodal, sem expor a chave
+no código (chave só em localStorage, digitada pelo usuário no app).
+
+Decisões do usuário:
+- Chave da API NÃO pode ficar no código.
+- Modelo deve ser FREE (no Termux/OpenCode existe mimo-v2.6-flash-free, mas
+  a free tier do OpenCode só funciona de dentro do OpenCode — NÃO serve para
+  o app web).
+- Escopo: TODAS as chamadas de IA.
+- Usuário já tem conta/chave OpenRouter (sk-or-…).
+- Preferência: se for mais rápido que o Gemini antigo, usar.
+
+==============================================================================
+2. O QUE JÁ FOI FEITO (não commitado)
+==============================================================================
+Arquivos alterados (git status):
+- M index.html   (migração IA + outros)
+- M styles.css   (modal diagnóstico + fix tema metas — de tarefa anterior)
+- ?? ANALISE.md  (untracked, não commitar sem pedido)
+
+### 2.1 Migração Gemini → OpenRouter (ESTA TAREFA)
+
+Cliente único: window.LivroCaixaAI (index.html ~linha 1364+)
+- OPENROUTER_API_KEY_STORAGE_KEY = 'livrocaixa_openrouter_api_key'
+- OPENROUTER_MODEL = 'google/gemma-4-26b-a4b-it:free'  (atual)
+- OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
+- OPENROUTER_DEFAULT_MAX_TOKENS = 900
+- Métodos: getApiKey, setApiKey, clearApiKey, isReady, generate({prompt, imagePart, maxTokens})
+- generate envia: temperature 0.2, max_tokens (cap), reasoning effort none
+- Imagem: formato OpenAI {type:'image_url', image_url:{url: data URI base64}}
+- Chave: localStorage apenas; UI mostra ••••••••; nunca logada
+
+UI Perfil → "Análise assistida":
+- Campo #openRouterApiKey (password)
+- Botões #btnSaveOpenRouterKey, #btnClearOpenRouterKey
+- Status #openRouterKeyStatus
+- Labels atualizadas: "Análise financeira com IA", "Analisar com IA"
+
+3 call sites migrados (sem usar mais window.firebaseAI / generateContent):
+1. runGeminiFinancialDiagnosis (~5771) — texto puro, maxTokens 1400
+2. runReceiptAIAnalysis (~7680) — comprovante, maxTokens 500
+3. runTransferReceiptAIAnalysis (~9420) — transferência, maxTokens 500
+
+fileToReceiptGenerativePart: resolve com formato image_url (não mais inlineData Gemini)
+
+Removido do index.html:
+- Módulo <script type="module"> Firebase AI Logic (firebase-ai.js, getGenerativeModel, gemini-3.7-flash)
+- initializeAppCheck / ReCaptchaEnterpriseProvider daquele módulo
+- FIREBASE_APPCHECK_DEBUG_TOKEN (ficou órfão; só servia à AI)
+- Imports CDN firebase-app.js / firebase-app-check.js / firebase-ai.js daquele bloco
+
+Mantido de propósito:
+- IDs/funções com "Gemini" no nome (btnGeminiDiagnostic, geminiDiagnosticStatus,
+  runGeminiFinancialDiagnosis, buildGeminiFinancialSnapshot, dashboardGeminiHost)
+  — regra AGENTS.md: não renomear IDs sem verificar consumidores
+- Firebase Auth/Firestore/compat do app principal — NÃO mexer
+- firebaseConfig público em index.html (apiKey Firebase é config pública)
+
+Histórico de modelos testados nesta migração:
+1. xiaomi/mimo-v2.6-flash (OpenRouter, pago ~$0.14/M) — descartado: user quer free
+2. OpenCode Zen mimo-v2.6-flash-free — descartado: FreeTierError "only from within OpenCode"
+3. qwen/qwen3.8-27b:free — trocado por latência
+4. google/gemma-4-26b-a4b-it:free — ATUAL (MoE 3.8B ativos, vision, $0)
+
+Free multimodais OpenRouter (imagem) disponíveis em 2026-09-24:
+- thinkingmachines/inkling:free (1M ctx)
+- thinkingmachines/inkling-small:free (1M ctx)
+- dots-studio/dots-3-note-preview:free
+- qwen/qwen3.8-27b:free
+- nex-agi/nex-n2.5-pro:free / nex-n2.5-mini:free
+- google/gemma-4-31b-it:free
+- google/gemma-4-26b-a4b-it:free  ← atual
+- nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free
+- openrouter/free (router de free; não garante imagem)
+
+### 2.2 Alterações anteriores pendentes de commit (já no worktree)
+- styles.css: modal do console técnico (#authDiagnosticOverlay, .tech-diag-*)
+- styles.css: fix tema escuro metas — .goal-card-v2/.goals-panel-v2 usavam
+  var(--panel) inexistente → var(--surface)
+- index.html: HTML do modal diagnóstico + listeners relacionados
+
+NÃO commitar/push sem pedido explícito do usuário.
+
+==============================================================================
+3. ERRO ABERTO (usuário cancelou no meio)
+==============================================================================
+Leitura de comprovante retornou:
+
+  429 Provider returned error
+  google/gemma-4-26b-a4b-it:free is temporarily rate-limited upstream.
+  Please retry shortly, or add your own key...
+
+Significado: free tier do Gemma no OpenRouter está com rate limit upstream
+(congestão do provider), não é erro de chave.
+
+Próximo passo planejado (NÃO implementado ainda):
+1. Em LivroCaixaAI.generate: lista de fallback de free multimodais
+   (ex.: qwen/qwen3.8-27b:free, google/gemma-4-31b-it:free,
+   nex-agi/nex-n2.5-mini:free) — em 429, tentar próximo modelo 1x.
+2. Mensagem amigável 429 em runReceiptAIAnalysis catch
+   (transferência já trata 429; comprovante normal só concatena error.message).
+3. Validar node --check / HTML parse / testar em localhost.
+
+Free OpenRouter rate limits típicos: ~20 req/min (podem variar se conta
+comprou créditos). Limite diário maior com créditos históricos.
+
+==============================================================================
+4. COMO TESTAR
+==============================================================================
+Servidor local:
+  http://127.0.0.1:8000
+  python3 -m http.server 8000 --bind 127.0.0.1
+  (porta 8080 foi encerrada a pedido do usuário)
+
+Hard refresh: Ctrl+Shift+R
+SW cache shell: livro-caixa-shell-v19-21-orange4 (HTML/CSS network-first)
+
+Fluxo manual:
+1. Perfil → Análise assistida → colar chave sk-or-… → Salvar chave
+2. Dashboard → "Analisar com IA"
+3. Novo lançamento → Ler comprovante com IA
+4. Transferências → ler comprovante de transferência
+
+Validações de código:
+  node --check nos blocos <script> extraídos
+  grep residual: não deve restar firebaseAI / generateContent / firebase-ai
+
+==============================================================================
+5. REGRAS DE ENGENHARIA (AGENTS.md — resumo crítico)
+==============================================================================
+- Estado real do repo > descrição histórica em AGENTS.md
+- Mudanças mínimas; sem refatoração ampla não pedida
+- Não alterar auth/Firestore/schema financeiro sem necessidade
+- Não renomear IDs/classes sem buscar consumidores
+- Não commit/push sem pedido explícito
+- Não sobrescrever trabalho pré-existente do usuário
+- Parar se houver risco de perda de dados ou ambiguidade
+- Validação sintaxe obrigatória após mexer em JS
+- Backups *.backup-*: não remover, não commitar
+
+IDs que DEVEM permanecer (consumidores JS/CSS):
+  btnGeminiDiagnostic, geminiDiagnosticStatus, geminiDiagnosticResults,
+  dashboardGeminiHost, runGeminiFinancialDiagnosis, buildGeminiFinancialSnapshot
+
+Novos IDs adicionados:
+  openRouterApiKey, btnSaveOpenRouterKey, btnClearOpenRouterKey, openRouterKeyStatus
+
+Chave localStorage:
+  livrocaixa_openrouter_api_key
+  (padrão livrocaixa_* igual LOG_STORAGE_KEY etc.)
+
+==============================================================================
+6. CONTEXTO AMBIENTE
+==============================================================================
+- Termux/Android; glob/grep nativos falham → usar bash+grep/rg
+- Arquivos grandes (index.html ~11232 linhas, styles.css ~8108)
+- ANÁLISES fora do repo: ~/storage/downloads/analises-livro-caixa/
+- ANALISE.md na raiz: untracked; contexto antigo; não assume que é spec
+- Auth Google/Firebase existente: NÃO mexer nesta tarefa
+- App Check restante do app principal: verificar antes de mexer de novo
+
+==============================================================================
+7. COMANDOS ÚTEIS
+==============================================================================
+git status --short
+git diff --stat
+node --check arquivo.js
+grep -nE 'LivroCaixaAI|firebaseAI|OPENROUTER' index.html
+curl -sS http://127.0.0.1:8000/ -o /dev/null -w '%{http_code}\n'
+
+Modelos free OpenRouter (listar):
+  curl -sS 'https://openrouter.ai/api/v1/models' | python3 -c "..."  # filtrar :free + image
+
+FIM

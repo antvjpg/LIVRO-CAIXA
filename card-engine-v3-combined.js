@@ -2,9 +2,15 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = factory();
   } else {
-    root.LivroCaixaCardEngineV3 = factory();
+    var result = factory();
+    root.LivroCaixaCardEngineV3 = result.engine;
+    root.LivroCaixaCardAdapter = result.adapter;
   }
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+
+  /* =====================================================================
+     ENGINE — card-engine-v3.js (lógica pura de cálculo de cartão)
+     ===================================================================== */
 
   const EPSILON = 0.004;
 
@@ -84,6 +90,104 @@
       target.getFullYear(),
       target.getMonth()
     );
+  }
+
+  function invoicePeriods(
+    card,
+    purchases,
+    cards,
+    invoiceLaunches,
+    referenceDate
+  ) {
+    const today =
+      referenceDate ||
+      new Date().toISOString().slice(0, 10);
+
+    const referencePeriod = invoicePeriodKeyForDate(
+      card,
+      today
+    );
+
+    if (!referencePeriod) {
+      return {
+        current: null,
+        previous: null,
+        next: null,
+        periods: []
+      };
+    }
+
+    const periods = new Set();
+
+    for (const purchase of purchases || []) {
+      if (purchase?.cardId !== card?.id) continue;
+
+      const occurrences = purchaseInstallmentOccurrences(
+        purchase,
+        new Map((cards || []).map(c => [c.id, c]))
+      );
+
+      for (const occurrence of occurrences) {
+        if (occurrence.periodKey) {
+          periods.add(occurrence.periodKey);
+        }
+      }
+    }
+
+    for (const launch of invoiceLaunches || []) {
+      if (
+        launch?.cardId === card?.id &&
+        launch?.closingPeriodKey
+      ) {
+        periods.add(launch.closingPeriodKey);
+      }
+    }
+
+    periods.add(referencePeriod);
+
+    const sorted = Array.from(periods)
+      .filter(Boolean)
+      .sort();
+
+    let current = referencePeriod;
+
+    const laterOpen = sorted
+      .filter(period => period >= referencePeriod)
+      .find(period => {
+        const state = invoiceState(
+          card.id,
+          period,
+          purchases,
+          cards,
+          invoiceLaunches
+        );
+
+        return state.total > EPSILON &&
+          state.remaining > EPSILON;
+      });
+
+    if (laterOpen) {
+      current = laterOpen;
+    }
+
+    const currentIndex = sorted.indexOf(current);
+
+    const previous =
+      currentIndex > 0
+        ? sorted[currentIndex - 1]
+        : addMonthsToPeriodKey(current, -1);
+
+    const next =
+      currentIndex >= 0 && currentIndex < sorted.length - 1
+        ? sorted[currentIndex + 1]
+        : addMonthsToPeriodKey(current, 1);
+
+    return {
+      current,
+      previous,
+      next,
+      periods: sorted
+    };
   }
 
   function purchaseInstallmentOccurrences(purchase, cardsById) {
@@ -194,10 +298,6 @@
         purchase: purchaseById.get(item.purchaseId)
       }));
 
-    /*
-     * purchaseInstallmentOccurrences não precisa carregar
-     * cardId porque purchaseId já identifica a compra.
-     */
     const normalizedLines = lines.filter(
       line => line.purchase?.cardId === cardId
     );
@@ -217,11 +317,6 @@
     };
   }
 
-  /*
-   * Cada pagamento é associado explicitamente a uma fatura.
-   *
-   * markedPaidOnly NÃO é considerado pagamento financeiro.
-   */
   function invoicePaymentsFor(
     cardId,
     periodKey,
@@ -276,135 +371,10 @@
       }
     }
 
-    /*
-     * Nunca reconhece como pagamento da fatura
-     * valor superior à própria dívida.
-     */
     return Math.min(
       Math.max(0, number(invoiceTotal)),
       paid
     );
-  }
-
-
-  /*
-   * Navegação de faturas:
-   *
-   * current = primeiro período futuro/atual que possui
-   *           saldo em aberto ou lançamentos.
-   *
-   * previous = período imediatamente anterior ao current.
-   *
-   * next = período imediatamente posterior ao current.
-   *
-   * O histórico nunca é apagado quando uma fatura é paga.
-   */
-  function invoicePeriods(
-    card,
-    purchases,
-    cards,
-    invoiceLaunches,
-    referenceDate
-  ) {
-    const today =
-      referenceDate ||
-      new Date().toISOString().slice(0, 10);
-
-    const referencePeriod = invoicePeriodKeyForDate(
-      card,
-      today
-    );
-
-    if (!referencePeriod) {
-      return {
-        current: null,
-        previous: null,
-        next: null,
-        periods: []
-      };
-    }
-
-    const periods = new Set();
-
-    for (const purchase of purchases || []) {
-      if (purchase?.cardId !== card?.id) continue;
-
-      const occurrences = purchaseInstallmentOccurrences(
-        purchase,
-        new Map((cards || []).map(c => [c.id, c]))
-      );
-
-      for (const occurrence of occurrences) {
-        if (occurrence.periodKey) {
-          periods.add(occurrence.periodKey);
-        }
-      }
-    }
-
-    for (const launch of invoiceLaunches || []) {
-      if (
-        launch?.cardId === card?.id &&
-        launch?.closingPeriodKey
-      ) {
-        periods.add(launch.closingPeriodKey);
-      }
-    }
-
-    /*
-     * A fatura do período de referência sempre precisa
-     * ser considerada, mesmo quando ainda não possui compras.
-     */
-    periods.add(referencePeriod);
-
-    const sorted = Array.from(periods)
-      .filter(Boolean)
-      .sort();
-
-    /*
-     * A fatura atual é o período de referência.
-     * Caso ela esteja totalmente paga e exista uma fatura
-     * posterior com lançamentos, promovemos essa próxima
-     * fatura para atual.
-     */
-    let current = referencePeriod;
-
-    const laterOpen = sorted
-      .filter(period => period >= referencePeriod)
-      .find(period => {
-        const state = invoiceState(
-          card.id,
-          period,
-          purchases,
-          cards,
-          invoiceLaunches
-        );
-
-        return state.total > EPSILON &&
-          state.remaining > EPSILON;
-      });
-
-    if (laterOpen) {
-      current = laterOpen;
-    }
-
-    const currentIndex = sorted.indexOf(current);
-
-    const previous =
-      currentIndex > 0
-        ? sorted[currentIndex - 1]
-        : addMonthsToPeriodKey(current, -1);
-
-    const next =
-      currentIndex >= 0 && currentIndex < sorted.length - 1
-        ? sorted[currentIndex + 1]
-        : addMonthsToPeriodKey(current, 1);
-
-    return {
-      current,
-      previous,
-      next,
-      periods: sorted
-    };
   }
 
   function invoiceStatus(
@@ -432,9 +402,6 @@
     return 'Pago';
   }
 
-  /*
-   * Retorna o estado financeiro completo de uma fatura.
-   */
   function invoiceState(
     cardId,
     periodKey,
@@ -455,13 +422,6 @@
       invoiceLaunches
     );
 
-    /*
-     * O estado da fatura é agregado por titular.
-     *
-     * markedPaidOnly é um estado INDIVIDUAL do titular.
-     * Portanto, um único titular marcado como pago
-     * nunca pode quitar a fatura inteira.
-     */
     const titulars = invoiceByTitular(
       cardId,
       periodKey,
@@ -478,30 +438,18 @@
       )
     );
 
-    /*
-     * Soma somente dinheiro efetivamente pago.
-     * markedPaidOnly não vira pagamento financeiro.
-     */
     const paid = titulars.reduce(
       (sum, titular) =>
         sum + Math.max(0, number(titular.paid)),
       0
     );
 
-    /*
-     * O saldo restante respeita tanto pagamentos financeiros
-     * quanto titulares marcados manualmente como pagos.
-     */
     const remaining = titulars.reduce(
       (sum, titular) =>
         sum + Math.max(0, number(titular.remaining)),
       0
     );
 
-    /*
-     * Só é "markedPaidOnly" no nível da fatura quando
-     * todos os titulares existentes foram marcados assim.
-     */
     const markedPaidOnly =
       titulars.length > 0 &&
       titulars.every(
@@ -534,14 +482,6 @@
     };
   }
 
-  /*
-   * Soma o comprometimento REAL das compras,
-   * mas desconta somente pagamentos que foram
-   * efetivamente associados às faturas.
-   *
-   * Pagamento acima da fatura não gera crédito
-   * artificial para outras faturas.
-   */
   function cardCommittedAmount(
     cardId,
     purchases,
@@ -573,19 +513,6 @@
       return 0;
     }
 
-    /*
-     * Limite comprometido:
-     *
-     * 1. período imediatamente anterior;
-     * 2. período de referência atual;
-     * 3. todos os períodos futuros.
-     *
-     * O período anterior continua consumindo limite
-     * enquanto não houver pagamento financeiro real.
-     *
-     * markedPaidOnly zera remaining daquele titular e LIBERA limite
-     *   (caso de uso: ja lancou no Livro-Caixa e so sincronizou o status).
-     */
     const installments = buildInstallments(
       purchases,
       cards
@@ -687,12 +614,6 @@
     };
   }
 
-  /*
-   * Validação de um novo pagamento.
-   *
-   * Não grava nada.
-   * Apenas informa se o pagamento pode ocorrer.
-   */
   function validatePayment(
     cardId,
     periodKey,
@@ -753,9 +674,6 @@
     };
   }
 
-  /*
-   * Identifica registros que apontam para cartões inexistentes.
-   */
   function auditOrphans(
     cards,
     purchases,
@@ -775,7 +693,6 @@
         .map(x => x.id)
     };
   }
-
 
   function normalizeTitular(value) {
     const s = String(value ?? '').trim();
@@ -1019,7 +936,7 @@
     };
   }
 
-  return Object.freeze({
+  const engine = Object.freeze({
     EPSILON,
     addMonthsToPeriodKey,
     invoicePeriodKeyForDate,
@@ -1043,4 +960,222 @@
     invoice,
     auditOrphans
   });
+
+  /* =====================================================================
+     ADAPTER — card-adapter.js (camada de adaptação para UI)
+     ===================================================================== */
+
+  function adapterNumber(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function resolveContext(ctx) {
+    const c = ctx || {};
+    return {
+      cards: Array.isArray(c.cards) ? c.cards : [],
+      purchases: Array.isArray(c.purchases) ? c.purchases : [],
+      invoiceLaunches: Array.isArray(c.invoiceLaunches) ? c.invoiceLaunches : [],
+      referenceDate: typeof c.referenceDate === 'string' && c.referenceDate ? c.referenceDate : undefined,
+      dueDateFor: typeof c.dueDateFor === 'function' ? c.dueDateFor : null
+    };
+  }
+
+  function dueDateFor(card, periodKey, c) {
+    if (!c.dueDateFor || !periodKey) return '';
+    try {
+      return String(c.dueDateFor(card, periodKey) || '').slice(0, 10);
+    } catch (err) {
+      return '';
+    }
+  }
+
+  function readInvoice(eng, card, periodKey, c) {
+    if (!periodKey) return null;
+    const state = eng.invoice(card.id, periodKey, c.purchases, c.cards, c.invoiceLaunches);
+    if (!state) return null;
+    return {
+      periodKey: periodKey,
+      total: Math.max(0, adapterNumber(state.total)),
+      paid: Math.max(0, adapterNumber(state.paid)),
+      remaining: Math.max(0, adapterNumber(state.remaining)),
+      status: state.status || 'Pendente',
+      dueDate: dueDateFor(card, periodKey, c)
+    };
+  }
+
+  function snapshot(card, ctx) {
+    const eng = engine;
+    if (!eng || !card) return null;
+
+    const c = resolveContext(ctx);
+    const periods = eng.invoicePeriods(
+      card,
+      c.purchases,
+      c.cards,
+      c.invoiceLaunches,
+      c.referenceDate
+    ) || {};
+
+    const previousKey = periods.previous || null;
+    const currentKey = periods.current || null;
+    const nextKey = periods.next || null;
+
+    const previous = readInvoice(eng, card, previousKey, c);
+    const current = readInvoice(eng, card, currentKey, c);
+    const next = readInvoice(eng, card, nextKey, c);
+
+    let futureRemaining = 0;
+    const futureInvoices = [];
+    const known = Array.isArray(periods.periods) ? periods.periods : [];
+
+    known.forEach(function (key) {
+      if (!currentKey || key <= currentKey) return;
+      const state = eng.invoice(card.id, key, c.purchases, c.cards, c.invoiceLaunches);
+      const remaining = Math.max(0, adapterNumber(state && state.remaining));
+      if (remaining <= 0) return;
+      futureRemaining += remaining;
+      futureInvoices.push({
+        periodKey: key,
+        remaining: remaining,
+        dueDate: dueDateFor(card, key, c)
+      });
+    });
+
+    const limitState = eng.calculateLimit(
+      card,
+      c.purchases,
+      c.cards,
+      c.invoiceLaunches,
+      c.referenceDate
+    ) || {};
+
+    const committed = Math.max(0, adapterNumber(
+      eng.cardCommittedAmount(card.id, c.purchases, c.cards, c.invoiceLaunches, c.referenceDate)
+    ));
+
+    const limitTotal = adapterNumber(card.limit);
+    const hasLimit = limitTotal > 0;
+
+    return {
+      cardId: card.id,
+      name: card.name || 'Cartão',
+      titular: card.titular || '',
+      active: card.active !== false,
+      referencePeriod: currentKey,
+      previous: previous,
+      current: current,
+      next: next,
+      futureRemaining: futureRemaining,
+      futureInvoices: futureInvoices,
+      committed: committed,
+      limitTotal: limitTotal,
+      limitUsed: hasLimit ? Math.max(0, adapterNumber(limitState.used)) : null,
+      limitAvailable: hasLimit ? Math.max(0, adapterNumber(limitState.available)) : null,
+      limitExcess: hasLimit ? Math.max(0, adapterNumber(limitState.excess)) : 0
+    };
+  }
+
+  function emptySummary() {
+    return {
+      ready: false,
+      cards: [],
+      count: 0,
+      totalLimit: 0,
+      totalUsed: 0,
+      totalAvailable: 0,
+      currentInvoiceTotal: 0,
+      currentInvoiceRemaining: 0,
+      previousInvoiceRemaining: 0,
+      nextInvoiceTotal: 0,
+      nextInvoiceRemaining: 0,
+      futureInstallmentsRemaining: 0,
+      committed: 0,
+      dueDates: []
+    };
+  }
+
+  function summarize(ctx) {
+    const eng = engine;
+    if (!eng) return emptySummary();
+
+    const c = resolveContext(ctx);
+    const rows = [];
+
+    c.cards
+      .filter(function (card) { return card && card.active !== false; })
+      .forEach(function (card) {
+        const snap = snapshot(card, c);
+        if (snap) rows.push(snap);
+      });
+
+    const out = emptySummary();
+    out.ready = true;
+    out.cards = rows;
+    out.count = rows.length;
+
+    rows.forEach(function (row) {
+      out.committed += row.committed;
+      out.futureInstallmentsRemaining += row.futureRemaining;
+
+      if (row.limitTotal > 0) {
+        out.totalLimit += row.limitTotal;
+        out.totalUsed += row.limitUsed || 0;
+        out.totalAvailable += row.limitAvailable || 0;
+      }
+
+      if (row.previous && row.previous.remaining > 0) {
+        out.previousInvoiceRemaining += row.previous.remaining;
+        if (row.previous.dueDate) {
+          out.dueDates.push({
+            cardId: row.cardId,
+            label: row.name,
+            periodKey: row.previous.periodKey,
+            dueDate: row.previous.dueDate,
+            amount: row.previous.remaining
+          });
+        }
+      }
+
+      if (row.current) {
+        out.currentInvoiceTotal += row.current.total;
+        out.currentInvoiceRemaining += row.current.remaining;
+        if (row.current.remaining > 0 && row.current.dueDate) {
+          out.dueDates.push({
+            cardId: row.cardId,
+            label: row.name,
+            periodKey: row.current.periodKey,
+            dueDate: row.current.dueDate,
+            amount: row.current.remaining
+          });
+        }
+      }
+
+      if (row.next) {
+        out.nextInvoiceTotal += row.next.total;
+        out.nextInvoiceRemaining += row.next.remaining;
+      }
+
+      (row.futureInvoices || []).forEach(function (future) {
+        if (!future.dueDate) return;
+        out.dueDates.push({
+          cardId: row.cardId,
+          label: row.name,
+          periodKey: future.periodKey,
+          dueDate: future.dueDate,
+          amount: future.remaining
+        });
+      });
+    });
+
+    return out;
+  }
+
+  const adapter = Object.freeze({
+    isReady: function () { return !!engine; },
+    snapshot: snapshot,
+    summarize: summarize
+  });
+
+  return { engine, adapter };
 });

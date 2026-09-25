@@ -25,8 +25,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="./card-engine-v3.js"></script>
-<script src="./card-adapter.js"></script>
+<script src="./card-engine-v3-combined.js"></script>
 
 
   <link rel="stylesheet" href="./styles.css?v=19-20-orange2">
@@ -5549,7 +5548,7 @@ document.addEventListener('DOMContentLoaded', () => {
        categories/budgets + ciclo financeiro    → gastos e orçamento
        recurringBills (billAppliesToMonth…)      → compromissos pendentes
        goals (goalPlanning/goalCurrentAmount)    → metas
-       LivroCaixaCardEngineV3 (card-adapter.js)  → faturas, limites, parcelas
+       LivroCaixaCardEngineV3 + Adapter (card-engine-v3-combined.js)  → faturas, limites, parcelas
        getDashboardAlerts()                      → camada determinística
      Nenhuma regra financeira é duplicada neste bloco.
      ===================================================================== */
