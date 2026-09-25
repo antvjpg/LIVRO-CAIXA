@@ -5,15 +5,16 @@ const JWKS_URL =
   "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com";
 const JWKS_CACHE_URL = "https://jwks-cache.internal/securetoken.json";
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
-/* Ordem de tentativa. Em 429/5xx o Worker passa para o próximo modelo free. */
+/* Ordem de tentativa. Em 429/5xx o Worker passa para o próximo modelo free.
+   404 (modelo removido do OpenRouter / sem endpoint) também pula: um modelo
+   morto na lista não pode derrubar toda a cadeia. */
 const DEFAULT_MODELS = [
   "google/gemma-4-26b-a4b-it:free",
-  "nex-agi/nex-n2.5-mini:free",
   "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
   "qwen/qwen3.8-27b:free",
   "google/gemma-4-31b-it:free"
 ];
-const RETRYABLE_STATUS = new Set([402, 408, 429, 500, 502, 503, 504]);
+const RETRYABLE_STATUS = new Set([402, 404, 408, 429, 500, 502, 503, 504]);
 const UPSTREAM_TIMEOUT_MS = 45000;
 const DEFAULT_MAX_TOKENS = 900;
 const MAX_TOKENS_CAP = 4096;
@@ -305,6 +306,9 @@ function upstreamMessage(status, raw, parsed) {
     return "A IA atingiu o limite de uso temporariamente. Aguarde alguns segundos e tente novamente.";
   }
   if (status === 402) {
+    return "A IA está indisponível no momento. Tente novamente mais tarde.";
+  }
+  if (status === 404) {
     return "A IA está indisponível no momento. Tente novamente mais tarde.";
   }
   return `A IA respondeu com erro ${status}${detail ? `: ${detail}` : "."}`;
