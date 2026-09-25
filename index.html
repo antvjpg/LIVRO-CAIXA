@@ -72,21 +72,18 @@
 </div>
 
 
-<!-- Console técnico global de diagnóstico -->
-      <section id="authDiagnosticPanel" hidden aria-label="Console de diagnóstico do login"
-        style="position:fixed;inset:18px;z-index:1000;margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface);color:var(--ink);text-align:left;box-shadow:0 20px 60px rgba(0,0,0,.45);display:none;flex-direction:column;max-width:760px;max-height:calc(100vh - 36px);margin-left:auto;margin-right:auto;">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-bottom:1px solid var(--line);">
-          <strong style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.04em;">CONSOLE DE DIAGNÓSTICO</strong>
-          <button type="button" id="authDiagnosticClose" aria-label="Fechar console" title="Fechar" style="padding:4px 8px;font-family:'IBM Plex Mono',monospace;font-size:9px;">Fechar</button>
-          <button type="button" id="authDiagnosticClear"
-            style="padding:4px 8px;font-family:'IBM Plex Mono',monospace;font-size:9px;">Limpar</button>
+<!-- Console técnico global de diagnóstico — modal no padrão do app -->
+      <div class="modal-overlay" id="authDiagnosticOverlay" aria-hidden="true">
+        <div class="panel" id="authDiagnosticPanel" hidden role="dialog" aria-modal="true" aria-label="Console de diagnóstico">
+          <h3>Console de diagnóstico <button type="button" class="modal-close" id="authDiagnosticClose" aria-label="Fechar console" title="Fechar">×</button></h3>
+          <p class="hint tech-diag-intro">Registro técnico de carregamento, autenticação e operações. Dados sensíveis não são gravados.</p>
+          <pre id="authDiagnosticLog" class="tech-diag-log" role="log" aria-live="polite"></pre>
+          <div class="tech-diag-actions">
+            <button type="button" id="authDiagnosticClear">Limpar</button>
+            <button type="button" id="authDiagnosticCopy">Copiar diagnóstico</button>
+          </div>
         </div>
-        <pre id="authDiagnosticLog" role="log" aria-live="polite"
-          style="margin:0;padding:10px;max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-word;font:10px/1.55 'IBM Plex Mono',monospace;color:var(--ink);background:rgba(0,0,0,.08);"></pre>
-        <div style="display:flex;gap:8px;padding:9px 10px;border-top:1px solid var(--line);">
-          <button type="button" id="authDiagnosticCopy" style="flex:1;font-family:'IBM Plex Mono',monospace;font-size:9px;">Copiar diagnóstico</button>
-        </div>
-      </section>
+      </div>
 
 <div id="syncOverlay" class="hidden">
   <div class="sync-box">
@@ -209,11 +206,11 @@
             <div class="diagnostic-summary-head">
               <span class="diagnostic-summary-icon" aria-hidden="true"><i class="fi fi-tc-sparkles" aria-hidden="true"></i></span>
               <div>
-                <strong>Análise financeira com Gemini</strong>
+                <strong>Análise financeira com IA</strong>
                 <span id="geminiDiagnosticStatus">Análise baseada nos dados financeiros resumidos do aplicativo.</span>
               </div>
             </div>
-            <button type="button" id="btnGeminiDiagnostic" class="primary">Analisar com Gemini</button>
+            <button type="button" id="btnGeminiDiagnostic" class="primary">Analisar com IA</button>
           </div>
 
           <div id="geminiDiagnosticResults" class="diagnostic-results" aria-live="polite"></div>
@@ -229,6 +226,7 @@
       <div id="dailyInsightBody" class="daily-insight-body">
         <p class="hint">Uma leitura objetiva da sua situação financeira, no máximo uma vez por dia. Nenhum lançamento é alterado.</p>
       </div>
+      <div class="daily-insight-quota hint" data-ai-quota aria-live="polite"></div>
     </section>
   </div>
 
@@ -456,6 +454,19 @@
           <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-lab-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias usando descrições já categorizadas no seu histórico; nenhuma alteração é feita sem confirmação.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
           <div class="feature-lab-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
           <div id="labsAnalysisStatus" class="feature-lab-feedback" aria-live="polite"></div>
+          <div class="feature-lab-pin-row" style="margin-top:10px;">
+            <div>
+              <label for="openRouterApiKey">Chave da API (OpenRouter)</label>
+              <input type="password" id="openRouterApiKey" autocomplete="off" spellcheck="false" placeholder="sk-or-…">
+            </div>
+            <div class="feature-lab-pin-actions">
+              <button type="button" id="btnSaveOpenRouterKey" class="primary">Salvar chave</button>
+              <button type="button" id="btnClearOpenRouterKey">Remover</button>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:6px;">Usa o modelo free <strong>Gemma 4 26B A4B</strong> no OpenRouter (visão, latência baixa, reasoning desligado). O normal é usar pela sua sessão, com a chave guardada no servidor. Esta chave é só uma <strong>alternativa local</strong> para quando o serviço estiver indisponível: fica somente neste dispositivo e não é enviada ao Firebase. Free tier tem limite de requisições por minuto.</p>
+          <div id="openRouterKeyStatus" class="feature-lab-feedback" aria-live="polite"></div>
+          <div id="aiQuotaStatus" class="feature-lab-feedback" data-ai-quota aria-live="polite"></div>
         </div>
       </div>
 
@@ -1352,6 +1363,320 @@ const firebaseConfig = {
 };
 window.__firebaseConfig = firebaseConfig;
 
+/* [JS AI] Cliente único de IA. Modo principal: Worker do Cloudflare (chave no servidor, sessão Firebase).
+   Modo fallback: chave OpenRouter digitada pelo usuário, guardada só neste dispositivo (localStorage). */
+const OPENROUTER_API_KEY_STORAGE_KEY = 'livrocaixa_openrouter_api_key';
+const OPENROUTER_MODEL = 'google/gemma-4-26b-a4b-it:free';
+const OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
+const OPENROUTER_DEFAULT_MAX_TOKENS = 900;
+/* URL do Worker. Vazia = só o modo local (chave no dispositivo) é usado. */
+const AI_WORKER_ENDPOINT = 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/ai';
+
+window.LivroCaixaAI = {
+  getApiKey() {
+    try { return localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY) || ''; } catch (err) { return ''; }
+  },
+  setApiKey(rawKey) {
+    const key = String(rawKey || '').trim();
+    try {
+      if (!key) {
+        localStorage.removeItem(OPENROUTER_API_KEY_STORAGE_KEY);
+        return false;
+      }
+      localStorage.setItem(OPENROUTER_API_KEY_STORAGE_KEY, key);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  },
+  clearApiKey() {
+    try { localStorage.removeItem(OPENROUTER_API_KEY_STORAGE_KEY); } catch (err) {}
+  },
+  hasLocalKey() {
+    return Boolean(this.getApiKey());
+  },
+  isReady() {
+    if (this.getApiKey()) return true;
+    try {
+      return typeof auth !== 'undefined' && Boolean(auth?.currentUser);
+    } catch (err) {
+      return false;
+    }
+  },
+  buildContent(text, imagePart) {
+    if (imagePart && imagePart.image_url && imagePart.image_url.url) {
+      return [
+        { type: 'text', text },
+        { type: 'image_url', image_url: { url: imagePart.image_url.url } }
+      ];
+    }
+    return text;
+  },
+  async generateViaWorker({ prompt, imagePart, maxTokens }) {
+    if (!AI_WORKER_ENDPOINT) {
+      const err = new Error('O serviço de IA não está configurado.');
+      err.code = 'worker_not_configured';
+      throw err;
+    }
+
+    let user = null;
+    try {
+      user = typeof auth !== 'undefined' ? auth?.currentUser : null;
+    } catch (err) {
+      user = null;
+    }
+
+    if (!user) {
+      const err = new Error('Entre na sua conta ou cadastre uma chave local em Perfil → Análise assistida.');
+      err.code = 'not_authenticated';
+      throw err;
+    }
+
+    let idToken = '';
+    try {
+      idToken = await user.getIdToken();
+    } catch (err) {
+      const tokenErr = new Error('Não foi possível validar a sessão para usar a IA.');
+      tokenErr.code = 'token_failed';
+      throw tokenErr;
+    }
+
+    let response;
+    try {
+      response = await fetch(AI_WORKER_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${idToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          prompt,
+          imagePart: imagePart || null,
+          maxTokens
+        })
+      });
+    } catch (networkError) {
+      const err = new Error('Falha de rede ao consultar a IA. Verifique a conexão.');
+      err.code = 'network';
+      throw err;
+    }
+
+    try { this.applyQuotaFromHeaders(response); } catch (quotaErr) {}
+
+    const rawBody = await response.text().catch(() => '');
+    let parsed = null;
+    try { parsed = rawBody ? JSON.parse(rawBody) : null; } catch (err) { parsed = null; }
+
+    if (!response.ok) {
+      const err = new Error(parsed?.error || `A IA respondeu com erro ${response.status}.`);
+      err.status = response.status;
+      err.code = parsed?.code || `http_${response.status}`;
+      throw err;
+    }
+
+    const reply = typeof parsed?.text === 'string' ? parsed.text.trim() : '';
+    if (!reply) {
+      const err = new Error('A IA não retornou uma resposta utilizável.');
+      err.code = 'empty_reply';
+      throw err;
+    }
+    return reply;
+  },
+  async generateViaLocalKey({ content, maxTokens }) {
+    const apiKey = this.getApiKey();
+    if (!apiKey) {
+      const err = new Error('Chave da API não configurada. Cadastre-a em Perfil → Análise assistida.');
+      err.code = 'missing_api_key';
+      throw err;
+    }
+
+    let response;
+    try {
+      response = await fetch(OPENROUTER_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': location.origin,
+          'X-Title': 'LIVRO-CAIXA'
+        },
+        body: JSON.stringify({
+          model: OPENROUTER_MODEL,
+          messages: [{ role: 'user', content }],
+          temperature: 0.2,
+          max_tokens: maxTokens,
+          reasoning: { effort: 'none' },
+          reasoning_effort: 'none'
+        })
+      });
+    } catch (networkError) {
+      const err = new Error('Falha de rede ao consultar a IA. Verifique a conexão.');
+      err.code = 'network';
+      throw err;
+    }
+
+    if (!response.ok) {
+      let detail = '';
+      try { detail = await response.text(); } catch (err) {}
+      const err = new Error(`A IA respondeu com erro ${response.status}${detail ? `: ${detail.slice(0, 200)}` : '.'}`);
+      err.status = response.status;
+      err.code = `http_${response.status}`;
+      throw err;
+    }
+
+    let data;
+    try { data = await response.json(); } catch (err) {
+      const parseErr = new Error('Resposta inválida da IA.');
+      parseErr.code = 'bad_json';
+      throw parseErr;
+    }
+
+    const reply = data?.choices?.[0]?.message?.content;
+    const responseText = typeof reply === 'string' ? reply.trim() : '';
+    if (!responseText) {
+      const err = new Error('A IA não retornou uma resposta utilizável.');
+      err.code = 'empty_reply';
+      throw err;
+    }
+    return responseText;
+  },
+  async generate({ prompt, imagePart, maxTokens } = {}) {
+    const text = String(prompt || '').trim();
+    if (!text) {
+      const err = new Error('Prompt vazio para a análise de IA.');
+      err.code = 'empty_prompt';
+      throw err;
+    }
+
+    const content = this.buildContent(text, imagePart);
+    const tokenCap = Number.isFinite(maxTokens) && maxTokens > 0
+      ? Math.min(Math.floor(maxTokens), 4096)
+      : OPENROUTER_DEFAULT_MAX_TOKENS;
+
+    if (AI_WORKER_ENDPOINT) {
+      try {
+        return await this.generateViaWorker({ prompt: text, imagePart, maxTokens: tokenCap });
+      } catch (workerError) {
+        /* Sem chave local, o erro do Worker é o que o usuário precisa ver. */
+        if (!this.getApiKey()) throw workerError;
+      }
+    }
+
+    return this.generateViaLocalKey({ content, maxTokens: tokenCap });
+  },
+
+  /* Cota diária de leituras (modelos free). Vem do Worker em headers na
+     resposta de /ai, ou sob demanda pela rota GET /quota. */
+  quota: null,
+  quotaState: 'idle',
+  setQuota(data) {
+    if (!data || data.remaining == null || !Number.isFinite(Number(data.remaining))) return;
+    this.quota = {
+      limit: Number(data.limit) || 0,
+      used: Number(data.used) || 0,
+      remaining: Math.max(0, Number(data.remaining) || 0),
+      resetAt: Number(data.resetAt) || null
+    };
+    this.quotaState = 'ready';
+    window.renderAiQuotaStatus?.();
+  },
+  getQuota() {
+    return this.quota;
+  },
+  applyQuotaFromHeaders(response) {
+    if (!response || !response.headers) return;
+    const rawLimit = response.headers.get('X-AI-Quota-Limit');
+    const rawRemaining = response.headers.get('X-AI-Quota-Remaining');
+    if (rawLimit == null || rawRemaining == null) return;
+
+    const limit = Number(rawLimit);
+    const remaining = Number(rawRemaining);
+    if (!Number.isFinite(limit) || !Number.isFinite(remaining)) return;
+
+    const resetAt = Number(response.headers.get('X-AI-Quota-Reset'));
+    this.setQuota({
+      limit,
+      remaining,
+      used: Math.max(0, limit - remaining),
+      resetAt: Number.isFinite(resetAt) ? resetAt : null
+    });
+  },
+  async refreshQuota() {
+    if (!AI_WORKER_ENDPOINT) return null;
+
+    let user = null;
+    try { user = typeof auth !== 'undefined' ? auth?.currentUser : null; } catch (err) { user = null; }
+    if (!user) {
+      this.quotaState = 'idle';
+      window.renderAiQuotaStatus?.();
+      return null;
+    }
+
+    let idToken = '';
+    try { idToken = await user.getIdToken(); } catch (err) { return null; }
+
+    this.quotaState = 'loading';
+    window.renderAiQuotaStatus?.();
+
+    try {
+      const endpoint = AI_WORKER_ENDPOINT.replace(/\/ai$/, '/quota');
+      const response = await fetch(endpoint, {
+        headers: { 'Authorization': `Bearer ${idToken}` }
+      });
+      if (!response.ok) {
+        this.quotaState = 'unavailable';
+        return null;
+      }
+      const data = await response.json();
+      this.setQuota(data);
+      return this.quota;
+    } catch (err) {
+      this.quotaState = 'unavailable';
+      return null;
+    } finally {
+      window.renderAiQuotaStatus?.();
+    }
+  }
+};
+
+window.renderAiQuotaStatus = function renderAiQuotaStatus() {
+  const nodes = document.querySelectorAll('[data-ai-quota]');
+  if (!nodes.length) return;
+
+  const ai = window.LivroCaixaAI;
+  const quota = ai?.quota;
+  const state = ai?.quotaState || 'idle';
+
+  let text = '';
+  let color = '';
+
+  if (state === 'loading') {
+    text = 'Consultando o limite de leituras de IA…';
+  } else if (state === 'unavailable') {
+    text = 'Não foi possível consultar o limite de leituras de IA agora.';
+    color = 'var(--red)';
+  } else if (quota && quota.remaining <= 0) {
+    text = `Limite diário de leituras de IA atingido (${quota.limit}/dia). Volta a liberar à meia-noite (UTC).`;
+    color = 'var(--red)';
+  } else if (quota) {
+    const ending = quota.remaining <= 5;
+    text = ending
+      ? `Leituras de IA hoje: ${quota.remaining} de ${quota.limit} — o limite está acabando.`
+      : `Leituras de IA hoje: ${quota.remaining} de ${quota.limit} restantes.`;
+    color = ending ? 'var(--red)' : '';
+  }
+
+  nodes.forEach((el) => {
+    el.textContent = text;
+    el.style.color = color;
+  });
+};
+
+window.addEventListener('load', () => {
+  window.renderAiQuotaStatus?.();
+  window.LivroCaixaAI?.refreshQuota?.();
+});
+
 /* Diagnóstico acessível na tela de login — robusto contra ordem de carregamento do DOM. */
 (function initLoginDiagnostic() {
   const maxLines = 180;
@@ -1422,6 +1747,7 @@ window.__firebaseConfig = firebaseConfig;
   function setDiagnosticOpen(open) {
     const toggle = getEl('authDiagnosticToggle');
     const panel = getEl('authDiagnosticPanel');
+    const overlay = getEl('authDiagnosticOverlay');
 
     if (!panel || !toggle) {
       window.loginDebugLog?.(
@@ -1434,7 +1760,10 @@ window.__firebaseConfig = firebaseConfig;
 
     if (open) {
       panel.removeAttribute('hidden');
+      panel.classList.add('open');
       panel.style.display = 'flex';
+      overlay?.classList.add('open');
+      overlay?.setAttribute('aria-hidden', 'false');
 
       toggle.setAttribute(
         'aria-expanded',
@@ -1446,7 +1775,10 @@ window.__firebaseConfig = firebaseConfig;
     }
 
     panel.setAttribute('hidden', '');
+    panel.classList.remove('open');
     panel.style.display = 'none';
+    overlay?.classList.remove('open');
+    overlay?.setAttribute('aria-hidden', 'true');
 
     toggle.setAttribute(
       'aria-expanded',
@@ -1524,6 +1856,15 @@ window.__firebaseConfig = firebaseConfig;
           'INFO',
           'Console limpo'
         );
+      }
+    );
+
+    getEl('authDiagnosticOverlay')?.addEventListener(
+      'click',
+      event => {
+        if (event.target === event.currentTarget) {
+          window.toggleLoginDiagnostic(event);
+        }
       }
     );
 
@@ -5160,6 +5501,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const savings = document.getElementById('featureSavingsGoalAmount'); if (savings) setMoneyInput('featureSavingsGoalAmount', featureSettings.monthlySavingsGoal);
     const whatIf = document.getElementById('featureWhatIfExpense'); if (whatIf) setMoneyInput('featureWhatIfExpense', 0);
     const pinInput = document.getElementById('featurePin'); if (pinInput) pinInput.value = '';
+    const orKey = document.getElementById('openRouterApiKey'); if (orKey) orKey.value = window.LivroCaixaAI?.hasLocalKey() ? '••••••••' : '';
+    window.renderAiQuotaStatus?.();
+    window.LivroCaixaAI?.refreshQuota?.();
     const bank = document.getElementById('reconcileBank'); if (bank) { const current = bank.value; bank.innerHTML = banks.map(item => `<option value="${item.id}">${escapeHTML(item.name)}</option>`).join(''); if (banks.some(item => item.id === current)) bank.value = current; }
     const month = currentMonthYM(); const budgetCycle = currentFinancialCycleKey(); const rows = document.getElementById('featureBudgetRows');
     if (rows) rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id); const spent = budgetSpent(cat.id, budgetCycle); const pct = budget && budget.amount > 0 ? (spent / budget.amount * 100) : 0; const dot = !budget || !(budget.amount > 0) ? '' : pct >= 100 ? '🔴' : pct >= 80 ? '🟡' : '🟢'; return `<div class="feature-budget-row"><label for="budget-${escapeHTML(cat.id)}">${dot ? dot + ' ' : ''}${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"><span>${fmt(spent)} gastos${budget && budget.amount>0 ? ` (${pct.toFixed(0)}%)` : ''}</span></div>`; }).join('');
@@ -5256,6 +5600,29 @@ document.addEventListener('DOMContentLoaded', () => {
   function exportPatrimonyChartPng() { const series = dashboardMonthSeries(6); const canvas = document.createElement('canvas'); canvas.width = 1400; canvas.height = 820; const ctx = canvas.getContext('2d'); ctx.fillStyle = '#F7F5EF'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#1C2B24'; ctx.font = '700 36px Plus Jakarta Sans, sans-serif'; ctx.fillText('Livro-Caixa · Patrimônio estimado', 80, 90); ctx.font = '20px Plus Jakarta Sans, sans-serif'; ctx.fillStyle = '#4C5A52'; ctx.fillText('Últimos seis meses · imagem gerada localmente', 80, 130); const left = 110, top = 210, width = 1160, height = 470; const values = series.map(item => Number(item.patrimony || 0)); const min = Math.min(0, ...values), max = Math.max(1, ...values); ctx.strokeStyle = '#D8D2C1'; ctx.lineWidth = 2; for (let i = 0; i <= 4; i++) { const y = top + height - (height * i / 4); ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(left + width, y); ctx.stroke(); } const xFor = i => left + (series.length <= 1 ? width / 2 : i * width / (series.length - 1)); const yFor = value => top + height - ((value - min) / (max - min || 1)) * height; ctx.strokeStyle = '#2F6F4F'; ctx.lineWidth = 7; ctx.beginPath(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); if (!i) ctx.moveTo(x, y); else ctx.lineTo(x, y); }); ctx.stroke(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); ctx.fillStyle = '#2F6F4F'; ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1C2B24'; ctx.font = '18px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.fillText(item.label, x, top + height + 42); ctx.font = '16px IBM Plex Mono, monospace'; ctx.fillText(fmt(item.patrimony), x, y - 20); }); const link = document.createElement('a'); link.download = `patrimonio-livro-caixa-${todayISO()}.png`; link.href = canvas.toDataURL('image/png'); link.click(); logInfo('Exportação', 'Exportar patrimônio PNG', 'Sucesso', 'Gráfico de patrimônio exportado como imagem.'); }
   document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnomalyScan);
   document.getElementById('btnGenerateMonthlyReview')?.addEventListener('click', generateMonthlyReview);
+  (function bindOpenRouterKeyUI() {
+    const input = document.getElementById('openRouterApiKey');
+    const status = document.getElementById('openRouterKeyStatus');
+    const fill = () => { if (input) input.value = window.LivroCaixaAI?.hasLocalKey() ? '••••••••' : ''; };
+    fill();
+    document.getElementById('btnSaveOpenRouterKey')?.addEventListener('click', () => {
+      const raw = String(input?.value || '').trim();
+      if (!raw || raw === '••••••••') {
+        if (status) status.textContent = window.LivroCaixaAI?.hasLocalKey()
+          ? 'Já existe uma chave salva neste dispositivo.'
+          : 'Cole a chave da API para salvar.';
+        return;
+      }
+      const saved = window.LivroCaixaAI?.setApiKey(raw);
+      if (input) input.value = '••••••••';
+      if (status) status.textContent = saved ? 'Chave salva neste dispositivo.' : 'Não foi possível salvar a chave.';
+    });
+    document.getElementById('btnClearOpenRouterKey')?.addEventListener('click', () => {
+      window.LivroCaixaAI?.clearApiKey();
+      if (input) input.value = '';
+      if (status) status.textContent = 'Chave removida.';
+    });
+  })();
   document.getElementById('btnRunWhatIf')?.addEventListener('click', runWhatIf);
   document.getElementById('btnExportPatrimonyPng')?.addEventListener('click', exportPatrimonyChartPng);
 
@@ -5628,20 +5995,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!results) return;
 
-    if (!window.firebaseAI?.model) {
-      if (status) status.textContent = 'Gemini indisponível no momento.';
+    if (!window.LivroCaixaAI?.isReady()) {
+      if (status) status.textContent = 'IA indisponível: entre na sua conta ou cadastre uma chave local no Perfil.';
       results.innerHTML = `
         <div class="diagnostic-item is-warning">
           <span>⚠️</span>
           <div>
             <strong>IA não disponível</strong>
-            <span>A integração com o Firebase AI Logic não foi inicializada.</span>
+            <span>Entre na sua conta ou cadastre uma chave local em Perfil → Análise assistida para usar a análise com IA.</span>
           </div>
         </div>`;
       return;
     }
 
-    const previousText = button?.textContent || 'Analisar com Gemini';
+    const previousText = button?.textContent || 'Analisar com IA';
 
     try {
       if (button) {
@@ -5658,7 +6025,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <span>✨</span>
           <div>
             <strong>Analisando sua situação financeira...</strong>
-            <span>O Gemini está interpretando os dados resumidos. Nenhum dado será alterado.</span>
+            <span>A IA está interpretando os dados resumidos. Nenhum dado será alterado.</span>
           </div>
         </div>`;
 
@@ -5724,17 +6091,10 @@ SNAPSHOT:
 ${JSON.stringify(snapshot)}
 `;
 
-      const response = await window.firebaseAI.model.generateContent(prompt);
-
-      const responseText =
-        typeof response?.response?.text === 'function'
-          ? response.response.text()
-          : typeof response?.text === 'function'
-            ? response.text()
-            : '';
+      const responseText = await window.LivroCaixaAI.generate({ prompt, maxTokens: 1400 });
 
       if (!responseText) {
-        throw new Error('O Gemini não retornou uma resposta utilizável.');
+        throw new Error('A IA não retornou uma resposta utilizável.');
       }
 
       if (status) {
@@ -5750,10 +6110,12 @@ ${JSON.stringify(snapshot)}
           </div>
         </div>`;
     } catch (error) {
-      console.error('[Livro-Caixa] Erro no diagnóstico Gemini:', error);
+      console.error('[Livro-Caixa] Erro no diagnóstico de IA:', error);
+
+      const errorDetail = String(error?.message || '').trim();
 
       if (status) {
-        status.textContent = 'Não foi possível concluir a análise.';
+        status.textContent = errorDetail || 'Não foi possível concluir a análise.';
       }
 
       results.innerHTML = `
@@ -5761,7 +6123,7 @@ ${JSON.stringify(snapshot)}
           <span>⚠️</span>
           <div>
             <strong>Falha na análise</strong>
-            <span>O Gemini não conseguiu concluir a análise. Seus dados financeiros não foram alterados.</span>
+            <span>${errorDetail ? `${escapeHTML(errorDetail)} ` : ''}Seus dados financeiros não foram alterados.</span>
           </div>
         </div>`;
     } finally {
@@ -5821,7 +6183,7 @@ ${JSON.stringify(snapshot)}
         }
       }
       if (!text || text.length < 24) {
-        text = 'Resumo local: use a análise Gemini no Perfil se a resposta completa não aparecer aqui. Seus saldos e lançamentos não foram alterados.';
+        text = 'Resumo local: use a análise de IA no Perfil se a resposta completa não aparecer aqui. Seus saldos e lançamentos não foram alterados.';
       }
       saveDailyInsightCache({ date: today, text: text.slice(0, 2500) });
       renderDailyInsightFromCache();
@@ -7176,8 +7538,8 @@ document.getElementById('receiptFile').addEventListener('change', (ev) => {
 });
 
 
-// P3.5.3 — Envio multimodal do comprovante ao Gemini.
-// O Gemini interpreta o arquivo, mas não grava nenhum dado financeiro.
+// P3.5.3 — Envio multimodal do comprovante à IA (OpenRouter/MiMo).
+// A IA interpreta o arquivo, mas não grava nenhum dado financeiro.
 let receiptAIResponseText = '';
 
 async function fileToReceiptGenerativePart(file) {
@@ -7195,9 +7557,9 @@ async function fileToReceiptGenerativePart(file) {
         }
 
         resolve({
-          inlineData: {
-            data: base64Data,
-            mimeType: file.type
+          type: 'image_url',
+          image_url: {
+            url: `data:${file.type || 'image/jpeg'};base64,${base64Data}`
           }
         });
       } catch (error) {
@@ -7211,6 +7573,85 @@ async function fileToReceiptGenerativePart(file) {
 
     reader.readAsDataURL(file);
   });
+}
+
+function normalizeReceiptTypeToken(value) {
+  const text = String(value || '')
+    .trim()
+    .toLocaleLowerCase('pt-BR')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  if (!text) return null;
+
+  const aliases = {
+    entrada: 'entrada',
+    in: 'entrada',
+    credito: 'entrada',
+    recebimento: 'entrada',
+    recebido: 'entrada',
+    deposito: 'entrada',
+    saida: 'saida',
+    out: 'saida',
+    debito: 'saida',
+    pagamento: 'saida',
+    enviado: 'saida',
+    sacado: 'saida',
+    compra: 'saida',
+    transferencia: 'transferencia'
+  };
+
+  return aliases[text] || null;
+}
+
+function normalizeHolderKey(value) {
+  return String(value || '')
+    .trim()
+    .toLocaleLowerCase('pt-BR')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function getAccountHolderNames() {
+  const names = [];
+
+  const add = (value) => {
+    const key = normalizeHolderKey(value);
+    if (key.length >= 3 && !names.includes(key)) names.push(key);
+  };
+
+  const user = typeof currentUser !== 'undefined' ? currentUser : null;
+
+  add(user && user.displayName);
+  add(user && user.email && user.email.split('@')[0]);
+
+  return names;
+}
+
+function matchesAccountHolder(text, holderNames) {
+  const value = normalizeHolderKey(text);
+
+  if (!value || !holderNames || !holderNames.length) return false;
+
+  return holderNames.some((name) => {
+    if (value === name) return true;
+    if (value.length < 5 || name.length < 5) return false;
+    return value.includes(name) || name.includes(value);
+  });
+}
+
+function resolveReceiptType(tipo, pagador, recebedor, holderNames) {
+  if (tipo !== 'desconhecido') return tipo;
+  if (!holderNames || !holderNames.length) return tipo;
+
+  const pagadorIsOwner = matchesAccountHolder(pagador, holderNames);
+  const recebedorIsOwner = matchesAccountHolder(recebedor, holderNames);
+
+  if (pagadorIsOwner === recebedorIsOwner) return tipo;
+
+  return pagadorIsOwner ? 'saida' : 'entrada';
 }
 
 function parseReceiptAIResult(responseText) {
@@ -7260,6 +7701,16 @@ function parseReceiptAIResult(responseText) {
       ? null
       : String(parsed.observacoes).trim() || null;
 
+  const pagador =
+    parsed.pagador == null
+      ? null
+      : String(parsed.pagador).trim() || null;
+
+  const recebedor =
+    parsed.recebedor == null
+      ? null
+      : String(parsed.recebedor).trim() || null;
+
   const valor =
     parsed.valor == null || parsed.valor === ''
       ? null
@@ -7271,7 +7722,7 @@ function parseReceiptAIResult(responseText) {
 
   const tipo = allowedTypes.has(parsed.tipo)
     ? parsed.tipo
-    : 'desconhecido';
+    : normalizeReceiptTypeToken(parsed.tipo) || 'desconhecido';
 
   const confianca = allowedConfidence.has(parsed.confianca)
     ? parsed.confianca
@@ -7284,7 +7735,9 @@ function parseReceiptAIResult(responseText) {
     banco,
     tipo,
     confianca,
-    observacoes
+    observacoes,
+    pagador,
+    recebedor
   };
 }
 
@@ -7302,27 +7755,38 @@ function normalizeReceiptAIData(aiData) {
   const normalizeDate = (value) => {
     if (value == null || value === '') return null;
 
-    const text = String(value).trim();
+    let text = String(value).trim();
+    if (!text) return null;
 
-    if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
-      const [year, month, day] = text.split('-').map(Number);
+    /* Ignora horário/fuso quando vier junto: "2026-09-24T10:15:00-03:00" */
+    const isoWithTime = text.match(/^(\d{4}-\d{2}-\d{2})[T\s]/);
+    if (isoWithTime) text = isoWithTime[1];
+
+    const isValidIso = (iso) => {
+      const [year, month, day] = iso.split('-').map(Number);
       const date = new Date(year, month - 1, day);
-
-      if (
+      return (
         date.getFullYear() === year &&
         date.getMonth() === month - 1 &&
         date.getDate() === day
-      ) {
-        return text;
-      }
+      );
+    };
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(text) && isValidIso(text)) {
+      return text;
     }
 
-    const brMatch = text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (/^\d{4}\/\d{2}\/\d{2}$/.test(text)) {
+      const iso = text.replace(/\//g, '-');
+      if (isValidIso(iso)) return iso;
+    }
 
-    if (brMatch) {
-      const [, day, month, year] = brMatch;
-      const iso = `${year}-${month}-${day}`;
-      return normalizeDate(iso);
+    /* 24/09/2026, 24-09-2026, 24.09.2026 e dígitos simples */
+    const dayFirst = text.match(/^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$/);
+    if (dayFirst) {
+      const [, day, month, year] = dayFirst;
+      const iso = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      if (isValidIso(iso)) return iso;
     }
 
     return null;
@@ -7372,10 +7836,21 @@ function normalizeReceiptAIData(aiData) {
   const descricao = normalizeText(aiData.descricao);
   const banco = normalizeText(aiData.banco);
   const observacoes = normalizeText(aiData.observacoes);
+  const pagador = normalizeText(aiData.pagador);
+  const recebedor = normalizeText(aiData.recebedor);
 
-  const tipo = allowedTypes.has(aiData.tipo)
+  const rawTipo = allowedTypes.has(aiData.tipo)
     ? aiData.tipo
-    : 'desconhecido';
+    : normalizeReceiptTypeToken(aiData.tipo) || 'desconhecido';
+
+  const tipo = resolveReceiptType(
+    rawTipo,
+    pagador,
+    recebedor,
+    getAccountHolderNames()
+  );
+
+  const tipoInferidoPeloTitular = tipo !== rawTipo;
 
   const confianca = allowedConfidence.has(aiData.confianca)
     ? aiData.confianca
@@ -7399,7 +7874,13 @@ function normalizeReceiptAIData(aiData) {
   }
 
   if (tipo === 'desconhecido') {
-    warnings.push('O tipo da operação não foi identificado com segurança.');
+    warnings.push(
+      'Não foi possível identificar se é entrada ou saída. Confirme o tipo antes de salvar.'
+    );
+  } else if (tipoInferidoPeloTitular) {
+    warnings.push(
+      'O tipo da operação foi inferido pelo nome do titular — confirme antes de salvar.'
+    );
   }
 
   if (confianca === 'baixa') {
@@ -7414,6 +7895,8 @@ function normalizeReceiptAIData(aiData) {
     tipo,
     confianca,
     observacoes,
+    pagador,
+    recebedor,
     missingFields,
     warnings,
     isValid: missingFields.length === 0
@@ -7593,7 +8076,19 @@ function applyReceiptToLaunchForm() {
 
   const warnings = [...(data.warnings || [])];
 
-  if (receiptReaderState?.bankMatchStatus?.status === 'not_found') {
+  if (data.tipo === 'transferencia') {
+    warnings.push(
+      'Este documento parece uma transferência entre contas. Use o fluxo de transferências ou confirme o tipo.'
+    );
+  }
+
+  if (!data.data) {
+    warnings.push('A data não foi identificada pela IA. Preencha a data manualmente.');
+  }
+
+  if (!data.banco) {
+    warnings.push('O comprovante não traz banco identificável. Escolha a conta manualmente.');
+  } else if (receiptReaderState?.bankMatchStatus?.status === 'not_found') {
     warnings.push('O banco identificado pela IA não foi encontrado nas contas cadastradas.');
   } else if (receiptReaderState?.bankMatchStatus?.status === 'partial') {
     warnings.push('O banco foi encontrado por correspondência parcial. Revise antes de salvar.');
@@ -7607,9 +8102,18 @@ function applyReceiptToLaunchForm() {
     ? ` · Atenção: ${warnings.join(' ')}`
     : '';
 
+  const quota = window.LivroCaixaAI?.getQuota();
+  const quotaNote = !quota
+    ? ''
+    : quota.remaining <= 0
+      ? ` Limite diário de leituras de IA atingido (${quota.limit}/dia).`
+      : quota.remaining <= 5
+        ? ` Leituras de IA hoje: ${quota.remaining} de ${quota.limit} restantes.`
+        : '';
+
   setReceiptFileStatus(
-    `Comprovante aplicado ao formulário. Revise os dados antes de salvar.${warningText}`,
-    warnings.length > 0
+    `Comprovante aplicado ao formulário. Revise os dados antes de salvar.${warningText}${quotaNote}`,
+    warnings.length > 0 || Boolean(quota && quota.remaining <= 0)
   );
 
   return true;
@@ -7623,12 +8127,12 @@ async function runReceiptAIAnalysis() {
     return;
   }
 
-  if (!window.firebaseAI?.model) {
+  if (!window.LivroCaixaAI?.isReady()) {
     setReceiptFileStatus(
-      'A inteligência artificial ainda não está disponível. Tente novamente.',
+      'Entre na sua conta ou cadastre uma chave local em Perfil → Análise assistida para ler comprovantes.',
       true
     );
-    alert('A IA do Livro-Caixa não está disponível no momento.');
+    alert('Entre na sua conta ou cadastre uma chave local em Perfil → Análise assistida para usar a leitura de comprovantes.');
     return;
   }
 
@@ -7659,8 +8163,14 @@ async function runReceiptAIAnalysis() {
 
     const filePart = await fileToReceiptGenerativePart(file);
 
+    const holderUser = typeof currentUser !== 'undefined' ? currentUser : null;
+    const holderLabel =
+      (holderUser && (holderUser.displayName || holderUser.email)) || 'não informado';
+
     const prompt = `
 Analise o comprovante financeiro anexado.
+
+Titular desta conta: ${holderLabel}.
 
 Nesta etapa, faça somente a leitura e interpretação do documento.
 NÃO grave, altere ou execute nenhum lançamento financeiro.
@@ -7677,17 +8187,26 @@ Use exatamente esta estrutura:
   "valor": null,
   "descricao": null,
   "banco": null,
+  "pagador": null,
+  "recebedor": null,
   "tipo": null,
   "confianca": null,
   "observacoes": null
 }
 
 Regras:
-- "data": data da operação no formato YYYY-MM-DD, quando identificável.
+- "data": data da operação. SEMPRE preencha quando existir QUALQUER data visível no comprovante (data de emissão, data da transação, data/hora). Converta sempre para YYYY-MM-DD. Exemplos: "24/09/2026" ou "24-09-2026" → "2026-09-24"; "2026-09-24" mantenha; "24 de setembro de 2026" → "2026-09-24". Use null somente se o documento não tiver nenhuma data.
 - "valor": valor numérico da operação, sem símbolo de moeda, quando identificável.
 - "descricao": estabelecimento, pessoa ou descrição principal do comprovante.
 - "banco": banco ou instituição identificada no documento.
-- "tipo": use somente "entrada", "saida", "transferencia" ou "desconhecido".
+- "pagador": nome ou conta de quem paga/envia o dinheiro, quando visível no documento. Caso contrário null.
+- "recebedor": nome ou conta de quem recebe o dinheiro, quando visível no documento. Caso contrário null.
+- "tipo": use somente "entrada", "saida", "transferencia" ou "desconhecido". Siga esta ordem de decisão:
+  1. O titular acima aparece como recebedor → "entrada".
+  2. O titular acima aparece como pagador → "saida".
+  3. Sem o titular no documento: "recebido", "crédito", "recebimento", "depositado" → "entrada"; "enviado", "pagamento", "débito", "saída", "cobrança", "compra" → "saida".
+  4. Movimentação entre contas do mesmo titular → "transferencia".
+  5. Nenhum desses sinais → "desconhecido".
 - "confianca": use somente "alta", "media" ou "baixa".
 - "observacoes": informações relevantes que não caibam nos demais campos.
 - Se houver dúvida relevante sobre qualquer campo, prefira null.
@@ -7695,25 +8214,14 @@ Regras:
 - Não execute nenhuma ação no aplicativo.
 `;
 
-    const response = await window.firebaseAI.model.generateContent({
-      contents: [{
-        role: 'user',
-        parts: [
-          { text: prompt },
-          filePart
-        ]
-      }]
+    const responseText = await window.LivroCaixaAI.generate({
+      prompt,
+      imagePart: filePart,
+      maxTokens: 500
     });
 
-    const responseText =
-      typeof response?.response?.text === 'function'
-        ? response.response.text()
-        : typeof response?.text === 'function'
-          ? response.text()
-          : '';
-
     if (!responseText) {
-      throw new Error('O Gemini não retornou uma resposta utilizável.');
+      throw new Error('A IA não retornou uma resposta utilizável.');
     }
 
     const receiptAIData = parseReceiptAIResult(responseText);
@@ -9309,12 +9817,12 @@ async function runTransferReceiptAIAnalysis() {
     return;
   }
 
-  if (!window.firebaseAI?.model) {
+  if (!window.LivroCaixaAI?.isReady()) {
     setTransferReceiptFileStatus(
-      'A inteligência artificial ainda não está disponível. Tente novamente.',
+      'Entre na sua conta ou cadastre uma chave local em Perfil → Análise assistida para ler comprovantes.',
       true
     );
-    alert('A IA do Livro-Caixa não está disponível no momento.');
+    alert('Entre na sua conta ou cadastre uma chave local em Perfil → Análise assistida para usar a leitura de comprovantes.');
     return;
   }
 
@@ -9374,7 +9882,7 @@ Use exatamente esta estrutura:
 }
 
 Regras:
-- "data": data da operação no formato YYYY-MM-DD, quando identificável.
+- "data": data da operação. SEMPRE preencha quando existir QUALQUER data visível no comprovante (data de emissão, data da transação, data/hora). Converta sempre para YYYY-MM-DD. Exemplos: "24/09/2026" ou "24-09-2026" → "2026-09-24"; "2026-09-24" mantenha; "24 de setembro de 2026" → "2026-09-24". Use null somente se o documento não tiver nenhuma data.
 - "banco_origem": instituição, conta, pessoa ou identificador de origem
   visível no comprovante.
 - "banco_destino": instituição, conta, pessoa ou identificador de destino
@@ -9390,25 +9898,14 @@ Regras:
 - Não execute nenhuma ação no aplicativo.
 `;
 
-    const response = await window.firebaseAI.model.generateContent({
-      contents: [{
-        role: 'user',
-        parts: [
-          { text: prompt },
-          filePart
-        ]
-      }]
+    const responseText = await window.LivroCaixaAI.generate({
+      prompt,
+      imagePart: filePart,
+      maxTokens: 500
     });
 
-    const responseText =
-      typeof response?.response?.text === 'function'
-        ? response.response.text()
-        : typeof response?.text === 'function'
-          ? response.text()
-          : '';
-
     if (!responseText) {
-      throw new Error('O Gemini não retornou uma resposta utilizável.');
+      throw new Error('A IA não retornou uma resposta utilizável.');
     }
 
     const parsedReceipt = parseTransferReceiptAIResult(responseText);
@@ -9573,26 +10070,38 @@ function normalizeTransferReceiptAIData(aiData) {
   const normalizeDate = (value) => {
     if (value == null || value === '') return null;
 
-    const text = String(value).trim();
+    let text = String(value).trim();
+    if (!text) return null;
 
-    if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
-      const [year, month, day] = text.split('-').map(Number);
+    /* Ignora horário/fuso quando vier junto: "2026-09-24T10:15:00-03:00" */
+    const isoWithTime = text.match(/^(\d{4}-\d{2}-\d{2})[T\s]/);
+    if (isoWithTime) text = isoWithTime[1];
+
+    const isValidIso = (iso) => {
+      const [year, month, day] = iso.split('-').map(Number);
       const date = new Date(year, month - 1, day);
-
-      if (
+      return (
         date.getFullYear() === year &&
         date.getMonth() === month - 1 &&
         date.getDate() === day
-      ) {
-        return text;
-      }
+      );
+    };
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(text) && isValidIso(text)) {
+      return text;
     }
 
-    const brMatch = text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (/^\d{4}\/\d{2}\/\d{2}$/.test(text)) {
+      const iso = text.replace(/\//g, '-');
+      if (isValidIso(iso)) return iso;
+    }
 
-    if (brMatch) {
-      const [, day, month, year] = brMatch;
-      return normalizeDate(`${year}-${month}-${day}`);
+    /* 24/09/2026, 24-09-2026, 24.09.2026 e dígitos simples */
+    const dayFirst = text.match(/^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$/);
+    if (dayFirst) {
+      const [, day, month, year] = dayFirst;
+      const iso = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      if (isValidIso(iso)) return iso;
     }
 
     return null;
@@ -10913,71 +11422,6 @@ document.getElementById('tSalvar').onclick = async () => {
     }
   });
 });
-</script>
-
-<script>
-  if (
-    location.hostname === "localhost" ||
-    location.hostname === "127.0.0.1"
-  ) {
-    self.FIREBASE_APPCHECK_DEBUG_TOKEN = "2ee74e4b-b432-47c9-88b9-763f38e77893";
-  }
-</script>
-
-<script type="module">
-  import {
-    initializeApp
-  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-
-  import {
-    initializeAppCheck,
-    ReCaptchaEnterpriseProvider
-  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app-check.js";
-
-  import {
-    getAI,
-    getGenerativeModel,
-    GoogleAIBackend
-  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-ai.js";
-
-  const firebaseAIApp = initializeApp(
-    window.__firebaseConfig,
-    "livroCaixaAI"
-  );
-
-  const appCheck = initializeAppCheck(firebaseAIApp, {
-    provider: new ReCaptchaEnterpriseProvider(
-      "6LfHGLotAAAAALoSBew5wEFAw7AFDawNvZLxmw-T"
-    ),
-    isTokenAutoRefreshEnabled: true
-  });
-
-  window.firebaseAppCheck = appCheck;
-
-  const ai = getAI(firebaseAIApp, {
-    backend: new GoogleAIBackend()
-  });
-
-  const model = getGenerativeModel(ai, {
-    model: "gemini-3.7-flash"
-  });
-
-  window.firebaseAI = {
-    app: firebaseAIApp,
-    ai,
-    model,
-    initializeApp,
-    getAI,
-    getGenerativeModel,
-    GoogleAIBackend
-  };
-
-  console.log("[Livro-Caixa] Firebase AI Logic inicializado:", {
-    app: !!window.firebaseAI.app,
-    ai: !!window.firebaseAI.ai,
-    model: !!window.firebaseAI.model
-  });
-
 </script>
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">

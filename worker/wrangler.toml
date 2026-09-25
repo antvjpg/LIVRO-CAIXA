@@ -1,0 +1,13 @@
+name = "livro-caixa-ai"
+main = "src/index.js"
+compatibility_date = "2026-09-24"
+workers_dev = true
+
+# A chave da API NÃO fica aqui. Definida com:
+#   npx wrangler secret put OPENROUTER_API_KEY
+
+[vars]
+FIREBASE_PROJECT_ID = "livro-caixa-54357"
+ALLOW_ORIGINS = "http://127.0.0.1:8000,http://localhost:8000,https://antvjpg.github.io"
+OPENROUTER_MODELS = "google/gemma-4-26b-a4b-it:free,nex-agi/nex-n2.5-mini:free,nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free,qwen/qwen3.8-27b:free,google/gemma-4-31b-it:free"
+AI_RATE_LIMIT_PER_MINUTE = "30"

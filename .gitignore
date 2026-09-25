@@ -3,3 +3,8 @@
 *.backup*
 *.bak*
 backup-card-engine-legacy-*/
+
+# Cloudflare Worker (nunca versionar segredos/local state)
+worker/.wrangler/
+worker/.dev.vars
+worker/node_modules/
