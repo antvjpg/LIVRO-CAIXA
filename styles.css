@@ -1296,7 +1296,6 @@
     .quick-action-icon{display:grid;place-items:center;width:31px;height:31px;border:1px solid color-mix(in srgb,var(--accent) 15%,transparent);border-radius:10px;background:var(--green-soft);color:var(--accent);line-height:1;}
     .quick-action-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;}
     #btnUpdateAllPrices { border-color:#8CB9A0; background:#E7F1E9; color:#1C6042; }
-    #viewCaixa .toolbar #btnImportBackupTrigger { grid-column:span 2; }
     .cat-summary { margin:0 0 13px; padding:17px 15px; border:1px solid var(--line); border-radius:14px; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
     .cat-summary h3 { font-size:20px; letter-spacing:-.025em; margin-bottom:14px; }
     .cat-summary-content { display:grid; grid-template-columns:minmax(116px,.82fr) minmax(0,1.18fr); gap:12px; align-items:center; }
@@ -5038,32 +5037,11 @@ body.dark-mode{
   --action-border: color-mix(in srgb, var(--line) 92%, transparent);
 }
 
-/* Insight do dia */
-.daily-insight-card{
-  margin:0 0 14px;
-  padding:12px 14px;
-  border:1px solid var(--line);
-  border-radius:16px;
-  background:var(--surface);
-}
-.daily-insight-head{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;
-}
-.daily-insight-kicker{
-  display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
-}
-.daily-insight-head strong{font-size:14px;color:var(--ink);}
-.daily-insight-btn{
-  flex-shrink:0;min-height:34px;padding:0 12px;border-radius:999px;
-  border:1px solid var(--line)!important;background:var(--paper);color:var(--ink);
-  font-size:11px;font-weight:700;
-}
-.daily-insight-body{font-size:12px;line-height:1.45;color:var(--ink-soft);}
-.daily-insight-text{color:var(--ink);margin-bottom:6px;}
-.daily-insight-card .daily-insight-quota{
+/* Cota da IA no card único de análise (movida do antigo card "Insight do dia") */
+.daily-insight-quota{
   margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);font-size:11px;line-height:1.4;
 }
-.daily-insight-card .daily-insight-quota:empty{display:none;}
+.daily-insight-quota:empty{display:none;}
 
 /* Resgate ativo — cor permanente */
 .type-toggle button.active-out,
@@ -5293,10 +5271,6 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{
 #viewDashboard #dashboardNextPayment{
   display:block;
   margin-top:12px;
-}
-#viewDashboard .daily-insight-card{
-  margin-top:16px;
-  margin-bottom:8px;
 }
 #viewDashboard .dashboard-gemini-host .diagnostic-summary-card{
   margin-top:12px;
@@ -6176,15 +6150,57 @@ body:not([data-tab="profile"]) .profile-shell{
   margin:0 !important;
 }
 #viewDashboard .dashboard-gemini-host .diagnostic-summary-card{
-  margin:0 !important;
-  padding:14px 16px !important;
-  border-radius:16px !important;
+  margin:0;
+  padding:14px 16px;
+  border-radius:16px;
 }
-#viewDashboard .daily-insight-card{
-  padding:14px 16px !important;
-  border-radius:16px !important;
-  border:1px solid var(--line);
-  background:var(--surface);
+
+/* Análise assistida — saída estruturada da IA.
+   Se o formato não for reconhecido, a tela cai no texto corrido de antes. */
+.analysis-body{
+  display:grid;gap:10px;width:100%;
+}
+.analysis-section{
+  display:grid;gap:5px;
+}
+.analysis-section-title{
+  margin:0;font-size:10px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--accent);
+}
+.analysis-body p{
+  margin:0;font-size:11px;line-height:1.55;color:var(--ink-soft);
+}
+.analysis-body ul{
+  margin:0;padding-left:17px;display:grid;gap:5px;
+}
+.analysis-body li{
+  font-size:11px;line-height:1.45;color:var(--ink);
+}
+.analysis-confidence{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+}
+.analysis-confidence-note{
+  flex:1;min-width:170px;font-size:11px;line-height:1.5;color:var(--ink-soft);
+}
+.confidence-badge{
+  display:inline-block;padding:3px 9px;border-radius:999px;
+  font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid transparent;
+}
+.confidence-badge.is-high{
+  background:color-mix(in srgb, var(--green) 14%, var(--paper));
+  color:var(--green);
+  border-color:color-mix(in srgb, var(--green) 38%, var(--line));
+}
+.confidence-badge.is-mid{
+  background:color-mix(in srgb, var(--gold) 16%, var(--paper));
+  color:var(--gold);
+  border-color:color-mix(in srgb, var(--gold) 44%, var(--line));
+}
+.confidence-badge.is-low{
+  background:color-mix(in srgb, var(--red,#B3432B) 12%, var(--paper));
+  color:var(--red,#B3432B);
+  border-color:color-mix(in srgb, var(--red,#B3432B) 36%, var(--line));
 }
 
 /* Caixinhas: total no padrão dos demais cards de saldo */

@@ -202,7 +202,7 @@
     <div id="advancedDashboard"></div>
     <div id="dashboardNextPayment" class="dashboard-next-payment-card" aria-live="polite"></div>
     <div id="dashboardGeminiHost" class="dashboard-gemini-host">
-<div class="diagnostic-summary-card" style="margin-top:10px;">
+<div class="diagnostic-summary-card">
             <div class="diagnostic-summary-head">
               <span class="diagnostic-summary-icon" aria-hidden="true"><i class="fi fi-tc-sparkles" aria-hidden="true"></i></span>
               <div>
@@ -211,23 +211,11 @@
               </div>
             </div>
             <button type="button" id="btnGeminiDiagnostic" class="primary">Analisar com IA</button>
+            <div class="daily-insight-quota hint" data-ai-quota aria-live="polite"></div>
           </div>
 
           <div id="geminiDiagnosticResults" class="diagnostic-results" aria-live="polite"></div>
     </div>
-    <section class="daily-insight-card" id="dailyInsightCard" aria-label="Insight financeiro do dia">
-      <div class="daily-insight-head">
-        <div>
-          <span class="daily-insight-kicker">Insight do dia</span>
-          <strong>Análise assistida</strong>
-        </div>
-        <button type="button" id="btnDailyInsight" class="daily-insight-btn">Gerar insight</button>
-      </div>
-      <div id="dailyInsightBody" class="daily-insight-body">
-        <p class="hint">Uma leitura objetiva da sua situação financeira, no máximo uma vez por dia. Nenhum lançamento é alterado.</p>
-      </div>
-      <div class="daily-insight-quota hint" data-ai-quota aria-live="polite"></div>
-    </section>
   </div>
 
   <!-- ABA 2: LIVRO CAIXA -->
@@ -257,7 +245,6 @@
   <!-- [VIEW] Livro-Caixa -->
 <div id="viewCaixa" class="tab-content active">
     <div class="toolbar">
-      <button class="quick-action" id="btnBanco"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-bank" aria-hidden="true"></i></span><span>Banco</span></button>
       <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-money-bill-transfer" aria-hidden="true"></i></span><span>Transferência</span></button>
       <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-paste" aria-hidden="true"></i></span><span>Colar texto</span></button>
       <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m8.5 10.5 3.5 3.5 3.5-3.5"/><path d="M5 18v2h14v-2"/></svg></span><span>Importar PDF/DOCX</span></button>
@@ -342,7 +329,7 @@
   <div id="viewInvest" class="tab-content">
     <div class="balance-strip section-balance-strip" id="investBalanceStrip"></div>
     <div class="toolbar">
-      <button type="button" id="btnUpdateAllPrices">🔄 Atualizar Cotações</button>
+      <button type="button" id="btnUpdateAllPrices"><i class="fi fi-rr-refresh" aria-hidden="true"></i> Atualizar Cotações</button>
     </div>
     <div id="updateAllStatus" style="font-size:12px; margin-bottom:16px; opacity:0.75;"></div>
     <div id="investPeriodSummary" class="period-summary" aria-label="Resumo de investimentos no período"></div>
@@ -718,20 +705,10 @@
         <div><strong>Área de testes</strong><span>Algumas opções podem executar ações reais no seu Livro-Caixa. Recursos automáticos começam desativados.</span></div>
       </div>
 
-      <div class="feature-lab-section labs-plus-section">
-        <div class="feature-lab-section-head"><div><span class="feature-lab-section-number">07</span><h4>Metas e simulações</h4></div><span class="feature-lab-section-tag">PROJEÇÃO</span></div>
-        <div class="feature-lab-fields">
-          <div><label for="featureSavingsGoalAmount">Meta de economia mensal</label><input type="text" id="featureSavingsGoalAmount" data-money="true" placeholder="R$ 0,00"><span class="hint">Acompanha o saldo positivo do mês.</span></div>
-          <div><label for="featureWhatIfExpense">Simular nova saída mensal</label><input type="text" id="featureWhatIfExpense" data-money="true" placeholder="R$ 0,00"><span class="hint">Usada apenas no simulador “E se?”.</span></div>
-        </div>
-        <div class="feature-lab-actions"><button type="button" id="btnRunWhatIf" class="primary">Simular “E se...?”</button><button type="button" id="btnExportPatrimonyPng">Exportar patrimônio PNG</button></div>
-        <div id="labsProjectionStatus" class="feature-lab-feedback" aria-live="polite"></div>
-
         <div class="feature-lab-primary-actions">
         <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
       </div>
       <div id="featureLabStatus" class="feature-lab-feedback" aria-live="polite"></div>
-    </div>
     </div>
 
 
@@ -1081,7 +1058,7 @@
             <label for="iCotacao" id="iCotacaoLabel">Cotação (R$ por unidade)</label>
             <div style="display:flex; gap:6px; align-items:stretch;">
               <input type="text" id="iCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
-              <button type="button" id="btnFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;">🔄 Cotação</button>
+              <button type="button" id="btnFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;"><i class="fi fi-rr-refresh" aria-hidden="true"></i> Cotação</button>
             </div>
             <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Você pode digitar a cotação manualmente ou clicar em "Cotação" para buscar pela internet.</div>
           </div>
@@ -1207,9 +1184,9 @@
           <label for="imCotacao">Cotação</label>
           <div style="display:flex; gap:6px; align-items:stretch;">
             <input type="text" id="imCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
-            <button type="button" id="imFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;">🔄</button>
+            <button type="button" id="imFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;"><i class="fi fi-rr-refresh" aria-hidden="true"></i></button>
           </div>
-          <div id="imPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a cotação manualmente ou clique no botão 🔄 para buscar pela internet.</div>
+          <div id="imPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a cotação manualmente ou clique no botão <i class="fi fi-rr-refresh" aria-hidden="true"></i> para buscar pela internet.</div>
         </div>
         <div>
           <label for="imValor">Valor (R$)</label>
@@ -3907,7 +3884,7 @@ document.addEventListener('DOMContentLoaded', () => {
     strip.innerHTML = html;
     markValueRefresh(strip);
     const bankSummaryCard = strip.querySelector('.bank-summary-card');
-    const openBankPanel = () => document.getElementById('btnBanco').click();
+    const openBankPanel = () => openBankManagementPanel();
     bankSummaryCard?.addEventListener('click', openBankPanel);
     bankSummaryCard?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
@@ -4045,19 +4022,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  const CATEGORY_PALETTE = ['#B3432B', '#2F7654', '#B89034', '#3A6B88', '#8C5383', '#D9822B', '#5C7A68', '#B05A88'];
+  const CATEGORY_PALETTE = ['#93584B', '#386D54', '#B89034', '#426980', '#593553', '#AA825A', '#678974', '#AC5E88'];
   const CATEGORY_ICON_RULES = [
     [/aliment|restaur|mercado|comida/i, '🍔'], [/transporte|uber|ônibus|combust/i, '🚗'],
     [/moradia|casa|aluguel|luz|água/i, '🏠'], [/salário|renda|receb|trabalho/i, '💰'],
     [/invest|cripto|cdb|renda fixa/i, '📈'], [/lazer|jogo|cinema|stream/i, '🎮'],
     [/compra|loja/i, '🛒'], [/saúde|farmácia|médic/i, '❤️'], [/educa|curso|livro/i, '📚'], [/transfer/i, '↔️']
   ];
+  const categoryColorMap = new Map();
+  function pickCategoryColor(key) {
+    const used = new Set(categoryColorMap.values());
+    const seed = [...key].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    for (let i = 0; i < CATEGORY_PALETTE.length; i++) {
+      const candidate = CATEGORY_PALETTE[(seed + i) % CATEGORY_PALETTE.length];
+      if (!used.has(candidate)) return candidate;
+    }
+    return `hsl(${(216 + categoryColorMap.size * 137.508) % 360}, 24%, 58%)`;
+  }
   function categoryColor(category) {
     if (!category) return '#66746B';
     if (category.color) return category.color;
-    const text = String(category.id || category.name || 'outros');
-    const seed = [...text].reduce((sum, char) => sum + char.charCodeAt(0), 0);
-    return CATEGORY_PALETTE[seed % CATEGORY_PALETTE.length];
+    const key = String(category.id || category.name || 'outros');
+    if (!categoryColorMap.has(key)) {
+      (Array.isArray(categories) ? categories : []).forEach(cat => {
+        const catKey = cat && String(cat.id || cat.name || 'outros');
+        if (catKey && !categoryColorMap.has(catKey)) categoryColorMap.set(catKey, pickCategoryColor(catKey));
+      });
+      if (!categoryColorMap.has(key)) categoryColorMap.set(key, pickCategoryColor(key));
+    }
+    return categoryColorMap.get(key);
   }
 
   const normalizeTextKey = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLocaleLowerCase('pt-BR');
@@ -6025,6 +6018,104 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  /* Analise assistida — a IA responde em blocos nomeados (RESUMO, PONTOS ...).
+     Converte em HTML semântico; devolve null quando o formato não é
+     reconhecido, para que a tela mantenha o texto corrido de antes. */
+  const ANALYSIS_SECTIONS = ['RESUMO', 'PONTOS POSITIVOS', 'PONTOS DE ATENÇÃO', 'TENDÊNCIAS', 'RECOMENDAÇÕES', 'CONFIANÇA'];
+  /* A IA nem sempre devolve a grafia acentuada, então a comparação usa a mesma
+     normalização de acentos já usada nas categorias (normalizeTextKey). */
+  const ANALYSIS_SECTION_KEYS = ANALYSIS_SECTIONS.map(normalizeTextKey);
+
+  function renderAnalysisSections(rawText) {
+    const source = String(rawText || '').replace(/\r\n?/g, '\n').trim();
+    if (!source) return null;
+
+    const sectionTitle = line => {
+      const clean = normalizeTextKey(
+        String(line || '')
+          .replace(/\*\*/g, '')
+          .replace(/^[#\s]*[\u2022*\-–—]+[\s]*/, '')
+          .replace(/^\d+[.)]\s*/, '')
+          .replace(/^[#\s]+/, '')
+          .replace(/[:：]\s*$/, '')
+      );
+      const index = ANALYSIS_SECTION_KEYS.indexOf(clean);
+      return index !== -1 ? ANALYSIS_SECTIONS[index] : null;
+    };
+
+    const sections = [];
+    let current = null;
+    for (const line of source.split('\n')) {
+      const title = sectionTitle(line);
+      if (title) {
+        current = { title, lines: [] };
+        sections.push(current);
+        continue;
+      }
+      if (!current) {
+        current = { title: null, lines: [] };
+        sections.push(current);
+      }
+      current.lines.push(line);
+    }
+
+    if (!sections.some(s => s.title)) return null;
+
+    const splitBlocks = section => {
+      const paras = [];
+      const items = [];
+      const bullet = /^\s*(?:[\u2022*\-]|\d+[.)])\s+(.*)$/;
+      for (const line of section.lines) {
+        const match = line.match(bullet);
+        if (match && match[1].trim()) items.push(match[1].trim());
+        else if (line.trim()) paras.push(line.trim());
+      }
+      return { paras, items };
+    };
+
+    const confidenceKind = text => {
+      const upper = String(text || '').toUpperCase();
+      if (/\b(ALTA|ALTO|HIGH)\b/.test(upper)) return { label: 'ALTA', cls: 'is-high' };
+      if (/\b(M\u00c9DIA|MEDIA|M\u00c9DIO|MEDIO|MEDIUM)\b/.test(upper)) return { label: 'M\u00c9DIA', cls: 'is-mid' };
+      if (/\b(BAIXA|BAIXO|LOW)\b/.test(upper)) return { label: 'BAIXA', cls: 'is-low' };
+      return null;
+    };
+
+    const html = sections.map(section => {
+      const { paras, items } = splitBlocks(section);
+      const body = [
+        paras.length ? `<p>${paras.map(escapeHTML).join(' ')}</p>` : '',
+        items.length ? `<ul>${items.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>` : ''
+      ].join('');
+
+      if (!section.title) return body;
+
+      if (section.title === 'CONFIANÇA') {
+        const plain = section.lines.join(' ').replace(/\s+/g, ' ').trim();
+        const kind = confidenceKind(plain);
+        let note = plain;
+        if (kind) {
+          note = plain
+            .replace(/\b(ALTA|ALTO|M\u00c9DIA|MEDIA|M\u00c9DIO|MEDIO|BAIXA|BAIXO|HIGH|MEDIUM|LOW)\b/i, '')
+            .replace(/^[\s:,.;\u2013\u2014\-]+/, '')
+            .trim();
+        }
+        return `<section class="analysis-section">
+            <h4 class="analysis-section-title">CONFIAN\u00c7A</h4>
+            <div class="analysis-confidence">
+              ${kind ? `<span class="confidence-badge ${kind.cls}">${escapeHTML(kind.label)}</span>` : ''}
+              ${note ? `<span class="analysis-confidence-note">${escapeHTML(note)}</span>` : ''}
+            </div>
+          </section>`;
+      }
+
+      return `<section class="analysis-section"><h4 class="analysis-section-title">${escapeHTML(section.title)}</h4>${body}</section>`;
+    }).join('');
+
+    const trimmed = html.trim();
+    return trimmed || null;
+  }
+
   async function runGeminiFinancialDiagnosis() {
     const status = document.getElementById('geminiDiagnosticStatus');
     const results = document.getElementById('geminiDiagnosticResults');
@@ -6138,7 +6229,14 @@ ${JSON.stringify(snapshot)}
         status.textContent = 'Análise concluída. Nenhum dado financeiro foi alterado.';
       }
 
-      results.innerHTML = `
+      const structuredAnalysis = renderAnalysisSections(responseText);
+      results.innerHTML = structuredAnalysis
+        ? `
+        <div class="diagnostic-item">
+          <span>✨</span>
+          <div class="analysis-body">${structuredAnalysis}</div>
+        </div>`
+        : `
         <div class="diagnostic-item">
           <span>✨</span>
           <div style="width:100%;">
@@ -6171,67 +6269,6 @@ ${JSON.stringify(snapshot)}
     }
   }
 
-
-  const DAILY_INSIGHT_KEY = 'livrocaixa_daily_insight_v19_18';
-  function loadDailyInsightCache() {
-    try { return JSON.parse(localStorage.getItem(DAILY_INSIGHT_KEY) || 'null'); } catch (e) { return null; }
-  }
-  function saveDailyInsightCache(payload) {
-    try { localStorage.setItem(DAILY_INSIGHT_KEY, JSON.stringify(payload)); } catch (e) {}
-  }
-  function renderDailyInsightFromCache() {
-    const body = document.getElementById('dailyInsightBody');
-    const btn = document.getElementById('btnDailyInsight');
-    if (!body) return;
-    const cache = loadDailyInsightCache();
-    const today = typeof todayISO === 'function' ? todayISO() : new Date().toISOString().slice(0,10);
-    if (cache && cache.date === today && cache.text) {
-      body.innerHTML = `<div class="daily-insight-text">${escapeHTML(cache.text).replace(/\n/g, '<br>')}</div><div class="hint">Gerado hoje · não altera seus lançamentos</div>`;
-      if (btn) btn.textContent = 'Já gerado hoje';
-    }
-  }
-  async function runDailyInsight() {
-    const body = document.getElementById('dailyInsightBody');
-    const btn = document.getElementById('btnDailyInsight');
-    const today = typeof todayISO === 'function' ? todayISO() : new Date().toISOString().slice(0,10);
-    const cache = loadDailyInsightCache();
-    if (cache && cache.date === today && cache.text && btn?.dataset.force !== '1') {
-      renderDailyInsightFromCache();
-      if (body) {
-        const note = document.createElement('p');
-        note.className = 'hint';
-        note.textContent = 'Limite diário: toque de novo para tentar regenerar.';
-        body.appendChild(note);
-      }
-      if (btn) btn.dataset.force = '1';
-      return;
-    }
-    if (btn) { btn.disabled = true; btn.textContent = 'Gerando…'; }
-    if (body) body.innerHTML = '<p class="hint">Consultando a análise assistida…</p>';
-    try {
-      let text = '';
-      if (typeof runGeminiFinancialDiagnosis === 'function') {
-        await runGeminiFinancialDiagnosis();
-        const gemOut = document.getElementById('geminiDiagnosticOutput')
-          || document.getElementById('labsAnalysisStatus')
-          || document.getElementById('diagnosticGeminiResult');
-        if (gemOut && (gemOut.innerText || gemOut.textContent)) {
-          text = (gemOut.innerText || gemOut.textContent).trim();
-        }
-      }
-      if (!text || text.length < 24) {
-        text = 'Resumo local: use a análise de IA no Perfil se a resposta completa não aparecer aqui. Seus saldos e lançamentos não foram alterados.';
-      }
-      saveDailyInsightCache({ date: today, text: text.slice(0, 2500) });
-      renderDailyInsightFromCache();
-    } catch (err) {
-      if (body) body.innerHTML = `<p class="hint">${escapeHTML(err.message || 'Não foi possível gerar o insight agora.')}</p>`;
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Gerar insight'; btn.dataset.force = ''; }
-    }
-  }
-  document.getElementById('btnDailyInsight')?.addEventListener('click', () => runDailyInsight());
-  try { renderDailyInsightFromCache(); } catch (e) {}
 
   document.getElementById('btnGeminiDiagnostic')?.addEventListener(
     'click',
@@ -6408,7 +6445,7 @@ ${JSON.stringify(snapshot)}
     if (action === 'pockets') window.switchTab('pockets');
     if (action === 'goals') openGoalsPanel();
     if (action === 'investments') window.switchTab('invest');
-    if (action === 'banks') document.getElementById('btnBanco')?.click();
+    if (action === 'banks') openBankManagementPanel();
     if (action === 'categories') document.getElementById('btnCategoria')?.click();
     if (action === 'theme') document.getElementById('btnThemeToggle')?.click();
     closeDrawer();
@@ -6557,7 +6594,7 @@ ${JSON.stringify(snapshot)}
     setMoneyInput('imCotacao', 0);
     setMoneyInput('imValor', 0);
     document.getElementById('imDesc').value = '';
-    document.getElementById('imPriceStatus').textContent = 'Digite a cotação manualmente ou clique no botão 🔄 para buscar pela internet.';
+    document.getElementById('imPriceStatus').innerHTML = 'Digite a cotação manualmente ou clique no botão <i class="fi fi-rr-refresh" aria-hidden="true"></i> para buscar pela internet.';
   }
 
   window.openYieldModal = function(type, id) {
@@ -9083,14 +9120,19 @@ VALOR: ${fmt(pseudoBill.amount)}
     openModal('panelInvest');
   };
 
-  document.getElementById('btnBanco').onclick = () => {
+  /* Abre o painel de bancos em modo "novo" (zera o formulário antes).
+     Ponto de entrada desde a saída do botão "Banco" da toolbar: chamado pelo
+     card "Bancos" da faixa de saldos (sempre renderizado, inclusive sem bancos).
+     A ramificação `action === 'banks'` do drawer também aponta para cá, mas hoje
+     nenhum item do drawer emite essa ação — mantida por compatibilidade. */
+  function openBankManagementPanel() {
     editingBankId = null;
     document.getElementById('bNome').value = '';
     setMoneyInput('bSaldo', 0);
     document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('bSalvar').textContent = 'Adicionar';
     openModal('panelBanco');
-  };
+  }
 
   document.getElementById('btnCategoria').onclick = () => {
     returnToEntryAfterCategory = false;
@@ -9383,7 +9425,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       if (isBitcoinType(item.type) && isFinite(units)) units = Math.round(units);
       price = readMoneyInput('imCotacao');
       if (!isFinite(units) || units <= 0) { alert('Informe uma quantidade válida.'); return; }
-      if (!isFinite(price) || price <= 0) { alert('Informe uma cotação válida ou use o botão 🔄 para buscá-la.'); return; }
+      if (!isFinite(price) || price <= 0) { alert('Informe uma cotação válida ou use o botão de cotação para buscá-la.'); return; }
       if (kind === 'resgate') {
         const available = cryptoCurrentUnits(item, investmentMovementEditingId);
         if (units > available + 1e-12) { alert(`O resgate não pode ser maior que o saldo disponível (${formatCryptoUnits(item.type, available, item.name)}).`); return; }
