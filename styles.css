@@ -642,7 +642,7 @@
     position:relative;
   }
   .cat-row .cat-bar{
-    background:var(--red);
+    background:var(--category-color,#B3432B);
     height:100%;
   }
   .cat-row .cat-amt{
@@ -1027,6 +1027,7 @@
     cursor:pointer;
   }
   .pass-toggle:hover{background:none;color:var(--ink);}
+  .pass-toggle:active{transform:translateY(-50%) scale(.975);}
   #authSubmit{min-height:48px;border-radius:11px;font-size:12px;font-weight:700;letter-spacing:.02em;}
   #authGoogle{min-height:44px;border:1px solid var(--line);border-radius:11px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;}
   #authGoogle:hover{background:var(--green-soft);color:var(--ink);}
@@ -1350,6 +1351,7 @@
     .ledger-month { position:relative; padding-right:90px; }
     .ledger-filter-button { position:absolute; right:10px; top:50%; transform:translateY(-50%); min-height:30px; padding:5px 8px; border:1px solid #D5E3D8; border-radius:8px; background:#E7EFE8; color:#1E6C4B; font-size:8px; letter-spacing:.02em; }
     .ledger-filter-button:hover { background:#327957; color:#fffefa; }
+    .ledger-filter-button:active { transform:translateY(-50%) scale(.975); }
     .cat-row .cat-bar { background:var(--category-color,#B3432B); }
     .invest-grid { grid-template-columns:1fr; gap:10px; margin-top:8px; }
     .invest-box { padding:16px; border-radius:15px; background:#fffefa; border-color:var(--line); }

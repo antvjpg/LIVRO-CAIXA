@@ -1569,6 +1569,7 @@ window.LivroCaixaAI = {
      resposta de /ai, ou sob demanda pela rota GET /quota. */
   quota: null,
   quotaState: 'idle',
+  lastQuotaFetchAt: 0,
   setQuota(data) {
     if (!data || data.remaining == null || !Number.isFinite(Number(data.remaining))) return;
     this.quota = {
@@ -1601,22 +1602,31 @@ window.LivroCaixaAI = {
       resetAt: Number.isFinite(resetAt) ? resetAt : null
     });
   },
-  async refreshQuota() {
+  async refreshQuota(options) {
+    const silent = Boolean(options && options.silent);
+    const throttleMs = Number(options && options.throttleMs) || 0;
     if (!AI_WORKER_ENDPOINT) return null;
+    if (throttleMs > 0 && Date.now() - this.lastQuotaFetchAt < throttleMs) return this.quota;
 
     let user = null;
     try { user = typeof auth !== 'undefined' ? auth?.currentUser : null; } catch (err) { user = null; }
     if (!user) {
-      this.quotaState = 'idle';
-      window.renderAiQuotaStatus?.();
+      // Em refresh silencioso não mexe no estado: evita apagar um número já exibido.
+      if (!silent) {
+        this.quotaState = 'idle';
+        window.renderAiQuotaStatus?.();
+      }
       return null;
     }
 
     let idToken = '';
     try { idToken = await user.getIdToken(); } catch (err) { return null; }
 
-    this.quotaState = 'loading';
-    window.renderAiQuotaStatus?.();
+    this.lastQuotaFetchAt = Date.now();
+    if (!silent) {
+      this.quotaState = 'loading';
+      window.renderAiQuotaStatus?.();
+    }
 
     try {
       const endpoint = AI_WORKER_ENDPOINT.replace(/\/ai$/, '/quota');
@@ -1624,14 +1634,14 @@ window.LivroCaixaAI = {
         headers: { 'Authorization': `Bearer ${idToken}` }
       });
       if (!response.ok) {
-        this.quotaState = 'unavailable';
+        if (!silent) this.quotaState = 'unavailable';
         return null;
       }
       const data = await response.json();
       this.setQuota(data);
       return this.quota;
     } catch (err) {
-      this.quotaState = 'unavailable';
+      if (!silent) this.quotaState = 'unavailable';
       return null;
     } finally {
       window.renderAiQuotaStatus?.();
@@ -1675,6 +1685,13 @@ window.renderAiQuotaStatus = function renderAiQuotaStatus() {
 window.addEventListener('load', () => {
   window.renderAiQuotaStatus?.();
   window.LivroCaixaAI?.refreshQuota?.();
+});
+
+/* A cota fica só em memória e o reset é do OpenRouter (dia UTC), então relê-la
+   ao voltar ao app é o que faz o número acompanhar a virada do dia. */
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  window.LivroCaixaAI?.refreshQuota?.({ silent: true, throttleMs: 60000 });
 });
 
 /* Diagnóstico acessível na tela de login — robusto contra ordem de carregamento do DOM. */
@@ -2117,6 +2134,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingPocketId = null;
   let investmentMovementTarget = null; // { kind: 'aporte'|'resgate'|'rendimento', id }
   let catChartInstance = null;
+  const catChartBreakpoint = window.matchMedia('(max-width: 680px)');
+  if (typeof catChartBreakpoint.addEventListener === 'function') {
+    catChartBreakpoint.addEventListener('change', () => { if (catChartInstance) renderCategorySummary(); });
+  } else if (typeof catChartBreakpoint.addListener === 'function') {
+    catChartBreakpoint.addListener(() => { if (catChartInstance) renderCategorySummary(); });
+  }
 
   /* [JS 03] UTILITÁRIOS / FORMATAÇÃO / DOM */
   const normalizeMoney = (n) => {
@@ -2609,6 +2632,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabName === 'receivables') renderReceivables();
     if (tabName === 'invest') { renderInvestments(); refreshStaleInvestmentQuotes(); }
     if (tabName === 'dashboard') renderAdvancedDashboard();
+    if (tabName === 'caixa') renderCategorySummary();
     document.querySelectorAll('.mobile-bottom-nav button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === tabName));
     if (tabName === 'profile') renderProfile();
   };
@@ -4036,6 +4060,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return CATEGORY_PALETTE[seed % CATEGORY_PALETTE.length];
   }
 
+  const normalizeTextKey = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLocaleLowerCase('pt-BR');
+  function findCategoryByName(name) {
+    const key = normalizeTextKey(name);
+    return categories.find(c => normalizeTextKey(c.name) === key) || null;
+  }
+
   function categoryIcon(category, flow = 'in') {
     if (category?.icon) return category.icon;
     const name = String(category?.name || '');
@@ -4564,10 +4594,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const wrap = document.getElementById('categorySummary');
     const activeEntries = getFilteredEntries();
 
-    const spend = categories.map(c => ({
-      cat: c,
-      total: activeEntries.filter(e => e.category === c.id && e.type === 'out').reduce((s, e) => s + e.amount, 0)
-    })).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
+    const transferCatIds = new Set(categories.filter(c => normalizeTextKey(c.name) === 'transferencia').map(c => c.id));
+    const isTransferEntry = entry => transferCatIds.has(entry.category) || normalizeTextKey(entry.desc).startsWith('transferencia para ');
+    const spend = categories
+      .map(c => ({
+        cat: c,
+        total: activeEntries.filter(e => e.type === 'out' && e.category === c.id && !isTransferEntry(e)).reduce((s, e) => s + e.amount, 0)
+      })).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
 
     if (spend.length === 0) {
       if (catChartInstance) {
@@ -4591,6 +4624,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (flowVal === 'in') subtitle = '— Entradas';
     else if (flowVal === 'out') subtitle = '— Saídas';
     if (ds || de) subtitle += `${subtitle ? ' · ' : '— '}${ds ? ds.split('-').reverse().join('/') : 'Início'} até ${de ? de.split('-').reverse().join('/') : 'Hoje'}`;
+
+    if (catChartInstance) {
+      catChartInstance.destroy();
+      catChartInstance = null;
+    }
 
     wrap.innerHTML = `<div class="cat-summary">
       <h3>Gastos por Categoria ${subtitle}</h3>
@@ -4616,9 +4654,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const ctx = document.getElementById('catPieChart');
     if (ctx && typeof Chart !== 'undefined') {
-      if (catChartInstance) {
-        catChartInstance.destroy();
-      }
       const isDark = document.body.classList.contains('dark-mode');
       const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
       const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
@@ -4652,8 +4687,10 @@ document.addEventListener('DOMContentLoaded', () => {
             tooltip: {
               callbacks: {
                 label: function(context) {
+                  const head = ' ' + context.label + ': ';
+                  if (document.body.classList.contains('balances-hidden')) return head + '••••••';
                   const val = context.raw || 0;
-                  return ' ' + context.label + ': R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                  return head + 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 }
               }
             }
@@ -10477,7 +10514,7 @@ document.getElementById('tSalvar').onclick = async () => {
     const paraBank = banks.find(b => b.id === paraId);
     const paraPocket = pockets.find(p => p.id === paraId);
     const paraInvest = investments.find(i => i.id === paraId);
-    let transCat = categories.find(c => c.name === 'Transferência');
+    let transCat = findCategoryByName('Transferência');
     const extraDesc = desc ? ` (${desc})` : '';
     const deName = deBank ? deBank.name : (dePocket ? dePocket.name + ' (Caixinha)' : (deInvest ? deInvest.name + ' (Investimento)' : ''));
     const paraName = paraBank ? paraBank.name : (paraPocket ? paraPocket.name + ' (Caixinha)' : (paraInvest ? paraInvest.name + ' (Investimento)' : ''));
@@ -11402,6 +11439,7 @@ document.getElementById('tSalvar').onclick = async () => {
       renderUserBar();
       startSessionSecurity();
       startFeatureAutomation();
+      window.LivroCaixaAI?.refreshQuota?.({ throttleMs: 15000 });
       loadState();
       setTimeout(checkLocalPinLock, 700);
     } else {
