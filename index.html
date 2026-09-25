@@ -26,15 +26,15 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="./card-engine-v3.js"></script>
-
-
+<script src="./card-adapter.js"></script>
 
 
   <link rel="stylesheet" href="./styles.css?v=19-20-orange2">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
-<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-circular/css/uicons-thin-circular.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-circular/css/uicons-thin-circular.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
 </head>
 <body>
 <div id="authOverlay">
@@ -117,6 +117,7 @@
     <div class="drawer-heading"><span>Livro-Caixa</span><button type="button" class="drawer-close" data-close-drawer aria-label="Fechar menu">×</button></div>
     <p class="drawer-caption">Navegação e configurações rápidas</p>
     <nav class="drawer-nav" aria-label="Navegação principal">
+      <button type="button" data-drawer-action="dash"><span><i class="fi fi-rr-ballot" aria-hidden="true"></i></span> Dashboard</button>
       <button type="button" data-drawer-action="cards"><span><i class="fi fi-rr-credit-card" aria-hidden="true"></i></span> Cartões</button>
       <button type="button" data-drawer-action="bills"><span><i class="fi fi-rr-calendar-day" aria-hidden="true"></i></span> Contas & Calendário</button>
       <button type="button" data-drawer-action="receivables"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-arrow-down-triangle-square" aria-hidden="true"></i></span> Valores a Receber</button>
@@ -147,6 +148,7 @@
 <main>
   <!-- Navegação por Abas: Contas & Calendário acessível pelo menu lateral -->
   <div class="nav-tabs">
+    <button class="nav-tab" id="tabBtnDash" onclick="switchTab('dash')"><i class="fi fi-rr-ballot" aria-hidden="true"></i> Dashboard</button>
     <button class="nav-tab" id="tabBtnDashboard" onclick="switchTab('dashboard')"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i> Visão geral</button>
     <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')"><i class="fi fi-rr-book" aria-hidden="true"></i> Livro-Caixa</button>
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i> Caixinhas</button>
@@ -196,7 +198,36 @@
   </div>
   </section>
 
-  <!-- ABA 1: VISÃO GERAL -->
+  <!-- ABA 1: DASHBOARD (NOVA) -->
+  <!-- [VIEW] Dashboard de análise financeira -->
+  <div id="viewDash" class="tab-content">
+    <div id="dashFilterBar" class="dash-filter-bar" role="group" aria-label="Filtros do dashboard">
+      <div class="dash-filter-field">
+        <span class="dash-filter-label" id="dashPeriodLabel">Período</span>
+        <div class="dash-segmented" role="group" aria-labelledby="dashPeriodLabel">
+          <span class="dash-segmented-pill" style="--dash-pill-i:0" aria-hidden="true"></span>
+          <button type="button" data-dash-period="7d">7 dias</button>
+          <button type="button" data-dash-period="30d">30 dias</button>
+          <button type="button" data-dash-period="6m">6 meses</button>
+          <button type="button" data-dash-period="1y">1 ano</button>
+        </div>
+      </div>
+      <div class="dash-filter-field">
+        <label class="dash-filter-label" for="dashAccountFilter">Conta</label>
+        <select id="dashAccountFilter" class="dash-select"></select>
+      </div>
+      <div class="dash-filter-field dash-filter-compare">
+        <label class="dash-filter-check" for="dashCompare">
+          <input type="checkbox" id="dashCompare">
+          <span>Comparar com período anterior</span>
+        </label>
+        <span class="dash-filter-range" id="dashRangeLabel" aria-live="polite"></span>
+      </div>
+    </div>
+    <div id="dashContent" aria-live="polite"></div>
+  </div>
+
+  <!-- ABA 1B: VISÃO GERAL -->
   <!-- [VIEW] Dashboard / Visão geral -->
   <div id="viewDashboard" class="tab-content">
     <div id="advancedDashboard"></div>
@@ -360,6 +391,7 @@
       <div class="profile-heading profile-heading-integrated">
         <div class="profile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
+        <button type="button" id="btnProfileLogout" class="profile-heading-logout" title="Sair da conta" aria-label="Sair da conta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button>
       </div>
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">👤</span> Dados da conta</div>
@@ -369,28 +401,17 @@
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">⚙️</span> Preferências gerais</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">⚙️</span> Configurações gerais</div>
         <div class="profile-list">
           <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.1 2.1-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.57v.09h-3v-.09A1.7 1.7 0 0 0 10.68 18.64a1.7 1.7 0 0 0-1.88.34l-.06.06-2.1-2.1.06-.06A1.7 1.7 0 0 0 7.04 15a1.7 1.7 0 0 0-1.57-1.04h-.09v-3h.09A1.7 1.7 0 0 0 7.04 9.92 1.7 1.7 0 0 0 6.7 8.04l-.06-.06 2.1-2.1.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.04-1.57v-.09h3v.09a1.7 1.7 0 0 0 1.04 1.57 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.1 2.1-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.57 1.04h.09v3h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta, no cabeçalho</span></span></div>
-        </div>
-      </div>
-
-
-
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">🎛️</span> Geral</div>
-        <div class="profile-list">
           <div class="profile-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><i class="fi fi-rr-tags"></i></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamentos — criar, editar e excluir.</span></span><span class="profile-item-arrow">›</span></div>
           <div class="profile-item">
             <span class="profile-item-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v3M15.5 3.5v3"/></svg></span>
             <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define em qual dia começa seu mês financeiro. Isso altera apenas os períodos usados no orçamento — não muda a data dos lançamentos.</span></span>
             <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
           </div>
-          <div class="profile-item" role="button" tabindex="0" onclick="openFeatureLab()"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v3H9z"/><path d="M8 6h8l1.5 12.5a2 2 0 0 1-2 2.5H8.5a2 2 0 0 1-2-2.5L8 6z"/><path d="M10 10v6M14 10v6"/></svg></span><span class="profile-item-copy"><strong>Recursos experimentais</strong><span>Metas, simulações e outros testes continuam no LABS</span></span><span class="profile-item-arrow">›</span></div>
-          <!-- Lembretes (dentro de Geral) -->
+          <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
           <label class="feature-lab-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-lab-toggle-copy"><strong>Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
-          <div class="profile-item"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);">
-        </div>
         </div>
       </div>
 
@@ -423,7 +444,7 @@
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">🏦</span> Conciliação bancária</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-bank"></i></span> Conciliação bancária</div>
         <div class="feature-lab-section">
           <div class="feature-lab-fields">
             <div><label for="reconcileBank">Banco</label><select id="reconcileBank"></select></div>
@@ -436,7 +457,7 @@
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">✨</span> Análise assistida</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-sr-sparkles"></i></span> Análise assistida</div>
         <div class="feature-lab-section labs-plus-section">
           <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-lab-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias usando descrições já categorizadas no seu histórico; nenhuma alteração é feita sem confirmação.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
           <div class="feature-lab-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
@@ -455,8 +476,22 @@
           <div id="openRouterKeyStatus" class="feature-lab-feedback" aria-live="polite"></div>
           <div id="aiQuotaStatus" class="feature-lab-feedback" data-ai-quota aria-live="polite"></div>
         </div>
+        <div class="feature-lab-heading"><strong>Diagnóstico</strong></div>
+        <div class="profile-list">
+          <div class="diagnostic-summary-card">
+            <div class="diagnostic-summary-head">
+              <span class="diagnostic-summary-icon" id="diagnosticSummaryIcon" aria-hidden="true">🩺</span>
+              <div><strong id="diagnosticSummaryLabel">Consistência dos dados</strong><span id="diagnosticSummaryDetail">Toque em "Executar diagnóstico" para verificar</span></div>
+            </div>
+            <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
+            <button type="button" id="btnOpenTechnicalDiagnostic"
+              style="margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;">
+              ⚙ Abrir console técnico
+            </button>
+          </div>
+          <div id="diagnosticResults" class="diagnostic-results" aria-live="polite"></div>
+        </div>
       </div>
-
 
       <div class="profile-group profile-group-hidden" hidden aria-hidden="true"><div class="profile-group-title">Proteção local</div>
         <div class="feature-lab-section feature-lab-security">
@@ -477,7 +512,7 @@
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">🔐</span> Dados e segurança</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-lock"></i></span> Dados e segurança</div>
         <div class="feature-lab-section labs-plus-section">
           <p class="feature-lab-section-desc">Recursos experimentais para proteger backups e trazer fechamentos OFX ou CSV para a prévia editável.</p>
           <div class="feature-lab-fields">
@@ -501,32 +536,6 @@
         </div>
       </div>
 
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">🩺</span> Diagnóstico</div>
-        <div class="profile-list">
-          <div class="diagnostic-summary-card">
-            <div class="diagnostic-summary-head">
-              <span class="diagnostic-summary-icon" id="diagnosticSummaryIcon" aria-hidden="true">🩺</span>
-              <div><strong id="diagnosticSummaryLabel">Consistência dos dados</strong><span id="diagnosticSummaryDetail">Toque em "Executar diagnóstico" para verificar</span></div>
-            </div>
-            <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
-            <button type="button" id="btnOpenTechnicalDiagnostic"
-              style="margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;">
-              ⚙ Abrir console técnico
-            </button>
-          </div>
-          <div id="diagnosticResults" class="diagnostic-results" aria-live="polite"></div>
-        </div>
-      </div>
-
-
-
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">🚪</span> Conta</div>
-        <div class="profile-list">
-          <div class="profile-item is-danger" role="button" tabindex="0" id="btnProfileLogout"><span class="profile-item-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="profile-item-copy"><strong>Sair da conta</strong><span>Encerra a sessão neste aparelho — seus dados continuam salvos na nuvem</span></span><span class="profile-item-arrow">›</span></div>
-        </div>
-      </div>
       <div class="profile-roadmap"><b>Em preparação:</b> revisão de Meta/Simulação financeira.</div>
 </section>
   </div>
@@ -1058,7 +1067,7 @@
             <label for="iCotacao" id="iCotacaoLabel">Cotação (R$ por unidade)</label>
             <div style="display:flex; gap:6px; align-items:stretch;">
               <input type="text" id="iCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
-              <button type="button" id="btnFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;"><i class="fi fi-rr-refresh" aria-hidden="true"></i> Cotação</button>
+              <button type="button" id="btnFetchPrice" class="quote-fetch-button" title="Buscar cotação automática"><i class="fi fi-rr-refresh" aria-hidden="true"></i> Cotação</button>
             </div>
             <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Você pode digitar a cotação manualmente ou clicar em "Cotação" para buscar pela internet.</div>
           </div>
@@ -1184,7 +1193,7 @@
           <label for="imCotacao">Cotação</label>
           <div style="display:flex; gap:6px; align-items:stretch;">
             <input type="text" id="imCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
-            <button type="button" id="imFetchPrice" title="Buscar cotação automática" style="flex:1; white-space:nowrap; font-size:11.5px; padding:0 8px;"><i class="fi fi-rr-refresh" aria-hidden="true"></i></button>
+            <button type="button" id="imFetchPrice" class="quote-fetch-button" title="Buscar cotação automática"><i class="fi fi-rr-refresh" aria-hidden="true"></i></button>
           </div>
           <div id="imPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a cotação manualmente ou clique no botão <i class="fi fi-rr-refresh" aria-hidden="true"></i> para buscar pela internet.</div>
         </div>
@@ -2542,6 +2551,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderInvestments();
     renderPockets();
     renderPocketBalances();
+    renderDashboardTab();
   };
 
   // Suporte a tecla ESC para fechar modais
@@ -2586,6 +2596,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('tab-changing');
     window.setTimeout(() => document.body.classList.remove('tab-changing'), 240);
     updateNavIndicator(tabName);
+    document.getElementById('tabBtnDash')?.classList.toggle('active', tabName === 'dash');
     document.getElementById('tabBtnDashboard')?.classList.toggle('active', tabName === 'dashboard');
     document.getElementById('tabBtnCaixa')?.classList.toggle('active', tabName === 'caixa');
     document.getElementById('tabBtnInvest')?.classList.toggle('active', tabName === 'invest');
@@ -2593,6 +2604,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tabBtnCards')?.classList.toggle('active', tabName === 'cards');
     document.getElementById('tabBtnReceivables')?.classList.toggle('active', tabName === 'receivables');
     document.getElementById('tabBtnBills')?.classList.toggle('active', tabName === 'bills');
+    document.getElementById('viewDash')?.classList.toggle('active', tabName === 'dash');
     document.getElementById('viewDashboard')?.classList.toggle('active', tabName === 'dashboard');
     document.getElementById('viewCaixa')?.classList.toggle('active', tabName === 'caixa');
     document.getElementById('viewInvest')?.classList.toggle('active', tabName === 'invest');
@@ -2609,6 +2621,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabName === 'receivables') renderReceivables();
     if (tabName === 'invest') { renderInvestments(); refreshStaleInvestmentQuotes(); }
     if (tabName === 'dashboard') renderAdvancedDashboard();
+    if (tabName === 'dash') renderDashboardTab();
     if (tabName === 'caixa') renderCategorySummary();
     document.querySelectorAll('.mobile-bottom-nav button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === tabName));
     if (tabName === 'profile') renderProfile();
@@ -4319,7 +4332,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="yield-actions"><button type="button" class="action-btn beta-icon-button edit" onclick="editYield('${y.id}')" aria-label="Editar movimentação" title="Editar movimentação"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deleteYield('${y.id}')" aria-label="Excluir movimentação" title="Excluir movimentação"></button></div>
       </article>`;
     }).join('');
-    return `<details class="yield-history"><summary>📋 Histórico auditável (${rowsData.length})</summary><div class="yield-history-list">${rows}</div></details>`;
+    return `<details class="yield-history"><summary><i class="fi fi-rr-clipboard-list" aria-hidden="true"></i> Histórico auditável (${rowsData.length})</summary><div class="yield-history-list">${rows}</div></details>`;
   }
 
   function rentabilityHTML(targetType, targetId, currentValue) {
@@ -4332,7 +4345,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const monthly = totalYield / (days / 30);
     const pct = baseValue > 0 ? (totalYield / baseValue * 100) : null;
     return `<div class="rentability-box">
-      <span>💹 Rendimento total: <strong class="${totalYield >= 0 ? 'yield-pos' : 'yield-neg'}">${fmt(totalYield)}</strong>${pct !== null ? ` (${pct.toFixed(2)}%)` : ''}</span>
+      <span><i class="fi fi-rr-financial-health" aria-hidden="true"></i> Rendimento total: <strong class="${totalYield >= 0 ? 'yield-pos' : 'yield-neg'}">${fmt(totalYield)}</strong>${pct !== null ? ` (${pct.toFixed(2)}%)` : ''}</span>
       <span>Média: ${fmt(monthly)}/mês · desde ${firstDate.split('-').reverse().join('/')}</span>
     </div>`;
   }
@@ -4583,16 +4596,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* Transferências entre contas: não devem ser contadas como entradas/saídas.
+     Fonte compartilhada por resumo de categorias e pelo Dashboard (dash). */
+  function transferCategoryIds() {
+    return new Set(categories.filter(c => normalizeTextKey(c.name) === 'transferencia').map(c => c.id));
+  }
+  function isTransferEntry(entry, transferCatIds) {
+    const set = transferCatIds || transferCategoryIds();
+    return set.has(entry.category) || normalizeTextKey(entry.desc).startsWith('transferencia para ');
+  }
+
   function renderCategorySummary() {
     const wrap = document.getElementById('categorySummary');
     const activeEntries = getFilteredEntries();
 
-    const transferCatIds = new Set(categories.filter(c => normalizeTextKey(c.name) === 'transferencia').map(c => c.id));
-    const isTransferEntry = entry => transferCatIds.has(entry.category) || normalizeTextKey(entry.desc).startsWith('transferencia para ');
+    const transferCatIds = transferCategoryIds();
     const spend = categories
       .map(c => ({
         cat: c,
-        total: activeEntries.filter(e => e.type === 'out' && e.category === c.id && !isTransferEntry(e)).reduce((s, e) => s + e.amount, 0)
+        total: activeEntries.filter(e => e.type === 'out' && e.category === c.id && !isTransferEntry(e, transferCatIds)).reduce((s, e) => s + e.amount, 0)
       })).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
 
     if (spend.length === 0) {
@@ -5520,6 +5542,1106 @@ document.addEventListener('DOMContentLoaded', () => {
     wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dashboard-explainer"><span class="legend-dot income"></span> Entradas <span class="legend-dot expense"></span> Saídas <span class="legend-dot patrimony"></span> Patrimônio estimado</div><div class="monthly-flow-chart">${series.map(item => { const incomePct = Math.max(item.income > 0 ? 4 : 0, item.income / maxFlow * 100); const expensePct = Math.max(item.expense > 0 ? 4 : 0, item.expense / maxFlow * 100); return `<div class="monthly-flow-row"><div class="monthly-flow-label"><strong>${escapeHTML(item.label)}</strong><span>Fluxo ${item.net >= 0 ? '+' : ''}${fmt(item.net)}</span></div><div class="monthly-flow-bars"><div class="flow-bar-line"><span>Entradas</span><div class="flow-track"><i class="income" style="width:${Math.min(100, incomePct).toFixed(2)}%"></i></div><b>${fmt(item.income)}</b></div><div class="flow-bar-line"><span>Saídas</span><div class="flow-track"><i class="expense" style="width:${Math.min(100, expensePct).toFixed(2)}%"></i></div><b>${fmt(item.expense)}</b></div></div><div class="monthly-patrimony"><small>Patrimônio estimado</small><strong>${fmt(item.patrimony)}</strong></div></div>`; }).join('')}</div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta ou fatura encontrada para o filtro/titular selecionado neste mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
   }
 
+  /* =====================================================================
+     [DASHBOARD] Aba "dash" — análise financeira (aba nova, separada da
+     "Visão geral"). Reaproveita as fontes de verdade já existentes:
+       entradas/bancos/caixinhas/investimentos → saldo, fluxo e patrimônio
+       categories/budgets + ciclo financeiro    → gastos e orçamento
+       recurringBills (billAppliesToMonth…)      → compromissos pendentes
+       goals (goalPlanning/goalCurrentAmount)    → metas
+       LivroCaixaCardEngineV3 (card-adapter.js)  → faturas, limites, parcelas
+       getDashboardAlerts()                      → camada determinística
+     Nenhuma regra financeira é duplicada neste bloco.
+     ===================================================================== */
+
+  const DASH_FILTERS_KEY = 'livrocaixa_dashboard_filters_v1';
+  const DASH_SCHEMA_VERSION = 1;
+  const DASH_DAYS_PER_MONTH = 30.4375;
+  const DASH_PERIODS = {
+    '7d':  { label: '7 dias',  days: 7,   bucket: 'day'   },
+    '30d': { label: '30 dias', days: 30,  bucket: 'chunk' },
+    '6m':  { label: '6 meses', months: 6, bucket: 'month' },
+    '1y':  { label: '1 ano',   months: 12, bucket: 'month' }
+  };
+  let dashFilters = { period: '30d', account: '', compare: true };
+
+  function dashLoadFilters() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(DASH_FILTERS_KEY) || 'null');
+      if (saved && DASH_PERIODS[saved.period]) {
+        dashFilters = {
+          period: saved.period,
+          account: typeof saved.account === 'string' ? saved.account : '',
+          compare: saved.compare !== false
+        };
+      }
+    } catch (err) {
+      dashFilters = { period: '30d', account: '', compare: true };
+    }
+  }
+
+  function dashSaveFilters() {
+    try {
+      localStorage.setItem(DASH_FILTERS_KEY, JSON.stringify(dashFilters));
+    } catch (err) {
+      /* armazenamento indisponível — filtros valem só para a sessão */
+    }
+  }
+
+  dashLoadFilters();
+
+  function dashPreset() {
+    return DASH_PERIODS[dashFilters.period] || DASH_PERIODS['30d'];
+  }
+
+  function dashParseISO(value) {
+    const date = new Date(`${String(value || '').slice(0, 10)}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function dashToISO(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  function dashShiftDays(iso, days) {
+    const base = dashParseISO(iso);
+    if (!base) return iso;
+    base.setDate(base.getDate() + days);
+    return dashToISO(base);
+  }
+
+  function dashShortDate(iso) {
+    const parts = String(iso || '').split('-');
+    return parts.length === 3 ? `${parts[2]}/${parts[1]}` : '';
+  }
+
+  function dashLongDate(iso) {
+    const parts = String(iso || '').split('-');
+    return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : '';
+  }
+
+  function dashFormatRange(range) {
+    if (!range || !range.start || !range.end) return '';
+    const yearStart = range.start.slice(0, 4);
+    const yearEnd = range.end.slice(0, 4);
+    return yearStart === yearEnd
+      ? `${dashShortDate(range.start)} a ${dashShortDate(range.end)}/${yearEnd}`
+      : `${dashShortDate(range.start)}/${yearStart} a ${dashShortDate(range.end)}/${yearEnd}`;
+  }
+
+  /* Período atual e período imediatamente anterior (para comparação). */
+  function dashRange(previous) {
+    const cfg = dashPreset();
+    const today = dashParseISO(todayISO());
+    if (!today) return { start: '', end: '' };
+
+    if (cfg.days) {
+      const days = cfg.days;
+      const end = new Date(today);
+      if (previous) end.setDate(end.getDate() - days);
+      const start = new Date(end);
+      start.setDate(start.getDate() - (days - 1));
+      return { start: dashToISO(start), end: dashToISO(end) };
+    }
+
+    const months = cfg.months;
+    const currentStart = new Date(today.getFullYear(), today.getMonth() - (months - 1), 1);
+    if (previous) {
+      // Período anterior = os N meses completos imediatamente anteriores ao
+      // início do período atual (sem lacuna e alinhado às barras mensais).
+      const prevStart = new Date(currentStart.getFullYear(), currentStart.getMonth() - months, 1);
+      const prevEnd = new Date(currentStart.getFullYear(), currentStart.getMonth(), 0);
+      return { start: dashToISO(prevStart), end: dashToISO(prevEnd) };
+    }
+    return { start: dashToISO(currentStart), end: dashToISO(today) };
+  }
+
+  /* Escopo de lançamentos do período já marcado como transferência ou não. */
+  function dashBuildScope(range) {
+    const start = range.start;
+    const end = range.end;
+    const account = dashFilters.account;
+    const transferIds = transferCategoryIds();
+    const rows = [];
+
+    for (const entry of entries) {
+      const date = String(entry.date || '');
+      if (date < start || date > end) continue;
+      if (account && entry.bank !== account) continue;
+      rows.push({ entry, transfer: isTransferEntry(entry, transferIds) });
+    }
+    return rows;
+  }
+
+  function dashFlowOf(rows) {
+    let income = 0;
+    let expense = 0;
+    let transfers = 0;
+    for (const row of rows) {
+      if (row.transfer) { transfers += 1; continue; }
+      const value = Number(row.entry.amount || 0);
+      if (row.entry.type === 'in') income += value;
+      else if (row.entry.type === 'out') expense += value;
+    }
+    return { income, expense, net: income - expense, transfers, count: rows.length };
+  }
+
+  /* Blocos do gráfico de fluxo: dia (7d), pedaços de 5 dias (30d), mês (6m/1y). */
+  function dashBuckets(range) {
+    const cfg = dashPreset();
+    const out = [];
+    const startD = dashParseISO(range.start);
+    const endD = dashParseISO(range.end);
+    if (!startD || !endD || endD < startD) return out;
+
+    if (cfg.bucket === 'month') {
+      let cursor = new Date(startD.getFullYear(), startD.getMonth(), 1);
+      let guard = 0;
+      while (cursor <= endD && guard < 36) {
+        guard += 1;
+        const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`;
+        const monthStart = `${key}-01`;
+        const monthEnd = monthEndDate(key);
+        out.push({
+          start: monthStart < range.start ? range.start : monthStart,
+          end: monthEnd > range.end ? range.end : monthEnd,
+          label: new Date(`${key}-01T00:00:00`).toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''),
+          title: formatMonthLabel(key)
+        });
+        cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+      }
+      return out;
+    }
+
+    if (cfg.bucket === 'day') {
+      const cursor = new Date(startD);
+      let guard = 0;
+      while (cursor <= endD && guard < 40) {
+        guard += 1;
+        const iso = dashToISO(cursor);
+        out.push({ start: iso, end: iso, label: dashShortDate(iso), title: dashLongDate(iso) });
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      return out;
+    }
+
+    const size = Math.max(1, Math.ceil(Number(cfg.days || 30) / 5));
+    let cursor = new Date(startD);
+    let guard = 0;
+    while (cursor <= endD && guard < 40) {
+      guard += 1;
+      const chunkEnd = new Date(cursor);
+      chunkEnd.setDate(chunkEnd.getDate() + size - 1);
+      const effectiveEnd = chunkEnd > endD ? endD : chunkEnd;
+      const chunkStartISO = dashToISO(cursor);
+      const chunkEndISO = dashToISO(effectiveEnd);
+      out.push({
+        start: chunkStartISO,
+        end: chunkEndISO,
+        label: dashShortDate(chunkStartISO),
+        title: `${dashLongDate(chunkStartISO)} a ${dashLongDate(chunkEndISO)}`
+      });
+      cursor = new Date(effectiveEnd);
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return out;
+  }
+
+  function dashPatrimonyAt(cutoff) {
+    if (!cutoff) return 0;
+    const banksAt = banks.reduce((sum, bank) => sum + balanceAtDate(bank.id, cutoff), 0);
+    const pocketsAt = pockets.reduce((sum, pocket) => sum + pocketBalanceAtDate(pocket, cutoff), 0);
+    const investmentsAt = investments.reduce((sum, inv) => sum + investmentValueAtDate(inv, cutoff), 0);
+    return banksAt + pocketsAt + investmentsAt;
+  }
+
+  function dashPatrimonyParts(cutoff) {
+    return {
+      banks: banks.reduce((sum, bank) => sum + balanceAtDate(bank.id, cutoff), 0),
+      pockets: pockets.reduce((sum, pocket) => sum + pocketBalanceAtDate(pocket, cutoff), 0),
+      investments: investments.reduce((sum, inv) => sum + investmentValueAtDate(inv, cutoff), 0)
+    };
+  }
+
+  function dashPercentDelta(current, previous) {
+    if (!dashFilters.compare) return null;
+    if (!Number.isFinite(previous) || Math.abs(previous) < 0.005) return null;
+    const pct = ((current - previous) / Math.abs(previous)) * 100;
+    const rounded = Math.abs(pct) < 0.05 ? 0 : pct;
+    return {
+      pct: rounded,
+      up: rounded >= 0,
+      text: `${rounded >= 0 ? '+' : ''}${rounded.toFixed(1).replace('.', ',')}%`
+    };
+  }
+
+  function dashMoneyDelta(current, previous) {
+    if (!dashFilters.compare) return null;
+    if (!Number.isFinite(previous)) return null;
+    const diff = current - previous;
+    if (Math.abs(diff) < 0.005) return null;
+    return { pct: diff, up: diff >= 0, text: `${diff >= 0 ? '+' : ''}${fmt(diff)}` };
+  }
+
+  function dashCategoryRanking(currentRows, previousRows) {
+    const current = new Map();
+    const previous = new Map();
+    let total = 0;
+
+    for (const row of currentRows) {
+      if (row.transfer || row.entry.type !== 'out') continue;
+      const key = row.entry.category || '__none__';
+      const value = Number(row.entry.amount || 0);
+      current.set(key, (current.get(key) || 0) + value);
+      total += value;
+    }
+    for (const row of previousRows) {
+      if (row.transfer || row.entry.type !== 'out') continue;
+      const key = row.entry.category || '__none__';
+      previous.set(key, (previous.get(key) || 0) + Number(row.entry.amount || 0));
+    }
+
+    const rows = Array.from(current.entries())
+      .map(([id, amount]) => {
+        const category = id === '__none__' ? null : categories.find(item => item.id === id);
+        const base = previous.get(id) || 0;
+        let delta = null;
+        if (dashFilters.compare) {
+          if (base > 0) {
+            const pct = ((amount - base) / base) * 100;
+            delta = { up: pct >= 0, text: `${pct >= 0 ? '+' : ''}${pct.toFixed(1).replace('.', ',')}%` };
+          } else if (amount > 0) {
+            delta = { up: null, text: 'novo' };
+          }
+        }
+        return {
+          id,
+          name: category ? category.name : 'Sem categoria',
+          color: categoryColor(category),
+          amount,
+          share: total > 0 ? (amount / total) * 100 : 0,
+          delta
+        };
+      })
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 8);
+
+    return { rows, total };
+  }
+
+  function dashBudgetRows() {
+    const cycle = currentFinancialCycleKey();
+    const rows = [];
+    categories.forEach(category => {
+      const budget = budgetFor(category.id);
+      if (!budget || !(Number(budget.amount) > 0)) return;
+      const planned = Number(budget.amount) || 0;
+      const spent = budgetSpent(category.id, cycle);
+      rows.push({
+        id: category.id,
+        name: category.name,
+        planned,
+        spent,
+        rest: planned - spent,
+        pct: planned > 0 ? (spent / planned) * 100 : 0
+      });
+    });
+    return { cycle, rows: rows.sort((a, b) => b.pct - a.pct) };
+  }
+
+  function dashCardSummary() {
+    const adapter = window.LivroCaixaCardAdapter;
+    if (!adapter || typeof adapter.isReady !== 'function' || !adapter.isReady()) return null;
+    try {
+      return adapter.summarize({
+        cards,
+        purchases,
+        invoiceLaunches,
+        referenceDate: todayISO(),
+        dueDateFor: typeof invoiceDueDateForPeriod === 'function' ? invoiceDueDateForPeriod : null
+      });
+    } catch (err) {
+      logSyncError('dashboard · resumo de cartões', err);
+      return null;
+    }
+  }
+
+  /* Contas recorrentes pendentes com vencimento entre hoje e o horizonte. */
+  function dashUpcomingBills(horizon) {
+    const today = todayISO();
+    const start = dashParseISO(today);
+    const end = dashParseISO(horizon);
+    const rows = [];
+    if (!start || !end) return rows;
+
+    let cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+    let guard = 0;
+    while (cursor <= end && guard < 6) {
+      guard += 1;
+      const year = cursor.getFullYear();
+      const month = cursor.getMonth();
+      const key = `${year}-${String(month + 1).padStart(2, '0')}`;
+      recurringBills
+        .filter(bill => billAppliesToMonth(bill, year, month))
+        .forEach(bill => {
+          if (billGeneratedForMonth(bill, key) || billPaidForMonth(bill, key)) return;
+          const due = String(billDueDateForMonth(bill, year, month) || '').slice(0, 10);
+          if (!due || due < today || due > horizon) return;
+          rows.push({
+            id: `bill_${bill.id}_${key}`,
+            name: bill.name || 'Conta recorrente',
+            amount: Number(bill.amount || 0),
+            due
+          });
+        });
+      cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+    }
+    return rows.sort((a, b) => a.due.localeCompare(b.due));
+  }
+
+  /* Valor das contas recorrentes cujo vencimento cai dentro do período filtrado. */
+  function dashFixedExpenses(range) {
+    const startD = dashParseISO(range.start);
+    const endD = dashParseISO(range.end);
+    if (!startD || !endD) return 0;
+
+    const seen = new Set();
+    let total = 0;
+    let cursor = new Date(startD.getFullYear(), startD.getMonth(), 1);
+    let guard = 0;
+    while (cursor <= endD && guard < 36) {
+      guard += 1;
+      const year = cursor.getFullYear();
+      const month = cursor.getMonth();
+      recurringBills
+        .filter(bill => billAppliesToMonth(bill, year, month))
+        .forEach(bill => {
+          const due = String(billDueDateForMonth(bill, year, month) || '').slice(0, 10);
+          if (!due || due < range.start || due > range.end) return;
+          const dedupeKey = `${bill.id}_${due}`;
+          if (seen.has(dedupeKey)) return;
+          seen.add(dedupeKey);
+          total += Number(bill.amount || 0);
+        });
+      cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
+    }
+    return total;
+  }
+
+  function dashObligations(cardSummary) {
+    const today = todayISO();
+    const horizon = dashShiftDays(today, 30);
+    const bills = dashUpcomingBills(horizon);
+    const invoices = (cardSummary && Array.isArray(cardSummary.dueDates) ? cardSummary.dueDates : [])
+      .map(item => ({
+        id: `card_${item.cardId}_${item.periodKey}`,
+        name: `Fatura ${item.label || 'cartão'}`,
+        amount: Number(item.amount || 0),
+        due: String(item.dueDate || '').slice(0, 10)
+      }))
+      .filter(item => item.due);
+
+    const all = bills.concat(invoices).sort((a, b) => a.due.localeCompare(b.due));
+    const buckets = [
+      { key: 'overdue', label: 'Vencidas', hint: 'vencidas até hoje', rows: [] },
+      { key: 'today', label: 'Vencem hoje', hint: 'vencimento de hoje', rows: [] },
+      { key: 'd7', label: 'Próximos 7 dias', hint: 'hoje + 7 dias', rows: [] },
+      { key: 'd30', label: 'Próximos 30 dias', hint: 'hoje + 8 a 30 dias', rows: [] },
+      { key: 'later', label: 'Após 30 dias', hint: 'faturas com vencimento mais distante', rows: [] }
+    ];
+
+    all.forEach(item => {
+      let key = 'later';
+      if (item.due < today) key = 'overdue';
+      else if (item.due === today) key = 'today';
+      else if (item.due <= dashShiftDays(today, 7)) key = 'd7';
+      else if (item.due <= dashShiftDays(today, 30)) key = 'd30';
+      buckets.find(bucket => bucket.key === key).rows.push(item);
+    });
+
+    const committedBills = bills.reduce((sum, item) => sum + item.amount, 0);
+    return { buckets, committedBills, today, horizon, total: all.length };
+  }
+
+  function dashGoalRows() {
+    return goals.map(goal => {
+      const plan = goalPlanning(goal);
+      const target = plan.target;
+      const current = plan.current;
+      const raw = plan.hasCurrent && target > 0 ? (current / target) * 100 : null;
+      return {
+        id: goal.id,
+        name: goal.name || 'Meta',
+        target,
+        current,
+        hasCurrent: plan.hasCurrent,
+        raw,
+        pct: raw == null ? 0 : Math.min(100, Math.max(0, raw)),
+        overdue: plan.overdue,
+        deadline: goal.deadline || null
+      };
+    });
+  }
+
+  function dashHealthMetric(label, value, tone, detail, base) {
+    return { label, value, tone, detail: detail || '', base: base || null };
+  }
+
+  function dashHealthRows(range, flow, fixedExpenses, patrimony, patrimonyStart, committed) {
+    const rows = [];
+    const startD = dashParseISO(range.start);
+    const endD = dashParseISO(range.end);
+    const days = startD && endD ? Math.max(1, Math.round((endD - startD) / 86400000) + 1) : 0;
+    const monthlyExpense = days > 0 ? flow.expense / (days / DASH_DAYS_PER_MONTH) : 0;
+
+    rows.push(dashHealthMetric(
+      'Taxa de poupança',
+      flow.income > 0 ? `${((flow.net / flow.income) * 100).toFixed(1).replace('.', ',')}%` : '—',
+      flow.income > 0 && flow.net >= 0 ? 'positive' : flow.income > 0 ? 'negative' : 'neutral',
+      'Resultado dividido pelas entradas do período',
+      flow.income > 0 ? { label: 'resultado / entradas', value: `${fmt(flow.net)} / ${fmt(flow.income)}` } : null
+    ));
+
+    rows.push(dashHealthMetric(
+      'Despesas fixas / entradas',
+      flow.income > 0 ? `${((fixedExpenses / flow.income) * 100).toFixed(1).replace('.', ',')}%` : '—',
+      flow.income > 0 && fixedExpenses / flow.income <= 0.5 ? 'positive' : flow.income > 0 ? 'negative' : 'neutral',
+      'Contas recorrentes com vencimento no período',
+      { label: 'despesas fixas no período', value: fmt(fixedExpenses) }
+    ));
+
+    rows.push(dashHealthMetric(
+      'Comprometimento financeiro',
+      patrimony > 0 ? `${((committed / patrimony) * 100).toFixed(1).replace('.', ',')}%` : '—',
+      patrimony > 0 && committed / patrimony <= 0.3 ? 'positive' : patrimony > 0 ? 'negative' : 'neutral',
+      'Cartões mais contas dos próximos 30 dias sobre o patrimônio',
+      { label: 'comprometido', value: fmt(committed) }
+    ));
+
+    const growth = patrimonyStart > 0 ? ((patrimony - patrimonyStart) / patrimonyStart) * 100 : null;
+    rows.push(dashHealthMetric(
+      'Crescimento patrimonial',
+      growth == null ? '—' : `${growth >= 0 ? '+' : ''}${growth.toFixed(1).replace('.', ',')}%`,
+      growth == null ? 'neutral' : growth >= 0 ? 'positive' : 'negative',
+      'Variação do patrimônio entre o início e o fim do período',
+      growth == null ? null : { label: 'variação no período', value: fmt(patrimony - patrimonyStart) }
+    ));
+
+    rows.push(dashHealthMetric(
+      'Reserva financeira',
+      monthlyExpense > 0 ? `${(patrimony > 0 ? Math.min(999, patrimony / monthlyExpense) : 0).toFixed(1).replace('.', ',')} meses` : '—',
+      monthlyExpense > 0 && patrimony / monthlyExpense >= 3 ? 'positive' : monthlyExpense > 0 ? 'negative' : 'neutral',
+      'Patrimônio dividido pela média mensal de saídas do período',
+      monthlyExpense > 0 ? { label: 'saída média mensal', value: fmt(monthlyExpense) } : null
+    ));
+
+    return rows;
+  }
+
+  function dashHistoryAvailable(range) {
+    const start = range.start;
+    if (!start) return false;
+    return entries.some(entry => String(entry.date || '') <= start)
+      || yieldsLog.some(item => String(item.dateEnd || item.date || '') <= start);
+  }
+
+  function buildDashboardSummary() {
+    const preset = dashPreset();
+    const range = dashRange(false);
+    const previousRange = dashRange(true);
+    const hasAccount = Boolean(dashFilters.account);
+    const bank = hasAccount ? banks.find(item => item.id === dashFilters.account) : null;
+    if (hasAccount && !bank) dashFilters.account = '';
+
+    const scope = dashBuildScope(range);
+    const flow = dashFlowOf(scope);
+    const previousScope = dashFilters.compare ? dashBuildScope(previousRange) : [];
+    const previousFlow = dashFilters.compare ? dashFlowOf(previousScope) : { income: 0, expense: 0, net: 0, transfers: 0, count: 0 };
+
+    const buckets = dashBuckets(range);
+    const bucketRows = buckets.map(bucket => {
+      const slice = scope.filter(row => row.entry.date >= bucket.start && row.entry.date <= bucket.end);
+      const bucketFlow = dashFlowOf(slice);
+      return {
+        start: bucket.start,
+        end: bucket.end,
+        label: bucket.label,
+        title: bucket.title,
+        income: bucketFlow.income,
+        expense: bucketFlow.expense,
+        net: bucketFlow.net,
+        patrimony: dashPatrimonyAt(bucket.end)
+      };
+    });
+
+    const today = todayISO();
+    const patrimony = dashPatrimonyAt(today);
+    const patrimonyParts = dashPatrimonyParts(today);
+    const patrimonyStart = dashPatrimonyAt(range.start);
+    const balanceAvailable = dashFilters.account ? bankBalance(dashFilters.account) : totalBankBalance();
+    const cardSummary = dashCardSummary();
+    const obligations = dashObligations(cardSummary);
+    const committedCards = cardSummary ? Number(cardSummary.committed || 0) : 0;
+    const committed = committedCards + obligations.committedBills;
+    const fixedExpenses = dashFixedExpenses(range);
+    const categoriesSummary = dashCategoryRanking(scope, previousScope);
+    const budgetsSummary = dashBudgetRows();
+    const historyAvailable = dashHistoryAvailable(range);
+
+    return {
+      schemaVersion: DASH_SCHEMA_VERSION,
+      generatedAt: new Date().toISOString(),
+      period: {
+        key: dashFilters.period,
+        label: preset.label,
+        bucket: preset.bucket,
+        start: range.start,
+        end: range.end,
+        text: dashFormatRange(range),
+        previous: dashFilters.compare ? previousRange : null,
+        previousText: dashFilters.compare ? dashFormatRange(previousRange) : '',
+        entries: scope.length
+      },
+      account: {
+        id: dashFilters.account,
+        label: dashFilters.account && bank ? bank.name : 'Todas as contas'
+      },
+      compare: dashFilters.compare,
+      income: flow.income,
+      expense: flow.expense,
+      result: flow.net,
+      previous: dashFilters.compare
+        ? { income: previousFlow.income, expense: previousFlow.expense, result: previousFlow.net }
+        : null,
+      balanceAvailable,
+      patrimony: {
+        current: patrimony,
+        atStart: patrimonyStart,
+        delta: patrimony - patrimonyStart,
+        hasHistory: historyAvailable,
+        parts: patrimonyParts
+      },
+      flow: {
+        buckets: bucketRows,
+        transfers: flow.transfers,
+        count: flow.count
+      },
+      committed: {
+        total: committed,
+        cards: committedCards,
+        bills: obligations.committedBills,
+        horizon: obligations.horizon
+      },
+      categories: categoriesSummary,
+      budgets: budgetsSummary,
+      obligations,
+      cards: cardSummary,
+      fixedExpenses,
+      goals: dashGoalRows(),
+      health: dashHealthRows(range, flow, fixedExpenses, patrimony, patrimonyStart, committed),
+      insights: getDashboardAlerts()
+    };
+  }
+
+  window.LivroCaixaDashboard = {
+    schemaVersion: DASH_SCHEMA_VERSION,
+    buildSummary: buildDashboardSummary,
+    refresh: renderDashboardTab
+  };
+
+  function dashDeltaHTML(delta) {
+    if (!delta) return '';
+    return `<span class="dash-delta ${delta.up ? 'up' : 'down'}">${escapeHTML(delta.text)}</span>`;
+  }
+
+  function dashSectionHead(index, title, subtitle, meta) {
+    return `<div class="dash-section-head"><div><span class="dash-section-index">${escapeHTML(index)}</span><h3>${escapeHTML(title)}</h3><p>${escapeHTML(subtitle)}</p></div>${meta ? `<span class="dash-section-meta">${meta}</span>` : ''}</div>`;
+  }
+
+  function renderDashSummary(s) {
+    const kpi = (label, value, cls, note, delta) => `
+      <div class="dash-kpi">
+        <small>${escapeHTML(label)}</small>
+        <strong class="js-money ${cls || ''}">${value}</strong>
+        ${delta || ''}
+        ${note ? `<span class="dash-kpi-note">${note}</span>` : ''}
+      </div>`;
+
+    const incomeDelta = s.previous ? dashDeltaHTML(dashPercentDelta(s.income, s.previous.income)) : '';
+    const expenseDelta = s.previous ? dashDeltaHTML(dashPercentDelta(s.expense, s.previous.expense)) : '';
+    const resultDelta = s.previous ? dashDeltaHTML(dashPercentDelta(s.result, s.previous.result)) : '';
+    const patrimonyDelta = dashMoneyDelta(s.patrimony.current, s.patrimony.atStart);
+
+    return `
+      <section class="dash-section" aria-labelledby="dashSec1">
+        ${dashSectionHead('01', 'Resumo', `Movimentação e posição em ${s.period.text}.`, escapeHTML(s.account.label))}
+        <div class="dash-kpis">
+          ${kpi('Entradas', fmt(s.income), 'positive', s.previous && s.previous.income > 0 ? 'vs. ' + escapeHTML(fmt(s.previous.income)) + ' no período anterior' : '', incomeDelta)}
+          ${kpi('Saídas', fmt(s.expense), 'negative', s.previous && s.previous.expense > 0 ? 'vs. ' + escapeHTML(fmt(s.previous.expense)) + ' no período anterior' : '', expenseDelta)}
+          ${kpi('Resultado', fmt(s.result), s.result >= 0 ? 'positive' : 'negative', s.previous ? 'vs. ' + escapeHTML(fmt(s.previous.result)) + ' no período anterior' : '', resultDelta)}
+          ${kpi('Saldo disponível', fmt(s.balanceAvailable), '', 'Contas bancárias' + (s.account.id ? ' do filtro' : ''), '')}
+          ${kpi('Patrimônio', fmt(s.patrimony.current), '', 'Bancos + caixinhas + investimentos', patrimonyDelta ? `<span class="dash-delta ${patrimonyDelta.up ? 'up' : 'down'}">${escapeHTML(patrimonyDelta.text)} no período</span>` : '')}
+          ${kpi('Comprometido', fmt(s.committed.total), 'negative', 'Cartões + contas dos próximos 30 dias', '')}
+        </div>
+        ${s.flow.transfers ? `<p class="dash-inline-note">${s.flow.transfers} transferência(s) entre contas não contam como entrada/saída.</p>` : ''}
+      </section>`;
+  }
+
+  let dashFlowChartInstance = null;
+
+  function renderDashFlow(s) {
+    const rows = s.flow.buckets;
+    if (!rows.length) {
+      return `
+        <section class="dash-section" aria-labelledby="dashSec2">
+          ${dashSectionHead('02', 'Fluxo de caixa', 'Entradas, saídas e patrimônio por período.', '')}
+          <div class="dashboard-empty-state">Selecione um período válido para visualizar o fluxo de caixa.</div>
+        </section>`;
+    }
+
+    return `
+      <section class="dash-section" aria-labelledby="dashSec2">
+        ${dashSectionHead('02', 'Fluxo de caixa', 'Entradas, saídas e patrimônio por período.', `${rows.length} bloco(s)`)}
+        <div class="dash-panel dash-flow-panel">
+          <div class="dash-chart-box" id="dashFlowChartBox">
+            <canvas id="dashFlowChart" role="img" aria-label="Gráfico de entradas, saídas e patrimônio por período"></canvas>
+          </div>
+          <div class="dash-chart-fallback" id="dashFlowFallback" hidden></div>
+          <p class="dashboard-footnote">Barras no eixo esquerdo: entradas e saídas do período. Linha no eixo direito: patrimônio estimado. O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada data; ele não altera seus saldos atuais.</p>
+        </div>
+      </section>`;
+  }
+
+  /* Versão em HTML do fluxo: usada apenas quando Chart.js não está disponível. */
+  function dashFlowFallbackHTML(rows) {
+    const maxFlow = Math.max(1, ...rows.flatMap(item => [item.income, item.expense]));
+    const body = rows.map(item => {
+      const incomePct = item.income > 0 ? Math.max(4, (item.income / maxFlow) * 100) : 0;
+      const expensePct = item.expense > 0 ? Math.max(4, (item.expense / maxFlow) * 100) : 0;
+      return `
+        <div class="monthly-flow-row">
+          <div class="monthly-flow-label"><strong>${escapeHTML(item.label)}</strong><span>Fluxo ${item.net >= 0 ? '+' : ''}${fmt(item.net)}</span></div>
+          <div class="monthly-flow-bars">
+            <div class="flow-bar-line"><span>Entradas</span><div class="flow-track"><i class="income" style="width:${Math.min(100, incomePct).toFixed(2)}%"></i></div><b class="js-money">${fmt(item.income)}</b></div>
+            <div class="flow-bar-line"><span>Saídas</span><div class="flow-track"><i class="expense" style="width:${Math.min(100, expensePct).toFixed(2)}%"></i></div><b class="js-money">${fmt(item.expense)}</b></div>
+          </div>
+          <div class="monthly-patrimony"><small>Patrimônio estimado</small><strong class="js-money">${fmt(item.patrimony)}</strong></div>
+        </div>`;
+    }).join('');
+
+    return `<div class="dashboard-explainer"><span class="legend-dot income"></span> Entradas <span class="legend-dot expense"></span> Saídas <span class="legend-dot patrimony"></span> Patrimônio estimado</div><div class="monthly-flow-chart">${body}</div>`;
+  }
+
+  function dashDestroyFlowChart() {
+    if (!dashFlowChartInstance) return;
+    try {
+      dashFlowChartInstance.destroy();
+    } catch (err) {
+      /* canvas já removido do DOM */
+    }
+    dashFlowChartInstance = null;
+  }
+
+  function dashRenderFlowChart(s) {
+    const rows = s.flow.buckets;
+    if (!rows.length) return;
+
+    const canvas = document.getElementById('dashFlowChart');
+    const box = document.getElementById('dashFlowChartBox');
+    const fallback = document.getElementById('dashFlowFallback');
+
+    if (!canvas || typeof Chart === 'undefined') {
+      if (box) box.hidden = true;
+      if (fallback) {
+        fallback.hidden = false;
+        fallback.innerHTML = dashFlowFallbackHTML(rows);
+      }
+      return;
+    }
+
+    if (fallback) fallback.hidden = true;
+    if (box) box.hidden = false;
+
+    const styles = getComputedStyle(document.body);
+    const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
+    const ink = readVar('--ink', '#1C2B24');
+    const inkSoft = readVar('--ink-soft', '#4C5A52');
+    const lineColor = readVar('--line', '#D8D2C1');
+    const green = readVar('--dash-flow-income', readVar('--green', '#3E9B6E'));
+    const red = readVar('--dash-flow-expense', readVar('--red', '#C2553B'));
+    const gold = readVar('--dash-flow-patrimony', readVar('--gold', '#B08D3E'));
+    const masked = () => document.body.classList.contains('balances-hidden');
+    const money = value => (masked() ? '••••••' : fmt(value));
+    const tick = value => {
+      if (masked()) return '';
+      return 'R$ ' + Number(value || 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+    };
+
+    dashFlowChartInstance = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: rows.map(item => item.label),
+        datasets: [
+          {
+            label: 'Entradas',
+            data: rows.map(item => item.income),
+            backgroundColor: green,
+            borderRadius: 4,
+            maxBarThickness: 26,
+            yAxisID: 'y',
+            order: 2
+          },
+          {
+            label: 'Saídas',
+            data: rows.map(item => item.expense),
+            backgroundColor: red,
+            borderRadius: 4,
+            maxBarThickness: 26,
+            yAxisID: 'y',
+            order: 2
+          },
+          {
+            label: 'Patrimônio estimado',
+            data: rows.map(item => item.patrimony),
+            type: 'line',
+            borderColor: gold,
+            backgroundColor: gold,
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: rows.length > 31 ? 0 : 2,
+            pointHoverRadius: 4,
+            yAxisID: 'y1',
+            order: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' },
+              color: inkSoft,
+              boxWidth: 12,
+              padding: 12
+            }
+          },
+          tooltip: {
+            callbacks: {
+              title: items => {
+                const index = items && items.length ? items[0].dataIndex : -1;
+                return rows[index] ? rows[index].title : '';
+              },
+              label: context => ` ${context.dataset.label}: ${money(context.parsed.y)}`,
+              afterBody: items => {
+                const index = items && items.length ? items[0].dataIndex : -1;
+                const row = rows[index];
+                return row ? `Resultado: ${money(row.net)}` : '';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: ink, font: { size: 10, weight: '600' }, maxRotation: 0, autoSkip: true }
+          },
+          y: {
+            position: 'left',
+            beginAtZero: true,
+            grid: { color: lineColor },
+            ticks: { color: inkSoft, font: { size: 10 }, callback: tick }
+          },
+          y1: {
+            position: 'right',
+            grid: { drawOnChartArea: false },
+            ticks: { color: gold, font: { size: 10 }, callback: tick }
+          }
+        }
+      }
+    });
+  }
+
+  function renderDashSpending(s) {
+    const categoriesHTML = s.categories.rows.length
+      ? s.categories.rows.map(row => `
+        <div class="dash-cat-row">
+          <span class="dash-cat-dot" style="background:${escapeHTML(row.color)}" aria-hidden="true"></span>
+          <div class="dash-cat-copy">
+            <strong>${escapeHTML(row.name)}</strong>
+            <span>${row.share.toFixed(1).replace('.', ',')}% do total do período</span>
+          </div>
+          <div class="dash-cat-value">
+            <b class="js-money">${fmt(row.amount)}</b>
+            ${row.delta ? `<span class="dash-delta ${row.delta.up == null ? 'muted' : row.delta.up ? 'up' : 'down'}">${escapeHTML(row.delta.text)}</span>` : ''}
+          </div>
+        </div>`).join('')
+      : `<div class="dashboard-empty-state">Nenhuma saída registrada${s.account.id ? ' para a conta selecionada' : ''} neste período.</div>`;
+
+    const budgetsHTML = s.budgets.rows.length
+      ? s.budgets.rows.map(row => {
+        const over = row.pct >= 100;
+        return `
+        <div class="budget-summary-row">
+          <div><strong>${escapeHTML(row.name)}</strong><span class="js-money">${fmt(row.spent)} de ${fmt(row.planned)}</span></div>
+          <div class="budget-summary-track"><span class="${over ? 'over' : ''}" style="width:${Math.min(100, Math.max(0, row.pct)).toFixed(2)}%"></span></div>
+          <b>${row.pct.toFixed(0).replace('.', ',')}%</b>
+        </div>`;
+      }).join('')
+      : `<div class="dashboard-empty-state">Nenhum orçamento ativo no ciclo atual. Defina limites em Perfil → Preferências financeiras.</div>`;
+
+    return `
+      <section class="dash-section" aria-labelledby="dashSec3">
+        ${dashSectionHead('03', 'Gastos e orçamento', 'Para onde o dinheiro saiu e o que já está planejado.', `Ciclo ${escapeHTML(s.budgets.cycle)}`)}
+        <div class="dash-two-col">
+          <div class="dash-panel">
+            <div class="dash-panel-head"><strong>Categorias</strong><span class="js-money">${fmt(s.categories.total)}</span></div>
+            ${categoriesHTML}
+          </div>
+          <div class="dash-panel dash-budgets">
+            <div class="dash-panel-head"><strong>Orçamento do ciclo</strong><span>não segue o filtro de período</span></div>
+            ${budgetsHTML}
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function renderDashCommitments(s) {
+    const cards = s.cards;
+    const perCard = cards && cards.count > 1
+      ? `<div class="dash-card-list">${cards.cards.map(row => `
+          <div class="dash-card-line">
+            <div><strong>${escapeHTML(row.name)}</strong><span>referência ${escapeHTML(row.referencePeriod || '—')}</span></div>
+            <b class="js-money">${fmt(row.committed)}</b>
+          </div>`).join('')}</div>`
+      : '';
+
+    const cardsPanel = cards && cards.ready
+      ? `
+        <div class="dash-panel">
+          <div class="dash-panel-head"><strong>Cartões</strong><span>${cards.count} ativo(s)</span></div>
+          ${cards.count ? `
+            <div class="dash-card-line"><div><strong>Fatura atual</strong><span>de ${escapeHTML(fmt(cards.currentInvoiceTotal))}</span></div><b class="js-money">${fmt(cards.currentInvoiceRemaining)}</b></div>
+            ${cards.previousInvoiceRemaining > 0 ? `<div class="dash-card-line"><div><strong>Fatura anterior pendente</strong><span>vencimento já ocorrido ou próximo</span></div><b class="js-money">${fmt(cards.previousInvoiceRemaining)}</b></div>` : ''}
+            <div class="dash-card-line"><div><strong>Próxima fatura</strong><span>de ${escapeHTML(fmt(cards.nextInvoiceTotal))}</span></div><b class="js-money">${fmt(cards.nextInvoiceRemaining)}</b></div>
+            <div class="dash-card-line"><div><strong>Limite utilizado</strong><span>de ${escapeHTML(fmt(cards.totalLimit))}</span></div><b class="js-money">${fmt(cards.totalUsed)}</b></div>
+            <div class="dash-card-line"><div><strong>Parcelas futuras</strong><span>fora da fatura atual</span></div><b class="js-money">${fmt(cards.futureInstallmentsRemaining)}</b></div>
+            <div class="dash-card-line"><div><strong>Comprometido (motor)</strong><span>fonte: card-engine-v3</span></div><b class="js-money">${fmt(cards.committed)}</b></div>
+            ${perCard}
+          ` : '<div class="dashboard-empty-state">Nenhum cartão ativo cadastrado.</div>'}
+        </div>`
+      : `<div class="dash-panel"><div class="dash-panel-head"><strong>Cartões</strong><span>indisponível</span></div><div class="dashboard-empty-state">Motor de cartões não carregado neste momento.</div></div>`;
+
+    const visibleBuckets = s.obligations.buckets
+      .filter(bucket => bucket.key !== 'later')
+      .filter(bucket => bucket.rows.length);
+    const visibleTotal = visibleBuckets.reduce((sum, bucket) => sum + bucket.rows.length, 0);
+
+    const bucketRows = visibleBuckets
+      .map(bucket => `
+        <div class="dash-bucket">
+          <div class="dash-bucket-head"><strong>${escapeHTML(bucket.label)}</strong><span class="dash-bucket-count">${bucket.rows.length}</span></div>
+          ${bucket.rows.slice(0, 6).map(item => `
+            <div class="dash-bucket-row ${bucket.key === 'overdue' ? 'overdue' : ''}">
+              <div><strong>${escapeHTML(item.name)}</strong><span>${dashLongDate(item.due)}</span></div>
+              <b class="js-money">${fmt(item.amount)}</b>
+            </div>`).join('')}
+          ${bucket.rows.length > 6 ? `<span class="dash-more">+${bucket.rows.length - 6} outro(s)</span>` : ''}
+        </div>`).join('')
+      || `<div class="dashboard-empty-state">Nenhuma conta ou fatura pendente nos próximos 30 dias.</div>`;
+
+    return `
+      <section class="dash-section" aria-labelledby="dashSec4">
+        ${dashSectionHead('04', 'Compromissos', `Vencimentos a partir de hoje (${dashLongDate(s.obligations.today)}).`, visibleTotal ? `${visibleTotal} compromisso(s)` : 'tudo em dia')}
+        <div class="dash-two-col">
+          ${cardsPanel}
+          <div class="dash-panel">
+            <div class="dash-panel-head"><strong>Contas e faturas por vencimento</strong><span class="js-money">${fmt(s.committed.total)} comprometido</span></div>
+            ${bucketRows}
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function renderDashPatrimony(s) {
+    const parts = s.patrimony.parts;
+    const totalParts = parts.banks + parts.pockets + parts.investments;
+    const partRow = (label, value, share) => `
+      <div class="dash-part-row">
+        <div class="dash-part-copy"><strong>${escapeHTML(label)}</strong><span>${share.toFixed(1).replace('.', ',')}% do patrimônio</span></div>
+        <div class="dash-part-track"><span style="width:${Math.min(100, Math.max(0, share)).toFixed(2)}%"></span></div>
+        <b class="js-money">${fmt(value)}</b>
+      </div>`;
+
+    const share = value => (totalParts > 0 ? (value / totalParts) * 100 : 0);
+
+    const goalsHTML = s.goals.length
+      ? s.goals.map(goal => `
+        <div class="pocket-goal dash-goal">
+          <div class="pocket-goal-head"><span>${escapeHTML(goal.name)}${goal.deadline ? ' · até ' + dashLongDate(goal.deadline) : ''}</span><strong>${goal.hasCurrent ? goal.pct.toFixed(0).replace('.', ',') + '%' : 'sem origem'}</strong></div>
+          <div class="pocket-goal-track"><span style="width:${goal.pct.toFixed(2)}%"></span></div>
+          <div class="pocket-goal-values"><span class="js-money">${goal.hasCurrent ? fmt(goal.current) : '—'} de ${fmt(goal.target)}</span></div>
+        </div>`).join('')
+      : `<div class="dashboard-empty-state">Nenhuma meta cadastrada. Crie metas na aba Metas para acompanhar o progresso aqui.</div>`;
+
+    const evolution = s.patrimony.hasHistory
+      ? `
+        <div class="dash-evolution">
+          <div class="dash-evolution-item"><small>No início do período</small><strong class="js-money">${fmt(s.patrimony.atStart)}</strong></div>
+          <div class="dash-evolution-item"><small>Hoje</small><strong class="js-money">${fmt(s.patrimony.current)}</strong></div>
+          <div class="dash-evolution-item"><small>Variação</small><strong class="js-money ${s.patrimony.delta >= 0 ? 'positive' : 'negative'}">${fmt(s.patrimony.delta)}</strong></div>
+        </div>`
+      : `<div class="dashboard-empty-state">Histórico insuficiente para comparar a evolução do patrimônio neste período. Registre movimentações anteriores a ${dashLongDate(s.period.start)}.</div>`;
+
+    return `
+      <section class="dash-section" aria-labelledby="dashSec5">
+        ${dashSectionHead('05', 'Patrimônio e metas', 'Composição do patrimônio, evolução e progresso das metas.', '')}
+        <div class="dash-two-col">
+          <div class="dash-panel">
+            <div class="dash-panel-head"><strong>Composição atual</strong><span class="js-money">${fmt(totalParts)}</span></div>
+            ${partRow('Bancos', parts.banks, share(parts.banks))}
+            ${partRow('Caixinhas', parts.pockets, share(parts.pockets))}
+            ${partRow('Investimentos', parts.investments, share(parts.investments))}
+            ${evolution}
+          </div>
+          <div class="dash-panel">
+            <div class="dash-panel-head"><strong>Metas</strong><span>${s.goals.length} cadastrada(s)</span></div>
+            ${goalsHTML}
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function renderDashHealth(s) {
+    const rows = s.health.map(metric => `
+      <div class="dash-metric">
+        <small>${escapeHTML(metric.label)}</small>
+        <strong class="dash-metric-value ${metric.tone}">${escapeHTML(metric.value)}</strong>
+        <span class="dash-metric-note">${escapeHTML(metric.detail)}</span>
+        ${metric.base ? `<span class="dash-metric-base js-money">${escapeHTML(metric.base.value)}</span>` : ''}
+      </div>`).join('');
+
+    return `
+      <section class="dash-section" aria-labelledby="dashSec6">
+        ${dashSectionHead('06', 'Saúde financeira', 'Indicadores derivados dos valores já calculados pelo aplicativo.', s.period.text)}
+        <div class="dash-metrics">${rows}</div>
+        <p class="dashboard-footnote">Poupança = resultado ÷ entradas · Despesas fixas = contas recorrentes com vencimento no período ÷ entradas · Comprometido = cartões + contas dos próximos 30 dias ÷ patrimônio · Reserva = patrimônio ÷ saída média mensal.</p>
+      </section>`;
+  }
+
+  function renderDashInsights(s) {
+    const rows = s.insights.length
+      ? s.insights.map(alert => `
+        <div class="dashboard-alert-row">
+          <span>${escapeHTML(alert.icon)}</span>
+          <div><strong>${escapeHTML(alert.title)}</strong><small>${escapeHTML(alert.detail)}</small></div>
+        </div>`).join('')
+      : `<div class="dashboard-alert-row positive"><span>✓</span><div><strong>Nenhum aviso importante</strong><small>O painel não encontrou pendências críticas neste momento.</small></div></div>`;
+
+    return `
+      <section class="dash-section" aria-labelledby="dashSec7">
+        ${dashSectionHead('07', 'Insights', 'Leitura determinística dos seus dados — base para a análise com IA.', 'sem chamadas externas')}
+        <div class="dashboard-alerts">${rows}</div>
+        <p class="dashboard-footnote">O objeto <code>window.LivroCaixaDashboard.buildSummary()</code> expõe estes indicadores em JSON (<code>schemaVersion ${DASH_SCHEMA_VERSION}</code>) para a IA interpretar. A IA não recalcula valores: ela lê o resumo gerado aqui.</p>
+      </section>`;
+  }
+
+  function dashSyncPeriodPill() {
+    const bar = document.getElementById('dashFilterBar');
+    if (!bar) return;
+    const pill = bar.querySelector('.dash-segmented-pill');
+    if (!pill) return;
+    const buttons = Array.from(bar.querySelectorAll('[data-dash-period]'));
+    const activeIndex = buttons.findIndex(button => button.dataset.dashPeriod === dashFilters.period);
+    pill.style.setProperty('--dash-pill-i', String(Math.max(0, activeIndex)));
+  }
+
+  function dashSyncFilterUI(s) {
+    const bar = document.getElementById('dashFilterBar');
+    if (bar) {
+      bar.querySelectorAll('[data-dash-period]').forEach(button => {
+        const active = button.dataset.dashPeriod === dashFilters.period;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      dashSyncPeriodPill();
+    }
+
+    const select = document.getElementById('dashAccountFilter');
+    if (select) {
+      const desired = dashFilters.account;
+      const options = [`<option value="">Todas as contas</option>`]
+        .concat(banks.map(item => `<option value="${escapeHTML(item.id)}">${escapeHTML(item.name)}</option>`))
+        .join('');
+      if (select.innerHTML !== options) select.innerHTML = options;
+      select.value = desired;
+      if (select.value !== desired) {
+        dashFilters.account = '';
+        select.value = '';
+      }
+    }
+
+    const compare = document.getElementById('dashCompare');
+    if (compare) compare.checked = dashFilters.compare;
+
+    const label = document.getElementById('dashRangeLabel');
+    if (label) {
+      label.textContent = s.period.text + (s.compare && s.period.previousText ? ` · comparação ${s.period.previousText}` : '');
+    }
+  }
+
+  function renderDashboardTab() {
+    if (currentTab !== 'dash') return;
+    const host = document.getElementById('dashContent');
+    if (!host) return;
+
+    dashDestroyFlowChart();
+    const summary = buildDashboardSummary();
+    dashSyncFilterUI(summary);
+    host.innerHTML =
+      renderDashSummary(summary) +
+      renderDashFlow(summary) +
+      renderDashSpending(summary) +
+      renderDashCommitments(summary) +
+      renderDashPatrimony(summary) +
+      renderDashHealth(summary) +
+      renderDashInsights(summary);
+    dashRenderFlowChart(summary);
+  }
+
+  (function bindDashboardFilters() {
+    const bar = document.getElementById('dashFilterBar');
+    if (!bar) return;
+
+    dashSyncPeriodPill();
+
+    bar.querySelectorAll('[data-dash-period]').forEach(button => {
+      button.addEventListener('click', () => {
+        if (!DASH_PERIODS[button.dataset.dashPeriod]) return;
+        dashFilters.period = button.dataset.dashPeriod;
+        dashSaveFilters();
+        renderDashboardTab();
+      });
+    });
+
+    const select = document.getElementById('dashAccountFilter');
+    select?.addEventListener('change', () => {
+      dashFilters.account = select.value;
+      dashSaveFilters();
+      renderDashboardTab();
+    });
+
+    const compare = document.getElementById('dashCompare');
+    compare?.addEventListener('change', () => {
+      dashFilters.compare = Boolean(compare.checked);
+      dashSaveFilters();
+      renderDashboardTab();
+    });
+  })();
+
   function renderFeatureLab() {
     const autoBills = document.getElementById('featureAutoBills'); if (autoBills) autoBills.checked = featureSettings.autoLaunchRecurring;
     const reminders = document.getElementById('featureReminders'); if (reminders) reminders.checked = featureSettings.reminders;
@@ -5568,7 +6690,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 }
 
-  document.getElementById('btnSaveFeatureSettings')?.addEventListener('click', async () => {
+  async function saveFeatureSettings({ silent = false } = {}) {
     featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization') ? document.getElementById('featureAutoCategorization').checked : featureSettings.autoCategorization, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
         ? readMoneyInput(document.getElementById('featureSavingsGoalAmount'))
         : featureSettings.monthlySavingsGoal });
@@ -5578,14 +6700,29 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await persistAll();
       await persistProfileSettings();
-      document.getElementById('profileSettingsStatus').textContent = 'Configurações e orçamentos salvos. Automação atualizada.';
-      logInfo('Recursos de teste', 'Salvar configurações', 'Sucesso', 'Configurações, preferências e orçamentos atualizados.');
+      if (!silent) {
+        document.getElementById('profileSettingsStatus').textContent = 'Configurações e orçamentos salvos. Automação atualizada.';
+        logInfo('Recursos de teste', 'Salvar configurações', 'Sucesso', 'Configurações, preferências e orçamentos atualizados.');
+      }
     } catch (err) {
-      document.getElementById('profileSettingsStatus').textContent = 'Configuração local salva; sincronização remota falhou.';
+      document.getElementById('profileSettingsStatus').textContent = silent
+        ? 'Alteração salva localmente; sincronização remota falhou.'
+        : 'Configuração local salva; sincronização remota falhou.';
       logSyncError('configurações de teste', err);
     }
     startFeatureAutomation(); render();
-  });
+  }
+  document.getElementById('btnSaveFeatureSettings')?.addEventListener('click', () => saveFeatureSettings());
+
+  // Salvamento automático (com debounce) ao alterar as opções e os limites por categoria.
+  const FEATURE_AUTOSAVE_IDS = ['featureAutoBills', 'featureReminders', 'featureAutoQuotes', 'featureQuoteInterval', 'featureProjectionMonths', 'featureAutoCategorization', 'featureReminderAdvanceDays', 'featureSavingsGoalAmount'];
+  let featureSettingsAutosaveTimer = 0;
+  function scheduleFeatureSettingsAutosave() {
+    clearTimeout(featureSettingsAutosaveTimer);
+    featureSettingsAutosaveTimer = setTimeout(() => { saveFeatureSettings({ silent: true }); }, 700);
+  }
+  FEATURE_AUTOSAVE_IDS.forEach(id => document.getElementById(id)?.addEventListener('change', scheduleFeatureSettingsAutosave));
+  document.getElementById('featureBudgetRows')?.addEventListener('change', scheduleFeatureSettingsAutosave);
   document.getElementById('btnRunFeatureCycle')?.addEventListener('click', async () => { const status = document.getElementById('featureLabStatus'); status.textContent = 'Executando ciclo de recorrências, lembretes e cotações…'; const result = await runFeatureAutomation({ manual: true }); status.textContent = result?.cancelled ? 'Ciclo cancelado; nenhum lançamento foi criado.' : result?.skipped ? 'Faça login para executar alterações financeiras.' : 'Ciclo concluído. Verifique o calendário, os avisos e os cards de investimento.'; });
   function suggestCategoryForDescription(description) { const text = String(description || '').toLocaleLowerCase('pt-BR'); const scores = new Map(); entries.forEach(entry => { const entryText = String(entry.desc || '').toLocaleLowerCase('pt-BR'); const category = categories.find(item => item.id === entry.category); if (!category || !entryText) return; const tokens = text.split(/\s+/).filter(token => token.length >= 4); const matches = tokens.filter(token => entryText.includes(token)).length; if (matches) scores.set(category.id, (scores.get(category.id) || 0) + matches); }); const best = [...scores.entries()].sort((a, b) => b[1] - a[1])[0]; return best ? best[0] : ''; }
   function applySimpleAutoCategorization(rows) { return rows.map(row => { if (!row.category && featureSettings.autoCategorization) { const suggested = suggestCategoryForDescription(row.desc); if (suggested) { row.category = suggested; row.matchStatus = 'Categoria sugerida pelo histórico · revise antes de confirmar'; } } return row; }); }
@@ -6325,6 +7462,7 @@ ${JSON.stringify(snapshot)}
       persistProfileSettings().catch(err => logSyncError('preferência de ciclo financeiro', err));
       renderFeatureLab();
       renderAdvancedDashboard();
+      renderDashboardTab();
     });
   }
   document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; logInfo('Segurança', 'Desbloquear PIN local', 'Sucesso', 'Aplicativo desbloqueado neste dispositivo.'); } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; logSyncError('desbloqueio por PIN', err); } });
@@ -6360,7 +7498,7 @@ ${JSON.stringify(snapshot)}
     let generated = 0;
     if (featureSettings.autoLaunchRecurring || manual) generated = await autoGenerateRecurringBills();
     if (featureSettings.autoRefreshQuotes || manual) { try { await updateAllInvestmentPrices({ auto: !manual }); } catch (err) { logSyncError('autoatualização de cotações', err); } }
-    renderNotifications(); renderAdvancedDashboard(); return { generated };
+    renderNotifications(); renderAdvancedDashboard(); renderDashboardTab(); return { generated };
   }
   function startFeatureAutomation() {
     if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
@@ -6376,6 +7514,7 @@ ${JSON.stringify(snapshot)}
     renderCategoryManageList();
     renderCategorySummary();
     renderAdvancedDashboard();
+    renderDashboardTab();
     renderLedger();
     renderInvestments();
     renderPocketBalances();
@@ -6435,6 +7574,7 @@ ${JSON.stringify(snapshot)}
     const action = button.dataset.drawerAction;
     const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
     if (action === 'overview') { window.switchTab('caixa'); window.scrollTo({ top:0, behavior:'smooth' }); }
+    if (action === 'dash') { window.switchTab('dash'); window.scrollTo({ top:0, behavior:'smooth' }); }
     if (action === 'entries') { window.switchTab('caixa'); setTimeout(() => scrollTo('ledgerBody'), 20); }
     if (action === 'bills') window.switchTab('bills');
     if (action === 'receivables') window.switchTab('receivables');
@@ -6616,6 +7756,8 @@ ${JSON.stringify(snapshot)}
     const statusEl = document.getElementById('imPriceStatus');
     if (!item) return;
     statusEl.textContent = 'Buscando cotação...';
+    const fetchIcon = document.querySelector('#imFetchPrice .fi');
+    fetchIcon?.classList.add('is-loading');
     try {
       const coin = await fetchCoinMatch(item.name);
       if (!coin) { statusEl.textContent = 'Ativo não encontrado. Não foi possível buscar a cotação.'; return; }
@@ -6627,6 +7769,8 @@ ${JSON.stringify(snapshot)}
     } catch (err) {
       console.error(err);
       statusEl.textContent = 'Erro ao buscar cotação. Verifique sua conexão.';
+    } finally {
+      fetchIcon?.classList.remove('is-loading');
     }
   }
 
@@ -9591,6 +10735,8 @@ VALOR: ${fmt(pseudoBill.amount)}
     const operation = beginLogOperation('Cotação', 'Atualização de cotação');
     logInfo('Cotação', 'Atualização de cotação', 'Em andamento', `Consulta iniciada para ${nameQuery}.`, null, operation);
     statusEl.textContent = 'Buscando cotação...';
+    const fetchIcon = document.querySelector('#btnFetchPrice .fi');
+    fetchIcon?.classList.add('is-loading');
     try {
       const currentInv = editingInvestId ? investments.find(inv => inv.id === editingInvestId) : null;
       const coin = currentInv?.coinGeckoId ? { id: currentInv.coinGeckoId, symbol: currentInv.name } : await fetchCoinMatch(nameQuery);
@@ -9610,6 +10756,8 @@ VALOR: ${fmt(pseudoBill.amount)}
       console.error(err);
       logSyncError('cotação CoinGecko', err, operation);
       statusEl.textContent = 'Erro ao buscar cotação. A última cotação válida foi preservada; informe uma cotação manual.';
+    } finally {
+      fetchIcon?.classList.remove('is-loading');
     }
   };
 
@@ -11505,6 +12653,7 @@ document.getElementById('tSalvar').onclick = async () => {
 </script>
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
+  <button type="button" data-destination="dash" aria-label="Dashboard"><span class="nav-icon"><i class="fi fi-rr-ballot" aria-hidden="true"></i></span><span>Dashboard</span></button>
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i></span><span>Visão geral</span></button>
   <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span><span>Caixinhas</span></button>
   <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><i class="fi fi-rr-book" aria-hidden="true"></i></span><span>Livro-Caixa</span></button>
