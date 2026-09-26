@@ -44,9 +44,17 @@ export const DEFAULT_WINDOW_DAYS = 30;
 
 /* Catálogo mínimo: nome e unidade só para série verificada na fonte.
    Séries fora do catálogo NÃO ganham unidade inventada ("unspecified")
-   e nenhuma conversão de unidade é aplicada em nenhum caso. */
+   e nenhuma conversão de unidade é aplicada em nenhum caso.
+
+   Verificadas ao vivo no SGS (api.bcb.gov.br) em 26/09/2026:
+   - 11 Selic e 12 CDI → valor diário em % (ex.: 0.050788);
+   - 433 IPCA → variação mensal em % (ex.: -0.32 para 01/08/2026).
+   Séries mensais como a 433 podem não ter valor na janela padrão de
+   30 dias: o consumidor deve pedir a janela que lhe interessa. */
 const SERIES_CATALOG = {
-  11: { name: "Selic", unit: "percent_per_day" }
+  11: { name: "Selic", unit: "percent_per_day" },
+  12: { name: "CDI", unit: "percent_per_day" },
+  433: { name: "IPCA", unit: "percent_per_month" }
 };
 
 const NUMBER_PATTERN = /^-?(\d+(\.\d+)?|\.\d+)([eE][+-]?\d+)?$/;

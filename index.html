@@ -26,9 +26,10 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="./card-engine-v3-combined.js"></script>
+<script src="./financial-client.js"></script>
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-20-orange2">
+  <link rel="stylesheet" href="./styles.css?v=19-20-orange3">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
@@ -1357,6 +1358,14 @@ const OPENROUTER_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENROUTER_DEFAULT_MAX_TOKENS = 900;
 /* URL do Worker. Vazia = só o modo local (chave no dispositivo) é usado. */
 const AI_WORKER_ENDPOINT = 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/ai';
+
+/* [JS INDICADORES] Base do Worker para GET /financial: mesma origem da IA,
+   derivada da URL acima (nada de host novo no código). Vazia = adaptador
+   desligado e o app segue normalmente. */
+window.LivroCaixaFinancial?.configure?.({
+  baseUrl: String(AI_WORKER_ENDPOINT || '').replace(/\/ai$/, ''),
+  ttlMs: 6 * 60 * 60 * 1000
+});
 
 window.LivroCaixaAI = {
   getApiKey() {
@@ -3284,11 +3293,18 @@ document.addEventListener('DOMContentLoaded', () => {
       await loadProfileSettingsFromCloud();
       if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
 
+      /* Indicadores públicos (BCB/Tesouro): só semeia a tela com o que já
+         estava persistido; a busca fresca acontece depois, sem atrasar a
+         sincronização das coleções. */
+      await loadFinancialIndicatorsFromCloud();
+      if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
+
       populateFilterControls(true);
       render();
       renderBills();
       firstLoadDone = true;
       renderBalances();
+      refreshFinancialIndicators();
       logInfo('Carregamento de dados', 'Sincronização concluída', 'Sucesso', `${COLLECTIONS.length} coleções carregadas.`, null, operation);
     } catch (err) {
       console.error(err);
@@ -4409,6 +4425,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ${isCryptoType(inv.type) ? `<span>Qtd: ${formatCryptoUnits(inv.type, cryptoCurrentUnits(inv), inv.name)}</span>` : ''}
           ${isCryptoType(inv.type) ? `<span>${fmt(inv.price || 0)} · ${inv.quoteSource === 'api' ? 'Auto' : 'Manual'} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</span>` : ''}
           ${inv.institution ? `<span>${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</span>` : ''}
+          ${investmentReferenceHTML(inv)}
           ${inv.dueDate ? `<span>Venc.: ${inv.dueDate.split('-').reverse().join('/')}</span>` : ''}
         </div>
         ${rentabilityHTML('invest', inv.id, displayVal)}
@@ -4899,6 +4916,272 @@ document.addEventListener('DOMContentLoaded', () => {
 
     await docRef().set({ profileSettings }, { merge: true });
   }
+
+  /* =====================================================================
+     [JS INDICADORES] BCB SGS + Tesouro Nacional — camada de exibição.
+
+     Consome window.LivroCaixaFinancial (financial-client.js) e serve
+     apenas três superfícies de leitura: seção do Dashboard, contexto da
+     IA e uma linha de referência nos cards de Renda Fixa/Tesouro.
+
+     Regras desta camada:
+     - não escreve nem lê o modelo financeiro (saldos, investimentos,
+       caixinhas e cartões continuam exatamente os mesmos);
+     - cotação de cripto continua exclusiva do CoinGecko;
+     - não envia token: /financial é rota pública do Worker.
+
+     Persistência: snapshot no documento raiz, campo aditivo
+     "financialIndicators" gravado com { merge: true } — mesmo padrão de
+     profileSettings. Campo ausente ou inválido em conta antiga não
+     quebra nada (sem indicadores até a próxima busca) e versões antigas
+     do app simplesmente ignoram o campo.
+     ===================================================================== */
+  const FINANCIAL_INDICATORS_DOC_FIELD = 'financialIndicators';
+  let financialIndicatorsPersistedJson = '';
+  let financialIndicatorsOwnerUid = '';
+
+  function financialIndicatorsClient() {
+    const client = window.LivroCaixaFinancial;
+    return client && typeof client.getIndicators === 'function' ? client : null;
+  }
+
+  function financialIndicatorsState() {
+    const client = financialIndicatorsClient();
+    if (!client) return null;
+    const snapshot = typeof client.getSnapshot === 'function' ? client.getSnapshot() : null;
+    if (!snapshot || !snapshot.indicators || !Object.keys(snapshot.indicators).length) return null;
+    const state = typeof client.getState === 'function' ? client.getState() : {};
+    return {
+      indicators: snapshot.indicators,
+      fetchedAt: snapshot.fetchedAt || '',
+      status: state.status || 'ready',
+      errors: Array.isArray(state.lastErrors) ? state.lastErrors : []
+    };
+  }
+
+  function financialIndicatorsSnapshot() {
+    const info = financialIndicatorsState();
+    return info ? info.indicators : null;
+  }
+
+  function formatIndicatorDate(iso) {
+    return typeof iso === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso.split('-').reverse().join('/') : '';
+  }
+
+  function formatIndicatorMonth(iso) {
+    return typeof iso === 'string' && /^\d{4}-\d{2}/.test(iso) ? iso.slice(0, 7).split('-').reverse().join('/') : '';
+  }
+
+  function formatIndicatorPercent(value, digits) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return '—';
+    return `${n.toFixed(digits).replace('.', ',')}%`;
+  }
+
+  async function loadFinancialIndicatorsFromCloud() {
+    const client = financialIndicatorsClient();
+    if (!client || !currentUser) return null;
+    try {
+      /* Troca de conta no mesmo aparelho: o snapshot anterior é de outra
+         pessoa e não pode ser reaproveitado nem persistido por engano. */
+      if (financialIndicatorsOwnerUid && financialIndicatorsOwnerUid !== currentUser.uid) {
+        if (typeof client.forget === 'function') client.forget();
+        financialIndicatorsPersistedJson = '';
+      }
+      financialIndicatorsOwnerUid = currentUser.uid;
+
+      const snap = await docRef().get();
+      if (!currentUser) return null;
+      const raw = snap && snap.exists ? snap.data()?.[FINANCIAL_INDICATORS_DOC_FIELD] : null;
+      const restored = typeof client.restoreFromPersisted === 'function'
+        ? client.restoreFromPersisted(raw)
+        : null;
+      if (restored) financialIndicatorsPersistedJson = JSON.stringify(restored);
+      return restored;
+    } catch (err) {
+      /* Offline ou leitura negada: segue sem cache remoto — a busca
+         abaixo recria os indicadores em memória. */
+      return null;
+    }
+  }
+
+  async function persistFinancialIndicators() {
+    const client = financialIndicatorsClient();
+    if (!client || !currentUser) return false;
+
+    let payload = null;
+    try {
+      payload = typeof client.snapshotToPersist === 'function' ? client.snapshotToPersist() : null;
+    } catch (err) {
+      return false;
+    }
+    if (!payload) return false;
+
+    const json = JSON.stringify(payload);
+    if (json === financialIndicatorsPersistedJson) return true;
+
+    try {
+      await docRef().set({ [FINANCIAL_INDICATORS_DOC_FIELD]: payload }, { merge: true });
+      financialIndicatorsPersistedJson = json;
+      return true;
+    } catch (err) {
+      console.warn('[Livro-Caixa] Indicadores não persistidos:', err?.code || err?.message || err);
+      return false;
+    }
+  }
+
+  /* Busca pública (sem login), mas só faz sentido com a tela pronta.
+     O TTL do adaptador (6 h) impede nova leva de chamadas ao reabrir. */
+  async function refreshFinancialIndicators(options = {}) {
+    try {
+      const client = financialIndicatorsClient();
+      if (!client) return null;
+
+      const before = JSON.stringify(financialIndicatorsSnapshot());
+      const snapshot = await client.getIndicators({ force: options.force === true });
+      if (!snapshot) return null;
+
+      if (firstLoadDone && JSON.stringify(financialIndicatorsSnapshot()) !== before) render();
+      await persistFinancialIndicators();
+      return snapshot;
+    } catch (err) {
+      /* Camada de exibição: falha aqui nunca pode derrubar a tela. */
+      return null;
+    }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible' || !currentUser) return;
+    refreshFinancialIndicators();
+  });
+
+  /* --- superfície 1: seção do Dashboard (somente leitura) --- */
+  function renderDashIndicators() {
+    const info = financialIndicatorsState();
+    if (!info) return '';
+    const ind = info.indicators;
+    const rows = [];
+    const add = (label, value, detail, icon) => rows.push(dashHealthMetric(label, value, 'neutral', detail, null, icon));
+
+    if (ind.selic) {
+      add('Selic (ao dia)', formatIndicatorPercent(ind.selic.value, 4),
+        `Último valor apurado em ${formatIndicatorDate(ind.selic.date)}`, '％');
+    }
+    if (ind.cdi) {
+      add('CDI (ao dia)', formatIndicatorPercent(ind.cdi.value, 4),
+        `Último valor apurado em ${formatIndicatorDate(ind.cdi.date)}`, '％');
+    }
+    if (ind.ipca) {
+      add('IPCA (mês)', formatIndicatorPercent(ind.ipca.value, 2),
+        `Variação de ${formatIndicatorMonth(ind.ipca.date)}`, '％');
+    }
+    if (ind.tesouro && Array.isArray(ind.tesouro.titles)) {
+      add('Tesouro Direto', `${ind.tesouro.titles.length} títulos`,
+        `Taxas e preços do dia ${formatIndicatorDate(ind.tesouro.date)}`, '▤');
+    }
+    if (!rows.length) return '';
+
+    const rowsHtml = rows.map(metric => `
+      <div class="dash-metric">
+        <div class="dash-metric-icon ${metric.tone}" aria-hidden="true">${metric.icon || ''}</div>
+        <div class="dash-metric-content">
+          <small>${escapeHTML(metric.label)}</small>
+          <strong class="dash-metric-value ${metric.tone}">${escapeHTML(metric.value)}</strong>
+          <span class="dash-metric-note">${escapeHTML(metric.detail)}</span>
+        </div>
+      </div>`).join('');
+
+    const meta = info.fetchedAt
+      ? `Atualizado em ${formatIndicatorDate(String(info.fetchedAt).slice(0, 10))}`
+      : '';
+    const missing = ['selic', 'cdi', 'ipca', 'tesouro'].filter(key => !ind[key]);
+    const missingNote = missing.length
+      ? `<p class="dashboard-footnote">Indicador(es) indisponível(is) no momento: ${escapeHTML(missing.join(', '))}. O app mantém o último valor conhecido.</p>`
+      : '';
+
+    return `
+      <section class="dash-section dash-indicators-section" aria-label="Indicadores do mercado">
+        ${dashSectionHead('07', 'Indicadores do mercado', 'Banco Central (SGS) e Tesouro Nacional — referência externa.', meta)}
+        <div class="dash-metrics">${rowsHtml}</div>
+        ${missingNote}
+        <p class="dashboard-footnote">Fonte: BCB SGS e Tesouro Transparente, consultados pelo Worker do Livro-Caixa. Valores de referência; nenhum saldo seu é calculado a partir deles.</p>
+      </section>`;
+  }
+
+  /* --- superfície 2: cards de Renda Fixa/Tesouro (só leitura) --- */
+  function normalizeIndicatorKey(text) {
+    return String(text || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }
+
+  function matchTesouroTitle(inv, tesouro) {
+    if (!inv || !tesouro || !Array.isArray(tesouro.titles)) return null;
+    const keys = [normalizeIndicatorKey(inv.alias), normalizeIndicatorKey(inv.name)]
+      .filter(key => key.length >= 5);
+    if (!keys.length) return null;
+
+    /* O CSV separa "Tipo Titulo" de "Data Vencimento": o mesmo tipo
+       (ex.: "Tesouro Selic") tem vários vencimentos e alguns tipos se
+       contêm ("Tesouro Prefixado" e "… com Juros Semestrais"). Sem o
+       vencimento do investimento o par seria ambíguo — nesse caso nada é
+       exibido, em vez de apontar taxa/PU do título errado. */
+    const due = typeof inv.dueDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(inv.dueDate)
+      ? inv.dueDate
+      : '';
+    if (!due) return null;
+
+    const candidates = tesouro.titles.filter(title => {
+      if (!title || title.maturity !== due) return false;
+      const name = normalizeIndicatorKey(title.name);
+      if (!name) return false;
+      return keys.some(key => name === key
+        || key.startsWith(`${name} `)
+        || name.startsWith(`${key} `)
+        || name.includes(key));
+    });
+
+    if (!candidates.length) return null;
+    if (candidates.length === 1) return candidates[0];
+
+    /* Mesmo vencimento em duas variantes do tipo (ex.: "Tesouro Prefixado"
+       e "… com Juros Semestrais" em 2027-01-01): fica o que o próprio
+       investimento nomeia; empate vira "não mostra", nunca chute. */
+    const wantsSemiannual = keys.some(key => key.includes('juros') || key.includes('semestrais'));
+    const pool = candidates.filter(title => {
+      const name = normalizeIndicatorKey(title.name);
+      const semiannual = name.includes('juros') || name.includes('semestrais');
+      return wantsSemiannual ? semiannual : !semiannual;
+    });
+    if (pool.length === 1) return pool[0];
+    if (pool.length > 1) {
+      const exact = pool.filter(title => keys.includes(normalizeIndicatorKey(title.name)));
+      return exact.length === 1 ? exact[0] : null;
+    }
+    return null;
+  }
+
+  function investmentReferenceHTML(inv) {
+    if (!inv || (inv.type !== 'Renda Fixa' && inv.type !== 'Tesouro')) return '';
+    const ind = financialIndicatorsSnapshot();
+    if (!ind) return '';
+
+    const parts = [];
+    if (ind.selic) parts.push(`Selic ${formatIndicatorPercent(ind.selic.value, 4)}`);
+    if (ind.cdi) parts.push(`CDI ${formatIndicatorPercent(ind.cdi.value, 4)}`);
+
+    const title = matchTesouroTitle(inv, ind.tesouro);
+    if (title) {
+      parts.push(`${title.name}: taxa ${formatIndicatorPercent(title.purchaseRate, 2)} · PU ${fmt(title.purchasePrice)}`);
+    }
+
+    if (!parts.length) return '';
+    return `<span title="Referência externa (BCB/Tesouro), não altera este saldo">Ref.: ${escapeHTML(parts.join(' · '))}</span>`;
+  }
+
   const PIN_UNLOCKED_KEY = 'livrocaixa_pin_unlocked';
   let pinUnlocked = false;
   function localPinKey() { return `livrocaixa-local-pin-${currentUser?.uid || 'anonymous'}`; }
@@ -6819,7 +7102,8 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDashSpending(summary) +
       renderDashCommitments(summary) +
       renderDashPatrimony(summary) +
-      renderDashHealth(summary);
+      renderDashHealth(summary) +
+      renderDashIndicators();
     dashRenderFlowChart(summary);
   }
 
@@ -7333,6 +7617,25 @@ document.addEventListener('DOMContentLoaded', () => {
       budgets: budgetSummary,
       goals: goalSummary,
 
+      /* Referência externa de mercado (BCB/Tesouro) — contexto adicional.
+         null quando ainda não há indicadores; nunca entra em cálculo. */
+      indicators: (() => {
+        const info = financialIndicatorsState();
+        if (!info) return null;
+        const current = info.indicators;
+        const pick = item => (item ? { value: item.value, unit: item.unit, date: item.date } : null);
+        return {
+          source: 'BCB SGS e Tesouro Nacional',
+          fetchedAt: info.fetchedAt || null,
+          selic: pick(current.selic),
+          cdi: pick(current.cdi),
+          ipca: pick(current.ipca),
+          tesouro: current.tesouro && Array.isArray(current.tesouro.titles)
+            ? { date: current.tesouro.date, titleCount: current.tesouro.titles.length }
+            : null
+        };
+      })(),
+
       structuralDiagnosis: {
         issueCount: diagnosticIssues.length,
         issues: diagnosticIssues.map(issue => ({
@@ -7530,6 +7833,7 @@ OBJETIVOS:
 REGRAS IMPORTANTES:
 - Não altere nem proponha alterações automáticas nos dados do aplicativo.
 - Não invente valores que não estejam no snapshot.
+- "indicators" (quando presente) traz referências externas do Banco Central (SGS) e do Tesouro Nacional, cada uma com a própria data. Use-as apenas como contexto de mercado: não as apresente como dados do usuário, não derive projeções delas e não complete valores ausentes.
 - Não trate ausência de dados como um problema confirmado.
 - Diferencie fatos observados de interpretações.
 - Verifique period.currentMonthComplete antes de tirar conclusões sobre o mês atual. Se for false, trate os valores desse mês como parciais e evite compará-los diretamente com meses completos sem deixar essa limitação explícita.

@@ -8878,6 +8878,16 @@ body[data-tab="dashboard"] #viewDashboard.active {
 #viewDash .dash-health-section .dash-section-head{
   padding:4px 0 10px;
 }
+
+/* ---- 07 indicadores do mercado (BCB/Tesouro) ---- */
+#viewDash .dash-indicators-section{
+  background:linear-gradient(135deg,rgba(var(--gold-rgb),0.04),transparent);
+  border:1px dashed color-mix(in srgb,var(--line) 88%,transparent);
+  border-radius:16px;
+}
+#viewDash .dash-indicators-section .dash-section-head{
+  padding:4px 0 10px;
+}
 #viewDash .dash-metrics{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(170px,1fr));

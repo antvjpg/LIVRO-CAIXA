@@ -262,6 +262,38 @@ test("BCB série 11 → contrato completo, datas dd/MM e cache", async () => {
   net.handler = null;
 });
 
+test("BCB séries do catálogo → nome e unidade oficiais, sem conversão", async () => {
+  const catalogCases = [
+    { code: 11, name: "Selic", unit: "percent_per_day", raw: "0.050788", expected: 0.050788 },
+    { code: 12, name: "CDI", unit: "percent_per_day", raw: "0.050788", expected: 0.050788 },
+    { code: 433, name: "IPCA", unit: "percent_per_month", raw: "-0.32", expected: -0.32 }
+  ];
+  let ip = 60;
+
+  for (const item of catalogCases) {
+    net.handler = (url) => {
+      assert.ok(
+        url.includes(`bcdata.sgs.${item.code}/dados`),
+        `URL não aponta para a série ${item.code}: ${url}`
+      );
+      return jsonRes([{ data: "01/08/2026", valor: item.raw }]);
+    };
+
+    const res = await get(`/financial/bcb/series/${item.code}?startDate=2026-08-01&endDate=2026-08-01`, {
+      ip: `203.0.113.${ip++}`
+    });
+    assert.equal(res.status, 200);
+    const body = await res.json();
+    assert.deepEqual(body.series, { code: item.code, name: item.name });
+    assert.equal(body.unit, item.unit);
+    assert.equal(body.data.length, 1);
+    assert.equal(body.data[0].value, item.expected, "valor do SGS sofreu conversão indevida");
+    assertNoHostLeak(body);
+  }
+
+  net.handler = null;
+});
+
 test("BCB série fora do catálogo → nome e unidade não inventados", async () => {
   net.handler = () => jsonRes([{ data: "25/09/2026", valor: "1234.5" }]);
   const res = await get("/financial/bcb/series/4321?startDate=2026-09-25&endDate=2026-09-25", {

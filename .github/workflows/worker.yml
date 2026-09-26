@@ -7,10 +7,12 @@ on:
   push:
     paths:
       - "worker/**"
+      - "financial-client.js"
       - ".github/workflows/worker.yml"
   pull_request:
     paths:
       - "worker/**"
+      - "financial-client.js"
       - ".github/workflows/worker.yml"
   workflow_dispatch:
 
