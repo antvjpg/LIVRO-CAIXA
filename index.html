@@ -1398,6 +1398,9 @@ window.LivroCaixaAI = {
     }
     return text;
   },
+  /* Caminho principal e protegido: ID token do Firebase → Worker (POST /ai)
+     → OpenRouter. O Worker aplica autenticação, rate limit, cota diária e
+     validação de prompt/imagem/maxTokens antes de chamar o provedor. */
   async generateViaWorker({ prompt, imagePart, maxTokens }) {
     if (!AI_WORKER_ENDPOINT) {
       const err = new Error('O serviço de IA não está configurado.');
@@ -1468,6 +1471,10 @@ window.LivroCaixaAI = {
     }
     return reply;
   },
+  /* Fallback local: chamada direta ao OpenRouter com a chave guardada no
+     localStorage. NÃO é o caminho protegido pelo Worker — não passa por
+     autenticação, cota diária nem validação de payload do proxy. Usado
+     só quando o Worker falha e há chave local cadastrada. */
   async generateViaLocalKey({ content, maxTokens }) {
     const apiKey = this.getApiKey();
     if (!apiKey) {

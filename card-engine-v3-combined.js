@@ -962,7 +962,9 @@
   });
 
   /* =====================================================================
-     ADAPTER — card-adapter.js (camada de adaptação para UI)
+     ADAPTER — camada de adaptação para UI (definida aqui e exportada em
+     LivroCaixaCardAdapter). O arquivo separado card-adapter.js não existe
+     mais: manter a camada neste arquivo evita duplicar lógica.
      ===================================================================== */
 
   function adapterNumber(value) {
