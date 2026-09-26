@@ -209,6 +209,7 @@
           <button type="button" data-dash-period="30d">30 dias</button>
           <button type="button" data-dash-period="6m">6 meses</button>
           <button type="button" data-dash-period="1y">1 ano</button>
+          <button type="button" data-dash-period="custom" id="dashCustomPeriodBtn" title="Período personalizado"><i class="fi fi-rr-calendar" aria-hidden="true"></i></button>
         </div>
       </div>
       <div class="dash-filter-field">
@@ -5381,6 +5382,15 @@ document.addEventListener('DOMContentLoaded', () => {
         record.status = 'completed';
       }
     }
+
+    // O status segue o progresso: se ficou/manteve "Concluída" mas o objetivo
+    // ultrapassa o acumulado (ex.: meta editada com valor maior), reabre para Ativa.
+    if (record.status === 'completed') {
+      const measuredCurrent = goalCurrentAmount({ sourceType, sourceId, caixinhaId, currentAmount: legacyCurrent });
+      if (measuredCurrent != null && targetAmount > 0 && measuredCurrent < targetAmount) {
+        record.status = 'active';
+      }
+    }
     const btn = document.getElementById('btnSaveGoal');
     const originalLabel = btn.textContent;
     const previousGoals = goals.map(goal => ({ ...goal }));
@@ -5562,20 +5572,23 @@ document.addEventListener('DOMContentLoaded', () => {
     '6m':  { label: '6 meses', months: 6, bucket: 'month' },
     '1y':  { label: '1 ano',   months: 12, bucket: 'month' }
   };
-  let dashFilters = { period: '30d', account: '', compare: true };
+  let dashFilters = { period: '30d', account: '', compare: true, customStart: '', customEnd: '' };
+  let dashCommitmentsExpanded = false;
 
   function dashLoadFilters() {
     try {
       const saved = JSON.parse(localStorage.getItem(DASH_FILTERS_KEY) || 'null');
-      if (saved && DASH_PERIODS[saved.period]) {
+      if (saved && (DASH_PERIODS[saved.period] || saved.period === 'custom')) {
         dashFilters = {
           period: saved.period,
           account: typeof saved.account === 'string' ? saved.account : '',
-          compare: saved.compare !== false
+          compare: saved.compare !== false,
+          customStart: typeof saved.customStart === 'string' ? saved.customStart : '',
+          customEnd: typeof saved.customEnd === 'string' ? saved.customEnd : ''
         };
       }
     } catch (err) {
-      dashFilters = { period: '30d', account: '', compare: true };
+      dashFilters = { period: '30d', account: '', compare: true, customStart: '', customEnd: '' };
     }
   }
 
@@ -5590,6 +5603,20 @@ document.addEventListener('DOMContentLoaded', () => {
   dashLoadFilters();
 
   function dashPreset() {
+    if (dashFilters.period === 'custom') {
+      const start = dashParseISO(dashFilters.customStart);
+      const end = dashParseISO(dashFilters.customEnd);
+      if (start && end) {
+        const days = Math.max(1, Math.ceil((end - start) / 86400000) + 1);
+        return {
+          label: 'Personalizado',
+          days,
+          bucket: days <= 14 ? 'day' : days <= 45 ? 'chunk' : 'month',
+          custom: true
+        };
+      }
+      return DASH_PERIODS['30d'];
+    }
     return DASH_PERIODS[dashFilters.period] || DASH_PERIODS['30d'];
   }
 
@@ -5633,6 +5660,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const cfg = dashPreset();
     const today = dashParseISO(todayISO());
     if (!today) return { start: '', end: '' };
+
+    // Período personalizado: respeita as datas escolhidas pelo usuário.
+    if (cfg.custom && dashFilters.customStart && dashFilters.customEnd) {
+      if (!previous) {
+        return { start: dashFilters.customStart, end: dashFilters.customEnd };
+      }
+      const days = cfg.days || 30;
+      const startD = dashParseISO(dashFilters.customStart);
+      if (!startD) return { start: '', end: '' };
+      const prevEnd = new Date(startD);
+      prevEnd.setDate(prevEnd.getDate() - 1);
+      const prevStart = new Date(prevEnd);
+      prevStart.setDate(prevStart.getDate() - (days - 1));
+      return { start: dashToISO(prevStart), end: dashToISO(prevEnd) };
+    }
 
     if (cfg.days) {
       const days = cfg.days;
@@ -5982,8 +6024,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function dashHealthMetric(label, value, tone, detail, base) {
-    return { label, value, tone, detail: detail || '', base: base || null };
+  function dashHealthMetric(label, value, tone, detail, base, icon) {
+    return { label, value, tone, detail: detail || '', base: base || null, icon: icon || '' };
   }
 
   function dashHealthRows(range, flow, fixedExpenses, patrimony, patrimonyStart, committed) {
@@ -5998,7 +6040,8 @@ document.addEventListener('DOMContentLoaded', () => {
       flow.income > 0 ? `${((flow.net / flow.income) * 100).toFixed(1).replace('.', ',')}%` : '—',
       flow.income > 0 && flow.net >= 0 ? 'positive' : flow.income > 0 ? 'negative' : 'neutral',
       'Resultado dividido pelas entradas do período',
-      flow.income > 0 ? { label: 'resultado / entradas', value: `${fmt(flow.net)} / ${fmt(flow.income)}` } : null
+      flow.income > 0 ? { label: 'resultado / entradas', value: `${fmt(flow.net)} / ${fmt(flow.income)}` } : null,
+      '％'
     ));
 
     rows.push(dashHealthMetric(
@@ -6006,7 +6049,8 @@ document.addEventListener('DOMContentLoaded', () => {
       flow.income > 0 ? `${((fixedExpenses / flow.income) * 100).toFixed(1).replace('.', ',')}%` : '—',
       flow.income > 0 && fixedExpenses / flow.income <= 0.5 ? 'positive' : flow.income > 0 ? 'negative' : 'neutral',
       'Contas recorrentes com vencimento no período',
-      { label: 'despesas fixas no período', value: fmt(fixedExpenses) }
+      { label: 'despesas fixas no período', value: fmt(fixedExpenses) },
+      '⟳'
     ));
 
     rows.push(dashHealthMetric(
@@ -6014,7 +6058,8 @@ document.addEventListener('DOMContentLoaded', () => {
       patrimony > 0 ? `${((committed / patrimony) * 100).toFixed(1).replace('.', ',')}%` : '—',
       patrimony > 0 && committed / patrimony <= 0.3 ? 'positive' : patrimony > 0 ? 'negative' : 'neutral',
       'Cartões mais contas dos próximos 30 dias sobre o patrimônio',
-      { label: 'comprometido', value: fmt(committed) }
+      { label: 'comprometido', value: fmt(committed) },
+      '∑'
     ));
 
     const growth = patrimonyStart > 0 ? ((patrimony - patrimonyStart) / patrimonyStart) * 100 : null;
@@ -6023,7 +6068,8 @@ document.addEventListener('DOMContentLoaded', () => {
       growth == null ? '—' : `${growth >= 0 ? '+' : ''}${growth.toFixed(1).replace('.', ',')}%`,
       growth == null ? 'neutral' : growth >= 0 ? 'positive' : 'negative',
       'Variação do patrimônio entre o início e o fim do período',
-      growth == null ? null : { label: 'variação no período', value: fmt(patrimony - patrimonyStart) }
+      growth == null ? null : { label: 'variação no período', value: fmt(patrimony - patrimonyStart) },
+      growth != null && growth < 0 ? '↘' : '↗'
     ));
 
     rows.push(dashHealthMetric(
@@ -6031,7 +6077,8 @@ document.addEventListener('DOMContentLoaded', () => {
       monthlyExpense > 0 ? `${(patrimony > 0 ? Math.min(999, patrimony / monthlyExpense) : 0).toFixed(1).replace('.', ',')} meses` : '—',
       monthlyExpense > 0 && patrimony / monthlyExpense >= 3 ? 'positive' : monthlyExpense > 0 ? 'negative' : 'neutral',
       'Patrimônio dividido pela média mensal de saídas do período',
-      monthlyExpense > 0 ? { label: 'saída média mensal', value: fmt(monthlyExpense) } : null
+      monthlyExpense > 0 ? { label: 'saída média mensal', value: fmt(monthlyExpense) } : null,
+      '🛡'
     ));
 
     return rows;
@@ -6158,8 +6205,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderDashSummary(s) {
-    const kpi = (label, value, cls, note, delta) => `
-      <div class="dash-kpi">
+    const kpi = (label, value, cls, note, delta, isMain = false) => `
+      <div class="dash-kpi ${isMain ? 'dash-kpi-main' : ''}">
         <small>${escapeHTML(label)}</small>
         <strong class="js-money ${cls || ''}">${value}</strong>
         ${delta || ''}
@@ -6175,10 +6222,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <section class="dash-section" aria-labelledby="dashSec1">
         ${dashSectionHead('01', 'Resumo', `Movimentação e posição em ${s.period.text}.`, escapeHTML(s.account.label))}
         <div class="dash-kpis">
-          ${kpi('Entradas', fmt(s.income), 'positive', s.previous && s.previous.income > 0 ? 'vs. ' + escapeHTML(fmt(s.previous.income)) + ' no período anterior' : '', incomeDelta)}
-          ${kpi('Saídas', fmt(s.expense), 'negative', s.previous && s.previous.expense > 0 ? 'vs. ' + escapeHTML(fmt(s.previous.expense)) + ' no período anterior' : '', expenseDelta)}
-          ${kpi('Resultado', fmt(s.result), s.result >= 0 ? 'positive' : 'negative', s.previous ? 'vs. ' + escapeHTML(fmt(s.previous.result)) + ' no período anterior' : '', resultDelta)}
-          ${kpi('Saldo disponível', fmt(s.balanceAvailable), '', 'Contas bancárias' + (s.account.id ? ' do filtro' : ''), '')}
+          ${kpi('Entradas', fmt(s.income), 'positive', s.previous && s.previous.income > 0 ? 'vs. ' + escapeHTML(fmt(s.previous.income)) + ' no período anterior' : '', incomeDelta, true)}
+          ${kpi('Saídas', fmt(s.expense), 'negative', s.previous && s.previous.expense > 0 ? 'vs. ' + escapeHTML(fmt(s.previous.expense)) + ' no período anterior' : '', expenseDelta, true)}
+          ${kpi('Resultado', fmt(s.result), s.result >= 0 ? 'positive' : 'negative', s.previous ? 'vs. ' + escapeHTML(fmt(s.previous.result)) + ' no período anterior' : '', resultDelta, true)}
+          ${kpi('Saldo disponível', fmt(s.balanceAvailable), '', 'Contas bancárias' + (s.account.id ? ' do filtro' : ''), '', true)}
           ${kpi('Patrimônio', fmt(s.patrimony.current), '', 'Bancos + caixinhas + investimentos', patrimonyDelta ? `<span class="dash-delta ${patrimonyDelta.up ? 'up' : 'down'}">${escapeHTML(patrimonyDelta.text)} no período</span>` : '')}
           ${kpi('Comprometido', fmt(s.committed.total), 'negative', 'Cartões + contas dos próximos 30 dias', '')}
         </div>
@@ -6439,18 +6486,30 @@ document.addEventListener('DOMContentLoaded', () => {
       .filter(bucket => bucket.rows.length);
     const visibleTotal = visibleBuckets.reduce((sum, bucket) => sum + bucket.rows.length, 0);
 
-    const bucketRows = visibleBuckets
+    const allBucketRows = visibleBuckets
       .map(bucket => `
         <div class="dash-bucket">
           <div class="dash-bucket-head"><strong>${escapeHTML(bucket.label)}</strong><span class="dash-bucket-count">${bucket.rows.length}</span></div>
-          ${bucket.rows.slice(0, 6).map(item => `
+          ${bucket.rows.map(item => `
             <div class="dash-bucket-row ${bucket.key === 'overdue' ? 'overdue' : ''}">
               <div><strong>${escapeHTML(item.name)}</strong><span>${dashLongDate(item.due)}</span></div>
               <b class="js-money">${fmt(item.amount)}</b>
             </div>`).join('')}
-          ${bucket.rows.length > 6 ? `<span class="dash-more">+${bucket.rows.length - 6} outro(s)</span>` : ''}
+        </div>`).join('')
+      || '';
+
+    const summaryRows = visibleBuckets
+      .map(bucket => `
+        <div class="dash-bucket-summary">
+          <span>${escapeHTML(bucket.label)}</span>
+          <span class="dash-bucket-count">${bucket.rows.length}</span>
+          <b class="js-money">${fmt(bucket.rows.reduce((sum, r) => sum + r.amount, 0))}</b>
         </div>`).join('')
       || `<div class="dashboard-empty-state">Nenhuma conta ou fatura pendente nos próximos 30 dias.</div>`;
+
+    const commitmentsContent = dashCommitmentsExpanded
+      ? `<div class="dash-buckets-expanded">${allBucketRows}</div>`
+      : `<div class="dash-buckets-summary">${summaryRows}</div>`;
 
     return `
       <section class="dash-section" aria-labelledby="dashSec4">
@@ -6458,40 +6517,68 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="dash-two-col">
           ${cardsPanel}
           <div class="dash-panel">
-            <div class="dash-panel-head"><strong>Contas e faturas por vencimento</strong><span class="js-money">${fmt(s.committed.total)} comprometido</span></div>
-            ${bucketRows}
+            <div class="dash-panel-head">
+              <strong>Contas e faturas por vencimento</strong>
+              <span class="js-money">${fmt(s.committed.total)} comprometido</span>
+            </div>
+            <button type="button" class="dash-expand-btn" onclick="toggleDashCommitments()" aria-expanded="${dashCommitmentsExpanded}" aria-controls="dashCommitmentsContent">
+              <i class="fi fi-rr-angle-${dashCommitmentsExpanded ? 'up' : 'down'}-small" aria-hidden="true"></i>
+              <span>${dashCommitmentsExpanded ? 'Recolher' : 'Expandir'}</span>
+            </button>
+            <div id="dashCommitmentsContent" class="dash-commitments-content">
+              ${commitmentsContent}
+            </div>
           </div>
         </div>
       </section>`;
   }
 
+  window.toggleDashCommitments = function() {
+    dashCommitmentsExpanded = !dashCommitmentsExpanded;
+    renderDashboardTab();
+  }
+
   function renderDashPatrimony(s) {
     const parts = s.patrimony.parts;
     const totalParts = parts.banks + parts.pockets + parts.investments;
-    const partRow = (label, value, share) => `
+    const partRow = (label, value, share, color) => `
       <div class="dash-part-row">
         <div class="dash-part-copy"><strong>${escapeHTML(label)}</strong><span>${share.toFixed(1).replace('.', ',')}% do patrimônio</span></div>
-        <div class="dash-part-track"><span style="width:${Math.min(100, Math.max(0, share)).toFixed(2)}%"></span></div>
-        <b class="js-money">${fmt(value)}</b>
+        <div class="dash-part-mini-bar" style="--share:${Math.min(100, Math.max(0, share)).toFixed(2)}%;--bar-color:${color}"></div>
+        <div class="dash-part-value js-money">${fmt(value)}</div>
       </div>`;
 
     const share = value => (totalParts > 0 ? (value / totalParts) * 100 : 0);
 
     const goalsHTML = s.goals.length
       ? s.goals.map(goal => `
-        <div class="pocket-goal dash-goal">
-          <div class="pocket-goal-head"><span>${escapeHTML(goal.name)}${goal.deadline ? ' · até ' + dashLongDate(goal.deadline) : ''}</span><strong>${goal.hasCurrent ? goal.pct.toFixed(0).replace('.', ',') + '%' : 'sem origem'}</strong></div>
-          <div class="pocket-goal-track"><span style="width:${goal.pct.toFixed(2)}%"></span></div>
-          <div class="pocket-goal-values"><span class="js-money">${goal.hasCurrent ? fmt(goal.current) : '—'} de ${fmt(goal.target)}</span></div>
+        <div class="dash-goal-row">
+          <div class="dash-goal-info">
+            <strong>${escapeHTML(goal.name)}${goal.deadline ? ' · até ' + dashLongDate(goal.deadline) : ''}</strong>
+            <span>${goal.hasCurrent ? fmt(goal.current) : '—'} de ${fmt(goal.target)}</span>
+          </div>
+          <div class="dash-goal-progress">
+            <div class="dash-goal-bar" style="--pct:${goal.pct.toFixed(2)}%;--bar-color:${goal.pct >= 100 ? 'var(--green)' : 'var(--accent)'}"></div>
+            <span class="dash-goal-pct">${goal.hasCurrent ? goal.pct.toFixed(0).replace('.', ',') + '%' : 'sem origem'}</span>
+          </div>
         </div>`).join('')
       : `<div class="dashboard-empty-state">Nenhuma meta cadastrada. Crie metas na aba Metas para acompanhar o progresso aqui.</div>`;
 
     const evolution = s.patrimony.hasHistory
       ? `
-        <div class="dash-evolution">
-          <div class="dash-evolution-item"><small>No início do período</small><strong class="js-money">${fmt(s.patrimony.atStart)}</strong></div>
-          <div class="dash-evolution-item"><small>Hoje</small><strong class="js-money">${fmt(s.patrimony.current)}</strong></div>
-          <div class="dash-evolution-item"><small>Variação</small><strong class="js-money ${s.patrimony.delta >= 0 ? 'positive' : 'negative'}">${fmt(s.patrimony.delta)}</strong></div>
+        <div class="dash-evolution-grid">
+          <div class="dash-evo-item">
+            <small>No início do período</small>
+            <strong class="js-money">${fmt(s.patrimony.atStart)}</strong>
+          </div>
+          <div class="dash-evo-item">
+            <small>Hoje</small>
+            <strong class="js-money">${fmt(s.patrimony.current)}</strong>
+          </div>
+          <div class="dash-evo-item dash-evo-delta ${s.patrimony.delta >= 0 ? 'positive' : 'negative'}">
+            <small>Variação</small>
+            <strong class="js-money ${s.patrimony.delta >= 0 ? 'positive' : 'negative'}">${fmt(s.patrimony.delta)}</strong>
+          </div>
         </div>`
       : `<div class="dashboard-empty-state">Histórico insuficiente para comparar a evolução do patrimônio neste período. Registre movimentações anteriores a ${dashLongDate(s.period.start)}.</div>`;
 
@@ -6501,9 +6588,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="dash-two-col">
           <div class="dash-panel">
             <div class="dash-panel-head"><strong>Composição atual</strong><span class="js-money">${fmt(totalParts)}</span></div>
-            ${partRow('Bancos', parts.banks, share(parts.banks))}
-            ${partRow('Caixinhas', parts.pockets, share(parts.pockets))}
-            ${partRow('Investimentos', parts.investments, share(parts.investments))}
+            ${partRow('Bancos', parts.banks, share(parts.banks), '#3E9B6E')}
+            ${partRow('Caixinhas', parts.pockets, share(parts.pockets), '#B08D3E')}
+            ${partRow('Investimentos', parts.investments, share(parts.investments), '#327957')}
             ${evolution}
           </div>
           <div class="dash-panel">
@@ -6517,34 +6604,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderDashHealth(s) {
     const rows = s.health.map(metric => `
       <div class="dash-metric">
-        <small>${escapeHTML(metric.label)}</small>
-        <strong class="dash-metric-value ${metric.tone}">${escapeHTML(metric.value)}</strong>
-        <span class="dash-metric-note">${escapeHTML(metric.detail)}</span>
-        ${metric.base ? `<span class="dash-metric-base js-money">${escapeHTML(metric.base.value)}</span>` : ''}
+        <div class="dash-metric-icon ${metric.tone}" aria-hidden="true">${metric.icon || ''}</div>
+        <div class="dash-metric-content">
+          <small>${escapeHTML(metric.label)}</small>
+          <strong class="dash-metric-value ${metric.tone}">${escapeHTML(metric.value)}</strong>
+          <span class="dash-metric-note">${escapeHTML(metric.detail)}</span>
+          ${metric.base ? `<span class="dash-metric-base js-money">${escapeHTML(metric.base.value)}</span>` : ''}
+        </div>
       </div>`).join('');
 
     return `
-      <section class="dash-section" aria-labelledby="dashSec6">
-        ${dashSectionHead('06', 'Saúde financeira', 'Indicadores derivados dos valores já calculados pelo aplicativo.', s.period.text)}
+      <section class="dash-section dash-health-section" aria-labelledby="dashSec6">
+        ${dashSectionHead('06', 'Saúde financeira', 'Indicadores-chave da sua situação financeira.', s.period.text)}
         <div class="dash-metrics">${rows}</div>
         <p class="dashboard-footnote">Poupança = resultado ÷ entradas · Despesas fixas = contas recorrentes com vencimento no período ÷ entradas · Comprometido = cartões + contas dos próximos 30 dias ÷ patrimônio · Reserva = patrimônio ÷ saída média mensal.</p>
-      </section>`;
-  }
-
-  function renderDashInsights(s) {
-    const rows = s.insights.length
-      ? s.insights.map(alert => `
-        <div class="dashboard-alert-row">
-          <span>${escapeHTML(alert.icon)}</span>
-          <div><strong>${escapeHTML(alert.title)}</strong><small>${escapeHTML(alert.detail)}</small></div>
-        </div>`).join('')
-      : `<div class="dashboard-alert-row positive"><span>✓</span><div><strong>Nenhum aviso importante</strong><small>O painel não encontrou pendências críticas neste momento.</small></div></div>`;
-
-    return `
-      <section class="dash-section" aria-labelledby="dashSec7">
-        ${dashSectionHead('07', 'Insights', 'Leitura determinística dos seus dados — base para a análise com IA.', 'sem chamadas externas')}
-        <div class="dashboard-alerts">${rows}</div>
-        <p class="dashboard-footnote">O objeto <code>window.LivroCaixaDashboard.buildSummary()</code> expõe estes indicadores em JSON (<code>schemaVersion ${DASH_SCHEMA_VERSION}</code>) para a IA interpretar. A IA não recalcula valores: ela lê o resumo gerado aqui.</p>
       </section>`;
   }
 
@@ -6606,8 +6679,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDashSpending(summary) +
       renderDashCommitments(summary) +
       renderDashPatrimony(summary) +
-      renderDashHealth(summary) +
-      renderDashInsights(summary);
+      renderDashHealth(summary);
     dashRenderFlowChart(summary);
   }
 
@@ -6619,8 +6691,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     bar.querySelectorAll('[data-dash-period]').forEach(button => {
       button.addEventListener('click', () => {
-        if (!DASH_PERIODS[button.dataset.dashPeriod]) return;
-        dashFilters.period = button.dataset.dashPeriod;
+        const period = button.dataset.dashPeriod;
+        if (period === 'custom') {
+          openCustomPeriodModal();
+          return;
+        }
+        if (!DASH_PERIODS[period]) return;
+        dashFilters.period = period;
         dashSaveFilters();
         renderDashboardTab();
       });
@@ -7985,6 +8062,63 @@ ${JSON.stringify(snapshot)}
     overlay.classList.remove('open');
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
     returnToEntryAfterCategory = false;
+  }
+
+  function openCustomPeriodModal() {
+    closeFilterChoice();
+    const overlay = document.getElementById('modalOverlay');
+    if (!overlay) return;
+    
+    const modalHtml = `
+      <div class="panel" id="panelCustomPeriod">
+        <h3>Período personalizado <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
+        <div class="form-grid">
+          <div>
+            <label for="customPeriodStart">Início</label>
+            <input type="date" id="customPeriodStart" value="${dashFilters.customStart || ''}">
+          </div>
+          <div>
+            <label for="customPeriodEnd">Fim</label>
+            <input type="date" id="customPeriodEnd" value="${dashFilters.customEnd || ''}">
+          </div>
+          <div style="grid-column:1/-1; display:flex; gap:8px; margin-top:4px;">
+            <button type="button" onclick="closeAllPanels()" style="flex:1;">Cancelar</button>
+            <button type="button" class="primary" onclick="applyCustomPeriod()" style="flex:1;">Aplicar</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Remove existing custom period modal if any
+    const existing = document.getElementById('panelCustomPeriod');
+    if (existing) existing.remove();
+    
+    // Insere DENTRO do overlay: os estilos .modal-overlay/.panel#modalOverlay
+    // centralizam o painel; fora dele ele renderiza sem posicionamento de modal.
+    overlay.insertAdjacentHTML('beforeend', modalHtml);
+    openModal('panelCustomPeriod');
+  }
+
+  window.applyCustomPeriod = function() {
+    const start = document.getElementById('customPeriodStart')?.value;
+    const end = document.getElementById('customPeriodEnd')?.value;
+    
+    if (!start || !end) {
+      alert('Selecione data de início e fim');
+      return;
+    }
+    
+    if (new Date(start) > new Date(end)) {
+      alert('Data de início deve ser anterior à data de fim');
+      return;
+    }
+    
+    dashFilters.period = 'custom';
+    dashFilters.customStart = start;
+    dashFilters.customEnd = end;
+    dashSaveFilters();
+    closeAllPanels();
+    renderDashboardTab();
   }
 
   document.getElementById('modalOverlay').onclick = (e) => {
@@ -12652,7 +12786,6 @@ document.getElementById('tSalvar').onclick = async () => {
 </script>
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
-  <button type="button" data-destination="dash" aria-label="Dashboard"><span class="nav-icon"><i class="fi fi-rr-ballot" aria-hidden="true"></i></span><span>Dashboard</span></button>
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i></span><span>Visão geral</span></button>
   <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span><span>Caixinhas</span></button>
   <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><i class="fi fi-rr-book" aria-hidden="true"></i></span><span>Livro-Caixa</span></button>
