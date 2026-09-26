@@ -9053,3 +9053,84 @@ body[data-tab="dashboard"] #viewDashboard.active {
 @media (prefers-reduced-motion:reduce){
   .quote-fetch-button .fi.is-loading{animation:none;}
 }
+
+/* [CSS · DASHBOARD] gráfico de barras "Entradas e saídas por mês" (Visão geral) */
+.dashboard-monthly-flow-box{
+  position:relative;
+  width:100%;
+  height:248px;
+  min-width:0;
+}
+.dashboard-monthly-flow-box[hidden],
+.dashboard-monthly-flow-fallback[hidden]{
+  display:none;
+}
+.dashboard-monthly-flow-fallback{
+  min-width:0;
+}
+@media (max-width:680px){
+  .dashboard-monthly-flow-box{height:206px;}
+}
+
+/* [CSS · VISÃO GERAL] harmonização dos cards externos com o card principal.
+   Escopo: apenas chrome (raio, borda, sombra, padding e espaçamento). */
+#viewDashboard #advancedDashboard{
+  margin:0;
+}
+#viewDashboard #dashboardNextPayment .next-pay-inner,
+#viewDashboard #dashboardGeminiHost{
+  padding:18px 18px 20px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--surface);
+  box-shadow:0 7px 18px rgba(28,58,43,.06);
+}
+#viewDashboard #dashboardNextPayment .next-pay-inner{
+  margin:0;
+}
+#viewDashboard #dashboardGeminiHost .diagnostic-summary-card{
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+@media (max-width:680px){
+  #viewDashboard #dashboardNextPayment .next-pay-inner,
+  #viewDashboard #dashboardGeminiHost{
+    padding:15px 13px 17px;
+    border-radius:15px;
+  }
+}
+#viewDashboard #dashboardGeminiHost .diagnostic-results{
+  margin-top:12px;
+}
+#viewDashboard #dashboardGeminiHost .diagnostic-results:empty{
+  display:none;
+}
+
+/* [CSS · VISÃO GERAL] tipografia e botão das seções externas, no mesmo
+   padrão das seções internas do card (título 12px, valor em IBM Plex Mono,
+   dicas 10px, primary com raio ~12px como toolbar/painel). */
+#viewDashboard #dashboardNextPayment .next-pay-row strong{
+  font-size:12px;
+}
+#viewDashboard #dashboardNextPayment .next-pay-row b{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  font-weight:800;
+}
+#viewDashboard #dashboardNextPayment .next-pay-inner.empty strong{
+  font-size:11px;
+}
+#viewDashboard .dashboard-gemini-host #btnGeminiDiagnostic{
+  min-height:42px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+#viewDashboard .dashboard-gemini-host .daily-insight-quota{
+  font-size:10px;
+}

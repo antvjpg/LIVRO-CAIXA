@@ -5479,7 +5479,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const monthNet = monthIncome - monthExpense;
     const series = dashboardMonthSeries(6);
     const current = series.at(-1) || { income: monthIncome, expense: monthExpense, net: monthNet, patrimony: totalBankBalance() + totalPocketBalance() + totalInvestBalance() };
-    const maxFlow = Math.max(1, ...series.flatMap(item => [item.income, item.expense]));
     const avgNet = series.reduce((sum, item) => sum + item.net, 0) / Math.max(1, series.length);
     const projectionMonths = Number(featureSettings.projectionMonths || 6);
     const projected = current.patrimony + avgNet * projectionMonths;
@@ -5548,7 +5547,141 @@ document.addEventListener('DOMContentLoaded', () => {
     const advanceDays = Number(featureSettings.reminderAdvanceDays) || 0; const advanceBills = advanceDays ? pendingBills.filter(bill => { const due = new Date(`${month}-${String(billDueDateForMonth(bill, year, monthIndex).slice(-2)).padStart(2, '0')}T23:59:59`); return due >= new Date() && (due - new Date()) / 86400000 <= advanceDays; }) : []; if (advanceBills.length) alerts.push(`<div class="dashboard-alert-row"><span>i</span><div><strong>Fatura próxima</strong><small>${advanceBills.length} conta(s) vencem nos próximos ${advanceDays} dia(s).</small></div></div>`);
     if (!alerts.length) alerts.push(`<div class="dashboard-alert-row positive"><span>✓</span><div><strong>Nenhum alerta importante</strong><small>Seu painel não encontrou pendências críticas neste momento.</small></div></div>`);
 
-    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dashboard-explainer"><span class="legend-dot income"></span> Entradas <span class="legend-dot expense"></span> Saídas <span class="legend-dot patrimony"></span> Patrimônio estimado</div><div class="monthly-flow-chart">${series.map(item => { const incomePct = Math.max(item.income > 0 ? 4 : 0, item.income / maxFlow * 100); const expensePct = Math.max(item.expense > 0 ? 4 : 0, item.expense / maxFlow * 100); return `<div class="monthly-flow-row"><div class="monthly-flow-label"><strong>${escapeHTML(item.label)}</strong><span>Fluxo ${item.net >= 0 ? '+' : ''}${fmt(item.net)}</span></div><div class="monthly-flow-bars"><div class="flow-bar-line"><span>Entradas</span><div class="flow-track"><i class="income" style="width:${Math.min(100, incomePct).toFixed(2)}%"></i></div><b>${fmt(item.income)}</b></div><div class="flow-bar-line"><span>Saídas</span><div class="flow-track"><i class="expense" style="width:${Math.min(100, expensePct).toFixed(2)}%"></i></div><b>${fmt(item.expense)}</b></div></div><div class="monthly-patrimony"><small>Patrimônio estimado</small><strong>${fmt(item.patrimony)}</strong></div></div>`; }).join('')}</div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta ou fatura encontrada para o filtro/titular selecionado neste mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
+    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dash-chart-box dashboard-monthly-flow-box" id="dashMonthlyFlowChartBox"><canvas id="dashMonthlyFlowChart" role="img" aria-label="Gráfico de entradas, saídas e patrimônio estimado dos últimos meses"></canvas></div><div class="dash-chart-fallback dashboard-monthly-flow-fallback" id="dashMonthlyFlowFallback" hidden></div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta ou fatura encontrada para o filtro/titular selecionado neste mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
+    renderDashboardMonthlyFlowChart(series);
+  }
+
+  /* Gráfico de barras "Entradas e saídas por mês" (aba Visão geral).
+     Reusa dashFlowFallbackHTML quando o Chart.js não está disponível. */
+  let dashboardMonthlyFlowChartInstance = null;
+
+  function destroyDashboardMonthlyFlowChart() {
+    if (!dashboardMonthlyFlowChartInstance) return;
+    try {
+      dashboardMonthlyFlowChartInstance.destroy();
+    } catch (err) {
+      /* canvas já removido do DOM */
+    }
+    dashboardMonthlyFlowChartInstance = null;
+  }
+
+  function renderDashboardMonthlyFlowChart(series) {
+    const canvas = document.getElementById('dashMonthlyFlowChart');
+    const box = document.getElementById('dashMonthlyFlowChartBox');
+    const fallback = document.getElementById('dashMonthlyFlowFallback');
+
+    destroyDashboardMonthlyFlowChart();
+
+    if (!canvas || typeof Chart === 'undefined') {
+      if (box) box.hidden = true;
+      if (fallback) {
+        fallback.hidden = false;
+        fallback.innerHTML = dashFlowFallbackHTML(series);
+      }
+      return;
+    }
+
+    if (fallback) fallback.hidden = true;
+    if (box) box.hidden = false;
+
+    const styles = getComputedStyle(document.body);
+    const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
+    const ink = readVar('--ink', '#1C2B24');
+    const inkSoft = readVar('--ink-soft', '#4C5A52');
+    const lineColor = readVar('--line', '#D8D2C1');
+    const green = readVar('--dash-flow-income', readVar('--green', '#3E9B6E'));
+    const red = readVar('--dash-flow-expense', readVar('--red', '#C2553B'));
+    const gold = readVar('--dash-flow-patrimony', readVar('--gold', '#B08D3E'));
+    const masked = () => document.body.classList.contains('balances-hidden');
+    const money = value => (masked() ? '••••••' : fmt(value));
+    const tick = value => {
+      if (masked()) return '';
+      return 'R$ ' + Number(value || 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+    };
+
+    dashboardMonthlyFlowChartInstance = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: series.map(item => item.label),
+        datasets: [
+          {
+            label: 'Entradas',
+            data: series.map(item => item.income),
+            backgroundColor: green,
+            borderRadius: 4,
+            maxBarThickness: 22,
+            yAxisID: 'y',
+            order: 2
+          },
+          {
+            label: 'Saídas',
+            data: series.map(item => item.expense),
+            backgroundColor: red,
+            borderRadius: 4,
+            maxBarThickness: 22,
+            yAxisID: 'y',
+            order: 2
+          },
+          {
+            label: 'Patrimônio estimado',
+            data: series.map(item => item.patrimony),
+            type: 'line',
+            borderColor: gold,
+            backgroundColor: gold,
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 2,
+            pointHoverRadius: 4,
+            yAxisID: 'y1',
+            order: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' },
+              color: inkSoft,
+              boxWidth: 12,
+              padding: 12
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: context => ` ${context.dataset.label}: ${money(context.parsed.y)}`,
+              afterBody: items => {
+                const index = items && items.length ? items[0].dataIndex : -1;
+                const item = series[index];
+                return item ? `Resultado: ${money(item.net)}` : '';
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: ink, font: { size: 10, weight: '600' }, maxRotation: 0, autoSkip: true }
+          },
+          y: {
+            position: 'left',
+            beginAtZero: true,
+            grid: { color: lineColor },
+            ticks: { color: inkSoft, font: { size: 10 }, callback: tick }
+          },
+          y1: {
+            position: 'right',
+            beginAtZero: true,
+            grid: { drawOnChartArea: false },
+            ticks: { color: gold, font: { size: 10 }, callback: tick }
+          }
+        }
+      }
+    });
   }
 
   /* =====================================================================
