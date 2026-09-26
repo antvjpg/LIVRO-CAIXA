@@ -4,18 +4,18 @@
    Tabela de rotas (cada handler declara método, origem, autenticação e
    contrato de resposta; NÃO renomear rotas, códigos de erro nem os
    headers X-AI-Quota-* — o index.html os consome):
-     OPTIONS  *        → 204 + CORS, ou 403 fora da allowlist
-     GET      /health  → { ok: true }            (sem autenticação)
-     GET      /quota   → auth + cota forçada → { limit, used, remaining, resetAt, day }
-     POST     /ai      → auth + cota         → { text, model }
+      OPTIONS  *            → 204 + CORS, ou 403 fora da allowlist
+      GET      /health      → { ok: true }        (sem autenticação)
+      GET      /quota       → auth + cota forçada → { limit, used, remaining, resetAt, day }
+      POST     /ai          → auth + cota         → { text, model }
+      GET      /financial/  → gateway financeiro  → BCB (SGS) e Tesouro
+                             (sem autenticação: dado público; Origin na
+                             allowlist + rate limit próprio por IP/origem)
    Qualquer outra rota → 404 { error, code: "not_found" }.
 
-   Convenção preparada para o próximo passo (nenhuma rota publicada aqui):
-   /financial/{provider}/... — gateway isolado por provedor (BCB, Tesouro
-   Selic etc.), sem dependência com o módulo de IA. Envelope interno de
-   falha de provedor: { code, message, provider, status } (ver
-   ai/openrouter.js); cabe ao roteador decidir o que vira resposta HTTP.
-   Nenhum endpoint é exposto sem implementação real.
+   Envelope interno de falha de provedor: { code, message, provider,
+   status } (ver ai/openrouter.js e financial/gateway.js); cabe ao
+   roteador decidir o que vira resposta HTTP.
 
    Limitações conscientes desta versão: rate limit e cota vivem em memória
    por isolate (não distribuídos) — comportamento suficiente para o uso
@@ -32,24 +32,32 @@ import {
   failureFromResult,
   emptyReplyFailure
 } from "./ai/openrouter.js";
+import { handleFinancial } from "./financial/gateway.js";
 
 const RATE_LIMIT_WINDOW_MS = 60000;
 const DEFAULT_RATE_LIMIT = 30;
+const DEFAULT_FINANCIAL_RATE_LIMIT = 20;
 const MAX_RATE_BUCKETS = 500;
 
-/* Map de contagem por uid dentro do isolate atual. Sobe junto com o
-   isolate e não é compartilhado entre isolates. */
+/* Map de contagem por chave dentro do isolate atual. Sobe junto com o
+   isolate e não é compartilhado entre isolates. O prefixo separa os
+   contadores: IA usa o uid do Firebase; /financial usa IP/origem. */
 const rateBuckets = new Map();
 
-function isRateLimited(uid, env) {
-  const configured = Number(env.AI_RATE_LIMIT_PER_MINUTE);
-  const limit = Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_RATE_LIMIT;
+function isRateLimited(key, env, options = {}) {
+  const limitEnvVar = options.limitEnvVar || "AI_RATE_LIMIT_PER_MINUTE";
+  const defaultLimit = options.defaultLimit || DEFAULT_RATE_LIMIT;
+  const prefix = options.prefix || "";
+
+  const configured = Number(env[limitEnvVar]);
+  const limit = Number.isFinite(configured) && configured > 0 ? configured : defaultLimit;
   const now = Date.now();
-  const bucket = rateBuckets.get(uid);
+  const bucketKey = `${prefix}${key}`;
+  const bucket = rateBuckets.get(bucketKey);
 
   if (!bucket || now - bucket.start >= RATE_LIMIT_WINDOW_MS) {
     if (rateBuckets.size >= MAX_RATE_BUCKETS) rateBuckets.clear();
-    rateBuckets.set(uid, { start: now, count: 1 });
+    rateBuckets.set(bucketKey, { start: now, count: 1 });
     return false;
   }
 
@@ -70,6 +78,35 @@ export default {
 
     if (url.pathname === "/health") {
       return json({ ok: true }, 200, cors || {});
+    }
+
+    /* Rotas financeiras: dado público, sem autenticação, mas com a mesma
+       allowlist de origem do restante e rate limit próprio por IP/origem
+       (chave separada da IA: nunca disputa bucket com /ai). */
+    if (url.pathname === "/financial" || url.pathname.startsWith("/financial/")) {
+      if (!cors) return json({ error: "Origem não autorizada.", code: "origin_blocked" }, 403, null);
+      if (request.method !== "GET") {
+        return json({ error: "Método não permitido.", code: "method_not_allowed" }, 405, cors);
+      }
+
+      const rateKey = request.headers.get("cf-connecting-ip") || origin || "unknown";
+      const limited = isRateLimited(rateKey, env, {
+        limitEnvVar: "FINANCIAL_RATE_LIMIT_PER_MINUTE",
+        defaultLimit: DEFAULT_FINANCIAL_RATE_LIMIT,
+        prefix: "financial:"
+      });
+      if (limited) {
+        return json(
+          {
+            error: "Muitas consultas financeiras agora. Aguarde alguns segundos e tente novamente.",
+            code: "financial_rate_limited"
+          },
+          429,
+          cors
+        );
+      }
+
+      return handleFinancial(request, env, cors);
     }
 
     if (url.pathname === "/quota") {

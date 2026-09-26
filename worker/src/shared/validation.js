@@ -1,7 +1,11 @@
-/* Validação de entrada do corpo enviado pelo index.html ao POST /ai.
-   Regra: nada é encaminhado ao OpenRouter antes de passar por estes
-   limites. Campos desconhecos do payload são ignorados — apenas
-   "prompt", "imagePart" e "maxTokens" são lidos. */
+/* Validação compartilhada do Worker.
+
+   1) Entrada do corpo enviado pelo index.html ao POST /ai: nada é
+      encaminhado ao OpenRouter antes de passar por estes limites. Campos
+      desconhecidos do payload são ignorados — apenas "prompt",
+      "imagePart" e "maxTokens" são lidos.
+   2) Datas "YYYY-MM-DD" do gateway financeiro (BCB/Tesouro): validação
+      estrita e conversões de formato, sem regra de negócio financeira. */
 
 /* Teto do corpo da requisição.
    O frontend autoriza comprovante de até 15 MB (PDF) que vira data URL
@@ -192,4 +196,65 @@ export function validateAiPayload(payload) {
   if (!image.ok) return image;
 
   return { ok: true, value: { prompt, imageUrl: image.imageUrl, maxTokens } };
+}
+
+/* =====================================================================
+   Datas "YYYY-MM-DD" — usadas pelo gateway financeiro (BCB e Tesouro).
+   Formato estrito + validade calendário, tudo em UTC puro: nenhuma
+   conversão de timezone e nenhuma regra financeira aqui.
+   ===================================================================== */
+
+const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const MIN_VALID_YEAR = 1900;
+const MAX_VALID_YEAR = 2100;
+
+export function isISODateFormat(value) {
+  return typeof value === "string" && ISO_DATE_PATTERN.test(value);
+}
+
+export function isValidISODate(value) {
+  if (!isISODateFormat(value)) return false;
+  const year = Number(value.slice(0, 4));
+  const month = Number(value.slice(5, 7));
+  const day = Number(value.slice(8, 10));
+  if (year < MIN_VALID_YEAR || year > MAX_VALID_YEAR) return false;
+  const rebuilt = new Date(Date.UTC(year, month - 1, day));
+  return (
+    rebuilt.getUTCFullYear() === year &&
+    rebuilt.getUTCMonth() === month - 1 &&
+    rebuilt.getUTCDate() === day
+  );
+}
+
+export function todayUTC() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function isoToUTC(value) {
+  const [year, month, day] = value.split("-").map(Number);
+  return Date.UTC(year, month - 1, day);
+}
+
+export function addDaysISO(value, days) {
+  const date = new Date(isoToUTC(value) + days * 86400000);
+  return date.toISOString().slice(0, 10);
+}
+
+/* Diferença em dias: diffDaysISO("2026-01-01", "2026-01-11") === 10 */
+export function diffDaysISO(from, to) {
+  return Math.round((isoToUTC(to) - isoToUTC(from)) / 86400000);
+}
+
+/* 2026-09-26 → 26/09/2026 (formato do SGS/BCB) */
+export function isoToBrDate(value) {
+  const [year, month, day] = value.split("-");
+  return `${day}/${month}/${year}`;
+}
+
+/* 26/09/2026 → 2026-09-26; null quando malformada ou impossível. */
+export function brDateToIso(value) {
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(value || ""));
+  if (!match) return null;
+  const iso = `${match[3]}-${match[2]}-${match[1]}`;
+  return isValidISODate(iso) ? iso : null;
 }
