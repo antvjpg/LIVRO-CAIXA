@@ -399,6 +399,16 @@ test("BCB erro de rede → 502 financial_provider_error", async () => {
   net.handler = null;
 });
 
+test("BCB devolve 3xx → redirect não é seguido → 502 financial_provider_error", async () => {
+  net.handler = () => jsonRes([], 302, { location: "https://example.com/destino" });
+  const res = await get("/financial/bcb/series/11?startDate=2026-09-25&endDate=2026-09-25", {
+    ip: "203.0.113.46"
+  });
+  await expectJson(res, 502, "financial_provider_error");
+  assert.equal(callsTo("bcdata.sgs.11").length, 1, "deve parar na primeira leitura");
+  net.handler = null;
+});
+
 test("BCB Content-Length acima do teto → 502 response_too_large", async () => {
   net.handler = () => jsonRes([{ data: "25/09/2026", valor: "1" }], 200, { "content-length": "99999999" });
   const res = await get("/financial/bcb/series/11?startDate=2026-09-25&endDate=2026-09-25", {
@@ -476,7 +486,7 @@ test("Tesouro sem data → dia mais recente e títulos convertidos", async () =>
 
   const requested = callsTo("precotaxatesourodireto.csv");
   assert.equal(requested.length, 1);
-  assert.equal(requested[0].init.redirect, "error", "leitura externa deve bloquear redirect");
+  assert.equal(requested[0].init.redirect, "manual", "leitura externa não deve seguir redirect");
   net.handler = null;
 });
 

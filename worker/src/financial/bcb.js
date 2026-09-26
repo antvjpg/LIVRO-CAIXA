@@ -13,7 +13,7 @@
 
    Host e caminho são CONSTANTES: o cliente só informa código de série e
    datas (nunca URL) — não há espaço para SSRF, host arbitrário ou
-   redirecionamento (redirect: "error" na leitura).
+   redirecionamento (leitura com redirect: "manual", 3xx recusado).
 
    Transformações explícitas (nenhuma silenciosa):
    - YYYY-MM-DD → dd/MM/yyyy na requisição (formato do SGS);

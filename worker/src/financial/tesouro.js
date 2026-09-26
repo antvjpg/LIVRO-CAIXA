@@ -7,7 +7,8 @@
          precotaxatesourodireto.csv
 
    Host e caminho são CONSTANTES (montados na origem, nunca a partir de
-   input do cliente) e a leitura usa redirect: "error" — não há URL a
+   input do cliente) e a leitura usa redirect: "manual" com recusa de 3xx —
+   não há URL a
    manipular, portanto não há SSRF.
 
    Estrutura verificada na fonte (inspeção desta auditoria):

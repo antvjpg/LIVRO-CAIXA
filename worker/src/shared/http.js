@@ -46,7 +46,10 @@ export function withHeaders(cors, extra) {
 
    Política comum aqui (não em cada provedor):
    - timeout explícito (AbortSignal.timeout) — a falha vira reason "timeout";
-   - redirect: "error" — nenhum redirecionamento para destino arbitrário;
+   - redirect: "manual" + recusa de 3xx — nenhum redirecionamento é seguido.
+     O valor "error" da spec NÃO existe no runtime da Cloudflare e faz o
+     fetch falhar antes de qualquer requisição; "manual" devolve o 3xx
+     sem segui-lo e vale igual no Node e no workerd;
    - teto de bytes lidos (maxBytes) — nunca lê o arquivo inteiro;
    - teto de Content-Length (maxContentLength) — recusa resposta gigante
      antes de alocar memória;
@@ -77,7 +80,7 @@ export async function fetchText(url, options = {}) {
   try {
     response = await fetch(url, {
       headers,
-      redirect: "error",
+      redirect: "manual",
       signal: AbortSignal.timeout(timeoutMs)
     });
   } catch (fetchError) {
@@ -85,6 +88,18 @@ export async function fetchText(url, options = {}) {
   }
 
   const contentType = String(response.headers?.get?.("content-type") || "");
+
+  /* Com redirect: "manual" o 3xx chega como resposta comum: é recusado
+     aqui, sem seguir Location para destino arbitrário. */
+  if (response.status >= 300 && response.status < 400) {
+    try {
+      await response.body?.cancel();
+    } catch (cancelError) {
+      /* cancelamento é opcional */
+    }
+    return { ok: false, reason: "redirect_blocked", status: response.status, contentType };
+  }
+
   const contentLength = Number(response.headers?.get?.("content-length"));
   if (Number.isFinite(contentLength) && contentLength > maxContentLength) {
     /* Recusa ANTES de ler: resposta grande demais para o Worker. */
