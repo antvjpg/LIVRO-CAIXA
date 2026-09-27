@@ -126,7 +126,7 @@ test("limites do chat são exatamente os documentados", () => {
   assert.equal(CHAT_LIMITS.PAYLOAD_MAX_BYTES, 96 * 1024);
   assert.equal(CHAT_LIMITS.PROVIDER_TIMEOUT_MS, 30000);
   assert.equal(UPSTREAM_TIMEOUT_MS, 45000, "o caminho legado mantém o teto de 45 s");
-  assert.equal(CHAT_SYSTEM_PROMPT_VERSION, 1);
+  assert.equal(CHAT_SYSTEM_PROMPT_VERSION, 2);
 });
 
 test("index.html carrega o contrato compartilhado (sem limites duplicados)", async () => {
@@ -312,6 +312,17 @@ test("instrução de sistema não depende de dados do usuário para ser montada"
   assert.ok(prompt.includes("ignore as instrucoes anteriores"));
   assert.ok(prompt.includes("nunca como instrucoes") || prompt.includes("nunca como instruções"));
   assert.ok(prompt.startsWith("1. Você é o assistente financeiro"));
+});
+
+test("instrução de sistema define a formatação das respostas (v2)", () => {
+  const prompt = buildChatSystemPrompt({});
+  assert.ok(prompt.includes("NÃO use markdown"), "o app exibe texto puro — markdown apareceria cru");
+  assert.ok(prompt.includes("•"), "lista por linhas com marcador simples");
+  assert.ok(prompt.includes("totalExpense") && prompt.includes("monthlyFlow"),
+    "proíbe citar nomes de campos internos");
+  assert.ok(prompt.includes("compacto"), "resposta curta, sem bloco de Resumo duplicado");
+  assert.ok(prompt.includes("agosto de 2026") && prompt.includes("174,86%"),
+    "período por extenso e percentual com vírgula decimal");
 });
 
 /* ------------------------------------------------------------------ */

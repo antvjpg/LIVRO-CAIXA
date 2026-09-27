@@ -344,6 +344,9 @@ test("index.html: render do chat escapa o conteúdo vindo da IA", () => {
   assert.match(html, /escapeHTML\(item\.content\)/);
   assert.match(html, /escapeHTML\(pending\.content\)/);
   assert.match(html, /escapeHTML\(AI_CHAT_GREETING\)/);
+  assert.match(html, /function aiChatStripEmphasis\(/, "remove marcadores de markdown residuais");
+  assert.match(html, /aiChatStripEmphasis\(escapeHTML\(item\.content\)\)/,
+    "só a resposta da IA passa pelo strip, após o escape");
 });
 
 test("index.html: fluxo legado de diagnóstico por seções não voltou", () => {

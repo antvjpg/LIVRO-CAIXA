@@ -7924,6 +7924,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (box) box.setAttribute('aria-busy', busy ? 'true' : 'false');
   }
 
+  /* O prompt proíbe markdown, mas o modelo ainda pode escapar **negrito**
+     ou `código`: remove só os marcadores (pós-escape, sem inserir HTML)
+     para a conversa nunca exibir asterisco ou crase cru. */
+  function aiChatStripEmphasis(text) {
+    return text.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/`([^`]+)`/g, '$1');
+  }
+
   function aiChatRender() {
     const box = document.getElementById('aiChatMessages');
     if (!box) return;
@@ -7937,7 +7944,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     messages.forEach((item) => {
       const cls = item.role === 'user' ? 'is-user' : 'is-assistant';
-      parts.push(`<div class="ai-chat-msg ${cls}">${escapeHTML(item.content)}</div>`);
+      const body = item.role === 'assistant' ? aiChatStripEmphasis(escapeHTML(item.content)) : escapeHTML(item.content);
+      parts.push(`<div class="ai-chat-msg ${cls}">${body}</div>`);
     });
     if (pending) {
       parts.push(`<div class="ai-chat-msg is-user is-pending">${escapeHTML(pending.content)}</div>`);
