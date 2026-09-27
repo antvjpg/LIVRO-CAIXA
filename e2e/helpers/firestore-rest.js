@@ -84,22 +84,51 @@ async function listCollection(uid, idToken, projectId, collection) {
   const base = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/livrocaixa/${uid}/${collection}`;
   const out = [];
   let pageToken = '';
+  /* Trilha por página (só contagens/sinais — nunca token nem conteúdo):
+     permite ler o diagnóstico no relatório sem expor dado algum. */
+  const trilha = [];
   for (let guard = 0; guard < 20; guard++) {
     const url = `${base}?pageSize=300${pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : ''}`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${idToken}` } });
     if (res.status === 404) return out; /* coleção inexistente = vazia */
-    if (!res.ok) throw new Error(`Falha ao listar ${collection}: HTTP ${res.status}`);
+    if (!res.ok) {
+      const corpo = await res.text().catch(() => '');
+      const codigo = (() => { try { return JSON.parse(corpo)?.error?.message || ''; } catch { return ''; } })();
+      throw new Error(
+        `Falha ao listar ${collection}: HTTP ${res.status}${codigo ? ` (${codigo})` : ''}` +
+        ` — trilha=${trilha.join('|') || 'vazia'}`
+      );
+    }
     const body = await res.json();
-    for (const doc of body.documents || []) {
+    const docs = body.documents || [];
+    trilha.push(`p${guard + 1}:${docs.length}${body.nextPageToken ? 'T' : '-'}`);
+    for (const doc of docs) {
       assertScoped(uid, doc.name);
       out.push({ path: doc.name, fields: decodeFields(doc.fields || {}) });
     }
-    if (!body.nextPageToken) break;
+    if (!body.nextPageToken) return out;
+    /* Sem progresso: repetição de token ou página vazia com token indicam
+       paginação patológica — parar cedo, com evidência, em vez de repetir 20×. */
+    if (body.nextPageToken === pageToken) {
+      throw new Error(
+        `Falha ao listar ${collection}: token de paginação repetido após ${guard + 1} página(s)` +
+        ` — trilha=${trilha.join('|')} — listagem inconclusiva, reset recusado`
+      );
+    }
+    if (docs.length === 0) {
+      throw new Error(
+        `Falha ao listar ${collection}: página vazia com token após ${guard + 1} página(s)` +
+        ` — trilha=${trilha.join('|')} — listagem inconclusiva, reset recusado`
+      );
+    }
     pageToken = body.nextPageToken;
   }
   /* Paginação estourada: nunca entregar lista incompleta como se fosse o
      conjunto real (senão o reset ficaria silenciosamente incompleto). */
-  throw new Error(`Falha ao listar ${collection}: mais de 20 páginas de documentos — reset incompleto recusado`);
+  throw new Error(
+    `Falha ao listar ${collection}: mais de 20 páginas de documentos` +
+    ` — trilha=${trilha.join('|')} — reset incompleto recusado`
+  );
 }
 
 /* Firestore REST tipa valores ({integerValue}|{doubleValue}|{stringValue}...) */

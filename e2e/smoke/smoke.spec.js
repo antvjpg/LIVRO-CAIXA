@@ -18,7 +18,17 @@ test.describe('Smoke — aplicação operacional', () => {
     await app.openApp(page);
 
     if (!(await app.isLoggedIn(page))) {
-      test.skip(true, 'BLOCKED: sem sessão QA (setup de autenticação não concluído)');
+      /* diagnóstico vai para o próprio motivo (aparece no relatório) */
+      const diag = await page
+        .evaluate(() => ({
+          sessaoPersistida: Object.keys(localStorage).some((k) => k.indexOf('firebase:authUser:') === 0),
+          overlayAuthOculto: document.getElementById('authOverlay')?.classList.contains('hidden') === true,
+        }))
+        .catch(() => ({ erro: 'sem acesso ao contexto da página' }));
+      test.skip(
+        true,
+        `BLOCKED: sem sessão QA (setup não concluído) — persistida=${diag.sessaoPersistida} overlayOculto=${diag.overlayAuthOculto}`
+      );
     }
 
     /* usuário correto logado */

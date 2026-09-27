@@ -23,6 +23,22 @@ async function authOverlayHidden(page) {
 }
 
 async function isLoggedIn(page) {
+  /* O overlay começa visível e só some quando o SDK aplica a sessão
+     persistida no primeiro onAuthStateChanged (asincrônico). Uma leitura
+     imediata enxerga a corrida e devolveria falso mesmo com sessão válida
+     (BLOCKED falso no smoke). Havendo sessão persistida, espera a aplicação
+     (com limite) antes de responder; sem sessão persistida, responde na hora. */
+  const persistida = await page
+    .evaluate(() => Object.keys(localStorage).some((k) => k.indexOf('firebase:authUser:') === 0))
+    .catch(() => false);
+  if (!persistida) return authOverlayHidden(page);
+  await page
+    .waitForFunction(
+      () => document.getElementById('authOverlay')?.classList.contains('hidden') === true,
+      null,
+      { timeout: 15_000 }
+    )
+    .catch(() => {});
   return authOverlayHidden(page);
 }
 
