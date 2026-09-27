@@ -29,10 +29,20 @@ function decodeTextBodies(node) {
         for (const r of t.results || []) {
           for (const a of r.attachments || []) {
             if (!a.body || typeof a.body !== 'string' || !/^text\//.test(a.contentType || '')) continue;
+            /* só tenta decodificar se realmente parecer base64 (texto puro já
+               decodificado numa leitura anterior é preservado) */
+            if (!/^[A-Za-z0-9+/=\s]+$/.test(a.body)) continue;
             const b64 = a.body.replace(/\s+/g, '');
+            if (b64.length < 16 || b64.length % 4 !== 0) continue;
             try {
-              const texto = Buffer.from(b64, 'base64').toString('utf8');
-              if (texto && Buffer.from(texto, 'utf8').toString('base64') === b64) {
+              const bytes = Buffer.from(b64, 'base64');
+              if (!bytes.length) continue;
+              /* utf8 é o formato do reporter; se os bytes não forem UTF-8
+                 válido, cai para latin1 — evidência legível vale mais que
+                 evidência perdida */
+              let texto = bytes.toString('utf8');
+              if (texto.includes('\uFFFD')) texto = bytes.toString('latin1');
+              if (texto && !texto.includes('\u0000')) {
                 a.body = texto;
                 a.bodyFormat = 'text';
               }
@@ -76,6 +86,17 @@ function errorReason(message) {
   if (!lines.length) return 'erro sem mensagem';
   const text = lines.length > 1 ? `${lines[0]} … ${lines[lines.length - 1]}` : lines[0];
   return text.slice(0, 300);
+}
+
+/* Motivo completo (seção de falhas): todas as linhas do erro — o resumo curto
+   acima corta em 300 caracteres e esconderia evidências (diálogos/console). */
+function errorReasonFull(message) {
+  const lines = stripAnsi(message || '')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
+  if (!lines.length) return 'erro sem mensagem';
+  return lines.join(' | ').slice(0, 1200);
 }
 
 /* Motivo de skip: anotação "skip" com descrição quando existir. */
@@ -128,6 +149,7 @@ function walk(suite, titles, out) {
         title: spec.title,
         cls,
         reason: sanitizeText(cls === 'FAIL' ? errorReason(result?.error?.message) : reason),
+        reasonFull: cls === 'FAIL' ? sanitizeText(errorReasonFull(result?.error?.message)) : '',
         duration: result?.duration ?? 0,
         attachments,
         file: spec.file || '',
@@ -213,7 +235,7 @@ if (failures.length) {
     w('');
     w(`- Suíte: ${t.suite}`);
     w(`- Arquivo: \`${t.file}\``);
-    w(`- Motivo: ${t.reason || 'não informado'}`);
+    w(`- Motivo: ${t.reasonFull || t.reason || 'não informado'}`);
     if (t.attachments.length) {
       w('- Evidências:');
       for (const a of t.attachments) w(`  - ${a.name}${a.path ? `: \`${a.path}\`` : ' (corpo embutido)'}`);

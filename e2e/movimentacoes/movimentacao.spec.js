@@ -21,10 +21,36 @@ const { ledgerSummary, entriesByDescription } = require('../oracles/movement');
 
 test.describe.serial('Movimentações — criação, saldo e persistência', () => {
   let watchAtual = null;
-  /* evidência de console/rede disponível também quando o teste FALHA */
+  /* evidência de console/rede disponível também quando o teste FALHA + trilha
+     do log de diagnóstico do próprio app no Firestore (prova do que o handler
+     de salvar realmente fez: validou? começou? falhou na sincronização?) */
   test.afterEach(async ({ page }, testInfo) => {
     watchAtual?.attach(testInfo);
     watchAtual = null;
+    if (testInfo.status === testInfo.expectedStatus) return;
+    try {
+      const creds = resolveCredentials();
+      if (!creds) return;
+      const rest = await signIn(creds.email, creds.password);
+      const [diags, stored] = [
+        await listCollection(rest.uid, rest.idToken, rest.projectId, 'diagnostics'),
+        await listCollection(rest.uid, rest.idToken, rest.projectId, 'entries'),
+      ];
+      const linhas = [
+        `entries=${stored.length}`,
+        ...diags.map((d) => d.fields).slice(-14).map((f) =>
+          `${String(f.id || '').slice(0, 16)} ${f.type || '?'} ${f.module || ''}/${f.action || ''} → ${f.status || ''} — ${String(f.description || '').slice(0, 160)}`
+        ),
+      ];
+      await testInfo.attach('log-diagnostico-firestore.txt', {
+        body: linhas.join('\n'),
+        contentType: 'text/plain',
+      });
+    } catch (err) {
+      await testInfo
+        .attach('log-diagnostico-firestore.txt', { body: `falha ao coletar evidência: ${err.message}`, contentType: 'text/plain' })
+        .catch(() => {});
+    }
   });
 
   test('entrada de 1.000 e saída de 250: UI × oracle × Firestore', async ({ page }, testInfo) => {
@@ -51,15 +77,27 @@ test.describe.serial('Movimentações — criação, saldo e persistência', () 
     const dialogs = app.attachDialogHandler(page);
     const watch = watchPage(page);
     watchAtual = watch;
-    /* quando um passo falha, o console do app entra no próprio motivo da falha
-       (aparece na seção "Falhas e evidências" do relatório) */
+    /* quando um passo falha, diálogos (alert/confirm do app) e console entram
+       no próprio motivo da falha (seção "Falhas e evidências" do relatório) */
     const comEvidencia = async (fn) => {
       try {
         return await fn();
       } catch (err) {
         const cons = watch.summarize('ERROR');
-        if (!cons) throw err;
-        const erro = new Error(`${err.message}\nconsole: ${cons}`);
+        const warn = watch.summarize('WARNING', 2);
+        const dlg = dialogs
+          .slice(-4)
+          .map((d) => `${d.type}: ${d.message}`)
+          .join(' | ');
+        if (!cons && !dlg && !warn) throw err;
+        const partes = [err.message];
+        const rastro = [
+          `dialogos: ${dlg || 'nenhum'}`,
+          `console: ${cons || 'nenhum'}`,
+          `aviso: ${warn || 'nenhum'}`,
+        ].join(' | ');
+        partes.push(rastro);
+        const erro = new Error(partes.join('\n'));
         erro.cause = err;
         throw erro;
       }

@@ -170,11 +170,16 @@ async function addEntry(page, { type, desc, amount, bank, date, category } = {})
       .evaluate(() => {
         const painel = document.querySelector('#panelNovo');
         const btn = document.getElementById('fSalvar');
+        const campoValor = document.getElementById('fValor');
+        const campoDesc = document.getElementById('fDesc');
         const avisos = [...(painel || document).querySelectorAll('[role="alert"], .error, .alert')]
           .filter((n) => n.offsetParent !== null)
           .map((n) => (n.textContent || '').trim().replace(/\s+/g, ' '))
           .filter(Boolean)
           .slice(0, 3);
+        /* valorParseado reproduz a leitura do app (dígitos/100) para o
+           relatório mostrar o que o handler realmente veria ao salvar */
+        const bruto = campoValor ? String(campoValor.value) : '';
         return {
           painelAberto: !!(painel && painel.classList.contains('open')),
           botao: btn ? btn.textContent.trim() : null,
@@ -184,6 +189,9 @@ async function addEntry(page, { type, desc, amount, bank, date, category } = {})
             : document.getElementById('tglIn')?.classList.contains('active-in')
               ? 'in'
               : null,
+          descricao: campoDesc ? campoDesc.value.trim() : null,
+          valorBruto: bruto || null,
+          valorParseado: bruto ? Number(bruto.replace(/\D/g, '')) / 100 : null,
           avisosVisiveis: avisos,
         };
       })
