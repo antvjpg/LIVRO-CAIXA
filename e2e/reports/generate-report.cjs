@@ -19,6 +19,34 @@ if (!fs.existsSync(resultsPath)) {
 
 let raw = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
 
+/* Corpos de anexo text/* chegam em base64 no JSON reporter. Decodifica ANTES da
+   sanitização (sanitizeText encurta "palavras" longas e corromperia o base64) e
+   deixa o texto pronto para o relatório embutir a evidência da falha. */
+function decodeTextBodies(node) {
+  for (const suite of node?.suites || []) {
+    for (const spec of suite.specs || []) {
+      for (const t of spec.tests || []) {
+        for (const r of t.results || []) {
+          for (const a of r.attachments || []) {
+            if (!a.body || typeof a.body !== 'string' || !/^text\//.test(a.contentType || '')) continue;
+            const b64 = a.body.replace(/\s+/g, '');
+            try {
+              const texto = Buffer.from(b64, 'base64').toString('utf8');
+              if (texto && Buffer.from(texto, 'utf8').toString('base64') === b64) {
+                a.body = texto;
+                a.bodyFormat = 'text';
+              }
+            } catch {
+              /* mantém o corpo original: melhor evidência bruta que nenhuma */
+            }
+          }
+        }
+      }
+    }
+  }
+}
+decodeTextBodies(raw);
+
 /* O results.json bruto vai para os artefatos: sanitiza-o também (e-mail,
    senha, token). Se a validação JSON falhar, mantém o original. */
 try {
@@ -86,10 +114,15 @@ function walk(suite, titles, out) {
         }
       } else cls = 'FAIL';
 
-      const attachments = (result?.attachments || []).map((a) => ({
-        name: a.name,
-        path: a.path || '',
-      }));
+      const attachments = (result?.attachments || []).map((a) => {
+        const corpo =
+          typeof a.body === 'string' &&
+          /^text\//.test(a.contentType || '') &&
+          (a.bodyFormat === 'text' || /\s/.test(a.body))
+            ? a.body
+            : '';
+        return { name: a.name, path: a.path || '', corpo };
+      });
       out.push({
         suite: chain.join(' › ') || '(sem suíte)',
         title: spec.title,
@@ -183,7 +216,15 @@ if (failures.length) {
     w(`- Motivo: ${t.reason || 'não informado'}`);
     if (t.attachments.length) {
       w('- Evidências:');
-      for (const a of t.attachments) w(`  - ${a.name}: \`${a.path}\``);
+      for (const a of t.attachments) w(`  - ${a.name}${a.path ? `: \`${a.path}\`` : ' (corpo embutido)'}`);
+      for (const a of t.attachments.filter((x) => x.corpo)) {
+        w('');
+        w(`**${a.name}:**`);
+        w('');
+        w('```');
+        w(a.corpo.split('\n').slice(0, 40).join('\n'));
+        w('```');
+      }
     }
     w('');
   }

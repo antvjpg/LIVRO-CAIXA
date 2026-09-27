@@ -600,11 +600,30 @@ test('suítes dependentes refazem o login real com trace pausado (senha nunca vi
   assert.ok(iStop >= 0, 'trace deve ser pausado antes do login');
   assert.ok(iStop < iCall, 'pausa do trace deve vir ANTES do login');
   assert.ok(iCall >= 0 && iCall < iStart, 'trace deve ser religado DEPOIS do login (ordem: stop -> login -> start)');
-  assert.ok(corpo.includes("page.fill('#authPass', '')"), 'a senha deve sair do DOM logo após o login');
+  assert.ok(
+    corpo.includes("document.getElementById('authPass')") && corpo.includes("campo.value = ''"),
+    'a senha deve sair do DOM logo após o login (sem depender de visibilidade do overlay)'
+  );
 
   for (const spec of ['e2e/smoke/smoke.spec.js', 'e2e/movimentacoes/movimentacao.spec.js']) {
     const src = fs.readFileSync(path.join(ROOT, spec), 'utf8');
     assert.ok(src.includes('qa.ensureUiSession('), `${spec} deve estabelecer a sessão com ensureUiSession`);
     assert.ok(!src.includes('qa.loginOnly('), `${spec} não deve chamar loginOnly diretamente`);
   }
+});
+
+/* ==== Evidência de falha: console do app precisa chegar ao relatório ==== */
+test('evidência de console é anexada mesmo em FALHA e o relatório embute o corpo', () => {
+  for (const spec of ['e2e/smoke/smoke.spec.js', 'e2e/movimentacoes/movimentacao.spec.js']) {
+    const src = fs.readFileSync(path.join(ROOT, spec), 'utf8');
+    assert.ok(src.includes('test.afterEach('), `${spec} deve anexar evidência em afterEach (falha inclusive)`);
+    assert.ok(src.includes('watchAtual = watch'), `${spec} deve registrar o watch no escopo da suíte`);
+    assert.ok(
+      /watchAtual\?\.attach\(testInfo\)/.test(src),
+      `${spec} deve anexar o console-evidencia.txt também quando o teste falha`
+    );
+  }
+  const rel = fs.readFileSync(path.join(ROOT, 'e2e', 'reports', 'generate-report.cjs'), 'utf8');
+  assert.ok(rel.includes('decodeTextBodies'), 'o relatório deve decodificar o corpo dos anexos text/*');
+  assert.ok(rel.includes('a.corpo'), 'o relatório deve embutir o corpo da evidência na seção de falhas');
 });

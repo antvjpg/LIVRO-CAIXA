@@ -11,10 +11,18 @@ const { resolveCredentials } = require('../helpers/env');
 const qa = require('../helpers/qa-account');
 
 test.describe('Smoke — aplicação operacional', () => {
+  let watchAtual = null;
+  /* evidência de console/rede disponível também quando o teste FALHA */
+  test.afterEach(async ({ page }, testInfo) => {
+    watchAtual?.attach(testInfo);
+    watchAtual = null;
+  });
+
   test('abre, valida sessão QA e acessa a Visão Geral', async ({ page }, testInfo) => {
     const creds = resolveCredentials();
     const dialogs = app.attachDialogHandler(page);
     const watch = watchPage(page);
+    watchAtual = watch;
 
     const sessao = await qa.ensureUiSession(page, creds);
     if (sessao.status !== 'ok') {
@@ -56,7 +64,6 @@ test.describe('Smoke — aplicação operacional', () => {
       .toBeGreaterThan(0);
 
     /* evidências */
-    watch.attach(testInfo);
     await testInfo.attach('diagnostico-smoke.txt', {
       body: [
         `url=${page.url()}`,

@@ -45,6 +45,15 @@ function watchPage(page) {
     /* erro de página = falha dura do app (sempre reprova o teste) */
     pageErrors: () => events.filter((e) => e.kind === 'pageerror'),
     byLevel: (level) => events.filter((e) => e.level === level),
+    /* resumo curto das últimas mensagens de um nível: entra no motivo de falha
+       do relatório quando a evidência anexada não é suficiente */
+    summarize(level, n = 3) {
+      return events
+        .filter((e) => e.level === level)
+        .slice(-n)
+        .map((e) => `${e.kind}: ${e.text}`)
+        .join(' | ');
+    },
     counts() {
       return {
         ERROR: events.filter((e) => e.level === 'ERROR').length,

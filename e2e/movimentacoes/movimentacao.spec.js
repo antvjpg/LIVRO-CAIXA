@@ -20,6 +20,13 @@ const { banksBalance, patrimonio } = require('../oracles/balance');
 const { ledgerSummary, entriesByDescription } = require('../oracles/movement');
 
 test.describe.serial('Movimentações — criação, saldo e persistência', () => {
+  let watchAtual = null;
+  /* evidência de console/rede disponível também quando o teste FALHA */
+  test.afterEach(async ({ page }, testInfo) => {
+    watchAtual?.attach(testInfo);
+    watchAtual = null;
+  });
+
   test('entrada de 1.000 e saída de 250: UI × oracle × Firestore', async ({ page }, testInfo) => {
     test.setTimeout(240_000);
 
@@ -43,6 +50,20 @@ test.describe.serial('Movimentações — criação, saldo e persistência', () 
 
     const dialogs = app.attachDialogHandler(page);
     const watch = watchPage(page);
+    watchAtual = watch;
+    /* quando um passo falha, o console do app entra no próprio motivo da falha
+       (aparece na seção "Falhas e evidências" do relatório) */
+    const comEvidencia = async (fn) => {
+      try {
+        return await fn();
+      } catch (err) {
+        const cons = watch.summarize('ERROR');
+        if (!cons) throw err;
+        const erro = new Error(`${err.message}\nconsole: ${cons}`);
+        erro.cause = err;
+        throw erro;
+      }
+    };
 
     const sessao = await qa.ensureUiSession(page, creds);
     if (sessao.status !== 'ok') {
@@ -58,21 +79,25 @@ test.describe.serial('Movimentações — criação, saldo e persistência', () 
     expect(baselinePatrimonio, 'patrimônio baseline deveria ser 0').toBe(0);
 
     /* 3) banco de teste */
-    await app.ensureBankExists(page, fixtures.bank.name, fixtures.bank.initial);
+    await comEvidencia(() => app.ensureBankExists(page, fixtures.bank.name, fixtures.bank.initial));
 
     /* 4) movimentações pela interface */
-    await app.addEntry(page, {
-      type: fixtures.movements.in.type,
-      desc: fixtures.movements.in.desc,
-      amount: fixtures.movements.in.amount,
-      bank: fixtures.bank.name,
-    });
-    await app.addEntry(page, {
-      type: fixtures.movements.out.type,
-      desc: fixtures.movements.out.desc,
-      amount: fixtures.movements.out.amount,
-      bank: fixtures.bank.name,
-    });
+    await comEvidencia(() =>
+      app.addEntry(page, {
+        type: fixtures.movements.in.type,
+        desc: fixtures.movements.in.desc,
+        amount: fixtures.movements.in.amount,
+        bank: fixtures.bank.name,
+      })
+    );
+    await comEvidencia(() =>
+      app.addEntry(page, {
+        type: fixtures.movements.out.type,
+        desc: fixtures.movements.out.desc,
+        amount: fixtures.movements.out.amount,
+        bank: fixtures.bank.name,
+      })
+    );
 
     /* 5) ORACLE — cálculo independente do app */
     /* ids fictícios só dentro do oracle: a regra é a mesma, os ids reais vêm do Firestore */
@@ -150,7 +175,6 @@ test.describe.serial('Movimentações — criação, saldo e persistência', () 
     expect(banksBalance(storedBanks.map((b) => b.fields), stored.map((d) => d.fields)),
       'DIVERGÊNCIA: saldo de banco no Firestore ≠ oracle').toBe(oraclePatrimonio);
 
-    watch.attach(testInfo);
     expect(watch.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
 });

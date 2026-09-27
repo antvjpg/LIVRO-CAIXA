@@ -153,8 +153,14 @@ async function ensureUiSession(page, creds) {
       .catch(() => {});
   }
   /* senha sai do DOM imediatamente (mesmo em falha) antes de qualquer
-     screenshot/snapshot de erro da própria suíte */
-  await page.fill('#authPass', '').catch(() => {});
+     screenshot/snapshot de erro da própria suíte: evaluate não depende de
+     visibilidade — o overlay já está oculto e um fill falharia aqui */
+  await page
+    .evaluate(() => {
+      const campo = document.getElementById('authPass');
+      if (campo) campo.value = '';
+    })
+    .catch(() => {});
   return r;
 }
 

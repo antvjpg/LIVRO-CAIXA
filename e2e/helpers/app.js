@@ -161,8 +161,39 @@ async function addEntry(page, { type, desc, amount, bank, date, category } = {})
   if (category) await page.selectOption('#fCategoria', { label: category });
   await page.fill('#fValor', amount.toFixed(2).replace('.', ','));
   await page.click('#fSalvar');
-  /* fecha o painel ao salvar (closeAllPanels) */
-  await page.waitForFunction(() => !document.querySelector('#panelNovo.open'), null, { timeout: 20_000 });
+  /* fecha o painel ao salvar (closeAllPanels) — em timeout, captura o estado
+     real do formulário para a evidência do relatório (não mascara a falha) */
+  try {
+    await page.waitForFunction(() => !document.querySelector('#panelNovo.open'), null, { timeout: 20_000 });
+  } catch (waitErr) {
+    const diag = await page
+      .evaluate(() => {
+        const painel = document.querySelector('#panelNovo');
+        const btn = document.getElementById('fSalvar');
+        const avisos = [...(painel || document).querySelectorAll('[role="alert"], .error, .alert')]
+          .filter((n) => n.offsetParent !== null)
+          .map((n) => (n.textContent || '').trim().replace(/\s+/g, ' '))
+          .filter(Boolean)
+          .slice(0, 3);
+        return {
+          painelAberto: !!(painel && painel.classList.contains('open')),
+          botao: btn ? btn.textContent.trim() : null,
+          botaoDesabilitado: btn ? btn.disabled : null,
+          tipo: document.getElementById('tglOut')?.classList.contains('active-out')
+            ? 'out'
+            : document.getElementById('tglIn')?.classList.contains('active-in')
+              ? 'in'
+              : null,
+          avisosVisiveis: avisos,
+        };
+      })
+      .catch(() => ({ erro: 'sem diagnóstico do painel' }));
+    const erro = new Error(
+      `painel de novo lançamento não fechou em 20s após Salvar — ${JSON.stringify(diag)}`
+    );
+    erro.cause = waitErr;
+    throw erro;
+  }
 }
 
 async function findLedgerRow(page, desc) {
