@@ -35,7 +35,9 @@ jobs:
 
 
   deploy-production:
-    if: github.event_name == 'workflow_dispatch'
+    # Deploy automático em push para main (testes sempre como gate);
+    # workflow_dispatch continua disponível como gatilho manual.
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     needs: test-and-dry-run
     environment: production
     runs-on: ubuntu-latest
