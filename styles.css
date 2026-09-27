@@ -9225,3 +9225,281 @@ body[data-tab="dashboard"] #viewDashboard.active {
 @media (prefers-reduced-motion:reduce){
   #panelAiChat,.ai-chat-msg{animation:none!important;transition:none!important;}
 }
+
+/* ==========================================================================
+   V.20-01 — ANEXOS DA LIA · LEITURA/OCR · REVISÃO OBRIGATÓRIA
+   Tokens de tema (var(--…)) em todos os lugares: claro/escuro/variantes.
+   ========================================================================== */
+
+/* --- anexo no compositor do chat ---------------------------------------- */
+.ai-attachment-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-top:8px;
+}
+.ai-attach-btn{
+  flex:0 0 auto;
+  min-width:44px;
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1.5px solid var(--ink);
+  border-radius:12px;
+  background:var(--paper);
+  color:var(--ink);
+  cursor:pointer;
+}
+.ai-attach-btn:hover{background:var(--hover-soft);}
+.ai-attach-btn:disabled{opacity:.4;cursor:not-allowed;}
+.ai-attach-btn svg{display:block;}
+.ai-attachment-chip{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  min-width:0;
+  flex:1 1 auto;
+  padding:6px 8px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  background:var(--paper-2);
+  font-size:12px;
+  color:var(--ink-soft);
+}
+.ai-attachment-chip[hidden]{display:none;}
+.ocr-chip-name{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--ink);
+  font-weight:600;
+}
+.ocr-chip-meta{flex:0 0 auto;font-size:11px;opacity:.8;}
+.ocr-chip-remove{
+  flex:0 0 auto;
+  margin-left:auto;
+  width:26px;
+  height:26px;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:transparent;
+  color:var(--ink-soft);
+  font-size:14px;
+  line-height:1;
+  cursor:pointer;
+}
+.ocr-chip-remove:hover{color:var(--red);border-color:var(--red);}
+.ocr-fallback-row{margin-top:8px;}
+.ocr-fallback-row[hidden]{display:none;}
+.ocr-fallback-row button{
+  width:100%;
+  min-height:40px;
+  font-size:11px;
+}
+
+/* --- painel de revisão --------------------------------------------------- */
+.ocr-review-intro{
+  margin:0 0 10px;
+  font-size:12px;
+  line-height:1.5;
+  color:var(--ink-soft);
+}
+.ocr-attachment-preview{
+  margin-bottom:10px;
+  padding:8px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--paper-2);
+  text-align:center;
+}
+.ocr-attachment-preview[hidden]{display:none;}
+.ocr-preview-img{
+  display:block;
+  max-width:100%;
+  max-height:220px;
+  margin:0 auto;
+  border-radius:10px;
+  object-fit:contain;
+}
+.ocr-preview-file{
+  display:block;
+  font-size:12px;
+  color:var(--ink-soft);
+  word-break:break-all;
+}
+.ocr-review-notice{
+  margin-bottom:10px;
+  padding:9px 11px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--paper-2);
+  font-size:12px;
+  line-height:1.45;
+  color:var(--ink-soft);
+}
+.ocr-review-notice[hidden]{display:none;}
+.ocr-review-notice.is-error{
+  border-color:var(--red);
+  color:var(--red);
+}
+.ocr-field-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:min(46vh,420px);
+  overflow-y:auto;
+  padding-right:2px;
+}
+.ocr-field{
+  padding:9px 11px 11px;
+  border:1px solid var(--line);
+  border-left-width:4px;
+  border-radius:12px;
+  background:var(--paper);
+}
+.ocr-field-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:6px;
+}
+.ocr-field-head label,
+.ocr-field-head .ocr-field-label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.ocr-not-persisted{
+  padding:1px 6px;
+  border:1px dashed var(--line);
+  border-radius:999px;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:none;
+  color:var(--ink-soft);
+}
+.ocr-field-status{
+  flex:0 0 auto;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.ocr-field input[type=date],
+.ocr-field input[type=text],
+.ocr-field select{
+  width:100%;
+  min-height:42px;
+  padding:9px 11px;
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  background:var(--paper-2);
+  color:var(--ink);
+  font-size:14px;
+}
+.ocr-field input:focus,
+.ocr-field select:focus{
+  outline:2px solid var(--accent);
+  outline-offset:1px;
+}
+.ocr-readonly{
+  min-height:42px;
+  padding:9px 11px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  background:transparent;
+  color:var(--ink-soft);
+  font-size:13px;
+  word-break:break-word;
+}
+.ocr-field .type-toggle{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  padding:3px;
+  border:1.5px solid var(--line);
+  border-radius:13px;
+}
+.ocr-field .type-toggle button{
+  min-height:40px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:var(--ink-soft);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.ocr-field .type-toggle button.active-in{
+  background:var(--surface-accent);
+  color:var(--accent-ink);
+}
+.ocr-candidates{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:7px;
+}
+.ocr-candidate{
+  padding:5px 9px;
+  border:1.5px solid var(--gold);
+  border-radius:999px;
+  background:transparent;
+  color:var(--ink);
+  font-size:11px;
+  cursor:pointer;
+}
+.ocr-candidate:hover{background:var(--gold-soft);}
+.ocr-suggestion{
+  margin:7px 0 0;
+  font-size:11px;
+  line-height:1.45;
+  color:var(--ink-soft);
+}
+.ocr-field-error{
+  margin:7px 0 0;
+  font-size:11px;
+  font-weight:700;
+  color:var(--red);
+}
+.ocr-field-error[hidden]{display:none;}
+
+/* estados por campo */
+.ocr-field.is-extracted{border-left-color:var(--green);}
+.ocr-field.is-extracted .ocr-field-status{color:var(--green);}
+.ocr-field.is-edited{border-left-color:var(--accent);}
+.ocr-field.is-edited .ocr-field-status{color:var(--accent);}
+.ocr-field.is-unconfirmed{border-left-color:var(--gold);background:var(--gold-soft);}
+.ocr-field.is-unconfirmed .ocr-field-status{color:var(--ink);}
+.ocr-field.is-absent{border-left-color:var(--line);border-style:dashed;border-left-style:solid;}
+.ocr-field.is-absent .ocr-field-status{color:var(--ink-soft);}
+.ocr-field.is-invalid{border-left-color:var(--red);background:var(--red-soft);}
+.ocr-field.is-invalid .ocr-field-status{color:var(--red);}
+
+.ocr-review-actions{
+  display:grid;
+  grid-template-columns:1fr 1.4fr;
+  gap:8px;
+  margin-top:12px;
+}
+.ocr-review-actions button{
+  min-height:44px;
+}
+.ocr-review-hint{
+  margin-top:8px;
+}
+
+@media (max-width:680px){
+  .ocr-field-list{max-height:min(42vh,360px);}
+  .ocr-review-actions{grid-template-columns:1fr;}
+  .ai-attachment-chip{font-size:11px;}
+}

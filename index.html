@@ -27,6 +27,16 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="./card-engine-v3-combined.js"></script>
   <script src="./financial-client.js"></script>
+  <!-- V.20-01 — camada de abstração de anexos/OCR (contrato estável
+       globalThis.LivroCaixaOCR). Módulos puros, sem dependência de
+       Android/Capacitor: o PWA continua funcional sem recursos nativos. -->
+  <script src="./ocr/limits.js"></script>
+  <script src="./ocr/log.js"></script>
+  <script src="./ocr/attachment-manager.js"></script>
+  <script src="./ocr/extractor.js"></script>
+  <script src="./ocr/ocr-adapter.js"></script>
+  <script src="./ocr/lia-interpret.js"></script>
+  <script src="./ocr/review.js"></script>
   <!-- Contrato do Chat IA (V.20) — fonte única de limites/validação,
        compartilhada com o Worker. O módulo expõe
        window.LivroCaixaChatContract antes do DOMContentLoaded. -->
@@ -1326,7 +1336,56 @@
             <i class="fi fi-rr-paper-plane-top" aria-hidden="true"></i>
           </button>
         </div>
+        <div class="ai-attachment-row">
+          <!-- V.20-01 — anexo da LIA: validação + OCR + revisão obrigatória.
+               Este input nunca cria movimentação; só alimenta o pipeline. -->
+          <input
+            type="file"
+            id="liaAttachmentFile"
+            accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,application/pdf,.pdf"
+            hidden
+          >
+          <button type="button" id="btnLiaAttach" class="ai-attach-btn"
+                  aria-label="Anexar imagem ou documento" title="Anexar imagem ou documento">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16.5 6v11.5a4.5 4.5 0 1 1-9 0V5a3 3 0 0 1 6 0v10.5a1.5 1.5 0 0 1-3 0V6H9v9.5a3 3 0 0 0 6 0V5a4.5 4.5 0 0 0-9 0v12.5a6 6 0 0 0 12 0V6h-1.5Z"/></svg>
+          </button>
+          <div class="ai-attachment-chip" id="liaAttachmentChip" hidden></div>
+        </div>
       </form>
+
+      <div class="ai-chat-notice" id="liaAttachmentNotice" role="status" aria-live="polite" hidden></div>
+      <!-- fallback suportado quando a leitura não está disponível:
+           o usuário segue para o lançamento manual (fluxo existente). -->
+      <div class="ocr-fallback-row" id="liaAttachmentFallback" hidden>
+        <button type="button" id="btnLiaManualEntry">Abrir lançamento manual</button>
+      </div>
+    </div>
+
+    <!-- V.20-01 — revisão humana obrigatória do anexo lido pela LIA.
+         Nenhum elemento deste painel grava dado por si só: a confirmação
+         alimenta o fluxo EXISTENTE de criação de movimentação (fSalvar),
+         com as mesmas validações, persistência e tratamento de erro. -->
+    <div class="panel" id="panelOcrReview" role="dialog" aria-modal="true" aria-labelledby="ocrReviewTitle">
+      <h3 id="ocrReviewTitle">Revisar anexo
+        <button type="button" class="modal-close" id="btnOcrReviewClose" aria-label="Fechar revisão" title="Fechar">×</button>
+      </h3>
+
+      <p class="ocr-review-intro" id="ocrReviewIntro">
+        Confira o que foi reconhecido. Nada é gravado até você confirmar.
+      </p>
+
+      <div class="ocr-attachment-preview" id="ocrAttachmentPreview" hidden></div>
+      <div class="ocr-review-notice" id="ocrReviewNotice" role="status" aria-live="polite" hidden></div>
+
+      <div class="ocr-field-list" id="ocrReviewFields"></div>
+
+      <div class="ocr-review-actions">
+        <button type="button" id="btnOcrReviewCancel">Cancelar</button>
+        <button type="button" id="btnOcrReviewConfirm" class="primary" data-single-action="1">Confirmar e lançar</button>
+      </div>
+      <p class="hint ocr-review-hint" id="ocrReviewHint">
+        A confirmação usa o fluxo de lançamento manual, com as mesmas validações e persistência.
+      </p>
     </div>
 
   </div>
@@ -1503,12 +1562,15 @@ window.LivroCaixaAI = {
     }
     return reply;
   },
-  async generateViaWorker({ prompt, imagePart, maxTokens }) {
-    return this.postWorker({
-      prompt,
-      imagePart: imagePart || null,
-      maxTokens
-    });
+  async generateViaWorker({ prompt, imagePart, maxTokens, signal }) {
+    return this.postWorker(
+      {
+        prompt,
+        imagePart: imagePart || null,
+        maxTokens
+      },
+      { signal }
+    );
   },
   /* Chat IA (V.20): contrato {message, financialSnapshot, conversationContext}.
      Sem fallback de chave local — o Worker é quem valida limites, cota e
@@ -1585,7 +1647,7 @@ window.LivroCaixaAI = {
     }
     return responseText;
   },
-  async generate({ prompt, imagePart, maxTokens } = {}) {
+  async generate({ prompt, imagePart, maxTokens, signal } = {}) {
     const text = String(prompt || '').trim();
     if (!text) {
       const err = new Error('Prompt vazio para a análise de IA.');
@@ -1600,13 +1662,16 @@ window.LivroCaixaAI = {
 
     if (AI_WORKER_ENDPOINT) {
       try {
-        return await this.generateViaWorker({ prompt: text, imagePart, maxTokens: tokenCap });
+        return await this.generateViaWorker({ prompt: text, imagePart, maxTokens: tokenCap, signal });
       } catch (workerError) {
         /* Sem chave local, o erro do Worker é o que o usuário precisa ver. */
         if (!this.getApiKey()) throw workerError;
       }
     }
 
+    /* O caminho de chave local é o legado e não recebe o signal nesta
+       versão; o cancelamento do pipeline é garantido pelo timeout do
+       módulo ocr/ocr-adapter.js. */
     return this.generateViaLocalKey({ content, maxTokens: tokenCap });
   },
 
@@ -2375,7 +2440,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* [JS 07] BACKUP / IMPORTAÇÃO / EXPORTAÇÃO / DIAGNÓSTICOS */
   function markSingleActionButtons() {
-    ['fSalvar','bSalvar','cSalvar','tSalvar','iSalvar','pSalvar','pmSalvar','imSalvar','importConfirm','btnFetchPrice','imFetchPrice','btnUpdateAllPrices','btnExportBackup','billSalvar','cardSalvar','purchaseSalvar'].forEach(id => {
+    ['fSalvar','bSalvar','cSalvar','tSalvar','iSalvar','pSalvar','pmSalvar','imSalvar','importConfirm','btnFetchPrice','imFetchPrice','btnUpdateAllPrices','btnExportBackup','billSalvar','cardSalvar','purchaseSalvar','btnOcrReviewConfirm'].forEach(id => {
       const btn = document.getElementById(id);
       if (btn) btn.dataset.singleAction = '1';
     });
@@ -11271,13 +11336,18 @@ VALOR: ${fmt(pseudoBill.amount)}
     document.getElementById('tglIn').classList.remove('active-in');
   };
 
-  document.getElementById('fSalvar').onclick = async () => {
+  /* V.20-01 — o corpo do salvamento foi extraído para função nomeada,
+     com comportamento IDÊNTICO ao handler anterior, para que a revisão de
+     anexo reutilize o MESMO fluxo de criação de movimentação: validação,
+     cálculo, saldo, persistência, eventos e tratamento de erro.
+     Nenhuma segunda implementação de movimentação foi criada. */
+  async function saveMovementFromForm() {
     const btn = document.getElementById('fSalvar');
     const dateInput = document.getElementById('fData').value;
 
     if (receiptReaderState?.aiStatus === 'completed' && !dateInput) {
       alert('A data do comprovante não foi identificada. Informe a data antes de salvar.');
-      return;
+      return false;
     }
 
     const date = dateInput || todayISO();
@@ -11288,7 +11358,7 @@ VALOR: ${fmt(pseudoBill.amount)}
 
     if (!desc || isNaN(valor) || valor <= 0) {
       alert('Preencha a descrição e um valor válido.');
-      return;
+      return false;
     }
 
     if (!editingEntryId) {
@@ -11299,7 +11369,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       );
       if (possibleDuplicate) {
         const confirmDup = confirm('Já existe um lançamento igual a este nesta mesma data, banco e categoria. Deseja lançar mesmo assim?');
-        if (!confirmDup) return;
+        if (!confirmDup) return false;
       }
     }
 
@@ -11328,14 +11398,623 @@ VALOR: ${fmt(pseudoBill.amount)}
       document.getElementById('fDesc').value = '';
       setMoneyInput('fValor', 0);
       closeAllPanels();
+      return true;
     } catch (err) {
       logSyncError('lançamento', err, operation);
+      return false;
     } finally {
       btn.disabled = false;
       btn.textContent = originalLabel;
       render();
     }
-  };
+  }
+  document.getElementById('fSalvar').onclick = saveMovementFromForm;
+
+  /* ==================================================================
+     V.20-01 — ANEXOS DA LIA · LEITURA/OCR · REVISÃO OBRIGATÓRIA
+
+     Pipeline transacional obrigatório (nenhuma etapa, isoladamente,
+     cria movimentação):
+
+       arquivo → validação → leitura/OCR → extração estruturada →
+       normalização → interpretação pela LIA → preview → revisão e
+       edição do usuário → confirmação explícita → validação final →
+       fluxo EXISTENTE de criação (saveMovementFromForm)
+
+     A LIA conversa apenas com globalThis.LivroCaixaOCR (contrato estável).
+     Nenhum código aqui conhece Android, Capacitor ou plugin nativo.
+     ================================================================== */
+
+  const ocrState = { attachment: null, model: null, controller: null, busy: false, confirming: false };
+  const OCR_FIELD_ORDER = ['date', 'amount', 'description', 'type', 'category', 'account', 'merchant', 'paymentMethod', 'documentNumber'];
+  /* Exibidos na revisão mas SEM campo equivalente no modelo de movimentação:
+     são informações do documento, nunca persistidas. */
+  const OCR_READ_ONLY_FIELDS = ['merchant', 'paymentMethod', 'documentNumber'];
+
+  function ocrShowNotice(id, text, kind) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!text) { el.hidden = true; el.textContent = ''; el.classList.remove('is-error'); return; }
+    el.textContent = text;
+    el.hidden = false;
+    el.classList.toggle('is-error', kind === 'error');
+  }
+  const ocrAttachmentNotice = (text, kind) => ocrShowNotice('liaAttachmentNotice', text, kind);
+  const ocrReviewNotice = (text, kind) => ocrShowNotice('ocrReviewNotice', text, kind);
+
+  function ocrSetFallback(visible) {
+    const row = document.getElementById('liaAttachmentFallback');
+    if (row) row.hidden = !visible;
+  }
+
+  function ocrFileErrorMessage(code) {
+    const map = {
+      TOO_LARGE: 'Arquivo maior que o limite permitido.',
+      INVALID_FILE: 'Arquivo inválido ou vazio.',
+      UNSUPPORTED_FILE: 'Formato não suportado. Use JPG, PNG, WEBP ou PDF.',
+      DUPLICATE: 'Este anexo já está na fila de processamento.',
+      LIMIT_REACHED: 'Limite de anexos por operação atingido.'
+    };
+    return map[code] || 'Não foi possível usar este arquivo.';
+  }
+
+  function ocrReadErrorMessage(status) {
+    const map = {
+      UNAVAILABLE: 'A leitura do anexo está indisponível no momento.',
+      NOT_IMPLEMENTED: 'Este formato ainda não pode ser lido. Use uma imagem JPG, PNG ou WEBP.',
+      TIMEOUT: 'O tempo máximo de leitura foi atingido.',
+      CANCELLED: 'Leitura cancelada.',
+      PERMISSION_DENIED: 'Permissão negada pelo dispositivo.',
+      UNSUPPORTED_PLATFORM: 'Este ambiente não suporta a leitura de anexos.',
+      TOO_LARGE: 'A imagem é grande demais para leitura (máx. 7 MB).',
+      INVALID_FILE: 'O arquivo selecionado é inválido.',
+      UNSUPPORTED_FILE: 'Formato não suportado.',
+      DUPLICATE: 'Este anexo já foi processado.'
+    };
+    return map[status] || 'Não foi possível ler o anexo.';
+  }
+
+  function ocrDependenciesReady() {
+    return !!(globalThis.LivroCaixaOCRLimits && globalThis.LivroCaixaOCRLog &&
+      globalThis.LivroCaixaAttachments && globalThis.LivroCaixaExtract &&
+      globalThis.LivroCaixaOCR && globalThis.LivroCaixaOCRLia && globalThis.LivroCaixaReview);
+  }
+
+  /* Libera Blob/File/ObjectURL e zera o estado — usado em conclusão,
+     cancelamento, erro e fechamento do painel. Idempotente. */
+  function ocrReleaseAll() {
+    if (ocrState.controller) {
+      try { ocrState.controller.abort(); } catch (err) { /* abort é best-effort */ }
+      ocrState.controller = null;
+    }
+    if (ocrState.attachment) {
+      try { globalThis.LivroCaixaAttachments.manager.release(ocrState.attachment.id); } catch (err) { /* best-effort */ }
+      ocrState.attachment = null;
+    } else {
+      try { globalThis.LivroCaixaAttachments.manager.releaseAll(); } catch (err) { /* best-effort */ }
+    }
+    ocrState.model = null;
+    ocrState.busy = false;
+    const input = document.getElementById('liaAttachmentFile');
+    if (input) input.value = '';
+    const chip = document.getElementById('liaAttachmentChip');
+    if (chip) { chip.hidden = true; chip.textContent = ''; }
+    const attachBtn = document.getElementById('btnLiaAttach');
+    if (attachBtn) attachBtn.disabled = false;
+  }
+
+  function ocrHolderLabel() {
+    try {
+      const user = typeof currentUser !== 'undefined' ? currentUser : null;
+      return (user && (user.displayName || user.email)) || 'não informado';
+    } catch (err) {
+      return 'não informado';
+    }
+  }
+
+  function ocrRenderChip() {
+    const chip = document.getElementById('liaAttachmentChip');
+    if (!chip) return;
+    const attachment = ocrState.attachment;
+    if (!attachment) { chip.hidden = true; chip.textContent = ''; return; }
+    const sizeMb = (attachment.size / (1024 * 1024)).toFixed(2);
+    chip.hidden = false;
+    chip.innerHTML =
+      '<span class="ocr-chip-name">' + escapeHTML(attachment.name) + '</span>' +
+      '<span class="ocr-chip-meta">' + sizeMb + ' MB</span>' +
+      '<button type="button" class="ocr-chip-remove" aria-label="Remover anexo" title="Remover">×</button>';
+    const remove = chip.querySelector('.ocr-chip-remove');
+    if (remove) {
+      remove.addEventListener('click', () => {
+        ocrReleaseAll();
+        ocrSetFallback(false);
+        ocrAttachmentNotice('Anexo removido. Nada foi gravado.');
+      });
+    }
+  }
+
+  /* ------------------------------------------------------- render preview */
+
+  function ocrCandidatesHtml(key, field) {
+    if (!field.candidates || !field.candidates.length) return '';
+    if (field.status !== 'AMBIGUOUS' && field.status !== 'MISSING') return '';
+    const items = field.candidates.map((candidate) => {
+      const label = key === 'amount' && Number.isFinite(Number(candidate))
+        ? MONEY_FORMATTER.format(Number(candidate))
+        : String(candidate);
+      return '<button type="button" class="ocr-candidate" data-field="' + key + '" data-value="' +
+        escapeHTML(String(candidate)) + '">' + escapeHTML(label) + '</button>';
+    }).join('');
+    return '<div class="ocr-candidates" role="group" aria-label="Candidatos reconhecidos">' + items + '</div>';
+  }
+
+  function ocrControlHtml(key, field) {
+    const id = 'ocrField_' + key;
+    if (OCR_READ_ONLY_FIELDS.indexOf(key) !== -1) {
+      return '<div class="ocr-readonly" id="' + id + '">' + (field.value == null ? '—' : escapeHTML(String(field.value))) + '</div>';
+    }
+    if (field.kind === 'date') {
+      return '<input type="date" id="' + id + '" value="' + escapeHTML(field.value == null ? '' : String(field.value)) + '">';
+    }
+    if (field.kind === 'money') {
+      return '<input type="text" id="' + id + '" inputmode="numeric" placeholder="R$ 0,00">';
+    }
+    if (field.kind === 'select') {
+      const list = key === 'category' ? categories : banks;
+      const options = list.map((item) => '<option value="' + escapeHTML(String(item.id)) + '">' + escapeHTML(String(item.name)) + '</option>').join('');
+      return '<select id="' + id + '">' + options + '</select>';
+    }
+    if (field.kind === 'toggle') {
+      return '<div class="type-toggle" id="' + id + '" role="group" aria-label="Tipo de movimentação">' +
+        '<button type="button" data-type="in">Entrada</button>' +
+        '<button type="button" data-type="out">Saída</button>' +
+        '</div>';
+    }
+    return '<input type="text" id="' + id + '" value="' + escapeHTML(field.value == null ? '' : String(field.value)) + '">';
+  }
+
+  function ocrFieldHtml(key, field) {
+    const style = globalThis.LivroCaixaReview.describe(field.status);
+    const classes = ['ocr-field', style.className];
+    if (field.edited) classes.push('is-edited');
+    const note = field.persisted ? '' : '<span class="ocr-not-persisted">não é gravado</span>';
+    const labelTag = OCR_READ_ONLY_FIELDS.indexOf(key) !== -1
+      ? '<span class="ocr-field-label">' + escapeHTML(field.label) + note + '</span>'
+      : '<label for="ocrField_' + key + '">' + escapeHTML(field.label) + note + '</label>';
+    const suggestion = field.suggestion
+      ? '<p class="ocr-suggestion">Sugerido na leitura: ' + escapeHTML(String(field.suggestion)) + ' — selecione a correspondente.</p>'
+      : '';
+    return '<div class="' + classes.join(' ') + '" data-field="' + key + '">' +
+      '<div class="ocr-field-head">' + labelTag +
+      '<span class="ocr-field-status">' + escapeHTML(style.label) + '</span></div>' +
+      ocrControlHtml(key, field) +
+      ocrCandidatesHtml(key, field) + suggestion +
+      '<p class="ocr-field-error" data-error-for="' + key + '" hidden></p>' +
+      '</div>';
+  }
+
+  function ocrUpdateFieldChrome(key) {
+    const wrap = document.querySelector('.ocr-field[data-field="' + key + '"]');
+    const field = ocrState.model && ocrState.model.fields[key];
+    if (!wrap || !field) return;
+    const style = globalThis.LivroCaixaReview.describe(field.status);
+    wrap.className = 'ocr-field ' + style.className + (field.edited ? ' is-edited' : '');
+    const badge = wrap.querySelector('.ocr-field-status');
+    if (badge) badge.textContent = style.label;
+    const keepCandidates = (field.status === 'AMBIGUOUS' || field.status === 'MISSING') && field.candidates && field.candidates.length;
+    const cand = wrap.querySelector('.ocr-candidates');
+    if (cand && !keepCandidates) cand.remove();
+    /* valor preenchido → a sugestão deixa de fazer sentido */
+    if (field.value != null) {
+      const sg = wrap.querySelector('.ocr-suggestion');
+      if (sg) sg.remove();
+    }
+    ocrUpdateHint();
+  }
+
+  function ocrUpdateHint() {
+    const intro = document.getElementById('ocrReviewIntro');
+    if (!intro || !ocrState.model) return;
+    const counts = globalThis.LivroCaixaReview.summary(ocrState.model);
+    const parts = [];
+    if (counts.extracted) parts.push(counts.extracted + ' extraído(s)');
+    if (counts.edited) parts.push(counts.edited + ' editado(s)');
+    if (counts.unconfirmed) parts.push(counts.unconfirmed + ' não confirmado(s)');
+    if (counts.absent) parts.push(counts.absent + ' ausente(s)');
+    if (counts.invalid) parts.push(counts.invalid + ' inválido(s)');
+    intro.textContent = 'Confira o que foi reconhecido. Nada é gravado até você confirmar.' +
+      (parts.length ? ' (' + parts.join(', ') + ')' : '');
+  }
+
+  function ocrRenderTypeToggle() {
+    const wrap = document.getElementById('ocrField_type');
+    if (!wrap) return;
+    const value = ocrState.model && ocrState.model.fields.type ? ocrState.model.fields.type.value : null;
+    wrap.querySelectorAll('button[data-type]').forEach((btn) => {
+      const active = btn.dataset.type === value;
+      btn.classList.toggle('active-in', active && btn.dataset.type === 'in');
+      btn.classList.toggle('active-out', active && btn.dataset.type === 'out');
+    });
+  }
+
+  function ocrSelectField(key, selectEl) {
+    const field = ocrState.model.fields[key];
+    const list = key === 'category' ? categories : banks;
+    const found = list.find((item) => String(item.id) === String(selectEl.value));
+    field.resolvedId = found ? found.id : null;
+    field.value = found ? found.name : null;
+    field.edited = true;
+    field.invalid = false;
+    field.status = found ? globalThis.LivroCaixaExtract.STATUS.USER_EDITED : globalThis.LivroCaixaExtract.STATUS.MISSING;
+    ocrUpdateFieldChrome(key);
+  }
+
+  function ocrBindFields() {
+    const model = ocrState.model;
+    if (!model) return;
+
+    const dateEl = document.getElementById('ocrField_date');
+    if (dateEl) dateEl.addEventListener('change', () => {
+      globalThis.LivroCaixaReview.editField(model, 'date', dateEl.value);
+      ocrUpdateFieldChrome('date');
+    });
+
+    const descEl = document.getElementById('ocrField_description');
+    if (descEl) descEl.addEventListener('input', () => {
+      globalThis.LivroCaixaReview.editField(model, 'description', descEl.value);
+      ocrUpdateFieldChrome('description');
+    });
+
+    const amountEl = document.getElementById('ocrField_amount');
+    if (amountEl) {
+      amountEl.addEventListener('change', () => {
+        const value = readMoneyInput(amountEl);
+        globalThis.LivroCaixaReview.editField(model, 'amount', Number.isFinite(value) && value > 0 ? value : null);
+        if (Number.isFinite(value) && value > 0) setMoneyInput(amountEl, value);
+        ocrUpdateFieldChrome('amount');
+      });
+    }
+
+    const catEl = document.getElementById('ocrField_category');
+    if (catEl) catEl.addEventListener('change', () => ocrSelectField('category', catEl));
+    const bankEl = document.getElementById('ocrField_account');
+    if (bankEl) bankEl.addEventListener('change', () => ocrSelectField('account', bankEl));
+
+    const typeWrap = document.getElementById('ocrField_type');
+    if (typeWrap) {
+      typeWrap.querySelectorAll('button[data-type]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          globalThis.LivroCaixaReview.editField(model, 'type', btn.dataset.type);
+          ocrRenderTypeToggle();
+          ocrUpdateFieldChrome('type');
+        });
+      });
+    }
+
+    document.querySelectorAll('#ocrReviewFields .ocr-candidate').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.field;
+        /* data-value chega como string: o tipo do campo é restaurado aqui
+           (valor monetário NÃO pode virar string no modelo) */
+        let chosen = btn.dataset.value;
+        if (key === 'amount' && Number.isFinite(Number(chosen))) chosen = Number(chosen);
+        globalThis.LivroCaixaReview.chooseCandidate(model, key, chosen);
+        if (key === 'amount') {
+          const amountEl = document.getElementById('ocrField_amount');
+          const value = Number(btn.dataset.value);
+          if (amountEl && Number.isFinite(value)) setMoneyInput(amountEl, value);
+        }
+        ocrUpdateFieldChrome(key);
+        if (key === 'type') ocrRenderTypeToggle();
+        if (key === 'category' || key === 'account') {
+          const el = document.getElementById('ocrField_' + key);
+          const field = model.fields[key];
+          if (el && field && field.value) {
+            const list = key === 'category' ? categories : banks;
+            const found = list.find((item) => item.name === field.value);
+            if (found) { el.value = found.id; field.resolvedId = found.id; }
+          }
+        }
+        const wrap = document.querySelector('.ocr-field[data-field="' + key + '"]');
+        if (wrap) {
+          const cand = wrap.querySelector('.ocr-candidates');
+          if (cand) cand.remove();
+          const sg = wrap.querySelector('.ocr-suggestion');
+          if (sg) sg.remove();
+        }
+      });
+    });
+  }
+
+  function ocrRenderReview() {
+    const model = ocrState.model;
+    const box = document.getElementById('ocrReviewFields');
+    if (!model || !box) return;
+
+    const preview = document.getElementById('ocrAttachmentPreview');
+    if (preview) {
+      const attachment = model.attachment;
+      if (!attachment) {
+        preview.hidden = true;
+        preview.innerHTML = '';
+      } else if (attachment.category === 'image') {
+        const url = globalThis.LivroCaixaAttachments.manager.previewUrl(attachment.id);
+        preview.hidden = false;
+        preview.innerHTML = url
+          ? '<img class="ocr-preview-img" src="' + url + '" alt="Pré-visualização do anexo">'
+          : '<span class="ocr-preview-file">' + escapeHTML(attachment.name) + '</span>';
+      } else {
+        preview.hidden = false;
+        preview.innerHTML = '<span class="ocr-preview-file">' + escapeHTML(attachment.name) + '</span>';
+      }
+    }
+
+    box.innerHTML = OCR_FIELD_ORDER
+      .map((key) => (model.fields[key] ? ocrFieldHtml(key, model.fields[key]) : ''))
+      .join('');
+
+    const amountEl = document.getElementById('ocrField_amount');
+    if (amountEl && model.fields.amount && model.fields.amount.value != null) {
+      setMoneyInput(amountEl, model.fields.amount.value);
+    }
+    const catEl = document.getElementById('ocrField_category');
+    if (catEl && model.fields.category && model.fields.category.resolvedId) catEl.value = model.fields.category.resolvedId;
+    const bankEl = document.getElementById('ocrField_account');
+    if (bankEl && model.fields.account && model.fields.account.resolvedId) bankEl.value = model.fields.account.resolvedId;
+
+    ocrRenderTypeToggle();
+    ocrBindFields();
+    ocrUpdateHint();
+  }
+
+  function ocrShowErrors(errors) {
+    const list = errors || [];
+    document.querySelectorAll('#ocrReviewFields .ocr-field-error').forEach((el) => {
+      el.hidden = true;
+      el.textContent = '';
+    });
+    /* ao limpar os erros, os campos destacados voltam ao estado real */
+    if (!list.length && ocrState.model) {
+      OCR_FIELD_ORDER.forEach((key) => ocrUpdateFieldChrome(key));
+    }
+    list.forEach((err) => {
+      const el = document.querySelector('[data-error-for="' + err.key + '"]');
+      if (el) { el.textContent = err.message; el.hidden = false; }
+      ocrUpdateFieldChrome(err.key);
+    });
+  }
+
+  /* ------------------------------------------------------------- pipeline */
+
+  async function ocrRunPipeline(attachment) {
+    const manager = globalThis.LivroCaixaAttachments.manager;
+    const guard = manager.beginProcessing(attachment.id);
+    if (!guard.ok) {
+      ocrAttachmentNotice('Este anexo já está sendo processado.', 'error');
+      return;
+    }
+
+    const controller = new AbortController();
+    ocrState.controller = controller;
+    ocrState.busy = true;
+    ocrAttachmentNotice('Lendo o anexo…');
+    const attachBtn = document.getElementById('btnLiaAttach');
+    if (attachBtn) attachBtn.disabled = true;
+
+    try {
+      const prompt = globalThis.LivroCaixaOCRLia.buildReadPrompt({ holderLabel: ocrHolderLabel() });
+      const aiReady = !!(window.LivroCaixaAI && typeof window.LivroCaixaAI.isReady === 'function' && window.LivroCaixaAI.isReady());
+
+      const read = await globalThis.LivroCaixaOCR.extract(attachment.file, {
+        prompt,
+        signal: controller.signal,
+        aiReady,
+        reader: async ({ signal }) => {
+          const part = await fileToReceiptGenerativePart(attachment.file);
+          return await window.LivroCaixaAI.generate({ prompt, imagePart: part, maxTokens: 1200, signal });
+        },
+        parse: globalThis.LivroCaixaOCRLia.parseReadResponse
+      });
+
+      if (!read.continuable) {
+        ocrAttachmentNotice(ocrReadErrorMessage(read.status), 'error');
+        ocrSetFallback(true);
+        return;
+      }
+
+      const deterministic = globalThis.LivroCaixaExtract.extractFromText(read.text || '');
+      const interpreted = globalThis.LivroCaixaOCRLia.interpret({
+        readFields: read.fields || {},
+        readCandidates: read.candidates || {},
+        deterministic,
+        text: read.text,
+        catalog: {
+          categories: categories.map((c) => ({ value: c.id, label: c.name })),
+          banks: banks.map((b) => ({ value: b.id, label: b.name }))
+        }
+      });
+
+      ocrState.model = globalThis.LivroCaixaReview.createModel(interpreted, {
+        attachment,
+        environment: read.environment,
+        provider: read.provider,
+        extractStatus: read.status
+      });
+
+      ocrSetFallback(false);
+      ocrAttachmentNotice('');
+      ocrRenderReview();
+      ocrReviewNotice(read.status === 'NO_TEXT'
+        ? 'Não consegui reconhecer texto neste anexo. Preencha os dados manualmente.'
+        : read.status === 'AMBIGUOUS' ? 'Alguns campos precisam da sua revisão.' : '');
+      openModal('panelOcrReview');
+    } catch (err) {
+      ocrAttachmentNotice('Não foi possível ler o anexo.', 'error');
+      ocrSetFallback(true);
+      globalThis.LivroCaixaOCRLog && globalThis.LivroCaixaOCRLog.failure('pipeline.erro', {
+        stage: 'pipeline', status: 'falhou', code: (err && err.code) || 'UNEXPECTED'
+      });
+    } finally {
+      ocrState.busy = false;
+      manager.endProcessing(attachment.id);
+      if (attachBtn) attachBtn.disabled = false;
+    }
+  }
+
+  function ocrFillLaunchForm(value) {
+    editingEntryId = null;
+    const dateEl = document.getElementById('fData');
+    const descEl = document.getElementById('fDesc');
+    const bankEl = document.getElementById('fBanco');
+    const catEl = document.getElementById('fCategoria');
+    if (dateEl) dateEl.value = value.date;
+    if (descEl) descEl.value = value.desc;
+    if (bankEl && value.bank) bankEl.value = value.bank;
+    if (catEl && value.category) catEl.value = value.category;
+    setMoneyInput('fValor', value.amount);
+    if (currentType !== value.type) {
+      document.getElementById(value.type === 'in' ? 'tglIn' : 'tglOut').click();
+    }
+  }
+
+  function ocrAbortReview(message) {
+    ocrReleaseAll();
+    ocrReviewNotice('');
+    closeAllPanels();
+    /* o aviso de "nada foi gravado" mora dentro da conversa: reabre-a
+       para que a mensagem seja lida (é o mesmo caminho do FAB da Visão
+       Geral — LivroCaixaChat.open()). */
+    const text = message || 'Revisão encerrada. Nada foi gravado.';
+    if (window.LivroCaixaChat && typeof window.LivroCaixaChat.open === 'function') {
+      window.LivroCaixaChat.open();
+    }
+    ocrAttachmentNotice(text);
+  }
+
+  /* ------------------------------------------------------------- listeners */
+
+  (function ocrWireUp() {
+    const attachBtn = document.getElementById('btnLiaAttach');
+    const fileInput = document.getElementById('liaAttachmentFile');
+    if (!attachBtn || !fileInput) return;
+
+    attachBtn.addEventListener('click', () => {
+      if (!ocrDependenciesReady()) {
+        ocrAttachmentNotice('Módulo de anexos indisponível. Recarregue a página.', 'error');
+        return;
+      }
+      if (ocrState.busy) { ocrAttachmentNotice('Aguarde o processamento atual.', 'error'); return; }
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', async (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      ocrSetFallback(false);
+      ocrAttachmentNotice('');
+      if (!ocrDependenciesReady()) {
+        event.target.value = '';
+        ocrAttachmentNotice('Módulo de anexos indisponível. Recarregue a página.', 'error');
+        return;
+      }
+      if (ocrState.busy) {
+        event.target.value = '';
+        ocrAttachmentNotice('Já há um anexo em processamento.', 'error');
+        return;
+      }
+      /* limite de 1 anexo por operação: substitui o anterior — fecha uma
+         revisão aberta para não deixar campos obsoletos na tela */
+      if (ocrState.attachment) ocrAbortReview('Substituindo o anexo anterior. Nada foi gravado.');
+
+      const registration = await globalThis.LivroCaixaAttachments.manager.register(file);
+      if (!registration.ok) {
+        event.target.value = '';
+        ocrAttachmentNotice(ocrFileErrorMessage(registration.code), 'error');
+        ocrSetFallback(registration.code === 'UNSUPPORTED_FILE');
+        return;
+      }
+      ocrState.attachment = registration.attachment;
+      ocrRenderChip();
+      await ocrRunPipeline(registration.attachment);
+    });
+
+    const cancelBtn = document.getElementById('btnOcrReviewCancel');
+    if (cancelBtn) cancelBtn.addEventListener('click', () => ocrAbortReview('Anexo descartado. Nada foi gravado.'));
+    const closeBtn = document.getElementById('btnOcrReviewClose');
+    if (closeBtn) closeBtn.addEventListener('click', () => ocrAbortReview('Revisão encerrada. Nada foi gravado.'));
+
+    const confirmBtn = document.getElementById('btnOcrReviewConfirm');
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', async () => {
+        if (ocrState.confirming) return;
+        const model = ocrState.model;
+        if (!model) { ocrReviewNotice('Nada para confirmar.', 'error'); return; }
+
+        const bankSelect = document.getElementById('fBanco');
+        const categorySelect = document.getElementById('fCategoria');
+        const bankOptions = bankSelect ? Array.from(bankSelect.options).map((o) => o.value) : [];
+        const categoryOptions = categorySelect ? Array.from(categorySelect.options).map((o) => o.value) : [];
+
+        /* validação final ANTES de tocar no fluxo financeiro */
+        const result = globalThis.LivroCaixaReview.validate(model, { bankOptions, categoryOptions });
+        if (!result.ok) {
+          ocrShowErrors(result.errors);
+          ocrReviewNotice('Confira os campos destacados antes de confirmar.', 'error');
+          return;
+        }
+        ocrShowErrors([]);
+        ocrReviewNotice('');
+
+        ocrState.confirming = true;
+        const originalLabel = confirmBtn.textContent;
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Confirmando…';
+        try {
+          ocrFillLaunchForm(result.value);
+          /* fluxo EXISTENTE de criação: mesmas validações, mesmo saldo,
+             mesma persistência, mesmos eventos e mesmo tratamento de erro */
+          const saved = await saveMovementFromForm();
+          if (saved) {
+            ocrReleaseAll();
+          } else {
+            ocrReviewNotice('O lançamento não foi concluído. Revise e tente novamente.', 'error');
+          }
+        } catch (err) {
+          ocrReviewNotice('Falha inesperada ao confirmar. Nada foi gravado duas vezes.', 'error');
+        } finally {
+          ocrState.confirming = false;
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = originalLabel;
+        }
+      });
+    }
+
+    const manualBtn = document.getElementById('btnLiaManualEntry');
+    if (manualBtn) {
+      manualBtn.addEventListener('click', () => {
+        ocrSetFallback(false);
+        ocrReleaseAll();
+        ocrAttachmentNotice('');
+        openNewEntryModal();
+      });
+    }
+
+    /* Fechamento do painel por qualquer via (Escape, clique fora, outro
+       painel) → libera Blob/ObjectURL e zera o estado. */
+    const reviewPanel = document.getElementById('panelOcrReview');
+    if (reviewPanel && typeof MutationObserver === 'function') {
+      let wasOpen = false;
+      const observer = new MutationObserver(() => {
+        const open = reviewPanel.classList.contains('open');
+        if (wasOpen && !open && (ocrState.model || ocrState.attachment)) {
+          ocrReleaseAll();
+          ocrReviewNotice('');
+        }
+        wasOpen = open;
+      });
+      observer.observe(reviewPanel, { attributes: true, attributeFilter: ['class'] });
+    }
+  })();
 
   function updateInvestmentMainValue() {
     const type = document.getElementById('iTipo').value;
