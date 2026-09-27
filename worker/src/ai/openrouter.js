@@ -16,7 +16,9 @@ const DEFAULT_MODELS = [
 ];
 
 export const RETRYABLE_STATUS = new Set([402, 404, 408, 429, 500, 502, 503, 504]);
-const UPSTREAM_TIMEOUT_MS = 45000;
+/* Teto dos fluxos legados (prompt e imagem). Exportado para os testes
+   poderem comparar com o teto menor do caminho de chat. */
+export const UPSTREAM_TIMEOUT_MS = 45000;
 
 export function modelList(env) {
   const raw = env.OPENROUTER_MODELS || DEFAULT_MODELS.join(",");
@@ -65,7 +67,16 @@ export function providerFailure({ code, message, status = 0, model = null, provi
   return { provider, code, message, status, model };
 }
 
-export async function callOpenRouter(model, env, content, maxTokens, referer) {
+export async function callOpenRouter(model, env, messages, maxTokens, referer, options = {}) {
+  /* messages — lista pronta de turnos: caminho legado monta apenas
+     [{role:"user", content}], caminho de chat monta sistema + histórico +
+     pergunta. Quem monta é o roteador (index.js), nunca o cliente.
+     options.timeoutMs — o chat usa CHAT_LIMITS.PROVIDER_TIMEOUT_MS;
+     os demais fluxos mantêm UPSTREAM_TIMEOUT_MS. */
+  const timeoutMs = Number.isFinite(options.timeoutMs) && options.timeoutMs > 0
+    ? options.timeoutMs
+    : UPSTREAM_TIMEOUT_MS;
+
   let response;
   try {
     response = await fetch(OPENROUTER_ENDPOINT, {
@@ -78,13 +89,13 @@ export async function callOpenRouter(model, env, content, maxTokens, referer) {
       },
       body: JSON.stringify({
         model,
-        messages: [{ role: "user", content }],
+        messages,
         temperature: 0.2,
         max_tokens: maxTokens,
         reasoning: { effort: "none" },
         reasoning_effort: "none"
       }),
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS)
+      signal: AbortSignal.timeout(timeoutMs)
     });
   } catch (networkError) {
     return { ok: false, status: 0, raw: "", parsed: null };

@@ -25,11 +25,16 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="./card-engine-v3-combined.js"></script>
-<script src="./financial-client.js"></script>
+  <script src="./card-engine-v3-combined.js"></script>
+  <script src="./financial-client.js"></script>
+  <!-- Contrato do Chat IA (V.20) — fonte única de limites/validação,
+       compartilhada com o Worker. O módulo expõe
+       window.LivroCaixaChatContract antes do DOMContentLoaded. -->
+  <script type="module" src="./ai-chat-contract.js"></script>
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-20-orange3">
+
+  <link rel="stylesheet" href="./styles.css?v=19-20-orange6">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
@@ -233,21 +238,6 @@
   <div id="viewDashboard" class="tab-content">
     <div id="advancedDashboard"></div>
     <div id="dashboardNextPayment" class="dashboard-next-payment-card" aria-live="polite"></div>
-    <div id="dashboardGeminiHost" class="dashboard-gemini-host">
-<div class="diagnostic-summary-card">
-            <div class="diagnostic-summary-head">
-              <span class="diagnostic-summary-icon" aria-hidden="true"><i class="fi fi-tc-sparkles" aria-hidden="true"></i></span>
-              <div>
-                <strong>Análise financeira com IA</strong>
-                <span id="geminiDiagnosticStatus">Análise baseada nos dados financeiros resumidos do aplicativo.</span>
-              </div>
-            </div>
-            <button type="button" id="btnGeminiDiagnostic" class="primary">Analisar com IA</button>
-            <div class="daily-insight-quota hint" data-ai-quota aria-live="polite"></div>
-          </div>
-
-          <div id="geminiDiagnosticResults" class="diagnostic-results" aria-live="polite"></div>
-    </div>
   </div>
 
   <!-- ABA 2: LIVRO CAIXA -->
@@ -542,7 +532,7 @@
   </div>
 
   <!-- Modais -->
-  <button type="button" id="fabAdd" class="fab-add" title="Adicionar" aria-label="Adicionar"><svg class="add-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button type="button" id="fabAdd" class="fab-add" title="Adicionar" aria-label="Adicionar"><svg class="add-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><i class="fi fi-rr-messages fab-chat-icon" aria-hidden="true"></i></button>
 
   <div class="modal-overlay" id="modalOverlay">
     <div class="panel" id="panelNovo">
@@ -1311,6 +1301,35 @@
       </div>
     </div>
 
+    <!-- CHAT IA (V.20) — modal aberto pelo FAB da Visão Geral.
+         Reutiliza o overlay/painel padrão: Escape e fechamento global
+         continuam funcionando pelo caminho já existente. -->
+    <div class="panel" id="panelAiChat" role="dialog" aria-modal="true" aria-labelledby="aiChatTitle">
+      <h3 id="aiChatTitle">IA Financeira
+        <button type="button" class="modal-close" id="btnAiChatClose" aria-label="Fechar conversa" title="Fechar">×</button>
+      </h3>
+
+      <p class="ai-chat-intro" id="aiChatIntro">Pergunte sobre seus dados financeiros. Nada é alterado sem você pedir.
+        <span class="ai-chat-quota" data-ai-quota aria-live="polite"></span>
+      </p>
+
+      <div class="ai-chat-notice" id="aiChatNotice" role="status" aria-live="polite" hidden></div>
+
+      <div class="ai-chat-messages" id="aiChatMessages" role="log" aria-live="polite" tabindex="0"></div>
+
+      <form class="ai-chat-composer" id="aiChatForm" autocomplete="off">
+        <label class="ai-chat-label" for="aiChatInput">Pergunte sobre suas finanças</label>
+        <div class="ai-chat-row">
+          <input type="text" id="aiChatInput" name="aiChatInput" placeholder="Pergunte sobre suas finanças…"
+                 enterkeyhint="send" aria-describedby="aiChatHint">
+          <button type="submit" id="btnAiChatSend" class="primary" aria-label="Enviar pergunta">
+            <i class="fi fi-rr-paper-plane-top" aria-hidden="true"></i>
+          </button>
+        </div>
+        <p class="ai-chat-hint" id="aiChatHint">Enter envia a pergunta.</p>
+      </form>
+    </div>
+
   </div>
 </main>
 
@@ -1410,7 +1429,10 @@ window.LivroCaixaAI = {
   /* Caminho principal e protegido: ID token do Firebase → Worker (POST /ai)
      → OpenRouter. O Worker aplica autenticação, rate limit, cota diária e
      validação de prompt/imagem/maxTokens antes de chamar o provedor. */
-  async generateViaWorker({ prompt, imagePart, maxTokens }) {
+  /* Transporte único de POST para /ai: autenticação, cota, parse de erro e
+     leitura da resposta. Compartilhado pelo caminho legado (prompt/imagem)
+     e pelo chat — existe UM envio de IA no frontend, não dois. */
+  async postWorker(payload, { signal } = {}) {
     if (!AI_WORKER_ENDPOINT) {
       const err = new Error('O serviço de IA não está configurado.');
       err.code = 'worker_not_configured';
@@ -1439,23 +1461,25 @@ window.LivroCaixaAI = {
       throw tokenErr;
     }
 
+    const init = {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${idToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    };
+    if (signal) init.signal = signal;
+
     let response;
     try {
-      response = await fetch(AI_WORKER_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${idToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          prompt,
-          imagePart: imagePart || null,
-          maxTokens
-        })
-      });
+      response = await fetch(AI_WORKER_ENDPOINT, init);
     } catch (networkError) {
-      const err = new Error('Falha de rede ao consultar a IA. Verifique a conexão.');
-      err.code = 'network';
+      /* Cancelamento explícito (AbortController) é distinto de queda de
+         rede: o chat descarta em silêncio, os demais fluxos mostram erro. */
+      const aborted = networkError?.name === 'AbortError';
+      const err = new Error(aborted ? 'Requisição cancelada.' : 'Falha de rede ao consultar a IA. Verifique a conexão.');
+      err.code = aborted ? 'aborted' : 'network';
       throw err;
     }
 
@@ -1479,6 +1503,26 @@ window.LivroCaixaAI = {
       throw err;
     }
     return reply;
+  },
+  async generateViaWorker({ prompt, imagePart, maxTokens }) {
+    return this.postWorker({
+      prompt,
+      imagePart: imagePart || null,
+      maxTokens
+    });
+  },
+  /* Chat IA (V.20): contrato {message, financialSnapshot, conversationContext}.
+     Sem fallback de chave local — o Worker é quem valida limites, cota e
+     autenticação, e este caminho não pode ser contornado. */
+  async chat({ message, financialSnapshot, conversationContext, signal } = {}) {
+    return this.postWorker(
+      {
+        message,
+        financialSnapshot,
+        conversationContext
+      },
+      { signal }
+    );
   },
   /* Fallback local: chamada direta ao OpenRouter com a chave guardada no
      localStorage. NÃO é o caminho protegido pelo Worker — não passa por
@@ -2258,6 +2302,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /* [JS 05] AUTENTICAÇÃO / SESSÃO */
   function clearSessionMemory() {
     pendingImport = [];
+    /* Conversa da IA é memória de sessão: login, logout ou troca de conta
+       descartam o contexto (nada é persistido fora da memória). */
+    window.LivroCaixaChat?.resetContext?.();
     editingEntryId = null;
     editingBankId = null;
     editingCategoryId = null;
@@ -4939,6 +4986,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const FINANCIAL_INDICATORS_DOC_FIELD = 'financialIndicators';
   let financialIndicatorsPersistedJson = '';
   let financialIndicatorsOwnerUid = '';
+  let financialIndicatorsWarnedNoClient = false;
+  let financialIndicatorsLastError = '';
 
   function financialIndicatorsClient() {
     const client = window.LivroCaixaFinancial;
@@ -5035,18 +5084,48 @@ document.addEventListener('DOMContentLoaded', () => {
   async function refreshFinancialIndicators(options = {}) {
     try {
       const client = financialIndicatorsClient();
-      if (!client) return null;
+      if (!client) {
+        if (!financialIndicatorsWarnedNoClient) {
+          financialIndicatorsWarnedNoClient = true;
+          financialIndicatorsLastError = 'script_ausente';
+          console.warn('[Livro-Caixa] Adaptador de indicadores não encontrado (financial-client.js).');
+          logWarn('Indicadores', 'Adaptador ausente', 'Falha', 'financial-client.js não carregou nesta sessão.');
+          renderIndicatorsSection();
+        }
+        return null;
+      }
 
       const before = JSON.stringify(financialIndicatorsSnapshot());
       const snapshot = await client.getIndicators({ force: options.force === true });
-      if (!snapshot) return null;
+      financialIndicatorsLastError = '';
+      if (!snapshot) {
+        renderIndicatorsSection();
+        return null;
+      }
 
       if (firstLoadDone && JSON.stringify(financialIndicatorsSnapshot()) !== before) render();
       await persistFinancialIndicators();
       return snapshot;
     } catch (err) {
-      /* Camada de exibição: falha aqui nunca pode derrubar a tela. */
+      /* Camada de exibição: falha aqui nunca pode derrubar a tela — mas
+         fica registrada para o usuário conseguir enxergar o motivo. */
+      const code = (err && err.code) || (err && err.name) || 'erro';
+      financialIndicatorsLastError = String(code);
+      console.warn('[Livro-Caixa] Indicadores indisponíveis:', code, (err && err.message) || '');
+      logWarn('Indicadores', 'Consulta ao Worker', 'Falha', `Sem indicadores externos (${code}). Saldos locais não foram afetados.`);
+      renderIndicatorsSection();
       return null;
+    }
+  }
+
+  /* Repinta só o Dashboard (e só quando ele está na tela), para o aviso de
+     indisponibilidade aparecer sem depender de outra ação do usuário. */
+  function renderIndicatorsSection() {
+    if (!firstLoadDone || typeof currentTab === 'undefined' || currentTab !== 'dash') return;
+    try {
+      render();
+    } catch (err) {
+      console.warn('[Livro-Caixa] Repaint do Dashboard falhou:', err?.message || err);
     }
   }
 
@@ -5058,7 +5137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* --- superfície 1: seção do Dashboard (somente leitura) --- */
   function renderDashIndicators() {
     const info = financialIndicatorsState();
-    if (!info) return '';
+    if (!info) return renderDashIndicatorsUnavailable();
     const ind = info.indicators;
     const rows = [];
     const add = (label, value, detail, icon) => rows.push(dashHealthMetric(label, value, 'neutral', detail, null, icon));
@@ -5105,6 +5184,27 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="dash-metrics">${rowsHtml}</div>
         ${missingNote}
         <p class="dashboard-footnote">Fonte: BCB SGS e Tesouro Transparente, consultados pelo Worker do Livro-Caixa. Valores de referência; nenhum saldo seu é calculado a partir deles.</p>
+      </section>`;
+  }
+
+  /* Sem snapshot a seção não some em silêncio: quando houve falha
+     registrada, ela aparece dizendo o que travou. Nada de dado inventado. */
+  function renderDashIndicatorsUnavailable() {
+    const client = financialIndicatorsClient();
+    const state = client && typeof client.getState === 'function' ? client.getState() : {};
+    const codes = [];
+    if (financialIndicatorsLastError) codes.push(financialIndicatorsLastError);
+    (Array.isArray(state.lastErrors) ? state.lastErrors : []).forEach(err => {
+      const code = err && err.code;
+      if (code && !codes.includes(code)) codes.push(code);
+    });
+    if (!codes.length && state.status !== 'error') return '';
+
+    const detail = codes.length ? ` (código: ${escapeHTML(codes.join(', '))})` : '';
+    return `
+      <section class="dash-section dash-indicators-section" aria-label="Indicadores do mercado">
+        ${dashSectionHead('07', 'Indicadores do mercado', 'Banco Central (SGS) e Tesouro Nacional — referência externa.', 'indisponível')}
+        <p class="dashboard-footnote">Os indicadores externos não puderam ser consultados agora${detail}. Nada dos seus dados foi afetado: saldos, lançamentos e cálculos continuam locais. A seção volta sozinha quando a consulta funcionar.</p>
       </section>`;
   }
 
@@ -7526,28 +7626,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const patrimony = getPatrimonySummaryBlock();
 
-      const pocketSummary = pockets.map(pocket => ({
-    balance: Number(pocketCurrentBalance(pocket).toFixed(2))
-  }));
+    /* Contas: rótulo + saldo. Sem números de conta, sem IDs internos. */
+    const accountSummary = banks
+      .filter(bank => bank && bank.id !== 'geral')
+      .map(bank => ({
+        name: String(bank.name || 'Conta'),
+        balance: Number(bankBalance(bank.id).toFixed(2))
+      }));
 
-  const investmentSummary = investments.map(inv => {
-    const crypto = isCryptoType(inv.type);
-    return {
-      type: String(inv.type || 'Não informado'),
-      value: Number(
-        (
-          inv.type === 'Renda Fixa'
-            ? fixedIncomeCurrentValue(inv)
-            : Number(inv.value || 0)
-        ).toFixed(2)
-      ),
-      units: crypto && inv.units != null
-        ? Number(cryptoCurrentUnits(inv))
-        : null
-    };
-  });
+    /* Caixinhas: usa as mesmas fórmulas da tela (pocketCurrentBalance e a
+       progressão exibida em pocketGoalMarkup) — nada de regra paralela. */
+    const pocketSummary = pockets.map(pocket => {
+      const balance = Number(pocketCurrentBalance(pocket).toFixed(2));
+      const target = Number(pocket.goalAmount) || 0;
+      const percent = target > 0 ? Math.min(100, Math.max(0, balance / target * 100)) : null;
+      return {
+        name: String(pocket.name || 'Caixinha'),
+        objective: pocket.goal ? String(pocket.goal) : null,
+        balance,
+        target: target > 0 ? target : null,
+        progressPercent: percent == null ? null : Number(percent.toFixed(1)),
+        remaining: target > 0 ? Number(Math.max(0, target - balance).toFixed(2)) : null
+      };
+    });
 
-  const budgetSummary = budgets.map(budget => {
+    const investmentSummary = investments.map(inv => {
+      const crypto = isCryptoType(inv.type);
+      return {
+        name: String(inv.name || inv.alias || 'Ativo'),
+        type: String(inv.type || 'Não informado'),
+        institution: inv.institution ? String(inv.institution) : null,
+        value: Number(
+          (
+            inv.type === 'Renda Fixa'
+              ? fixedIncomeCurrentValue(inv)
+              : Number(inv.value || 0)
+          ).toFixed(2)
+        ),
+        units: crypto && inv.units != null
+          ? Number(cryptoCurrentUnits(inv))
+          : null,
+        rate: inv.rate ? String(inv.rate) : null,
+        dueDate: inv.dueDate || null
+      };
+    });
+
+    const budgetSummary = budgets.map(budget => {
       const categoryName =
         categories.find(c => c.id === budget.categoryId)?.name ||
         'Sem categoria';
@@ -7561,17 +7685,49 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
-    const goalSummary = goals.map((goal, index) => ({
-      label: `Meta ${index + 1}`,
-      target: Number(goal.targetAmount || 0),
-      current: goalCurrentAmount(goal),
-      deadline: goal.deadline || null
-    }));
+    /* Metas: goalPlanning()/goalCurrentAmount() são a fonte oficial de
+       alvo, atual, restante e prazo. */
+    const goalSummary = goals.map(goal => {
+      const plan = goalPlanning(goal);
+      const percent = plan.target > 0 && plan.hasCurrent
+        ? Math.min(100, Math.max(0, plan.current / plan.target * 100))
+        : null;
+      return {
+        name: String(goal.name || 'Meta'),
+        target: plan.target,
+        current: plan.hasCurrent ? plan.current : null,
+        remaining: plan.remaining,
+        progressPercent: percent == null ? null : Number(percent.toFixed(1)),
+        deadline: goal.deadline || null,
+        status: goal.status || 'active',
+        daysRemaining: plan.daysRemaining,
+        source: goal.sourceType || (goal.caixinhaId ? 'pocket' : null)
+      };
+    });
 
-    const activeCards = cards.filter(card => card.active !== false);
+    /* Cartões: agregados do motor (card-engine) — nunca dados completos
+       do cartão, titular, número ou compras individuais. */
+    const cardSummary = dashCardSummary();
+    const cardTotals = cardSummary
+      ? {
+          activeCount: cards.filter(card => card.active !== false).length,
+          invoiceLaunchCount: invoiceLaunches.length,
+          purchaseCount: purchases.length,
+          currentInvoiceTotal: Number(cardSummary.currentInvoiceTotal || 0),
+          currentInvoiceRemaining: Number(cardSummary.currentInvoiceRemaining || 0),
+          previousInvoiceRemaining: Number(cardSummary.previousInvoiceRemaining || 0),
+          totalLimit: Number(cardSummary.totalLimit || 0),
+          totalUsed: Number(cardSummary.totalUsed || 0),
+          committed: Number(cardSummary.committed || 0)
+        }
+      : {
+          activeCount: cards.filter(card => card.active !== false).length,
+          invoiceLaunchCount: invoiceLaunches.length,
+          purchaseCount: purchases.length
+        };
 
     return {
-      schemaVersion: 'P3.4',
+      schemaVersion: 'P3.5',
       generatedAt: new Date().toISOString(),
       period: {
         currentMonth,
@@ -7580,6 +7736,19 @@ document.addEventListener('DOMContentLoaded', () => {
           const today = todayISO();
           const monthEnd = monthEndDate(currentMonth);
           return today >= monthEnd;
+        })(),
+        /* Totais do mês corrente mesmo quando ainda não há lançamento
+           nele — evita a IA tratar "sem dados" como "sem gastos". */
+        currentMonthTotals: (() => {
+          const inMonth = entriesSafe.filter(e => String(e.date || '').startsWith(currentMonth));
+          const inc = inMonth.filter(e => e.type === 'in').reduce((s, e) => s + Number(e.amount || 0), 0);
+          const exp = inMonth.filter(e => e.type === 'out').reduce((s, e) => s + Number(e.amount || 0), 0);
+          return {
+            income: Number(inc.toFixed(2)),
+            expense: Number(exp.toFixed(2)),
+            net: Number((inc - exp).toFixed(2)),
+            transactions: inMonth.length
+          };
         })(),
         latestEntryDate: entriesSafe
           .map(e => String(e.date || ''))
@@ -7605,14 +7774,11 @@ document.addEventListener('DOMContentLoaded', () => {
         total: Number(patrimony.total.toFixed(2))
       },
 
+      accounts: accountSummary,
       pockets: pocketSummary,
       investments: investmentSummary,
 
-      cards: {
-        activeCount: activeCards.length,
-        purchaseCount: purchases.length,
-        invoiceLaunchCount: invoiceLaunches.length
-      },
+      cards: cardTotals,
 
       budgets: budgetSummary,
       goals: goalSummary,
@@ -7646,6 +7812,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  /* ETAPA 3 (V.20) — o orçamento do snapshot (CHAT_SNAPSHOT_REDUCTIONS e
+     fitChatSnapshotToBudget) mora em ai-chat-contract.js junto dos limites
+     que ele usa; aqui só chamamos contract.fitChatSnapshotToBudget(). */
+
   function renderDiagnosticResults() {
     const issues = runDiagnostics();
     const icon = document.getElementById('diagnosticSummaryIcon');
@@ -7674,263 +7844,354 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* Analise assistida — a IA responde em blocos nomeados (RESUMO, PONTOS ...).
-     Converte em HTML semântico; devolve null quando o formato não é
-     reconhecido, para que a tela mantenha o texto corrido de antes. */
-  const ANALYSIS_SECTIONS = ['RESUMO', 'PONTOS POSITIVOS', 'PONTOS DE ATENÇÃO', 'TENDÊNCIAS', 'RECOMENDAÇÕES', 'CONFIANÇA'];
-  /* A IA nem sempre devolve a grafia acentuada, então a comparação usa a mesma
-     normalização de acentos já usada nas categorias (normalizeTextKey). */
-  const ANALYSIS_SECTION_KEYS = ANALYSIS_SECTIONS.map(normalizeTextKey);
+  /* =====================================================================
+     CHAT IA (V.20) — modal aberto pelo FAB da Visão Geral.
 
-  function renderAnalysisSections(rawText) {
-    const source = String(rawText || '').replace(/\r\n?/g, '\n').trim();
-    if (!source) return null;
+     - contrato/limites: window.LivroCaixaChatContract (fonte única);
+     - snapshot: buildGeminiFinancialSnapshot() + orçamento de 64 KB;
+     - envio: window.LivroCaixaAI.chat() → POST /ai (sem chave local);
+     - contexto: EM MEMÓRIA, atrelado à conta ativa. Nada em Firebase,
+       localStorage ou sessionStorage nesta versão.
+     ===================================================================== */
 
-    const sectionTitle = line => {
-      const clean = normalizeTextKey(
-        String(line || '')
-          .replace(/\*\*/g, '')
-          .replace(/^[#\s]*[\u2022*\-–—]+[\s]*/, '')
-          .replace(/^\d+[.)]\s*/, '')
-          .replace(/^[#\s]+/, '')
-          .replace(/[:：]\s*$/, '')
-      );
-      const index = ANALYSIS_SECTION_KEYS.indexOf(clean);
-      return index !== -1 ? ANALYSIS_SECTIONS[index] : null;
-    };
+  const AI_CHAT_GREETING = 'Olá! Posso ajudar a entender seus dados financeiros: contas, movimentações, caixinhas, metas, investimentos e patrimônio.';
 
-    const sections = [];
-    let current = null;
-    for (const line of source.split('\n')) {
-      const title = sectionTitle(line);
-      if (title) {
-        current = { title, lines: [] };
-        sections.push(current);
-        continue;
-      }
-      if (!current) {
-        current = { title: null, lines: [] };
-        sections.push(current);
-      }
-      current.lines.push(line);
+  /* Máquina de estados da conversa: fonte única em ai-chat-contract.js
+     (testável sem DOM). Sem contrato o chat já não envia — aqui degradamos
+     para um núcleo inerte só para abrir/fechar sem lançar. */
+  function createAiChatSession() {
+    const contract = window.LivroCaixaChatContract;
+    if (contract && typeof contract.createChatSession === 'function') {
+      return contract.createChatSession();
     }
-
-    if (!sections.some(s => s.title)) return null;
-
-    const splitBlocks = section => {
-      const paras = [];
-      const items = [];
-      const bullet = /^\s*(?:[\u2022*\-]|\d+[.)])\s+(.*)$/;
-      for (const line of section.lines) {
-        const match = line.match(bullet);
-        if (match && match[1].trim()) items.push(match[1].trim());
-        else if (line.trim()) paras.push(line.trim());
-      }
-      return { paras, items };
+    return {
+      isOpen: () => false,
+      isBusy: () => false,
+      getAccountId: () => null,
+      getSessionId: () => 0,
+      getMessages: () => [],
+      getPending: () => null,
+      openFor() {},
+      close() {},
+      resetContext() {},
+      begin: () => ({ ok: false, token: null }),
+      isCurrent: () => false,
+      commit: () => false,
+      settle: () => false
     };
-
-    const confidenceKind = text => {
-      const upper = String(text || '').toUpperCase();
-      if (/\b(ALTA|ALTO|HIGH)\b/.test(upper)) return { label: 'ALTA', cls: 'is-high' };
-      if (/\b(M\u00c9DIA|MEDIA|M\u00c9DIO|MEDIO|MEDIUM)\b/.test(upper)) return { label: 'M\u00c9DIA', cls: 'is-mid' };
-      if (/\b(BAIXA|BAIXO|LOW)\b/.test(upper)) return { label: 'BAIXA', cls: 'is-low' };
-      return null;
-    };
-
-    const html = sections.map(section => {
-      const { paras, items } = splitBlocks(section);
-      const body = [
-        paras.length ? `<p>${paras.map(escapeHTML).join(' ')}</p>` : '',
-        items.length ? `<ul>${items.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>` : ''
-      ].join('');
-
-      if (!section.title) return body;
-
-      if (section.title === 'CONFIANÇA') {
-        const plain = section.lines.join(' ').replace(/\s+/g, ' ').trim();
-        const kind = confidenceKind(plain);
-        let note = plain;
-        if (kind) {
-          note = plain
-            .replace(/\b(ALTA|ALTO|M\u00c9DIA|MEDIA|M\u00c9DIO|MEDIO|BAIXA|BAIXO|HIGH|MEDIUM|LOW)\b/i, '')
-            .replace(/^[\s:,.;\u2013\u2014\-]+/, '')
-            .trim();
-        }
-        return `<section class="analysis-section">
-            <h4 class="analysis-section-title">CONFIAN\u00c7A</h4>
-            <div class="analysis-confidence">
-              ${kind ? `<span class="confidence-badge ${kind.cls}">${escapeHTML(kind.label)}</span>` : ''}
-              ${note ? `<span class="analysis-confidence-note">${escapeHTML(note)}</span>` : ''}
-            </div>
-          </section>`;
-      }
-
-      return `<section class="analysis-section"><h4 class="analysis-section-title">${escapeHTML(section.title)}</h4>${body}</section>`;
-    }).join('');
-
-    const trimmed = html.trim();
-    return trimmed || null;
   }
 
-  async function runGeminiFinancialDiagnosis() {
-    const status = document.getElementById('geminiDiagnosticStatus');
-    const results = document.getElementById('geminiDiagnosticResults');
-    const button = document.getElementById('btnGeminiDiagnostic');
+  const aiChat = {
+    session: createAiChatSession(),
+    controller: null,
+    opener: null
+  };
 
-    if (!results) return;
+  function aiChatContract() {
+    return window.LivroCaixaChatContract || null;
+  }
 
-    if (!window.LivroCaixaAI?.isReady()) {
-      if (status) status.textContent = 'IA indisponível: entre na sua conta ou cadastre uma chave local no Perfil.';
-      results.innerHTML = `
-        <div class="diagnostic-item is-warning">
-          <span>⚠️</span>
-          <div>
-            <strong>IA não disponível</strong>
-            <span>Entre na sua conta ou cadastre uma chave local em Perfil → Análise assistida para usar a análise com IA.</span>
-          </div>
-        </div>`;
+  function aiChatAccountId() {
+    try { return currentUser?.uid || null; } catch (err) { return null; }
+  }
+
+  function aiChatNotice(text, kind) {
+    const el = document.getElementById('aiChatNotice');
+    if (!el) return;
+    if (!text) {
+      el.hidden = true;
+      el.textContent = '';
+      el.classList.remove('is-error');
+      return;
+    }
+    el.textContent = text;
+    el.hidden = false;
+    el.classList.toggle('is-error', kind === 'error');
+  }
+
+  function aiChatScrollToEnd() {
+    const box = document.getElementById('aiChatMessages');
+    if (box) box.scrollTop = box.scrollHeight;
+  }
+
+  function aiChatSetBusy(busy) {
+    const send = document.getElementById('btnAiChatSend');
+    const box = document.getElementById('aiChatMessages');
+    if (send) {
+      send.disabled = Boolean(busy);
+      send.setAttribute('aria-busy', busy ? 'true' : 'false');
+    }
+    if (box) box.setAttribute('aria-busy', busy ? 'true' : 'false');
+  }
+
+  function aiChatRender() {
+    const box = document.getElementById('aiChatMessages');
+    if (!box) return;
+
+    const messages = aiChat.session.getMessages();
+    const pending = aiChat.session.getPending();
+
+    const parts = [];
+    if (!messages.length && !pending) {
+      parts.push(`<div class="ai-chat-msg is-placeholder">${escapeHTML(AI_CHAT_GREETING)}</div>`);
+    }
+    messages.forEach((item) => {
+      const cls = item.role === 'user' ? 'is-user' : 'is-assistant';
+      parts.push(`<div class="ai-chat-msg ${cls}">${escapeHTML(item.content)}</div>`);
+    });
+    if (pending) {
+      parts.push(`<div class="ai-chat-msg is-user is-pending">${escapeHTML(pending.content)}</div>`);
+      parts.push('<div class="ai-chat-msg is-assistant is-pending">Pensando…</div>');
+    }
+
+    box.innerHTML = parts.join('');
+    aiChatScrollToEnd();
+  }
+
+  const AI_CHAT_ERROR_MESSAGES = {
+    no_data: 'Ainda não existem dados suficientes no LIVRO-CAIXA para responder. Cadastre contas, lançamentos, caixinhas, metas ou investimentos e tente de novo.',
+    snapshot_too_large: 'Não foi possível preparar seus dados com segurança porque são grandes demais. Tente uma pergunta mais específica.',
+    contract_unavailable: 'O contrato da IA não carregou. Verifique a conexão e recarregue a página.',
+    empty_message: 'Escreva uma pergunta antes de enviar.',
+    message_too_long: 'A pergunta é maior que o limite permitido. Encurte-a e tente novamente.',
+    network: 'Falha de rede. Sua pergunta não foi enviada — tente novamente quando a conexão voltar.',
+    offline: 'Você está offline. Conecte-se à internet para perguntar à IA.',
+    rate_limited: 'Muitas perguntas agora. Aguarde alguns segundos e tente novamente.',
+    daily_limit: 'A IA atingiu o limite diário de leituras. O limite volta à meia-noite (UTC).',
+    empty_reply: 'A IA não retornou uma resposta utilizável. Tente novamente.',
+    not_authenticated: 'Entre na sua conta para conversar com a IA.',
+    token_failed: 'Não foi possível validar a sessão. Entre novamente.',
+    worker_not_configured: 'O serviço de IA não está configurado.',
+    bad_body: 'A requisição foi recusada pelo servidor. Tente novamente.',
+    payload_too_large: 'Os dados preparados foram recusados por tamanho. Tente uma pergunta mais específica.',
+    chat_payload_too_large: 'A pergunta com o contexto ficou grande demais. Tente novamente.'
+  };
+
+  function aiChatErrorMessage(err) {
+    const code = String(err?.code || '');
+    if (AI_CHAT_ERROR_MESSAGES[code]) return AI_CHAT_ERROR_MESSAGES[code];
+    if (/^http_429$/.test(code)) return AI_CHAT_ERROR_MESSAGES.rate_limited;
+    const message = String(err?.message || '').trim();
+    return message || 'Não foi possível enviar a pergunta. Tente novamente.';
+  }
+
+  /* Monta e valida o payload ANTES de qualquer requisição. Repete a mesma
+     validação que o Worker fará (validateChatPayload) para falhar cedo e
+     com mensagem útil — o Worker continua sendo a garantia real. */
+  function aiChatPrepare(text) {
+    const contract = aiChatContract();
+    if (!contract) return { ok: false, code: 'contract_unavailable' };
+
+    const message = contract.validateChatMessage(text);
+    if (!message.ok) return { ok: false, code: message.body.code, error: message.body.error };
+
+    const rawSnapshot = buildGeminiFinancialSnapshot();
+    if (!contract.snapshotHasData(rawSnapshot)) return { ok: false, code: 'no_data' };
+
+    const fitted = contract.fitChatSnapshotToBudget(rawSnapshot);
+    if (!fitted.ok) return { ok: false, code: fitted.reason };
+
+    const context = contract.normalizeConversationContext(aiChat.session.getMessages());
+    const payload = {
+      message: message.value,
+      financialSnapshot: fitted.snapshot,
+      conversationContext: context
+    };
+
+    const check = contract.validateChatPayload(payload);
+    if (!check.ok) return { ok: false, code: check.body.code, error: check.body.error };
+
+    return { ok: true, payload: check.value, dropped: fitted.dropped || [] };
+  }
+
+  async function aiChatSend(rawText) {
+    if (aiChat.session.isBusy()) return;
+
+    const originalText = String(rawText ?? '');
+    const prepared = aiChatPrepare(originalText);
+
+    if (!prepared.ok) {
+      aiChatNotice(
+        AI_CHAT_ERROR_MESSAGES[prepared.code] || prepared.error || 'Não foi possível enviar a pergunta.',
+        'error'
+      );
       return;
     }
 
-    const previousText = button?.textContent || 'Analisar com IA';
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      aiChatNotice(AI_CHAT_ERROR_MESSAGES.offline, 'error');
+      return;
+    }
+
+    const input = document.getElementById('aiChatInput');
+    if (input) input.value = '';
+
+    const started = aiChat.session.begin(prepared.payload.message);
+    if (!started.ok) return;
+    const token = started.token;
+
+    const controller = new AbortController();
+    aiChat.controller = controller;
+    aiChatNotice(prepared.dropped.length
+      ? `Alguns detalhes foram omitidos do envio por tamanho (${prepared.dropped.join(', ')}).`
+      : '');
+    aiChatSetBusy(true);
+    aiChatRender();
+
+    const isCurrent = () =>
+      aiChat.session.isCurrent(token) &&
+      token.accountId === aiChatAccountId() &&
+      !controller.signal.aborted;
 
     try {
-      if (button) {
-        button.disabled = true;
-        button.textContent = 'Analisando...';
-      }
+      const reply = await window.LivroCaixaAI.chat({
+        message: prepared.payload.message,
+        financialSnapshot: prepared.payload.financialSnapshot,
+        conversationContext: prepared.payload.conversationContext,
+        signal: controller.signal
+      });
 
-      if (status) {
-        status.textContent = 'Preparando os dados financeiros para análise...';
-      }
+      /* Guardas de sessão: conta, sessão do modal, cancelamento e
+         pertencimento à pergunta enviada. Falhou alguma → descarta. */
+      if (!isCurrent()) return;
 
-      results.innerHTML = `
-        <div class="diagnostic-item">
-          <span>✨</span>
-          <div>
-            <strong>Analisando sua situação financeira...</strong>
-            <span>A IA está interpretando os dados resumidos. Nenhum dado será alterado.</span>
-          </div>
-        </div>`;
+      aiChat.session.commit(token, prepared.payload.message, reply);
+    } catch (err) {
+      if (err?.code === 'aborted') return;
+      if (!isCurrent()) return;
 
-      const snapshot = buildGeminiFinancialSnapshot();
-
-      const prompt = `
-Você é um analista financeiro pessoal responsável por interpretar dados financeiros de forma clara, prudente e útil.
-
-Analise EXCLUSIVAMENTE o snapshot financeiro abaixo.
-
-OBJETIVOS:
-1. Identificar a situação geral do fluxo de caixa.
-2. Encontrar tendências relevantes de entradas, saídas e fluxo líquido.
-3. Identificar categorias de gastos que merecem atenção.
-4. Avaliar o uso dos orçamentos quando houver dados suficientes.
-5. Avaliar a evolução das metas.
-6. Considerar patrimônio, caixinhas e investimentos apenas como contexto.
-7. Considerar os problemas estruturais encontrados pelo diagnóstico determinístico.
-8. Sugerir ações práticas e realistas para melhorar a organização financeira.
-
-REGRAS IMPORTANTES:
-- Não altere nem proponha alterações automáticas nos dados do aplicativo.
-- Não invente valores que não estejam no snapshot.
-- "indicators" (quando presente) traz referências externas do Banco Central (SGS) e do Tesouro Nacional, cada uma com a própria data. Use-as apenas como contexto de mercado: não as apresente como dados do usuário, não derive projeções delas e não complete valores ausentes.
-- Não trate ausência de dados como um problema confirmado.
-- Diferencie fatos observados de interpretações.
-- Verifique period.currentMonthComplete antes de tirar conclusões sobre o mês atual. Se for false, trate os valores desse mês como parciais e evite compará-los diretamente com meses completos sem deixar essa limitação explícita.
-- Use period.latestEntryDate para considerar até que data os lançamentos estão registrados.
-- Não conclua que uma tendência é estrutural quando houver poucos meses disponíveis. Indique a limitação quando a amostra for pequena.
-- Não dê recomendações de compra ou venda de investimentos específicos.
-- Não classifique automaticamente um tipo de investimento como inadequado apenas por ser mais volátil. Se houver concentração, exposição relevante ou risco aparente, descreva isso como ponto de atenção, deixando claro que é uma interpretação baseada nos dados disponíveis.
-- Não presuma que o usuário deva aumentar, reduzir ou abandonar uma classe de investimento sem evidência suficiente no snapshot.
-- Ao comentar investimentos, priorize diversificação, concentração, liquidez e relação com o patrimônio total quando esses aspectos puderem ser avaliados pelos dados.
-- Quando calcular ou citar percentuais, deixe explícito o denominador usado. Diferencie percentual dos investimentos, percentual do patrimônio total e percentual do fluxo de caixa.
-- Não apresente o percentual de uma categoria dentro dos investimentos como se fosse o percentual dessa categoria sobre o patrimônio total.
-- Ao avaliar concentração de investimentos, considere o percentual dentro do total investido e, quando relevante, também a participação no patrimônio total.
-- Não solicite dados pessoais.
-- Não mencione IDs internos, Firebase, tokens ou detalhes técnicos do aplicativo.
-- Seja objetivo e priorize os pontos mais importantes.
-- Valores monetários estão em reais (BRL).
-- A análise é informativa e não substitui orientação financeira profissional.
-
-FORMATO DA RESPOSTA:
-
-RESUMO
-Uma visão geral em 2 ou 3 frases.
-
-PONTOS POSITIVOS
-- Até 3 pontos positivos observados.
-
-PONTOS DE ATENÇÃO
-- Até 5 pontos de atenção, priorizados.
-
-TENDÊNCIAS
-- Até 4 tendências relevantes encontradas nos dados.
-
-RECOMENDAÇÕES
-- Até 5 ações práticas, começando pelas mais importantes.
-
-CONFIANÇA
-Informe se a análise tem confiança ALTA, MÉDIA ou BAIXA e explique brevemente caso existam limitações relevantes nos dados.
-
-SNAPSHOT:
-${JSON.stringify(snapshot)}
-`;
-
-      const responseText = await window.LivroCaixaAI.generate({ prompt, maxTokens: 1400 });
-
-      if (!responseText) {
-        throw new Error('A IA não retornou uma resposta utilizável.');
-      }
-
-      if (status) {
-        status.textContent = 'Análise concluída. Nenhum dado financeiro foi alterado.';
-      }
-
-      const structuredAnalysis = renderAnalysisSections(responseText);
-      results.innerHTML = structuredAnalysis
-        ? `
-        <div class="diagnostic-item">
-          <span>✨</span>
-          <div class="analysis-body">${structuredAnalysis}</div>
-        </div>`
-        : `
-        <div class="diagnostic-item">
-          <span>✨</span>
-          <div style="width:100%;">
-            <strong>Diagnóstico financeiro</strong>
-            <span style="white-space:pre-wrap;">${escapeHTML(responseText)}</span>
-          </div>
-        </div>`;
-    } catch (error) {
-      console.error('[Livro-Caixa] Erro no diagnóstico de IA:', error);
-
-      const errorDetail = String(error?.message || '').trim();
-
-      if (status) {
-        status.textContent = errorDetail || 'Não foi possível concluir a análise.';
-      }
-
-      results.innerHTML = `
-        <div class="diagnostic-item is-warning">
-          <span>⚠️</span>
-          <div>
-            <strong>Falha na análise</strong>
-            <span>${errorDetail ? `${escapeHTML(errorDetail)} ` : ''}Seus dados financeiros não foram alterados.</span>
-          </div>
-        </div>`;
+      aiChatNotice(aiChatErrorMessage(err), 'error');
+      /* A pergunta volta ao campo para reenvio — sem duplicar no histórico. */
+      const field = document.getElementById('aiChatInput');
+      if (field && !field.value) field.value = originalText;
     } finally {
-      if (button) {
-        button.disabled = false;
-        button.textContent = previousText;
-      }
+      aiChat.session.settle(token);
+      aiChat.controller = null;
+      aiChatSetBusy(false);
+      if (aiChat.session.isOpen() && aiChat.session.getSessionId() === token.sessionId) aiChatRender();
     }
   }
 
+  function openAiChat() {
+    /* Contexto pertence a uma conta: outro dono = conversa nova. */
+    aiChat.session.openFor(aiChatAccountId());
 
-  document.getElementById('btnGeminiDiagnostic')?.addEventListener(
-    'click',
-    runGeminiFinancialDiagnosis
-  );
+    const contract = aiChatContract();
+    const input = document.getElementById('aiChatInput');
+    if (contract && input) input.maxLength = contract.CHAT_LIMITS.MESSAGE_MAX_CHARS;
+
+    aiChat.opener = document.activeElement;
+
+    openModal('panelAiChat');
+    aiChatNotice(contract ? '' : AI_CHAT_ERROR_MESSAGES.contract_unavailable, contract ? null : 'error');
+    aiChatSetBusy(aiChat.session.isBusy());
+    aiChatRender();
+    /* Foco em caixa overflow:hidden deixa overlay/painel deslocados de uma
+       abertura anterior; limpa antes de posicionar o cursor. */
+    aiChatResetModalScroll();
+    window.renderAiQuotaStatus?.();
+    window.LivroCaixaAI?.refreshQuota?.({ silent: true, throttleMs: 15000 });
+
+    window.setTimeout(() => input?.focus({ preventScroll: true }), 0);
+  }
+
+  function closeAiChat() {
+    /* O contexto permanece em memória; só o envio em andamento é
+       invalidado (close incrementa requestId no contrato). */
+    aiChat.session.close();
+
+    if (aiChat.controller) {
+      try { aiChat.controller.abort(); } catch (err) { /* já encerrado */ }
+      aiChat.controller = null;
+    }
+
+    aiChatSetBusy(false);
+
+    const input = document.getElementById('aiChatInput');
+    if (input) input.value = '';
+
+    const opener = aiChat.opener;
+    aiChat.opener = null;
+    if (opener && typeof opener.focus === 'function' && document.contains(opener)) {
+      try { opener.focus(); } catch (err) { /* elemento saiu do DOM */ }
+    }
+  }
+
+  /* Limpeza de contexto: troca de conta, logout, sessão reiniciada.
+     Nunca persistida — só isto apaga a conversa nesta versão. */
+  function resetAiChatContext() {
+    aiChat.session.resetContext();
+
+    if (aiChat.controller) {
+      try { aiChat.controller.abort(); } catch (err) { /* já encerrado */ }
+      aiChat.controller = null;
+    }
+
+    if (aiChat.session.isOpen()) {
+      aiChatNotice('');
+      aiChatSetBusy(false);
+      aiChatRender();
+    }
+  }
+
+  /* Superfície usada pelos pontos de integração existentes (fechamento
+     global de modais e limpeza de sessão) sem depender de ordem de
+     declaração. */
+  window.LivroCaixaChat = {
+    open: openAiChat,
+    close: closeAiChat,
+    resetContext: resetAiChatContext,
+    isOpen: () => aiChat.session.isOpen(),
+    isBusy: () => aiChat.session.isBusy(),
+    getMessages: () => aiChat.session.getMessages()
+  };
+
+  document.getElementById('btnAiChatClose')?.addEventListener('click', () => {
+    if (typeof closeAllPanels === 'function') closeAllPanels();
+  });
+
+  document.getElementById('aiChatForm')?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const input = document.getElementById('aiChatInput');
+    aiChatSend(input ? input.value : '');
+  });
+
+  /* O navegador rola caixas overflow:hidden (sem barra visível) para
+     revelar o input em foco — e nada disso se corrige sozinho. Zera o
+     deslocamento ao abrir, ao focar e quando o viewport muda. */
+  function aiChatResetModalScroll() {
+    const overlay = document.getElementById('modalOverlay');
+    const panel = document.getElementById('panelAiChat');
+    if (overlay) { overlay.scrollTop = 0; overlay.scrollLeft = 0; }
+    if (panel) { panel.scrollTop = 0; panel.scrollLeft = 0; }
+  }
+
+  document.getElementById('aiChatInput')?.addEventListener('focus', aiChatResetModalScroll);
+
+  /* Toque/foco na área de conversa produz o mesmo deslocamento: o
+     navegador rola overlay/painel para "revelar" o elemento focado e o
+     cabeçalho sobe junto. Zera após o evento e trava qualquer rolagem
+     residual enquanto o chat estiver aberto (nada ali deve rolar). */
+  const aiChatMessagesBox = document.getElementById('aiChatMessages');
+  aiChatMessagesBox?.addEventListener('pointerdown', () => requestAnimationFrame(aiChatResetModalScroll));
+  aiChatMessagesBox?.addEventListener('focus', () => requestAnimationFrame(aiChatResetModalScroll));
+
+  ['modalOverlay', 'panelAiChat'].forEach((id) => {
+    const el = document.getElementById(id);
+    el?.addEventListener('scroll', () => {
+      if (!window.LivroCaixaChat?.isOpen?.()) return;
+      if (el.scrollTop || el.scrollLeft) {
+        el.scrollTop = 0;
+        el.scrollLeft = 0;
+      }
+    }, { passive: true });
+  });
+
+  window.visualViewport?.addEventListener('resize', () => {
+    if (window.LivroCaixaChat?.isOpen?.()) {
+      requestAnimationFrame(aiChatResetModalScroll);
+    }
+  });
 
 
   // V19-20: meses de projeção são salvos automaticamente ao sair do campo.
@@ -8489,6 +8750,12 @@ ${JSON.stringify(snapshot)}
   function openModal(panelId) {
     closeFilterChoice();
     const overlay = document.getElementById('modalOverlay');
+    /* Se outro painel for aberto enquanto o chat está no ar, o chat fecha
+       pelo mesmo caminho (cancela requisição + devolve foco) para o estado
+       interno não divergir do que está visível. */
+    if (panelId !== 'panelAiChat' && window.LivroCaixaChat?.isOpen?.()) {
+      window.LivroCaixaChat.close();
+    }
     // Fecha TODOS os painéis antes de abrir um (evita modais lado a lado)
     document.querySelectorAll('.panel.open, .panel').forEach(p => p.classList.remove('open'));
     const panel = document.getElementById(panelId);
@@ -8504,8 +8771,11 @@ ${JSON.stringify(snapshot)}
     closeFilterChoice();
     const overlay = document.getElementById('modalOverlay');
     overlay.classList.remove('open');
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.panel.open, .panel').forEach(p => p.classList.remove('open'));
     returnToEntryAfterCategory = false;
+    /* Chat: cancela requisição em andamento, limpa o campo e devolve o
+       foco. O contexto em memória é preservado (só troca de conta apaga). */
+    window.LivroCaixaChat?.close?.();
   }
 
   function openCustomPeriodModal() {
@@ -13168,6 +13438,12 @@ document.getElementById('tSalvar').onclick = async () => {
 
   document.getElementById('fabAdd').onclick = () => {
     const activeTab = document.body.dataset.tab || currentTab;
+    /* Visão Geral: o FAB é o ponto de acesso à IA financeira (V.20).
+       Nas demais abas ele continua abrindo o modal de adicionar. */
+    if (activeTab === 'dashboard') {
+      window.LivroCaixaChat?.open();
+      return;
+    }
     if (activeTab === 'bills') openBillModal();
     else if (activeTab === 'receivables') openReceivableModal();
     else if (activeTab === 'invest') openNewInvestModal();

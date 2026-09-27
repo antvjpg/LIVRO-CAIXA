@@ -23,6 +23,9 @@
 
 import { json, corsHeaders, withHeaders } from "./shared/http.js";
 import { readJsonBody, validateAiPayload } from "./shared/validation.js";
+/* Contrato do chat: fonte única compartilhada com o index.html. */
+import { validateChatPayload, CHAT_LIMITS } from "../../ai-chat-contract.js";
+import { buildChatSystemPrompt } from "./ai/chat-prompt.js";
 import { authenticate } from "./ai/auth.js";
 import { getFreeQuota, currentQuota, burnQuota, quotaHeaderValues } from "./ai/quota.js";
 import {
@@ -192,29 +195,68 @@ export default {
       );
     }
 
-    /* Corpo: limite de tamanho → parse → validação de prompt, imagem e
-       maxTokens. Nada disso chega ao provedor sem passar por aqui. */
+    /* Corpo: limite de tamanho → parse → validação. Nada disso chega ao
+       provedor sem passar por aqui.
+
+       Dois caminhos na MESMA rota (sem segunda arquitetura de IA):
+       - payload com "message"      → contrato do chat (ai-chat-contract.js);
+       - payload com "prompt"       → contrato legado (prompt/imagem) usado
+                                      por comprovantes e diagnóstico. */
     const body = await readJsonBody(request);
     if (!body.ok) return json(body.body, body.status, cors);
 
-    const validation = validateAiPayload(body.payload);
-    if (!validation.ok) return json(validation.body, validation.status, cors);
+    /* Um payload é de chat se trouxer QUALQUER campo do contrato de chat.
+       Assim, "message" esquecida ainda cai no caminho do chat e retorna
+       empty_message em vez de empty_prompt genérico. */
+    const payloadKeys = ["message", "conversationContext", "financialSnapshot"];
+    const isChatPayload = payloadKeys.some((key) =>
+      Object.prototype.hasOwnProperty.call(body.payload, key)
+    );
 
-    const { prompt, imageUrl, maxTokens } = validation.value;
+    let messages;
+    let maxTokens;
+    let providerTimeoutMs;
 
-    const content = imageUrl
-      ? [
-          { type: "text", text: prompt },
-          { type: "image_url", image_url: { url: imageUrl } }
-        ]
-      : prompt;
+    if (isChatPayload) {
+      const chat = validateChatPayload(body.payload);
+      if (!chat.ok) return json(chat.body, chat.status, cors);
+
+      messages = [
+        { role: "system", content: buildChatSystemPrompt(chat.value.financialSnapshot) },
+        ...chat.value.conversationContext.map((item) => ({ role: item.role, content: item.content })),
+        { role: "user", content: chat.value.message }
+      ];
+      maxTokens = CHAT_LIMITS.MAX_TOKENS;
+      providerTimeoutMs = CHAT_LIMITS.PROVIDER_TIMEOUT_MS;
+    } else {
+      const validation = validateAiPayload(body.payload);
+      if (!validation.ok) return json(validation.body, validation.status, cors);
+
+      const { prompt, imageUrl, maxTokens: legacyMaxTokens } = validation.value;
+
+      messages = imageUrl
+        ? [
+            {
+              role: "user",
+              content: [
+                { type: "text", text: prompt },
+                { type: "image_url", image_url: { url: imageUrl } }
+              ]
+            }
+          ]
+        : [{ role: "user", content: prompt }];
+      maxTokens = legacyMaxTokens;
+      providerTimeoutMs = undefined;
+    }
 
     const referer = origin || "https://livro-caixa.local";
     const models = modelList(env);
     let lastFailure = null;
 
     for (const model of models) {
-      const result = await callOpenRouter(model, env, content, maxTokens, referer);
+      const result = await callOpenRouter(model, env, messages, maxTokens, referer, {
+        timeoutMs: providerTimeoutMs
+      });
 
       /* Conta na cota apenas o que deu certo: tentativas que o OpenRouter
          recusou (402/404 de modelo pago, falha de rede) não gastam o dia. */

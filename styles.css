@@ -899,6 +899,9 @@
     transition:transform 0.15s ease, background 0.2s ease, color 0.2s ease;
   }
   .fab-add .add-icon{width:31px;height:31px;display:block;fill:none;stroke:currentColor;stroke-width:2.35;stroke-linecap:round;}
+  .fab-add .fab-chat-icon{display:none;font-size:26px;line-height:1;} /* .fab-add tem font-size:0 */
+  body[data-tab="dashboard"] .fab-add .add-icon{display:none;}
+  body[data-tab="dashboard"] .fab-add .fab-chat-icon{display:block;}
   .fab-add:hover{background:var(--accent-to);filter:brightness(0.96); transform:scale(1.06);}
   .fab-add:active{transform:scale(0.95);}
 
@@ -5276,28 +5279,13 @@ body.dark-mode{
 
 /* Insight only visible on dashboard tab */
 body:not([data-tab="dashboard"]) #dailyInsightCard,
-body:not([data-tab="dashboard"]) #dashboardGeminiHost,
 body:not([data-tab="dashboard"]) #dashboardNextPayment{
   display:none !important;
 }
 #viewDashboard #dailyInsightCard,
-#viewDashboard #dashboardGeminiHost,
 #viewDashboard #dashboardNextPayment{
   display:block;
   margin-top:12px;
-}
-#viewDashboard .dashboard-gemini-host .diagnostic-summary-card{
-  margin-top:12px;
-  padding:14px;
-  border:1px solid var(--line);
-  border-radius:16px;
-  background:var(--surface);
-}
-#viewDashboard .dashboard-gemini-host .diagnostic-summary-head{
-  display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;
-}
-#viewDashboard .dashboard-gemini-host #btnGeminiDiagnostic{
-  width:100%;min-height:44px;border-radius:999px;
 }
 
 /* Próximo pagamento */
@@ -5575,17 +5563,13 @@ button.edit.btn-action::before{
 
 /* === V.19-18 UI2 critical (idempotent overrides) === */
 #viewDashboard #dailyInsightCard{display:block;margin-top:16px;}
-#viewDashboard #dashboardGeminiHost{display:block;margin-top:12px;}
 #viewDashboard #dashboardNextPayment{display:block;margin-top:12px;}
 body:not([data-tab="dashboard"]) #dailyInsightCard,
-body:not([data-tab="dashboard"]) #dashboardGeminiHost,
 body:not([data-tab="dashboard"]) #dashboardNextPayment{display:none!important;}
 /* when dashboard tab content is shown via .active, also show children */
 #viewDashboard.active #dailyInsightCard,
-#viewDashboard.active #dashboardGeminiHost,
 #viewDashboard.active #dashboardNextPayment{display:block!important;}
 #viewDashboard:not(.active) #dailyInsightCard,
-#viewDashboard:not(.active) #dashboardGeminiHost,
 #viewDashboard:not(.active) #dashboardNextPayment{display:none!important;}
 
 .profile-group-hidden,[hidden].profile-group{display:none!important;}
@@ -5594,8 +5578,6 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{display:none!important;}
 .dashboard-next-payment-card .next-pay-inner{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);}
 .dashboard-next-payment-card .next-pay-kicker{display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
 .dashboard-next-payment-card .next-pay-row{display:flex;justify-content:space-between;gap:10px;}
-.dashboard-gemini-host .diagnostic-summary-card{padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);}
-.dashboard-gemini-host #btnGeminiDiagnostic{width:100%;min-height:44px;border-radius:999px;margin-top:10px;}
 
 .period-bar{gap:6px!important;}
 .period-bar button,.period-nav,.period-all,.period-picker-button{min-height:32px!important;padding:5px 10px!important;}
@@ -5801,7 +5783,6 @@ body[data-tab="profile"] .fab-add{
   margin-bottom:4px !important;
 }
 #viewDashboard #dashboardNextPayment,
-#viewDashboard #dashboardGeminiHost,
 #viewDashboard #dailyInsightCard{
   margin-top:4px !important;
 }
@@ -6193,64 +6174,8 @@ body[data-tab="profile"] .fab-add{
 #viewDashboard #dashboardNextPayment{
   margin:0 !important;
 }
-#viewDashboard #dashboardGeminiHost{
-  margin:0 !important;
-}
 #viewDashboard #dailyInsightCard{
   margin:0 !important;
-}
-#viewDashboard .dashboard-gemini-host .diagnostic-summary-card{
-  margin:0;
-  padding:14px 16px;
-  border-radius:16px;
-}
-
-/* Análise assistida — saída estruturada da IA.
-   Se o formato não for reconhecido, a tela cai no texto corrido de antes. */
-.analysis-body{
-  display:grid;gap:10px;width:100%;
-}
-.analysis-section{
-  display:grid;gap:5px;
-}
-.analysis-section-title{
-  margin:0;font-size:10px;font-weight:800;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--accent);
-}
-.analysis-body p{
-  margin:0;font-size:11px;line-height:1.55;color:var(--ink-soft);
-}
-.analysis-body ul{
-  margin:0;padding-left:17px;display:grid;gap:5px;
-}
-.analysis-body li{
-  font-size:11px;line-height:1.45;color:var(--ink);
-}
-.analysis-confidence{
-  display:flex;align-items:center;gap:9px;flex-wrap:wrap;
-}
-.analysis-confidence-note{
-  flex:1;min-width:170px;font-size:11px;line-height:1.5;color:var(--ink-soft);
-}
-.confidence-badge{
-  display:inline-block;padding:3px 9px;border-radius:999px;
-  font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
-  border:1px solid transparent;
-}
-.confidence-badge.is-high{
-  background:color-mix(in srgb, var(--green) 14%, var(--paper));
-  color:var(--green);
-  border-color:color-mix(in srgb, var(--green) 38%, var(--line));
-}
-.confidence-badge.is-mid{
-  background:color-mix(in srgb, var(--gold) 16%, var(--paper));
-  color:var(--gold);
-  border-color:color-mix(in srgb, var(--gold) 44%, var(--line));
-}
-.confidence-badge.is-low{
-  background:color-mix(in srgb, var(--red,#B3432B) 12%, var(--paper));
-  color:var(--red,#B3432B);
-  border-color:color-mix(in srgb, var(--red,#B3432B) 36%, var(--line));
 }
 
 /* Caixinhas: total no padrão dos demais cards de saldo */
@@ -9087,8 +9012,7 @@ body[data-tab="dashboard"] #viewDashboard.active {
 #viewDashboard #advancedDashboard{
   margin:0;
 }
-#viewDashboard #dashboardNextPayment .next-pay-inner,
-#viewDashboard #dashboardGeminiHost{
+#viewDashboard #dashboardNextPayment .next-pay-inner{
   padding:18px 18px 20px;
   border:1px solid var(--line);
   border-radius:18px;
@@ -9098,26 +9022,11 @@ body[data-tab="dashboard"] #viewDashboard.active {
 #viewDashboard #dashboardNextPayment .next-pay-inner{
   margin:0;
 }
-#viewDashboard #dashboardGeminiHost .diagnostic-summary-card{
-  margin:0;
-  padding:0;
-  border:0;
-  border-radius:0;
-  background:transparent;
-  box-shadow:none;
-}
 @media (max-width:680px){
-  #viewDashboard #dashboardNextPayment .next-pay-inner,
-  #viewDashboard #dashboardGeminiHost{
+  #viewDashboard #dashboardNextPayment .next-pay-inner{
     padding:15px 13px 17px;
     border-radius:15px;
   }
-}
-#viewDashboard #dashboardGeminiHost .diagnostic-results{
-  margin-top:12px;
-}
-#viewDashboard #dashboardGeminiHost .diagnostic-results:empty{
-  display:none;
 }
 
 /* [CSS · VISÃO GERAL] tipografia e botão das seções externas, no mesmo
@@ -9134,13 +9043,169 @@ body[data-tab="dashboard"] #viewDashboard.active {
 #viewDashboard #dashboardNextPayment .next-pay-inner.empty strong{
   font-size:11px;
 }
-#viewDashboard .dashboard-gemini-host #btnGeminiDiagnostic{
-  min-height:42px;
-  border-radius:12px;
-  font-size:11px;
-  font-weight:800;
-  letter-spacing:.04em;
+
+/* =========================================================
+   CHAT IA (V.20) — modal aberto pelo FAB da Visão Geral.
+   Reutiliza .panel/.modal-overlay; só define o layout interno.
+   ========================================================= */
+#panelAiChat{
+  display:none;
+  width:min(640px,100%);
+  height:min(70vh,660px);
+  max-height:calc(100dvh - 48px);
+  padding:18px 18px 14px;
+  overflow:hidden;
+  flex-direction:column;
 }
-#viewDashboard .dashboard-gemini-host .daily-insight-quota{
+#panelAiChat.open{
+  display:flex;
+  flex-direction:column;
+}
+#panelAiChat h3{
+  margin:0 0 6px;
+  font-size:18px;
+}
+.ai-chat-intro{
+  margin:0 0 10px;
+  color:var(--ink-soft);
+  font-size:11px;
+  line-height:1.45;
+}
+.ai-chat-quota{
+  display:block;
+  margin-top:4px;
+  min-height:1.3em;
+}
+.ai-chat-notice{
+  margin:0 0 10px;
+  padding:9px 11px;
+  border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);
+  border-radius:10px;
+  background:var(--paper);
+  color:var(--ink);
+  font-size:11px;
+  line-height:1.45;
+}
+.ai-chat-notice[hidden]{display:none;}
+.ai-chat-notice.is-error{
+  border-color:color-mix(in srgb,var(--red) 40%,transparent);
+  background:color-mix(in srgb,var(--red) 8%,var(--paper));
+  color:var(--red);
+}
+.ai-chat-messages{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  padding:2px 2px 10px;
+  border-top:1px dashed var(--line);
+  border-bottom:1px dashed var(--line);
+}
+.ai-chat-msg{
+  max-width:88%;
+  padding:9px 11px;
+  border-radius:14px;
+  font-size:12.5px;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+  white-space:pre-wrap;
+}
+.ai-chat-msg.is-user{
+  align-self:flex-end;
+  background:var(--accent);
+  color:var(--accent-ink);
+  border-bottom-right-radius:4px;
+}
+.ai-chat-msg.is-assistant{
+  align-self:flex-start;
+  background:var(--paper);
+  border:1px solid var(--line);
+  color:var(--ink);
+  border-bottom-left-radius:4px;
+}
+.ai-chat-msg.is-pending{
+  opacity:.72;
+  font-style:italic;
+}
+.ai-chat-msg.is-placeholder{
+  align-self:flex-start;
+  color:var(--ink-soft);
+  background:transparent;
+  border:1px dashed var(--line);
+}
+.ai-chat-composer{
+  flex:0 0 auto;
+  margin-top:10px;
+}
+.ai-chat-label{
+  display:block;
+  margin-bottom:6px;
   font-size:10px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.ai-chat-row{
+  display:flex;
+  gap:8px;
+  align-items:stretch;
+}
+.ai-chat-row input{
+  flex:1 1 auto;
+  min-width:0;
+  min-height:44px;
+  padding:10px 12px;
+  border:2px solid var(--ink);
+  border-radius:12px;
+  background:var(--paper);
+  color:var(--ink);
+  font-size:14px;
+}
+.ai-chat-row input:focus{
+  outline:2px solid var(--accent);
+  outline-offset:1px;
+}
+.ai-chat-row button[type=submit]{
+  flex:0 0 auto;
+  min-width:52px;
+  border-radius:12px;
+}
+.ai-chat-row button[type=submit] .fi{
+  font-size:17px;
+  line-height:1;
+}
+.ai-chat-hint{
+  margin:6px 0 0;
+  color:var(--ink-soft);
+  font-size:10px;
+  line-height:1.4;
+}
+.ai-chat-empty{
+  align-self:center;
+  max-width:92%;
+  padding:8px 12px;
+  border:1px dashed var(--line);
+  border-radius:999px;
+  color:var(--ink-soft);
+  font-size:11px;
+  text-align:center;
+}
+@media (max-width:700px){
+  #panelAiChat{
+    width:100%;
+    max-width:none;
+    height:min(88dvh,100%);
+    max-height:calc(100dvh - 32px);
+    padding:15px 14px calc(12px + env(safe-area-inset-bottom));
+  }
+  .ai-chat-msg{max-width:94%;font-size:13px;}
+  .ai-chat-row input{font-size:16px;} /* evita zoom automático do iOS */
+}
+@media (prefers-reduced-motion:reduce){
+  #panelAiChat,.ai-chat-msg{animation:none!important;transition:none!important;}
 }

@@ -2,6 +2,7 @@
   "id": "./",
   "name": "Livro-Caixa — Patrimônio Pessoal",
   "short_name": "Livro-Caixa",
+  "version": "Livro-Caixa V.19-20",
   "description": "Controle pessoal de caixa, caixinhas e investimentos.",
   "lang": "pt-BR",
   "start_url": "./",
