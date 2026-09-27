@@ -561,3 +561,28 @@ test('FASE 4: logout/login reais existem e o relogin nunca rebaixa a propriedade
   );
   assert.ok(setup.includes('rebaixar a propriedade'), 'setup deve conferir createdByCode após o relogin');
 });
+
+/* ==== Provisionamento: proteção contra enumeração esconde "conta inexistente" ==== */
+test('provisionamento tenta cadastro quando o login falha (sem depender do texto do erro)', () => {
+  const src = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.js'), 'utf8');
+  const iSign = src.indexOf('async function signInOrCreate(');
+  const iHint = src.indexOf('function hintFor(');
+  assert.ok(iSign > 0 && iHint > iSign, 'signInOrCreate deve existir antes de hintFor');
+  const corpo = src.slice(iSign, iHint);
+
+  assert.ok(
+    !corpo.includes('MSG.notFound'),
+    'não pode condicionar a criação ao texto "Conta não encontrada" — o Firebase devolve credencial inválida quando protege a enumeração'
+  );
+  assert.ok(corpo.includes('MSG.exists'), 'deve tratar a colisão "Já existe uma conta" voltando ao login');
+  assert.ok(corpo.includes("how: 'signup'"), 'deve registrar o caminho signup');
+  assert.ok(corpo.includes('loginErr'), 'deve preservar o erro do login para diagnóstico');
+
+  const iSub1 = corpo.indexOf('await submit(page, creds)');
+  const iToggle = corpo.indexOf('await toggleMode(page)');
+  const iSub2 = corpo.indexOf('await submit(page, creds)', iSub1 + 1);
+  assert.ok(
+    iSub1 >= 0 && iToggle > iSub1 && iSub2 > iToggle,
+    'fluxo deve ser: login -> cadastro -> (colisão) login'
+  );
+});

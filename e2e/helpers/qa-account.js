@@ -10,7 +10,7 @@ const firestore = require('./firestore-rest');
 const identity = require('./identity');
 
 const MSG = {
-  notFound: 'Conta não encontrada',
+  notFound: 'Conta não encontrada', /* texto do app p/ auth/user-not-found */
   /* Códigos devolvidos pela API do Firebase Auth. São SINAIS diagnósticos de
      configuração/disponibilidade do provider — não provam que o provider
      esteja desabilitado agora (regra em hintFor). */
@@ -154,25 +154,29 @@ async function signInOrCreate(page, creds) {
   let r = await submit(page, creds);
   if (r.loggedIn) return finish({ status: 'ok', how: 'login' });
 
-  let err = r.error;
-  if (err.includes(MSG.notFound)) {
-    if ((await page.evaluate(() => document.getElementById('authTitle')?.textContent)) !== 'Criar conta') {
-      await toggleMode(page);
-    }
+  const loginErr = r.error || '';
+  const authTitle = async () =>
+    (await page.evaluate(() => (document.getElementById('authTitle')?.textContent || '').trim()));
+
+  /* Login falhou: em projetos com proteção contra enumeração de contas o
+     Firebase devolve "credencial inválida" (auth/invalid-credential) em vez
+     de "conta não encontrada" (auth/user-not-found). Por isso o cadastro é
+     tentado SEMPRE que o login falha — nunca dependendo do texto do erro —
+     e a colisão "já existe" volta ao login com a mesma senha. */
+  if ((await authTitle()) !== 'Criar conta') await toggleMode(page);
+  r = await submit(page, creds);
+  if (r.loggedIn) return finish({ status: 'ok', how: 'signup' });
+
+  let err = r.error || '';
+  if (err.includes(MSG.exists)) {
+    if ((await authTitle()) !== 'Entrar') await toggleMode(page);
     r = await submit(page, creds);
-    if (r.loggedIn) return finish({ status: 'ok', how: 'signup' });
-    err = r.error;
-    if (err.includes(MSG.exists)) {
-      if ((await page.evaluate(() => document.getElementById('authTitle')?.textContent)) !== 'Entrar') {
-        await toggleMode(page);
-      }
-      r = await submit(page, creds);
-      if (r.loggedIn) return finish({ status: 'ok', how: 'login-apos-colisao' });
-      err = r.error;
-    }
+    if (r.loggedIn) return finish({ status: 'ok', how: 'login-apos-colisao' });
+    err = r.error || '';
   }
 
-  return finish({ status: 'blocked', error: err || 'sem mensagem de erro', hint: hintFor(err) });
+  const erroFinal = err || loginErr;
+  return finish({ status: 'blocked', error: erroFinal || 'sem mensagem de erro', hint: hintFor(erroFinal) });
 }
 
 /* Interpreta erros da autenticação.
