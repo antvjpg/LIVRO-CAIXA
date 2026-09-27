@@ -24,9 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Node 22+: `node --test` aceita padrões glob (20 não expande o glob e
+      # falhava em "Could not find 'e2e/oracles/*.test.mjs'" no CI).
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Dependências
