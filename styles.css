@@ -9175,9 +9175,9 @@ body[data-tab="dashboard"] #viewDashboard.active {
 .ai-chat-row{
   display:flex;
   gap:8px;
-  align-items:stretch;
+  align-items:center;
 }
-.ai-chat-row input{
+.ai-chat-row input[type=text]{
   flex:1 1 auto;
   min-width:0;
   min-height:44px;
@@ -9188,10 +9188,26 @@ body[data-tab="dashboard"] #viewDashboard.active {
   color:var(--ink);
   font-size:14px;
 }
-.ai-chat-row input:focus{
+.ai-chat-row input[type=text]:focus{
   outline:2px solid var(--accent);
   outline-offset:1px;
 }
+.ai-chat-row .ai-attach-btn{
+  flex:0 0 auto;
+  min-width:44px;
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1.5px solid var(--ink);
+  border-radius:12px;
+  background:var(--paper);
+  color:var(--ink);
+  cursor:pointer;
+}
+.ai-chat-row .ai-attach-btn:hover{background:var(--hover-soft);}
+.ai-chat-row .ai-attach-btn:disabled{opacity:.4;cursor:not-allowed;}
+.ai-chat-row .ai-attach-btn svg{display:block;}
 .ai-chat-row button[type=submit]{
   flex:0 0 auto;
   min-width:52px;
@@ -9232,35 +9248,13 @@ body[data-tab="dashboard"] #viewDashboard.active {
    ========================================================================== */
 
 /* --- anexo no compositor do chat ---------------------------------------- */
-.ai-attachment-row{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  margin-top:8px;
-}
-.ai-attach-btn{
-  flex:0 0 auto;
-  min-width:44px;
-  min-height:44px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border:1.5px solid var(--ink);
-  border-radius:12px;
-  background:var(--paper);
-  color:var(--ink);
-  cursor:pointer;
-}
-.ai-attach-btn:hover{background:var(--hover-soft);}
-.ai-attach-btn:disabled{opacity:.4;cursor:not-allowed;}
-.ai-attach-btn svg{display:block;}
 .ai-attachment-chip{
   display:flex;
   gap:8px;
   align-items:center;
   min-width:0;
-  flex:1 1 auto;
   padding:6px 8px;
+  margin-top:8px;
   border:1px dashed var(--line);
   border-radius:12px;
   background:var(--paper-2);

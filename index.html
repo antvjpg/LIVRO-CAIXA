@@ -1330,13 +1330,6 @@
       <form class="ai-chat-composer" id="aiChatForm" autocomplete="off">
         <label class="ai-chat-label" for="aiChatInput">Pergunte sobre suas finanças</label>
         <div class="ai-chat-row">
-          <input type="text" id="aiChatInput" name="aiChatInput" placeholder="Pergunte sobre suas finanças…"
-                 enterkeyhint="send">
-          <button type="submit" id="btnAiChatSend" class="primary" aria-label="Enviar pergunta">
-            <i class="fi fi-rr-paper-plane-top" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div class="ai-attachment-row">
           <!-- V.20-01 — anexo da LIA: validação + OCR + revisão obrigatória.
                Este input nunca cria movimentação; só alimenta o pipeline. -->
           <input
@@ -1349,8 +1342,13 @@
                   aria-label="Anexar imagem ou documento" title="Anexar imagem ou documento">
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16.5 6v11.5a4.5 4.5 0 1 1-9 0V5a3 3 0 0 1 6 0v10.5a1.5 1.5 0 0 1-3 0V6H9v9.5a3 3 0 0 0 6 0V5a4.5 4.5 0 0 0-9 0v12.5a6 6 0 0 0 12 0V6h-1.5Z"/></svg>
           </button>
-          <div class="ai-attachment-chip" id="liaAttachmentChip" hidden></div>
+          <input type="text" id="aiChatInput" name="aiChatInput" placeholder="Pergunte sobre suas finanças…"
+                 enterkeyhint="send">
+          <button type="submit" id="btnAiChatSend" class="primary" aria-label="Enviar pergunta">
+            <i class="fi fi-rr-paper-plane-top" aria-hidden="true"></i>
+          </button>
         </div>
+        <div class="ai-attachment-chip" id="liaAttachmentChip" hidden></div>
       </form>
 
       <div class="ai-chat-notice" id="liaAttachmentNotice" role="status" aria-live="polite" hidden></div>
