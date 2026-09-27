@@ -9061,6 +9061,13 @@ body[data-tab="dashboard"] #viewDashboard.active {
   display:flex;
   flex-direction:column;
 }
+/* Só a caixa de mensagens absorve a altura; cabeçalho, intro e aviso
+   não encolhem quando o painel comprime com o teclado aberto. */
+#panelAiChat h3,
+#panelAiChat .ai-chat-intro,
+#panelAiChat .ai-chat-notice{
+  flex:0 0 auto;
+}
 #panelAiChat h3{
   margin:0 0 6px;
   font-size:18px;

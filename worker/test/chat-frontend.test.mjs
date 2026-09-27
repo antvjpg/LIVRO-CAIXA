@@ -382,19 +382,30 @@ test("index.html: contador de leitura de IA reusa [data-ai-quota] no intro", () 
 
 test("index.html: foco do chat não desloca overlay/painel (regressão de arrasto)", () => {
   assert.match(html, /focus\(\{ preventScroll: true \}\)/, "foco programático usa preventScroll");
-  assert.match(html, /function aiChatResetModalScroll\(\)/);
-  assert.match(html, /getElementById\('aiChatInput'\)\?\.addEventListener\('focus', aiChatResetModalScroll\)/);
+  assert.match(html, /function aiChatResetModalScroll\(/);
+  assert.match(html, /getElementById\('aiChatInput'\)\?\.addEventListener\('focus'/);
+  assert.match(html, /getElementById\('aiChatInput'\)\?\.addEventListener\('blur'/);
   assert.match(html, /visualViewport\?\.addEventListener\('resize'/);
-  assert.match(html, /aiChatResetModalScroll\(\);\s*\n\s*window\.renderAiQuotaStatus/, "reset também roda na abertura");
+  assert.match(html, /aiChatResetModalScroll\(true\);\s*\n\s*window\.renderAiQuotaStatus/, "reset também roda na abertura");
 });
 
 test("index.html: área de conversa e trava de rolagem mantêm o cabeçalho no lugar", () => {
-  assert.match(html, /aiChatMessagesBox\?\.addEventListener\('pointerdown', \(\) => requestAnimationFrame\(aiChatResetModalScroll\)\)/,
-    "toque na área de mensagens zera o deslocamento");
-  assert.match(html, /aiChatMessagesBox\?\.addEventListener\('focus', \(\) => requestAnimationFrame\(aiChatResetModalScroll\)\)/,
-    "foco na área de mensagens zera o deslocamento");
+  assert.match(html, /aiChatMessagesBox\?\.addEventListener\('pointerdown', \(\) => requestAnimationFrame\(\(\) => aiChatResetModalScroll\(true\)\)\)/,
+    "toque na área de mensagens zera o deslocamento sem pular a conversa");
+  assert.match(html, /aiChatMessagesBox\?\.addEventListener\('focus', \(\) => requestAnimationFrame\(\(\) => aiChatResetModalScroll\(true\)\)\)/,
+    "foco na área de mensagens zera o deslocamento sem pular a conversa");
   assert.match(html, /\['modalOverlay', 'panelAiChat'\]\.forEach/,
     "as duas caixas que nunca devem rolar são vigiadas");
   assert.match(html, /addEventListener\('scroll', \(\) => \{\s*\n\s*if \(!window\.LivroCaixaChat\?\.isOpen\?\.\(\)\) return;/,
     "a trava de rolagem só age com o chat aberto (outros modais ficam intactos)");
+});
+
+test("index.html: reset de scroll cobre página/teclado (correção mobile)", () => {
+  assert.match(html, /window\.scrollTo\(0, 0\)/, "zera a rolagem da página (ponte do teclado)");
+  assert.match(html, /document\.documentElement\.scrollTop = 0/, "zera documentElement");
+  assert.match(html, /document\.body\.scrollTop = 0/, "zera body");
+  assert.match(html, /aiChatResetModalScroll\(\);\s*\n\s*openModal\('panelAiChat'\)/, "reset antes do openModal");
+  assert.match(html, /function closeAiChat\(\) \{[\s\S]{0,1600}?aiChatResetModalScroll\(\);/, "fechamento também reseta");
+  assert.match(html, /aiChat\.pageScroll/, "posição da página é salva no abrir e devolvida no fechar");
+  assert.match(html, /el\.style\.transform = ''/, "limpa transform/top/height inline residuais");
 });

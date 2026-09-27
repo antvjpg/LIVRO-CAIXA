@@ -7884,7 +7884,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const aiChat = {
     session: createAiChatSession(),
     controller: null,
-    opener: null
+    opener: null,
+    pageScroll: null
   };
 
   function aiChatContract() {
@@ -8082,13 +8083,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     aiChat.opener = document.activeElement;
 
+    /* Estado da página antes de abrir (restaurado no fechamento) e
+       limpeza de qualquer deslocamento herdado — antes do openModal. */
+    aiChat.pageScroll = { x: window.scrollX || 0, y: window.scrollY || 0 };
+    aiChatResetModalScroll();
     openModal('panelAiChat');
     aiChatNotice(contract ? '' : AI_CHAT_ERROR_MESSAGES.contract_unavailable, contract ? null : 'error');
     aiChatSetBusy(aiChat.session.isBusy());
     aiChatRender();
     /* Foco em caixa overflow:hidden deixa overlay/painel deslocados de uma
-       abertura anterior; limpa antes de posicionar o cursor. */
-    aiChatResetModalScroll();
+       abertura anterior; limpa a página/camadas mas preserva a âncora do
+       fim da conversa que o aiChatRender() acabou de posicionar. */
+    aiChatResetModalScroll(true);
     window.renderAiQuotaStatus?.();
     window.LivroCaixaAI?.refreshQuota?.({ silent: true, throttleMs: 15000 });
 
@@ -8114,6 +8120,17 @@ document.addEventListener('DOMContentLoaded', () => {
     aiChat.opener = null;
     if (opener && typeof opener.focus === 'function' && document.contains(opener)) {
       try { opener.focus(); } catch (err) { /* elemento saiu do DOM */ }
+    }
+
+    /* Reset completo (página + camadas + caixa) para a próxima abertura
+       não herdar deslocamento de teclado; em seguida devolve a página à
+       posição de antes de abrir — no mobile era 0, no desktop não pula
+       para o topo. */
+    aiChatResetModalScroll();
+    const pageScroll = aiChat.pageScroll;
+    aiChat.pageScroll = null;
+    if (pageScroll && (pageScroll.x || pageScroll.y)) {
+      try { window.scrollTo(pageScroll.x, pageScroll.y); } catch (err) { /* sem janela */ }
     }
   }
 
@@ -8156,25 +8173,54 @@ document.addEventListener('DOMContentLoaded', () => {
     aiChatSend(input ? input.value : '');
   });
 
-  /* O navegador rola caixas overflow:hidden (sem barra visível) para
-     revelar o input em foco — e nada disso se corrige sozinho. Zera o
-     deslocamento ao abrir, ao focar e quando o viewport muda. */
-  function aiChatResetModalScroll() {
+  /* O navegador rola a PÁGINA (body/documentElement) e as caixas
+     overflow:hidden para manter o input em foco com o teclado aberto — e
+     o deslocamento permanece depois que o teclado fecha. Zera página,
+     overlay, painel e, no ciclo de vida, a caixa de conversa.
+
+     keepMessages — foco/blur/toque preservam a rolagem da conversa para a
+     lista não pular para o topo enquanto o usuário digita. */
+  function aiChatResetModalScroll(keepMessages) {
+    try { window.scrollTo(0, 0); } catch (err) { /* sem janela */ }
+    try {
+      document.documentElement.scrollTop = 0;
+      document.documentElement.scrollLeft = 0;
+      document.body.scrollTop = 0;
+      document.body.scrollLeft = 0;
+    } catch (err) { /* sem DOM */ }
+
     const overlay = document.getElementById('modalOverlay');
     const panel = document.getElementById('panelAiChat');
     if (overlay) { overlay.scrollTop = 0; overlay.scrollLeft = 0; }
     if (panel) { panel.scrollTop = 0; panel.scrollLeft = 0; }
+
+    const box = document.getElementById('aiChatMessages');
+    if (box && !keepMessages) { box.scrollTop = 0; box.scrollLeft = 0; }
+
+    /* Nenhum estilo inline existe hoje; limpa resíduo de transform/top/
+       height para a próxima abertura nascer com layout limpo. */
+    [overlay, panel].forEach((el) => {
+      if (!el) return;
+      if (el.style.transform) el.style.transform = '';
+      if (el.style.top) el.style.top = '';
+      if (el.style.height) el.style.height = '';
+    });
   }
 
-  document.getElementById('aiChatInput')?.addEventListener('focus', aiChatResetModalScroll);
+  document.getElementById('aiChatInput')?.addEventListener('focus', () => {
+    requestAnimationFrame(() => aiChatResetModalScroll(true));
+  });
+  document.getElementById('aiChatInput')?.addEventListener('blur', () => {
+    requestAnimationFrame(() => aiChatResetModalScroll(true));
+  });
 
   /* Toque/foco na área de conversa produz o mesmo deslocamento: o
      navegador rola overlay/painel para "revelar" o elemento focado e o
      cabeçalho sobe junto. Zera após o evento e trava qualquer rolagem
      residual enquanto o chat estiver aberto (nada ali deve rolar). */
   const aiChatMessagesBox = document.getElementById('aiChatMessages');
-  aiChatMessagesBox?.addEventListener('pointerdown', () => requestAnimationFrame(aiChatResetModalScroll));
-  aiChatMessagesBox?.addEventListener('focus', () => requestAnimationFrame(aiChatResetModalScroll));
+  aiChatMessagesBox?.addEventListener('pointerdown', () => requestAnimationFrame(() => aiChatResetModalScroll(true)));
+  aiChatMessagesBox?.addEventListener('focus', () => requestAnimationFrame(() => aiChatResetModalScroll(true)));
 
   ['modalOverlay', 'panelAiChat'].forEach((id) => {
     const el = document.getElementById(id);
@@ -8187,10 +8233,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   });
 
+  /* Teclado abrindo/fechando dispara vários resizes: corrige no rAF e
+     reafirma com debounce curto quando o teclado assentou. */
+  let aiChatViewportResetTimer = 0;
   window.visualViewport?.addEventListener('resize', () => {
-    if (window.LivroCaixaChat?.isOpen?.()) {
-      requestAnimationFrame(aiChatResetModalScroll);
-    }
+    if (!window.LivroCaixaChat?.isOpen?.()) return;
+    requestAnimationFrame(() => aiChatResetModalScroll(true));
+    window.clearTimeout(aiChatViewportResetTimer);
+    aiChatViewportResetTimer = window.setTimeout(() => aiChatResetModalScroll(true), 150);
   });
 
 
