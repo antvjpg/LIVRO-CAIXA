@@ -1,0 +1,136 @@
+/* C.O.D.E. — cleanup em camadas (FASE 7, 10, 11).
+   Camada 1: Firestore — apaga somente livrocaixa/{uid-da-conta-QA}.
+   Camada 2: Auth — exclui a conta SOMENTE se foi criada por esta run.
+   Roda no globalTeardown (sucesso/falha/blocked) e no CLI `code:cleanup`.
+   Nunca lança exceção; nunca imprime senha/idToken; resultado vira
+   e2e/.state/qa-summary.json (alimenta a seção QA ENVIRONMENT do relatório). */
+'use strict';
+
+const { resolveCredentials, guardReasonText } = require('./env');
+const identity = require('./identity');
+const rest = require('./firestore-rest');
+
+async function runCleanup({ log = () => {} } = {}) {
+  const summary = {
+    runId: identity.newRunId(),
+    mode: 'desconhecido',
+    email: null,
+    uid: null,
+    createdByCode: false,
+    firestoreCleanup: 'SKIP',
+    authCleanup: 'SKIP',
+    deletedDocs: 0,
+    severity: null,
+    notes: [],
+    finishedAt: new Date().toISOString(),
+  };
+
+  try {
+    const meta = identity.load();
+    if (meta) {
+      summary.runId = meta.runId || summary.runId;
+      summary.mode = meta.mode || summary.mode;
+      summary.email = meta.email ? identity.maskEmail(meta.email) : null;
+      summary.createdByCode = meta.createdByCode === true;
+      if (meta.staleAccounts && meta.staleAccounts.length) {
+        summary.severity = summary.severity || 'CLEANUP_WARNING';
+        summary.notes.push(
+          `${meta.staleAccounts.length} conta(s) de run anterior não removida(s): ` +
+            meta.staleAccounts.map((s) => s.email).join(', '),
+        );
+      }
+    }
+
+    const creds = resolveCredentials();
+    if (!creds) {
+      const reason = guardReasonText() || 'não informado';
+      summary.notes.push(`sem credenciais: ${reason}`);
+      /* sem senha em memória não há como autenticar: se ESTA run criou a
+         conta, as sobras são reais → BLOCKED visível no relatório. */
+      const plan = identity.planCleanup(meta, { ok: false, reason });
+      summary.severity = plan.severity;
+      return finish(summary, log);
+    }
+    summary.mode = meta?.mode || creds.source;
+    summary.email = summary.email || identity.maskEmail(creds.email);
+
+    /* --- autenticação (signIn REST; senha só em memória) --- */
+    let session;
+    try {
+      session = await rest.signIn(creds.email, creds.password);
+    } catch (err) {
+      const reason = err.reason || err.message || 'signIn falhou';
+      summary.notes.push(`signIn: ${reason}`);
+      /* sem autenticação nada foi tentado: SKIP + severidade visível */
+      const plan = identity.planCleanup(meta, { ok: false, reason });
+      summary.severity = plan.severity;
+      return finish(summary, log);
+    }
+
+    summary.uid = identity.maskUid(session.uid);
+    if (meta?.createdByCode !== true) summary.createdByCode = false;
+    if (meta?.uid && String(meta.uid) !== String(session.uid)) {
+      summary.severity = 'BLOCKED';
+      summary.notes.push('UID da sessão não confere com o registrado — nada foi apagado');
+      return finish(summary, log);
+    }
+
+    /* --- camada 1: Firestore (escopo exato livrocaixa/{uid}) --- */
+    try {
+      const r = await rest.resetWithSession(session);
+      summary.firestoreCleanup = 'PASS';
+      summary.deletedDocs = r.deleted;
+      log(`[C.O.D.E.] cleanup Firestore: ${r.deleted} documento(s)`);
+    } catch (err) {
+      summary.firestoreCleanup = 'FAIL';
+      summary.severity = summary.severity || 'BLOCKED';
+      summary.notes.push(`Firestore: ${err.message}`);
+    }
+
+    /* --- camada 2: Auth (apenas conta criada por esta run) --- */
+    const own = identity.canDeleteIdentity(meta, {
+      uid: session.uid,
+      email: session.email || creds.email,
+    });
+    if (own.ok) {
+      try {
+        const gone = await rest.deleteOwnAccount(session.idToken);
+        summary.authCleanup = gone ? 'PASS' : 'PASS (já excluída)';
+        log('[C.O.D.E.] conta Auth efêmera excluída');
+      } catch (err) {
+        summary.authCleanup = 'FAIL';
+        summary.severity = summary.severity || 'CLEANUP_WARNING';
+        summary.notes.push(`conta Auth permaneceu: ${err.message}`);
+      }
+    } else {
+      summary.authCleanup = 'SKIP-PREEXISTENTE';
+      summary.notes.push(own.reason);
+    }
+  } catch (err) {
+    summary.severity = summary.severity || 'BLOCKED';
+    summary.notes.push(`cleanup: ${err.message}`);
+  }
+
+  return finish(summary, log);
+}
+
+function finish(summary, log) {
+  try {
+    identity.writeSummary(summary);
+  } catch {
+    /* resumo é best-effort */
+  }
+  try {
+    identity.clear(); /* metadados da run (nenhum segredo) */
+  } catch {
+    /* best-effort */
+  }
+  log(
+    `[C.O.D.E.] QA CREATED=${summary.createdByCode ? 'SIM' : 'NAO'} | ` +
+      `FIRESTORE=${summary.firestoreCleanup} | AUTH=${summary.authCleanup}` +
+      (summary.severity ? ` | ${summary.severity}` : ''),
+  );
+  return summary;
+}
+
+module.exports = { runCleanup };
