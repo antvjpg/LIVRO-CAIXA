@@ -248,6 +248,17 @@ if (failures.length) {
         w('```');
       }
     }
+    /* forense gravada pela própria suíte em falha: e2e/reports/evidencia/<spec>.txt
+       (arquivo puro — não depende do corpo base64 dos anexos) */
+    const evidFile = path.join(config.reportsDir, 'evidencia', `${path.basename(t.file, '.js')}.txt`);
+    if (t.file && fs.existsSync(evidFile)) {
+      w('');
+      w('**Forense da suíte (`e2e/reports/evidencia/`):**');
+      w('');
+      w('```');
+      w(fs.readFileSync(evidFile, 'utf8').trim().split('\n').slice(0, 60).join('\n'));
+      w('```');
+    }
     w('');
   }
 }

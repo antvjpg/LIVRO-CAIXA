@@ -10,6 +10,8 @@
 'use strict';
 
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
 const app = require('../helpers/app');
 const qa = require('../helpers/qa-account');
 const { watchPage } = require('../helpers/console-watch');
@@ -21,36 +23,51 @@ const { ledgerSummary, entriesByDescription } = require('../oracles/movement');
 
 test.describe.serial('Movimentações — criação, saldo e persistência', () => {
   let watchAtual = null;
-  /* evidência de console/rede disponível também quando o teste FALHA + trilha
-     do log de diagnóstico do próprio app no Firestore (prova do que o handler
-     de salvar realmente fez: validou? começou? falhou na sincronização?) */
+  let dialogsAtual = null;
+  let motivoAtual = '';
+  /* Falha ⇒ forense completa (console, diálogos e log de diagnóstico do app no
+     Firestore) gravada em e2e/reports/evidencia/ — arquivo lido diretamente
+     pelo relatório (imune à sanitização do base64 dos anexos). */
   test.afterEach(async ({ page }, testInfo) => {
-    watchAtual?.attach(testInfo);
+    const watch = watchAtual;
     watchAtual = null;
+    watch?.attach(testInfo);
     if (testInfo.status === testInfo.expectedStatus) return;
+
+    const partes = [
+      `motivo: ${motivoAtual || (testInfo.error && testInfo.error.message) || '(sem motivo capturado)'}`,
+    ];
+    partes.push(`console ERROR: ${watch?.summarize('ERROR', 10) || 'nenhum'}`);
+    partes.push(`console WARNING: ${watch?.summarize('WARNING', 5) || 'nenhum'}`);
+    partes.push(
+      `dialogos: ${dialogsAtual.map((d) => `${d.type}: ${d.message}`).join(' | ') || 'nenhum'}`
+    );
     try {
       const creds = resolveCredentials();
-      if (!creds) return;
+      if (!creds) throw new Error('credenciais QA indisponíveis');
       const rest = await signIn(creds.email, creds.password);
-      const [diags, stored] = [
-        await listCollection(rest.uid, rest.idToken, rest.projectId, 'diagnostics'),
-        await listCollection(rest.uid, rest.idToken, rest.projectId, 'entries'),
-      ];
-      const linhas = [
-        `entries=${stored.length}`,
-        ...diags.map((d) => d.fields).slice(-14).map((f) =>
-          `${String(f.id || '').slice(0, 16)} ${f.type || '?'} ${f.module || ''}/${f.action || ''} → ${f.status || ''} — ${String(f.description || '').slice(0, 160)}`
-        ),
-      ];
-      await testInfo.attach('log-diagnostico-firestore.txt', {
-        body: linhas.join('\n'),
-        contentType: 'text/plain',
-      });
+      const diags = await listCollection(rest.uid, rest.idToken, rest.projectId, 'diagnostics');
+      const stored = await listCollection(rest.uid, rest.idToken, rest.projectId, 'entries');
+      partes.push(`firestore entries=${stored.length} diagnostics=${diags.length}`);
+      for (const f of diags.map((d) => d.fields).slice(-14)) {
+        partes.push(
+          `log ${String(f.id || '').slice(0, 16)} ${f.type || '?'} ${f.module || ''}/${f.action || ''} → ${f.status || ''} — ${String(f.description || '').slice(0, 200)}`
+        );
+      }
     } catch (err) {
-      await testInfo
-        .attach('log-diagnostico-firestore.txt', { body: `falha ao coletar evidência: ${err.message}`, contentType: 'text/plain' })
-        .catch(() => {});
+      partes.push(`coleta de evidência falhou: ${err.message}`);
     }
+    const corpo = partes.join('\n');
+    try {
+      const dir = path.join(__dirname, '..', 'reports', 'evidencia');
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(path.join(dir, 'movimentacao.spec.txt'), `${corpo}\n`);
+    } catch {
+      /* o anexo abaixo segue sendo a evidência primária */
+    }
+    await testInfo
+      .attach('log-diagnostico-firestore.txt', { body: corpo, contentType: 'text/plain' })
+      .catch(() => {});
   });
 
   test('entrada de 1.000 e saída de 250: UI × oracle × Firestore', async ({ page }, testInfo) => {
@@ -75,6 +92,7 @@ test.describe.serial('Movimentações — criação, saldo e persistência', () 
     testInfo.annotations.push({ type: 'reset', description: `antes: ${reset1.deleted} doc(s)` });
 
     const dialogs = app.attachDialogHandler(page);
+    dialogsAtual = dialogs;
     const watch = watchPage(page);
     watchAtual = watch;
     /* quando um passo falha, diálogos (alert/confirm do app) e console entram
@@ -83,12 +101,13 @@ test.describe.serial('Movimentações — criação, saldo e persistência', () 
       try {
         return await fn();
       } catch (err) {
-        const cons = watch.summarize('ERROR');
-        const warn = watch.summarize('WARNING', 2);
+        const cons = watch.summarize('ERROR', 10);
+        const warn = watch.summarize('WARNING', 3);
         const dlg = dialogs
           .slice(-4)
           .map((d) => `${d.type}: ${d.message}`)
           .join(' | ');
+        motivoAtual = err.message;
         if (!cons && !dlg && !warn) throw err;
         const partes = [err.message];
         const rastro = [

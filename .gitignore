@@ -19,4 +19,5 @@ e2e/.artifacts/
 e2e/reports/html/
 e2e/reports/results.json
 e2e/reports/CODE-relatorio-*.md
+e2e/reports/evidencia/
 e2e/scripts/android-platform-shim.cjs

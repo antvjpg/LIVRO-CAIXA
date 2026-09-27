@@ -619,11 +619,19 @@ test('evidência de console é anexada mesmo em FALHA e o relatório embute o co
     assert.ok(src.includes('test.afterEach('), `${spec} deve anexar evidência em afterEach (falha inclusive)`);
     assert.ok(src.includes('watchAtual = watch'), `${spec} deve registrar o watch no escopo da suíte`);
     assert.ok(
-      /watchAtual\?\.attach\(testInfo\)/.test(src),
+      /\.attach\(testInfo\)/.test(src.slice(src.indexOf('test.afterEach('))),
       `${spec} deve anexar o console-evidencia.txt também quando o teste falha`
     );
   }
   const rel = fs.readFileSync(path.join(ROOT, 'e2e', 'reports', 'generate-report.cjs'), 'utf8');
   assert.ok(rel.includes('decodeTextBodies'), 'o relatório deve decodificar o corpo dos anexos text/*');
   assert.ok(rel.includes('a.corpo'), 'o relatório deve embutir o corpo da evidência na seção de falhas');
+  /* forense em arquivo puro: se o base64 do anexo não decodificar, o relatório
+     ainda recebe a evidência gravada pela própria suíte */
+  const mov = fs.readFileSync(path.join(ROOT, 'e2e', 'movimentacoes', 'movimentacao.spec.js'), 'utf8');
+  assert.ok(
+    mov.includes('reports') && mov.includes('evidencia') && mov.includes('movimentacao.spec.txt'),
+    'a suíte de movimentações deve gravar a forense em e2e/reports/evidencia/'
+  );
+  assert.ok(rel.includes(`'evidencia'`) && rel.includes('evidFile'), 'o relatório deve embutir a forense da suíte');
 });
