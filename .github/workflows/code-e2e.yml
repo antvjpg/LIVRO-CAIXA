@@ -1,0 +1,88 @@
+name: C.O.D.E. E2E
+
+# FASE 3 — ambiente QA autônomo: NENHUM GitHub Secret, NENHUM environment.
+# Cada run gera e-mail/senha efêmeros no processo (memória), cria a conta pela
+# UI real e a exclui no teardown (só se foi criada por esta run).
+on:
+  push:
+    branches: [main, feature/code-qa]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Smoke + Movimentações (QA)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CODE_BASE_URL: http://127.0.0.1:8000
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Dependências
+        run: npm ci
+
+      - name: Oracles (unidade, sem browser)
+        run: node --test "e2e/oracles/*.test.mjs"
+
+      - name: Garantias de segurança do C.O.D.E. (sem browser)
+        run: node --test "e2e/security/*.test.mjs"
+
+      - name: Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Suítes E2E (identidade efêmera gerada pelo global-setup)
+        run: npx playwright test
+
+      - name: Relatório C.O.D.E.
+        if: always()
+        run: node e2e/reports/generate-report.cjs || true
+
+      - name: Confirmação de limpeza da run efêmera
+        if: always()
+        run: |
+          if [ -f e2e/.state/qa-identity.json ]; then
+            node -e "const i=require('./e2e/.state/qa-identity.json');console.log('AVISO: identidade órfã da run '+(i.runId||'?')+' | criadoPorCode='+(i.createdByCode===true)) "
+            echo "::warning::identity-file-leftover (run abortada antes do teardown — conta Auth pode ter permanecido)"
+          fi
+          if [ -f e2e/.state/qa-summary.json ]; then
+            node -e "const s=require('./e2e/.state/qa-summary.json');console.log('cleanup | created='+(s.createdByCode?'SIM':'NAO')+' | firestore='+s.firestoreCleanup+' | auth='+s.authCleanup+(s.severity?(' | '+s.severity):''))"
+          fi
+
+      - name: Publicar resumo
+        if: always()
+        run: |
+          {
+            echo "## C.O.D.E. — resultado"
+            echo '```'
+            cat e2e/reports/CODE-relatorio-*.md 2>/dev/null | sed -n '1,60p' || echo "sem relatório"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Bloqueio não pode passar em silêncio
+        if: always()
+        run: node e2e/reports/generate-report.cjs --strict
+
+      # Evidências: somente relatórios (sanitizados). Nunca e2e/.state/ nem
+      # credenciais — ver testes em e2e/security/security.test.mjs.
+      - name: Evidências
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-e2e-evidencias
+          path: |
+            e2e/reports/
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14

@@ -8,3 +8,15 @@ backup-card-engine-legacy-*/
 worker/.wrangler/
 worker/.dev.vars
 worker/node_modules/
+
+# C.O.D.E. (QA/E2E) — dependências, estado de sessão, artefatos e credenciais locais
+node_modules/
+test-results/
+playwright-report/
+e2e/.env.local
+e2e/.state/
+e2e/.artifacts/
+e2e/reports/html/
+e2e/reports/results.json
+e2e/reports/CODE-relatorio-*.md
+e2e/scripts/android-platform-shim.cjs
