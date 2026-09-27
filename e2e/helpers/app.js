@@ -118,6 +118,24 @@ async function ledgerRows(page) {
   );
 }
 
+/* Guard anti-clique-duplo do app (index.html, listener de CAPTURA no document):
+   cada botão [data-single-action] é travado por 1200ms após um clique e o
+   clique seguinte é engolido com stopImmediatePropagation() — sem alerta, sem
+   erro de console e sem execução do onclick (o CSS só muda a opacidade, então
+   o Playwright ainda considera o botão clicável). Espera a trava liberar. */
+async function esperaTravaAntiDuplo(page, selector) {
+  await page
+    .waitForFunction(
+      (sel) => {
+        const btn = document.querySelector(sel);
+        return !btn || Date.now() >= Number(btn.dataset.actionLockedUntil || 0);
+      },
+      selector,
+      { timeout: 5_000 }
+    )
+    .catch(() => {});
+}
+
 async function ensureBankExists(page, bankName, initial = 0) {
   const options = await page.$$eval('#fBanco option', (o) => o.map((x) => x.textContent.trim())).catch(() => []);
   if (options.includes(bankName)) return;
@@ -128,6 +146,7 @@ async function ensureBankExists(page, bankName, initial = 0) {
   await page.fill('#bNome', bankName);
   /* máscara de dinheiro: dígitos = centavos (readMoneyInput /100) */
   await page.fill('#bSaldo', String(Math.round(initial * 100)));
+  await esperaTravaAntiDuplo(page, '#bSalvar');
   await page.click('#bSalvar');
   await page.waitForSelector('#panelBanco.open', { state: 'detached', timeout: 15_000 }).catch(async () => {
     await page.waitForFunction(() => !document.querySelector('#panelBanco.open'), null, { timeout: 15_000 });
@@ -142,6 +161,7 @@ async function openNewEntry(page, bankName) {
     /* app exige ≥1 banco (index.html:10446) — cria e reabre */
     await page.fill('#bNome', bankName);
     await page.fill('#bSaldo', '0');
+    await esperaTravaAntiDuplo(page, '#bSalvar');
     await page.click('#bSalvar');
     await page.waitForFunction(() => !document.querySelector('#panelBanco.open'), null, { timeout: 15_000 });
     await page.click('#fabAdd');
@@ -160,6 +180,9 @@ async function addEntry(page, { type, desc, amount, bank, date, category } = {})
   if (bank) await page.selectOption('#fBanco', { label: bank });
   if (category) await page.selectOption('#fCategoria', { label: category });
   await page.fill('#fValor', amount.toFixed(2).replace('.', ','));
+  /* sem espera, um 2º salvar <1200ms após o anterior seria engolido em silêncio
+     pelo guard anti-clique-duplo do app (ver esperaTravaAntiDuplo) */
+  await esperaTravaAntiDuplo(page, '#fSalvar');
   await page.click('#fSalvar');
   /* fecha o painel ao salvar (closeAllPanels) — em timeout, captura o estado
      real do formulário para a evidência do relatório (não mascara a falha) */
@@ -184,6 +207,7 @@ async function addEntry(page, { type, desc, amount, bank, date, category } = {})
           painelAberto: !!(painel && painel.classList.contains('open')),
           botao: btn ? btn.textContent.trim() : null,
           botaoDesabilitado: btn ? btn.disabled : null,
+          travaAntiDuplo: btn ? Number(btn.dataset.actionLockedUntil || 0) > Date.now() : null,
           tipo: document.getElementById('tglOut')?.classList.contains('active-out')
             ? 'out'
             : document.getElementById('tglIn')?.classList.contains('active-in')

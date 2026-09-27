@@ -35,7 +35,7 @@ e2e/
     sanitize.js            mascarador de e-mail/senha/token para relatórios
   fixtures/fixtures.js     dados determinísticos (marcadores CODE_TEST_*)
   oracles/                 cálculo INDEPENDENTE do app + testes unitários (node:test)
-  security/security.test.mjs  34 garantias auditáveis do próprio C.O.D.E.
+  security/security.test.mjs  35 garantias auditáveis do próprio C.O.D.E.
   seeds/reset.cjs          cleanup manual de dados (só Firestore)
   seeds/cleanup.cjs        cleanup manual completo (Firestore + Auth efêmera)
   reports/generate-report.cjs  relatório + QA ENVIRONMENT (gitignored)
@@ -55,7 +55,7 @@ nenhum segredo no Git nem em artefato; bloqueio aparece como `BLOCKED`, nunca so
 |---|---|---|
 | `npm run code:oracles` | testes unitários dos oracles (sem browser) | sim |
 | `npm run code:list` | descobre/lista os testes (shim de plataforma) | sim |
-| `npm run code:security` | 34 garantias do próprio C.O.D.E. (offline) | sim |
+| `npm run code:security` | 35 garantias do próprio C.O.D.E. (offline) | sim |
 | `npm run code:test` | suítes + relatório `--strict` (sai 1 se FAIL/BLOCKED) | **não** |
 | `npm run code:smoke` / `code:movimentacoes` | suíte individual | **não** |
 | `npm run code:test:headed` | idem com navegador visível | não |
@@ -162,7 +162,7 @@ sobrou arquivo de identidade (run abortada).
 | Sessão QA (login/criação) | `auth/qa.setup` | — | não |
 | Criar banco + entrada + saída + saldo | `movimentacoes` | `balance`, `movement`, `money` | não |
 | Persistência (reload + Firestore REST) | `movimentacoes` | idem | não |
-| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (34) | — | não precisa |
+| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (35) | — | não precisa |
 | Edição/exclusão de lançamentos | pendente | pendente | — |
 | Caixinhas, metas, investimentos | pendente | pendente | — |
 | Cartões/faturas, orçamentos, contas | pendente | pendente | — |

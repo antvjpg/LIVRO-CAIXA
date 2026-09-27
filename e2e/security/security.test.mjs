@@ -635,3 +635,20 @@ test('evidência de console é anexada mesmo em FALHA e o relatório embute o co
   );
   assert.ok(rel.includes(`'evidencia'`) && rel.includes('evidFile'), 'o relatório deve embutir a forense da suíte');
 });
+
+/* ==== Guard anti-clique-duplo do app (1200ms) não pode engolir o salvar ==== */
+test('cliques de salvamento esperam a trava anti-clique-duplo do app liberar', () => {
+  const src = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'app.js'), 'utf8');
+  assert.ok(src.includes('function esperaTravaAntiDuplo'), 'o helper de espera da trava deve existir');
+  const cliques = (re) => (src.match(re) || []).length;
+  assert.ok(
+    cliques(/page\.click\('#fSalvar'\)/g) === cliques(/esperaTravaAntiDuplo\(page, '#fSalvar'\)/g) &&
+      cliques(/page\.click\('#fSalvar'\)/g) >= 1,
+    'todo clique em #fSalvar deve ser precedido pela espera da trava anti-duplo'
+  );
+  assert.ok(
+    cliques(/page\.click\('#bSalvar'\)/g) === cliques(/esperaTravaAntiDuplo\(page, '#bSalvar'\)/g),
+    'todo clique em #bSalvar deve ser precedido pela espera da trava anti-duplo'
+  );
+  assert.ok(src.includes('travaAntiDuplo'), 'a evidência de falha deve registrar a trava anti-duplo');
+});
