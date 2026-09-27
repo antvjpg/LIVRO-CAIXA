@@ -16,7 +16,9 @@
     "code:list": "node e2e/scripts/list-tests.cjs",
     "code:serve": "python3 -m http.server 8000 --bind 127.0.0.1",
     "code:report:strict": "node e2e/reports/generate-report.cjs --strict",
-    "code:security": "node --test \"e2e/security/*.test.mjs\""
+    "code:security": "node --test \"e2e/security/*.test.mjs\"",
+    "code:syntax": "node e2e/scripts/syntax-check.cjs",
+    "code:v20": "node --test \"worker/test/v20-01-*.test.mjs\" \"e2e/oracles/v20-01-*.test.mjs\" \"e2e/security/v20-01-*.test.mjs\""
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0"

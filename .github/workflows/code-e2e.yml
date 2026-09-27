@@ -34,6 +34,9 @@ jobs:
       - name: Dependências
         run: npm ci
 
+      - name: Sintaxe (JS inline de index.html + módulos ocr)
+        run: node e2e/scripts/syntax-check.cjs
+
       - name: Oracles (unidade, sem browser)
         run: node --test "e2e/oracles/*.test.mjs"
 
