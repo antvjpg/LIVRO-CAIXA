@@ -2,7 +2,7 @@
 <html lang="pt-BR"><!-- Livro-Caixa V.19-20 (GPT) — Branding Orange themes (claro + escuro) -->
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#1C2B24">
 <meta name="background-color" content="#F7F5EF">
 <meta name="description" content="Livro-Caixa — controle financeiro pessoal sincronizado e disponível offline.">
@@ -8092,9 +8092,9 @@ document.addEventListener('DOMContentLoaded', () => {
     aiChatSetBusy(aiChat.session.isBusy());
     aiChatRender();
     /* Foco em caixa overflow:hidden deixa overlay/painel deslocados de uma
-       abertura anterior; limpa a página/camadas mas preserva a âncora do
-       fim da conversa que o aiChatRender() acabou de posicionar. */
-    aiChatResetModalScroll(true);
+       abertura anterior; limpa a página/camadas, mede contra a visual
+       viewport e preserva a âncora do fim da conversa do aiChatRender(). */
+    aiChatApplyViewportFix();
     window.renderAiQuotaStatus?.();
     window.LivroCaixaAI?.refreshQuota?.({ silent: true, throttleMs: 15000 });
 
@@ -8127,6 +8127,11 @@ document.addEventListener('DOMContentLoaded', () => {
        posição de antes de abrir — no mobile era 0, no desktop não pula
        para o topo. */
     aiChatResetModalScroll();
+    const closedPanel = document.getElementById('panelAiChat');
+    if (closedPanel) {
+      closedPanel.style.removeProperty('--ai-chat-vv-bottom');
+      closedPanel.style.removeProperty('--ai-chat-vv-max');
+    }
     const pageScroll = aiChat.pageScroll;
     aiChat.pageScroll = null;
     if (pageScroll && (pageScroll.x || pageScroll.y)) {
@@ -8207,11 +8212,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* 2ª rodada (mobile): em vez de só zerar scroll, o sheet é medido
+     contra a VISUAL viewport e ancorado acima do teclado — encolhe lá
+     em cima em vez de subir e cortar o cabeçalho. As medidas viram
+     custom properties consumidas pelo CSS (#panelAiChat.open). */
+  function aiChatFitVisualViewport() {
+    const panel = document.getElementById('panelAiChat');
+    if (!panel || !panel.classList.contains('open')) return;
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const layoutH = document.documentElement.clientHeight || window.innerHeight || 0;
+    const bottomGap = Math.max(16, layoutH - (vv.offsetTop + vv.height));
+    const maxHeight = Math.max(240, Math.round(vv.height - 48));
+    panel.style.setProperty('--ai-chat-vv-bottom', Math.round(bottomGap) + 'px');
+    panel.style.setProperty('--ai-chat-vv-max', maxHeight + 'px');
+  }
+
+  function aiChatApplyViewportFix() {
+    aiChatResetModalScroll(true);
+    aiChatFitVisualViewport();
+  }
+
+  /* O Chrome faz scroll-into-view DEPOIS do rAF do evento de foco.
+     Por isso o reforço com 50ms (logo após o scroll nativo) e 150ms
+     (quando o teclado assentou) reaplicando posição + medida. */
+  const aiChatRetriggerViewportFix = () => {
+    aiChatApplyViewportFix();
+    window.setTimeout(aiChatApplyViewportFix, 50);
+    window.setTimeout(aiChatApplyViewportFix, 150);
+  };
+
   document.getElementById('aiChatInput')?.addEventListener('focus', () => {
-    requestAnimationFrame(() => aiChatResetModalScroll(true));
+    requestAnimationFrame(aiChatRetriggerViewportFix);
   });
   document.getElementById('aiChatInput')?.addEventListener('blur', () => {
-    requestAnimationFrame(() => aiChatResetModalScroll(true));
+    requestAnimationFrame(aiChatRetriggerViewportFix);
   });
 
   /* Toque/foco na área de conversa produz o mesmo deslocamento: o
@@ -8234,14 +8269,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* Teclado abrindo/fechando dispara vários resizes: corrige no rAF e
-     reafirma com debounce curto quando o teclado assentou. */
+     reafirma com debounce curto quando o teclado assentou. O pan do
+     Chrome sobre a viewport visual (visualViewport.scroll) e a rolagem
+     da página em si também reaplicam posição + medida. */
   let aiChatViewportResetTimer = 0;
-  window.visualViewport?.addEventListener('resize', () => {
+  const aiChatViewportSync = () => {
     if (!window.LivroCaixaChat?.isOpen?.()) return;
-    requestAnimationFrame(() => aiChatResetModalScroll(true));
+    requestAnimationFrame(aiChatApplyViewportFix);
     window.clearTimeout(aiChatViewportResetTimer);
-    aiChatViewportResetTimer = window.setTimeout(() => aiChatResetModalScroll(true), 150);
-  });
+    aiChatViewportResetTimer = window.setTimeout(aiChatApplyViewportFix, 150);
+  };
+  window.visualViewport?.addEventListener('resize', aiChatViewportSync);
+  window.visualViewport?.addEventListener('scroll', aiChatViewportSync);
+  window.addEventListener('scroll', () => {
+    if (!window.LivroCaixaChat?.isOpen?.()) return;
+    aiChatApplyViewportFix();
+  }, { passive: true });
 
 
   // V19-20: meses de projeção são salvos automaticamente ao sair do campo.

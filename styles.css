@@ -9068,6 +9068,23 @@ body[data-tab="dashboard"] #viewDashboard.active {
 #panelAiChat .ai-chat-notice{
   flex:0 0 auto;
 }
+/* Mobile (2ª rodada): folha ancorada na base da VISUAL viewport. Com o
+   teclado aberto as custom properties --ai-chat-vv-* (medidas pelo JS)
+   encolhem o sheet ACIMA do teclado em vez de deixar o navegador empurrá-
+   lo e cortar o cabeçalho. Só #panelAiChat.open — outros modais seguem
+   com o flex-center original. */
+@media (max-width:680px){
+  #panelAiChat.open{
+    position:absolute;
+    left:0;
+    right:0;
+    top:auto;
+    bottom:max(var(--ai-chat-vv-bottom, 16px), env(safe-area-inset-bottom, 0px));
+    width:min(640px, calc(100% - 32px));
+    margin-inline:auto;
+    max-height:var(--ai-chat-vv-max, calc(100dvh - 48px));
+  }
+}
 #panelAiChat h3{
   margin:0 0 6px;
   font-size:18px;

@@ -386,7 +386,7 @@ test("index.html: foco do chat não desloca overlay/painel (regressão de arrast
   assert.match(html, /getElementById\('aiChatInput'\)\?\.addEventListener\('focus'/);
   assert.match(html, /getElementById\('aiChatInput'\)\?\.addEventListener\('blur'/);
   assert.match(html, /visualViewport\?\.addEventListener\('resize'/);
-  assert.match(html, /aiChatResetModalScroll\(true\);\s*\n\s*window\.renderAiQuotaStatus/, "reset também roda na abertura");
+  assert.match(html, /aiChatApplyViewportFix\(\);\s*\n\s*window\.renderAiQuotaStatus/, "fix também roda na abertura");
 });
 
 test("index.html: área de conversa e trava de rolagem mantêm o cabeçalho no lugar", () => {
@@ -408,4 +408,22 @@ test("index.html: reset de scroll cobre página/teclado (correção mobile)", ()
   assert.match(html, /function closeAiChat\(\) \{[\s\S]{0,1600}?aiChatResetModalScroll\(\);/, "fechamento também reseta");
   assert.match(html, /aiChat\.pageScroll/, "posição da página é salva no abrir e devolvida no fechar");
   assert.match(html, /el\.style\.transform = ''/, "limpa transform/top/height inline residuais");
+});
+
+test("index.html/css: 2ª rodada — sheet medido pela visualViewport (teclado mobile)", () => {
+  assert.match(html, /name="viewport"[^>]*interactive-widget=resizes-content/,
+    "viewport reflow com o teclado (Android Chrome)");
+  assert.match(html, /function aiChatFitVisualViewport\(/, "medida da visual viewport");
+  assert.match(html, /--ai-chat-vv-bottom/, "gap do teclado vira custom property");
+  assert.match(html, /--ai-chat-vv-max/, "altura máxima vira custom property");
+  assert.match(html, /window\.setTimeout\(aiChatApplyViewportFix, 50\)/, "reafirma após o scroll nativo (50ms)");
+  assert.match(html, /window\.setTimeout\(aiChatApplyViewportFix, 150\)/, "reafirma quando o teclado assenta (150ms)");
+  assert.match(html, /visualViewport\?\.addEventListener\('scroll'/, "pan da viewport visual também dispara");
+  assert.match(html, /removeProperty\('--ai-chat-vv-bottom'\)/, "fechar limpa as medidas");
+  assert.match(css, /#panelAiChat\.open\{[^}]*position:absolute/,
+    "no mobile o sheet sai do flex-center e vira absoluto");
+  assert.match(css, /bottom:max\(var\(--ai-chat-vv-bottom/,
+    "ancorado acima do teclado");
+  assert.match(css, /max-height:var\(--ai-chat-vv-max/,
+    "altura máxima amarrada à viewport visível");
 });
