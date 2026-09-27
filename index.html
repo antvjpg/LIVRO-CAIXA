@@ -1305,11 +1305,11 @@
          Reutiliza o overlay/painel padrão: Escape e fechamento global
          continuam funcionando pelo caminho já existente. -->
     <div class="panel" id="panelAiChat" role="dialog" aria-modal="true" aria-labelledby="aiChatTitle">
-      <h3 id="aiChatTitle">IA Financeira
+      <h3 id="aiChatTitle">LIA • IA Financeira
         <button type="button" class="modal-close" id="btnAiChatClose" aria-label="Fechar conversa" title="Fechar">×</button>
       </h3>
 
-      <p class="ai-chat-intro" id="aiChatIntro">Pergunte sobre seus dados financeiros. Nada é alterado sem você pedir.
+      <p class="ai-chat-intro" id="aiChatIntro">
         <span class="ai-chat-quota" data-ai-quota aria-live="polite"></span>
       </p>
 
@@ -1321,12 +1321,11 @@
         <label class="ai-chat-label" for="aiChatInput">Pergunte sobre suas finanças</label>
         <div class="ai-chat-row">
           <input type="text" id="aiChatInput" name="aiChatInput" placeholder="Pergunte sobre suas finanças…"
-                 enterkeyhint="send" aria-describedby="aiChatHint">
+                 enterkeyhint="send">
           <button type="submit" id="btnAiChatSend" class="primary" aria-label="Enviar pergunta">
             <i class="fi fi-rr-paper-plane-top" aria-hidden="true"></i>
           </button>
         </div>
-        <p class="ai-chat-hint" id="aiChatHint">Enter envia a pergunta.</p>
       </form>
     </div>
 
@@ -7854,7 +7853,7 @@ document.addEventListener('DOMContentLoaded', () => {
        localStorage ou sessionStorage nesta versão.
      ===================================================================== */
 
-  const AI_CHAT_GREETING = 'Olá! Posso ajudar a entender seus dados financeiros: contas, movimentações, caixinhas, metas, investimentos e patrimônio.';
+  const AI_CHAT_GREETING = 'Olá! Eu sou a LIA.\nEstou aqui para ajudar você a entender melhor suas finanças — suas contas, gastos, metas, caixinhas e investimentos.';
 
   /* Máquina de estados da conversa: fonte única em ai-chat-contract.js
      (testável sem DOM). Sem contrato o chat já não envia — aqui degradamos
@@ -8129,8 +8128,8 @@ document.addEventListener('DOMContentLoaded', () => {
     aiChatResetModalScroll();
     const closedPanel = document.getElementById('panelAiChat');
     if (closedPanel) {
+      closedPanel.style.removeProperty('--ai-chat-vv-top');
       closedPanel.style.removeProperty('--ai-chat-vv-bottom');
-      closedPanel.style.removeProperty('--ai-chat-vv-max');
     }
     const pageScroll = aiChat.pageScroll;
     aiChat.pageScroll = null;
@@ -8222,10 +8221,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const vv = window.visualViewport;
     if (!vv) return;
     const layoutH = document.documentElement.clientHeight || window.innerHeight || 0;
-    const bottomGap = Math.max(16, layoutH - (vv.offsetTop + vv.height));
-    const maxHeight = Math.max(240, Math.round(vv.height - 48));
-    panel.style.setProperty('--ai-chat-vv-bottom', Math.round(bottomGap) + 'px');
-    panel.style.setProperty('--ai-chat-vv-max', maxHeight + 'px');
+    /* Topo: o offset da viewport visual (barra do sistema) + 16px de folga.
+       Base: o que sobra até o fim do layout (teclado em modo
+       resizes-visual; ~0 em resizes-content, que encolhe o layout) + 16px.
+       O overlay recebe esses valores como padding e o flex-center do
+       overlay mantém o painel centralizado dentro da região visível. */
+    const topGap = Math.max(16, Math.round(vv.offsetTop) + 16);
+    const bottomGap = Math.max(16, layoutH - (vv.offsetTop + vv.height)) + 16;
+    panel.style.setProperty('--ai-chat-vv-top', topGap + 'px');
+    panel.style.setProperty('--ai-chat-vv-bottom', bottomGap + 'px');
   }
 
   function aiChatApplyViewportFix() {

@@ -410,20 +410,32 @@ test("index.html: reset de scroll cobre página/teclado (correção mobile)", ()
   assert.match(html, /el\.style\.transform = ''/, "limpa transform/top/height inline residuais");
 });
 
-test("index.html/css: 2ª rodada — sheet medido pela visualViewport (teclado mobile)", () => {
+test("index.html/css: chat centralizado na região visível (teclado mobile)", () => {
   assert.match(html, /name="viewport"[^>]*interactive-widget=resizes-content/,
     "viewport reflow com o teclado (Android Chrome)");
   assert.match(html, /function aiChatFitVisualViewport\(/, "medida da visual viewport");
-  assert.match(html, /--ai-chat-vv-bottom/, "gap do teclado vira custom property");
-  assert.match(html, /--ai-chat-vv-max/, "altura máxima vira custom property");
+  assert.match(html, /--ai-chat-vv-top/, "topo da região visível vira custom property");
+  assert.match(html, /--ai-chat-vv-bottom/, "folga do teclado vira custom property");
   assert.match(html, /window\.setTimeout\(aiChatApplyViewportFix, 50\)/, "reafirma após o scroll nativo (50ms)");
   assert.match(html, /window\.setTimeout\(aiChatApplyViewportFix, 150\)/, "reafirma quando o teclado assenta (150ms)");
   assert.match(html, /visualViewport\?\.addEventListener\('scroll'/, "pan da viewport visual também dispara");
-  assert.match(html, /removeProperty\('--ai-chat-vv-bottom'\)/, "fechar limpa as medidas");
-  assert.match(css, /#panelAiChat\.open\{[^}]*position:absolute/,
-    "no mobile o sheet sai do flex-center e vira absoluto");
-  assert.match(css, /bottom:max\(var\(--ai-chat-vv-bottom/,
-    "ancorado acima do teclado");
-  assert.match(css, /max-height:var\(--ai-chat-vv-max/,
-    "altura máxima amarrada à viewport visível");
+  assert.match(html, /removeProperty\('--ai-chat-vv-top'\)/, "fechar limpa as medidas");
+  assert.match(css, /\.modal-overlay:has\(#panelAiChat\.open\)/,
+    "só o overlay do chat recebe o padding da viewport visível");
+  assert.match(css, /padding-top:max\(var\(--ai-chat-vv-top/,
+    "ancora o topo da região visível");
+  assert.match(css, /padding-bottom:max\(var\(--ai-chat-vv-bottom/,
+    "folga acima do teclado");
+  assert.match(css, /#panelAiChat\.open\{[^}]*max-height:100%/,
+    "altura do painel respeita a região visível (centro é do overlay)");
+});
+
+test("index.html: textos da tela do chat (LIA)", () => {
+  assert.match(html, /<h3 id="aiChatTitle">LIA • IA Financeira/, "título com LIA");
+  assert.ok(/const AI_CHAT_GREETING = 'Olá! Eu sou a LIA\.\\nEstou aqui para ajudar você a entender melhor suas finanças — suas contas, gastos, metas, caixinhas e investimentos\.'/
+    .test(html), "saudação da LIA");
+  assert.ok(!/Pergunte sobre seus dados financeiros\. Nada é alterado sem você pedir\./.test(html),
+    "intro antiga removida");
+  assert.ok(!/Enter envia a pergunta\./.test(html), "dica de Enter removida");
+  assert.ok(!/aria-describedby="aiChatHint"/.test(html), "aria-describedby removido junto da dica");
 });
