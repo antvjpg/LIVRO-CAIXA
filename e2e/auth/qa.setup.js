@@ -80,6 +80,22 @@ test('provisiona sessão QA (login/criação autônoma)', async ({ page, context
   }
 
   await context.storageState({ path: config.statePath });
+  /* prova sanitizada do que foi gravado (só contagens/origem — nunca valores) */
+  let estadoInfo = 'state ilegível';
+  try {
+    const estado = JSON.parse(fs.readFileSync(config.statePath, 'utf8'));
+    const origens = estado.origins || [];
+    const chaves = origens.flatMap((o) => o.localStorage || []);
+    estadoInfo = JSON.stringify({
+      origens: origens.length,
+      origem: origens[0]?.origin || null,
+      chavesLocalStorage: chaves.length,
+      sessaoFirebase: chaves.some((it) => String(it.name || '').indexOf('firebase:authUser:') === 0),
+    });
+  } catch {
+    /* evidência de diagnóstico nunca derruba a run */
+  }
+  console.log(`[C.O.D.E.] storageState gravado: ${estadoInfo}`);
   watch.attach(testInfo);
   /* Evidência só com dados mascarados: nunca senha, nunca e-mail completo,
      nunca token (FASE 12). */
@@ -91,7 +107,8 @@ test('provisiona sessão QA (login/criação autônoma)', async ({ page, context
       `criado-por-este-código=${meta.createdByCode === true ? 'sim' : 'não'}\n` +
       `conta=${identity.maskEmail(creds.email)}\n` +
       `uid=${identity.maskUid(result.uid || meta.uid)}\n` +
-      `diálogos=${dialogs.length}\n`,
+      `diálogos=${dialogs.length}\n` +
+      `storageState=${estadoInfo}\n`,
     contentType: 'text/plain',
   });
   expect(watch.pageErrors(), 'erros de página durante autenticação').toHaveLength(0);

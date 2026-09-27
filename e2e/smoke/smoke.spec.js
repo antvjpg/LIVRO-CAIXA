@@ -21,13 +21,15 @@ test.describe('Smoke — aplicação operacional', () => {
       /* diagnóstico vai para o próprio motivo (aparece no relatório) */
       const diag = await page
         .evaluate(() => ({
+          origem: location.origin,
+          chavesLocalStorage: Object.keys(localStorage).length,
           sessaoPersistida: Object.keys(localStorage).some((k) => k.indexOf('firebase:authUser:') === 0),
           overlayAuthOculto: document.getElementById('authOverlay')?.classList.contains('hidden') === true,
         }))
         .catch(() => ({ erro: 'sem acesso ao contexto da página' }));
       test.skip(
         true,
-        `BLOCKED: sem sessão QA (setup não concluído) — persistida=${diag.sessaoPersistida} overlayOculto=${diag.overlayAuthOculto}`
+        `BLOCKED: sem sessão QA (setup não concluído) — origem=${diag.origem} chaves=${diag.chavesLocalStorage} persistida=${diag.sessaoPersistida} overlayOculto=${diag.overlayAuthOculto}`
       );
     }
 
