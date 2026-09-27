@@ -129,6 +129,35 @@ async function loginOnly(page, creds) {
   return { status: 'blocked', error: r.error || 'sem mensagem de erro', hint: hintFor(r.error) };
 }
 
+/* Sessão por suíte: o Firebase 10 (compat) persiste a sessão em IndexedDB e o
+   storageState do Playwright exporta apenas cookies + localStorage — por isso
+   as suítes dependentes refazem o login real em vez de confiar no arquivo.
+   O trace fica pausado durante o login: a senha nunca vira artefato (a prova
+   de logout/login real continua sendo a FASE 4, feita no projeto "setup",
+   que já roda com trace/screenshot/video OFF). */
+async function ensureUiSession(page, creds) {
+  if (!creds) {
+    return { status: 'blocked', error: 'credenciais QA indisponíveis', hint: 'defina CODE_TEST_EMAIL/CODE_TEST_PASSWORD' };
+  }
+  await app.openApp(page);
+  if (await app.isLoggedIn(page)) return { status: 'ok', how: 'sessao-ja-ativa' };
+
+  const ctx = page.context();
+  await ctx.tracing.stop().catch(() => {});
+  let r;
+  try {
+    r = await loginOnly(page, creds);
+  } finally {
+    await ctx.tracing
+      .start({ snapshots: true, screenshots: true, sources: true })
+      .catch(() => {});
+  }
+  /* senha sai do DOM imediatamente (mesmo em falha) antes de qualquer
+     screenshot/snapshot de erro da própria suíte */
+  await page.fill('#authPass', '').catch(() => {});
+  return r;
+}
+
 /* Retorna { status: 'ok', how } ou { status: 'blocked', error, hint }. */
 async function signInOrCreate(page, creds) {
   /* fecha cada caminho registrando propriedade/uid na identidade da run */
@@ -229,6 +258,7 @@ module.exports = {
   signInOrCreate,
   loginOnly,
   logout,
+  ensureUiSession,
   sessionIdentity: readSessionIdentity,
   reset,
   MSG,

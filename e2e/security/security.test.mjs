@@ -586,3 +586,25 @@ test('provisionamento tenta cadastro quando o login falha (sem depender do texto
     'fluxo deve ser: login -> cadastro -> (colisão) login'
   );
 });
+
+/* ==== Sessão por suíte: Firebase 10 usa IndexedDB (storageState não cobre) ==== */
+test('suítes dependentes refazem o login real com trace pausado (senha nunca vira artefato)', () => {
+  const qa = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.js'), 'utf8');
+  const iEnsure = qa.indexOf('async function ensureUiSession(');
+  const iFim = qa.indexOf('async function signInOrCreate(', iEnsure);
+  assert.ok(iEnsure > 0 && iFim > iEnsure, 'ensureUiSession deve existir');
+  const corpo = qa.slice(iEnsure, iFim);
+  const iStop = corpo.indexOf('tracing.stop()');
+  const iCall = corpo.indexOf('loginOnly(page, creds)');
+  const iStart = corpo.indexOf('start({ snapshots');
+  assert.ok(iStop >= 0, 'trace deve ser pausado antes do login');
+  assert.ok(iStop < iCall, 'pausa do trace deve vir ANTES do login');
+  assert.ok(iCall >= 0 && iCall < iStart, 'trace deve ser religado DEPOIS do login (ordem: stop -> login -> start)');
+  assert.ok(corpo.includes("page.fill('#authPass', '')"), 'a senha deve sair do DOM logo após o login');
+
+  for (const spec of ['e2e/smoke/smoke.spec.js', 'e2e/movimentacoes/movimentacao.spec.js']) {
+    const src = fs.readFileSync(path.join(ROOT, spec), 'utf8');
+    assert.ok(src.includes('qa.ensureUiSession('), `${spec} deve estabelecer a sessão com ensureUiSession`);
+    assert.ok(!src.includes('qa.loginOnly('), `${spec} não deve chamar loginOnly diretamente`);
+  }
+});

@@ -18,7 +18,8 @@ package.json               scripts code:* + devDependency @playwright/test (só 
 playwright.config.js       setup → smoke → movimentacoes; globalSetup/globalTeardown
 e2e/
   AUDITORIA.md             FASE 0 — auditoria arquivo:linha (auth, persistência, seletores)
-  auth/qa.setup.js         provisiona sessão QA pela UI real e grava storageState
+  auth/qa.setup.js         provisiona sessão QA (signup + logout/login reais) e
+                           grava storageState (só cookies/localStorage)
   smoke/smoke.spec.js      aplicação operacional + Visão Geral
   movimentacoes/           banco → entrada → saída → UI × oracle × Firestore → reload
   helpers/
@@ -26,14 +27,15 @@ e2e/
     cleanup.js             cleanup em 2 camadas (Firestore + Auth) → qa-summary.json
     global-setup.js        1× por run: gera e-mail/senha efêmeros (só em process.env)
     global-teardown.js     o "finally": roda sempre, nunca derruba a run
-    qa-account.js          login/criação pela UI real + registro de propriedade
+    qa-account.js          login/criação + logout/login reais + ensureUiSession
+                           (refaz a sessão em cada suíte, com trace pausado)
     firestore-rest.js      REST somente no escopo livrocaixa/{uid} + deleteOwnAccount
     env.js                 resolução de credenciais + guarda isQaEmail
     app.js, console-watch  page object e evidência de erros de console
     sanitize.js            mascarador de e-mail/senha/token para relatórios
   fixtures/fixtures.js     dados determinísticos (marcadores CODE_TEST_*)
   oracles/                 cálculo INDEPENDENTE do app + testes unitários (node:test)
-  security/security.test.mjs  28 garantias auditáveis do próprio C.O.D.E.
+  security/security.test.mjs  33 garantias auditáveis do próprio C.O.D.E.
   seeds/reset.cjs          cleanup manual de dados (só Firestore)
   seeds/cleanup.cjs        cleanup manual completo (Firestore + Auth efêmera)
   reports/generate-report.cjs  relatório + QA ENVIRONMENT (gitignored)
@@ -53,7 +55,7 @@ nenhum segredo no Git nem em artefato; bloqueio aparece como `BLOCKED`, nunca so
 |---|---|---|
 | `npm run code:oracles` | testes unitários dos oracles (sem browser) | sim |
 | `npm run code:list` | descobre/lista os testes (shim de plataforma) | sim |
-| `npm run code:security` | 28 garantias do próprio C.O.D.E. (offline) | sim |
+| `npm run code:security` | 33 garantias do próprio C.O.D.E. (offline) | sim |
 | `npm run code:test` | suítes + relatório `--strict` (sai 1 se FAIL/BLOCKED) | **não** |
 | `npm run code:smoke` / `code:movimentacoes` | suíte individual | **não** |
 | `npm run code:test:headed` | idem com navegador visível | não |
@@ -98,6 +100,15 @@ No PC/CI: `npm ci && npx playwright install --with-deps chromium && npm run code
   `CODE_TEST_ALLOW_ANY_EMAIL=1`. Testado em `security.test.mjs`.
 - **Isolamento:** todo dado fica em `livrocaixa/{uid}/*`; o reset só acessa o
   uid devolvido pela autenticação da própria conta QA.
+- **Sessão por suíte (descoberto na primeira execução no Actions):** o
+  Firebase 10 (compat) persiste a sessão em **IndexedDB** (`firebaseLocalStorageDb`),
+  e o `storageState` do Playwright exporta **apenas cookies + localStorage** —
+  o arquivo gravado pelo `setup` não contém a sessão. Por isso cada suíte que
+  depende da sessão chama `ensureUiSession()`, que refaz o **login real** na
+  própria página. Para a senha nunca virar artefato, o **trace é pausado
+  durante o login** (`tracing.stop()` → login → `tracing.start()`) e a senha é
+  removida do DOM logo em seguida. A prova de logout/login real continua no
+  projeto `setup` (FASE 4), que já roda com `trace/screenshot/video: off`.
 - **Provedores — estado atual informado (Firebase Console, 27/09/2026):**
   E-mail/senha **ATIVADO** · Smartphone **ATIVADO** · Google **ATIVADO**.
   O diagnóstico anterior registrava o e-mail/senha como desabilitado com base
@@ -151,7 +162,7 @@ sobrou arquivo de identidade (run abortada).
 | Sessão QA (login/criação) | `auth/qa.setup` | — | não |
 | Criar banco + entrada + saída + saldo | `movimentacoes` | `balance`, `movement`, `money` | não |
 | Persistência (reload + Firestore REST) | `movimentacoes` | idem | não |
-| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (28) | — | não precisa |
+| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (33) | — | não precisa |
 | Edição/exclusão de lançamentos | pendente | pendente | — |
 | Caixinhas, metas, investimentos | pendente | pendente | — |
 | Cartões/faturas, orçamentos, contas | pendente | pendente | — |
@@ -161,7 +172,9 @@ sobrou arquivo de identidade (run abortada).
 1. Termux: Playwright aborta com `Unsupported platform: android` (sem Chromium) —
    por isso `code:list` usa shim só para validação local; execução real é CI/PC.
 2. Reset: máximo de 20 páginas × 300 docs (6.000) por coleção; estourou ⇒ recusa
-   ruidosa (nunca reset incompleto silencioso).
+   ruidosa (nunca reset incompleto silencioso). A recusa carrega a **trilha por
+   página** (contagem de docs/sinal de token, sem token nem conteúdo) e detecta
+   logo na 1ª página vazia com token ou token repetido.
 3. Nenhum `data-testid` novo foi criado: usamos os seletores já existentes
    mapeados em `AUDITORIA.md` (zero mudança no app).
 4. Oracles de caixinhas/metas/investimentos/cartões serão escritos **depois** de

@@ -95,7 +95,15 @@ test('provisiona sessão QA (login/criação autônoma)', async ({ page, context
   } catch {
     /* evidência de diagnóstico nunca derruba a run */
   }
+  /* onde o Firebase 10 (compat) guarda a sessão — só nomes de banco */
+  const idb = await page
+    .evaluate(async () =>
+      indexedDB.databases ? (await indexedDB.databases()).map((d) => d.name || 'sem-nome') : ['indisponível']
+    )
+    .catch(() => ['erro-ao-ler']);
+  const persistencia = JSON.stringify(idb);
   console.log(`[C.O.D.E.] storageState gravado: ${estadoInfo}`);
+  console.log(`[C.O.D.E.] bancos IndexedDB da página: ${persistencia}`);
   watch.attach(testInfo);
   /* Evidência só com dados mascarados: nunca senha, nunca e-mail completo,
      nunca token (FASE 12). */
@@ -108,7 +116,8 @@ test('provisiona sessão QA (login/criação autônoma)', async ({ page, context
       `conta=${identity.maskEmail(creds.email)}\n` +
       `uid=${identity.maskUid(result.uid || meta.uid)}\n` +
       `diálogos=${dialogs.length}\n` +
-      `storageState=${estadoInfo}\n`,
+      `storageState=${estadoInfo}\n` +
+      `bancosIndexedDB=${persistencia}\n`,
     contentType: 'text/plain',
   });
   expect(watch.pageErrors(), 'erros de página durante autenticação').toHaveLength(0);

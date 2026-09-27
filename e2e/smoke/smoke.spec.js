@@ -8,6 +8,7 @@ const { test, expect } = require('@playwright/test');
 const app = require('../helpers/app');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials } = require('../helpers/env');
+const qa = require('../helpers/qa-account');
 
 test.describe('Smoke — aplicação operacional', () => {
   test('abre, valida sessão QA e acessa a Visão Geral', async ({ page }, testInfo) => {
@@ -15,9 +16,8 @@ test.describe('Smoke — aplicação operacional', () => {
     const dialogs = app.attachDialogHandler(page);
     const watch = watchPage(page);
 
-    await app.openApp(page);
-
-    if (!(await app.isLoggedIn(page))) {
+    const sessao = await qa.ensureUiSession(page, creds);
+    if (sessao.status !== 'ok') {
       /* diagnóstico vai para o próprio motivo (aparece no relatório) */
       const diag = await page
         .evaluate(() => ({
@@ -29,7 +29,7 @@ test.describe('Smoke — aplicação operacional', () => {
         .catch(() => ({ erro: 'sem acesso ao contexto da página' }));
       test.skip(
         true,
-        `BLOCKED: sem sessão QA (setup não concluído) — origem=${diag.origem} chaves=${diag.chavesLocalStorage} persistida=${diag.sessaoPersistida} overlayOculto=${diag.overlayAuthOculto}`
+        `BLOCKED: sem sessão QA — ${sessao.error} | ${sessao.hint || ''} — origem=${diag.origem} chaves=${diag.chavesLocalStorage} persistida=${diag.sessaoPersistida} overlayOculto=${diag.overlayAuthOculto}`
       );
     }
 

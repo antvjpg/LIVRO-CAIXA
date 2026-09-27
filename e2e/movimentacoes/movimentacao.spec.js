@@ -44,9 +44,9 @@ test.describe.serial('Movimentações — criação, saldo e persistência', () 
     const dialogs = app.attachDialogHandler(page);
     const watch = watchPage(page);
 
-    await app.openApp(page);
-    if (!(await app.isLoggedIn(page))) {
-      test.skip(true, 'BLOCKED: sessão QA indisponível (setup não concluído)');
+    const sessao = await qa.ensureUiSession(page, creds);
+    if (sessao.status !== 'ok') {
+      test.skip(true, `BLOCKED: sessão QA indisponível — ${sessao.error} | ${sessao.hint || ''}`);
     }
     await app.waitForDataReady(page);
     await app.openTab(page, 'caixa');
