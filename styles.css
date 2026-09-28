@@ -890,7 +890,7 @@
     color:var(--accent-ink);
     border:none;
     padding:0;
-    font-size:26px;
+    font-size:24px;
     line-height:1;
     display:grid;
     place-items:center;
@@ -901,6 +901,8 @@
   }
   .fab-add .add-icon{display:block;}
   .fab-add .fab-chat-icon{display:none;}
+  body[data-tab="dashboard"] .fab-add .add-icon{display:none;}
+  body[data-tab="dashboard"] .fab-add .fab-chat-icon{display:block;}
   .fab-add:hover{background:var(--accent-to);filter:brightness(0.96); transform:scale(1.06);}
   .fab-add:active{transform:scale(0.95);}
   .fab-add:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
