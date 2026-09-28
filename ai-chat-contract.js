@@ -1,4 +1,4 @@
-/* Contrato e núcleo compartilhado do Chat IA — LIVRO-CAIXA (V.20).
+/* Contrato e núcleo compartilhado do Chat IA — LIVRO-CAIXA (V.20-01).
    FONT ÚNICA dos limites, da validação de payload e do ciclo de vida do
    contexto da conversa.
 

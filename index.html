@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.20 (opencode) — Branding Orange themes (claro + escuro) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.20-01 (opencode) — Branding Orange themes (claro + escuro) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
@@ -37,7 +37,7 @@
   <script src="./ocr/ocr-adapter.js"></script>
   <script src="./ocr/lia-interpret.js"></script>
   <script src="./ocr/review.js"></script>
-<!-- Contrato do Chat IA (V.20) — fonte única de limites/validação,
+<!-- Contrato do Chat IA (V.20-01) — fonte única de limites/validação,
         compartilhada com o Worker. O módulo expõe
         window.LivroCaixaChatContract antes do DOMContentLoaded. -->
   <script type="module" src="./ai-chat-contract.js"></script>
@@ -1313,7 +1313,7 @@
       </div>
     </div>
 
-    <!-- CHAT IA (V.20) — modal aberto pelo FAB da Visão Geral.
+    <!-- CHAT IA (V.20-01) — modal aberto pelo FAB da Visão Geral.
          Reutiliza o overlay/painel padrão: Escape e fechamento global
          continuam funcionando pelo caminho já existente. -->
     <div class="panel" id="panelAiChat" role="dialog" aria-modal="true" aria-labelledby="aiChatTitle">
@@ -1580,7 +1580,7 @@ window.LivroCaixaAI = {
       { signal }
     );
   },
-  /* Chat IA (V.20): contrato {message, financialSnapshot, conversationContext}.
+  /* Chat IA (V.20-01): contrato {message, financialSnapshot, conversationContext}.
      Sem fallback de chave local — o Worker é quem valida limites, cota e
      autenticação, e este caminho não pode ser contornado. */
   async chat({ message, financialSnapshot, conversationContext, signal } = {}) {
@@ -7537,7 +7537,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.20 (opencode)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.20-01 (opencode)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
   function syncProfileEmail() {
@@ -7922,7 +7922,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  /* ETAPA 3 (V.20) — o orçamento do snapshot (CHAT_SNAPSHOT_REDUCTIONS e
+  /* ETAPA 3 (V.20-01) — o orçamento do snapshot (CHAT_SNAPSHOT_REDUCTIONS e
      fitChatSnapshotToBudget) mora em ai-chat-contract.js junto dos limites
      que ele usa; aqui só chamamos contract.fitChatSnapshotToBudget(). */
 
@@ -7955,7 +7955,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* =====================================================================
-     CHAT IA (V.20) — modal aberto pelo FAB da Visão Geral.
+     CHAT IA (V.20-01) — modal aberto pelo FAB da Visão Geral.
 
      - contrato/limites: window.LivroCaixaChatContract (fonte única);
      - snapshot: buildGeminiFinancialSnapshot() + orçamento de 64 KB;
