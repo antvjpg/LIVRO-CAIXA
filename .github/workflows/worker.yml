@@ -20,11 +20,12 @@ jobs:
   test-and-dry-run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
+          cache: npm
 
       - name: Testes do Worker
         run: node --test worker/test/*.test.mjs
@@ -37,16 +38,18 @@ jobs:
   deploy-production:
     # Deploy automático em push para main (testes sempre como gate);
     # workflow_dispatch continua disponível como gatilho manual.
+    # Requer environment "production" configurado no GitHub (Settings → Environments).
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     needs: test-and-dry-run
     environment: production
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
+          cache: npm
 
       - name: Deploy real do Worker
         run: npx --yes wrangler@4 deploy
