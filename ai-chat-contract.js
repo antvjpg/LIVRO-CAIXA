@@ -370,8 +370,108 @@ export function snapshotHasData(snapshot) {
 }
 
 /* =====================================================================
-   Máquina de estados da conversa (ETAPA 13).
+   Sugestões rápidas dinâmicas (V.20-01).
+ 
+   Gera exatamente 3 sugestões contextuais baseadas no snapshot financeiro.
+   Função pura, determinística, sem side effects.
+   ===================================================================== */
 
+const SUGGESTION_TEMPLATES = Object.freeze({
+  accounts: [
+    "Qual é o meu saldo total?",
+    "Quanto gastei neste mês?",
+    "Mostre meus maiores gastos"
+  ],
+  pockets: [
+    "Como estão minhas caixinhas?",
+    "Qual caixinha está mais perto da meta?",
+    "Quanto falta para completar minhas metas?"
+  ],
+  investments: [
+    "Como estão meus investimentos?",
+    "Qual a rentabilidade da minha carteira?",
+    "Quanto rendeu este mês?"
+  ],
+  goals: [
+    "Como estão minhas metas financeiras?",
+    "Qual meta vou atingir primeiro?",
+    "Quanto preciso poupar por mês?"
+  ],
+  budgets: [
+    "Estou dentro do orçamento?",
+    "Em qual categoria gastei mais?",
+    "Quanto ainda posso gastar?"
+  ],
+  cards: [
+    "Como estão minhas faturas?",
+    "Qual o limite disponível?",
+    "Quando vence a próxima fatura?"
+  ],
+  cashFlow: [
+    "Como está meu fluxo de caixa?",
+    "Entradas vs saídas do mês",
+    "Tendência dos últimos 6 meses"
+  ],
+  fallback: [
+    "Cadastre uma conta para começar",
+    "Crie uma caixinha para seus objetivos",
+    "Adicione seu primeiro investimento"
+  ]
+});
+
+function pickSuggestions(pool, max) {
+  const shuffled = [...pool].sort((a, b) => a.localeCompare(b));
+  return shuffled.slice(0, max);
+}
+
+function buildDomainPools(snapshot) {
+  const pools = [];
+  if (snapshot.accounts?.length) pools.push(SUGGESTION_TEMPLATES.accounts);
+  if (snapshot.pockets?.length) pools.push(SUGGESTION_TEMPLATES.pockets);
+  if (snapshot.investments?.length) pools.push(SUGGESTION_TEMPLATES.investments);
+  if (snapshot.goals?.length) pools.push(SUGGESTION_TEMPLATES.goals);
+  if (snapshot.budgets?.length) pools.push(SUGGESTION_TEMPLATES.budgets);
+  if (snapshot.cards && Number(snapshot.cards.activeCount) > 0) pools.push(SUGGESTION_TEMPLATES.cards);
+  if (snapshot.cashFlow && Number(snapshot.cashFlow.transactionCount) > 0) pools.push(SUGGESTION_TEMPLATES.cashFlow);
+  return pools;
+}
+
+export function generateQuickSuggestions(snapshot) {
+  if (!snapshot || !snapshotHasData(snapshot)) {
+    return [...SUGGESTION_TEMPLATES.fallback];
+  }
+
+  const pools = buildDomainPools(snapshot);
+  if (pools.length === 0) {
+    return [...SUGGESTION_TEMPLATES.fallback];
+  }
+
+  const perPool = Math.max(1, Math.floor(3 / pools.length));
+  const suggestions = [];
+
+  for (const pool of pools) {
+    const picked = pickSuggestions(pool, perPool);
+    suggestions.push(...picked);
+    if (suggestions.length >= 3) break;
+  }
+
+  while (suggestions.length < 3 && pools.length > 0) {
+    for (const pool of pools) {
+      const remaining = pool.filter(s => !suggestions.includes(s));
+      if (remaining.length > 0) {
+        suggestions.push(remaining[0]);
+        if (suggestions.length >= 3) break;
+      }
+    }
+    if (suggestions.length >= 3) break;
+  }
+
+  return suggestions.slice(0, 3).map(s => s.slice(0, CHAT_LIMITS.MESSAGE_MAX_CHARS));
+}
+
+/* =====================================================================
+   Máquina de estados da conversa (ETAPA 13).
+ 
    Pura, sem DOM: o index.html só lê getters e chama transições. Um token
    ({sessionId, accountId, requestId}) identifica cada requisição; uma
    resposta só entra se o token ainda for o atual. Fechar/reabrir preserva
@@ -385,11 +485,16 @@ export function createChatSession() {
   let messages = [];
   let pending = null;
   let busy = false;
+  let quickSuggestions = [];
 
   const isCurrent = (token) => Boolean(token) &&
     token.sessionId === sessionId &&
     token.accountId === accountId &&
     token.requestId === requestId;
+
+  function regenerateSuggestions(snapshot) {
+    quickSuggestions = generateQuickSuggestions(snapshot);
+  }
 
   return {
     isOpen: () => open,
@@ -398,9 +503,10 @@ export function createChatSession() {
     getSessionId: () => sessionId,
     getMessages: () => messages.slice(),
     getPending: () => pending,
+    getQuickSuggestions: () => quickSuggestions.slice(),
 
     /* Abertura vinculada à conta ativa. Outro dono = conversa nova. */
-    openFor(uid) {
+    openFor(uid, snapshot) {
       if (accountId !== uid) {
         accountId = uid;
         messages = [];
@@ -408,6 +514,7 @@ export function createChatSession() {
       }
       open = true;
       pending = null;
+      if (snapshot) regenerateSuggestions(snapshot);
     },
 
     /* Fechar preserva o contexto; só encerra a exibição, o envio atual e
@@ -427,6 +534,7 @@ export function createChatSession() {
       messages = [];
       pending = null;
       busy = false;
+      quickSuggestions = [];
     },
 
     /* Início de envio: bloqueia enquanto houver outro em andamento. */
@@ -475,6 +583,7 @@ const api = {
   validateChatPayload,
   fitChatSnapshotToBudget,
   snapshotHasData,
+  generateQuickSuggestions,
   createChatSession
 };
 

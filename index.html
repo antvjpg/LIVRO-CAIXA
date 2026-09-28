@@ -392,7 +392,7 @@
       <div class="profile-heading profile-heading-integrated">
         <div class="profile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg></div>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
-        <button type="button" id="btnProfileLogout" class="profile-heading-logout" title="Sair da conta" aria-label="Sair da conta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button>
+        <button type="button" id="btnProfileLogout" class="profile-heading-logout" title="Sair da conta" aria-label="Sair da conta"><i class="fi fi-rr-exit" aria-hidden="true"></i></button>
       </div>
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true">👤</span> Dados da conta</div>
@@ -8004,6 +8004,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const parts = [];
     if (!messages.length && !pending) {
       parts.push(`<div class="ai-chat-msg is-placeholder">${escapeHTML(AI_CHAT_GREETING)}</div>`);
+
+      /* V.20-01 — sugestões rápidas dinâmicas (exatamente 3). */
+      const suggestions = aiChat.session.getQuickSuggestions();
+      if (suggestions.length > 0) {
+        parts.push('<div class="ai-quick-suggestions" role="list" aria-label="Sugestões rápidas">');
+        suggestions.forEach((text, idx) => {
+          const safe = escapeHTML(text);
+          parts.push(
+            `<button type="button" class="ai-quick-suggestion" role="listitem" ` +
+            `aria-label="Perguntar: ${safe}" ` +
+            `aria-posinset="${idx + 1}" aria-setsize="${suggestions.length}" ` +
+            `data-suggestion="${safe}">${safe}</button>`
+          );
+        });
+        parts.push('</div>');
+      }
     }
     messages.forEach((item) => {
       const cls = item.role === 'user' ? 'is-user' : 'is-assistant';
@@ -8017,6 +8033,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     box.innerHTML = parts.join('');
     aiChatScrollToEnd();
+
+    /* Listeners das sugestões (delegação no container). */
+    box.querySelectorAll('.ai-quick-suggestion').forEach((btn) => {
+      btn.addEventListener('click', onQuickSuggestionClick);
+    });
+  }
+
+  function onQuickSuggestionClick(event) {
+    const btn = event.currentTarget;
+    const suggestion = btn.getAttribute('data-suggestion');
+    if (!suggestion) return;
+
+    const input = document.getElementById('aiChatInput');
+    if (!input) return;
+
+    input.value = suggestion;
+    input.focus({ preventScroll: true });
+
+    /* Dispara o envio usando o fluxo padrão (submit do form). */
+    const form = document.getElementById('aiChatForm');
+    if (form) {
+      const submitEvent = new Event('submit', { cancelable: true, bubbles: true });
+      form.dispatchEvent(submitEvent);
+    }
   }
 
   const AI_CHAT_ERROR_MESSAGES = {
@@ -8145,7 +8185,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openAiChat() {
     /* Contexto pertence a uma conta: outro dono = conversa nova. */
-    aiChat.session.openFor(aiChatAccountId());
+    const snapshot = buildGeminiFinancialSnapshot();
+    aiChat.session.openFor(aiChatAccountId(), snapshot);
 
     const contract = aiChatContract();
     const input = document.getElementById('aiChatInput');
@@ -8212,6 +8253,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Limpeza de contexto: troca de conta, logout, sessão reiniciada.
      Nunca persistida — só isto apaga a conversa nesta versão. */
   function resetAiChatContext() {
+    const snapshot = buildGeminiFinancialSnapshot();
     aiChat.session.resetContext();
 
     if (aiChat.controller) {
@@ -8220,6 +8262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (aiChat.session.isOpen()) {
+      aiChat.session.openFor(aiChatAccountId(), snapshot);
       aiChatNotice('');
       aiChatSetBusy(false);
       aiChatRender();
