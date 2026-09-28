@@ -6,9 +6,22 @@ workers_dev = true
 # A chave da API NÃO fica aqui. Definida com:
 #   npx wrangler secret put OPENROUTER_API_KEY
 
+# KV namespaces para cota e rate limit distribuídos
+# Criar com: npx wrangler kv:namespace create "QUOTA_KV" && npx wrangler kv:namespace create "RATE_LIMIT_KV"
+[[kv_namespaces]]
+binding = "QUOTA_KV"
+id = "your-quota-kv-namespace-id"
+preview_id = "your-quota-kv-preview-id"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "your-rate-limit-kv-namespace-id"
+preview_id = "your-rate-limit-kv-preview-id"
+
 [vars]
 FIREBASE_PROJECT_ID = "livro-caixa-54357"
-ALLOW_ORIGINS = "http://127.0.0.1:8000,http://localhost:8000,https://antvjpg.github.io"
+# Adicionar domínio de produção (ex: https://livrocaixa.app, https://app.livrocaixa.com)
+ALLOW_ORIGINS = "http://127.0.0.1:8000,http://localhost:8000,https://antvjpg.github.io,https://livrocaixa.app"
 OPENROUTER_MODELS = "google/gemma-4-26b-a4b-it:free,nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free,qwen/qwen3.8-27b:free,google/gemma-4-31b-it:free"
 AI_RATE_LIMIT_PER_MINUTE = "30"
 # Consultas externas por minuto por IP/origem nas rotas /financial (públicas).

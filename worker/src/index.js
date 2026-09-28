@@ -27,7 +27,9 @@ import { readJsonBody, validateAiPayload } from "./shared/validation.js";
 import { validateChatPayload, CHAT_LIMITS } from "../../ai-chat-contract.js";
 import { buildChatSystemPrompt } from "./ai/chat-prompt.js";
 import { authenticate } from "./ai/auth.js";
-import { getFreeQuota, currentQuota, burnQuota, quotaHeaderValues } from "./ai/quota.js";
+import { requireAppCheck } from "./ai/appcheck.js";
+import { getFreeQuotaKV, burnQuotaKV, quotaHeaderValues } from "./ai/quota-kv.js";
+import { isRateLimitedKV } from "./ai/ratelimit-kv.js";
 import {
   RETRYABLE_STATUS,
   modelList,
@@ -37,17 +39,14 @@ import {
 } from "./ai/openrouter.js";
 import { handleFinancial } from "./financial/gateway.js";
 
+/* Rate limit em memória como fallback quando KV não disponível */
 const RATE_LIMIT_WINDOW_MS = 60000;
 const DEFAULT_RATE_LIMIT = 30;
 const DEFAULT_FINANCIAL_RATE_LIMIT = 20;
 const MAX_RATE_BUCKETS = 500;
-
-/* Map de contagem por chave dentro do isolate atual. Sobe junto com o
-   isolate e não é compartilhado entre isolates. O prefixo separa os
-   contadores: IA usa o uid do Firebase; /financial usa IP/origem. */
 const rateBuckets = new Map();
 
-function isRateLimited(key, env, options = {}) {
+function isRateLimitedMemory(key, env, options = {}) {
   const limitEnvVar = options.limitEnvVar || "AI_RATE_LIMIT_PER_MINUTE";
   const defaultLimit = options.defaultLimit || DEFAULT_RATE_LIMIT;
   const prefix = options.prefix || "";
@@ -66,6 +65,13 @@ function isRateLimited(key, env, options = {}) {
 
   bucket.count += 1;
   return bucket.count > limit;
+}
+
+async function isRateLimited(key, env, options = {}) {
+  if (env.RATE_LIMIT_KV) {
+    return isRateLimitedKV(key, env, options);
+  }
+  return isRateLimitedMemory(key, env, options);
 }
 
 export default {
@@ -118,10 +124,13 @@ export default {
         return json({ error: "Método não permitido.", code: "method_not_allowed" }, 405, cors);
       }
 
+      const appCheck = await requireAppCheck(request, env, cors);
+      if (!appCheck.ok) return appCheck.response;
+
       const quotaAuth = await authenticate(request, env, cors);
       if (quotaAuth instanceof Response) return quotaAuth;
 
-      const quota = await getFreeQuota(env, true);
+      const quota = await getFreeQuotaKV(env, true);
       if (!quota) {
         return json(
           { error: "Não foi possível consultar o limite de leituras agora.", code: "quota_unavailable" },
@@ -155,6 +164,9 @@ export default {
       return json({ error: "Origem não autorizada.", code: "origin_blocked" }, 403, null);
     }
 
+    const appCheck = await requireAppCheck(request, env, cors);
+    if (!appCheck.ok) return appCheck.response;
+
     const authResult = await authenticate(request, env, cors);
     if (authResult instanceof Response) return authResult;
     const claims = authResult.claims;
@@ -179,16 +191,16 @@ export default {
     }
 
     /* Garante o cache de cota antes de decidir sobre o limite diário. */
-    await getFreeQuota(env);
-    const quotaHeaders = () => quotaHeaderValues(currentQuota());
+    const quota = await getFreeQuotaKV(env);
+    const quotaHeaders = () => quotaHeaderValues(quota);
 
-    if (currentQuota() && currentQuota().remaining <= 0) {
+    if (quota && quota.remaining <= 0) {
       return json(
         {
           error:
             "A IA atingiu o limite diário de leituras. O limite volta a ser liberado à meia-noite (UTC).",
           code: "daily_limit",
-          quota: currentQuota()
+          quota
         },
         429,
         withHeaders(cors, quotaHeaders())
@@ -260,11 +272,20 @@ export default {
 
       /* Conta na cota apenas o que deu certo: tentativas que o OpenRouter
          recusou (402/404 de modelo pago, falha de rede) não gastam o dia. */
-      if (result.ok) burnQuota();
+      if (result.ok) await burnQuotaKV(env);
 
       if (!result.ok) {
         const status = result.status || 0;
         lastFailure = failureFromResult(result, model, env);
+
+        /* Log estruturado para monitoramento de falhas de modelo */
+        console.log(JSON.stringify({
+          event: "model_failed",
+          model,
+          status,
+          code: lastFailure.code,
+          timestamp: new Date().toISOString()
+        }));
 
         if (status !== 0 && !RETRYABLE_STATUS.has(status)) {
           return json(
@@ -284,6 +305,13 @@ export default {
       const reply = result.parsed?.choices?.[0]?.message?.content;
       const text = typeof reply === "string" ? reply.trim() : "";
       if (text) return json({ text, model }, 200, withHeaders(cors, quotaHeaders()));
+
+      /* Log para resposta vazia */
+      console.log(JSON.stringify({
+        event: "model_empty_reply",
+        model,
+        timestamp: new Date().toISOString()
+      }));
 
       lastFailure = emptyReplyFailure(model);
     }

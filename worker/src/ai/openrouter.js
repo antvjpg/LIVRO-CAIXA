@@ -15,7 +15,7 @@ const DEFAULT_MODELS = [
   "google/gemma-4-31b-it:free"
 ];
 
-export const RETRYABLE_STATUS = new Set([402, 404, 408, 429, 500, 502, 503, 504]);
+export const RETRYABLE_STATUS = new Set([0, 402, 404, 408, 429, 500, 502, 503, 504]);
 /* Teto dos fluxos legados (prompt e imagem). Exportado para os testes
    poderem comparar com o teto menor do caminho de chat. */
 export const UPSTREAM_TIMEOUT_MS = 45000;

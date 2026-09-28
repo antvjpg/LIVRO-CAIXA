@@ -476,8 +476,14 @@ export function generateQuickSuggestions(snapshot) {
    ({sessionId, accountId, requestId}) identifica cada requisição; uma
    resposta só entra se o token ainda for o atual. Fechar/reabrir preserva
    a conversa; trocar de conta ou resetar é a única forma de apagá-la.
+   
+   Persistência (IndexedDB): opcional, injetada via callbacks no index.html.
+   - onLoad(uid) -> Promise<{messages, sessionId} | null>
+   - onSave(uid, sessionId, messages) -> Promise<void>
+   - onClear(uid) -> Promise<void>
    ===================================================================== */
-export function createChatSession() {
+export function createChatSession(persistence = {}) {
+  const { onLoad, onSave, onClear } = persistence;
   let open = false;
   let accountId = null;
   let sessionId = 0;
@@ -486,6 +492,7 @@ export function createChatSession() {
   let pending = null;
   let busy = false;
   let quickSuggestions = [];
+  let persistenceLoaded = false;
 
   const isCurrent = (token) => Boolean(token) &&
     token.sessionId === sessionId &&
@@ -494,6 +501,18 @@ export function createChatSession() {
 
   function regenerateSuggestions(snapshot) {
     quickSuggestions = generateQuickSuggestions(snapshot);
+  }
+
+  async function persistSave() {
+    if (onSave && accountId) {
+      try { await onSave(accountId, sessionId, messages); } catch (err) { /* best-effort */ }
+    }
+  }
+
+  async function persistClear() {
+    if (onClear && accountId) {
+      try { await onClear(accountId); } catch (err) { /* best-effort */ }
+    }
   }
 
   return {
@@ -506,14 +525,25 @@ export function createChatSession() {
     getQuickSuggestions: () => quickSuggestions.slice(),
 
     /* Abertura vinculada à conta ativa. Outro dono = conversa nova. */
-    openFor(uid, snapshot) {
+    async openFor(uid, snapshot) {
       if (accountId !== uid) {
         accountId = uid;
-        messages = [];
         sessionId += 1;
+        messages = [];
+        persistenceLoaded = false;
       }
       open = true;
       pending = null;
+      
+      if (!persistenceLoaded && onLoad && uid) {
+        persistenceLoaded = true;
+        const loaded = await onLoad(uid);
+        if (loaded && loaded.messages && loaded.messages.length) {
+          messages = loaded.messages;
+          sessionId = loaded.sessionId || sessionId;
+        }
+      }
+      
       if (snapshot) regenerateSuggestions(snapshot);
     },
 
@@ -528,13 +558,15 @@ export function createChatSession() {
 
     /* Limpeza de contexto: troca de conta, logout, sessão reiniciada.
        Único caminho que apaga a conversa. */
-    resetContext() {
+    async resetContext() {
+      await persistClear();
       sessionId += 1;
       requestId += 1;
       messages = [];
       pending = null;
       busy = false;
       quickSuggestions = [];
+      persistenceLoaded = false;
     },
 
     /* Início de envio: bloqueia enquanto houver outro em andamento. */
@@ -550,10 +582,11 @@ export function createChatSession() {
     isCurrent,
 
     /* Resposta só entra se o token ainda for o atual. */
-    commit(token, message, reply) {
+    async commit(token, message, reply) {
       if (!isCurrent(token)) return false;
       messages.push({ role: "user", content: message });
       messages.push({ role: "assistant", content: reply });
+      await persistSave();
       return true;
     },
 

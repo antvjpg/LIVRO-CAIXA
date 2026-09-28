@@ -37,10 +37,12 @@
   <script src="./ocr/ocr-adapter.js"></script>
   <script src="./ocr/lia-interpret.js"></script>
   <script src="./ocr/review.js"></script>
-  <!-- Contrato do Chat IA (V.20) — fonte única de limites/validação,
-       compartilhada com o Worker. O módulo expõe
-       window.LivroCaixaChatContract antes do DOMContentLoaded. -->
+<!-- Contrato do Chat IA (V.20) — fonte única de limites/validação,
+        compartilhada com o Worker. O módulo expõe
+        window.LivroCaixaChatContract antes do DOMContentLoaded. -->
   <script type="module" src="./ai-chat-contract.js"></script>
+  <!-- Persistência do histórico do chat no IndexedDB (V.20-01). -->
+  <script type="module" src="./chat-persistence.js"></script>
 
 
 
@@ -1509,8 +1511,13 @@ window.LivroCaixaAI = {
     }
 
     let idToken = '';
+    let appCheckToken = '';
     try {
       idToken = await user.getIdToken();
+      if (typeof firebase !== 'undefined' && firebase.appCheck) {
+        const appCheckResult = await firebase.appCheck().getToken(false);
+        appCheckToken = appCheckResult?.token || '';
+      }
     } catch (err) {
       const tokenErr = new Error('Não foi possível validar a sessão para usar a IA.');
       tokenErr.code = 'token_failed';
@@ -1525,6 +1532,9 @@ window.LivroCaixaAI = {
       },
       body: JSON.stringify(payload)
     };
+    if (appCheckToken) {
+      init.headers['X-Firebase-AppCheck'] = appCheckToken;
+    }
     if (signal) init.signal = signal;
 
     let response;
@@ -7923,8 +7933,9 @@ document.addEventListener('DOMContentLoaded', () => {
      para um núcleo inerte só para abrir/fechar sem lançar. */
   function createAiChatSession() {
     const contract = window.LivroCaixaChatContract;
+    const persistence = window.LivroCaixaChatPersistence;
     if (contract && typeof contract.createChatSession === 'function') {
-      return contract.createChatSession();
+      return contract.createChatSession(persistence || {});
     }
     return {
       isOpen: () => false,
@@ -8185,6 +8196,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openAiChat() {
     /* Contexto pertence a uma conta: outro dono = conversa nova. */
+    
+    /* Garante que indicadores de mercado estejam disponíveis para a IA. */
+    const refreshIndicatorsPromise = (typeof refreshFinancialIndicators === 'function')
+      ? refreshFinancialIndicators({ silent: true })
+      : Promise.resolve(null);
+
     const snapshot = buildGeminiFinancialSnapshot();
     aiChat.session.openFor(aiChatAccountId(), snapshot);
 
@@ -8208,6 +8225,9 @@ document.addEventListener('DOMContentLoaded', () => {
     aiChatApplyViewportFix();
     window.renderAiQuotaStatus?.();
     window.LivroCaixaAI?.refreshQuota?.({ silent: true, throttleMs: 15000 });
+
+    /* Aguarda indicadores (não bloqueia a UI, mas enriquece o snapshot se chegar a tempo). */
+    refreshIndicatorsPromise.catch(() => { /* best-effort */ });
 
     window.setTimeout(() => input?.focus({ preventScroll: true }), 0);
   }
