@@ -1605,7 +1605,7 @@
     background:var(--paper);color:var(--ink);font-size:13px;
   }
   #viewProfile .feature-profile-actions{
-    display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px;
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;
   }
   #viewProfile .feature-profile-actions button,
   #viewProfile .feature-profile-pin-actions button,
@@ -1814,7 +1814,7 @@
     .feature-profile-section{margin:14px 17px 0;padding:13px;}
     .feature-profile-primary-actions{margin:14px 17px 0;flex-direction:column;}
     .feature-profile-feedback{margin-left:17px;margin-right:17px;}
-    .feature-profile-fields,.feature-profile-pin-row{grid-template-columns:1fr;}
+    .feature-profile-fields,.feature-profile-pin-row,.feature-profile-actions{grid-template-columns:1fr;}
     .feature-profile-pin-actions{display:grid;grid-template-columns:1fr 1fr;}
     .feature-budget-row{grid-template-columns:minmax(0,1fr) 105px;}
     .feature-budget-row span{grid-column:1/-1;}
