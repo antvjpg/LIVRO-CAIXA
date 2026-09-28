@@ -14285,7 +14285,7 @@ document.getElementById('tSalvar').onclick = async () => {
     const fab = document.getElementById('fabAdd');
     if (!fab) return;
     const labels = {
-      dashboard: 'Conversar com IA financeira',
+      dashboard: 'Adicionar lançamento',
       bills: 'Adicionar conta recorrente',
       receivables: 'Adicionar valor a receber',
       invest: 'Adicionar investimento',
@@ -14300,12 +14300,6 @@ document.getElementById('tSalvar').onclick = async () => {
 
   document.getElementById('fabAdd').onclick = () => {
     const activeTab = document.body.dataset.tab || currentTab;
-    /* Visão Geral: o FAB é o ponto de acesso à IA financeira (V.20).
-       Nas demais abas ele continua abrindo o modal de adicionar. */
-    if (activeTab === 'dashboard') {
-      window.LivroCaixaChat?.open();
-      return;
-    }
     if (activeTab === 'bills') openBillModal();
     else if (activeTab === 'receivables') openReceivableModal();
     else if (activeTab === 'invest') openNewInvestModal();
