@@ -283,8 +283,8 @@
       <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-paste" aria-hidden="true"></i></span><span>Colar texto</span></button>
       <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-file-import" aria-hidden="true"></i></span><span>Importar PDF/DOCX</span></button>
       <button class="quick-action" id="btnExport"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-file-export" aria-hidden="true"></i></span><span>Exportar extrato</span></button>
-      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-database-export" aria-hidden="true"></i></span><span>Exportar backup</span></button>
-      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-database-import" aria-hidden="true"></i></span><span>Restaurar backup</span></button>
+      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-cloud-upload-alt" aria-hidden="true"></i></span><span>Exportar backup</span></button>
+      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-cloud-download-alt" aria-hidden="true"></i></span><span>Restaurar backup</span></button>
       <input type="file" id="fileImport" accept="application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
       <input type="file" id="fileBackupImport" accept="application/json">
     </div>
@@ -392,7 +392,7 @@
   <div id="viewProfile" class="tab-content">
     <section class="profile-shell" aria-label="Área de perfil">
       <div class="profile-heading profile-heading-integrated">
-        <div class="profile-avatar" aria-hidden="true"><i class="fi fi-rr-user-circle" aria-hidden="true"></i></div>
+        <div class="profile-avatar" aria-hidden="true"><i class="fi fi-rr-user" aria-hidden="true"></i></div>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
         <button type="button" id="btnProfileLogout" class="profile-heading-logout" title="Sair da conta" aria-label="Sair da conta"><i class="fi fi-rr-exit" aria-hidden="true"></i></button>
       </div>
@@ -1340,9 +1340,9 @@
             accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,application/pdf,.pdf"
             hidden
           >
-          <button type="button" id="btnLiaAttach" class="ai-attach-btn"
-                  aria-label="Anexar imagem ou documento" title="Anexar imagem ou documento">
-            <i class="fi fi-rr-paperclip" aria-hidden="true"></i>
+<button type="button" id="btnLiaAttach" class="ai-attach-btn"
+                   aria-label="Anexar imagem ou documento" title="Anexar imagem ou documento">
+            <i class="fi fi-rr-paperclip-vertical" aria-hidden="true"></i>
           </button>
           <input type="text" id="aiChatInput" name="aiChatInput" placeholder="Pergunte sobre suas finanças…"
                  enterkeyhint="send">
@@ -2672,7 +2672,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function setThemeToggleIcon(isDark) {
     if (!themeBtn) return;
-    themeBtn.innerHTML = isDark ? `<i class="fi fi-rr-sun" aria-hidden="true"></i>` : `<i class="fi fi-rr-moon" aria-hidden="true"></i>`;
+    themeBtn.innerHTML = `<i class="fi fi-rr-contrast" aria-hidden="true"></i>`;
   }
   themeBtn.onclick = () => {
     document.body.classList.toggle('dark-mode');
