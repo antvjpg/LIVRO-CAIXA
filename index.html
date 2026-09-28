@@ -14281,6 +14281,23 @@ document.getElementById('tSalvar').onclick = async () => {
     }
   })();
 
+  function updateFabAriaLabel(tab) {
+    const fab = document.getElementById('fabAdd');
+    if (!fab) return;
+    const labels = {
+      dashboard: 'Conversar com IA financeira',
+      bills: 'Adicionar conta recorrente',
+      receivables: 'Adicionar valor a receber',
+      invest: 'Adicionar investimento',
+      pockets: 'Adicionar caixinha',
+      cards: 'Adicionar cartão',
+      goals: 'Adicionar meta',
+      caixa: 'Adicionar lançamento',
+      contas: 'Adicionar lançamento'
+    };
+    fab.setAttribute('aria-label', labels[tab] || 'Adicionar');
+  }
+
   document.getElementById('fabAdd').onclick = () => {
     const activeTab = document.body.dataset.tab || currentTab;
     /* Visão Geral: o FAB é o ponto de acesso à IA financeira (V.20).
@@ -14297,6 +14314,18 @@ document.getElementById('tSalvar').onclick = async () => {
     else if (activeTab === 'goals') openNewGoalModal();
     else openNewEntryModal();
   };
+
+  /* Atualiza aria-label do FAB quando a aba muda */
+  const origSwitchTab = window.switchTab;
+  if (typeof origSwitchTab === 'function') {
+    window.switchTab = function(...args) {
+      origSwitchTab.apply(this, args);
+      const tab = document.body.dataset.tab || currentTab;
+      updateFabAriaLabel(tab);
+    };
+  }
+  /* Inicial */
+  updateFabAriaLabel(document.body.dataset.tab || currentTab);
 
   initMoneyMasks();
   markSingleActionButtons();
