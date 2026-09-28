@@ -434,9 +434,9 @@
 
       </div>
 
-      <div class="feature-lab-primary-actions">
+      <div class="feature-lab-primary-actions" style="display:none;">
         <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
-        <div id="profileSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
+        <div id="profileSettingsStatus" class="feature-profile-feedback" aria-live="polite"></div>
       </div>
 
       <div class="profile-group">
@@ -454,17 +454,17 @@
             <div><label for="reconcileReported">Saldo informado</label><input type="text" id="reconcileReported" data-money="true" placeholder="R$ 0,00"></div>
           </div>
           <div class="feature-lab-actions"><button type="button" id="btnRunReconciliation">Comparar saldos</button><button type="button" id="btnApplyReconciliation" hidden>Aplicar ajuste sugerido</button></div>
-          <div id="reconciliationResult" class="feature-lab-feedback" aria-live="polite"></div>
+          <div id="reconciliationResult" class="feature-profile-feedback" aria-live="polite"></div>
         </div>
 
       </div>
 
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-sr-sparkles"></i></span> Análise assistida</div>
-        <div class="feature-lab-section labs-plus-section">
+        <div class="feature-lab-section profile-plus-section">
           <label class="feature-lab-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-lab-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias usando descrições já categorizadas no seu histórico; nenhuma alteração é feita sem confirmação.</small></span><span class="feature-lab-switch" aria-hidden="true"></span></label>
           <div class="feature-lab-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
-          <div id="labsAnalysisStatus" class="feature-lab-feedback" aria-live="polite"></div>
+          <div id="profileAnalysisStatus" class="feature-profile-feedback" aria-live="polite"></div>
           <div class="feature-lab-pin-row" style="margin-top:10px;">
             <div>
               <label for="openRouterApiKey">Chave da API (OpenRouter)</label>
@@ -476,8 +476,8 @@
             </div>
           </div>
           <p class="hint" style="margin-top:6px;">Usa o modelo free <strong>Gemma 4 26B A4B</strong> no OpenRouter (visão, latência baixa, reasoning desligado). O normal é usar pela sua sessão, com a chave guardada no servidor. Esta chave é só uma <strong>alternativa local</strong> para quando o serviço estiver indisponível: fica somente neste dispositivo e não é enviada ao Firebase. Free tier tem limite de requisições por minuto.</p>
-          <div id="openRouterKeyStatus" class="feature-lab-feedback" aria-live="polite"></div>
-          <div id="aiQuotaStatus" class="feature-lab-feedback" data-ai-quota aria-live="polite"></div>
+          <div id="openRouterKeyStatus" class="feature-profile-feedback" aria-live="polite"></div>
+          <div id="aiQuotaStatus" class="feature-profile-feedback" data-ai-quota aria-live="polite"></div>
         </div>
         <div class="feature-lab-heading"><strong>Diagnóstico</strong></div>
         <div class="profile-list">
@@ -509,14 +509,14 @@
             <button type="button" id="btnDisableBiometric">Desativar biometria</button>
           </div>
           <p class="hint" id="biometricHint" style="margin-top:6px;">A biometria desbloqueia o app no lugar do PIN, quando o aparelho permitir. O PIN continua como reserva.</p>
-          <div id="pinSettingsStatus" class="feature-lab-feedback" aria-live="polite"></div>
+          <div id="pinSettingsStatus" class="feature-profile-feedback" aria-live="polite"></div>
         </div>
 
       </div>
 
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-lock"></i></span> Dados e segurança</div>
-        <div class="feature-lab-section labs-plus-section">
+        <div class="feature-lab-section profile-plus-section">
           <p class="feature-lab-section-desc">Recursos experimentais para proteger backups e trazer fechamentos OFX ou CSV para a prévia editável.</p>
           <div class="feature-lab-fields">
             <div><label for="featureBackupPassword">Senha do backup criptografado</label><input type="password" id="featureBackupPassword" autocomplete="new-password" placeholder="Mínimo de 6 caracteres"></div>
@@ -524,7 +524,7 @@
           <div class="feature-lab-actions"><button type="button" id="btnExportEncryptedBackup" class="primary">Exportar backup criptografado</button><button type="button" id="btnImportEncryptedBackup">Importar backup criptografado</button></div>
           <input type="file" id="fileEncryptedBackup" accept="application/json,.json" hidden>
           <div class="feature-lab-actions"><button type="button" id="btnImportStructuredFile">Importar OFX / CSV</button><input type="file" id="fileStructuredImport" accept=".ofx,.qfx,.csv,text/csv,application/x-ofx" hidden></div>
-          <div id="labsDataStatus" class="feature-lab-feedback" aria-live="polite"></div>
+          <div id="profileDataStatus" class="feature-profile-feedback" aria-live="polite"></div>
         </div>
       </div>
 
@@ -702,7 +702,7 @@
       </div>
     </div>
 
-    <div class="panel feature-lab-panel" id="panelFeatureLab">
+    <div class="panel feature-profile-panel" id="panelFeatureProfile">
       <div class="feature-lab-header">
         <div class="feature-lab-title-wrap">
           <span class="feature-lab-kicker">LABS · EXPERIMENTAL</span>
@@ -720,7 +720,7 @@
         <div class="feature-lab-primary-actions">
         <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
       </div>
-      <div id="featureLabStatus" class="feature-lab-feedback" aria-live="polite"></div>
+      <div id="featureProfileStatus" class="feature-profile-feedback" aria-live="polite"></div>
     </div>
 
 
@@ -936,7 +936,7 @@
       <p class="hint">Revise a mensagem antes de copiar ou abrir o compartilhamento do dispositivo.</p>
       <textarea id="billShareMessage" class="bill-share-message" rows="12" spellcheck="false"></textarea>
       <div class="bill-share-actions"><button type="button" id="btnCopyBillShare">Copiar mensagem</button><button type="button" id="btnNativeBillShare" class="primary">Compartilhar</button></div>
-      <div id="billShareStatus" class="feature-lab-feedback" aria-live="polite"></div>
+      <div id="billShareStatus" class="feature-profile-feedback" aria-live="polite"></div>
       <button type="button" id="btnCancelBillShare" class="bill-share-cancel" onclick="closeAllPanels()">Cancelar</button>
     </div>
 
@@ -7314,7 +7314,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 
-  function renderFeatureLab() {
+  function renderFeatureProfile() {
     const autoBills = document.getElementById('featureAutoBills'); if (autoBills) autoBills.checked = featureSettings.autoLaunchRecurring;
     const reminders = document.getElementById('featureReminders'); if (reminders) reminders.checked = featureSettings.reminders;
     const autoQuotes = document.getElementById('featureAutoQuotes'); if (autoQuotes) autoQuotes.checked = featureSettings.autoRefreshQuotes;
@@ -7333,7 +7333,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (rows) rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id); const spent = budgetSpent(cat.id, budgetCycle); const pct = budget && budget.amount > 0 ? (spent / budget.amount * 100) : 0; const dot = !budget || !(budget.amount > 0) ? '' : pct >= 100 ? '🔴' : pct >= 80 ? '🟡' : '🟢'; return `<div class="feature-budget-row"><label for="budget-${escapeHTML(cat.id)}">${dot ? dot + ' ' : ''}${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"><span>${fmt(spent)} gastos${budget && budget.amount>0 ? ` (${pct.toFixed(0)}%)` : ''}</span></div>`; }).join('');
     initMoneyMasks();
   }
-  function openFeatureLab() { renderFeatureLab(); openModal('panelFeatureLab'); }
+  function openFeatureProfile() { renderFeatureProfile(); openModal('panelFeatureProfile'); }
 
   function openGoalsPanel() {
   if (typeof renderGoalsList === 'function') {
@@ -7386,8 +7386,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.getElementById('btnSaveFeatureSettings')?.addEventListener('click', () => saveFeatureSettings());
 
-  // Salvamento automático (com debounce) ao alterar as opções e os limites por categoria.
-  const FEATURE_AUTOSAVE_IDS = ['featureAutoBills', 'featureReminders', 'featureAutoQuotes', 'featureQuoteInterval', 'featureProjectionMonths', 'featureAutoCategorization', 'featureReminderAdvanceDays', 'featureSavingsGoalAmount'];
+  // Salvamento automático (com debounce) ao alterar QUALQUER opção da aba Perfil.
+  const FEATURE_AUTOSAVE_IDS = [
+    'featureAutoBills', 'featureReminders', 'featureAutoQuotes', 'featureQuoteInterval',
+    'featureProjectionMonths', 'featureAutoCategorization', 'featureReminderAdvanceDays',
+    'featureSavingsGoalAmount'
+  ];
   let featureSettingsAutosaveTimer = 0;
   function scheduleFeatureSettingsAutosave() {
     clearTimeout(featureSettingsAutosaveTimer);
@@ -7395,12 +7399,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   FEATURE_AUTOSAVE_IDS.forEach(id => document.getElementById(id)?.addEventListener('change', scheduleFeatureSettingsAutosave));
   document.getElementById('featureBudgetRows')?.addEventListener('change', scheduleFeatureSettingsAutosave);
-  document.getElementById('btnRunFeatureCycle')?.addEventListener('click', async () => { const status = document.getElementById('featureLabStatus'); status.textContent = 'Executando ciclo de recorrências, lembretes e cotações…'; const result = await runFeatureAutomation({ manual: true }); status.textContent = result?.cancelled ? 'Ciclo cancelado; nenhum lançamento foi criado.' : result?.skipped ? 'Faça login para executar alterações financeiras.' : 'Ciclo concluído. Verifique o calendário, os avisos e os cards de investimento.'; });
+  document.getElementById('btnRunFeatureCycle')?.addEventListener('click', async () => { const status = document.getElementById('featureProfileStatus'); status.textContent = 'Executando ciclo de recorrências, lembretes e cotações…'; const result = await runFeatureAutomation({ manual: true }); status.textContent = result?.cancelled ? 'Ciclo cancelado; nenhum lançamento foi criado.' : result?.skipped ? 'Faça login para executar alterações financeiras.' : 'Ciclo concluído. Verifique o calendário, os avisos e os cards de investimento.'; });
   function suggestCategoryForDescription(description) { const text = String(description || '').toLocaleLowerCase('pt-BR'); const scores = new Map(); entries.forEach(entry => { const entryText = String(entry.desc || '').toLocaleLowerCase('pt-BR'); const category = categories.find(item => item.id === entry.category); if (!category || !entryText) return; const tokens = text.split(/\s+/).filter(token => token.length >= 4); const matches = tokens.filter(token => entryText.includes(token)).length; if (matches) scores.set(category.id, (scores.get(category.id) || 0) + matches); }); const best = [...scores.entries()].sort((a, b) => b[1] - a[1])[0]; return best ? best[0] : ''; }
   function applySimpleAutoCategorization(rows) { return rows.map(row => { if (!row.category && featureSettings.autoCategorization) { const suggested = suggestCategoryForDescription(row.desc); if (suggested) { row.category = suggested; row.matchStatus = 'Categoria sugerida pelo histórico · revise antes de confirmar'; } } return row; }); }
   function detectSpendingAnomalies() { const currentMonth = currentMonthYM(); const byCategory = new Map(); entries.filter(entry => entry.type === 'out').forEach(entry => { const month = String(entry.date || '').slice(0, 7); const key = `${entry.category || 'sem-categoria'}|${month}`; byCategory.set(key, (byCategory.get(key) || 0) + Number(entry.amount || 0)); }); const current = new Map(); entries.filter(entry => entry.type === 'out' && String(entry.date || '').startsWith(currentMonth)).forEach(entry => current.set(entry.category || 'sem-categoria', (current.get(entry.category || 'sem-categoria') || 0) + Number(entry.amount || 0))); const anomalies = []; current.forEach((value, categoryId) => { const history = [...byCategory.entries()].filter(([key]) => key.startsWith(`${categoryId}|`) && !key.endsWith(`|${currentMonth}`)).map(([, amount]) => amount).slice(-6); if (history.length < 2) return; const average = history.reduce((sum, amount) => sum + amount, 0) / history.length; if (value > average * 1.75 && value > average + 50) anomalies.push({ category: categories.find(cat => cat.id === categoryId)?.name || 'Sem categoria', value, average }); }); return anomalies.sort((a, b) => b.value - b.average - (a.value - a.average)); }
-  function runAnomalyScan() { const anomalies = detectSpendingAnomalies(); const status = document.getElementById('labsAnalysisStatus'); status.innerHTML = anomalies.length ? anomalies.slice(0, 5).map(item => `<div><strong>${escapeHTML(item.category)}</strong>: ${fmt(item.value)} no mês atual, contra média de ${fmt(item.average)}.</div>`).join('') : 'Nenhuma anomalia estatística encontrada com pelo menos dois meses de histórico.'; logInfo('Análise', 'Detectar anomalias', 'Sucesso', `${anomalies.length} possível(is) anomalia(s) encontrada(s).`); }
-  function generateMonthlyReview() { const month = currentMonthYM(); const income = entries.filter(e => e.type === 'in' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const expense = entries.filter(e => e.type === 'out' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const over = categories.filter(cat => { const budget = budgetFor(cat.id); return budget && budget.amount > 0 && budgetSpent(cat.id, currentFinancialCycleKey()) > budget.amount; }).map(cat => cat.name); const status = document.getElementById('labsAnalysisStatus'); status.innerHTML = `<strong>Revisão de ${escapeHTML(formatMonthLabel(month))}</strong><div>Entradas: ${fmt(income)} · Saídas: ${fmt(expense)} · Fluxo: ${fmt(income - expense)}</div><div>${over.length ? `Categorias acima do orçamento: ${escapeHTML(over.join(', '))}.` : 'Nenhuma categoria acima do orçamento.'}</div><small>Resumo informativo; nenhuma alteração automática foi feita.</small>`; logInfo('Análise', 'Revisão mensal guiada', 'Sucesso', 'Resumo mensal apresentado sem alterações automáticas.'); }
+  function runAnomalyScan() { const anomalies = detectSpendingAnomalies(); const status = document.getElementById('profileAnalysisStatus'); status.innerHTML = anomalies.length ? anomalies.slice(0, 5).map(item => `<div><strong>${escapeHTML(item.category)}</strong>: ${fmt(item.value)} no mês atual, contra média de ${fmt(item.average)}.</div>`).join('') : 'Nenhuma anomalia estatística encontrada com pelo menos dois meses de histórico.'; logInfo('Análise', 'Detectar anomalias', 'Sucesso', `${anomalies.length} possível(is) anomalia(s) encontrada(s).`); }
+  function generateMonthlyReview() { const month = currentMonthYM(); const income = entries.filter(e => e.type === 'in' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const expense = entries.filter(e => e.type === 'out' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const over = categories.filter(cat => { const budget = budgetFor(cat.id); return budget && budget.amount > 0 && budgetSpent(cat.id, currentFinancialCycleKey()) > budget.amount; }).map(cat => cat.name); const status = document.getElementById('profileAnalysisStatus'); status.innerHTML = `<strong>Revisão de ${escapeHTML(formatMonthLabel(month))}</strong><div>Entradas: ${fmt(income)} · Saídas: ${fmt(expense)} · Fluxo: ${fmt(income - expense)}</div><div>${over.length ? `Categorias acima do orçamento: ${escapeHTML(over.join(', '))}.` : 'Nenhuma categoria acima do orçamento.'}</div><small>Resumo informativo; nenhuma alteração automática foi feita.</small>`; logInfo('Análise', 'Revisão mensal guiada', 'Sucesso', 'Resumo mensal apresentado sem alterações automáticas.'); }
   function runWhatIf() {
     const extra = Math.max(0, readMoneyInput(document.getElementById('featureWhatIfExpense')));
     const goal = Math.max(0, readMoneyInput(document.getElementById('featureSavingsGoalAmount')));
@@ -7422,7 +7426,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : `A projeção mensal fica <strong>${fmt(Math.abs(goalGap))}</strong> abaixo da meta de economia.`)
       : 'Defina uma meta de economia mensal para comparar o cenário.';
 
-    const status = document.getElementById('labsProjectionStatus');
+    const status = document.getElementById('profileProjectionStatus');
     if (status) {
       status.innerHTML = `
         <strong>Projeção para ${projectionMonths} ${projectionMonths === 1 ? 'mês' : 'meses'}</strong>
@@ -7461,6 +7465,21 @@ document.addEventListener('DOMContentLoaded', () => {
       if (input) input.value = '';
       if (status) status.textContent = 'Chave removida.';
     });
+    // Autosave para chave OpenRouter (debounce 2s ao sair do campo)
+    let orKeyAutosaveTimer = 0;
+    input?.addEventListener('blur', () => {
+      clearTimeout(orKeyAutosaveTimer);
+      orKeyAutosaveTimer = setTimeout(() => {
+        const raw = String(input?.value || '').trim();
+        if (raw && raw !== '••••••••' && raw.startsWith('sk-or-')) {
+          const saved = window.LivroCaixaAI?.setApiKey(raw);
+          if (saved) {
+            input.value = '••••••••';
+            if (status) status.textContent = 'Chave salva automaticamente.';
+          }
+        }
+      }, 2000);
+    });
   })();
   document.getElementById('btnRunWhatIf')?.addEventListener('click', runWhatIf);
   document.getElementById('btnExportPatrimonyPng')?.addEventListener('click', exportPatrimonyChartPng);
@@ -7497,6 +7516,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('btnClearLocalPin')?.addEventListener('click', () => { removeLocalPin(); const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'PIN removido deste dispositivo.'; logInfo('Segurança', 'Remover PIN local', 'Sucesso', 'Proteção local removida deste dispositivo.'); });
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
+
+  // Autosave para PIN (debounce 1s ao sair do campo)
+  let pinAutosaveTimer = 0;
+  document.getElementById('featurePin')?.addEventListener('blur', () => {
+    clearTimeout(pinAutosaveTimer);
+    pinAutosaveTimer = setTimeout(async () => {
+      const pin = document.getElementById('featurePin')?.value || '';
+      if (pin.length >= 4) {
+        const status = document.getElementById('pinSettingsStatus');
+        try {
+          await saveLocalPin(pin);
+          document.getElementById('featurePin').value = '';
+          if (status) status.textContent = 'PIN salvo automaticamente.';
+        } catch (err) {
+          if (status) status.textContent = err.message;
+        }
+      }
+    }, 1000);
+  });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
   const APP_VERSION_LABEL = 'Livro-Caixa V.20 (opencode)';
@@ -8445,10 +8483,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       await persistProfileSettings();
-      const status = document.getElementById('profileSettingsStatus') || document.getElementById('featureLabStatus');
+      const status = document.getElementById('profileSettingsStatus') || document.getElementById('featureProfileStatus');
       if (status) status.textContent = 'Meses de projeção salvos automaticamente.';
     } catch (err) {
-      const status = document.getElementById('profileSettingsStatus') || document.getElementById('featureLabStatus');
+      const status = document.getElementById('profileSettingsStatus') || document.getElementById('featureProfileStatus');
       if (status) status.textContent = 'Projeção salva localmente; sincronização remota falhou.';
       logSyncError('meses de projeção', err);
     }
@@ -8472,7 +8510,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setFinancialCycleStartDay(inputFinancialCycleDay.value);
       inputFinancialCycleDay.value = getFinancialCycleStartDay();
       persistProfileSettings().catch(err => logSyncError('preferência de ciclo financeiro', err));
-      renderFeatureLab();
+      renderFeatureProfile();
       renderAdvancedDashboard();
       renderDashboardTab();
     });
@@ -8592,7 +8630,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (action === 'receivables') window.switchTab('receivables');
     if (action === 'cards') window.switchTab('cards');
     if (action === 'diagnostico') openDiagnostics();
-    if (action === 'lab') openFeatureLab();
+    if (action === 'lab') openFeatureProfile();
     if (action === 'reports') { window.switchTab('caixa'); setTimeout(() => scrollTo('categorySummary'), 20); }
     if (action === 'pockets') window.switchTab('pockets');
     if (action === 'goals') openGoalsPanel();
@@ -13536,9 +13574,9 @@ document.getElementById('tSalvar').onclick = async () => {
   function beginStructuredImport(rows, source) { if (!rows.length) { alert('Não encontrei linhas estruturadas no arquivo.'); return false; } pendingImport = rows.slice(0, IMPORT_MAX_ROWS); pendingImportSource = source; refreshImportFlags(); renderImportReview(); openModal('panelImport'); return true; }
   document.getElementById('btnImportStructuredFile').onclick = () => document.getElementById('fileStructuredImport').click();
   document.getElementById('fileStructuredImport').onchange = event => { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = () => { try { const rows = applySimpleAutoCategorization(parseStructuredImport(reader.result, file.name)); beginStructuredImport(rows, `Importação ${file.name}`); logInfo('Importação', 'Ler OFX/CSV', 'Sucesso', 'Prévia estruturada criada; nenhum lançamento foi salvo ainda.'); } catch (err) { logSyncError('leitura OFX/CSV', err); alert('Não foi possível interpretar este OFX/CSV.'); } finally { event.target.value = ''; } }; reader.readAsText(file, 'UTF-8'); };
-  document.getElementById('btnExportEncryptedBackup').onclick = async () => { const status = document.getElementById('labsDataStatus'); try { const envelope = await encryptBackupPayload(buildBackupPayload(), document.getElementById('featureBackupPassword').value); downloadJsonFile(envelope, `backup-livro-caixa-criptografado-${todayISO()}.json`); status.textContent = 'Backup criptografado exportado. A senha não é armazenada pelo aplicativo.'; logInfo('Exportação', 'Backup criptografado', 'Sucesso', 'Backup protegido por AES-GCM/PBKDF2 preparado.'); } catch (err) { status.textContent = err.message; logWarn('Exportação', 'Backup criptografado', 'Falha', err.message); } };
+  document.getElementById('btnExportEncryptedBackup').onclick = async () => { const status = document.getElementById('profileDataStatus'); try { const envelope = await encryptBackupPayload(buildBackupPayload(), document.getElementById('featureBackupPassword').value); downloadJsonFile(envelope, `backup-livro-caixa-criptografado-${todayISO()}.json`); status.textContent = 'Backup criptografado exportado. A senha não é armazenada pelo aplicativo.'; logInfo('Exportação', 'Backup criptografado', 'Sucesso', 'Backup protegido por AES-GCM/PBKDF2 preparado.'); } catch (err) { status.textContent = err.message; logWarn('Exportação', 'Backup criptografado', 'Falha', err.message); } };
   document.getElementById('btnImportEncryptedBackup').onclick = () => document.getElementById('fileEncryptedBackup').click();
-  document.getElementById('fileEncryptedBackup').onchange = event => { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = async () => { try { const payload = await decryptBackupPayload(JSON.parse(reader.result), document.getElementById('featureBackupPassword').value); const restored = await restoreValidatedBackup(payload, 'Backup criptografado'); document.getElementById('labsDataStatus').textContent = restored === false ? 'Restauração cancelada.' : 'Backup criptografado restaurado com sucesso.'; } catch (err) { document.getElementById('labsDataStatus').textContent = 'Senha incorreta ou backup criptografado inválido.'; logWarn('Importação', 'Backup criptografado', 'Falha', err.message); } finally { event.target.value = ''; } }; reader.readAsText(file); };
+  document.getElementById('fileEncryptedBackup').onchange = event => { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = async () => { try { const payload = await decryptBackupPayload(JSON.parse(reader.result), document.getElementById('featureBackupPassword').value); const restored = await restoreValidatedBackup(payload, 'Backup criptografado'); document.getElementById('profileDataStatus').textContent = restored === false ? 'Restauração cancelada.' : 'Backup criptografado restaurado com sucesso.'; } catch (err) { document.getElementById('profileDataStatus').textContent = 'Senha incorreta ou backup criptografado inválido.'; logWarn('Importação', 'Backup criptografado', 'Falha', err.message); } finally { event.target.value = ''; } }; reader.readAsText(file); };
 
   document.getElementById('btnImportBackupTrigger').onclick = () => document.getElementById('fileBackupImport').click();
   let restoringBackup = false;
@@ -14118,7 +14156,7 @@ document.getElementById('tSalvar').onclick = async () => {
     if (remindersAdvance) remindersAdvance.value = featureSettings.reminderAdvanceDays;
     const cycleInput = document.getElementById('inputFinancialCycleDay');
     if (cycleInput) cycleInput.value = getFinancialCycleStartDay();
-    renderFeatureLab();
+    renderFeatureProfile();
   }
 
   function setAuthError(msg) {
