@@ -7810,7 +7810,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const spent = budgetSpent(budget.categoryId);
 
       return {
+        categoryId: budget.categoryId,
         category: categoryName,
+        amount: Number(budget.amount || 0),
         limit: Number(budget.amount || 0),
         spent: Number(spent.toFixed(2))
       };
@@ -8262,7 +8264,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : Promise.resolve(null);
 
     const snapshot = buildGeminiFinancialSnapshot();
-    aiChat.session.openFor(aiChatAccountId(), snapshot);
+    const abertura = aiChat.session.openFor(aiChatAccountId(), snapshot);
 
     const contract = aiChatContract();
     const input = document.getElementById('aiChatInput');
@@ -8278,6 +8280,11 @@ document.addEventListener('DOMContentLoaded', () => {
     aiChatNotice(contract ? '' : AI_CHAT_ERROR_MESSAGES.contract_unavailable, contract ? null : 'error');
     aiChatSetBusy(aiChat.session.isBusy());
     aiChatRender();
+    if (abertura && typeof abertura.then === 'function') {
+      abertura.then(() => {
+        if (aiChat.session.isOpen()) aiChatRender();
+      }).catch(() => {});
+    }
     /* Foco em caixa overflow:hidden deixa overlay/painel deslocados de uma
        abertura anterior; limpa a página/camadas, mede contra a visual
        viewport e preserva a âncora do fim da conversa do aiChatRender(). */

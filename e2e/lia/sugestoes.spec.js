@@ -119,7 +119,7 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
       await expect(page.locator('#viewProfile')).toHaveClass(/active/);
     }
 
-    const input = page.locator('#featureBudgetRows input[data-budget-category*="alimentacao"]').first();
+    const input = app.budgetInput(page, 'Alimentação');
     await input.fill(fmtBR(gasto * 1.11));
     await input.blur();
     await expect(page.locator('#profileSettingsStatus')).toHaveText(/Salvo/, { timeout: 5000 });

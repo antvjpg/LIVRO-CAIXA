@@ -95,6 +95,12 @@ function parseCurrency(text) {
   return neg ? -n : n;
 }
 
+function budgetInput(page, categoryName) {
+  return page
+    .locator('#featureBudgetRows .feature-budget-row', { hasText: categoryName })
+    .locator('input[data-budget-category]');
+}
+
 /* Patrimônio total exibido na faixa de saldos (.balance-card.total). */
 async function readPatrimonio(page) {
   const text = await page.textContent('#balanceStrip .balance-card.total .amount');
@@ -256,4 +262,5 @@ module.exports = {
   openNewEntry,
   addEntry,
   findLedgerRow,
+  budgetInput,
 };

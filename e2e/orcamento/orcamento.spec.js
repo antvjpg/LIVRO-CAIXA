@@ -52,7 +52,7 @@ test.describe('V.20-02 Orçamento — UX finalizada', () => {
     const countBefore = await rowsBefore.count();
 
     const testCategory = 'Alimentação';
-    const input = page.locator(`#featureBudgetRows input[data-budget-category*="alimentacao"], #featureBudgetRows input[data-budget-category*="c_alimentacao"]`).first();
+    const input = app.budgetInput(page, testCategory);
     await input.fill('1.500,00');
     await input.blur();
 
@@ -63,7 +63,7 @@ test.describe('V.20-02 Orçamento — UX finalizada', () => {
     await app.waitForDataReady(page);
     await openProfileBudget(page);
 
-    const inputAfter = page.locator(`#featureBudgetRows input[data-budget-category*="alimentacao"], #featureBudgetRows input[data-budget-category*="c_alimentacao"]`).first();
+    const inputAfter = app.budgetInput(page, testCategory);
     await expect(inputAfter).toHaveValue(/1\.500/);
   });
 
@@ -79,7 +79,7 @@ test.describe('V.20-02 Orçamento — UX finalizada', () => {
 
     await openProfileBudget(page);
 
-    const input = page.locator('#featureBudgetRows input[data-budget-category*="alimentacao"], #featureBudgetRows input[data-budget-category*="c_alimentacao"]').first();
+    const input = app.budgetInput(page, 'Alimentação');
     await input.fill('2.000,00');
     await input.blur();
     await expect(page.locator('#profileSettingsStatus')).toHaveText(/Salvo/, { timeout: 5000 });
@@ -102,7 +102,7 @@ test.describe('V.20-02 Orçamento — UX finalizada', () => {
 
     await openProfileBudget(page);
 
-    const input = page.locator('#featureBudgetRows input[data-budget-category*="transporte"], #featureBudgetRows input[data-budget-category*="c_transporte"]').first();
+    const input = app.budgetInput(page, 'Transporte');
     await input.fill('');
     await input.blur();
     await expect(page.locator('#profileSettingsStatus')).toHaveText(/Salvo/, { timeout: 5000 });
@@ -240,7 +240,7 @@ test.describe('V.20-02 Orçamento — UX finalizada', () => {
     await app.waitForDataReady(page);
 
     await openProfileBudget(page);
-    const input1 = page.locator('#featureBudgetRows input[data-budget-category*="alimentacao"]').first();
+    const input1 = app.budgetInput(page, 'Alimentação');
     await input1.fill('1.000,00');
     await input1.blur();
     await expect(page.locator('#profileSettingsStatus')).toHaveText(/Salvo/, { timeout: 5000 });
@@ -254,7 +254,7 @@ test.describe('V.20-02 Orçamento — UX finalizada', () => {
     await app.waitForDataReady(page);
 
     await openProfileBudget(page);
-    const input2 = page.locator('#featureBudgetRows input[data-budget-category*="alimentacao"]').first();
+    const input2 = app.budgetInput(page, 'Alimentação');
     await expect(input2).toHaveValue('');
   });
 });
