@@ -103,6 +103,11 @@ test.describe('V.20-02 Orçamento — UX finalizada', () => {
     await openProfileBudget(page);
 
     const input = app.budgetInput(page, 'Transporte');
+    await input.fill('1.200,00');
+    await input.blur();
+    await expect(page.locator('#profileSettingsStatus')).toHaveText(/Salvo/, { timeout: 5000 });
+    await expect(page.locator('#profileSettingsStatus')).toHaveText('', { timeout: 5000 });
+
     await input.fill('');
     await input.blur();
     await expect(page.locator('#profileSettingsStatus')).toHaveText(/Salvo/, { timeout: 5000 });

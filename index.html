@@ -3420,6 +3420,7 @@ document.addEventListener('DOMContentLoaded', () => {
       populateFilterControls(true);
       render();
       renderBills();
+      if (currentTab === 'profile') renderProfile();
       firstLoadDone = true;
       renderBalances();
       refreshFinancialIndicators();
