@@ -194,6 +194,8 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
     if (sessao.status !== 'ok') { test.skip(true, `BLOCKED: ${sessao.error}`); }
     await app.waitForDataReady(page);
 
+    await page.route('**/ai', route => route.fulfill({ status: 429, body: JSON.stringify({ error: 'rate_limited' }) }));
+
     await openLiaChat(page);
     const suggestions = await getSuggestions(page);
     await expect(suggestions).toHaveCount(3);
