@@ -476,7 +476,7 @@ test('workflow: evidências nunca incluem e2e/.state (estado de sessão/identida
 });
 
 test('workflow: nenhuma falha é mascarada e o runner fica pinado', () => {
-  for (const arquivo of ['code-e2e.yml', 'worker.yml']) {
+  for (const arquivo of ['code-e2e.yml', 'worker.yml', 'eol-check.yml']) {
     const wf = fs.readFileSync(path.join(ROOT, '.github', 'workflows', arquivo), 'utf8');
     assert.ok(!wf.includes('|| true'), `${arquivo}: nenhum passo pode anular erro com "|| true"`);
     assert.ok(!wf.includes('continue-on-error'), `${arquivo}: nenhum passo pode continuar após falha`);
@@ -486,16 +486,51 @@ test('workflow: nenhuma falha é mascarada e o runner fica pinado', () => {
 });
 
 test('workflow: versões das actions rodam em runtime Node 24', () => {
-  /* node20 está deprecado no GitHub e é forçado a rodar em node24:
-     checkout@v5 e setup-node@v5 são os primeiros majors node24 (upload-artifact@v6) */
+  /* node20 está deprecado no GitHub e é forçado a rodar em node24.
+     As actions são pinadas por SHA (supply chain) e o comentário depois do
+     SHA registra a tag exata: checkout v5 e setup-node v5 são os primeiros
+     majors node24 (upload-artifact v6). */
+  const pinada = (wf, acao, major, arquivo) => {
+    const re = new RegExp(`${acao.replace('/', '\\/')}@[0-9a-f]{40} # v${major}\\.\\d+\\.\\d+`);
+    assert.match(wf, re, `${arquivo}: ${acao} precisa estar pinada por SHA na major node24 (>=v${major})`);
+  };
   for (const arquivo of ['code-e2e.yml', 'worker.yml']) {
     const wf = fs.readFileSync(path.join(ROOT, '.github', 'workflows', arquivo), 'utf8');
-    assert.ok(wf.includes('actions/checkout@v5'), `${arquivo}: checkout precisa ser major node24 (>=v5)`);
-    assert.ok(wf.includes('actions/setup-node@v5'), `${arquivo}: setup-node precisa ser major node24 (>=v5)`);
+    pinada(wf, 'actions/checkout', 5, arquivo);
+    pinada(wf, 'actions/setup-node', 5, arquivo);
     assert.ok(wf.includes('node-version: 24'), `${arquivo}: CI deve usar a mesma faixa do dev local (Node 24)`);
   }
   const e2e = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'code-e2e.yml'), 'utf8');
-  assert.ok(e2e.includes('actions/upload-artifact@v6'), 'upload-artifact precisa ser major node24 (>=v6)');
+  pinada(e2e, 'actions/upload-artifact', 6, 'code-e2e.yml');
+});
+
+test('workflow: toda action é pinada por SHA com tag documentada (supply chain)', () => {
+  /* Nenhuma `uses:` pode apontar para tag móvel (@v5): tag pode ser reescrita
+     depois do merge. Exige SHA de commit + comentário com a tag exata. */
+  const dir = path.join(ROOT, '.github', 'workflows');
+  const arquivos = fs.readdirSync(dir).filter((a) => a.endsWith('.yml') || a.endsWith('.yaml'));
+  assert.ok(arquivos.length >= 3, `esperado ao menos 3 workflows, encontrado ${arquivos.length}`);
+  const rePin = /^(- )?uses:\s*[A-Za-z0-9._/-]+@[0-9a-f]{40} # v\d+\.\d+\.\d+$/;
+  for (const arquivo of arquivos) {
+    const wf = fs.readFileSync(path.join(dir, arquivo), 'utf8');
+    const uses = wf.split('\n').filter((linha) => linha.includes('uses:'));
+    assert.ok(uses.length > 0, `${arquivo}: deveria declarar ao menos uma action`);
+    for (const linha of uses) {
+      assert.match(linha.trim(), rePin, `${arquivo}: action sem pin por SHA/tag → ${linha.trim()}`);
+    }
+  }
+});
+
+test('worker: smoke pós-deploy exige GET /health com falha explícita', () => {
+  const wf = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'worker.yml'), 'utf8');
+  const idx = wf.indexOf('name: Smoke pós-deploy');
+  assert.ok(idx >= 0, 'passo de smoke pós-deploy ausente');
+  assert.ok(wf.indexOf('Deploy real do Worker') < idx, 'smoke precisa rodar depois do deploy');
+  const bloco = wf.slice(idx);
+  assert.ok(bloco.includes('"$base/health"'), 'smoke deve chamar GET /health');
+  assert.ok(bloco.includes('.ok == true'), 'smoke deve validar ok:true (status 200 sozinho não basta)');
+  assert.ok(bloco.includes('exit 1'), 'smoke deve falhar explicitamente quando o health não responde');
+  assert.ok(!bloco.includes('|| true'), 'smoke não pode mascarar falha');
 });
 
 test('relatório: seção QA ENVIRONMENT documenta modo, limpeza e exclusão', () => {

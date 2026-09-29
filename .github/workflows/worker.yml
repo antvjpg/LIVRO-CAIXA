@@ -20,9 +20,9 @@ jobs:
   test-and-dry-run:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 24
           cache: npm
@@ -44,16 +44,81 @@ jobs:
     environment: production
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 24
           cache: npm
 
       - name: Deploy real do Worker
-        run: npx --yes wrangler@4 deploy
+        # pipefail obrigatório: sem ele, `| tee` mascararia falha do wrangler.
+        run: |
+          set -o pipefail
+          npx --yes wrangler@4 deploy 2>&1 | tee "$RUNNER_TEMP/deploy.log"
         working-directory: worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # Smoke obrigatório: deploy sem resposta de /health é falha, nunca sucesso.
+      - name: Smoke pós-deploy (GET /health)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SMOKE_BASE_URL: ${{ vars.SMOKE_BASE_URL }}
+        run: |
+          set -euo pipefail
+          echo "## Smoke pós-deploy" >> "$GITHUB_STEP_SUMMARY"
+
+          nome=$(sed -nE 's/^name[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/p' worker/wrangler.toml)
+          if [ -z "$nome" ]; then
+            echo "::error::Nome do Worker não encontrado em worker/wrangler.toml."
+            exit 1
+          fi
+
+          # 1) variável SMOKE_BASE_URL (opcional)  2) URL do log do deploy  3) API Cloudflare
+          base="${SMOKE_BASE_URL:-}"
+          if [ -z "$base" ] && [ -f "$RUNNER_TEMP/deploy.log" ]; then
+            if base=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' "$RUNNER_TEMP/deploy.log" | sed -n '1p'); then :; else base=""; fi
+          fi
+          if [ -z "$base" ]; then
+            if resp=$(curl -fsS --max-time 20 -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/subdomain"); then
+              sub=$(jq -r '.result.subdomain // empty' <<< "$resp")
+              if [ -n "$sub" ]; then
+                base="https://${nome}.${sub}.workers.dev"
+              fi
+            fi
+          fi
+          if [ -z "$base" ]; then
+            echo "::error::URL do Worker não determinada — defina a variável SMOKE_BASE_URL no repositório."
+            echo "- ❌ URL do Worker não determinada" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          corpo=""
+          tentativa=1
+          max_tentativas=12
+          while [ "$tentativa" -le "$max_tentativas" ]; do
+            if corpo=$(curl -fsS --max-time 15 "$base/health"); then
+              break
+            fi
+            echo "GET /health indisponível (tentativa $tentativa/$max_tentativas); nova tentativa em 5s"
+            corpo=""
+            tentativa=$((tentativa + 1))
+            sleep 5
+          done
+
+          if [ -z "$corpo" ]; then
+            echo "::error::Smoke falhou: $base/health sem resposta após $max_tentativas tentativas."
+            echo "- ❌ \`$base/health\` sem resposta" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if ! jq -e '.ok == true' <<< "$corpo" > /dev/null; then
+            echo "::error::Smoke falhou: resposta sem ok:true → $corpo"
+            echo "- ❌ resposta inesperada: \`$corpo\`" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "Smoke ok: $base/health → $corpo"
+          echo "- ✅ \`$base/health\` → \`$corpo\`" >> "$GITHUB_STEP_SUMMARY"

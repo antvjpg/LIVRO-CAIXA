@@ -22,12 +22,12 @@ jobs:
       CODE_BASE_URL: http://127.0.0.1:8000
       CI: "true"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
       # Node 22+: `node --test` aceita padrões glob (20 não expande o glob e
       # falhava em "Could not find 'e2e/oracles/*.test.mjs'" no CI).
       # Node 24 = LTS e é a versão usada no desenvolvimento local.
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 24
           cache: npm
@@ -83,7 +83,7 @@ jobs:
       # credenciais — ver testes em e2e/security/security.test.mjs.
       - name: Evidências
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: code-e2e-evidencias
           path: |

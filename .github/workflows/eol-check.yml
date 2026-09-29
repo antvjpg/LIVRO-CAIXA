@@ -1,0 +1,25 @@
+name: eol-check
+
+# Avisa (Annotations + Step Summary) quando o runner/toolchain se aproximam de
+# fim de vida, e quando uma Action pinada teve a tag reescrita/removida ou
+# ganhou nova major (supply chain / deprecation).
+# Execução: mensal e sob demanda (workflow_dispatch).
+
+on:
+  schedule:
+    - cron: "17 8 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  eol:
+    name: EOL do runner, toolchain e Actions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+      - name: Verificar EOL e supply chain
+        run: bash .github/scripts/eol-check.sh
