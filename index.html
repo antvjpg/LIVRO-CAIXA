@@ -8739,21 +8739,34 @@ document.addEventListener('DOMContentLoaded', () => {
       render();
     }
   };
-  window.deletePocket = function(id) {
+window.deletePocket = function(id) {
     if (confirm('Deseja excluir esta caixinha e todo o histórico de movimentações dela?')) {
+      const yieldIdsToDelete = yieldsLog
+        .filter(y => y.targetType === 'pocket' && y.targetId === id)
+        .map(y => y.id);
+
       pockets = pockets.filter(p => p.id !== id);
       const affectedGoals = goals.filter(goal => goal.caixinhaId === id);
-    goals = goals.map(goal =>
-      goal.caixinhaId === id
-        ? { ...goal, caixinhaId: null, caixinhaDetached: true, updatedAt: new Date().toISOString() }
-        : goal
-    );
+      goals = goals.map(goal =>
+        goal.caixinhaId === id
+          ? { ...goal, caixinhaId: null, caixinhaDetached: true, updatedAt: new Date().toISOString() }
+          : goal
+      );
 
-    yieldsLog = yieldsLog.filter(y => !(y.targetType === 'pocket' && y.targetId === id));
+      yieldsLog = yieldsLog.filter(y => !(y.targetType === 'pocket' && y.targetId === id));
 
-    if (affectedGoals.length) {
-      alert(`${affectedGoals.length} Meta(s) mantida(s). O vínculo com a Caixinha excluída foi removido; nenhum dinheiro foi transferido.`);
-    }
+      if (yieldIdsToDelete.length > 0) {
+        const batch = db.batch();
+        const userDocRef = db.collection('livrocaixa').doc(currentUser.uid);
+        yieldIdsToDelete.forEach(yid => {
+          batch.delete(userDocRef.collection('yieldsLog').doc(yid));
+        });
+        batch.commit().catch(err => logSyncError('exclusão de movimentações da caixinha', err));
+      }
+
+      if (affectedGoals.length) {
+        alert(`${affectedGoals.length} Meta(s) mantida(s). O vínculo com a Caixinha excluída foi removido; nenhum dinheiro foi transferido.`);
+      }
       persistAll().then(() => logInfo('Caixinhas','Excluir caixinha','Sucesso','Caixinha e seu histórico foram removidos.')).catch(err => logSyncError('exclusão de caixinha', err));
       render();
     }
