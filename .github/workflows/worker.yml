@@ -26,6 +26,12 @@ jobs:
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            worker/package-lock.json
+
+      - name: Dependências de teste do Worker (Miniflare)
+        run: npm ci --prefix worker
 
       - name: Testes do Worker
         run: node --test worker/test/*.test.mjs

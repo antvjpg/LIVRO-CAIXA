@@ -476,7 +476,7 @@ test('workflow: evidências nunca incluem e2e/.state (estado de sessão/identida
 });
 
 test('workflow: nenhuma falha é mascarada e o runner fica pinado', () => {
-  for (const arquivo of ['code-e2e.yml', 'worker.yml', 'eol-check.yml']) {
+  for (const arquivo of ['code-e2e.yml', 'worker.yml', 'eol-check.yml', 'model-failed-alert.yml']) {
     const wf = fs.readFileSync(path.join(ROOT, '.github', 'workflows', arquivo), 'utf8');
     assert.ok(!wf.includes('|| true'), `${arquivo}: nenhum passo pode anular erro com "|| true"`);
     assert.ok(!wf.includes('continue-on-error'), `${arquivo}: nenhum passo pode continuar após falha`);
@@ -531,6 +531,27 @@ test('worker: smoke pós-deploy exige GET /health com falha explícita', () => {
   assert.ok(bloco.includes('.ok == true'), 'smoke deve validar ok:true (status 200 sozinho não basta)');
   assert.ok(bloco.includes('exit 1'), 'smoke deve falhar explicitamente quando o health não responde');
   assert.ok(!bloco.includes('|| true'), 'smoke não pode mascarar falha');
+});
+
+test('alerta model_failed: permissão mínima, token do repositório e script que falha alto', () => {
+  const wf = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'model-failed-alert.yml'), 'utf8');
+  assert.ok(
+    wf.includes('permissions:\n  contents: read\n  issues: write'),
+    'workflow deve declarar apenas contents: read + issues: write'
+  );
+  assert.ok(wf.includes('secrets.CLOUDFLARE_API_TOKEN'), 'workflow deve repassar o token da Cloudflare');
+  assert.ok(wf.includes('github.token'), 'autenticação do gh deve usar github.token (novo segredo)');
+  assert.ok(!wf.includes('pull_request_target'), 'pull_request_target é proibido');
+  assert.ok(wf.includes('timeout-minutes:'), 'consulta à API precisa de timeout');
+  assert.ok(wf.includes('workflow_dispatch'), 'gatilho manual é obrigatório para validação/rollback');
+
+  const sh = fs.readFileSync(path.join(ROOT, '.github', 'scripts', 'model-failed-alert.sh'), 'utf8');
+  assert.ok(sh.includes('set -euo pipefail'), 'script deve abortar no primeiro erro (falha nunca vira sucesso)');
+  assert.ok(!sh.includes('set -x'), 'script não pode transpor variáveis (token) no log');
+  assert.ok(!sh.includes('curl -v'), 'curl não pode logar headers com o token');
+  assert.ok(!sh.includes('|| true'), 'script não pode mascarar falha');
+  assert.ok(sh.includes('CLOUDFLARE_API_TOKEN'), 'script usa o token via Authorization header');
+  assert.ok(sh.includes('::error::'), 'falha da API deve virar annotation de erro visível na run');
 });
 
 test('relatório: seção QA ENVIRONMENT documenta modo, limpeza e exclusão', () => {

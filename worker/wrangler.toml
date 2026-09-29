@@ -3,6 +3,9 @@ main = "src/index.js"
 compatibility_date = "2026-09-24"
 workers_dev = true
 
+[observability]
+enabled = true
+
 # A chave da API NÃO fica aqui. Definida com:
 #   npx wrangler secret put OPENROUTER_API_KEY
 

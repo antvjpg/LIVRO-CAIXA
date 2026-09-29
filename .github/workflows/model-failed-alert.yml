@@ -1,0 +1,32 @@
+name: model-failed-alert
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      janela_minutos:
+        description: "Janela de busca em minutos (validação: 10080 = 7 dias)"
+        required: false
+        default: "75"
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  alerta:
+    name: Alerta de model_failed (Workers Logs)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+      - name: Consultar Workers Logs e abrir/comentar issue
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          JANELA_MINUTOS: ${{ inputs.janela_minutos || '75' }}
+        run: bash .github/scripts/model-failed-alert.sh
