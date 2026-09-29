@@ -164,18 +164,75 @@ async function ensureUiSession(page, creds) {
   return r;
 }
 
-/* Retorna { status: 'ok', how } ou { status: 'blocked', error, hint }. */
-async function signInOrCreate(page, creds) {
+/* Sessão de conta SECUNDÁRIA (testes de isolamento por conta): cria a conta
+   se preciso pelo MESMO fluxo real da UI, mas NUNCA altera a identidade
+   principal da run — o e-mail vai para identity.extraAccounts e o cleanup
+   de teardown reseta o Firestore e exclui a conta Auth junto com as demais.
+   Mesma proteção de senha da ensureUiSession: trace pausado no login/cadastro
+   (a senha nunca vira artefato) e limpeza do campo imediatamente depois. */
+async function ensureSecondaryAccount(page, creds) {
+  if (!creds || !creds.email) {
+    return { status: 'blocked', error: 'credenciais da conta secundária indisponíveis' };
+  }
+  await app.openApp(page);
+  if (await app.isLoggedIn(page)) {
+    const sess = await readSessionIdentity(page, creds.email);
+    if (sess) {
+      /* conta já existe e está ativa — registra para o teardown excluí-la */
+      try {
+        identity.addExtraAccount(creds.email);
+      } catch {
+        /* metadado nunca derruba a sessão */
+      }
+      return { status: 'ok', how: 'sessao-ja-ativa', uid: sess.uid };
+    }
+    /* sessão pertence a OUTRA conta — sai pela UI antes de entrar na secundária */
+    await logout(page);
+  }
+
+  const ctx = page.context();
+  await ctx.tracing.stop().catch(() => {});
+  let r;
+  try {
+    r = await signInOrCreate(page, creds, { track: false });
+  } finally {
+    await ctx.tracing
+      .start({ snapshots: true, screenshots: true, sources: true })
+      .catch(() => {});
+  }
+  await page
+    .evaluate(() => {
+      const campo = document.getElementById('authPass');
+      if (campo) campo.value = '';
+    })
+    .catch(() => {});
+  if (r.status === 'ok') {
+    try {
+      identity.addExtraAccount(creds.email);
+    } catch {
+      /* registro de metadado nunca derruba a sessão */
+    }
+  }
+  return r;
+}
+
+/* Retorna { status: 'ok', how } ou { status: 'blocked', error, hint }.
+   opts.track === false NÃO grava nada na identidade principal da run —
+   usado por contas secundárias de teste (vão para identity.extraAccounts). */
+async function signInOrCreate(page, creds, opts = {}) {
+  const track = opts.track !== false;
   /* fecha cada caminho registrando propriedade/uid na identidade da run */
   const finish = async (result) => {
-    recordOwnership(result, creds);
+    if (track) recordOwnership(result, creds);
     if (result.status === 'ok') {
       const sess = await readSessionIdentity(page, creds.email);
       if (sess) {
-        try {
-          identity.patch({ uid: sess.uid });
-        } catch {
-          /* metadado nunca derruba o fluxo */
+        if (track) {
+          try {
+            identity.patch({ uid: sess.uid });
+          } catch {
+            /* metadado nunca derruba o fluxo */
+          }
         }
         result.uid = sess.uid;
       }
@@ -265,6 +322,7 @@ module.exports = {
   loginOnly,
   logout,
   ensureUiSession,
+  ensureSecondaryAccount,
   sessionIdentity: readSessionIdentity,
   reset,
   MSG,

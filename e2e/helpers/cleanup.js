@@ -54,6 +54,9 @@ async function runCleanup({ log = () => {} } = {}) {
     summary.mode = meta?.mode || creds.source;
     summary.email = summary.email || identity.maskEmail(creds.email);
 
+    /* --- camada 0: contas secundárias criadas por testes da run --- */
+    await cleanupExtraAccounts(meta, creds, summary, log);
+
     /* --- autenticação (signIn REST; senha só em memória) --- */
     let session;
     try {
@@ -112,6 +115,38 @@ async function runCleanup({ log = () => {} } = {}) {
   }
 
   return finish(summary, log);
+}
+
+/* Contas extras (testes de isolamento por conta): mesma senha da run, em
+   memória. Cada uma teve o documento apagado no Firestore e a conta Auth
+   excluída aqui. Falha vira aviso — nunca esconde o resultado da conta
+   principal nem derruba o teardown. */
+async function cleanupExtraAccounts(meta, creds, summary, log) {
+  const extras = meta && Array.isArray(meta.extraAccounts) ? meta.extraAccounts : [];
+  if (!extras.length) return;
+  let excluidas = 0;
+  for (const acc of extras) {
+    const email = acc && acc.email;
+    if (!email) continue;
+    const rotulo = identity.maskEmail(email);
+    try {
+      const session = await rest.signIn(email, creds.password);
+      try {
+        const r = await rest.resetWithSession(session);
+        summary.deletedDocs += r.deleted || 0;
+      } catch (err) {
+        summary.severity = summary.severity || 'CLEANUP_WARNING';
+        summary.notes.push(`Firestore da conta extra ${rotulo}: ${err.message}`);
+      }
+      await rest.deleteOwnAccount(session.idToken);
+      excluidas++;
+      log(`[C.O.D.E.] conta extra excluída: ${rotulo}`);
+    } catch (err) {
+      summary.severity = summary.severity || 'CLEANUP_WARNING';
+      summary.notes.push(`conta extra ${rotulo} não excluída: ${err.reason || err.message}`);
+    }
+  }
+  if (excluidas) summary.extraAccountsDeleted = excluidas;
 }
 
 function finish(summary, log) {

@@ -55,12 +55,19 @@ async function waitForDataReady(page, timeout = 60_000) {
   await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
 }
 
-async function openTab(page, tab /* 'dashboard' | 'caixa' | ... */) {
+async function openTab(page, tab /* 'dashboard' | 'caixa' | ... | 'profile' */) {
   const id = { dashboard: 'tabBtnDashboard', caixa: 'tabBtnCaixa', pockets: 'tabBtnPockets',
     cards: 'tabBtnCards', invest: 'tabBtnInvest', goals: 'tabBtnGoals', dash: 'tabBtnDash',
     receivables: 'tabBtnReceivables' }[tab];
-  if (!id) throw new Error(`Aba desconhecida: ${tab}`);
-  await page.click(`#${id}`);
+  if (tab === 'profile') {
+    /* Perfil não tem botão #tabBtnProfile (só existe na navegação mobile):
+       a rota pública é switchTab('profile'), que também é o caminho do
+       desktop e já chama renderProfile() → renderFeatureProfile(). */
+    await page.evaluate(() => window.switchTab('profile'));
+  } else {
+    if (!id) throw new Error(`Aba desconhecida: ${tab}`);
+    await page.click(`#${id}`);
+  }
   await page.waitForFunction(
     (t) =>
       document

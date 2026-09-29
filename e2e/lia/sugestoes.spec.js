@@ -7,6 +7,7 @@
 'use strict';
 
 const { test, expect } = require('@playwright/test');
+const assert = require('node:assert');
 const app = require('../helpers/app');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials } = require('../helpers/env');
@@ -24,7 +25,7 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
     await expect(page.locator('#viewDashboard')).toHaveClass(/active/);
     await page.waitForTimeout(1000);
     await page.locator('#fabAdd').click();
-    await expect(page.locator('#aiChatModal')).toHaveClass(/open/, { timeout: 5000 });
+    await expect(page.locator('#panelAiChat')).toHaveClass(/open/, { timeout: 5000 });
   }
 
   async function getSuggestions(page) {
@@ -60,7 +61,7 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
     const watch = watchPage(page);
     watchAtual = watch;
 
-    const sessao = await qa.ensureUiSession(page, { ...creds, email: `v2002-empty-${Date.now()}@test.local` });
+    const sessao = await qa.ensureSecondaryAccount(page, { ...creds, email: `v2002-empty-${Date.now()}@test.local` });
     if (sessao.status !== 'ok') { test.skip(true, `BLOCKED: ${sessao.error}`); }
     await app.waitForDataReady(page);
 
@@ -86,10 +87,40 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
     if (sessao.status !== 'ok') { test.skip(true, `BLOCKED: ${sessao.error}`); }
     await app.waitForDataReady(page);
 
+    /* O sinal "próximo do limite" exige gasto REAL ≥ 80% do limite
+       (analyzeFinancialContext em ai-chat-contract.js). Sem lançamento na
+       categoria o pct é 0 e o sinal nunca dispara — por isso o teste cria
+       a própria massa (gasto + limite ~11% acima do gasto), o que mantém
+       o pct na faixa 80–99% também em retry. */
+    const fmtBR = (v) => {
+      const [inteiro, decimal] = v.toFixed(2).split('.');
+      return `${inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.')},${decimal}`;
+    };
+
     await app.openTab(page, 'profile');
     await expect(page.locator('#viewProfile')).toHaveClass(/active/);
+    const linhaAlimentacao = page.locator('#featureBudgetRows .feature-budget-row', { hasText: 'Alimentação' });
+    await expect(linhaAlimentacao).toBeVisible({ timeout: 10000 });
+    let gasto = app.parseCurrency(await linhaAlimentacao.locator('span').first().textContent());
+    if (!(gasto > 0)) {
+      /* FAB só abre o formulário de lançamento fora da Visão Geral */
+      await app.openTab(page, 'caixa');
+      await app.ensureBankExists(page, 'Banco C.O.D.E.', 1000);
+      await app.addEntry(page, {
+        type: 'out',
+        desc: 'Mercado do mês (C.O.D.E.)',
+        amount: 900,
+        bank: 'Banco C.O.D.E.',
+        category: 'Alimentação',
+      });
+      await app.waitForDataReady(page);
+      gasto = 900;
+      await app.openTab(page, 'profile');
+      await expect(page.locator('#viewProfile')).toHaveClass(/active/);
+    }
+
     const input = page.locator('#featureBudgetRows input[data-budget-category*="alimentacao"]').first();
-    await input.fill('1.000,00');
+    await input.fill(fmtBR(gasto * 1.11));
     await input.blur();
     await expect(page.locator('#profileSettingsStatus')).toHaveText(/Salvo/, { timeout: 5000 });
 
@@ -194,8 +225,8 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
       texts1.push(await suggestions1.nth(i).textContent());
     }
 
-    await page.locator('#aiChatModal .modal-close, #aiChatModal [data-close]').click();
-    await expect(page.locator('#aiChatModal')).not.toHaveClass(/open/, { timeout: 3000 });
+    await page.locator('#panelAiChat .modal-close, #panelAiChat [data-close]').click();
+    await expect(page.locator('#panelAiChat')).not.toHaveClass(/open/, { timeout: 3000 });
 
     await openLiaChat(page);
     const suggestions2 = await getSuggestions(page);
@@ -218,14 +249,14 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
     await app.waitForDataReady(page);
 
     await openLiaChat(page);
-    await page.locator('#aiChatModal .modal-close, #aiChatModal [data-close]').click();
-    await expect(page.locator('#aiChatModal')).not.toHaveClass(/open/, { timeout: 3000 });
+    await page.locator('#panelAiChat .modal-close, #panelAiChat [data-close]').click();
+    await expect(page.locator('#panelAiChat')).not.toHaveClass(/open/, { timeout: 3000 });
 
     await page.evaluate(() => { if (window.firebase?.auth) return window.firebase.auth().signOut(); });
     await page.waitForTimeout(1000);
 
     const creds2 = { ...creds, email: `v2002-swap-${Date.now()}@test.local` };
-    const sessao2 = await qa.ensureUiSession(page, creds2);
+    const sessao2 = await qa.ensureSecondaryAccount(page, creds2);
     if (sessao2.status !== 'ok') { test.skip(true, `BLOCKED: ${sessao2.error}`); }
     await app.waitForDataReady(page);
 
@@ -251,7 +282,7 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
       texts1.push(await suggestions1.nth(i).textContent());
     }
 
-    await page.locator('#aiChatModal .modal-close, #aiChatModal [data-close]').click();
+    await page.locator('#panelAiChat .modal-close, #panelAiChat [data-close]').click();
     await page.evaluate(() => { if (window.firebase?.auth) return window.firebase.auth().signOut(); });
     await page.waitForTimeout(1000);
 
@@ -286,7 +317,7 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
     await page.route('**/ai', route => route.abort('failed'));
     await page.route('**/quota', route => route.abort('failed'));
 
-    await page.locator('#aiChatModal .modal-close, #aiChatModal [data-close]').click();
+    await page.locator('#panelAiChat .modal-close, #panelAiChat [data-close]').click();
     await openLiaChat(page);
     
     const suggestions2 = await getSuggestions(page);

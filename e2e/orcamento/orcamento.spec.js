@@ -4,6 +4,7 @@
 'use strict';
 
 const { test, expect } = require('@playwright/test');
+const assert = require('node:assert');
 const app = require('../helpers/app');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials } = require('../helpers/env');
@@ -248,7 +249,7 @@ test.describe('V.20-02 Orçamento — UX finalizada', () => {
     await page.waitForTimeout(1000);
 
     const creds2 = { ...creds, email: creds.email.replace('@', '+2@') };
-    const sessao2 = await qa.ensureUiSession(page, creds2);
+    const sessao2 = await qa.ensureSecondaryAccount(page, creds2);
     if (sessao2.status !== 'ok') { test.skip(true, `BLOCKED: ${sessao2.error}`); }
     await app.waitForDataReady(page);
 

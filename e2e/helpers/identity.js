@@ -87,6 +87,19 @@ function patch(partial) {
   return save(next);
 }
 
+/* Conta secundária criada por teste desta run (só o e-mail — a senha é a da
+   run e nunca vai ao disco). Nunca sobrescreve a identidade principal:
+   a lista extraAccounts é lida pelo cleanup para resetar o Firestore e
+   excluir cada conta extra no teardown. */
+function addExtraAccount(email) {
+  if (!email) return load();
+  const current = patch({}); /* cria base mínima se ainda não houver identidade */
+  const list = Array.isArray(current.extraAccounts) ? current.extraAccounts : [];
+  if (list.some((a) => a && a.email === email)) return current;
+  list.push({ email, createdByCode: true, createdAt: new Date().toISOString() });
+  return save({ ...current, extraAccounts: list, updatedAt: new Date().toISOString() });
+}
+
 function clear() {
   try {
     if (fs.existsSync(IDENTITY_PATH)) fs.unlinkSync(IDENTITY_PATH);
@@ -192,6 +205,7 @@ module.exports = {
   load,
   save,
   patch,
+  addExtraAccount,
   clear,
   writeSummary,
   readSummary,
