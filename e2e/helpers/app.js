@@ -258,6 +258,7 @@ module.exports = {
   readCardAmount,
   ledgerCount,
   ledgerRows,
+  esperaTravaAntiDuplo,
   ensureBankExists,
   openNewEntry,
   addEntry,
