@@ -85,17 +85,21 @@ total_janela=$(jq -r '
 ' "$resposta")
 
 resumo="${GITHUB_STEP_SUMMARY:-}"
+bloco=$(mktemp)
+trap 'rm -f "$resposta" "$mensagens" "$corpo" "$bloco"' EXIT
+{
+  echo "## model_failed (Workers Logs)"
+  echo ""
+  echo "- Janela: últimos ${janela} min (de ${de_ms} a ${agora_ms} ms)"
+  echo "- Ocorrências de model_failed: ${total_filtrado}"
+  echo "- Eventos de log na janela: ${total_janela}"
+  if [ "$total_janela" = "0" ]; then
+    echo "- Nota: nenhum log na janela — worker ocioso ou Workers Logs desabilitado; valide com workflow_dispatch."
+  fi
+} > "$bloco"
+cat "$bloco"
 if [ -n "$resumo" ]; then
-  {
-    echo "## model_failed (Workers Logs)"
-    echo ""
-    echo "- Janela: últimos ${janela} min (de ${de_ms} a ${agora_ms} ms)"
-    echo "- Ocorrências de model_failed: ${total_filtrado}"
-    echo "- Eventos de log na janela: ${total_janela}"
-    if [ "$total_janela" = "0" ]; then
-      echo "- Nota: nenhum log na janela — worker ocioso ou Workers Logs desabilitado; valide com workflow_dispatch."
-    fi
-  } >> "$resumo"
+  cat "$bloco" >> "$resumo"
 fi
 
 if [ "$total_filtrado" = "0" ]; then
