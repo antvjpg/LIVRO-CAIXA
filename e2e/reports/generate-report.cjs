@@ -72,6 +72,33 @@ try {
 
 const stripAnsi = (s) => String(s).replace(/\u001b\[[0-9;]*m/g, '');
 
+/* Duração legível a partir de milissegundos: "45s", "5m 32s", "1h 02m 03s". */
+function formatDuration(ms) {
+  const total = Math.max(0, Math.round(Number(ms) || 0));
+  const h = Math.floor(total / 3_600_000);
+  const m = Math.floor((total % 3_600_000) / 60_000);
+  const s = Math.floor((total % 60_000) / 1000);
+  if (h > 0) return `${h}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
+  if (m > 0) return `${m}m ${String(s).padStart(2, '0')}s`;
+  return `${s}s`;
+}
+
+function formatInstant(iso) {
+  if (!iso) return 'n/d';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return 'n/d';
+  return `${d.toISOString().slice(0, 19).replace('T', ' ')} UTC`;
+}
+
+/* stats do JSON reporter: startTime (ISO) + duration (ms) da execução
+   completa — é o tempo que a tarefa E2E levou para ser concluída. */
+const stats = raw.stats || null;
+const execDurationMs = Number(stats?.duration) || 0;
+const execStartIso = stats?.startTime || null;
+const execEndIso = execStartIso
+  ? new Date(new Date(execStartIso).getTime() + execDurationMs).toISOString()
+  : null;
+
 
 function annotationsOf(test, result) {
   return [...(test.annotations || []), ...(result?.annotations || [])];
@@ -144,13 +171,15 @@ function walk(suite, titles, out) {
             : '';
         return { name: a.name, path: a.path || '', corpo };
       });
+      /* soma todas as tentativas (retries): é o tempo real gasto no teste */
+      const duration = (t.results || []).reduce((sum, r) => sum + (Number(r?.duration) || 0), 0);
       out.push({
         suite: chain.join(' › ') || '(sem suíte)',
         title: spec.title,
         cls,
         reason: sanitizeText(cls === 'FAIL' ? errorReason(result?.error?.message) : reason),
         reasonFull: cls === 'FAIL' ? sanitizeText(errorReasonFull(result?.error?.message)) : '',
-        duration: result?.duration ?? 0,
+        duration,
         attachments,
         file: spec.file || '',
       });
@@ -172,6 +201,9 @@ const w = (s = '') => lines.push(s);
 w('# C.O.D.E. — RELATÓRIO');
 w('');
 w(`Gerado: ${now} · Specs: ${tests.length}`);
+w('');
+w(`Duração da execução (E2E): **${formatDuration(execDurationMs)}**`);
+w(`Início: ${formatInstant(execStartIso)} → Fim: ${formatInstant(execEndIso)}`);
 w('');
 w('| PASS | FAIL | BLOCKED | SKIPPED | FLAKY |');
 w('|---:|---:|---:|---:|---:|');
@@ -218,11 +250,11 @@ row('Arquivo de identidade remanescente', identityLeftover ? 'SIM (possível run
 w('');
 w('---');
 w('');
-w('| Classe | Suíte | Teste | Detalhe |');
-w('|---|---|---|---|');
+w('| Classe | Suíte | Teste | Tempo | Detalhe |');
+w('|---|---|---|---:|---|');
 for (const t of tests) {
   const detail = (t.reason || '').replace(/\|/g, '\\|');
-  w(`| **${t.cls}** | ${t.suite} | ${t.title} | ${detail} |`);
+  w(`| **${t.cls}** | ${t.suite} | ${t.title} | ${formatDuration(t.duration)} | ${detail} |`);
 }
 w('');
 
@@ -235,6 +267,7 @@ if (failures.length) {
     w('');
     w(`- Suíte: ${t.suite}`);
     w(`- Arquivo: \`${t.file}\``);
+    w(`- Tempo: ${formatDuration(t.duration)}`);
     w(`- Motivo: ${t.reasonFull || t.reason || 'não informado'}`);
     if (t.attachments.length) {
       w('- Evidências:');
@@ -281,6 +314,7 @@ const outPath = path.join(config.reportsDir, `CODE-relatorio-${new Date().toISOS
 fs.writeFileSync(outPath, sanitizeText(lines.join('\n')) + '\n');
 console.log(`Relatório: ${outPath}`);
 console.log(`PASS=${counts.PASS} FAIL=${counts.FAIL} BLOCKED=${counts.BLOCKED} SKIPPED=${counts.SKIPPED} FLAKY=${counts.FLAKY}`);
+console.log(`Duração da execução: ${formatDuration(execDurationMs)} (${formatInstant(execStartIso)} → ${formatInstant(execEndIso)})`);
 
 /* --strict (usado no CI): bloqueio de ambiente NÃO pode passar em silêncio. */
 if (process.argv.includes('--strict')) {
