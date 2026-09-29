@@ -8,6 +8,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 
+import { makeAppCheckToken, APP_CHECK_JWKS_FRAGMENT } from "./helpers/appcheck.mjs";
+import { makeKvMock } from "./helpers/kv.mjs";
+
 const PROJ = "livro-caixa-54357";
 const ORIGIN = "https://antvjpg.github.io";
 const BASE = "https://livro-caixa-ai.workers.dev";
@@ -48,6 +51,9 @@ const state = {
   onChat: null
 };
 
+/* /ai e /quota exigem App Check: token assinado com o par deste arquivo. */
+const appCheckToken = makeAppCheckToken(privateKey, PROJ);
+
 function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -58,6 +64,7 @@ function jsonResponse(body, status = 200) {
 globalThis.fetch = async (url, init) => {
   const target = String(url);
   if (target.includes("googleapis.com/service_accounts")) return jsonResponse({ keys: [pubJwk] });
+  if (target.includes(APP_CHECK_JWKS_FRAGMENT)) return jsonResponse({ keys: [pubJwk] });
   if (target === "https://openrouter.ai/api/v1/key") {
     return jsonResponse({ data: { free_model_daily_requests: state.quota } });
   }
@@ -75,17 +82,23 @@ const env = {
   FIREBASE_PROJECT_ID: PROJ,
   OPENROUTER_API_KEY: API_KEY,
   OPENROUTER_MODELS: "modelo-a:free,modelo-b:free",
-  AI_RATE_LIMIT_PER_MINUTE: "30"
+  AI_RATE_LIMIT_PER_MINUTE: "30",
+  QUOTA_KV: makeKvMock(),
+  RATE_LIMIT_KV: makeKvMock()
 };
 
 const workerModule = await import(new URL("../src/index.js", import.meta.url));
 const workerFetch = workerModule.default.fetch;
 const validation = await import(new URL("../src/shared/validation.js", import.meta.url));
 
-function post(path, { origin = ORIGIN, token, body, headers = {}, method = "POST" } = {}) {
+function post(path, { origin = ORIGIN, token, body, headers = {}, method = "POST", appCheck = true } = {}) {
   const finalHeaders = { "content-type": "application/json", ...headers };
   if (origin) finalHeaders.Origin = origin;
   if (token) finalHeaders.Authorization = `Bearer ${token}`;
+  /* appCheck=false é usado de propósito pelos testes do App Check */
+  if (appCheck && !("X-Firebase-AppCheck" in finalHeaders)) {
+    finalHeaders["X-Firebase-AppCheck"] = appCheckToken;
+  }
   return workerFetch(new Request(`${BASE}${path}`, { method, headers: finalHeaders, body }), env);
 }
 
@@ -304,6 +317,23 @@ test("GET /ai → 405 method_not_allowed", async () => {
 test("POST /ai sem token → 401 missing_token", async () => {
   const res = await post("/ai", { body: JSON.stringify({ prompt: "oi", maxTokens: 900 }) });
   await expectError(res, 401, "missing_token");
+});
+
+test("POST /ai sem App Check → 401 missing_appcheck (cai antes da auth)", async () => {
+  const antes = state.openRouterCalls.length;
+  const res = await post("/ai", { appCheck: false, body: JSON.stringify({ prompt: "oi", maxTokens: 900 }) });
+  await expectError(res, 401, "missing_appcheck");
+  assert.equal(state.openRouterCalls.length, antes, "App Check cai antes do provedor");
+});
+
+test("POST /ai com App Check inválido → 401 invalid_appcheck", async () => {
+  const antes = state.openRouterCalls.length;
+  const res = await post("/ai", {
+    headers: { "X-Firebase-AppCheck": "token-invalido.aqui.outro" },
+    body: JSON.stringify({ prompt: "oi", maxTokens: 900 })
+  });
+  await expectError(res, 401, "invalid_appcheck");
+  assert.equal(state.openRouterCalls.length, antes, "token inválido cai antes do provedor");
 });
 
 test("POST /ai token malformado → 401 invalid_token", async () => {

@@ -132,42 +132,42 @@ test("snapshotHasData: qualquer fonte de dado real conta", () => {
 
 /* -------------------------- máquina de estados ----------------------------- */
 
-test("máquina: mesma conta preserva a conversa ao fechar e reabrir", () => {
+test("máquina: mesma conta preserva a conversa ao fechar e reabrir", async () => {
   const session = createChatSession();
-  session.openFor("user-1");
+  await session.openFor("user-1");
 
   const started = session.begin("quanto gastei?");
   assert.equal(started.ok, true);
-  assert.equal(session.commit(started.token, "quanto gastei?", "R$ 1.200"), true);
+  assert.equal(await session.commit(started.token, "quanto gastei?", "R$ 1.200"), true);
 
   session.close();
   assert.equal(session.isOpen(), false);
 
-  session.openFor("user-1");
+  await session.openFor("user-1");
   assert.equal(session.isOpen(), true);
   assert.equal(session.getMessages().length, 2, "fechar/reabrir não apaga a conversa");
   assert.equal(session.getAccountId(), "user-1");
 });
 
-test("máquina: trocar de conta apaga a conversa e invalida o voo antigo", () => {
+test("máquina: trocar de conta apaga a conversa e invalida o voo antigo", async () => {
   const session = createChatSession();
-  session.openFor("user-1");
+  await session.openFor("user-1");
   const first = session.begin("p1");
-  assert.equal(session.commit(first.token, "p1", "r1"), true);
+  assert.equal(await session.commit(first.token, "p1", "r1"), true);
 
   const previousSession = session.getSessionId();
-  session.openFor("user-2");
+  await session.openFor("user-2");
 
   assert.equal(session.getMessages().length, 0, "outro dono = conversa nova");
   assert.equal(session.getSessionId(), previousSession + 1);
   assert.equal(session.getAccountId(), "user-2");
-  assert.equal(session.commit(first.token, "p1", "r2"), false, "resposta da conta anterior não entra");
+  assert.equal(await session.commit(first.token, "p1", "r2"), false, "resposta da conta anterior não entra");
   assert.equal(session.settle(first.token), false);
 });
 
-test("máquina: não aceita segundo envio enquanto houver um em andamento", () => {
+test("máquina: não aceita segundo envio enquanto houver um em andamento", async () => {
   const session = createChatSession();
-  session.openFor("user-1");
+  await session.openFor("user-1");
 
   const first = session.begin("primeira");
   assert.equal(first.ok, true);
@@ -186,27 +186,27 @@ test("máquina: não aceita segundo envio enquanto houver um em andamento", () =
   assert.equal(third.ok, true, "liberou depois de encerrar o envio");
 });
 
-test("máquina: fechar no meio do voo invalida a resposta tardia", () => {
+test("máquina: fechar no meio do voo invalida a resposta tardia", async () => {
   const session = createChatSession();
-  session.openFor("user-1");
+  await session.openFor("user-1");
 
   const inFlight = session.begin("p1");
   session.close();
 
   assert.equal(session.getPending(), null);
   assert.equal(session.isBusy(), false);
-  assert.equal(session.commit(inFlight.token, "p1", "tarde demais"), false);
+  assert.equal(await session.commit(inFlight.token, "p1", "tarde demais"), false);
   assert.equal(session.settle(inFlight.token), false, "o finally do voo antigo não mexe no estado");
   assert.equal(session.getMessages().length, 0);
 });
 
-test("máquina: o finally de um voo antigo não limpa um envio novo (fechar→reabrir→perguntar)", () => {
+test("máquina: o finally de um voo antigo não limpa um envio novo (fechar→reabrir→perguntar)", async () => {
   const session = createChatSession();
-  session.openFor("user-1");
+  await session.openFor("user-1");
 
   const old = session.begin("primeira");
   session.close();
-  session.openFor("user-1");
+  await session.openFor("user-1");
 
   const current = session.begin("segunda");
   assert.equal(current.ok, true, "reabriu e conseguiu perguntar de novo");
@@ -214,33 +214,33 @@ test("máquina: o finally de um voo antigo não limpa um envio novo (fechar→re
   assert.equal(session.isBusy(), true);
   assert.equal(session.getPending().content, "segunda");
 
-  assert.equal(session.commit(old.token, "primeira", "atrasada"), false);
-  assert.equal(session.commit(current.token, "segunda", "na hora"), true);
+  assert.equal(await session.commit(old.token, "primeira", "atrasada"), false);
+  assert.equal(await session.commit(current.token, "segunda", "na hora"), true);
   assert.equal(session.getMessages().length, 2);
   assert.equal(session.settle(current.token), true);
   assert.equal(session.isBusy(), false);
 });
 
-test("máquina: resetContext é o único caminho que apaga e descarta o voo", () => {
+test("máquina: resetContext é o único caminho que apaga e descarta o voo", async () => {
   const session = createChatSession();
-  session.openFor("user-1");
+  await session.openFor("user-1");
   const started = session.begin("p1");
-  assert.equal(session.commit(started.token, "p1", "r1"), true);
+  assert.equal(await session.commit(started.token, "p1", "r1"), true);
 
   const previousSession = session.getSessionId();
-  session.resetContext();
+  await session.resetContext();
 
   assert.equal(session.getMessages().length, 0);
   assert.equal(session.getPending(), null);
   assert.equal(session.isBusy(), false);
   assert.equal(session.getSessionId(), previousSession + 1);
-  assert.equal(session.commit(started.token, "p1", "r2"), false);
+  assert.equal(await session.commit(started.token, "p1", "r2"), false);
   assert.equal(session.settle(started.token), false);
 });
 
-test("máquina: getMessages devolve cópia (o render não muta o histórico)", () => {
+test("máquina: getMessages devolve cópia (o render não muta o histórico)", async () => {
   const session = createChatSession();
-  session.openFor("user-1");
+  await session.openFor("user-1");
 
   const view = session.getMessages();
   view.push({ role: "user", content: "injetada" });
@@ -248,13 +248,13 @@ test("máquina: getMessages devolve cópia (o render não muta o histórico)", (
   assert.equal(session.getMessages().length, 0);
 });
 
-test("máquina: fluxo completo de uma pergunta (begin→commit→settle)", () => {
+test("máquina: fluxo completo de uma pergunta (begin→commit→settle)", async () => {
   const session = createChatSession();
-  session.openFor("user-1");
+  await session.openFor("user-1");
 
   const started = session.begin("qual o saldo?");
   assert.equal(session.isCurrent(started.token), true);
-  assert.equal(session.commit(started.token, "qual o saldo?", "R$ 3.400"), true);
+  assert.equal(await session.commit(started.token, "qual o saldo?", "R$ 3.400"), true);
   assert.equal(session.settle(started.token), true);
 
   assert.equal(session.isBusy(), false);
@@ -278,7 +278,7 @@ test("index.html: contrato carregado como módulo antes do DOMContentLoaded", ()
 });
 
 test("index.html: chat usa máquina e orçamento do contrato, sem cópia local", () => {
-  assert.match(html, /contract\.createChatSession\(\)/);
+  assert.match(html, /contract\.createChatSession\(/);
   assert.match(html, /contract\.fitChatSnapshotToBudget\(/);
   assert.match(html, /contract\.snapshotHasData\(/);
 
@@ -361,8 +361,8 @@ test("index.html: fluxo legado de diagnóstico por seções não voltou", () => 
 /* --------------------- revisão de uso (ícones/contador/foco) --------------- */
 
 test("index.html: FAB alterna ícone — messages só na Visão geral, + nas demais abas", () => {
-  assert.match(html, /id="fabAdd"[^>]*><svg class="add-icon"[\s\S]{0,200}?<i class="fi fi-rr-messages fab-chat-icon" aria-hidden="true"><\/i><\/button>/,
-    "FAB deve manter o + original e carregar o ícone messages junto");
+  assert.match(html, /id="fabAdd"[^>]*><i class="fi fi-rr-plus add-icon" aria-hidden="true"><\/i><i class="fi fi-rr-messages fab-chat-icon" aria-hidden="true"><\/i><\/button>/,
+    "FAB deve manter o + original (add-icon) e carregar o ícone messages junto");
   assert.match(css, /\.fab-add \.fab-chat-icon\{display:none;/,
     "messages deve iniciar oculto (padrão de todas as abas)");
   assert.match(css, /body\[data-tab="dashboard"\] \.fab-add \.add-icon\{display:none;\}/,

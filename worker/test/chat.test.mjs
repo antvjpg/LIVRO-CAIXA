@@ -9,6 +9,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 
+import { makeAppCheckToken, APP_CHECK_JWKS_FRAGMENT } from "./helpers/appcheck.mjs";
+import { makeKvMock } from "./helpers/kv.mjs";
+
 import {
   CHAT_CONTRACT_VERSION,
   CHAT_LIMITS,
@@ -50,6 +53,9 @@ function makeToken(sub) {
 
 const state = { quota: { limit: 100, used: 10, remaining: 90 }, openRouterCalls: [], onChat: null };
 
+/* /ai exige App Check: token assinado com o par deste arquivo. */
+const appCheckToken = makeAppCheckToken(privateKey, PROJ);
+
 function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 }
@@ -66,6 +72,7 @@ AbortSignal.timeout = function spyTimeout(ms) {
 globalThis.fetch = async (url, init) => {
   const target = String(url);
   if (target.includes("googleapis.com/service_accounts")) return jsonResponse({ keys: [pubJwk] });
+  if (target.includes(APP_CHECK_JWKS_FRAGMENT)) return jsonResponse({ keys: [pubJwk] });
   if (target === "https://openrouter.ai/api/v1/key") {
     return jsonResponse({ data: { free_model_daily_requests: state.quota } });
   }
@@ -83,14 +90,16 @@ const env = {
   FIREBASE_PROJECT_ID: PROJ,
   OPENROUTER_API_KEY: API_KEY,
   OPENROUTER_MODELS: "modelo-a:free,modelo-b:free",
-  AI_RATE_LIMIT_PER_MINUTE: "30"
+  AI_RATE_LIMIT_PER_MINUTE: "30",
+  QUOTA_KV: makeKvMock(),
+  RATE_LIMIT_KV: makeKvMock()
 };
 
 const workerModule = await import(new URL("../src/index.js", import.meta.url));
 const workerFetch = workerModule.default.fetch;
 
 function post(path, { token, body } = {}) {
-  const headers = { "content-type": "application/json", Origin: ORIGIN };
+  const headers = { "content-type": "application/json", Origin: ORIGIN, "X-Firebase-AppCheck": appCheckToken };
   if (token) headers.Authorization = `Bearer ${token}`;
   return workerFetch(new Request(`${BASE}${path}`, { method: "POST", headers, body }), env);
 }
@@ -126,7 +135,7 @@ test("limites do chat são exatamente os documentados", () => {
   assert.equal(CHAT_LIMITS.PAYLOAD_MAX_BYTES, 96 * 1024);
   assert.equal(CHAT_LIMITS.PROVIDER_TIMEOUT_MS, 30000);
   assert.equal(UPSTREAM_TIMEOUT_MS, 45000, "o caminho legado mantém o teto de 45 s");
-  assert.equal(CHAT_SYSTEM_PROMPT_VERSION, 2);
+  assert.equal(CHAT_SYSTEM_PROMPT_VERSION, 3);
 });
 
 test("index.html carrega o contrato compartilhado (sem limites duplicados)", async () => {
@@ -416,7 +425,11 @@ test("/ai chat respeita autenticação, origem, cota e rate limit", async () => 
   state.openRouterCalls = [];
 
   const semToken = await workerFetch(
-    new Request(`${BASE}/ai`, { method: "POST", headers: { "content-type": "application/json", Origin: ORIGIN }, body: chatPayload() }),
+    new Request(`${BASE}/ai`, {
+      method: "POST",
+      headers: { "content-type": "application/json", Origin: ORIGIN, "X-Firebase-AppCheck": appCheckToken },
+      body: chatPayload()
+    }),
     env
   );
   await expectError(semToken, 401, "missing_token");

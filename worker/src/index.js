@@ -99,7 +99,7 @@ export default {
       }
 
       const rateKey = request.headers.get("cf-connecting-ip") || origin || "unknown";
-      const limited = isRateLimited(rateKey, env, {
+      const limited = await isRateLimited(rateKey, env, {
         limitEnvVar: "FINANCIAL_RATE_LIMIT_PER_MINUTE",
         defaultLimit: DEFAULT_FINANCIAL_RATE_LIMIT,
         prefix: "financial:"
@@ -179,7 +179,7 @@ export default {
       );
     }
 
-    if (isRateLimited(claims.sub, env)) {
+    if (await isRateLimited(claims.sub, env)) {
       return json(
         {
           error: "Muitas solicitações de IA agora. Aguarde alguns segundos e tente novamente.",
@@ -190,8 +190,11 @@ export default {
       );
     }
 
-    /* Garante o cache de cota antes de decidir sobre o limite diário. */
-    const quota = await getFreeQuotaKV(env);
+    /* Garante o cache de cota antes de decidir sobre o limite diário.
+       let: após um burn com sucesso a leitura é refeita para que os headers
+       X-AI-Quota-* da MESMA resposta mostrem o valor já decrementado
+       (contrato consumido pelo index.html, ver quota.js). */
+    let quota = await getFreeQuotaKV(env);
     const quotaHeaders = () => quotaHeaderValues(quota);
 
     if (quota && quota.remaining <= 0) {
@@ -272,7 +275,11 @@ export default {
 
       /* Conta na cota apenas o que deu certo: tentativas que o OpenRouter
          recusou (402/404 de modelo pago, falha de rede) não gastam o dia. */
-      if (result.ok) await burnQuotaKV(env);
+      if (result.ok) {
+        await burnQuotaKV(env);
+        const refreshed = await getFreeQuotaKV(env);
+        if (refreshed) quota = refreshed;
+      }
 
       if (!result.ok) {
         const status = result.status || 0;
