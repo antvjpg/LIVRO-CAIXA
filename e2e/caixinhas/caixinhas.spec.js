@@ -168,6 +168,7 @@ test.describe.serial('Caixinhas — criação, saldo, progresso, persistência e
     ).toBe(100);
 
     await savePocket(page, { name: nameC1, goal: p.c1.goal, goalAmount: p.c1.goalAmount, initial: p.c1.initial });
+    await openNewPocket(page);
     await savePocket(page, { name: nameC2, goal: p.c2.goal, goalAmount: p.c2.goalAmount, initial: p.c2.initial });
 
     expect(await cardBalance(page, nameC2), 'caixinha com valor inicial zero').toBe(0);
