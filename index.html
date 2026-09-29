@@ -3469,7 +3469,7 @@ document.addEventListener('DOMContentLoaded', () => {
     names.forEach(name => {
       const buffered = snapshotBuffer[name];
       setStateArray(name, buffered.arr);
-      if (!buffered.hasPendingWrites) lastSynced[name] = arrToMap(getStateArray(name));
+      lastSynced[name] = arrToMap(getStateArray(name));
     });
     snapshotBuffer = {};
     render();
