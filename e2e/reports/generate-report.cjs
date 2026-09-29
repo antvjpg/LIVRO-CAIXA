@@ -316,15 +316,24 @@ console.log(`Relatório: ${outPath}`);
 console.log(`PASS=${counts.PASS} FAIL=${counts.FAIL} BLOCKED=${counts.BLOCKED} SKIPPED=${counts.SKIPPED} FLAKY=${counts.FLAKY}`);
 console.log(`Duração da execução: ${formatDuration(execDurationMs)} (${formatInstant(execStartIso)} → ${formatInstant(execEndIso)})`);
 
-/* --strict (usado no CI): bloqueio de ambiente NÃO pode passar em silêncio. */
+/* --strict (usado no CI): nenhuma falha pode passar em silêncio.
+   Reprova: FAIL, BLOCKED, FLAKY (falhou e passou na repetição), relatório sem
+   nenhum spec, cleanup BLOCKED e identidade efêmera que sobrou na run. */
 if (process.argv.includes('--strict')) {
-  const problemas = counts.FAIL + counts.BLOCKED;
+  const problemas = counts.FAIL + counts.BLOCKED + counts.FLAKY;
+  const semSpecs = tests.length === 0;
   const cleanupBloqueado = !!summary && summary.severity === 'BLOCKED';
-  if (problemas > 0 || cleanupBloqueado) {
-    console.error(
-      `C.O.D.E.: ${counts.FAIL} falha(s), ${counts.BLOCKED} bloqueio(s)` +
-        `${cleanupBloqueado ? ' e cleanup BLOCKED (sobras possíveis)' : ''} — ver relatório.`
-    );
+  const identidadeOrfa = identityLeftover;
+  if (problemas > 0 || semSpecs || cleanupBloqueado || identidadeOrfa) {
+    const motivos = [
+      `${counts.FAIL} falha(s)`,
+      `${counts.BLOCKED} bloqueio(s)`,
+      `${counts.FLAKY} instável(eis)`,
+      semSpecs ? 'nenhum teste no results.json' : '',
+      cleanupBloqueado ? 'cleanup BLOCKED (sobras possíveis)' : '',
+      identidadeOrfa ? 'identidade efêmera não excluída (e2e/.state/qa-identity.json)' : '',
+    ].filter(Boolean);
+    console.error(`C.O.D.E.: ${motivos.join(', ')} — ver relatório.`);
     process.exit(1);
   }
 }

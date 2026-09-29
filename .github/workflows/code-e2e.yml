@@ -16,19 +16,20 @@ permissions:
 jobs:
   e2e:
     name: Smoke + Movimentações (QA)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       CODE_BASE_URL: http://127.0.0.1:8000
       CI: "true"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Node 22+: `node --test` aceita padrões glob (20 não expande o glob e
       # falhava em "Could not find 'e2e/oracles/*.test.mjs'" no CI).
-      - uses: actions/setup-node@v4
+      # Node 24 = LTS e é a versão usada no desenvolvimento local.
+      - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Dependências
@@ -51,7 +52,7 @@ jobs:
 
       - name: Relatório C.O.D.E.
         if: always()
-        run: node e2e/reports/generate-report.cjs || true
+        run: node e2e/reports/generate-report.cjs
 
       - name: Confirmação de limpeza da run efêmera
         if: always()
@@ -82,7 +83,7 @@ jobs:
       # credenciais — ver testes em e2e/security/security.test.mjs.
       - name: Evidências
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: code-e2e-evidencias
           path: |

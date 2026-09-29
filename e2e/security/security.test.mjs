@@ -475,6 +475,29 @@ test('workflow: evidências nunca incluem e2e/.state (estado de sessão/identida
   assert.ok(!bloco.includes('node_modules'), 'node_modules não deve ser artefato');
 });
 
+test('workflow: nenhuma falha é mascarada e o runner fica pinado', () => {
+  for (const arquivo of ['code-e2e.yml', 'worker.yml']) {
+    const wf = fs.readFileSync(path.join(ROOT, '.github', 'workflows', arquivo), 'utf8');
+    assert.ok(!wf.includes('|| true'), `${arquivo}: nenhum passo pode anular erro com "|| true"`);
+    assert.ok(!wf.includes('continue-on-error'), `${arquivo}: nenhum passo pode continuar após falha`);
+    assert.ok(!wf.includes('ubuntu-latest'), `${arquivo}: runner pinado — ubuntu-latest migra de imagem sem aviso`);
+    assert.ok(wf.includes('runs-on: ubuntu-24.04'), `${arquivo}: esperado runs-on: ubuntu-24.04`);
+  }
+});
+
+test('workflow: versões das actions rodam em runtime Node 24', () => {
+  /* node20 está deprecado no GitHub e é forçado a rodar em node24:
+     checkout@v5 e setup-node@v5 são os primeiros majors node24 (upload-artifact@v6) */
+  for (const arquivo of ['code-e2e.yml', 'worker.yml']) {
+    const wf = fs.readFileSync(path.join(ROOT, '.github', 'workflows', arquivo), 'utf8');
+    assert.ok(wf.includes('actions/checkout@v5'), `${arquivo}: checkout precisa ser major node24 (>=v5)`);
+    assert.ok(wf.includes('actions/setup-node@v5'), `${arquivo}: setup-node precisa ser major node24 (>=v5)`);
+    assert.ok(wf.includes('node-version: 24'), `${arquivo}: CI deve usar a mesma faixa do dev local (Node 24)`);
+  }
+  const e2e = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'code-e2e.yml'), 'utf8');
+  assert.ok(e2e.includes('actions/upload-artifact@v6'), 'upload-artifact precisa ser major node24 (>=v6)');
+});
+
 test('relatório: seção QA ENVIRONMENT documenta modo, limpeza e exclusão', () => {
   const src = fs.readFileSync(path.join(ROOT, 'e2e', 'reports', 'generate-report.cjs'), 'utf8');
   for (const esperado of ['QA ENVIRONMENT', 'Criada pelo C.O.D.E.', 'Limpeza Firestore', 'Exclusão da conta Auth', 'Arquivo de identidade remanescente']) {
@@ -482,6 +505,10 @@ test('relatório: seção QA ENVIRONMENT documenta modo, limpeza e exclusão', (
   }
   /* estrito: bloqueio de cleanup derruba o CI */
   assert.ok(src.includes("summary.severity === 'BLOCKED'"), '--strict deve considerar cleanup BLOCKED');
+  /* estrito: nenhuma falha vira sucesso silencioso */
+  assert.ok(src.includes('counts.FLAKY'), '--strict deve reprovar FLAKY (falhou e passou na repetição)');
+  assert.ok(src.includes('tests.length === 0'), '--strict deve reprovar results.json sem nenhum teste');
+  assert.ok(src.includes('identityLeftover'), '--strict deve reprovar identidade efêmera não excluída');
   assert.ok(src.includes('sanitizeText'), 'relatório deve passar pelo sanitizador');
 });
 
