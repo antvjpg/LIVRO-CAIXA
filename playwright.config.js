@@ -72,6 +72,12 @@ module.exports = defineConfig({
       testMatch: /lia\/.*\.spec\.js$/,
       use: { storageState: STATE },
     },
+    {
+      name: 'seguranca',
+      dependencies: ['setup'],
+      testMatch: /seguranca\/.*\.spec\.js$/,
+      use: { storageState: STATE },
+    },
   ],
   webServer: {
     command: `python3 -m http.server ${PORT} --bind 127.0.0.1`,

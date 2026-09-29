@@ -21,3 +21,8 @@ e2e/reports/results.json
 e2e/reports/CODE-relatorio-*.md
 e2e/reports/evidencia/
 e2e/scripts/android-platform-shim.cjs
+
+# Credenciais locais de qualquer nível (guarda de novos segredos)
+.env
+.env.*
+!.env.example

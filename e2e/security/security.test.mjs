@@ -8,6 +8,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 
 const require = createRequire(import.meta.url);
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -116,7 +117,7 @@ test('resolveCredentials: aceita e-mail QA declarado', () => {
 
 test('gitignore: credenciais, estado e artefatos nunca vão para o Git', () => {
   const gi = fs.readFileSync(path.join(ROOT, '.gitignore'), 'utf8');
-  for (const linha of ['e2e/.env.local', 'e2e/.state/', 'e2e/.artifacts/', 'node_modules/', 'e2e/reports/results.json']) {
+  for (const linha of ['e2e/.env.local', 'e2e/.state/', 'e2e/.artifacts/', 'node_modules/', 'e2e/reports/results.json', '\n.env\n', '!.env.example']) {
     assert.ok(gi.includes(linha), `.gitignore deveria conter ${linha}`);
   }
   /* a documentação precisa refletir a guarda implementada (evita doc que
@@ -125,6 +126,47 @@ test('gitignore: credenciais, estado e artefatos nunca vão para o Git', () => {
   assert.ok(example.includes('CODE_TEST_ALLOW_ANY_EMAIL'), '.env.example deve documentar o override');
   assert.ok(example.includes('CODE_TEST_EMAIL_DOMAINS') || example.includes('livrocaixa.test'),
     '.env.example deve documentar o padrão de domínio QA');
+});
+
+test('segredos: nenhum padrão de credencial em arquivos versionados', () => {
+  const arquivos = execFileSync('git', ['ls-files'], { cwd: ROOT, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean);
+  const permitidos = [
+    'AIzaSyADRwvRCaOB0Q8QvDeDfReVeMzK_m4KqlA',
+    'sk-or-v1-chave-fake-0123456789abcdef',
+  ];
+  const padroes = [
+    ['chave privada', /-----BEGIN (?:RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY/],
+    ['service account', /"type"\s*:\s*"service_account"/],
+    ['GitHub token', /(?:ghp|gho|ghs|ghu)_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{20,}/],
+    ['AWS access key', /\bAKIA[0-9A-Z]{16}\b/],
+    ['Slack token', /xox[baprs]-[A-Za-z0-9-]{10,}/],
+    ['OpenRouter key', /\bsk-or-v1-[A-Za-z0-9_-]{20,}/],
+    ['OpenAI key', /\bsk-proj-[A-Za-z0-9_-]{20,}/],
+    ['Google API key', /\bAIza[0-9A-Za-z_-]{35}\b/],
+    ['token Cloudflare', /CLOUDFLARE_API_TOKEN\s*[:=]\s*["'][A-Za-z0-9_-]{20,}["']/],
+    ['JWT', /\beyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}/],
+  ];
+  const violacoes = [];
+  for (const arquivo of arquivos) {
+    let buffer;
+    try {
+      buffer = fs.readFileSync(path.join(ROOT, arquivo));
+    } catch {
+      continue;
+    }
+    if (buffer.includes(0)) continue;
+    const texto = buffer.toString('utf8');
+    for (const [nome, padrao] of padroes) {
+      const achados = texto.match(new RegExp(padrao.source, 'g')) || [];
+      for (const achado of achados) {
+        if (permitidos.some((p) => achado.includes(p))) continue;
+        violacoes.push(`${nome}: ${arquivo} (${achado.slice(0, 16)}…)`);
+      }
+    }
+  }
+  assert.deepEqual(violacoes, [], `padrões de credencial detectados:\n${violacoes.join('\n')}`);
 });
 
 test('playwright: setup não grava trace/screenshot (senha no corpo do login)', () => {

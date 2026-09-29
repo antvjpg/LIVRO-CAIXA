@@ -217,9 +217,66 @@ async function deleteOwnAccount(idToken) {
   return true;
 }
 
+async function signUpOrCreate(email, password) {
+  const { apiKey, projectId } = readFirebaseWebConfig();
+  const headers = { 'Content-Type': 'application/json' };
+  let res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ email, password, returnSecureToken: true }),
+  });
+  let body = await res.json().catch(() => ({}));
+  let how = 'criada';
+  if (!res.ok) {
+    const codigo = body?.error?.message || String(res.status);
+    if (!codigo.includes('EMAIL_EXISTS')) {
+      const err = new Error(`BLOCKED: cadastro REST da conta secundária falhou (${codigo})`);
+      err.code = 'CODE_BLOCKED';
+      err.reason = codigo;
+      throw err;
+    }
+    res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ email, password, returnSecureToken: true }),
+    });
+    body = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const codigoLogin = body?.error?.message || String(res.status);
+      const err = new Error(`BLOCKED: login REST da conta secundária falhou (${codigoLogin})`);
+      err.code = 'CODE_BLOCKED';
+      err.reason = codigoLogin;
+      throw err;
+    }
+    how = 'existente';
+  }
+  return { uid: body.localId, idToken: body.idToken, email: body.email, projectId, how };
+}
+
+async function probeCrossAccount(uidAlvo, idTokenOutraConta, projectId) {
+  const base = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
+  const lista = `${base}/livrocaixa/${uidAlvo}/entries?pageSize=1`;
+  const anonimo = await fetch(lista);
+  await anonimo.arrayBuffer().catch(() => null);
+  const alheio = await fetch(lista, { headers: { Authorization: `Bearer ${idTokenOutraConta}` } });
+  await alheio.arrayBuffer().catch(() => null);
+  const escrita = await fetch(`${base}/livrocaixa/${uidAlvo}/entries/prova-c.o.d.e-sonda`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${idTokenOutraConta}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ fields: { origem: { stringValue: 'C.O.D.E.-auditoria-regras' } } }),
+  });
+  await escrita.arrayBuffer().catch(() => null);
+  return { anonimo: anonimo.status, alheio: alheio.status, escrita: escrita.status };
+}
+
 module.exports = {
   COLLECTIONS,
   signIn,
+  signUpOrCreate,
+  probeCrossAccount,
   listCollection,
   deleteDoc,
   resetUser,
