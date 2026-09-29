@@ -10,13 +10,13 @@ workers_dev = true
 # Criar com: npx wrangler kv:namespace create "QUOTA_KV" && npx wrangler kv:namespace create "RATE_LIMIT_KV"
 [[kv_namespaces]]
 binding = "QUOTA_KV"
-id = "your-quota-kv-namespace-id"
-preview_id = "your-quota-kv-preview-id"
+id = "0a525c61a6fb461aade806ab07a0282a"
+preview_id = "0a525c61a6fb461aade806ab07a0282a"
 
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "your-rate-limit-kv-namespace-id"
-preview_id = "your-rate-limit-kv-preview-id"
+id = "ab4265ca7efc4e379c5b0bce1d6cb42e"
+preview_id = "ab4265ca7efc4e379c5b0bce1d6cb42e"
 
 [vars]
 FIREBASE_PROJECT_ID = "livro-caixa-54357"
