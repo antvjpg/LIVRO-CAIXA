@@ -3350,6 +3350,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
 
+      COLLECTIONS.forEach(name => {
+        if (Object.keys(lastSynced[name]).length === 0 && getStateArray(name).length > 0) {
+          lastSynced[name] = arrToMap(getStateArray(name));
+        }
+      });
+
       const hasSubData = COLLECTIONS.some(name => getStateArray(name).length > 0);
 
       if (!hasSubData) {
