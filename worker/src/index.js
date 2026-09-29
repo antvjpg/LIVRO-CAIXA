@@ -331,7 +331,7 @@ export default {
       lastFailure.status >= 400 && lastFailure.status <= 599 ? lastFailure.status : 502;
 
     const exhausted =
-      failureStatus === 429 && currentQuota() && currentQuota().remaining <= 0;
+      failureStatus === 429 && quota && quota.remaining <= 0;
 
     return json(
       {

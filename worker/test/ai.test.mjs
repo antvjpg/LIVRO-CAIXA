@@ -485,3 +485,108 @@ test("resposta vazia → 502 empty_reply", async () => {
   await expectError(res, 502, "empty_reply");
   state.onChat = null;
 });
+
+/* ---------- provedor: retry e respostas inválidas (402/404/rede) ---------- */
+
+test("402 na cadeia cai para o próximo modelo", async () => {
+  state.openRouterCalls = [];
+  state.onChat = (call) =>
+    call.model === "modelo-a:free"
+      ? jsonResponse({ error: { message: "insufficient credits" } }, 402)
+      : jsonResponse({ choices: [{ message: { content: "segundo modelo" } }] });
+  const res = await post("/ai", {
+    token: makeToken("u-402"),
+    body: JSON.stringify({ prompt: "oi", maxTokens: 900 })
+  });
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.model, "modelo-b:free");
+  assert.equal(body.text, "segundo modelo");
+  assert.equal(state.openRouterCalls.length, 2, "402 deve tentar o próximo modelo");
+  state.onChat = null;
+});
+
+test("404 de modelo morto cai para o próximo modelo", async () => {
+  state.openRouterCalls = [];
+  state.onChat = (call) =>
+    call.model === "modelo-a:free"
+      ? jsonResponse({ error: { message: "model not found" } }, 404)
+      : jsonResponse({ choices: [{ message: { content: "segundo modelo" } }] });
+  const res = await post("/ai", {
+    token: makeToken("u-404"),
+    body: JSON.stringify({ prompt: "oi", maxTokens: 900 })
+  });
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.model, "modelo-b:free");
+  assert.equal(state.openRouterCalls.length, 2, "404 deve pular o modelo morto");
+  state.onChat = null;
+});
+
+test("falha de rede em todos os modelos → 502 network sem queimar cota", async () => {
+  state.openRouterCalls = [];
+  state.onChat = () => {
+    throw new Error("fetch rejeitado (sem rede)");
+  };
+  const cacheKey = `quota:${new Date().toISOString().slice(0, 10)}`;
+  const before = await env.QUOTA_KV.get(cacheKey, { type: "json" });
+  assert.ok(before?.data, "cache de cota deveria existir antes do teste");
+
+  const res = await post("/ai", {
+    token: makeToken("u-net"),
+    body: JSON.stringify({ prompt: "oi", maxTokens: 900 })
+  });
+  const body = await expectError(res, 502, "network");
+  assert.equal(body.tried, 2);
+  assert.equal(body.upstreamStatus, 0);
+  assert.equal(body.model, "modelo-b:free");
+  assert.match(body.error, /Falha de rede/);
+
+  assert.equal(state.openRouterCalls.length, 2, "falha de rede deve tentar todos os modelos");
+  const after = await env.QUOTA_KV.get(cacheKey, { type: "json" });
+  assert.equal(after.data.used, before.data.used, "tentativa falha não pode gastar a cota");
+  assert.equal(after.data.remaining, before.data.remaining, "remaining não pode mudar em falha");
+  state.onChat = null;
+});
+
+test("402 em toda a cadeia → envelope 402 com tried, sem queimar cota", async () => {
+  state.onChat = () => jsonResponse({ error: { message: "insufficient credits" } }, 402);
+  const cacheKey = `quota:${new Date().toISOString().slice(0, 10)}`;
+  const before = await env.QUOTA_KV.get(cacheKey, { type: "json" });
+
+  const res = await post("/ai", {
+    token: makeToken("u-402-all"),
+    body: JSON.stringify({ prompt: "oi", maxTokens: 900 })
+  });
+  const body = await expectError(res, 402, "upstream_402");
+  assert.equal(body.tried, 2);
+  assert.equal(body.upstreamStatus, 402);
+  assert.match(body.error, /indisponível/);
+
+  const after = await env.QUOTA_KV.get(cacheKey, { type: "json" });
+  assert.equal(after.data.used, before.data.used, "402 não gasta a cota diária");
+  state.onChat = null;
+});
+
+test("429 em toda a cadeia → envelope 429 com tried e cota intacta", async () => {
+  state.onChat = () => jsonResponse({ error: { message: "rate limited" } }, 429);
+  const cacheKey = `quota:${new Date().toISOString().slice(0, 10)}`;
+  const before = await env.QUOTA_KV.get(cacheKey, { type: "json" });
+  assert.ok(before?.data);
+
+  const res = await post("/ai", {
+    token: makeToken("u-429-all"),
+    body: JSON.stringify({ prompt: "oi", maxTokens: 900 })
+  });
+  const body = await expectError(res, 429, "upstream_429");
+  assert.equal(body.tried, 2);
+  assert.equal(body.upstreamStatus, 429);
+  assert.match(body.error, /limite de uso temporariamente/);
+  /* Respostas 429 carregam os headers de cota consumidos pelo index.html. */
+  assert.equal(res.headers.get("X-AI-Quota-Limit"), "100");
+  assert.equal(res.headers.get("X-AI-Quota-Remaining"), String(before.data.remaining));
+
+  const after = await env.QUOTA_KV.get(cacheKey, { type: "json" });
+  assert.equal(after.data.used, before.data.used, "429 não gasta a cota diária");
+  state.onChat = null;
+});
