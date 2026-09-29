@@ -110,12 +110,12 @@ test.describe.serial('Caixinhas — criação, saldo, progresso, persistência e
   }
 
   async function openEditPocket(page, name) {
-    await card(page, name).locator('button.edit').click();
+    await card(page, name).locator('button[aria-label="Editar caixinha"]').click();
     await page.waitForSelector('#panelPocket.open', { timeout: 15_000 });
   }
 
   async function openMovement(page, name, kind = 'aporte') {
-    await card(page, name).locator('button.move').click();
+    await card(page, name).locator('button[aria-label="Movimentações da caixinha"]').click();
     await page.waitForSelector('#panelPocketMovement.open', { timeout: 15_000 });
     if (kind === 'resgate') await page.click('#pmResgate');
     else if (kind === 'rendimento') await page.click('#pmRendimento');
@@ -449,7 +449,7 @@ test.describe.serial('Caixinhas — criação, saldo, progresso, persistência e
     await openPockets(page);
     await expect(card(page, nameC1Edited)).toBeVisible();
 
-    await card(page, nameC1Edited).locator('button.delete').click();
+    await card(page, nameC1Edited).locator('button[aria-label="Excluir caixinha"]').click();
     await waitDialog(dialogs, 'Deseja excluir esta caixinha e todo o histórico de movimentações dela?');
     await expect(card(page, nameC1Edited)).toHaveCount(0, { timeout: 20_000 });
     await expect(card(page, nameC2)).toBeVisible();
