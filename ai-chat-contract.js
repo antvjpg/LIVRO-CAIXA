@@ -371,7 +371,7 @@ export function snapshotHasData(snapshot) {
 
 /* =====================================================================
    Sugestões rápidas dinâmicas (V.20-01).
- 
+
    Gera exatamente 3 sugestões contextuais baseadas no snapshot financeiro.
    Função pura, determinística, sem side effects.
    ===================================================================== */
@@ -470,13 +470,167 @@ export function generateQuickSuggestions(snapshot) {
 }
 
 /* =====================================================================
+   Sugestões contextuais avançadas (V.20-02).
+
+   Usa o snapshot COMPLETO (antes da redução) para detectar sinais
+   financeiros reais e priorizar sugestões relevantes.
+   Função pura, determinística, sem side effects.
+   ===================================================================== */
+
+const CONTEXTUAL_TEMPLATES = Object.freeze({
+  budgetOver: [
+    "Por que estou acima do orçamento?",
+    "Como reduzir gastos nas categorias excedidas?"
+  ],
+  budgetNearLimit: [
+    "Quanto ainda posso gastar neste orçamento?",
+    "Estou perto do limite em alguma categoria?"
+  ],
+  topExpenseCategory: [
+    "Qual categoria mais pesou nos meus gastos?",
+    "Como comparar esta categoria com meses anteriores?"
+  ],
+  goalNearDeadline: [
+    "Quanto preciso guardar para atingir minha meta a tempo?",
+    "Minha meta está no prazo?"
+  ],
+  goalNeedsFunding: [
+    "Quanto falta para completar minha meta?",
+    "Qual o valor mensal necessário para a meta?"
+  ],
+  hasInvestments: [
+    "Como está a rentabilidade da minha carteira?",
+    "Qual a concentração dos meus investimentos?"
+  ],
+  negativeCashFlow: [
+    "Por que meu fluxo de caixa está negativo?",
+    "Como equilibrar entradas e saídas?"
+  ],
+  noData: [
+    "Cadastre uma conta para começar",
+    "Crie uma caixinha para seus objetivos",
+    "Adicione seu primeiro investimento"
+  ]
+});
+
+function pickContextual(pool, max) {
+  const shuffled = [...pool].sort((a, b) => a.localeCompare(b));
+  return shuffled.slice(0, max);
+}
+
+function analyzeFinancialContext(snapshot) {
+  const signals = [];
+
+  if (!snapshot || !snapshotHasData(snapshot)) {
+    signals.push({ type: 'noData', priority: 10 });
+    return signals;
+  }
+
+  const budgetCycle = (snapshot.budgets && snapshot.budgets[0]?.month) || null;
+  const currentMonth = budgetCycle || new Date().toISOString().slice(0, 7);
+
+  if (snapshot.budgets?.length) {
+    let hasOver = false;
+    let hasNear = false;
+    let topExpense = { category: null, spent: 0, pct: 0 };
+
+    for (const budget of snapshot.budgets) {
+      if (!budget.amount || budget.amount <= 0) continue;
+      const spent = budget.spent || 0;
+      const pct = (spent / budget.amount) * 100;
+
+      if (pct >= 100) {
+        hasOver = true;
+        signals.push({ type: 'budgetOver', priority: 1, category: budget.categoryId, pct, spent, limit: budget.amount });
+      } else if (pct >= 80) {
+        hasNear = true;
+        signals.push({ type: 'budgetNearLimit', priority: 2, category: budget.categoryId, pct, spent, limit: budget.amount });
+      }
+
+      if (spent > topExpense.spent) {
+        topExpense = { category: budget.categoryId, spent, pct };
+      }
+    }
+
+    if (topExpense.category && topExpense.spent > 0) {
+      signals.push({ type: 'topExpenseCategory', priority: hasOver || hasNear ? 4 : 3, ...topExpense });
+    }
+  }
+
+  if (snapshot.goals?.length) {
+    const now = new Date();
+    for (const goal of snapshot.goals) {
+      if (!goal.targetDate || !goal.targetAmount) continue;
+      const targetDate = new Date(goal.targetDate);
+      const monthsLeft = Math.max(1, Math.ceil((targetDate - now) / (30 * 24 * 60 * 60 * 1000)));
+      const current = goal.currentAmount || 0;
+      const needed = Math.max(0, (goal.targetAmount || 0) - current);
+
+      if (monthsLeft <= 3 && needed > 0) {
+        signals.push({ type: 'goalNearDeadline', priority: hasOver ? 5 : 3, goalId: goal.id, monthsLeft, needed, targetAmount: goal.targetAmount, current });
+      } else if (needed > 0) {
+        signals.push({ type: 'goalNeedsFunding', priority: 4, goalId: goal.id, monthsLeft, needed, targetAmount: goal.targetAmount, current });
+      }
+    }
+  }
+
+  if (snapshot.investments?.length) {
+    signals.push({ type: 'hasInvestments', priority: 6 });
+  }
+
+  if (snapshot.cashFlow && typeof snapshot.cashFlow.net === 'number' && snapshot.cashFlow.net < 0) {
+    signals.push({ type: 'negativeCashFlow', priority: hasOver ? 5 : 4, net: snapshot.cashFlow.net });
+  }
+
+  signals.sort((a, b) => a.priority - b.priority);
+  return signals;
+}
+
+export function generateContextualSuggestions(fullSnapshot, reducedSnapshot) {
+  const signals = analyzeFinancialContext(fullSnapshot);
+
+  if (signals.length === 0 || signals[0].type === 'noData') {
+    return [...CONTEXTUAL_TEMPLATES.noData];
+  }
+
+  const suggestions = [];
+  const usedTypes = new Set();
+
+  for (const signal of signals) {
+    if (suggestions.length >= 3) break;
+    if (usedTypes.has(signal.type)) continue;
+
+    const templates = CONTEXTUAL_TEMPLATES[signal.type];
+    if (!templates) continue;
+
+    const picked = pickContextual(templates, 3 - suggestions.length);
+    suggestions.push(...picked);
+    usedTypes.add(signal.type);
+  }
+
+  if (suggestions.length < 3) {
+    const fallbackPools = buildDomainPools(reducedSnapshot);
+    for (const pool of fallbackPools) {
+      if (suggestions.length >= 3) break;
+      const remaining = pool.filter(s => !suggestions.includes(s));
+      if (remaining.length > 0) {
+        const picked = pickContextual(remaining, 3 - suggestions.length);
+        suggestions.push(...picked);
+      }
+    }
+  }
+
+  return suggestions.slice(0, 3).map(s => s.slice(0, CHAT_LIMITS.MESSAGE_MAX_CHARS));
+}
+
+/* =====================================================================
    Máquina de estados da conversa (ETAPA 13).
- 
+
    Pura, sem DOM: o index.html só lê getters e chama transições. Um token
    ({sessionId, accountId, requestId}) identifica cada requisição; uma
    resposta só entra se o token ainda for o atual. Fechar/reabrir preserva
    a conversa; trocar de conta ou resetar é a única forma de apagá-la.
-   
+
    Persistência (IndexedDB): opcional, injetada via callbacks no index.html.
    - onLoad(uid) -> Promise<{messages, sessionId} | null>
    - onSave(uid, sessionId, messages) -> Promise<void>
@@ -500,7 +654,8 @@ export function createChatSession(persistence = {}) {
     token.requestId === requestId;
 
   function regenerateSuggestions(snapshot) {
-    quickSuggestions = generateQuickSuggestions(snapshot);
+    const reduced = fitChatSnapshotToBudget(snapshot);
+    quickSuggestions = generateContextualSuggestions(snapshot, reduced.ok ? reduced.snapshot : snapshot);
   }
 
   async function persistSave() {
@@ -534,7 +689,7 @@ export function createChatSession(persistence = {}) {
       }
       open = true;
       pending = null;
-      
+
       if (!persistenceLoaded && onLoad && uid) {
         persistenceLoaded = true;
         const loaded = await onLoad(uid);
@@ -543,7 +698,7 @@ export function createChatSession(persistence = {}) {
           sessionId = loaded.sessionId || sessionId;
         }
       }
-      
+
       if (snapshot) regenerateSuggestions(snapshot);
     },
 
@@ -617,6 +772,7 @@ const api = {
   fitChatSnapshotToBudget,
   snapshotHasData,
   generateQuickSuggestions,
+  generateContextualSuggestions,
   createChatSession
 };
 

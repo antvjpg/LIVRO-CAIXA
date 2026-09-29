@@ -60,6 +60,18 @@ module.exports = defineConfig({
       testMatch: /movimentacoes\/.*\.spec\.js$/,
       use: { storageState: STATE },
     },
+    {
+      name: 'orcamento',
+      dependencies: ['setup'],
+      testMatch: /orcamento\/.*\.spec\.js$/,
+      use: { storageState: STATE },
+    },
+    {
+      name: 'lia',
+      dependencies: ['setup'],
+      testMatch: /lia\/.*\.spec\.js$/,
+      use: { storageState: STATE },
+    },
   ],
   webServer: {
     command: `python3 -m http.server ${PORT} --bind 127.0.0.1`,

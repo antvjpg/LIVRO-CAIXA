@@ -9,6 +9,8 @@
     "code:test:headed": "playwright test --headed",
     "code:smoke": "playwright test --project=smoke",
     "code:movimentacoes": "playwright test --project=movimentacoes",
+    "code:orcamento": "playwright test --project=orcamento",
+    "code:lia": "playwright test --project=lia",
     "code:report": "node e2e/reports/generate-report.cjs",
     "code:oracles": "node --test \"e2e/oracles/*.test.mjs\"",
     "code:reset": "node e2e/seeds/reset.cjs",
@@ -18,7 +20,8 @@
     "code:report:strict": "node e2e/reports/generate-report.cjs --strict",
     "code:security": "node --test \"e2e/security/*.test.mjs\"",
     "code:syntax": "node e2e/scripts/syntax-check.cjs",
-    "code:v20": "node --test \"worker/test/v20-01-*.test.mjs\" \"e2e/oracles/v20-01-*.test.mjs\" \"e2e/security/v20-01-*.test.mjs\""
+    "code:v20": "node --test \"worker/test/v20-01-*.test.mjs\" \"e2e/oracles/v20-01-*.test.mjs\" \"e2e/security/v20-01-*.test.mjs\"",
+    "code:v20-02": "node --test \"e2e/oracles/v20-02-*.test.mjs\" \"e2e/security/v20-02-*.test.mjs\""
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0"

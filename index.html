@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.20-01 (opencode) — Branding Orange themes (claro + escuro) -->
+<html lang="pt-BR"><!-- Livro-Caixa V.20-02 (opencode) — Branding Orange themes (claro + escuro) -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
@@ -27,7 +27,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="./card-engine-v3-combined.js"></script>
   <script src="./financial-client.js"></script>
-  <!-- V.20-01 — camada de abstração de anexos/OCR (contrato estável
+  <!-- V.20-02 — camada de abstração de anexos/OCR (contrato estável
        globalThis.LivroCaixaOCR). Módulos puros, sem dependência de
        Android/Capacitor: o PWA continua funcional sem recursos nativos. -->
   <script src="./ocr/limits.js"></script>
@@ -37,11 +37,11 @@
   <script src="./ocr/ocr-adapter.js"></script>
   <script src="./ocr/lia-interpret.js"></script>
   <script src="./ocr/review.js"></script>
-<!-- Contrato do Chat IA (V.20-01) — fonte única de limites/validação,
+<!-- Contrato do Chat IA (V.20-02) — fonte única de limites/validação,
         compartilhada com o Worker. O módulo expõe
         window.LivroCaixaChatContract antes do DOMContentLoaded. -->
   <script type="module" src="./ai-chat-contract.js"></script>
-  <!-- Persistência do histórico do chat no IndexedDB (V.20-01). -->
+  <!-- Persistência do histórico do chat no IndexedDB (V.20-02). -->
   <script type="module" src="./chat-persistence.js"></script>
 
 
@@ -435,7 +435,6 @@
       </div>
 
       <div class="feature-profile-primary-actions" style="display:none;">
-        <button type="button" id="btnSaveFeatureSettings" class="primary">Salvar configurações</button>
         <div id="profileSettingsStatus" class="feature-profile-feedback" aria-live="polite"></div>
       </div>
 
@@ -1313,7 +1312,7 @@
       </div>
     </div>
 
-    <!-- CHAT IA (V.20-01) — modal aberto pelo FAB da Visão Geral.
+    <!-- CHAT IA (V.20-02) — modal aberto pelo FAB da Visão Geral.
          Reutiliza o overlay/painel padrão: Escape e fechamento global
          continuam funcionando pelo caminho já existente. -->
     <div class="panel" id="panelAiChat" role="dialog" aria-modal="true" aria-labelledby="aiChatTitle">
@@ -1332,7 +1331,7 @@
       <form class="ai-chat-composer" id="aiChatForm" autocomplete="off">
         <label class="ai-chat-label" for="aiChatInput">Pergunte sobre suas finanças</label>
         <div class="ai-chat-row">
-          <!-- V.20-01 — anexo da LIA: validação + OCR + revisão obrigatória.
+          <!-- V.20-02 — anexo da LIA: validação + OCR + revisão obrigatória.
                Este input nunca cria movimentação; só alimenta o pipeline. -->
           <input
             type="file"
@@ -1361,7 +1360,7 @@
       </div>
     </div>
 
-    <!-- V.20-01 — revisão humana obrigatória do anexo lido pela LIA.
+    <!-- V.20-02 — revisão humana obrigatória do anexo lido pela LIA.
          Nenhum elemento deste painel grava dado por si só: a confirmação
          alimenta o fluxo EXISTENTE de criação de movimentação (fSalvar),
          com as mesmas validações, persistência e tratamento de erro. -->
@@ -1580,7 +1579,7 @@ window.LivroCaixaAI = {
       { signal }
     );
   },
-  /* Chat IA (V.20-01): contrato {message, financialSnapshot, conversationContext}.
+  /* Chat IA (V.20-02): contrato {message, financialSnapshot, conversationContext}.
      Sem fallback de chave local — o Worker é quem valida limites, cota e
      autenticação, e este caminho não pode ser contornado. */
   async chat({ message, financialSnapshot, conversationContext, signal } = {}) {
@@ -7025,11 +7024,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const budgetsHTML = s.budgets.rows.length
       ? s.budgets.rows.map(row => {
         const over = row.pct >= 100;
+        let statusLabel = '';
+        let statusClass = '';
+        if (row.pct >= 100) { statusLabel = 'Excedido'; statusClass = 'excedido'; }
+        else if (row.pct >= 80) { statusLabel = 'Atenção'; statusClass = 'atencao'; }
+        else { statusLabel = 'Normal'; statusClass = 'normal'; }
         return `
         <div class="budget-summary-row">
           <div><strong>${escapeHTML(row.name)}</strong><span class="js-money">${fmt(row.spent)} de ${fmt(row.planned)}</span></div>
           <div class="budget-summary-track"><span class="${over ? 'over' : ''}" style="width:${Math.min(100, Math.max(0, row.pct)).toFixed(2)}%"></span></div>
           <b>${row.pct.toFixed(0).replace('.', ',')}%</b>
+          <span class="budget-status ${statusClass}">${statusLabel}</span>
         </div>`;
       }).join('')
       : `<div class="dashboard-empty-state">Nenhum orçamento ativo no ciclo atual. Defina limites em Perfil → Preferências financeiras.</div>`;
@@ -7330,7 +7335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.LivroCaixaAI?.refreshQuota?.();
     const bank = document.getElementById('reconcileBank'); if (bank) { const current = bank.value; bank.innerHTML = banks.map(item => `<option value="${item.id}">${escapeHTML(item.name)}</option>`).join(''); if (banks.some(item => item.id === current)) bank.value = current; }
     const month = currentMonthYM(); const budgetCycle = currentFinancialCycleKey(); const rows = document.getElementById('featureBudgetRows');
-    if (rows) rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id); const spent = budgetSpent(cat.id, budgetCycle); const pct = budget && budget.amount > 0 ? (spent / budget.amount * 100) : 0; const dot = !budget || !(budget.amount > 0) ? '' : pct >= 100 ? '🔴' : pct >= 80 ? '🟡' : '🟢'; return `<div class="feature-budget-row"><label for="budget-${escapeHTML(cat.id)}">${dot ? dot + ' ' : ''}${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"><span>${fmt(spent)} gastos${budget && budget.amount>0 ? ` (${pct.toFixed(0)}%)` : ''}</span></div>`; }).join('');
+    if (rows) rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id); const spent = budgetSpent(cat.id, budgetCycle); const pct = budget && budget.amount > 0 ? (spent / budget.amount * 100) : 0; let statusLabel = ''; let statusClass = ''; if (budget && budget.amount > 0) { if (pct >= 100) { statusLabel = 'Excedido'; statusClass = 'excedido'; } else if (pct >= 80) { statusLabel = 'Atenção'; statusClass = 'atencao'; } else { statusLabel = 'Normal'; statusClass = 'normal'; } } return `<div class="feature-budget-row"><label for="budget-${escapeHTML(cat.id)}">${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"><span>${fmt(spent)} gastos${budget && budget.amount>0 ? ` (${pct.toFixed(0)}%)` : ''}</span>${statusLabel ? `<span class="budget-status ${statusClass}">${statusLabel}</span>` : ''}</div>`; }).join('');
     initMoneyMasks();
   }
   function openFeatureProfile() { renderFeatureProfile(); openModal('panelFeatureProfile'); }
@@ -7363,42 +7368,51 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
   async function saveFeatureSettings({ silent = false } = {}) {
+    const statusEl = document.getElementById('profileSettingsStatus');
     featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization') ? document.getElementById('featureAutoCategorization').checked : featureSettings.autoCategorization, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
         ? readMoneyInput(document.getElementById('featureSavingsGoalAmount'))
         : featureSettings.monthlySavingsGoal });
     budgets = budgets.filter(item => !document.getElementById(`budget-${item.categoryId}`));
     document.querySelectorAll('[data-budget-category]').forEach(input => { const amount = readMoneyInput(input); const categoryId = input.dataset.budgetCategory; if (amount > 0) budgets.push({ id: `bud_${categoryId}`, categoryId, month: currentMonthYM(), amount, updatedAt: new Date().toISOString() }); });
     persistFeatureSettings();
+    if (!silent && statusEl) statusEl.textContent = 'Salvando…';
     try {
       await persistAll();
       await persistProfileSettings();
-      if (!silent) {
-        document.getElementById('profileSettingsStatus').textContent = 'Configurações e orçamentos salvos. Automação atualizada.';
+      if (!silent && statusEl) {
+        statusEl.textContent = 'Salvo ✓';
+        setTimeout(() => { if (statusEl.textContent === 'Salvo ✓') statusEl.textContent = ''; }, 3000);
         logInfo('Recursos de teste', 'Salvar configurações', 'Sucesso', 'Configurações, preferências e orçamentos atualizados.');
+      } else if (silent && statusEl) {
+        statusEl.textContent = 'Salvo ✓';
+        setTimeout(() => { if (statusEl.textContent === 'Salvo ✓') statusEl.textContent = ''; }, 2000);
       }
     } catch (err) {
-      document.getElementById('profileSettingsStatus').textContent = silent
-        ? 'Alteração salva localmente; sincronização remota falhou.'
-        : 'Configuração local salva; sincronização remota falhou.';
+      if (statusEl) statusEl.textContent = silent ? 'Erro ao sincronizar (salvo localmente)' : 'Erro ao sincronizar (salvo localmente)';
       logSyncError('configurações de teste', err);
     }
     startFeatureAutomation(); render();
   }
-  document.getElementById('btnSaveFeatureSettings')?.addEventListener('click', () => saveFeatureSettings());
 
-  // Salvamento automático (com debounce) ao alterar QUALQUER opção da aba Perfil.
+  let featureSettingsAutosaveTimer = 0;
+  let isSaving = false;
+  function scheduleFeatureSettingsAutosave() {
+    if (isSaving) return;
+    clearTimeout(featureSettingsAutosaveTimer);
+    featureSettingsAutosaveTimer = setTimeout(async () => {
+      isSaving = true;
+      await saveFeatureSettings({ silent: true });
+      isSaving = false;
+    }, 700);
+  }
   const FEATURE_AUTOSAVE_IDS = [
     'featureAutoBills', 'featureReminders', 'featureAutoQuotes', 'featureQuoteInterval',
     'featureProjectionMonths', 'featureAutoCategorization', 'featureReminderAdvanceDays',
     'featureSavingsGoalAmount'
   ];
-  let featureSettingsAutosaveTimer = 0;
-  function scheduleFeatureSettingsAutosave() {
-    clearTimeout(featureSettingsAutosaveTimer);
-    featureSettingsAutosaveTimer = setTimeout(() => { saveFeatureSettings({ silent: true }); }, 700);
-  }
   FEATURE_AUTOSAVE_IDS.forEach(id => document.getElementById(id)?.addEventListener('change', scheduleFeatureSettingsAutosave));
   document.getElementById('featureBudgetRows')?.addEventListener('change', scheduleFeatureSettingsAutosave);
+  document.getElementById('featureBudgetRows')?.addEventListener('input', scheduleFeatureSettingsAutosave);
   document.getElementById('btnRunFeatureCycle')?.addEventListener('click', async () => { const status = document.getElementById('featureProfileStatus'); status.textContent = 'Executando ciclo de recorrências, lembretes e cotações…'; const result = await runFeatureAutomation({ manual: true }); status.textContent = result?.cancelled ? 'Ciclo cancelado; nenhum lançamento foi criado.' : result?.skipped ? 'Faça login para executar alterações financeiras.' : 'Ciclo concluído. Verifique o calendário, os avisos e os cards de investimento.'; });
   function suggestCategoryForDescription(description) { const text = String(description || '').toLocaleLowerCase('pt-BR'); const scores = new Map(); entries.forEach(entry => { const entryText = String(entry.desc || '').toLocaleLowerCase('pt-BR'); const category = categories.find(item => item.id === entry.category); if (!category || !entryText) return; const tokens = text.split(/\s+/).filter(token => token.length >= 4); const matches = tokens.filter(token => entryText.includes(token)).length; if (matches) scores.set(category.id, (scores.get(category.id) || 0) + matches); }); const best = [...scores.entries()].sort((a, b) => b[1] - a[1])[0]; return best ? best[0] : ''; }
   function applySimpleAutoCategorization(rows) { return rows.map(row => { if (!row.category && featureSettings.autoCategorization) { const suggested = suggestCategoryForDescription(row.desc); if (suggested) { row.category = suggested; row.matchStatus = 'Categoria sugerida pelo histórico · revise antes de confirmar'; } } return row; }); }
@@ -7537,7 +7551,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
-  const APP_VERSION_LABEL = 'Livro-Caixa V.20-01 (opencode)';
+  const APP_VERSION_LABEL = 'Livro-Caixa V.20-02 (opencode)';
   const HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
   function syncProfileEmail() {
@@ -7929,7 +7943,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  /* ETAPA 3 (V.20-01) — o orçamento do snapshot (CHAT_SNAPSHOT_REDUCTIONS e
+  /* ETAPA 3 (V.20-02) — o orçamento do snapshot (CHAT_SNAPSHOT_REDUCTIONS e
      fitChatSnapshotToBudget) mora em ai-chat-contract.js junto dos limites
      que ele usa; aqui só chamamos contract.fitChatSnapshotToBudget(). */
 
@@ -7962,7 +7976,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* =====================================================================
-     CHAT IA (V.20-01) — modal aberto pelo FAB da Visão Geral.
+     CHAT IA (V.20-02) — modal aberto pelo FAB da Visão Geral.
 
      - contrato/limites: window.LivroCaixaChatContract (fonte única);
      - snapshot: buildGeminiFinancialSnapshot() + orçamento de 64 KB;
