@@ -1762,9 +1762,332 @@
   .feature-profile-warning{display:flex;gap:11px;align-items:flex-start;margin:18px 26px 4px;padding:12px 13px;border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--gold) 8%,var(--paper));}
   .feature-profile-warning-icon{font-size:18px;line-height:1.1;}
   .feature-profile-warning strong,.feature-profile-warning span{display:block;}
-  .feature-profile-warning strong{font-size:12px;margin-bottom:2px;}
-  .feature-profile-warning span{font-size:10.5px;color:var(--ink-soft);line-height:1.4;}
-  .feature-profile-section{margin:18px 26px 0;padding:17px;border:1px solid var(--line);border-radius:14px;background:var(--paper-2);}
+  /* ===== Conciliação Bancária - Redesenhada ===== */
+.reconciliation-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 8px;
+}
+
+.reconciliation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.reconciliation-header h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.reconciliation-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.reconciliation-badge.ok {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.reconciliation-badge.warning {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.reconciliation-badge.error {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.reconciliation-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.reconciliation-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reconciliation-field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.reconciliation-field select,
+.reconciliation-field input[data-money="true"] {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.reconciliation-field select:focus,
+.reconciliation-field input[data-money="true"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.reconciliation-field input[data-money="true"]::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.5;
+}
+
+.reconciliation-balances {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.balance-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.balance-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 120px;
+}
+
+.balance-item.calculated {
+  border-right: 1px solid var(--line);
+  padding-right: 16px;
+}
+
+.balance-item.reported {
+  border-left: 1px solid var(--line);
+  padding-left: 16px;
+}
+
+.balance-divider {
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.balance-label {
+  font-size: 10px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.balance-value {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink);
+}
+
+.difference-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  width: 100%;
+}
+
+.difference-amount {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.difference-amount.positive { color: var(--green); }
+.difference-amount.negative { color: var(--red); }
+.difference-amount.zero { color: var(--green); }
+
+.difference-label {
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.reconciliation-history {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.reconciliation-history h5 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.reconciliation-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.reconciliation-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--paper-2);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.reconciliation-history-item .history-date {
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.reconciliation-history-item .history-diff {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.reconciliation-history-item .history-diff.positive { color: var(--green); }
+.reconciliation-history-item .history-diff.negative { color: var(--red); }
+
+.reconciliation-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.reconciliation-actions .primary { flex: 1; min-height: 44px; }
+.reconciliation-actions .secondary { flex: 1; min-height: 44px; }
+
+.reconciliation-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.reconciliation-badge.ok {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.reconciliation-badge.warning {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.reconciliation-badge.error {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.reconciliation-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.reconciliation-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--paper-2);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.reconciliation-history-item .history-date {
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.reconciliation-history-item .history-diff {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.reconciliation-history-item .history-diff.positive { color: var(--green); }
+.reconciliation-history-item .history-diff.negative { color: var(--red); }
+
+@media (max-width: 768px) {
+  .balance-comparison {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .balance-item.calculated {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding-right: 0;
+    padding-bottom: 8px;
+  }
+
+  .balance-item.reported {
+    border-left: none;
+    border-top: 1px solid var(--line);
+    padding-left: 0;
+    padding-top: 8px;
+  }
+
+  .balance-divider {
+    display: none;
+  }
+}
+
+.feature-profile-warning strong{font-size:12px;margin-bottom:2px;}
   .feature-profile-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
   .feature-profile-section-head>div{display:flex;align-items:center;gap:9px;min-width:0;}
   .feature-profile-section-number{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:var(--accent-soft);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:800;}

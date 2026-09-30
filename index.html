@@ -448,12 +448,53 @@
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-bank"></i></span> Conciliação bancária</div>
         <div class="feature-profile-section">
-          <div class="feature-profile-fields">
-            <div><label for="reconcileBank">Banco</label><select id="reconcileBank"></select></div>
-            <div><label for="reconcileReported">Saldo informado</label><input type="text" id="reconcileReported" data-money="true" placeholder="R$ 0,00"></div>
+          <div class="reconciliation-card">
+            <div class="reconciliation-header">
+              <h4>Conciliação de saldo</h4>
+              <span class="reconciliation-badge" id="reconciliationStatusBadge" hidden></span>
+            </div>
+            
+            <div class="reconciliation-fields">
+              <div class="reconciliation-field">
+                <label for="reconcileBank">Banco</label>
+                <select id="reconcileBank" aria-label="Selecione o banco para conciliação"></select>
+              </div>
+              <div class="reconciliation-field">
+                <label for="reconcileReported">Saldo informado pelo banco</label>
+                <input type="text" id="reconcileReported" data-money="true" placeholder="R$ 0,00" aria-label="Saldo informado pelo extrato bancário">
+              </div>
+            </div>
+            
+            <div class="reconciliation-balances" id="reconciliationBalances" hidden>
+              <div class="balance-comparison">
+                <div class="balance-item calculated">
+                  <span class="balance-label">Saldo calculado</span>
+                  <span class="balance-value" id="reconciliationCalculated">R$ 0,00</span>
+                </div>
+                <div class="balance-divider">vs</div>
+                <div class="balance-item reported">
+                  <span class="balance-label">Saldo informado</span>
+                  <span class="balance-value" id="reconciliationReportedValue">R$ 0,00</span>
+                </div>
+              </div>
+              <div class="difference-display" id="differenceDisplay">
+                <div class="difference-amount" id="differenceAmount">R$ 0,00</div>
+                <div class="difference-label" id="differenceLabel"></div>
+              </div>
+            </div>
+            
+            <div class="feature-profile-actions">
+              <button type="button" id="btnRunReconciliation" class="primary">Comparar saldos</button>
+              <button type="button" id="btnApplyReconciliation" class="secondary" hidden>Aplicar ajuste sugerido</button>
+            </div>
+            
+            <div id="reconciliationResult" class="feature-profile-feedback" aria-live="polite"></div>
+            
+            <div id="reconciliationHistory" class="reconciliation-history" hidden>
+              <h5>Histórico de conciliações</h5>
+              <div id="reconciliationHistoryList"></div>
+            </div>
           </div>
-          <div class="feature-profile-actions"><button type="button" id="btnRunReconciliation">Comparar saldos</button><button type="button" id="btnApplyReconciliation" hidden>Aplicar ajuste sugerido</button></div>
-          <div id="reconciliationResult" class="feature-profile-feedback" aria-live="polite"></div>
         </div>
 
       </div>
@@ -7320,6 +7361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const month = currentMonthYM(); const budgetCycle = currentFinancialCycleKey(); const rows = document.getElementById('featureBudgetRows');
     if (rows) rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id); const spent = budgetSpent(cat.id, budgetCycle); const pct = budget && budget.amount > 0 ? (spent / budget.amount * 100) : 0; let statusLabel = ''; let statusClass = ''; if (budget && budget.amount > 0) { if (pct >= 100) { statusLabel = 'Excedido'; statusClass = 'excedido'; } else if (pct >= 80) { statusLabel = 'Atenção'; statusClass = 'atencao'; } else { statusLabel = 'Normal'; statusClass = 'normal'; } } return `<div class="feature-budget-row"><label for="budget-${escapeHTML(cat.id)}">${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"><span>${fmt(spent)} gastos${budget && budget.amount>0 ? ` (${pct.toFixed(0)}%)` : ''}</span>${statusLabel ? `<span class="budget-status ${statusClass}">${statusLabel}</span>` : ''}</div>`; }).join('');
     initMoneyMasks();
+    renderReconciliationHistory();
   }
   function openFeatureProfile() { renderFeatureProfile(); openModal('panelFeatureProfile'); }
 
@@ -8493,8 +8535,175 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   document.getElementById('btnPinLogout')?.addEventListener('click', () => auth.signOut());
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && currentUser && hasLocalPin()) { pinUnlocked = false; showPinOverlay(); } });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && currentUser) refreshStaleInvestmentQuotes(); });
-  document.getElementById('btnRunReconciliation')?.addEventListener('click', () => { const bankId = document.getElementById('reconcileBank')?.value; const reported = readMoneyInput('reconcileReported'); const calculated = bankBalance(bankId); const difference = reported - calculated; pendingReconciliation = Math.abs(difference) > 0.005 ? { bankId, reported, calculated, difference } : null; const result = document.getElementById('reconciliationResult'); if (result) result.textContent = Math.abs(difference) <= 0.005 ? `Conciliação conferida: ${fmt(calculated)}. Nenhum ajuste necessário.` : `Saldo calculado: ${fmt(calculated)} · informado: ${fmt(reported)} · diferença sugerida: ${fmt(difference)}.`; const apply = document.getElementById('btnApplyReconciliation'); if (apply) apply.hidden = !pendingReconciliation; logInfo('Conciliação', 'Comparar saldos', 'Sucesso', 'Comparação entre saldo calculado e informado concluída.', { bankId, difference }); });
-  document.getElementById('btnApplyReconciliation')?.addEventListener('click', async () => { if (!pendingReconciliation) return; const bank = banks.find(item => item.id === pendingReconciliation.bankId); if (!bank) return; const amount = Math.abs(pendingReconciliation.difference); const category = categories.find(item => item.name === 'Outros') || categories[0]; entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), date: todayISO(), desc: 'Ajuste de conciliação', bank: bank.id, category: category?.id || '', amount, type: pendingReconciliation.difference > 0 ? 'in' : 'out', isReconciliationAdjustment: true }); try { await persistAll(); logInfo('Conciliação', 'Aplicar ajuste', 'Sucesso', `Ajuste de ${fmt(amount)} aplicado em ${bank.name}.`); } catch (err) { logSyncError('ajuste de conciliação', err); } pendingReconciliation = null; document.getElementById('btnApplyReconciliation').hidden = true; document.getElementById('reconciliationResult').textContent = 'Ajuste aplicado e incorporado ao Livro-Caixa.'; render(); });
+  document.getElementById('btnRunReconciliation')?.addEventListener('click', () => {
+    const bankId = document.getElementById('reconcileBank')?.value;
+    const reported = readMoneyInput('reconcileReported');
+    const calculated = bankBalance(bankId);
+    const difference = reported - calculated;
+
+    if (!bankId) {
+      const result = document.getElementById('reconciliationResult');
+      if (result) result.textContent = 'Selecione um banco para conciliar.';
+      return;
+    }
+
+    if (reported <= 0) {
+      const result = document.getElementById('reconciliationResult');
+      if (result) result.textContent = 'Informe o saldo do extrato bancário.';
+      return;
+    }
+
+    const differenceAbs = Math.abs(difference);
+    const isMatch = differenceAbs <= 0.005;
+
+    // Update reconciliation status badge
+    const badge = document.getElementById('reconciliationStatusBadge');
+    if (badge) {
+      badge.hidden = false;
+      badge.textContent = isMatch ? 'Conciliado' : 'Diferença detectada';
+      badge.className = 'reconciliation-badge ' + (isMatch ? 'ok' : 'warning');
+    }
+
+    // Show balances comparison
+    const balancesDiv = document.getElementById('reconciliationBalances');
+    if (balancesDiv) balancesDiv.hidden = false;
+
+    const calculatedEl = document.getElementById('reconciliationCalculated');
+    if (calculatedEl) calculatedEl.textContent = fmt(calculated);
+
+    const reportedEl = document.getElementById('reconciliationReportedValue');
+    if (reportedEl) reportedEl.textContent = fmt(reported);
+
+    const diffEl = document.getElementById('differenceAmount');
+    const diffLabel = document.getElementById('differenceLabel');
+
+    if (diffEl) {
+      diffEl.textContent = fmt(differenceAbs);
+      diffEl.className = 'difference-amount ' + (difference > 0 ? 'positive' : (difference < 0 ? 'negative' : 'zero'));
+    }
+
+    if (diffLabel) {
+      if (isMatch) {
+        diffLabel.textContent = 'Saldo conferido — nenhuma diferença';
+        diffLabel.style.color = 'var(--green)';
+      } else if (difference > 0) {
+        diffLabel.textContent = 'O extrato bancário informa mais que o calculado';
+        diffLabel.style.color = 'var(--gold)';
+      } else {
+        diffLabel.textContent = 'O saldo calculado é maior que o informado';
+        diffLabel.style.color = 'var(--red)';
+      }
+    }
+
+    // Show/hide apply button
+    const applyBtn = document.getElementById('btnApplyReconciliation');
+    if (applyBtn) applyBtn.hidden = Math.abs(difference) <= 0.005;
+
+    // Update result text
+    const result = document.getElementById('reconciliationResult');
+    if (result) {
+      if (isMatch) {
+        result.textContent = `Conciliação conferida: ${fmt(calculated)}. Nenhum ajuste necessário.`;
+      } else {
+        result.textContent = `Saldo calculado: ${fmt(calculated)} · informado: ${fmt(reported)} · diferença sugerida: ${fmt(difference)}.`;
+      }
+    }
+
+    // Store for apply action
+    pendingReconciliation = isMatch ? null : { bankId, reported, calculated, difference };
+
+    // Add to history
+    addReconciliationToHistory(bankId, calculated, reported, difference, isMatch);
+
+    logInfo('Conciliação', 'Comparar saldos', 'Sucesso', 'Comparação entre saldo calculado e informado concluída.', { bankId, difference, isMatch });
+  });
+
+  document.getElementById('btnApplyReconciliation')?.addEventListener('click', async () => {
+    if (!pendingReconciliation) return;
+    const bank = banks.find(item => item.id === pendingReconciliation.bankId);
+    if (!bank) return;
+    const amount = Math.abs(pendingReconciliation.difference);
+    const category = categories.find(item => item.name === 'Outros') || categories[0];
+    entries.push({
+      id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7),
+      date: todayISO(),
+      desc: 'Ajuste de conciliação',
+      bank: bank.id,
+      category: category?.id || '',
+      amount,
+      type: pendingReconciliation.difference > 0 ? 'in' : 'out',
+      isReconciliationAdjustment: true
+    });
+    try {
+      await persistAll();
+      logInfo('Conciliação', 'Aplicar ajuste', 'Sucesso', `Ajuste de ${fmt(amount)} aplicado em ${bank.name}.`);
+    } catch (err) {
+      logSyncError('ajuste de conciliação', err);
+    }
+    pendingReconciliation = null;
+    document.getElementById('btnApplyReconciliation').hidden = true;
+    document.getElementById('reconciliationResult').textContent = 'Ajuste aplicado e incorporado ao Livro-Caixa.';
+    render();
+  });
+
+  function addReconciliationToHistory(bankId, calculated, reported, difference, isMatch) {
+    const bank = banks.find(b => b.id === bankId);
+    if (!bank) return;
+
+    const historyKey = 'reconciliationHistory';
+    try {
+      const stored = localStorage.getItem(historyKey);
+      const history = stored ? JSON.parse(stored) : [];
+      const entry = {
+        bankId,
+        bankName: bank.name,
+        calculated,
+        reported,
+        difference,
+        isMatch,
+        timestamp: Date.now(),
+        date: todayISO()
+      };
+      history.unshift(entry);
+      if (history.length > 50) history.length = 50;
+      localStorage.setItem(historyKey, JSON.stringify(history));
+      renderReconciliationHistory();
+    } catch (err) {
+      logWarn('Conciliação', 'Salvar histórico', 'Falha', err.message);
+    }
+  }
+
+  function renderReconciliationHistory() {
+    const historyKey = 'reconciliationHistory';
+    const list = document.getElementById('reconciliationHistoryList');
+    const historyDiv = document.getElementById('reconciliationHistory');
+    if (!list || !historyDiv) return;
+
+    try {
+      const stored = localStorage.getItem('reconciliationHistory');
+      const history = stored ? JSON.parse(stored) : [];
+
+      if (history.length === 0) {
+        historyDiv.hidden = true;
+        return;
+      }
+
+      historyDiv.hidden = false;
+      list.innerHTML = history.map(item => `
+        <div class="reconciliation-history-item">
+          <span class="history-date">${escapeHTML(item.date)}</span>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+            <span class="history-bank" style="font-weight:600;color:var(--ink);font-size:12px;">${escapeHTML(item.bankName)}</span>
+            <span class="history-diff ${item.difference > 0 ? 'positive' : (item.difference < 0 ? 'negative' : 'zero')}" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;color:${item.difference > 0 ? 'var(--red)' : (item.difference < 0 ? 'var(--green)' : 'var(--green)')};">
+              ${item.difference === 0 ? '✓ Conciliado' : (item.difference > 0 ? '+' : '') + fmt(Math.abs(item.difference))}
+            </span>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      logWarn('Conciliação', 'Render histórico', 'Falha', err.message);
+    }
+  }
 
   async function autoGenerateRecurringBills() {
     if (!currentUser) { logWarn('Calendário', 'Geração automática', 'Ignorado', 'É necessário estar autenticado para gerar lançamentos financeiros.'); return 0; }
