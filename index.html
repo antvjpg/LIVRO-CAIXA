@@ -13976,53 +13976,244 @@ document.getElementById('tSalvar').onclick = async () => {
   document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx().catch(err => { logSyncError('exportação DOCX', err); alert('Não foi possível gerar o arquivo Word.'); }); };
   function exportExtractPdf() {
     if (!window.jspdf || !window.jspdf.jsPDF) { alert('A biblioteca PDF ainda está carregando.'); return; }
-    const grouped=getOrganizedExportData(); const meta=getExportMeta(); const {jsPDF}=window.jspdf; const doc=new jsPDF(); const initial=grouped.reduce((s,g)=>s+g.initialBalance,0); const final=grouped.reduce((s,g)=>s+g.finalBalance,0); let y=18;
-    doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('Livro-Caixa — Extrato',14,y); y+=7; doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`,14,y); y+=6; doc.text(`Saldo Inicial: ${fmt(initial)}   Saldo Final: ${fmt(final)}`,14,y); y+=10;
-    grouped.forEach(group=>{ if(y>260){doc.addPage();y=20;} doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text(group.bank.name,14,y);y+=6;doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`,14,y);y+=6;doc.text('Data',14,y);doc.text('Descrição',38,y);doc.text('Categoria',110,y);doc.text('Movimentação',148,y);doc.text('Saldo',185,y);y+=4;doc.line(14,y,196,y);y+=6;let running=group.initialBalance;group.entries.forEach(e=>{if(y>280){doc.addPage();y=20;}const cat=categories.find(c=>c.id===e.category);const dateFmt=e.date.split('-').reverse().join('/');running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);const descLines=doc.splitTextToSize((e.desc||'Lançamento'),68);doc.text(dateFmt,14,y);doc.text(descLines[0]||'',38,y);doc.text(cat?cat.name.slice(0,14):'—',110,y);doc.text((e.type==='in'?'+':'-')+' '+fmt(Math.abs(e.amount)).replace('R$ ',''),148,y);doc.text(fmt(running).replace('R$ ',''),185,y);if(descLines.length>1){y+=5;doc.setFontSize(8);doc.text(descLines.slice(1,3).join(' '),38,y);doc.setFontSize(9);}y+=6;});y+=10;});
+    const grouped=getOrganizedExportData(); const meta=getExportMeta(); const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4'}); const initial=grouped.reduce((s,g)=>s+g.initialBalance,0); const final=grouped.reduce((s,g)=>s+g.finalBalance,0);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 14;
+    const contentWidth = pageWidth - 2 * margin;
+    let y = 18;
+    let pageNum = 1;
+    const totalPages = estimateTotalPages(grouped, meta);
 
+    const addHeader = (title) => {
+      doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('Livro-Caixa — Extrato', margin, y); y+=7;
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      doc.text(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`, margin, y); y+=5;
+      doc.text(`Saldo Inicial: ${fmt(initial)} | Saldo Final: ${fmt(final)}`, margin, y); y+=8;
+      doc.setDrawColor(200,200,200); doc.line(margin, y, pageWidth - margin, y); y+=6;
+    };
+
+    const addFooter = () => {
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8); doc.setFont('helvetica','normal');
+        doc.setTextColor(120,120,120);
+        doc.text(`Livro-Caixa — Extrato | Página ${i} de ${pageCount} | ${todayISO()}`, pageWidth/2, pageHeight - 8, {align:'center'});
+        doc.text(`Gerado em ${new Date().toLocaleString('pt-BR')}`, pageWidth/2, pageHeight - 4, {align:'center'});
+      }
+    };
+
+    const addPageIfNeeded = (spaceNeeded) => {
+      if (y + spaceNeeded > pageHeight - 20) {
+        doc.addPage(); y = 14; pageNum++;
+        doc.setDrawColor(200,200,200); doc.line(margin, y - 4, pageWidth - margin, y - 4);
+      }
+    };
+
+    const drawTableHeader = (cols, widths) => {
+      doc.setFont('helvetica','bold'); doc.setFontSize(8);
+      doc.setFillColor(240,240,240);
+      let x = margin;
+      cols.forEach((col, i) => {
+        doc.rect(x, y, widths[i], 6, 'F');
+        doc.text(col, x + 2, y + 4.5);
+        x += widths[i];
+      });
+      y += 6;
+      doc.setDrawColor(0,0,0); doc.line(margin, y, pageWidth - margin, y); y += 2;
+    };
+
+    const drawRow = (cells, widths, running) => {
+      addPageIfNeeded(8);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      let x = margin;
+      cells.forEach((cell, i) => {
+        const w = widths[i];
+        doc.text(String(cell), x + 1, y + 4, {maxWidth: w - 2});
+        x += w;
+      });
+      y += 5;
+      if (running !== undefined) {
+        doc.setFont('helvetica','normal'); doc.setFontSize(7);
+        doc.setTextColor(100,100,100);
+        doc.text(`Saldo: ${fmt(running)}`, margin + widths[0] + widths[1] + widths[2] + 2, y - 1);
+        doc.setTextColor(0,0,0);
+      }
+    };
+
+    function estimateTotalPages(grouped, meta) {
+      let total = 1; // capa
+      grouped.forEach(g => total += Math.ceil((g.entries.length + 2) / 30));
+      return total + 3; // caixinhas, investimentos, resumo
+    }
+
+    addHeader('Livro-Caixa — Extrato');
+
+    grouped.forEach((group, gi) => {
+      addPageIfNeeded(30);
+      doc.setFont('helvetica','bold'); doc.setFontSize(13);
+      doc.setTextColor(40,40,40);
+      doc.text(group.bank.name, margin, y); y+=6;
+      doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.setTextColor(80,80,80);
+      doc.text(`Saldo inicial: ${fmt(group.initialBalance)}  |  Saldo final: ${fmt(group.finalBalance)}`, margin, y); y+=5;
+      doc.setDrawColor(200,200,200); doc.line(margin, y, pageWidth - margin, y); y+=4;
+
+      const widths = [25, 55, 30, 25, 25, 30];
+      drawTableHeader(['Data','Descrição','Categoria','Entrada','Saída','Saldo'], widths);
+
+      let running = group.initialBalance;
+      group.entries.forEach(e => {
+        addPageIfNeeded(8);
+        const cat = categories.find(c => c.id === e.category);
+        const dateFmt = e.date.split('-').reverse().join('/');
+        running += e.type === 'in' ? Number(e.amount||0) : -Number(e.amount||0);
+        const descLines = doc.splitTextToSize((e.desc||'Lançamento'), 55);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(0,0,0);
+        doc.text(e.date.split('-').reverse().join('/'), margin, y);
+        doc.text(descLines[0] || '', margin + 25, y);
+        const catName = cat ? cat.name.slice(0,18) : '—';
+        doc.text(catName, margin + 25 + 55, y);
+        const movText = (e.type==='in'?'+':'−') + ' ' + fmt(Math.abs(e.amount)).replace('R$ ','');
+        doc.setTextColor(e.type==='in'?0x2F6F4F:0xB44D3A);
+        doc.text(movText, margin + 25 + 55 + 30, y, {align:'right'});
+        doc.setTextColor(0,0,0);
+        const runningText = fmt(running).replace('R$ ','');
+        doc.setFontSize(7); doc.setTextColor(100,100,100);
+        doc.text(runningText, pageWidth - margin - 30, y);
+        doc.setTextColor(0,0,0);
+        doc.setFontSize(8);
+        y += 5;
+        if (descLines.length > 1) {
+          doc.setFontSize(7); doc.setTextColor(100,100,100);
+          doc.text(descLines.slice(1,3).join(' '), margin + 25, y);
+          doc.setTextColor(0,0,0);
+          y += 4;
+        }
+      });
+      y += 8;
+    });
+
+    // Caixinhas
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     if (pocketsBlock.length) {
-      doc.addPage(); y = 20;
-      doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('2. Caixinhas', 14, y); y += 10;
+      doc.addPage(); y = 14;
+      doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(40,40,40);
+      doc.text('2. Caixinhas', margin, y); y+=10;
       pocketsBlock.forEach(p => {
-        if (y > 260) { doc.addPage(); y = 20; }
-        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text(p.name, 14, y); y += 6;
-        doc.setFont('helvetica','normal'); doc.setFontSize(9);
-        doc.text(`${p.goal ? 'Objetivo: ' + p.goal + ' · ' : ''}Saldo inicial: ${fmt(p.initial)} · Saldo atual: ${fmt(p.current)}`, 14, y); y += 8;
-        p.movements.forEach(m => { if (y > 280) { doc.addPage(); y = 20; } doc.text(`${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}${m.desc ? ' (' + m.desc + ')' : ''}`, 18, y); y += 6; });
-        y += 8;
+        addPageIfNeeded(30);
+        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(40,40,40);
+        doc.text(p.name, margin, y); y+=6;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+        doc.text(`${p.goal ? 'Objetivo: ' + p.goal + ' · ' : ''}Saldo inicial: ${fmt(p.initial)} · Saldo atual: ${fmt(p.current)}`, margin, y); y+=8;
+        p.movements.forEach(m => {
+          addPageIfNeeded(8);
+          doc.setFontSize(9); doc.setTextColor(0,0,0);
+          doc.text(`${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}${m.desc ? ' (' + m.desc + ')' : ''}`, margin + 4, y);
+          y += 6;
+        });
+        y += 6;
       });
     }
 
+    // Investimentos
     const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     if (investBlock.length) {
-      doc.addPage(); y = 20;
-      doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('3. Investimentos', 14, y); y += 10;
+      doc.addPage(); y = 14;
+      doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(40,40,40);
+      doc.text('3. Investimentos', margin, y); y+=10;
       investBlock.forEach(inv => {
-        if (y > 260) { doc.addPage(); y = 20; }
-        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text(`${inv.name}${inv.alias ? ' (' + inv.alias + ')' : ''}`, 14, y); y += 6;
-        doc.setFont('helvetica','normal'); doc.setFontSize(9);
-        doc.text(`Tipo: ${inv.type}${inv.units ? ' · Quantidade: ' + inv.units : ''}${inv.price ? ' · Cotação: ' + fmt(inv.price) : ''} · Valor atual: ${fmt(inv.currentValue)}`, 14, y); y += 8;
-        inv.movements.forEach(m => { if (y > 280) { doc.addPage(); y = 20; } doc.text(`${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}`, 18, y); y += 6; });
-        y += 8;
+        addPageIfNeeded(30);
+        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(40,40,40);
+        doc.text(`${inv.name}${inv.alias ? ' (' + inv.alias + ')' : ''}`, margin, y); y+=6;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+        doc.text(`Tipo: ${inv.type}${inv.units ? ' · Quantidade: ' + inv.units : ''}${inv.price ? ' · Cotação: ' + fmt(inv.price) : ''} · Valor atual: ${fmt(inv.currentValue)}`, margin, y); y+=8;
+        inv.movements.forEach(m => {
+          addPageIfNeeded(8);
+          doc.setFontSize(9); doc.setTextColor(0,0,0);
+          doc.text(`${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}`, margin + 4, y); y+=6;
+        });
+        y += 6;
       });
     }
 
+    // Resumo Patrimonial
     const summary = getPatrimonySummaryBlock();
-    doc.addPage(); y = 20;
-    doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('4. Resumo Patrimonial', 14, y); y += 12;
-    doc.setFont('helvetica','normal'); doc.setFontSize(10);
-    doc.text(`Total em contas: ${fmt(summary.bankTotal)}`, 14, y); y += 8;
-    doc.text(`Total em Caixinhas: ${fmt(summary.pocketTotal)}`, 14, y); y += 8;
-    doc.text(`Total investido: ${fmt(summary.investTotal)}`, 14, y); y += 10;
-    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text(`Patrimônio Total: ${fmt(summary.total)}`, 14, y);
+    doc.addPage(); y = 14;
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(40,40,40);
+    doc.text('Resumo Patrimonial', margin, y); y+=10;
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(0,0,0);
+    doc.text(`Total em contas: ${fmt(getPatrimonySummaryBlock().bankTotal)}`, margin, y); y+=8;
+    doc.text(`Total em Caixinhas: ${fmt(getPatrimonySummaryBlock().pocketTotal)}`, margin, y); y+=8;
+    doc.text(`Total investido: ${fmt(getPatrimonySummaryBlock().investTotal)}`, margin, y); y+=10;
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(0,0,0);
+    doc.text(`Patrimônio Total: ${fmt(getPatrimonySummaryBlock().total)}`, margin, y);
 
-    doc.save(`livro-caixa-extrato-${todayISO()}.pdf`); logInfo('Exportação','Exportação PDF','Sucesso','Extrato PDF completo gerado (4 blocos).',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
+    addFooter();
+    doc.save(`livro-caixa-extrato-${todayISO()}.pdf`); logInfo('Exportação','Exportação PDF','Sucesso','Extrato PDF completo gerado.',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
   }
   function exportExtractXlsx() {
-    if(typeof XLSX==='undefined'){alert('A biblioteca de Excel ainda está carregando.');return;} const grouped=getOrganizedExportData(); const meta=getExportMeta(); const wb=XLSX.utils.book_new(); const totalInitial=grouped.reduce((s,g)=>s+g.initialBalance,0); const totalFinal=grouped.reduce((s,g)=>s+g.finalBalance,0);
-    grouped.forEach(group=>{const rows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],['Saldo Inicial',group.initialBalance],[],['Data','Descrição','Categoria','Entrada','Saída','Saldo']];let running=group.initialBalance;group.entries.forEach(e=>{const cat=categories.find(c=>c.id===e.category);running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);rows.push([e.date.split('-').reverse().join('/'),e.desc||'',cat?cat.name:'—',e.type==='in'?e.amount:'',e.type==='out'?e.amount:'',running]);});rows.push([],['','','','','Saldo Final',group.finalBalance]);const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:12},{wch:34},{wch:18},{wch:14},{wch:14},{wch:14}];const safeName=group.bank.name.replace(/[\/*?:\[\]]/g,'').slice(0,31)||'Banco';XLSX.utils.book_append_sheet(wb,ws,safeName);});
-    const summaryRows=[['Extrato — Livro-Caixa'],['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],[],['Banco','Saldo Inicial','Saldo Final']];grouped.forEach(g=>summaryRows.push([g.bank.name,g.initialBalance,g.finalBalance]));summaryRows.push([],['Saldo Inicial Total',totalInitial],['Saldo Final Total',totalFinal]);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summaryRows),'Resumo');
+    if(typeof XLSX==='undefined'){alert('A biblioteca de Excel ainda está carregando.');return;}
+    const grouped=getOrganizedExportData(); const meta=getExportMeta(); const wb=XLSX.utils.book_new(); const totalInitial=grouped.reduce((s,g)=>s+g.initialBalance,0); const totalFinal=grouped.reduce((s,g)=>s+g.finalBalance,0);
+
+    grouped.forEach(group=>{
+      const rows=[
+        ['Extrato — Livro-Caixa'],
+        ['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],
+        ['Saldo Inicial',group.initialBalance],
+        [],
+        ['Data','Descrição','Categoria','Entrada','Saída','Saldo']
+      ];
+      let running=group.initialBalance;
+      group.entries.forEach(e=>{
+        const cat=categories.find(c=>c.id===e.category);
+        running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);
+        rows.push([
+          e.date.split('-').reverse().join('/'),
+          e.desc||'',
+          cat?cat.name:'—',
+          e.type==='in'?e.amount:'',
+          e.type==='out'?e.amount:'',
+          running
+        ]);
+      });
+      rows.push([],['','','','','Saldo Final',group.finalBalance]);
+      const ws=XLSX.utils.aoa_to_sheet(rows);
+      ws['!cols']=[
+        {wch:12},{wch:40},{wch:22},{wch:14},{wch:14},{wch:16}
+      ];
+      // Currency formatting for money columns
+      for(let r=5;r<=rows.length;r++){
+        ['E','F','G'].forEach(col=>{
+          const cell = ws[`${col}${r}`];
+          if(cell && cell.v!==null && cell.v!=='') {
+            cell.t='n'; cell.z='#,##0.00';
+          }
+        });
+      }
+      const safeName=group.bank.name.replace(/[\/*?:\[\]]/g,'').slice(0,31)||'Banco';
+      XLSX.utils.book_append_sheet(wb,ws,safeName);
+    });
+
+    const summaryRows=[
+      ['Extrato — Livro-Caixa'],
+      ['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],
+      [],
+      ['Banco','Saldo Inicial','Saldo Final']
+    ];
+    grouped.forEach(g=>summaryRows.push([g.bank.name,g.initialBalance,g.finalBalance]));
+    summaryRows.push([],['Saldo Inicial Total',totalInitial],['Saldo Final Total',totalFinal]);
+    const summaryWs = XLSX.utils.aoa_to_sheet(summaryRows);
+    summaryWs['!cols']=[{wch:30},{wch:18},{wch:18}];
+    // Currency format for summary
+    for(let r=5;r<=summaryRows.length;r++){
+      ['B','C'].forEach(col=>{
+        const cell = summaryWs[`${col}${r}`];
+        if(cell && cell.v!==null) { cell.t='n'; cell.z='#,##0.00'; }
+      });
+    }
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(summaryRows),'Resumo');
 
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     if (pocketsBlock.length) {
@@ -14052,9 +14243,17 @@ document.getElementById('tSalvar').onclick = async () => {
 
     const patrimony = getPatrimonySummaryBlock();
     const patrimonyRows = [['4. Resumo Patrimonial'], [], ['Total em contas', patrimony.bankTotal], ['Total em Caixinhas', patrimony.pocketTotal], ['Total investido', patrimony.investTotal], [], ['Patrimônio Total', patrimony.total]];
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(patrimonyRows), 'Patrimônio');
+    const wsPatrimony = XLSX.utils.aoa_to_sheet(patrimonyRows);
+    wsPatrimony['!cols']=[{wch:30},{wch:20}];
+    // Currency format
+    for(let r=4;r<=patrimonyRows.length;r++){
+      const cell = wsPatrimony[`B${r}`];
+      if(cell && cell.v!==null) { cell.t='n'; cell.z='#,##0.00'; }
+    }
+    XLSX.utils.book_append_sheet(wb, wsPatrimony, 'Patrimônio');
 
-    XLSX.writeFile(wb,`livro-caixa-extrato-${todayISO()}.xlsx`);logInfo('Exportação','Exportação Excel','Sucesso','Extrato Excel completo gerado (4 blocos).',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
+    XLSX.writeFile(wb,`livro-caixa-extrato-${todayISO()}.xlsx`);
+    logInfo('Exportação','Exportação Excel','Sucesso','Extrato Excel completo gerado (4 blocos).',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
   }
   async function exportExtractDocx() {
     if (!window.docx) { alert('A biblioteca Word ainda está carregando.'); return; }
@@ -14066,7 +14265,8 @@ document.getElementById('tSalvar').onclick = async () => {
     const children = [
       new d.Paragraph({ text: 'Livro-Caixa — Extrato', heading: d.HeadingLevel.TITLE }),
       new d.Paragraph(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`),
-      new d.Paragraph(`Saldo Inicial: ${fmt(initial)}   |   Saldo Final: ${fmt(final)}`)
+      new d.Paragraph(`Saldo Inicial: ${fmt(initial)}   |   Saldo Final: ${fmt(final)}`),
+      new d.Paragraph({ text: '', spacing: { after: 200 } })
     ];
 
     const detailLine = (label, value, color = '1C2B24') => new d.Paragraph({
@@ -14077,10 +14277,14 @@ document.getElementById('tSalvar').onclick = async () => {
       ]
     });
 
+    const moneyColor = (val) => val >= 0 ? '2F6F4F' : 'B44D3A';
+    const moneySign = (val) => val >= 0 ? '+' : '−';
+
     grouped.forEach(group => {
       children.push(
         new d.Paragraph({ text: group.bank.name, heading: d.HeadingLevel.HEADING_1 }),
-        new d.Paragraph(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`)
+        new d.Paragraph(`Saldo inicial: ${fmt(group.initialBalance)} · Saldo final: ${fmt(group.finalBalance)}`),
+        new d.Paragraph({ text: '', spacing: { after: 100 } })
       );
       let running = group.initialBalance;
       group.entries.forEach(entry => {
@@ -14091,13 +14295,13 @@ document.getElementById('tSalvar').onclick = async () => {
         const movementColor = entry.type === 'in' ? '2F6F4F' : 'B44D3A';
         children.push(
           new d.Paragraph({
-            spacing: { before: 180, after: 70 },
+            spacing: { before: 120, after: 60 },
             children: [new d.TextRun({ text: `${date} — ${entry.desc || 'Lançamento'}`, bold: true, size: 24 })]
           }),
           detailLine('Categoria: ', category ? category.name : '—'),
           detailLine('Movimentação: ', movement, movementColor),
           detailLine('Saldo após o lançamento: ', fmt(running)),
-          new d.Paragraph({ text: '────────────────────────', spacing: { after: 50 } })
+          new d.Paragraph({ text: '', spacing: { after: 60 } })
         );
       });
     });
