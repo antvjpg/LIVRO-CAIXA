@@ -1229,6 +1229,10 @@
       <h3>Revisar importação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <div id="importSummary" class="import-summary" aria-live="polite"></div>
       <div id="importList"></div>
+      <div class="import-actions" style="display:flex; gap:8px; margin:8px 0; flex-wrap:wrap;">
+        <button type="button" id="importRemoveDuplicates" class="secondary" style="flex:1;" disabled aria-label="Remover todas as linhas duplicadas">Remover duplicatas</button>
+        <button type="button" id="importRemoveInvalid" class="secondary" style="flex:1;" disabled aria-label="Remover todas as linhas inválidas">Remover inválidas</button>
+      </div>
       <div class="hint">Possíveis duplicidades são mantidas visíveis para revisão, mas não entram na confirmação. Edite ou remova as linhas que não forem lançamentos reais.</div>
       <div style="display:flex; gap:10px; margin-top:14px;">
         <button class="primary" id="importConfirm" style="flex:1;">Confirmar Lançamentos</button>
@@ -14161,20 +14165,58 @@ document.getElementById('tSalvar').onclick = async () => {
     const list = document.getElementById('importList');
     list.innerHTML = pendingImport.map((row, i) => `
       <div class="import-row ${row.duplicate ? 'is-duplicate' : ''}">
-        <input type="date" value="${row.date}" onchange="updateImportRow(${i}, 'date', this.value)">
-        <input type="text" value="${escapeHTML(row.desc)}" onchange="updateImportRow(${i}, 'desc', this.value)">
-        <select onchange="updateImportRow(${i}, 'bank', this.value)"><option value="">Selecione o banco</option>${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}</select>
-        <select onchange="updateImportRow(${i}, 'category', this.value)"><option value="">Sem categoria</option>${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select>
-        <input type="number" step="0.01" min="0.01" value="${row.amount}" onchange="updateImportRow(${i}, 'amount', this.value)">
-        <select onchange="updateImportRow(${i}, 'type', this.value)"><option value="in" ${row.type === 'in' ? 'selected' : ''}>Entrada</option><option value="out" ${row.type === 'out' ? 'selected' : ''}>Saída</option></select>
-        <button class="action-btn del" onclick="removeImportRow(${i})" aria-label="Remover">×</button>
+        <input type="date" value="${row.date}" aria-label="Data" onchange="updateImportRow(${i}, 'date', this.value)">
+        <input type="text" value="${escapeHTML(row.desc)}" aria-label="Descrição" onchange="updateImportRow(${i}, 'desc', this.value)">
+        <select aria-label="Banco" onchange="updateImportRow(${i}, 'bank', this.value)"><option value="">Selecione o banco</option>${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}</select>
+        <select aria-label="Categoria" onchange="updateImportRow(${i}, 'category', this.value)"><option value="">Sem categoria</option>${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select>
+        <input type="number" step="0.01" min="0.01" value="${row.amount}" aria-label="Valor" onchange="updateImportRow(${i}, 'amount', this.value)">
+        <select aria-label="Tipo" onchange="updateImportRow(${i}, 'type', this.value)"><option value="in" ${row.type === 'in' ? 'selected' : ''}>Entrada</option><option value="out" ${row.type === 'out' ? 'selected' : ''}>Saída</option></select>
+        <button class="action-btn del" onclick="removeImportRow(${i})" aria-label="Remover linha ${i + 1}">×</button>
         <div class="import-status">${row.duplicate ? 'Possível duplicidade: esta linha será ignorada até que você a edite ou remova.' : (row.valid ? `${escapeHTML(row.matchStatus || 'Banco e categoria conferidos.')}. Pronta para importar.` : `${escapeHTML(row.matchStatus || 'Revise banco, categoria, data, descrição e valor.')}. Corrija antes de confirmar.`)}</div>
       </div>
     `).join('');
     const confirm = document.getElementById('importConfirm');
     confirm.disabled = ready === 0;
-    confirm.textContent = ready ? `Confirmar ${ready} lançamento(s)` : 'Nenhum lançamento pronto';
+    confirm.textContent = ready ? `Confirmar ${ready} lançamento(s)` : 'Nenhum lançamento válido';
+
+    const btnRemoveDup = document.getElementById('importRemoveDuplicates');
+    const btnRemoveInv = document.getElementById('importRemoveInvalid');
+    if (btnRemoveDup) btnRemoveDup.disabled = duplicates === 0;
+    if (btnRemoveInv) btnRemoveInv.disabled = invalid === 0;
+
+    // Focus first invalid/editable field when modal opens
+    setTimeout(() => {
+      const firstInvalid = document.querySelector('.import-row:not(.is-duplicate) input, .import-row:not(.is-duplicate) select');
+      if (firstInvalid) firstInvalid.focus();
+    }, 50);
   }
+
+  // Bulk action handlers
+  document.getElementById('importRemoveDuplicates')?.addEventListener('click', () => {
+    pendingImport = pendingImport.filter(row => !row.duplicate);
+    renderImportReview();
+  });
+  document.getElementById('importRemoveInvalid')?.addEventListener('click', () => {
+    pendingImport = pendingImport.filter(row => row.valid);
+    renderImportReview();
+  });
+
+  // Keyboard shortcuts for panelImport
+  const panelImport = document.getElementById('panelImport');
+  if (panelImport && !panelImport.dataset.keyHandlerAttached) {
+    panelImport.dataset.keyHandlerAttached = 'true';
+    panelImport.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey && !e.target.matches('input, select, textarea')) {
+        e.preventDefault();
+        const confirm = document.getElementById('importConfirm');
+        if (confirm && !confirm.disabled) confirm.click();
+      }
+      if (e.key === 'Escape') {
+        document.getElementById('importCancel')?.click();
+      }
+    });
+  }
+
   window.updateImportRow = function(index, field, value) {
     const row = pendingImport[index];
     if (!row) return;
