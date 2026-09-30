@@ -37,6 +37,34 @@ const fixtures = {
       cappedProgress: '100%',
     },
   },
+  /* Metas (P1): datas de prazo NÃO são fixas — o spec calcula a partir do
+     relógio do browser para a suíte não envelhecer. */
+  goals: {
+    m1: { name: `${MARK}_META_001`, target: 1000, current: 0 },
+    m2: { name: `${MARK}_META_002`, target: 600, current: 300, deadlineOffsetDays: 30 },
+    m3: { name: `${MARK}_META_003`, target: 1000, retarget: 2000 },
+    m4: { name: `${MARK}_META_004`, target: 400, aporte: 100 },
+    m5: { name: `${MARK}_META_005`, target: 1200 },
+    edit: { nameSuffix: '_EDIT', target: 400, current: 200, status: 'paused' },
+    invest: { name: `${MARK}_INVEST_001`, type: 'Outros', value: 600 },
+    topUp: { amount: 250, desc: `${MARK}_META_TOPUP_001` },
+    expected: {
+      bankBalance: 750,
+      bankBalanceAfterTopUp: 1000,
+      pocketBalance: 100,
+      pocketBalanceAfterAporte: 200,
+      m1: { current: 0, target: 1000, remaining: 1000, percent: '0%' },
+      m2: { current: 300, target: 600, remaining: 300, percent: '50%' },
+      m3: { current: 750, target: 1000, remaining: 250, percent: '75%' },
+      m3Done: { current: 1000, target: 1000, remaining: 0, percent: '100%' },
+      m3Retarget: { current: 1000, target: 2000, remaining: 1000, percent: '50%' },
+      m3Paused: { current: 1000, target: 1000, remaining: 0, percent: '100%' },
+      m4: { current: 100, target: 400, remaining: 300, percent: '25%' },
+      m4AfterAporte: { current: 200, target: 400, remaining: 200, percent: '50%' },
+      m5: { current: 600, target: 1200, remaining: 600, percent: '50%' },
+      m1Edited: { current: 200, target: 400, remaining: 200, percent: '50%' },
+    },
+  },
   /* resultado esperado pelo oracle (não pelo app): 0 + 1000 − 250 */
   expected: {
     patrimonio: 750,

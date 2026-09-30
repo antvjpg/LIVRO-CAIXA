@@ -11,6 +11,7 @@
     "code:movimentacoes": "playwright test --project=movimentacoes",
     "code:orcamento": "playwright test --project=orcamento",
     "code:lia": "playwright test --project=lia",
+    "code:metas": "playwright test --project=metas",
     "code:report": "node e2e/reports/generate-report.cjs",
     "code:oracles": "node --test \"e2e/oracles/*.test.mjs\"",
     "code:reset": "node e2e/seeds/reset.cjs",

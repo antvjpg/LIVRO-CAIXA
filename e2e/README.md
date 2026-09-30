@@ -172,7 +172,9 @@ sobrou arquivo de identidade (run abortada).
 | Persistência (reload + Firestore REST) | `movimentacoes` | idem | não |
 | Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (35) | — | não precisa |
 | Edição/exclusão de lançamentos | pendente | pendente | — |
-| Caixinhas, metas, investimentos | pendente | pendente | — |
+| Caixinhas | `caixinhas` | `pocket`, `money` | não (CI/PC pendente) |
+| Metas (criação, fontes, progresso, edição, exclusão) | `metas` | `goal`, `money` | não (CI/PC pendente) |
+| Investimentos | pendente | pendente | — |
 | Cartões/faturas, orçamentos, contas | pendente | pendente | — |
 
 ## 6. Limitações conhecidas
@@ -185,8 +187,9 @@ sobrou arquivo de identidade (run abortada).
    logo na 1ª página vazia com token ou token repetido.
 3. Nenhum `data-testid` novo foi criado: usamos os seletores já existentes
    mapeados em `AUDITORIA.md` (zero mudança no app).
-4. Oracles de caixinhas/metas/investimentos/cartões serão escritos **depois** de
-   auditar a semântica real de cada um (nada de inventar regra financeira).
+4. Oracles de caixinhas (`pocket.js`) e metas (`goal.js`) já existem;
+   os de investimentos/cartões serão escritos **depois** de auditar a
+   semântica real de cada um (nada de inventar regra financeira).
 5. **Run abortada (kill/timeout do processo):** o teardown não roda e a senha
    efêmera (só em memória) se perde — a conta Auth pode sobrar. Mitigações:
    aviso no início da run seguinte, `::warning` no CI e linha no relatório

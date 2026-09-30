@@ -84,6 +84,12 @@ module.exports = defineConfig({
       testMatch: /caixinhas\/.*\.spec\.js$/,
       use: { storageState: STATE },
     },
+    {
+      name: 'metas',
+      dependencies: ['setup'],
+      testMatch: /metas\/.*\.spec\.js$/,
+      use: { storageState: STATE },
+    },
   ],
   webServer: {
     command: `python3 -m http.server ${PORT} --bind 127.0.0.1`,
