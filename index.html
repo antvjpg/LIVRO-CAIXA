@@ -1448,7 +1448,7 @@ window.LivroCaixaAI = {
     try { return localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY) || ''; } catch (err) { return ''; }
   },
   setApiKey(rawKey) {
-    const key = String(rawKey || '').trim();
+    const key = String(rawKey || '').replace(/\s+/g, '');
     try {
       if (!key) {
         localStorage.removeItem(OPENROUTER_API_KEY_STORAGE_KEY);
