@@ -916,7 +916,7 @@
   }
   .import-row{
     display:grid;
-    grid-template-columns:110px 1fr 110px 110px 110px 70px 34px;
+    grid-template-columns:90px 110px 110px 110px 110px 1fr 34px;
     gap:8px;
     align-items:center;
     padding:6px 0;

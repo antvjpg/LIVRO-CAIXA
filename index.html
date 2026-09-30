@@ -14163,14 +14163,14 @@ document.getElementById('tSalvar').onclick = async () => {
     const invalid = pendingImport.filter(row => !row.valid).length;
     document.getElementById('importSummary').innerHTML = `<b>${escapeHTML(pendingImportSource || 'Importação')}</b> · ${pendingImport.length} linha(s) identificada(s) · <span class="import-ready">${ready} pronta(s)</span>${duplicates ? ` · <span class="import-warning">${duplicates} possível(is) duplicidade(s)</span>` : ''}${invalid ? ` · <span class="import-warning">${invalid} inválida(s)</span>` : ''}`;
     const list = document.getElementById('importList');
-    list.innerHTML = pendingImport.map((row, i) => `
+list.innerHTML = pendingImport.map((row, i) => `
       <div class="import-row ${row.duplicate ? 'is-duplicate' : ''}">
-        <input type="date" value="${row.date}" aria-label="Data" onchange="updateImportRow(${i}, 'date', this.value)">
-        <input type="text" value="${escapeHTML(row.desc)}" aria-label="Descrição" onchange="updateImportRow(${i}, 'desc', this.value)">
-        <select aria-label="Banco" onchange="updateImportRow(${i}, 'bank', this.value)"><option value="">Selecione o banco</option>${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}</select>
-        <select aria-label="Categoria" onchange="updateImportRow(${i}, 'category', this.value)"><option value="">Sem categoria</option>${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select>
-        <input type="number" step="0.01" min="0.01" value="${row.amount}" aria-label="Valor" onchange="updateImportRow(${i}, 'amount', this.value)">
         <select aria-label="Tipo" onchange="updateImportRow(${i}, 'type', this.value)"><option value="in" ${row.type === 'in' ? 'selected' : ''}>Entrada</option><option value="out" ${row.type === 'out' ? 'selected' : ''}>Saída</option></select>
+        <input type="date" value="${row.date}" aria-label="Data" placeholder="DD/MM/AAAA" onchange="updateImportRow(${i}, 'date', this.value)">
+        <input type="number" step="0.01" min="0.01" value="${row.amount}" aria-label="Valor" placeholder="0,00" onchange="updateImportRow(${i}, 'amount', this.value)">
+        <select aria-label="Banco" onchange="updateImportRow(${i}, 'bank', this.value)"><option value="">Banco</option>${banks.map(b => `<option value="${b.id}" ${b.id === row.bank ? 'selected' : ''}>${escapeHTML(b.name)}</option>`).join('')}</select>
+        <select aria-label="Categoria" onchange="updateImportRow(${i}, 'category', this.value)"><option value="">Categoria</option>${categories.map(c => `<option value="${c.id}" ${c.id === row.category ? 'selected' : ''}>${escapeHTML(c.name)}</option>`).join('')}</select>
+        <input type="text" value="${escapeHTML(row.desc)}" aria-label="Descrição" placeholder="Descrição" onchange="updateImportRow(${i}, 'desc', this.value)">
         <button class="action-btn del" onclick="removeImportRow(${i})" aria-label="Remover linha ${i + 1}">×</button>
         <div class="import-status">${row.duplicate ? 'Possível duplicidade: esta linha será ignorada até que você a edite ou remova.' : (row.valid ? `${escapeHTML(row.matchStatus || 'Banco e categoria conferidos.')}. Pronta para importar.` : `${escapeHTML(row.matchStatus || 'Revise banco, categoria, data, descrição e valor.')}. Corrija antes de confirmar.`)}</div>
       </div>
