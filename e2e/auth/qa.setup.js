@@ -4,6 +4,8 @@
      2. logout real + login real (prova de que a conta criada autentica);
      3. grava storageState (pós-relogin) consumido pelas demais suítes.
    Sem credenciais → grava estado vazio e reporta BLOCKED (nunca escondido).
+   Cota do Firestore esgotada (429 no projeto) → BLOCKED no primeiro passo,
+   antes de criar conta ou queimar a run inteira em cascata.
    Projeto "setup" roda com trace/screenshot/video OFF: nenhum corpo de
    requisição de login vira artefato. */
 'use strict';
@@ -12,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const { test, expect } = require('@playwright/test');
 const qa = require('../helpers/qa-account');
+const rest = require('../helpers/firestore-rest');
 const app = require('../helpers/app');
 const { watchPage } = require('../helpers/console-watch');
 const { config, guardReasonText } = require('../helpers/env');
@@ -23,6 +26,19 @@ function writeEmptyState() {
 }
 
 test('provisiona sessão QA (login/criação autônoma)', async ({ page, context }, testInfo) => {
+  /* Cota do Firestore esgotada (429 no projeto): abortar aqui, antes de
+     criar conta e de 40 testes falharem em cascata. BLOCKED fica visível no
+     relatório e é reprovado pelo passo --strict do CI. */
+  const quotaStatus = await rest.probeQuota();
+  if (quotaStatus === 429) {
+    writeEmptyState();
+    test.skip(
+      true,
+      'BLOCKED: cota do Firestore esgotada (HTTP 429 RESOURCE_EXHAUSTED no projeto) — ' +
+      'run interrompida no setup antes de consumir mais cota; aguardar a janela de cota'
+    );
+  }
+
   const creds = qa.credentials();
   if (!creds) {
     writeEmptyState();

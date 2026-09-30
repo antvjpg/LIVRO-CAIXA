@@ -79,6 +79,38 @@ function assertCollection(collection) {
   }
 }
 
+/* Cota do Firestore (HTTP 429 RESOURCE_EXHAUSTED) é do PROJETO e dura horas
+   (janela diária), não segundos. Estratégia: 2 retentativas curtas na PRIMEIRA
+   resposta 429 de uma run e, se persistir, marcar uma carência — dentro dela
+   nenhuma chamada repete espera (14 listagens × backoff estouraria o timeout
+   de 90s do Playwright sem recuperar cota). Falha continua explícita. */
+const QUOTA_RETRY_DELAYS_MS = [2000, 5000];
+const QUOTA_COOLDOWN_MS = 10 * 60 * 1000;
+let quotaExhaustedUntil = 0;
+
+async function fetchWithQuotaRetry(url, init) {
+  let res = await fetch(url, init);
+  let attempt = 0;
+  while (res.status === 429 && attempt < QUOTA_RETRY_DELAYS_MS.length && Date.now() >= quotaExhaustedUntil) {
+    await new Promise((r) => setTimeout(r, QUOTA_RETRY_DELAYS_MS[attempt]));
+    attempt += 1;
+    res = await fetch(url, init);
+  }
+  if (res.status === 429 && Date.now() >= quotaExhaustedUntil) quotaExhaustedUntil = Date.now() + QUOTA_COOLDOWN_MS;
+  return res;
+}
+
+/* Sonda de cota para o setup E2E abortar a run ANTES de criar conta e
+   queimar 9 minutos falhando em cascata. Sem autenticação: 429 = cota
+   esgotada; 401/403/200 = projeto atendendo. Não lê dado algum (pageSize 1
+   sobre coleção inexistente sob conta inexistente). */
+async function probeQuota() {
+  const { projectId } = readFirebaseWebConfig();
+  const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/livrocaixa/probe-cota/entries?pageSize=1`;
+  const res = await fetch(url).catch(() => null);
+  return res ? res.status : 0;
+}
+
 async function listCollection(uid, idToken, projectId, collection) {
   assertCollection(collection);
   const base = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/livrocaixa/${uid}/${collection}`;
@@ -89,7 +121,7 @@ async function listCollection(uid, idToken, projectId, collection) {
   const trilha = [];
   for (let guard = 0; guard < 20; guard++) {
     const url = `${base}?pageSize=300${pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : ''}`;
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${idToken}` } });
+    const res = await fetchWithQuotaRetry(url, { headers: { Authorization: `Bearer ${idToken}` } });
     if (res.status === 404) return out; /* coleção inexistente = vazia */
     if (!res.ok) {
       const corpo = await res.text().catch(() => '');
@@ -149,7 +181,7 @@ function decodeFields(fields) {
 
 async function deleteDoc(uid, idToken, projectId, docPath) {
   assertScoped(uid, docPath);
-  const res = await fetch(`https://firestore.googleapis.com/v1/${docPath}`, {
+  const res = await fetchWithQuotaRetry(`https://firestore.googleapis.com/v1/${docPath}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${idToken}` },
   });
@@ -178,7 +210,7 @@ async function resetWithSession(session) {
   /* documento raiz (formato legado) — opcional, 404 é normal */
   const root = `livrocaixa/${uid}`;
   assertScoped(uid, root);
-  const res = await fetch(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${root}`, {
+  const res = await fetchWithQuotaRetry(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${root}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${idToken}` },
   });
@@ -274,6 +306,7 @@ async function probeCrossAccount(uidAlvo, idTokenOutraConta, projectId) {
 
 module.exports = {
   COLLECTIONS,
+  probeQuota,
   signIn,
   signUpOrCreate,
   probeCrossAccount,
