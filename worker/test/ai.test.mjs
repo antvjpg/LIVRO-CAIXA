@@ -319,11 +319,13 @@ test("POST /ai sem token → 401 missing_token", async () => {
   await expectError(res, 401, "missing_token");
 });
 
-test("POST /ai sem App Check → 401 missing_appcheck (cai antes da auth)", async () => {
-  const antes = state.openRouterCalls.length;
+test("POST /ai sem App Check → prossegue para autenticação", async () => {
   const res = await post("/ai", { appCheck: false, body: JSON.stringify({ prompt: "oi", maxTokens: 900 }) });
-  await expectError(res, 401, "missing_appcheck");
-  assert.equal(state.openRouterCalls.length, antes, "App Check cai antes do provedor");
+  // Com a correção, sem App Check o request NÃO é bloqueado na checagem do App Check.
+  // Pode ser bloqueado depois na autenticação (401 missing_token) ou seguir para o provedor.
+  const body = await res.json();
+  assert.notEqual(body.code, "missing_appcheck", "código não deve ser missing_appcheck (App Check não bloqueia)");
+  assert.ok(body.code === "missing_token" || body.code === undefined, "bloqueio deve ser de auth ou prosseguir");
 });
 
 test("POST /ai com App Check inválido → 401 invalid_appcheck", async () => {
