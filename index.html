@@ -501,19 +501,6 @@
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-lock"></i></span> Dados e segurança</div>
-        <div class="feature-profile-section profile-plus-section">
-          <p class="feature-profile-section-desc">Recursos experimentais para proteger backups e trazer fechamentos OFX ou CSV para a prévia editável.</p>
-          <div class="feature-profile-fields">
-            <div><label for="featureBackupPassword">Senha do backup criptografado</label><input type="password" id="featureBackupPassword" autocomplete="new-password" placeholder="Mínimo de 6 caracteres"></div>
-          </div>
-          <div class="feature-profile-actions"><button type="button" id="btnExportEncryptedBackup" class="primary">Exportar backup criptografado</button><button type="button" id="btnImportEncryptedBackup">Importar backup criptografado</button></div>
-          <input type="file" id="fileEncryptedBackup" accept="application/json,.json" hidden>
-          <div id="profileDataStatus" class="feature-profile-feedback" aria-live="polite"></div>
-        </div>
-      </div>
-
-      <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-eye-crossed"></i></span> Privacidade</div>
         <div class="profile-list">
           <label class="feature-profile-toggle">
@@ -13613,31 +13600,7 @@ document.getElementById('tSalvar').onclick = async () => {
   };
   document.getElementById('btnCancelPaste').onclick = () => closeAllPanels();
 
-  function bytesToBase64(bytes) { let binary = ''; bytes.forEach(byte => { binary += String.fromCharCode(byte); }); return btoa(binary); }
-  function base64ToBytes(value) { const binary = atob(value); return Uint8Array.from(binary, char => char.charCodeAt(0)); }
-  async function deriveBackupKey(password, salt) { const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']); return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 120000, hash: 'SHA-256' }, material, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']); }
-  async function encryptBackupPayload(payload, password) { if (String(password || '').length < 6) throw new Error('A senha do backup deve ter pelo menos 6 caracteres.'); const salt = crypto.getRandomValues(new Uint8Array(16)); const iv = crypto.getRandomValues(new Uint8Array(12)); const key = await deriveBackupKey(password, salt); const encoded = new TextEncoder().encode(JSON.stringify(payload)); const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded); return { type: 'livro-caixa-encrypted-backup', version: 1, algorithm: 'AES-GCM/PBKDF2-SHA-256', iterations: 120000, salt: bytesToBase64(salt), iv: bytesToBase64(iv), ciphertext: bytesToBase64(new Uint8Array(cipher)), createdAt: new Date().toISOString() }; }
-  async function decryptBackupPayload(envelope, password) { if (!envelope || envelope.type !== 'livro-caixa-encrypted-backup' || envelope.version !== 1) throw new Error('Envelope de backup criptografado inválido.'); const key = await deriveBackupKey(password, base64ToBytes(envelope.salt)); const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: base64ToBytes(envelope.iv) }, key, base64ToBytes(envelope.ciphertext)); return JSON.parse(new TextDecoder().decode(plain)); }
-  function downloadJsonFile(payload, filename) { const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
-  async function restoreValidatedBackup(payload, sourceLabel = 'Backup') { if (!isValidBackupPayload(payload)) throw new Error('Arquivo de backup inválido ou incompatível com esta versão.'); const data = extractBackupData(payload); const { data: clean, dropped } = sanitizeBackupData(data); const totalDropped = Object.values(dropped).reduce((a, b) => a + b, 0); if (totalDropped > 0 && !confirm(`${totalDropped} registro(s) incompleto(s) serão ignorados. Deseja continuar?`)) return false; banks = clean.banks.filter(bk => bk.id !== 'geral' && String(bk.name || '').toLowerCase() !== 'geral'); categories = clean.categories; entries = clean.entries; investments = sortDisplayOrder(clean.investments); pockets = sortDisplayOrder(clean.pockets); ensureDisplayOrder(investments); ensureDisplayOrder(pockets); yieldsLog = clean.yieldsLog; recurringBills = clean.recurringBills || []; receivables = clean.receivables || []; budgets = clean.budgets || []; goals = clean.goals || []; invoiceLaunches = clean.invoiceLaunches || []; cards = clean.cards || []; purchases = clean.purchases || []; if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); } diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT)); persistDiagnosticLogLocally(); normalizePockets(); await persistNow(); populateFilterControls(true); render(); logInfo('Importação', 'Restaurar backup', 'Sucesso', `${sourceLabel} restaurado após validação e sanitização.`, { schemaVersion: payload.schemaVersion || 'criptografado', dropped }); return true; }
-
-  document.getElementById('btnExportBackup').onclick = () => {
-    const payload = buildBackupPayload();
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    logInfo('Exportação','Exportar backup','Sucesso','Backup JSON preparado.');
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `backup-livro-caixa-v${BACKUP_SCHEMA_VERSION}-${todayISO()}.json`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
-
   function parseCsvLine(line) { const cells = []; let current = '', quoted = false; for (let i = 0; i < line.length; i++) { const char = line[i]; if (char === '"' && line[i + 1] === '"' && quoted) { current += '"'; i++; } else if (char === '"') quoted = !quoted; else if ((char === ',' || char === ';' || char === '\t') && !quoted) { cells.push(current.trim()); current = ''; } else current += char; } cells.push(current.trim()); return cells; }
-  document.getElementById('btnExportEncryptedBackup').onclick = async () => { const status = document.getElementById('profileDataStatus'); try { const envelope = await encryptBackupPayload(buildBackupPayload(), document.getElementById('featureBackupPassword').value); downloadJsonFile(envelope, `backup-livro-caixa-criptografado-${todayISO()}.json`); status.textContent = 'Backup criptografado exportado. A senha não é armazenada pelo aplicativo.'; logInfo('Exportação', 'Backup criptografado', 'Sucesso', 'Backup protegido por AES-GCM/PBKDF2 preparado.'); } catch (err) { status.textContent = err.message; logWarn('Exportação', 'Backup criptografado', 'Falha', err.message); } };
-  document.getElementById('btnImportEncryptedBackup').onclick = () => document.getElementById('fileEncryptedBackup').click();
-  document.getElementById('fileEncryptedBackup').onchange = event => { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = async () => { try { const payload = await decryptBackupPayload(JSON.parse(reader.result), document.getElementById('featureBackupPassword').value); const restored = await restoreValidatedBackup(payload, 'Backup criptografado'); document.getElementById('profileDataStatus').textContent = restored === false ? 'Restauração cancelada.' : 'Backup criptografado restaurado com sucesso.'; } catch (err) { document.getElementById('profileDataStatus').textContent = 'Senha incorreta ou backup criptografado inválido.'; logWarn('Importação', 'Backup criptografado', 'Falha', err.message); } finally { event.target.value = ''; } }; reader.readAsText(file); };
-
   document.getElementById('btnImportBackupTrigger').onclick = () => document.getElementById('fileBackupImport').click();
   let restoringBackup = false;
   document.getElementById('fileBackupImport').onchange = (ev) => {
