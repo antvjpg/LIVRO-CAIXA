@@ -10853,6 +10853,18 @@ function openNewEntryModal() {
     const finalDay = Math.min(due, lastDayOfDueMonth);
     return `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(finalDay).padStart(2, '0')}`;
   }
+  // Rótulo da janela de compras da fatura ("11/08 a 10/09"), derivado do motor
+  // para não duplicar o cálculo de fechamento. Retorna '' se o motor não
+  // estiver disponível ou o período for inválido.
+  function invoiceCycleLabel(card, periodKey) {
+    const engineRef = window.LivroCaixaCardEngineV3;
+    const cycle = engineRef && typeof engineRef.invoiceCycleRange === 'function'
+      ? engineRef.invoiceCycleRange(card, periodKey)
+      : null;
+    if (!cycle) return '';
+    const br = iso => String(iso || '').split('-').reverse().join('/');
+    return `${br(cycle.start)} a ${br(cycle.end)}`;
+  }
   // ===== Fase F — Lançamento/compartilhamento/status individual por titular dentro de cada fatura =====
   // Vínculo por ID: cardId + período de fechamento + titular identifica de forma estável a "fatia" de um titular
   // numa fatura, independente de nome/valor/data mudarem depois (o valor exibido é sempre recalculado ao vivo;
@@ -11153,6 +11165,47 @@ VALOR: ${fmt(pseudoBill.amount)}
       .filter(Boolean);
   }
 
+  // ===== Navegação de períodos de fatura por cartão =====
+  // Seleção por cartão (período de fechamento escolhido na UI). NÃO é dado
+  // persistido: só controla qual fatura está sendo exibida em renderCards().
+  // Padrão: período corrente; volta ao corrente se ficar fora dos limites.
+  const cardInvoiceSelection = {};
+
+  // Limites = períodos conhecidos (compras/parcelas + lançamentos + referência
+  // atual). Navegação acontece em ±1 mês dentro dessa faixa.
+  function cardInvoiceNavState(card) {
+    const referencePeriod = currentInvoicePeriodKey();
+    const periodState = typeof window.LivroCaixaCardEngineV3?.invoicePeriods === 'function'
+      ? window.LivroCaixaCardEngineV3.invoicePeriods(
+          card,
+          purchases,
+          cards,
+          invoiceLaunches,
+          referencePeriod
+        )
+      : null;
+    const current = periodState?.current || closingPeriodKeyForDueMonth(card, referencePeriod);
+    const known = Array.isArray(periodState?.periods) && periodState.periods.length
+      ? periodState.periods
+      : [current];
+    const min = known[0];
+    const max = known[known.length - 1];
+    let selected = cardInvoiceSelection[card.id];
+    if (typeof selected !== 'string' || selected < min || selected > max) {
+      selected = current;
+      cardInvoiceSelection[card.id] = selected;
+    }
+    return {
+      referencePeriod,
+      current,
+      min,
+      max,
+      selected,
+      canPrev: selected > min,
+      canNext: selected < max
+    };
+  }
+
   function renderCards() {
     const container = document.getElementById('cardsGrid');
     if (!container) return;
@@ -11170,18 +11223,9 @@ VALOR: ${fmt(pseudoBill.amount)}
         throw new Error('CardEngine não disponível para renderCards.');
       }
 
-      const referencePeriod = currentInvoicePeriodKey();
-      const periodState = typeof window.LivroCaixaCardEngineV3.invoicePeriods === 'function'
-        ? window.LivroCaixaCardEngineV3.invoicePeriods(
-            card,
-            purchases,
-            cards,
-            invoiceLaunches,
-            referencePeriod
-          )
-        : null;
-
-      const period = periodState?.current || closingPeriodKeyForDueMonth(card, referencePeriod);
+      const nav = cardInvoiceNavState(card);
+      const referencePeriod = nav.referencePeriod;
+      const period = nav.selected;
       const dueMonth = dueMonthKeyForClosingPeriod(card, period);
 
       const invoice = window.LivroCaixaCardEngineV3.invoice(
@@ -11230,6 +11274,12 @@ VALOR: ${fmt(pseudoBill.amount)}
               <span class="hint">${invoice.count} compra(s)/parcela(s) neste período. Cálculo automático</span>
             </div>
             <strong class="credit-card-invoice-total">${fmt(invoice.total)}</strong>
+          </div>
+          <div class="credit-card-invoice-nav">
+            <button type="button" class="credit-card-invoice-nav-btn" onclick="shiftCardInvoice('${card.id}', -1)" aria-label="Fatura anterior" ${nav.canPrev ? '' : 'disabled'}>‹</button>
+            <span class="credit-card-invoice-range">${invoiceCycleLabel(card, period)} · vence ${(invoiceDueDateForPeriod(card, period) || '').split('-').reverse().join('/')}</span>
+            ${nav.selected !== nav.current ? `<button type="button" class="credit-card-invoice-reset" onclick="resetCardInvoice('${card.id}')" aria-label="Voltar para a fatura atual">Atual</button>` : ''}
+            <button type="button" class="credit-card-invoice-nav-btn" onclick="shiftCardInvoice('${card.id}', 1)" aria-label="Próxima fatura" ${nav.canNext ? '' : 'disabled'}>›</button>
           </div>
           ${invoice.lines.length ? `
           <button type="button" class="credit-card-invoice-toggle" onclick="this.closest('.credit-card-invoice-block').classList.toggle('is-open')">Ver parcelas</button>
@@ -11335,6 +11385,20 @@ VALOR: ${fmt(pseudoBill.amount)}
     }).join('');
   }
   window.editCard = id => openCardModal(id);
+  window.shiftCardInvoice = (cardId, delta) => {
+    const card = cards.find(c => c.id === cardId);
+    if (!card) return;
+    const nav = cardInvoiceNavState(card);
+    const nextPeriod = addMonthsToPeriodKey(nav.selected, delta);
+    if (!nextPeriod || nextPeriod < nav.min || nextPeriod > nav.max) return;
+    cardInvoiceSelection[cardId] = nextPeriod;
+    renderCards();
+  };
+  window.resetCardInvoice = cardId => {
+    if (!(cardId in cardInvoiceSelection)) return;
+    delete cardInvoiceSelection[cardId];
+    renderCards();
+  };
   window.editPurchase = id => openPurchaseModal('', id);
   window.openPurchaseModal = openPurchaseModal;
   window.toggleCardActive = async id => {

@@ -92,6 +92,50 @@
     );
   }
 
+  // Janela de compras da fatura de um período de fechamento 'AAAA-MM':
+  // começa no dia seguinte ao fechamento do mês anterior e termina no
+  // dia de fechamento do próprio período (limitado ao último dia do mês).
+  // É o inverso de invoicePeriodKeyForDate(): toda data dentro da janela
+  // cai no mesmo períodoKey, e datas fora dela caem em outro.
+  function invoiceCycleRange(card, periodKeyValue) {
+    const parsed = parsePeriodKey(periodKeyValue);
+    if (!parsed) return null;
+
+    const closing = clampDay(card?.closingDay, 1);
+    const year = parsed.year;
+    const monthIndex = parsed.monthIndex;
+
+    const lastDayOfMonth = (y, m) =>
+      new Date(y, m + 1, 0).getDate();
+
+    const endDay = Math.min(
+      closing,
+      lastDayOfMonth(year, monthIndex)
+    );
+
+    const previous = new Date(year, monthIndex - 1, 1);
+    const previousClosing = Math.min(
+      closing,
+      lastDayOfMonth(
+        previous.getFullYear(),
+        previous.getMonth()
+      )
+    );
+
+    // Dia anterior ao fechamento do mês anterior; quando o fechamento
+    // cai no último dia do mês, a data "vira" para o dia 1 do período.
+    const start = new Date(
+      previous.getFullYear(),
+      previous.getMonth(),
+      previousClosing + 1
+    );
+
+    return {
+      start: `${start.getFullYear()}-${pad2(start.getMonth() + 1)}-${pad2(start.getDate())}`,
+      end: `${year}-${pad2(monthIndex + 1)}-${pad2(endDay)}`
+    };
+  }
+
   function invoicePeriods(
     card,
     purchases,
@@ -940,6 +984,7 @@
     EPSILON,
     addMonthsToPeriodKey,
     invoicePeriodKeyForDate,
+    invoiceCycleRange,
     invoicePeriods,
     purchaseInstallmentOccurrences,
     buildInstallments,
