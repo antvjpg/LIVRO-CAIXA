@@ -5675,8 +5675,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="goal-card-v2-meta">
         <span>Faltam ${remainTxt}</span>
-        ${daysTxt ? `<span class="goal-card-v2-dot">·</span><span>${escapeHTML(daysTxt)}</span>` : ''}
-        ${deadlineTxt ? `<span class="goal-card-v2-dot">·</span><span>Prazo ${escapeHTML(deadlineTxt)}</span>` : ''}
+        ${daysTxt ? `<span class="goal-card-v2-dot">·</span> <span>${escapeHTML(daysTxt)}</span>` : ''}
+        ${deadlineTxt ? `<span class="goal-card-v2-dot">·</span> <span>Prazo ${escapeHTML(deadlineTxt)}</span>` : ''}
       </div>
       <div class="goal-card-v2-footer">
         <span class="goal-card-v2-pace">${monthPace ? '↗ ' + escapeHTML(monthPace) : ''}</span>
