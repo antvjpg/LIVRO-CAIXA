@@ -31,10 +31,19 @@ function goalStatusLabel(status) {
    - meta pausada/cancelada nunca conclui sozinha; meta sem fonte nunca conclui. */
 function goalSaveStatus(status, { target, current, linked }) {
   const t = Number(target) || 0;
-  const c = Number(current);
+  const c = Number(current) || 0;
   let next = status || 'active';
-  if (linked && next === 'active' && c != null && t > 0 && c >= t) next = 'completed';
-  if (next === 'completed' && c != null && t > 0 && c < t) next = 'active';
+
+  // Regra 1: Se meta vinculada, está ativa E atual >= alvo → Concluída
+  if (linked && next === 'active' && c >= t && t > 0) {
+    next = 'completed';
+  }
+
+  // Regra 2: Se estava Concluída e atual < alvo → reabrir Ativa
+  if (next === 'completed' && c < t && t > 0) {
+    next = 'active';
+  }
+
   return next;
 }
 
