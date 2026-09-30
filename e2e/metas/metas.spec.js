@@ -448,7 +448,7 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
       meta: expectedMeta({ remaining: e.m5.remaining }),
     });
     expect(s5.source, 'fonte Investimento no card').toContain(investName);
-    expect(await countGoals(page), 'total de metas').toBe(4);
+    expect(await countGoals(page), 'total de metas').toBe(5);
 
     const rest = await signIn(creds.email, creds.password);
     const goals = await storedGoals(rest);
@@ -593,7 +593,7 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
     await fillMoney(page, '#goalValorObjetivo', 999999);
     await page.click('#btnCancelGoalEdit');
     await waitGoalFormClosed(page);
-    await expect.poll(() => countGoals(page), { timeout: 20_000, message: 'total após cancelar' }).toBe(4);
+    await expect.poll(() => countGoals(page), { timeout: 20_000, message: 'total após cancelar' }).toBe(5);
     const still = await expectGoal(page, nameM1Edited, e.m1Edited, { badge: 'Pausada' });
     expect((await card(page, nameM1Edited).locator('strong').textContent()).trim(), 'nome fantasma').toBe(
       nameM1Edited
