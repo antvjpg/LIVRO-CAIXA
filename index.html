@@ -469,7 +469,7 @@
         <div class="profile-list">
           <div class="diagnostic-summary-card">
             <div class="diagnostic-summary-head">
-              <span class="diagnostic-summary-icon" id="diagnosticSummaryIcon" aria-hidden="true">🩺</span>
+              <span class="diagnostic-summary-icon" id="diagnosticSummaryIcon" aria-hidden="true"></span>
               <div><strong id="diagnosticSummaryLabel">Consistência dos dados</strong><span id="diagnosticSummaryDetail">Toque em "Executar diagnóstico" para verificar</span></div>
             </div>
             <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
@@ -7910,14 +7910,14 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     const icon = document.getElementById('diagnosticSummaryIcon');
     const label = document.getElementById('diagnosticSummaryLabel');
     const detail = document.getElementById('diagnosticSummaryDetail');
-    if (icon) icon.textContent = issues.length ? '⚠️' : '✅';
+    if (icon) icon.textContent = '';
     if (label) label.textContent = issues.length ? `${issues.length} ponto(s) de atenção` : 'Dados consistentes';
     if (detail) detail.textContent = issues.length ? 'Veja os detalhes abaixo — nada foi alterado automaticamente.' : 'Nenhuma inconsistência encontrada na última verificação.';
     const results = document.getElementById('diagnosticResults');
     if (results) {
       results.innerHTML = issues.length
-        ? issues.map(i => `<div class="diagnostic-item is-warning"><span>⚠️</span><div><strong>${escapeHTML(i.title)}</strong><span>${escapeHTML(i.detail)}</span></div></div>`).join('')
-        : '<div class="diagnostic-item is-ok"><span>✅</span><div><strong>Tudo certo</strong><span>Nenhuma inconsistência encontrada.</span></div></div>';
+        ? issues.map(i => `<div class="diagnostic-item is-warning"><span></span><div><strong>${escapeHTML(i.title)}</strong><span>${escapeHTML(i.detail)}</span></div></div>`).join('')
+        : '<div class="diagnostic-item is-ok"><span></span><div><strong>Tudo certo</strong><span>Nenhuma inconsistência encontrada.</span></div></div>';
     }
     return issues;
   }
