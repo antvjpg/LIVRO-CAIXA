@@ -46,7 +46,7 @@
 
 
 
-  <link rel="stylesheet" href="./styles.css?v=19-20-orange6">
+  <link rel="stylesheet" href="./styles.css?v=20-02-orange6">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
@@ -2199,7 +2199,7 @@ window.addEventListener('beforeunload', e => {
 document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('./sw.js?v=19-20-orange3').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=20-02').then(reg => {
       window.loginDebugLog?.(
         'PWA',
         'Service Worker registrado',

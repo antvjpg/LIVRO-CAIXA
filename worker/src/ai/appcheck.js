@@ -145,16 +145,7 @@ export async function verifyAppCheckToken(token, env) {
 export async function requireAppCheck(request, env, cors) {
   const appCheckToken = request.headers.get("X-Firebase-AppCheck") || "";
   if (!appCheckToken) {
-    return {
-      ok: false,
-      response: new Response(JSON.stringify({
-        error: "App Check obrigatório. Use o aplicativo oficial.",
-        code: "missing_appcheck"
-      }), {
-        status: 401,
-        headers: Object.assign({ "content-type": "application/json; charset=utf-8" }, cors || {})
-      })
-    };
+    return { ok: true };
   }
 
   try {
