@@ -5704,6 +5704,7 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshGoalCaixinhaOptions(current?.caixinhaId || document.getElementById('goalCaixinha')?.value || '');
     syncGoalLegacyAmountField();
   }
+  window.renderGoalsList = renderGoalsList;
   window.editGoal = function(id) {
     const goal = goals.find(g => g.id === id);
     if (!goal) return;
