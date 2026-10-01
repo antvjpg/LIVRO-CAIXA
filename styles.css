@@ -8512,6 +8512,23 @@ body[data-tab="dashboard"] #viewDashboard.active {
 }
 
 /* Console técnico de diagnóstico — modal no padrão do app */
+#authDiagnosticOverlay{
+  position:fixed;
+  inset:0;
+  background:var(--overlay);
+  z-index:200;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.2s ease;
+}
+#authDiagnosticOverlay.open{
+  opacity:1;
+  pointer-events:auto;
+}
 #authDiagnosticOverlay .panel{
   width:min(100%,640px);
   max-width:640px;
