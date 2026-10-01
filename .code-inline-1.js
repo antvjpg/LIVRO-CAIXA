@@ -1,1439 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR"><!-- Livro-Caixa V.20-02 (opencode) — Branding Orange themes (claro + escuro) -->
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
-<meta name="theme-color" content="#1C2B24">
-<meta name="background-color" content="#F7F5EF">
-<meta name="description" content="Livro-Caixa — controle financeiro pessoal sincronizado e disponível offline.">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Livro-Caixa">
-<link rel="manifest" href="./manifest.webmanifest?v=19-19">
-<link rel="icon" href="./icon-192.png?v=13" type="image/png">
-<link rel="apple-touch-icon" href="./icon-192.png?v=13">
-<title>Livro-Caixa</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="./card-engine-v3-combined.js"></script>
-  <script src="./financial-client.js"></script>
-  <!-- V.20-02 — camada de abstração de anexos/OCR (contrato estável
-       globalThis.LivroCaixaOCR). Módulos puros, sem dependência de
-       Android/Capacitor: o PWA continua funcional sem recursos nativos. -->
-  <script src="./ocr/limits.js"></script>
-  <script src="./ocr/log.js"></script>
-  <script src="./ocr/attachment-manager.js"></script>
-  <script src="./ocr/extractor.js"></script>
-  <script src="./ocr/ocr-adapter.js"></script>
-  <script src="./ocr/lia-interpret.js"></script>
-  <script src="./ocr/review.js"></script>
-<!-- Contrato do Chat IA (V.20-02) — fonte única de limites/validação,
-        compartilhada com o Worker. O módulo expõe
-        window.LivroCaixaChatContract antes do DOMContentLoaded. -->
-  <script type="module" src="./ai-chat-contract.js"></script>
-  <!-- Persistência do histórico do chat no IndexedDB (V.20-02). -->
-  <script type="module" src="./chat-persistence.js"></script>
 
-
-
-  <link rel="stylesheet" href="./styles.css?v=20-02">
-<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
-<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
-<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
-    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-circular/css/uicons-thin-circular.css">
-    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
-</head>
-<body>
-<div id="authOverlay">
-  <div class="auth-box">
-    <h2 id="authTitle">Entrar</h2>
-    <p class="sub">Livro-Caixa · sincronizado</p>
-    <label for="authEmail">E-mail</label>
-    <input type="email" id="authEmail" placeholder="voce@email.com">
-    <label for="authPass">Senha</label>
-    <div class="pass-wrap">
-      <input type="password" id="authPass" placeholder="mínimo 6 caracteres">
-      <button type="button" class="pass-toggle" id="authPassToggle" aria-label="Mostrar senha">
-        <i id="eyeOpen" class="fi fi-rr-eye" aria-hidden="true"></i>
-        <i id="eyeClosed" class="fi fi-rr-eye-crossed" aria-hidden="true" style="display:none;"></i>
-      </button>
-    </div>
-    <button class="primary" id="authSubmit" style="width:100%;margin-top:14px;">Entrar</button>
-    <div class="auth-error" id="authError"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin:16px 0;">
-      <div style="flex:1;height:1px;background:var(--line);"></div>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-soft);">ou</span>
-      <div style="flex:1;height:1px;background:var(--line);"></div>
-    </div>
-    <button type="button" id="authGoogle" style="width:100%;">Entrar com Google</button>
-    <div class="auth-toggle" id="authToggleWrap">
-      Não tem conta? <a id="authToggleLink">Criar conta</a>
-    </div>
-    <div id="authDiagnosticWrap" style="margin-top:18px;">
-      <button type="button" id="authDiagnosticToggle" aria-expanded="false"
-        style="width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:.86;position:relative;">
-        ⚙ Diagnóstico
-        <span style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;background:var(--gold);border-radius:50%;border:2px solid var(--paper);animation:diag-pulse 1.5s ease-in-out infinite;"></span>
-</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- Console técnico global de diagnóstico — modal no padrão do app -->
-      <div id="authDiagnosticOverlay" aria-hidden="true">
-        <div class="panel" id="authDiagnosticPanel" hidden role="dialog" aria-modal="true" aria-label="Console de diagnóstico">
-          <h3>Console de diagnóstico <button type="button" class="modal-close" id="authDiagnosticClose" aria-label="Fechar console" title="Fechar">×</button></h3>
-          <p class="hint tech-diag-intro">Registro técnico de carregamento, autenticação e operações. Dados sensíveis não são gravados.</p>
-          <pre id="authDiagnosticLog" class="tech-diag-log" role="log" aria-live="polite"></pre>
-          <div class="tech-diag-actions">
-            <button type="button" id="authDiagnosticClear">Limpar</button>
-            <button type="button" id="authDiagnosticCopy">Copiar diagnóstico</button>
-          </div>
-        </div>
-      </div>
-
-<div id="syncOverlay" class="hidden">
-  <div class="sync-box">
-    <div class="sync-spinner"></div>
-    <p id="syncOverlayText">Sincronizando seus dados...</p>
-  </div>
-</div>
-
-
-
-
-<!-- =========================================================
-     [HTML 02] CHROME DA APLICAÇÃO
-     Header / usuário / notificações / tema / PWA
-     ========================================================= -->
-<header class="app-header">
-  <button type="button" id="btnOpenDrawer" class="header-icon-button" aria-label="Abrir menu" title="Menu"><i class="fi fi-rr-menu-burger" aria-hidden="true"></i></button>
-  <div class="app-brand">
-    <h1>Livro-Caixa</h1>
-    <div class="subtitle" id="todayLabel">—</div>
-  </div>
-  <div class="app-header-actions">
-    <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><i class="fi fi-rs-bell-notification-social-media" aria-hidden="true"></i><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
-    <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><i class="fi fi-rr-night-day" aria-hidden="true"></i></button>
-    <button type="button" id="btnGitHub" class="header-icon-button" title="Repositório no GitHub" aria-label="Abrir repositório no GitHub" onclick="window.open('https://github.com/seu-usuario/LIVRO-CAIXA', '_blank', 'width=800,height=600')">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.036 1.835 2.807 1.301 3.498.998.077-.78.27-1.305.502-1.604-1.758-.196-4.312-.794-4.312-4.593 0-1.005.386-1.828 1.02-2.467-.103-.232-.444-1.172.098-2.44 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.719-.679 3.059-1.795 3.059-3.285 0-.728-.228-1.405-.632-1.905.376-.15.77-.231 1.174-.231.437 0 .81.071 1.185.218.689-.071 1.324-.307 1.603-.586C21.325 5.507 24 6.976 24 8.701c0 6.627-5.373 12-12 12z"/>
-</svg>
-    <div id="userBar"></div>
-  </div>
-</header>
-
-<div id="appDrawerOverlay" class="app-drawer-overlay" aria-hidden="true">
-  <aside class="app-drawer" role="dialog" aria-modal="true" aria-label="Menu principal">
-    <div class="drawer-heading"><span>Livro-Caixa</span><button type="button" class="drawer-close" data-close-drawer aria-label="Fechar menu">×</button></div>
-    <p class="drawer-caption">Navegação e configurações rápidas</p>
-    <nav class="drawer-nav" aria-label="Navegação principal">
-      <button type="button" data-drawer-action="dash"><span><i class="fi fi-rr-ballot" aria-hidden="true"></i></span> Dashboard</button>
-      <button type="button" data-drawer-action="cards"><span><i class="fi fi-rr-credit-card" aria-hidden="true"></i></span> Cartões</button>
-      <button type="button" data-drawer-action="bills"><span><i class="fi fi-rr-calendar-day" aria-hidden="true"></i></span> Contas & Calendário</button>
-      <button type="button" data-drawer-action="receivables"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-arrow-down-triangle-square" aria-hidden="true"></i></span> Valores a Receber</button>
-      <button type="button" data-drawer-action="pockets"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span> Caixinhas</button>
-      <button type="button" data-drawer-action="goals"><span><i class="fi fi-rr-bullseye-arrow" aria-hidden="true"></i></span> Metas</button>
-      <button type="button" data-drawer-action="investments"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span> Investimentos</button>
-    </nav>
-    <div class="drawer-divider"></div>
-    <div class="drawer-nav drawer-nav-secondary">
-      <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rs-blood-test-tube" aria-hidden="true"></i></span> LABS</button>
-      <button type="button" data-drawer-action="diagnostico"><span><i class="fi fi-rr-clipboard" aria-hidden="true"></i></span> Diagnóstico Geral (LOG)</button>
-    </div>
-  </aside>
-</div>
-
-<div id="notificationOverlay" class="notification-overlay" aria-hidden="true">
-  <section class="notification-center" role="dialog" aria-modal="true" aria-label="Avisos">
-    <div class="notification-heading"><div><span class="eyebrow">Livro-Caixa</span><h2>Avisos</h2></div><button type="button" class="drawer-close" data-close-notifications aria-label="Fechar avisos">×</button></div>
-    <div id="notificationList" class="notification-list"></div>
-  </section>
-</div>
-
-<!-- =========================================================
-     [HTML 03] TELAS / VIEWS PRINCIPAIS
-     Dashboard / Livro-Caixa / Contas / Caixinhas /
-     Cartões / Recebíveis / Investimentos / Metas
-     ========================================================= -->
-<main>
-  <!-- Navegação por Abas: Contas & Calendário acessível pelo menu lateral -->
-  <div class="nav-tabs">
-    <button class="nav-tab" id="tabBtnDash" onclick="switchTab('dash')"><i class="fi fi-rr-ballot" aria-hidden="true"></i> Dashboard</button>
-    <button class="nav-tab" id="tabBtnDashboard" onclick="switchTab('dashboard')"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i> Visão geral</button>
-    <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')"><i class="fi fi-rr-book" aria-hidden="true"></i> Livro-Caixa</button>
-    <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i> Caixinhas</button>
-    <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')"><i class="fi fi-rr-credit-card" aria-hidden="true"></i> Cartões</button>
-    <button class="nav-tab" id="tabBtnReceivables" onclick="switchTab('receivables')"><i class="fi fi-rr-arrow-down-triangle-square" aria-hidden="true"></i> A Receber</button>
-    <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i> Investimentos</button>
-    <button class="nav-tab" id="tabBtnGoals" onclick="switchTab('goals')"><i class="fi fi-rr-bullseye-arrow" aria-hidden="true"></i> Metas</button>
-  </div>
-
-  <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
-    <span class="light-theme-picker-label">Paleta clara</span>
-    <button type="button" class="light-theme-option" data-theme="1" aria-label="Verde original" aria-pressed="true" title="Verde original"></button>
-    <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracotta e Sage" aria-pressed="false" title="Terracotta & Sage"></button>
-    <button type="button" class="light-theme-option" data-theme="5" aria-label="Branding Orange" aria-pressed="false" title="Branding Orange"></button>
-  </div>
-
-  <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
-    <span class="dark-theme-picker-label">Paleta escura</span>
-    <button type="button" class="dark-theme-option" data-theme="1" aria-label="Verde e Dourado" aria-pressed="true" title="Verde + Dourado"></button>
-    <button type="button" class="dark-theme-option" data-theme="3" aria-label="Verde-oliva e Terracota" aria-pressed="false" title="Verde-oliva + Terracota"></button>
-    <button type="button" class="dark-theme-option" data-theme="4" aria-label="Grafite neutro" aria-pressed="false" title="Grafite neutro"></button>
-    <button type="button" class="dark-theme-option" data-theme="5" aria-label="Branding Orange" aria-pressed="false" title="Branding Orange"></button>
-  </div>
-
-  <div class="balance-strip" id="balanceStrip"></div>
-
-  <!-- V18-12: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
-  <section class="period-bar is-collapsed" id="universalPeriodBar" aria-label="Período de visualização">
-    <button type="button" class="period-bar-toggle" id="btnTogglePeriodBar" aria-expanded="false" aria-controls="periodBarBody">
-      <span class="period-bar-toggle-copy"><span class="period-eyebrow">Período ativo</span><strong class="period-active-label" id="periodActiveLabelTop">—</strong></span>
-      <span class="period-bar-chevron" aria-hidden="true">▾</span>
-    </button>
-    <div class="period-bar-body" id="periodBarBody">
-    <div class="period-bar-copy">
-      <div class="period-hint" id="periodActiveHint">O filtro afeta somente os históricos e lançamentos exibidos.</div>
-      <strong class="period-active-label" id="periodActiveLabel" hidden aria-hidden="true">Agosto / 2026</strong>
-    </div>
-    <div class="period-controls">
-      <button type="button" class="period-nav" id="btnPeriodPrev" aria-label="Mês anterior" title="Mês anterior">‹</button>
-      <div class="period-picker-wrap">
-        <button type="button" class="period-picker-button" id="btnPeriodPicker">Agosto / 2026 ▾</button>
-        <input class="period-picker-input" type="month" id="periodMonthInput" aria-label="Escolher mês">
-      </div>
-      <button type="button" class="period-nav" id="btnPeriodNext" aria-label="Próximo mês" title="Próximo mês">›</button>
-      <button type="button" class="period-all" id="btnPeriodAll" aria-pressed="false">Todos</button>
-    </div>
-  </div>
-  </section>
-
-  <!-- ABA 1: DASHBOARD (NOVA) -->
-  <!-- [VIEW] Dashboard de análise financeira -->
-  <div id="viewDash" class="tab-content">
-    <div id="dashFilterBar" class="dash-filter-bar" role="group" aria-label="Filtros do dashboard">
-      <div class="dash-filter-field">
-        <span class="dash-filter-label" id="dashPeriodLabel">Período</span>
-        <div class="dash-segmented" role="group" aria-labelledby="dashPeriodLabel">
-          <span class="dash-segmented-pill" style="--dash-pill-i:0" aria-hidden="true"></span>
-          <button type="button" data-dash-period="7d">7 dias</button>
-          <button type="button" data-dash-period="30d">30 dias</button>
-          <button type="button" data-dash-period="6m">6 meses</button>
-          <button type="button" data-dash-period="1y">1 ano</button>
-          <button type="button" data-dash-period="custom" id="dashCustomPeriodBtn" title="Período personalizado"><i class="fi fi-rr-calendar" aria-hidden="true"></i></button>
-        </div>
-      </div>
-      <div class="dash-filter-field">
-        <label class="dash-filter-label" for="dashAccountFilter">Conta</label>
-        <select id="dashAccountFilter" class="dash-select"></select>
-      </div>
-      <div class="dash-filter-field dash-filter-compare">
-        <label class="dash-filter-check" for="dashCompare">
-          <input type="checkbox" id="dashCompare">
-          <span>Comparar com período anterior</span>
-        </label>
-        <span class="dash-filter-range" id="dashRangeLabel" aria-live="polite"></span>
-      </div>
-    </div>
-    <div id="dashContent" aria-live="polite"></div>
-  </div>
-
-  <!-- ABA 1B: VISÃO GERAL -->
-  <!-- [VIEW] Dashboard / Visão geral -->
-  <div id="viewDashboard" class="tab-content">
-    <div id="advancedDashboard"></div>
-    <div id="dashboardNextPayment" class="dashboard-next-payment-card" aria-live="polite"></div>
-  </div>
-
-  <!-- ABA 2: LIVRO CAIXA -->
-    <!-- ABA: METAS -->
-  <!-- [VIEW] Metas -->
-  <div id="viewGoals" class="tab-content">
-    <div class="goals-page">
-      <div class="goals-panel goals-panel-v2" id="panelGoals">
-        <div class="goals-v2-header">
-          <div class="goals-v2-title-wrap">
-            <span class="goals-v2-kicker">PLANEJAMENTO</span>
-            <h3 class="goals-v2-title">Metas financeiras</h3>
-            <p class="goals-v2-intro">Objetivos sobre dinheiro real das Caixinhas — sem criar saldo paralelo.</p>
-          </div>
-        </div>
-
-        <div class="goals-v2-section">
-          <div class="goals-v2-section-head">
-            <h4>Suas metas</h4>
-          </div>
-          <div id="goalsList" class="goals-v2-list"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- [VIEW] Livro-Caixa -->
-<div id="viewCaixa" class="tab-content active">
-    <div class="toolbar">
-      <button class="quick-action" id="btnTransferencia"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-money-bill-transfer" aria-hidden="true"></i></span><span>Transferência</span></button>
-      <button class="quick-action" id="btnPasteTrigger"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-paste" aria-hidden="true"></i></span><span>Colar texto</span></button>
-      <button class="quick-action" id="btnImportTrigger"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-file-import" aria-hidden="true"></i></span><span>Importar PDF/DOCX</span></button>
-      <button class="quick-action" id="btnExport"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-file-export" aria-hidden="true"></i></span><span>Exportar extrato</span></button>
-      <button class="quick-action" id="btnExportBackup"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-cloud-upload-alt" aria-hidden="true"></i></span><span>Exportar backup</span></button>
-      <button class="quick-action" id="btnImportBackupTrigger"><span class="quick-action-icon" aria-hidden="true"><i class="fi fi-rr-cloud-download-alt" aria-hidden="true"></i></span><span>Restaurar backup</span></button>
-      <input type="file" id="fileImport" accept="application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-      <input type="file" id="fileBackupImport" accept="application/json">
-    </div>
-
-    <div id="categorySummary"></div>
-    <div id="caixaPeriodSummary" class="period-summary" aria-label="Resumo do período"></div>
-    <div id="cashflowMiniSummary" class="cashflow-mini-summary" aria-label="Resumo rápido do fluxo"></div>
-
-    <div class="ledger">
-      <div class="ledger-month">
-        <span id="ledgerLabel">Lançamentos</span>
-        <span id="ledgerCount">0</span>
-        <button type="button" id="btnOpenFilters" class="ledger-filter-button" aria-label="Filtrar movimentações" title="Filtrar movimentações"><i class="fi fi-rr-filter-list" aria-hidden="true"></i></button>
-      </div>
-
-      <div class="ledger-scroll-area">
-        <div id="ledgerBody"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ÁREA INTEGRADA: CONTAS RECORRENTES E CALENDÁRIO -->
-  <!-- [VIEW] Contas & Calendário -->
-  <div id="viewBills" class="tab-content">
-    <div class="balance-strip section-balance-strip" id="billsSummary"></div>
-    <div class="toolbar bills-toolbar-v19-16">
-      <div class="bills-toolbar-actions">
-        <button type="button" id="btnBillsToday"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><i class="fi fi-rr-calendar-day" aria-hidden="true"></i></span>Mês atual</button>
-        <button type="button" id="btnExportBillsPdf">📄 Exportar PDF</button>
-        <button type="button" id="btnExportBillsXlsx">📊 Exportar Excel</button>
-      </div>
-      <div class="bills-toolbar-titular">
-        <label class="calendar-filter-control" for="billTitularFilter"><span>Titular</span><select id="billTitularFilter"><option value="">Todos</option></select></label>
-      </div>
-    </div>
-    <div class="bills-status-filter" id="billsStatusFilter" role="group" aria-label="Filtrar por estado">
-      <button type="button" data-bills-status="" class="is-active">Todos</button>
-      <button type="button" data-bills-status="pendente">Pendentes</button>
-      <button type="button" data-bills-status="atrasado">Atrasadas</button>
-      <button type="button" data-bills-status="pago">Pagas</button>
-    </div>
-    <div class="card" style="padding:16px; margin-bottom:16px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
-        <button type="button" id="btnBillPrev">‹</button>
-        <strong id="billMonthLabel" style="font-size:18px;text-transform:capitalize;"></strong>
-        <button type="button" id="btnBillNext">›</button>
-      </div>
-      <div id="billCalendar" class="bill-calendar"></div>
-    </div>
-    <div class="card" style="padding:16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
-        <div><strong>Contas e faturas</strong><div class="hint">Compromissos futuros não alteram o saldo. Use “Lançar no Livro-Caixa” para registrar o pagamento.</div></div>
-      </div>
-      <div id="billList"></div>
-    </div>
-  </div>
-
-  <!-- P3.1 — Valores a Receber (módulo independente; não mexe em caixa/patrimônio) -->
-  <!-- [VIEW] Valores a Receber -->
-  <div id="viewReceivables" class="tab-content">
-    <div class="balance-strip section-balance-strip" id="receivablesSummary"></div>
-    <div class="toolbar" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));">
-      <select id="receivableStatusFilter" aria-label="Filtrar por status">
-        <option value="">Todos os status</option>
-        <option value="pendente">Pendentes</option>
-        <option value="recebido">Recebidos</option>
-        <option value="cancelado">Cancelados</option>
-      </select>
-    </div>
-    <p class="hint" style="margin:0 0 12px;">Módulo independente: marcar como recebido <strong>não</strong> cria lançamento no Livro-Caixa, nem altera caixinhas, investimentos ou patrimônio.</p>
-    <div id="receivablesList" class="receivables-list"></div>
-  </div>
-
-  <!-- ABA 2: CRIPTO E INVESTIMENTOS -->
-  <!-- [VIEW] Investimentos -->
-  <div id="viewInvest" class="tab-content">
-    <div class="balance-strip section-balance-strip" id="investBalanceStrip"></div>
-    <div class="toolbar">
-      <button type="button" id="btnUpdateAllPrices"><i class="fi fi-rr-refresh" aria-hidden="true"></i> Atualizar Cotações</button>
-    </div>
-    <div id="updateAllStatus" style="font-size:12px; margin-bottom:16px; opacity:0.75;"></div>
-    <div id="investPeriodSummary" class="period-summary" aria-label="Resumo de investimentos no período"></div>
-
-    <div id="investGrid" class="invest-grid"></div>
-  </div>
-
-  <!-- [VIEW] Caixinhas -->
-  <div id="viewPockets" class="tab-content">
-    <div class="balance-strip" id="pocketBalanceStrip"></div>
-
-    <div id="pocketGrid" class="invest-grid"></div>
-  </div>
-
-  <!-- [VIEW] Cartões -->
-  <div id="viewCards" class="tab-content">
-    <div class="cards-toolbar">
-      <div>
-        <h2 style="margin:0 0 4px;font-size:20px;">Cartões</h2>
-        <p class="hint">Cadastre cartões e compras. Faturas do ciclo aparecem aqui e no Calendário. Marcar como pago não lança no Livro-Caixa; Lançar registra a saída.</p>
-      </div>
-    </div>
-    <div id="cardsGrid" class="cards-grid"></div>
-  </div>
-
-  <div id="viewProfile" class="tab-content">
-    <section class="profile-shell" aria-label="Área de perfil">
-      <div class="profile-heading profile-heading-integrated">
-        <div class="profile-avatar" aria-hidden="true"><i class="fi fi-rr-user" aria-hidden="true"></i></div>
-        <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
-        <button type="button" id="btnProfileLogout" class="profile-heading-logout" title="Sair da conta" aria-label="Sair da conta"><i class="fi fi-rr-exit" aria-hidden="true"></i></button>
-      </div>
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-user" aria-hidden="true"></i></span> Dados da conta</div>
-        <div class="profile-list">
-          <div class="profile-item"><span class="profile-item-icon"><i class="fi fi-rr-file-code" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Versão do aplicativo</strong><span id="profileAppVersion">Livro-Caixa</span></span></div>
-        </div>
-      </div>
-
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-settings" aria-hidden="true"></i></span> Configurações gerais</div>
-        <div class="profile-list">
-          <div class="profile-item"><span class="profile-item-icon"><i class="fi fi-rr-palette" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta, no cabeçalho</span></span></div>
-          <div class="profile-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><i class="fi fi-rr-tags"></i></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamentos — criar, editar e excluir.</span></span><span class="profile-item-arrow">›</span></div>
-          <div class="profile-item">
-            <span class="profile-item-icon"><i class="fi fi-rr-calendar" aria-hidden="true"></i></span>
-            <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define quando começa seu mês financeiro (apenas para orçamentos).</span></span>
-            <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
-          </div>
-          <div class="profile-item"><span class="profile-item-icon"><i class="fi fi-rr-bell" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
-          <label class="feature-profile-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
-        </div>
-      </div>
-
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-home-robot"></i></span> Automações</div>
-        <div class="feature-profile-section">
-          <div class="feature-profile-section-head" hidden><div><h4>Automações</h4></div></div>
-          <div class="feature-profile-options feature-profile-option-list">
-            <label class="feature-profile-toggle"><input type="checkbox" id="featureAutoBills"><span class="feature-profile-toggle-copy"><strong>Contas recorrentes</strong><small>Gerar contas recorrentes automaticamente no mês atual.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
-            <label class="feature-profile-toggle"><input type="checkbox" id="featureAutoQuotes"><span class="feature-profile-toggle-copy"><strong>Cotações automáticas</strong><small>Atualizar cotações enquanto o aplicativo estiver aberto.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
-          </div>
-          <div class="feature-profile-fields">
-            <div><label for="featureQuoteInterval">Intervalo de cotação</label><div class="feature-profile-input-suffix"><input type="number" id="featureQuoteInterval" min="1" max="1440" step="1" value="15"><span>min</span></div></div>
-            <div><label for="featureProjectionMonths">Meses de projeção</label><div class="feature-profile-input-suffix"><input type="number" id="featureProjectionMonths" min="1" max="24" step="1" value="6"><span>meses</span></div></div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="feature-profile-primary-actions" style="display:none;">
-        <div id="profileSettingsStatus" class="feature-profile-feedback" aria-live="polite"></div>
-      </div>
-
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-calculator-money"></i></span> Orçamento</div>
-        <div class="feature-profile-section">
-          <div id="featureBudgetRows" class="feature-budget-rows"></div>
-        </div>
-      </div>
-
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-bank"></i></span> Conciliação bancária</div>
-        <div class="feature-profile-section">
-          <div class="reconciliation-card">
-            <div class="reconciliation-header">
-              <h4>Conciliação de saldo</h4>
-              <span class="reconciliation-badge" id="reconciliationStatusBadge" hidden></span>
-            </div>
-            
-            <div class="reconciliation-fields">
-              <div class="reconciliation-field">
-                <label for="reconcileBank">Banco</label>
-                <select id="reconcileBank" aria-label="Selecione o banco para conciliação"></select>
-              </div>
-              <div class="reconciliation-field">
-                <label for="reconcileReported">Saldo informado pelo banco</label>
-                <input type="text" id="reconcileReported" data-money="true" placeholder="R$ 0,00" aria-label="Saldo informado pelo extrato bancário">
-              </div>
-            </div>
-            
-            <div class="reconciliation-balances" id="reconciliationBalances" hidden>
-              <div class="balance-comparison">
-                <div class="balance-item calculated">
-                  <span class="balance-label">Saldo calculado</span>
-                  <span class="balance-value" id="reconciliationCalculated">R$ 0,00</span>
-                </div>
-                <div class="balance-divider">vs</div>
-                <div class="balance-item reported">
-                  <span class="balance-label">Saldo informado</span>
-                  <span class="balance-value" id="reconciliationReportedValue">R$ 0,00</span>
-                </div>
-              </div>
-              <div class="difference-display" id="differenceDisplay">
-                <div class="difference-amount" id="differenceAmount">R$ 0,00</div>
-                <div class="difference-label" id="differenceLabel"></div>
-              </div>
-            </div>
-            
-            <div class="feature-profile-actions">
-              <button type="button" id="btnRunReconciliation" class="primary">Comparar saldos</button>
-              <button type="button" id="btnApplyReconciliation" class="secondary" hidden>Aplicar ajuste sugerido</button>
-            </div>
-            
-            <div id="reconciliationResult" class="feature-profile-feedback" aria-live="polite"></div>
-            
-            <div id="reconciliationHistory" class="reconciliation-history" hidden>
-              <h5>Histórico de conciliações</h5>
-              <div id="reconciliationHistoryList"></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-sr-sparkles"></i></span> Análise assistida</div>
-        <div class="feature-profile-section profile-plus-section">
-          <label class="feature-profile-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-profile-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias usando descrições já categorizadas no seu histórico; nenhuma alteração é feita sem confirmação.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
-          <div class="feature-profile-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
-          <div id="profileAnalysisStatus" class="feature-profile-feedback" aria-live="polite"></div>
-        </div>
-        <div class="feature-profile-heading"><strong>Diagnóstico</strong></div>
-        <div class="profile-list">
-          <div class="diagnostic-summary-card">
-            <div class="diagnostic-summary-head">
-              <span class="diagnostic-summary-icon" id="diagnosticSummaryIcon" aria-hidden="true"></span>
-              <div><strong id="diagnosticSummaryLabel">Consistência dos dados</strong><span id="diagnosticSummaryDetail">Toque em "Executar diagnóstico" para verificar</span></div>
-            </div>
-            <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
-            <button type="button" id="btnOpenTechnicalDiagnostic"
-              style="margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;">
-              ⚙ Abrir console técnico
-            </button>
-          </div>
-          <div id="diagnosticResults" class="diagnostic-results" aria-live="polite"></div>
-        </div>
-      </div>
-
-      <div class="profile-group profile-group-hidden" hidden aria-hidden="true"><div class="profile-group-title">Proteção local</div>
-        <div class="feature-profile-section feature-profile-security">
-          <p class="feature-profile-section-desc">Proteja o acesso local ao aplicativo com um PIN de 4 a 8 dígitos.</p>
-          <div class="feature-profile-pin-row">
-            <div><label for="featurePin">PIN local</label><input type="password" id="featurePin" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="4 a 8 dígitos"></div>
-            <div class="feature-profile-pin-actions"><button type="button" id="btnSaveLocalPin" class="primary">Ativar / alterar</button><button type="button" id="btnClearLocalPin">Remover</button></div>
-          </div>
-          <div class="feature-profile-actions"><button type="button" id="btnLockNow"><span class="quick-action-icon" aria-hidden="true" style="width:15px;height:15px;display:inline-flex;vertical-align:-2px;margin-right:5px;"><i class="fi fi-rr-lock" aria-hidden="true"></i></span>Bloquear agora</button></div>
-          <div class="feature-profile-actions" style="margin-top:8px;flex-wrap:wrap;gap:8px;">
-            <button type="button" id="btnEnableBiometric">Usar biometria neste aparelho</button>
-            <button type="button" id="btnDisableBiometric">Desativar biometria</button>
-          </div>
-          <p class="hint" id="biometricHint" style="margin-top:6px;">A biometria desbloqueia o app no lugar do PIN, quando o aparelho permitir. O PIN continua como reserva.</p>
-          <div id="pinSettingsStatus" class="feature-profile-feedback" aria-live="polite"></div>
-        </div>
-
-      </div>
-
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-eye-crossed"></i></span> Privacidade</div>
-        <div class="profile-list">
-          <label class="feature-profile-toggle">
-            <input type="checkbox" id="chkHideBalancesOnOpen">
-            <span class="feature-profile-toggle-copy"><strong><span class="profile-inline-icon" aria-hidden="true">👁</span> Ocultar saldos ao abrir</strong><small>Os valores iniciam como ••••••. Toque em qualquer saldo/valor na tela para alternar a visualização.</small></span>
-            <span class="feature-profile-switch" aria-hidden="true"></span>
-          </label>
-        </div>
-      </div>
-
-</section>
-  </div>
-
-  <!-- Modais -->
-  <button type="button" id="fabAdd" class="fab-add" title="Adicionar" aria-label="Adicionar"><i class="fi fi-rr-plus add-icon" aria-hidden="true"></i><i class="fi fi-rr-messages fab-chat-icon" aria-hidden="true"></i></button>
-
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="panel" id="panelNovo">
-      <h3 id="panelNovoTitle">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div>
-          <label>Tipo</label>
-          <div class="type-toggle">
-            <button type="button" id="tglIn" class="active-in">Entrada</button>
-            <button type="button" id="tglOut">Saída</button>
-          </div>
-        </div>
-        <div>
-          <label for="fData">Data</label>
-          <input type="date" id="fData">
-        </div>
-        <div>
-          <label for="fDesc">Descrição</label>
-          <input type="text" id="fDesc" placeholder="Ex: Salário, Mercado...">
-        </div>
-        <div>
-          <label for="fBanco">Banco</label>
-          <select id="fBanco"></select>
-        </div>
-        <div>
-          <label for="fCategoria">Categoria</label>
-          <div style="display:flex; gap:6px;">
-            <select id="fCategoria" style="flex:1;"></select>
-            <button type="button" id="btnQuickCat" title="Cadastrar Nova Categoria" style="padding:0 12px; font-weight:bold; font-size:14px;">+</button>
-          </div>
-        </div>
-        <div>
-          <label for="fValor">Valor (R$)</label>
-          <input type="text" id="fValor" data-money="true" placeholder="R$ 0,00">
-        </div>
-        <div style="grid-column: 1 / -1; margin-top: 4px;">
-          <input
-            type="file"
-            id="receiptFile"
-            accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
-            hidden
-          >
-          <button
-            type="button"
-            id="btnReadReceipt"
-            style="width:100%;"
-          >
-            Ler comprovante com IA
-          </button>
-          <div
-            id="receiptFileStatus"
-            style="display:none; margin-top:8px; font-size:12px; opacity:.8;"
-          ></div>
-        </div>
-        <div style="grid-column: 1 / -1; margin-top: 8px;">
-          <button class="primary" id="fSalvar" style="width:100%">Salvar</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" id="panelBanco">
-      <h3 id="panelBancoTitle">Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div>
-          <label for="bNome">Nome do banco</label>
-          <input type="text" id="bNome" placeholder="Ex: Nubank">
-        </div>
-        <div>
-          <label for="bSaldo">Saldo inicial (R$)</label>
-          <input type="text" id="bSaldo" data-money="true" placeholder="R$ 0,00">
-        </div>
-        <div>
-          <button class="primary" id="bSalvar" style="width:100%">Adicionar</button>
-        </div>
-      </div>
-      <div style="margin-top:16px;">
-        <label>Bancos Cadastrados:</label>
-        <div id="bankManageList"></div>
-      </div>
-    </div>
-
-    <div class="panel" id="panelCategoria">
-      <h3>Gerenciar Categorias <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="category-modal-body">
-        <div class="form-grid">
-          <div>
-            <label for="cNome">Nome da nova categoria</label>
-            <input type="text" id="cNome" placeholder="Ex: Renda Extra">
-          </div>
-          <div>
-            <label for="btnEmojiCatalog">Ícone</label>
-            <input type="hidden" id="cIcon" value="📦">
-            <div class="category-icon-picker">
-              <button type="button" class="emoji-trigger" id="btnEmojiCatalog" aria-haspopup="dialog">
-                <span class="emoji-trigger-preview" id="cEmojiPreview">📦</span>
-                <span class="emoji-trigger-copy"><strong id="cEmojiLabel">Outros</strong><span>Toque para escolher um ícone</span></span>
-                <span class="emoji-trigger-chevron" aria-hidden="true">⌄</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="category-managed-section">
-          <label>Categorias Cadastradas:</label>
-          <div id="catManageList"></div>
-        </div>
-      </div>
-      <div class="category-modal-footer">
-        <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
-      </div>
-    </div>
-
-    <div class="panel" id="panelFiltros">
-      <h3>Filtrar movimentações <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div>
-          <label for="filterFlow">Movimentação</label>
-          <select id="filterFlow">
-            <option value="">Todas</option>
-            <option value="in">Somente Entradas</option>
-            <option value="out">Somente Saídas</option>
-          </select>
-        </div>
-        <div>
-          <label for="filterDateStart">Data inicial</label>
-          <input type="date" id="filterDateStart">
-        </div>
-        <div>
-          <label for="filterDateEnd">Data final</label>
-          <input type="date" id="filterDateEnd">
-        </div>
-        <div class="filter-choice-field">
-          <label for="filterBankTrigger">Banco / conta</label>
-          <button type="button" class="filter-choice-trigger" id="filterBankTrigger" aria-haspopup="dialog" aria-controls="filterChoiceSheet"><span><strong>Banco / conta</strong><small id="filterBankSummary">Todos os bancos</small></span><b aria-hidden="true">⌄</b></button>
-          <select id="filterBank" class="filter-state-select" multiple aria-hidden="true" tabindex="-1"></select>
-        </div>
-        <div class="filter-choice-field">
-          <label for="filterCategoryTrigger">Categorias</label>
-          <button type="button" class="filter-choice-trigger" id="filterCategoryTrigger" aria-haspopup="dialog" aria-controls="filterChoiceSheet"><span><strong>Categorias</strong><small id="filterCategorySummary">Todas as categorias</small></span><b aria-hidden="true">⌄</b></button>
-          <select id="filterCategory" class="filter-state-select" multiple aria-hidden="true" tabindex="-1"></select>
-        </div>
-        <div style="grid-column:1/-1;">
-          <label for="filterText">Buscar por texto</label>
-          <input type="search" id="filterText" placeholder="Descrição, banco ou categoria">
-        </div>
-        <div style="grid-column:1/-1; display:flex; gap:8px; margin-top:4px;">
-          <button type="button" id="btnClearFilters" style="flex:1;">Limpar</button>
-          <button type="button" class="primary" id="btnApplyFilters" style="flex:1;">Aplicar filtros</button>
-        </div>
-      </div>
-      <div class="filter-choice-sheet" id="filterChoiceSheet" aria-hidden="true" role="dialog" aria-modal="true">
-        <div class="filter-choice-sheet-head"><div><strong id="filterChoiceTitle">Escolha</strong><small id="filterChoiceSubtitle">Selecione uma ou mais opções para filtrar.</small></div><button type="button" class="modal-close" id="filterChoiceClose" aria-label="Fechar seleção">×</button></div>
-        <input type="search" id="filterChoiceSearch" class="filter-choice-search" placeholder="Buscar banco ou categoria" autocomplete="off">
-        <div id="filterChoiceList" class="filter-choice-list"></div>
-        <button type="button" class="primary filter-choice-confirm" id="filterChoiceConfirm">Confirmar seleção</button>
-      </div>
-    </div>
-
-    <div class="panel feature-profile-panel" id="panelFeatureProfile">
-      <div class="feature-profile-header">
-        <div class="feature-profile-title-wrap">
-          <span class="feature-profile-kicker">LABS · EXPERIMENTAL</span>
-          <h3>LABS <span class="feature-profile-status-dot" aria-hidden="true"></span></h3>
-          <p class="feature-profile-intro">Recursos experimentais e ainda em teste, antes de virarem parte definitiva do aplicativo.</p>
-        </div>
-        <button type="button" class="modal-close feature-profile-close" onclick="closeAllPanels()" aria-label="Fechar recursos completos">×</button>
-      </div>
-
-      <div class="feature-profile-warning">
-        <span class="feature-profile-warning-icon" aria-hidden="true"><i class="fi fi-rr-triangle-exclamation" aria-hidden="true"></i></span>
-        <div><strong>Área de testes</strong><span>Algumas opções podem executar ações reais no seu Livro-Caixa. Recursos automáticos começam desativados.</span></div>
-      </div>
-
-        <div class="feature-profile-primary-actions">
-        <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
-      </div>
-      <div id="featureProfileStatus" class="feature-profile-feedback" aria-live="polite"></div>
-    </div>
-
-
-
-    <div class="panel" id="panelDiagnostico">
-      <h3>Diagnóstico Geral (LOG) <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <p class="hint" style="margin:0 0 10px;">Registro técnico de carregamento, salvamento, sincronização, autenticação, importação, exportação, cálculos, cotações, calendário e operações concluídas ou falhas. Dados sensíveis não são registrados.</p>
-      <div class="log-toolbar">
-        <select id="logFilterType" aria-label="Filtrar tipo de LOG"><option value="">Todos os tipos</option><option value="INFO">INFO</option><option value="WARN">WARN</option><option value="ERROR">ERROR</option></select>
-        <select id="logFilterModule" aria-label="Filtrar módulo do LOG"><option value="">Todos os módulos</option></select>
-        <input id="logFilterText" type="search" placeholder="Buscar no LOG" aria-label="Buscar no LOG">
-      </div>
-      <div id="diagnosticoList" style="max-height:50vh; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
-      <div style="display:flex; gap:8px; margin-top:12px;">
-        <button type="button" id="btnCopyDiagnostico" style="flex:1;">Copiar LOG</button>
-        <button type="button" id="btnClearDiagnostico" style="flex:1;">Limpar local</button>
-      </div>
-    </div>
-
-    <div class="panel" id="panelTransferencia">
-      <h3>Transferência universal <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div>
-          <label for="tData">Data</label>
-          <input type="date" id="tData">
-        </div>
-        <div>
-          <label for="tDe">Origem (Sai de)</label>
-          <select id="tDe"></select>
-        </div>
-        <div>
-          <label for="tPara">Destino (Vai para)</label>
-          <select id="tPara"></select>
-        </div>
-        <div>
-          <label for="tValor">Valor (R$)</label>
-          <input type="text" id="tValor" data-money="true" placeholder="R$ 0,00">
-        </div>
-        <div>
-          <label for="tDesc">Observação (Opcional)</label>
-          <input type="text" id="tDesc" placeholder="Ex: Reserva mensal">
-        </div>
-        <div style="grid-column: 1 / -1; margin-top: 4px;">
-          <input
-            type="file"
-            id="transferReceiptFile"
-            accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
-            hidden
-          >
-          <button
-            type="button"
-            id="btnReadTransferReceipt"
-            style="width:100%;"
-          >
-            Ler comprovante com IA
-          </button>
-          <div
-            id="transferReceiptFileStatus"
-            style="display:none; margin-top:8px; font-size:12px; opacity:.8;"
-          ></div>
-        </div>
-        <div style="grid-column: 1 / -1; margin-top: 8px;">
-          <button class="primary" id="tSalvar" style="width:100%">Transferir</button>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="panel bill-form-sheet" id="panelBill">
-  <h3 id="panelBillTitle">
-    Nova Conta / Fatura
-    <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button>
-  </h3>
-
-  <div class="bill-value-block">
-    <label for="billValor">Valor</label>
-    <input id="billValor" type="text" data-money="true" inputmode="decimal" placeholder="R$ 0,00">
-  </div>
-
-  <div class="bill-section bill-identity-card">
-    <div class="bill-section-title">Identificação</div>
-    <div class="bill-section-grid">
-      <div>
-        <label for="billNome">Nome da conta / fatura</label>
-        <input id="billNome" type="text" placeholder="Ex: Netflix, Energia, Cartão">
-      </div>
-      <div>
-        <label for="billTitular">Titular</label>
-        <input id="billTitular" type="text" placeholder="Opcional · Ex: Mãe">
-      </div>
-    </div>
-  </div>
-
-  <div class="bill-config-grid">
-    <div class="bill-section bill-choice-card">
-      <div class="bill-section-title">Tipo de ocorrência</div>
-      <div class="bill-choice-row">
-        <span class="bill-choice-icon" aria-hidden="true">↻</span>
-        <select id="billTipoOcorrencia">
-          <option value="recorrente">Recorrente</option>
-          <option value="nao_recorrente">Não recorrente</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="bill-section bill-choice-card">
-      <div class="bill-section-title">Parcelado</div>
-      <div class="bill-choice-row">
-        <span class="bill-choice-icon" aria-hidden="true">▤</span>
-        <select id="billParcelado">
-          <option value="0">Não</option>
-          <option value="1">Sim</option>
-        </select>
-      </div>
-    </div>
-  </div>
-
-  <div id="billParcelasFields" class="bill-section bill-installments-card" style="display:none;">
-    <div class="bill-section-title">Parcelamento</div>
-    <div class="bill-section-grid">
-      <div>
-        <label for="billParcelasTotal">Número total de parcelas</label>
-        <input id="billParcelasTotal" type="number" min="2" max="360" step="1" placeholder="Ex: 6">
-      </div>
-      <div>
-        <label for="billParcelaInicial">Parcela inicial</label>
-        <input id="billParcelaInicial" type="number" min="1" max="360" step="1" value="1">
-      </div>
-    </div>
-  </div>
-
-  <div class="bill-section bill-payment-card">
-    <div class="bill-section-title">Pagamento</div>
-
-    <div class="bill-payment-row">
-      <span class="bill-bank-mark" aria-hidden="true">P</span>
-      <div class="bill-payment-main">
-        <label for="billBanco">Conta de pagamento</label>
-        <select id="billBanco"></select>
-      </div>
-    </div>
-
-    <div class="bill-category-row">
-      <label for="billCategoria">Categoria</label>
-      <select id="billCategoria"></select>
-    </div>
-  </div>
-
-  <div class="bill-section bill-timeline-card">
-    <div class="bill-section-title">Timeline</div>
-
-    <div class="bill-section-grid">
-      <div>
-        <label for="billInicio">Início / vencimento</label>
-        <div class="bill-date-field">
-          <span aria-hidden="true">◷</span>
-          <input id="billInicio" type="date">
-        </div>
-      </div>
-
-      <div id="billFimField">
-        <label for="billFim">Fim (opcional)</label>
-        <div class="bill-date-field">
-          <span aria-hidden="true">◷</span>
-          <input id="billFim" type="date">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bill-status-row">
-    <div>
-      <label for="billAtiva">Status</label>
-      <select id="billAtiva" class="bill-status-pill">
-        <option value="1">Ativa</option>
-        <option value="0">Pausada</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="bill-observation">
-    <label for="billObs">Observação <span>(opcional)</span></label>
-    <input id="billObs" type="text" placeholder="Ex: cobrança mensal automática">
-  </div>
-
-  <button class="primary bill-save-cta" id="billSalvar">Salvar Conta / Fatura</button>
-</div>
-<div class="panel" id="panelBillLaunch">
-      <h3>Lançar no Livro-Caixa <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <p id="billLaunchDescription" class="hint">Escolha o banco que será utilizado para esta despesa.</p>
-      <label for="billLaunchBank">Banco utilizado</label>
-      <select id="billLaunchBank"></select>
-      <button type="button" class="primary" id="billLaunchConfirm" style="width:100%;margin-top:12px;">Confirmar lançamento</button>
-    </div>
-
-    <div class="panel" id="panelReceivable">
-      <h3 id="panelReceivableTitle">Valor a receber <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <p class="hint">Registro independente. Receber aqui não gera movimento no Livro-Caixa.</p>
-      <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
-        <div style="grid-column:1/-1"><label for="recvPessoa">Pessoa</label><input id="recvPessoa" type="text" placeholder="Quem deve pagar" required></div>
-        <div style="grid-column:1/-1"><label for="recvDesc">Descrição</label><input id="recvDesc" type="text" placeholder="Ex: Empréstimo, reembolso…" required></div>
-        <div><label for="recvValor">Valor (R$)</label><input id="recvValor" type="text" data-money="true" placeholder="R$ 0,00"></div>
-        <div><label for="recvDataRegistro">Data do registro</label><input id="recvDataRegistro" type="date"></div>
-        <div><label for="recvDataPrevista">Data prevista (opcional)</label><input id="recvDataPrevista" type="date"></div>
-        <div><label for="recvStatus">Status</label><select id="recvStatus"><option value="pendente">Pendente</option><option value="recebido">Recebido</option><option value="cancelado">Cancelado</option></select></div>
-        <div style="grid-column:1/-1"><label for="recvObs">Observação (opcional)</label><input id="recvObs" type="text" placeholder="Detalhes opcionais"></div>
-        <div style="grid-column:1/-1"><button class="primary" id="recvSalvar" style="width:100%">Salvar</button></div>
-      </div>
-    </div>
-
-    <div class="panel bill-share-panel" id="panelBillShare">
-      <div class="bill-share-head"><div><span class="eyebrow">COMPARTILHAMENTO INDIVIDUAL</span><h3>Mensagem da conta</h3></div><button type="button" class="modal-close" onclick="closeAllPanels()">×</button></div>
-      <p class="hint">Revise a mensagem antes de copiar ou abrir o compartilhamento do dispositivo.</p>
-      <textarea id="billShareMessage" class="bill-share-message" rows="12" spellcheck="false"></textarea>
-      <div class="bill-share-actions"><button type="button" id="btnCopyBillShare">Copiar mensagem</button><button type="button" id="btnNativeBillShare" class="primary">Compartilhar</button></div>
-      <div id="billShareStatus" class="feature-profile-feedback" aria-live="polite"></div>
-      <button type="button" id="btnCancelBillShare" class="bill-share-cancel" onclick="closeAllPanels()">Cancelar</button>
-    </div>
-
-    <div class="panel card-form-sheet" id="panelCard">
-      <h3 id="panelCardTitle">Novo Cartão <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
-
-      <div class="card-section">
-        <div class="card-section-title">Identificação</div>
-        <div class="card-section-grid">
-          <div>
-            <label for="cardNome">Nome do cartão</label>
-            <input id="cardNome" type="text" placeholder="Ex: Nubank" autocomplete="off">
-          </div>
-          <div>
-            <label for="cardBanco">Banco / instituição</label>
-            <select id="cardBanco"></select>
-          </div>
-          <div class="card-field-wide">
-            <label for="cardTitular">Titular principal</label>
-            <input id="cardTitular" type="text" placeholder="Ex: Titular 01" autocomplete="off">
-          </div>
-        </div>
-      </div>
-
-      <div class="card-section card-cycle-section">
-        <div class="card-section-title">Ciclo da fatura</div>
-        <div class="card-cycle-grid">
-          <div>
-            <label for="cardFechamento">Dia de fechamento</label>
-            <div class="card-number-field">
-              <span aria-hidden="true">◷</span>
-              <input id="cardFechamento" type="number" min="1" max="31" step="1" placeholder="10">
-            </div>
-          </div>
-          <div>
-            <label for="cardVencimento">Dia de vencimento</label>
-            <div class="card-number-field">
-              <span aria-hidden="true">✓</span>
-              <input id="cardVencimento" type="number" min="1" max="31" step="1" placeholder="17">
-            </div>
-          </div>
-        </div>
-        <div class="card-cycle-hint">Esses dias determinam em qual fatura cada compra será contabilizada.</div>
-      </div>
-
-      <div class="card-section">
-        <div class="card-section-title">Limite e status</div>
-        <div class="card-section-grid">
-          <div>
-            <label for="cardLimite">Limite disponível (opcional)</label>
-            <input id="cardLimite" type="text" data-money="true" placeholder="R$ 0,00">
-          </div>
-          <div>
-            <label for="cardAtivo">Status</label>
-            <select id="cardAtivo">
-              <option value="1">Ativo</option>
-              <option value="0">Inativo</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-section">
-        <div class="card-section-title">Observação</div>
-        <label for="cardObs" class="card-visually-hidden">Observação</label>
-        <input id="cardObs" type="text" placeholder="Ex: cartão adicional, uso pessoal">
-      </div>
-
-      <button class="primary card-save-cta" id="cardSalvar">Salvar Cartão</button>
-    </div>
-
-    <div class="panel" id="panelPurchase">
-      <h3 id="panelPurchaseTitle">Nova Compra <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div><label for="purchaseCard">Cartão</label><select id="purchaseCard"></select></div>
-        <div><label for="purchaseDate">Data da compra</label><input id="purchaseDate" type="date"></div>
-        <div style="grid-column:1/-1"><label for="purchaseDesc">Descrição da compra</label><input id="purchaseDesc" type="text" placeholder="Ex: Pizza, celular, mercado" autocomplete="off"></div>
-        <div><label for="purchaseValue" id="purchaseValueLabel">Valor total (R$)</label><input id="purchaseValue" type="text" data-money="true" placeholder="R$ 0,00"></div>
-        <div><label for="purchaseTitular">Titular responsável</label><input id="purchaseTitular" type="text" placeholder="Ex: Titular 02" autocomplete="off"></div>
-        <div><label for="purchaseCategory">Categoria</label><select id="purchaseCategory"></select></div>
-        <div><label for="purchaseType">Pagamento</label><select id="purchaseType"><option value="avista">À vista</option><option value="parcelado">Parcelado</option></select></div>
-        <div id="purchaseInstallmentsField" style="display:none"><label for="purchaseInstallments">Total de parcelas</label><input id="purchaseInstallments" type="number" min="2" max="360" step="1" placeholder="Ex: 7"></div>
-        <div id="purchaseInstallmentValueField" style="display:none"><label for="purchaseInstallmentValue">Valor da parcela</label><input id="purchaseInstallmentValue" type="text" data-money="true" placeholder="R$ 0,00"></div>
-        <div id="purchaseInitialInstallmentField" style="display:none"><label for="purchaseInitialInstallment">Parcela inicial</label><input id="purchaseInitialInstallment" type="number" min="1" max="360" step="1" value="1"><span class="hint">Refere-se à fatura calculada a partir da data da compra — não à fatura do mês atual. Ex: se a data da compra cai na fatura de julho, "2" significa que julho já é a parcela 2/N.</span></div>
-        <div style="grid-column:1/-1"><label for="purchaseObs">Observação (opcional)</label><input id="purchaseObs" type="text" placeholder="Ex: compra para uso pessoal"></div>
-        <div id="purchaseInstallmentHint" class="purchase-installment-hint" style="grid-column:1/-1;display:none">A compra parcelada será armazenada como um único registro. As ocorrências das parcelas serão calculadas futuramente pelo motor de faturas da Fase C.</div>
-        <div style="grid-column:1/-1"><button class="primary" id="purchaseSalvar" style="width:100%">Salvar Compra</button></div>
-      </div>
-    </div>
-
-    <div class="panel" id="panelInvest">
-      <h3 id="panelInvestTitle">Novo Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div>
-          <label for="iNome">Nome do Ativo</label>
-          <input type="text" id="iNome" placeholder="Ex: USDC, Bitcoin, CDB">
-        </div>
-          <div>
-            <label for="iApelido">Apelido / Identificação</label>
-            <input type="text" id="iApelido" placeholder="Ex: USDC - Coinbase, USDC - Binance">
-            <div class="hint">Use um apelido para diferenciar o mesmo ativo em locais diferentes.</div>
-          </div>
-          <div>
-            <label for="iCoinGeckoId">CoinGecko ID (opcional)</label>
-            <input type="text" id="iCoinGeckoId" placeholder="Ex: tether, usd-coin, bitcoin">
-            <div class="hint">Depois de preenchido, as atualizações usam este ID fixo em vez de buscar por nome.</div>
-          </div>
-          <div>
-            <label for="iTipo">Tipo / Categoria</label>
-          <select id="iTipo" onchange="updateInvestFormLayout()">
-            <option value="Stablecoin">Stablecoin (ex: USDC)</option>
-            <option value="Criptomoeda">Criptomoeda</option>
-            <option value="Bitcoin">Bitcoin (SATS)</option>
-            <option value="Renda Fixa">Renda Fixa / CDI</option>
-            <option value="Outros">Outros</option>
-          </select>
-        </div>
-
-        <div id="cryptoFields" style="display:contents;">
-          <div>
-            <label for="iUnidades" id="iUnidadesLabel">Saldo Inicial</label>
-            <input type="number" id="iUnidades" step="0.000001" placeholder="Ex: 50.00">
-            <div id="iUnidadesInitialHint" style="font-size:11px; margin-top:4px; opacity:0.7;">Editável. O saldo final é calculado pelas movimentações.</div>
-          </div>
-          <div>
-            <label for="iUnidadesAtual" id="iUnidadesAtualLabel">Saldo Final</label>
-            <input type="number" id="iUnidadesAtual" step="0.000001" placeholder="Calculado automaticamente" readonly aria-readonly="true">
-            <div id="iUnidadesFinalHint" style="font-size:11px; margin-top:4px; opacity:0.7;">Somente leitura: saldo inicial + aportes + rendimentos − resgates.</div>
-          </div>
-          <div>
-            <label for="iCotacao" id="iCotacaoLabel">Cotação (R$ por unidade)</label>
-            <div style="display:flex; gap:6px; align-items:stretch;">
-              <input type="text" id="iCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
-              <button type="button" id="btnFetchPrice" class="quote-fetch-button" title="Buscar cotação automática"><i class="fi fi-rr-refresh" aria-hidden="true"></i> Cotação</button>
-            </div>
-            <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Você pode digitar a cotação manualmente ou clicar em "Cotação" para buscar pela internet.</div>
-          </div>
-          <div>
-            <label for="iValor">Valor Total Atual (R$)</label>
-            <input type="text" id="iValor" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true" style="width:100%;">
-            <div style="font-size:11px; margin-top:4px; opacity:0.7;">Com cotação e quantidade preenchidas, o valor é calculado automaticamente.</div>
-          </div>
-        </div>
-
-        <div id="rendaFixaFields" style="display:none;">
-          <div>
-            <label for="iInstituicao">Instituição / Banco</label>
-            <input type="text" id="iInstituicao" placeholder="Ex: Nubank, XP, Banco Inter">
-          </div>
-          <div>
-            <label for="iTaxa">Taxa / Rentabilidade (Opcional)</label>
-            <input type="text" id="iTaxa" placeholder="Ex: 110% do CDI, 12% a.a.">
-          </div>
-          <div>
-            <label for="iVencimento">Data de Vencimento (Opcional)</label>
-            <input type="date" id="iVencimento">
-          </div>
-        </div>
-
-        <div id="valorSimplesField" style="display:none;">
-          <div>
-            <label for="iValorSimples">Saldo Inicial (R$)</label>
-            <input type="text" id="iValorSimples" data-money="true" placeholder="R$ 0,00">
-            <div style="font-size:11px; margin-top:4px; opacity:0.7;">Editável. O saldo atual é recalculado pelas movimentações.</div>
-          </div>
-          <div>
-            <label for="iValorAtualSimples">Saldo Atual / Final (R$)</label>
-            <input type="text" id="iValorAtualSimples" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true" style="width:100%;">
-            <div style="font-size:11px; margin-top:4px; opacity:0.7;">Somente leitura: saldo inicial + aportes + rendimentos − resgates.</div>
-          </div>
-        </div>
-
-        <div style="grid-column: 1 / -1; margin-top: 8px;">
-          <button class="primary" id="iSalvar" style="width:100%">Salvar Ativo</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" id="panelPocket">
-      <h3 id="panelPocketTitle">Nova Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="form-grid">
-        <div>
-          <label for="pNome">Nome da Caixinha</label>
-          <input type="text" id="pNome" placeholder="Ex: Viagem, Reserva de Emergência">
-        </div>
-        <div>
-          <label for="pObjetivo">Descrição da meta (Opcional)</label>
-          <input type="text" id="pObjetivo" placeholder="Ex: Reserva de emergência">
-        </div>
-        <div>
-          <label for="pMetaValor">Meta numérica (R$)</label>
-          <input type="text" id="pMetaValor" data-money="true" placeholder="Ex: R$ 5.000,00">
-        </div>
-        <div>
-          <label for="pBancoOrigem">Banco de origem</label>
-          <select id="pBancoOrigem"><option value="">A definir</option></select>
-          <div class="hint">Usa os bancos já cadastrados no Livro-Caixa.</div>
-        </div>
-        <div>
-          <label for="pInicial">Saldo Inicial (R$)</label>
-          <input type="text" id="pInicial" data-money="true" placeholder="R$ 0,00">
-        </div>
-        <div>
-          <label for="pAtual">Saldo Atual (R$)</label>
-          <input type="text" id="pAtual" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true">
-          <div class="hint">Saldo inicial + movimentações registradas nesta caixinha.</div>
-        </div>
-        <div style="grid-column: 1 / -1; margin-top: 8px;">
-          <button class="primary" id="pSalvar" style="width:100%">Salvar Caixinha</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" id="panelPocketMovement">
-      <h3 id="panelPocketMovementTitle">Registrar Movimentação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="type-toggle movement-tabs" style="margin-bottom:14px;">
-        <button type="button" id="pmAporte" class="active-in">Aporte</button>
-        <button type="button" id="pmResgate">Resgate</button>
-        <button type="button" id="pmRendimento">Rendimento</button>
-      </div>
-<div class="form-grid">
-        <div>
-          <label for="pmData" id="pmDataLabel">Data</label>
-          <input type="date" id="pmData">
-        </div>
-<div>
-          <label for="pmValor">Valor (R$)</label>
-          <input type="text" id="pmValor" data-money="true" placeholder="R$ 0,00">
-        </div>
-        <div style="grid-column: 1 / -1;">
-          <label for="pmDesc">Observação (Opcional)</label>
-          <input type="text" id="pmDesc" placeholder="Ex: Aporte mensal / Rendimento do período / Resgate">
-        </div>
-        <div style="grid-column: 1 / -1; margin-top: 8px;">
-          <button class="primary" id="pmSalvar" style="width:100%">Registrar Aporte</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" id="panelInvestMovement">
-      <h3 id="panelInvestMovementTitle">Registrar Movimentação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="type-toggle movement-tabs" style="margin-bottom:14px;">
-        <button type="button" id="imAporte" class="active-in">Aporte</button>
-        <button type="button" id="imResgate">Resgate</button>
-        <button type="button" id="imRendimento">Rendimento</button>
-      </div>
-<div class="form-grid">
-        <div>
-          <label for="imData" id="imDataLabel">Data</label>
-          <input type="date" id="imData">
-        </div>
-<div id="imCryptoQuantityField">
-          <label for="imQuantidade" id="imQuantidadeLabel">Quantidade</label>
-          <input type="number" id="imQuantidade" step="0.00000001" min="0" placeholder="Ex: 0.50">
-        </div>
-        <div id="imCryptoQuoteField">
-          <label for="imCotacao">Cotação</label>
-          <div style="display:flex; gap:6px; align-items:stretch;">
-            <input type="text" id="imCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
-            <button type="button" id="imFetchPrice" class="quote-fetch-button" title="Buscar cotação automática"><i class="fi fi-rr-refresh" aria-hidden="true"></i></button>
-          </div>
-          <div id="imPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a cotação manualmente ou clique no botão <i class="fi fi-rr-refresh" aria-hidden="true"></i> para buscar pela internet.</div>
-        </div>
-        <div>
-          <label for="imValor">Valor (R$)</label>
-          <input type="text" id="imValor" data-money="true" placeholder="Calculado automaticamente" readonly aria-readonly="true">
-        </div>
-        <div style="grid-column: 1 / -1;">
-          <label for="imDesc">Observação (Opcional)</label>
-          <input type="text" id="imDesc" placeholder="Ex: Rendimento mensal Binance Earn / Aporte mensal">
-        </div>
-        <div style="grid-column: 1 / -1; margin-top: 8px;">
-          <button class="primary" id="imSalvar" style="width:100%">Registrar Lançamento</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel" id="panelExportFormat">
-      <h3>Exportar Extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:-6px;">Confira a prévia respeitando os filtros atuais antes de escolher o formato.</p>
-      <div id="exportPreview" class="export-preview" aria-live="polite"></div>
-      <div class="toolbar" style="grid-template-columns: 1fr 1fr; margin-top:14px;">
-        <button class="primary" id="btnExportFormatPdf">📄 PDF</button>
-        <button class="primary" id="btnExportFormatXlsx">📊 Excel (.xlsx)</button>
-        <button class="primary" id="btnExportFormatDocx">📝 Word (.docx)</button>
-      </div>
-    </div>
-
-    <div class="panel" id="panelPaste">
-      <h3>Colar texto do extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <label for="pasteArea">Cole as movimentações no formato: DD/MM/AAAA / VALOR / BANCO / CATEGORIA / OBSERVAÇÃO</label>
-      <textarea id="pasteArea" placeholder="15/08/2026 / -12,50 / Nubank / Alimentação / Almoço
-16/08/2026 / +50,00 / PagBank / / TikTok
-17/08/2026 / -20,00 / Dinheiro"></textarea>
-      <p id="pasteStatus" class="hint" aria-live="polite">Categoria e observação são opcionais. Linhas inválidas serão destacadas antes da importação e não serão salvas silenciosamente.</p>
-      <button type="button" id="btnReadClipboard" class="emoji-native-toggle" style="margin-top:10px;">⌘ Ler área de transferência</button>
-      <div style="display:flex; gap:10px; margin-top:12px;">
-        <button class="primary" id="btnProcessPaste" style="flex:1;">Gerar Prévia</button>
-        <button id="btnCancelPaste" style="flex:1;">Cancelar</button>
-      </div>
-    </div>
-
-    <div class="panel" id="panelImport">
-      <h3>Revisar importação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div id="importSummary" class="import-summary" aria-live="polite"></div>
-      <div id="importList"></div>
-      <div class="import-actions" style="display:flex; gap:8px; margin:8px 0; flex-wrap:wrap;">
-        <button type="button" id="importRemoveDuplicates" class="secondary" style="flex:1;" disabled aria-label="Remover todas as linhas duplicadas">Remover duplicatas</button>
-        <button type="button" id="importRemoveInvalid" class="secondary" style="flex:1;" disabled aria-label="Remover todas as linhas inválidas">Remover inválidas</button>
-      </div>
-      <div class="hint">Possíveis duplicidades são mantidas visíveis para revisão, mas não entram na confirmação. Edite ou remova as linhas que não forem lançamentos reais.</div>
-      <div style="display:flex; gap:10px; margin-top:14px;">
-        <button class="primary" id="importConfirm" style="flex:1;">Confirmar Lançamentos</button>
-        <button id="importCancel" style="flex:1;">Cancelar</button>
-      </div>
-    </div>
-
-    <div class="panel goals-form-sheet" id="panelGoalForm" role="dialog" aria-modal="true" aria-labelledby="goalFormTitle">
-      <div class="goals-form-head">
-        <div>
-          <span class="goals-v2-kicker">PLANEJAMENTO</span>
-          <h3 id="goalFormTitle">Nova Meta</h3>
-        </div>
-        <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button>
-      </div>
-      <div class="goals-form-body feature-profile-fields">
-        <div>
-          <label for="goalNome">NOME DA META</label>
-          <input type="text" id="goalNome" placeholder="Ex: Reserva de emergência">
-        </div>
-        <div>
-          <label for="goalIcone">ÍCONE</label>
-          <input type="text" id="goalIcone" maxlength="4" placeholder="🎯" value="🎯">
-        </div>
-        <div>
-          <label for="goalValorObjetivo">VALOR OBJETIVO</label>
-          <input type="text" id="goalValorObjetivo" data-money="true" placeholder="R$ 0,00">
-        </div>
-        <div>
-          <label for="goalCaixinha">VÍNCULO FINANCEIRO</label>
-          <select id="goalCaixinha">
-            <option value="">Nenhum — planejamento sem saldo</option>
-          </select>
-          <span class="hint">Você pode vincular a uma conta, Caixinha ou investimento. O progresso usa o saldo/valor real.</span>
-        </div>
-        <div class="goals-form-row-2">
-          <div>
-            <label for="goalDataInicio">DATA DE INÍCIO</label>
-            <input type="date" id="goalDataInicio">
-          </div>
-          <div>
-            <label for="goalPrazo">PRAZO (OPCIONAL)</label>
-            <input type="date" id="goalPrazo">
-          </div>
-        </div>
-        <div>
-          <label for="goalStatus">STATUS</label>
-          <select id="goalStatus">
-            <option value="active">Ativa</option>
-            <option value="completed">Concluída</option>
-            <option value="paused">Pausada</option>
-            <option value="cancelled">Cancelada</option>
-          </select>
-        </div>
-        <div id="goalValorAtualLegacyField">
-          <label for="goalValorAtual">Valor já acumulado <span class="hint">(legado)</span></label>
-          <input type="text" id="goalValorAtual" data-money="true" placeholder="R$ 0,00">
-          <span class="hint">Usado somente em Metas antigas sem Caixinha vinculada.</span>
-        </div>
-        <div>
-          <label for="goalObs">OBSERVAÇÃO (OPCIONAL)</label>
-          <input type="text" id="goalObs" placeholder="Detalhes ou contexto sobre esta meta...">
-        </div>
-      </div>
-      <div class="goals-form-actions">
-        <button type="button" id="btnSaveGoal" class="primary goals-form-save">SALVAR META</button>
-        <button type="button" id="btnCancelGoalEdit" class="goals-form-cancel">CANCELAR</button>
-      </div>
-    </div>
-
-    <!-- CHAT IA (V.20-02) — modal aberto pelo FAB da Visão Geral.
-         Reutiliza o overlay/painel padrão: Escape e fechamento global
-         continuam funcionando pelo caminho já existente. -->
-    <div class="panel" id="panelAiChat" role="dialog" aria-modal="true" aria-labelledby="aiChatTitle">
-      <h3 id="aiChatTitle">LIA • IA Financeira
-        <button type="button" class="modal-close" id="btnAiChatClose" aria-label="Fechar conversa" title="Fechar">×</button>
-      </h3>
-
-      <p class="ai-chat-intro" id="aiChatIntro">
-        <span class="ai-chat-quota" data-ai-quota aria-live="polite"></span>
-      </p>
-
-      <div class="ai-chat-notice" id="aiChatNotice" role="status" aria-live="polite" hidden></div>
-
-      <div class="ai-chat-messages" id="aiChatMessages" role="log" aria-live="polite" tabindex="0"></div>
-
-      <form class="ai-chat-composer" id="aiChatForm" autocomplete="off">
-        <label class="ai-chat-label" for="aiChatInput">Pergunte sobre suas finanças</label>
-        <div class="ai-chat-row">
-          <!-- V.20-02 — anexo da LIA: validação + OCR + revisão obrigatória.
-               Este input nunca cria movimentação; só alimenta o pipeline. -->
-          <input
-            type="file"
-            id="liaAttachmentFile"
-            accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,application/pdf,.pdf"
-            hidden
-          >
-<button type="button" id="btnLiaAttach" class="ai-attach-btn"
-                   aria-label="Anexar imagem ou documento" title="Anexar imagem ou documento">
-            <i class="fi fi-rr-paperclip-vertical" aria-hidden="true"></i>
-          </button>
-          <input type="text" id="aiChatInput" name="aiChatInput" placeholder="Pergunte sobre suas finanças…"
-                 enterkeyhint="send">
-          <button type="submit" id="btnAiChatSend" class="primary" aria-label="Enviar pergunta">
-            <i class="fi fi-rr-paper-plane-top" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div class="ai-attachment-chip" id="liaAttachmentChip" hidden></div>
-      </form>
-
-      <div class="ai-chat-notice" id="liaAttachmentNotice" role="status" aria-live="polite" hidden></div>
-      <!-- fallback suportado quando a leitura não está disponível:
-           o usuário segue para o lançamento manual (fluxo existente). -->
-      <div class="ocr-fallback-row" id="liaAttachmentFallback" hidden>
-        <button type="button" id="btnLiaManualEntry">Abrir lançamento manual</button>
-      </div>
-    </div>
-
-    <!-- V.20-02 — revisão humana obrigatória do anexo lido pela LIA.
-         Nenhum elemento deste painel grava dado por si só: a confirmação
-         alimenta o fluxo EXISTENTE de criação de movimentação (fSalvar),
-         com as mesmas validações, persistência e tratamento de erro. -->
-    <div class="panel" id="panelOcrReview" role="dialog" aria-modal="true" aria-labelledby="ocrReviewTitle">
-      <h3 id="ocrReviewTitle">Revisar anexo
-        <button type="button" class="modal-close" id="btnOcrReviewClose" aria-label="Fechar revisão" title="Fechar">×</button>
-      </h3>
-
-      <p class="ocr-review-intro" id="ocrReviewIntro">
-        Confira o que foi reconhecido. Nada é gravado até você confirmar.
-      </p>
-
-      <div class="ocr-attachment-preview" id="ocrAttachmentPreview" hidden></div>
-      <div class="ocr-review-notice" id="ocrReviewNotice" role="status" aria-live="polite" hidden></div>
-
-      <div class="ocr-field-list" id="ocrReviewFields"></div>
-
-      <div class="ocr-review-actions">
-        <button type="button" id="btnOcrReviewCancel">Cancelar</button>
-        <button type="button" id="btnOcrReviewConfirm" class="primary" data-single-action="1">Confirmar e lançar</button>
-      </div>
-      <p class="hint ocr-review-hint" id="ocrReviewHint">
-        A confirmação usa o fluxo de lançamento manual, com as mesmas validações e persistência.
-      </p>
-    </div>
-
-  </div>
-</main>
-
-<footer>livro-caixa · dados sincronizados com a nuvem pela sua conta</footer>
-
-<!--
-=========================================================
-LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
-
-[JS 01] CONFIGURAÇÃO / CONSTANTES
-[JS 02] ESTADO GLOBAL / COLLECTIONS
-[JS 03] UTILITÁRIOS / FORMATAÇÃO / DOM
-[JS 04] DOMÍNIO FINANCEIRO / CÁLCULOS / NORMALIZAÇÕES
-[JS 05] AUTENTICAÇÃO
-[JS 06] FIREBASE / STORAGE / SINCRONIZAÇÃO / MIGRAÇÕES
-[JS 07] BACKUP / IMPORTAÇÃO / EXPORTAÇÃO / DIAGNÓSTICOS
-[JS 08] RENDERIZAÇÃO / VIEWS
-[JS 09] EVENTOS / INTERAÇÕES / MODAIS
-[JS 10] INICIALIZAÇÃO / BOOTSTRAP
-
-[PATCH] CORREÇÕES / COMPATIBILIDADE
-=========================================================
--->
-<script>
-</script>
 if (typeof Chart !== 'undefined') {
   Chart.defaults.font.family = 'Plus Jakarta Sans';
   Chart.defaults.font.weight = '500';
@@ -1834,7 +399,350 @@ document.addEventListener('visibilitychange', () => {
   window.LivroCaixaAI?.refreshQuota?.({ silent: true, throttleMs: 60000 });
 });
 
-<script type="module" src="./src/diagnostic/login-diagnostic.js"></script>
+/* Diagnóstico acessível na tela de login — robusto contra ordem de carregamento do DOM. */
+(function initLoginDiagnostic() {
+  const maxLines = 180;
+  const state = { lines: [] };
+  let initialized = false;
+
+  function format(value) {
+    if (value == null) return '';
+    if (value instanceof Error) return value.message || String(value);
+
+    if (typeof value === 'object') {
+      try {
+        return JSON.stringify(value, (key, val) =>
+          /password|token|secret|authorization|apiKey|credential/i.test(key)
+            ? '[oculto]'
+            : val
+        );
+      } catch (_) {
+        return String(value);
+      }
+    }
+
+    return String(value);
+  }
+
+  function getEl(id) {
+    return document.getElementById(id);
+  }
+
+  function render() {
+    const el = getEl('authDiagnosticLog');
+    if (!el) return;
+
+    el.textContent = state.lines.join('\n');
+    el.scrollTop = el.scrollHeight;
+  }
+
+  window.loginDebugLog = function(type, message, details) {
+    const stamp = new Date().toLocaleTimeString('pt-BR', {
+      hour12: false
+    });
+
+    const suffix =
+      details === undefined ? '' : ' · ' + format(details);
+
+    state.lines.push(
+      stamp +
+      ' [' +
+      String(type || 'INFO').toUpperCase() +
+      '] ' +
+      message +
+      suffix
+    );
+
+    if (state.lines.length > maxLines) {
+      state.lines.splice(
+        0,
+        state.lines.length - maxLines
+      );
+    }
+
+    render();
+  };
+
+  window.getLoginDiagnosticText = () =>
+    state.lines.join('\n');
+
+  function setDiagnosticOpen(open) {
+    const toggle = getEl('authDiagnosticToggle');
+    const panel = getEl('authDiagnosticPanel');
+    const overlay = getEl('authDiagnosticOverlay');
+
+    if (!panel || !toggle) {
+      window.loginDebugLog?.(
+        'WARN',
+        'Painel de diagnóstico ainda não está disponível no DOM'
+      );
+
+      return false;
+    }
+
+    if (open) {
+      panel.removeAttribute('hidden');
+      panel.classList.add('open');
+      panel.style.display = 'flex';
+      overlay?.classList.add('open');
+      overlay?.setAttribute('aria-hidden', 'false');
+
+      toggle.setAttribute(
+        'aria-expanded',
+        'true'
+      );
+
+      render();
+      return true;
+    }
+
+    panel.setAttribute('hidden', '');
+    panel.classList.remove('open');
+    panel.style.display = 'none';
+    overlay?.classList.remove('open');
+    overlay?.setAttribute('aria-hidden', 'true');
+
+    toggle.setAttribute(
+      'aria-expanded',
+      'false'
+    );
+
+    return true;
+  }
+
+  window.toggleLoginDiagnostic = function(event) {
+    event?.preventDefault?.();
+
+    const panel = getEl('authDiagnosticPanel');
+
+    if (!panel) {
+      window.loginDebugLog?.(
+        'ERROR',
+        'Painel de diagnóstico não encontrado'
+      );
+
+      return;
+    }
+
+    const opening = panel.hasAttribute('hidden');
+
+    if (
+      setDiagnosticOpen(opening) &&
+      opening
+    ) {
+      window.loginDebugLog?.(
+        'INFO',
+        'Console de diagnóstico aberto'
+      );
+    }
+  };
+
+  function bindControls() {
+    if (initialized) return true;
+
+    const toggle = getEl('authDiagnosticToggle');
+    const panel = getEl('authDiagnosticPanel');
+    const close = getEl('authDiagnosticClose');
+    const clear = getEl('authDiagnosticClear');
+    const copy = getEl('authDiagnosticCopy');
+
+    if (
+      !toggle ||
+      !panel ||
+      !close ||
+      !clear ||
+      !copy
+    ) {
+      return false;
+    }
+
+    toggle.addEventListener(
+      'click',
+      window.toggleLoginDiagnostic
+    );
+
+    close.addEventListener(
+      'click',
+      event =>
+        window.toggleLoginDiagnostic(event)
+    );
+
+    clear.addEventListener(
+      'click',
+      event => {
+        event.preventDefault();
+
+        state.lines.length = 0;
+
+        window.loginDebugLog(
+          'INFO',
+          'Console limpo'
+        );
+      }
+    );
+
+    getEl('authDiagnosticOverlay')?.addEventListener(
+      'click',
+      event => {
+        if (event.target === event.currentTarget) {
+          window.toggleLoginDiagnostic(event);
+        }
+      }
+    );
+
+    copy.addEventListener(
+      'click',
+      async event => {
+        event.preventDefault();
+
+        const text =
+          window.getLoginDiagnosticText() ||
+          'Nenhum diagnóstico registrado.';
+
+        try {
+          await navigator.clipboard.writeText(text);
+
+          window.loginDebugLog(
+            'INFO',
+            'Diagnóstico copiado'
+          );
+        } catch (_) {
+          const area =
+            document.createElement('textarea');
+
+          area.value = text;
+          area.setAttribute(
+            'readonly',
+            ''
+          );
+
+          area.style.position = 'fixed';
+          area.style.left = '-9999px';
+          area.style.opacity = '0';
+
+          document.body.appendChild(area);
+          area.select();
+
+          try {
+            document.execCommand('copy');
+
+            window.loginDebugLog(
+              'INFO',
+              'Diagnóstico copiado'
+            );
+          } catch (err) {
+            window.loginDebugLog(
+              'WARN',
+              'Não foi possível copiar automaticamente',
+              err?.message
+            );
+          }
+
+          area.remove();
+        }
+      }
+    );
+
+    initialized = true;
+
+    window.loginDebugLog(
+      'INFO',
+      'Controles do diagnóstico conectados'
+    );
+
+    return true;
+  }
+
+  function ensureInitialized() {
+    if (bindControls()) {
+      render();
+      return;
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener(
+        'DOMContentLoaded',
+        bindControls,
+        { once: true }
+      );
+    } else {
+      queueMicrotask(bindControls);
+    }
+  }
+
+  window.addEventListener(
+    'error',
+    event => {
+      window.loginDebugLog(
+        'ERROR',
+        'Erro de JavaScript',
+        event.error?.code ||
+        event.message ||
+        'erro desconhecido'
+      );
+    }
+  );
+
+  window.addEventListener(
+    'unhandledrejection',
+    event => {
+      const reason = event.reason;
+
+      window.loginDebugLog(
+        'ERROR',
+        'Promise rejeitada',
+        reason?.code ||
+        reason?.message ||
+        String(
+          reason ||
+          'motivo desconhecido'
+        )
+      );
+    }
+  );
+
+  document.addEventListener(
+    'keydown',
+    event => {
+      const panel =
+        getEl('authDiagnosticPanel');
+
+      if (
+        event.key === 'Escape' &&
+        panel &&
+        !panel.hasAttribute('hidden')
+      ) {
+        window.toggleLoginDiagnostic?.(
+          event
+        );
+      }
+    }
+  );
+
+  window.loginDebugLog(
+    'INFO',
+    'Sistema de diagnóstico iniciado',
+    {
+      host: location.hostname,
+      path: location.pathname,
+      online: navigator.onLine,
+      readyState: document.readyState
+    }
+  );
+
+  ensureInitialized();
+})();
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+window.loginDebugLog?.(
+  'FIREBASE',
+  'Firebase Auth inicializado',
+  {
+    authDomain: firebaseConfig.authDomain,
+    projectId: firebaseConfig.projectId
+  }
+);
 
 firebase.firestore().enablePersistence().catch(err => {
   console.log("A persistência offline não pôde ser ativada:", err);
@@ -14639,192 +13547,3 @@ list.innerHTML = pendingImport.map((row, i) => `
     }
   });
 });
-</script>
-
-<nav class="mobile-bottom-nav" aria-label="Navegação principal">
-  <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i></span><span>Visão geral</span></button>
-  <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span><span>Caixinhas</span></button>
-  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><i class="fi fi-rr-book" aria-hidden="true"></i></span><span>Livro-Caixa</span></button>
-<button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span><span>Investimentos</span></button>
-  <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><i class="fi fi-rr-user" aria-hidden="true"></i></span><span>Perfil</span></button>
-</nav>
-<div class="emoji-float-overlay" id="emojiFloatOverlay" role="dialog" aria-modal="true" aria-label="Escolher ícone">
-  <div class="emoji-float-window">
-    <div class="emoji-float-head">
-      <strong>Escolher ícone</strong>
-      <button type="button" class="emoji-float-close" id="emojiFloatClose" aria-label="Fechar">✕</button>
-    </div>
-    <div class="emoji-float-body">
-      <div class="emoji-float-grid" id="emojiFloatGrid" aria-live="polite"></div>
-    </div>
-    <div class="emoji-float-footer">
-      <button type="button" class="emoji-float-native" id="emojiFloatKeyboard">⌨ Usar emoji do teclado</button>
-      <div class="emoji-float-native-box" id="emojiFloatNativeBox">
-        <input type="text" id="emojiFloatNativeInput" inputmode="text" maxlength="16" placeholder="🪴" aria-label="Emoji personalizado">
-        <button type="button" id="emojiFloatNativeUse" class="primary">Usar</button>
-      </div>
-      <div class="emoji-float-preview">
-        <span id="emojiFloatPreviewIcon">📦</span>
-        <span id="emojiFloatPreviewLabel">Nenhum emoji selecionado</span>
-      </div>
-      <button type="button" class="primary" id="emojiFloatConfirm" style="width:100%">Confirmar</button>
-    </div>
-  </div>
-</div>
-
-</script>
-<script>
-</script>
-// [PATCH] Contas/Faturas — menus contextuais
-function closeBillMenus(){
-  document.querySelectorAll('.bill-more-menu').forEach(menu => {
-    menu.hidden = true;
-  });
-  document.querySelectorAll('.bill-more-button').forEach(button => {
-    button.setAttribute('aria-expanded','false');
-  });
-}
-
-function toggleBillMenu(id){
-  const menu = document.getElementById(`bill-more-${id}`);
-  if(!menu) return;
-
-  const wasHidden = menu.hidden;
-  closeBillMenus();
-
-  if(wasHidden){
-    menu.hidden = false;
-    const button = menu.parentElement?.querySelector('.bill-more-button');
-    if(button) button.setAttribute('aria-expanded','true');
-  }
-}
-
-document.addEventListener('click', (event) => {
-  if(!event.target.closest('.bill-more-wrap')){
-    closeBillMenus();
-  }
-});
-</script>
-
-
-<script>
-</script>
-// [PATCH] Metas — isolamento de aba / switchTab
-/* Metas como aba própria — resolve switchTabOriginal em tempo de chamada (nunca captura undefined) */
-(function () {
-  function runOriginalSwitchTab(tab, ctx, args) {
-    var original = window.switchTabOriginal;
-    if (typeof original !== 'function') {
-      console.error('[Metas] switchTabOriginal indisponível');
-      try {
-        if (typeof logError === 'function') {
-          logError('Sistema', 'erro de interface', 'Falha', 'switchTabOriginal indefinido ao navegar para ' + tab);
-        }
-      } catch (e) {}
-      return;
-    }
-    return original.apply(ctx, args);
-  }
-
-  window.switchTab = function(tab) {
-    if (tab === 'goals') {
-      document.body.dataset.tab = 'goals';
-
-      document.querySelectorAll('.tab-content').forEach(function(view) {
-        view.classList.remove('active');
-      });
-
-      document.querySelectorAll('.nav-tab').forEach(function(button) {
-        button.classList.remove('active');
-      });
-
-      var goalsView = document.getElementById('viewGoals');
-      var goalsButton = document.getElementById('tabBtnGoals');
-
-      var goalsOverlay = document.getElementById('modalOverlay');
-      if (goalsOverlay) goalsOverlay.classList.remove('open');
-
-      document.querySelectorAll('.panel.open').forEach(function(panel) {
-        panel.classList.remove('open');
-      });
-
-      if (goalsView) goalsView.classList.add('active');
-      if (goalsButton) goalsButton.classList.add('active');
-
-      if (typeof currentTab !== 'undefined') currentTab = 'goals';
-
-      document.querySelectorAll('.mobile-bottom-nav button').forEach(function(button) {
-        button.classList.remove('is-active');
-      });
-      var goalsNav = document.querySelector('.mobile-bottom-nav');
-      if (goalsNav) goalsNav.removeAttribute('data-active');
-
-      if (typeof renderGoalsList === 'function') {
-        try { renderGoalsList(); } catch (e) { console.warn(e); }
-      }
-      if (typeof initMoneyMasks === 'function') {
-        try { initMoneyMasks(); } catch (e) {}
-      }
-
-      return;
-    }
-
-    // Saindo de Metas
-    var goalsView = document.getElementById('viewGoals');
-    var goalsButton = document.getElementById('tabBtnGoals');
-    if (goalsView) goalsView.classList.remove('active');
-    if (goalsButton) goalsButton.classList.remove('active');
-
-    var result = runOriginalSwitchTab(tab, this, arguments);
-
-    // Reforço da pílula BNI
-    var nav = document.querySelector('.mobile-bottom-nav');
-    document.querySelectorAll('.mobile-bottom-nav button').forEach(function(button) {
-      button.classList.toggle('is-active', button.dataset.destination === tab);
-    });
-    if (nav) nav.dataset.active = tab || 'caixa';
-
-    // Garantir que o body não fique preso em goals
-    if (document.body.dataset.tab === 'goals') {
-      document.body.dataset.tab = tab || 'caixa';
-    }
-
-    return result;
-  };
-
-  document.addEventListener('click', function(event) {
-    var item = event.target.closest('[data-drawer-action="goals"]');
-    if (!item) return;
-    event.preventDefault();
-    window.switchTab('goals');
-    var drawer = document.getElementById('appDrawerOverlay');
-    if (drawer) {
-      drawer.classList.remove('open');
-      drawer.setAttribute('aria-hidden', 'true');
-    }
-  });
-})();
-</script>
-
-
-<!-- [PATCH CSS] Metas — isolamento visual -->
-
-
-
-
-<!-- [CSS 02] ESTILOS FINAIS — REPOSICIONADOS INTERNAMENTE -->
-
-
-
-
-<!-- [PATCH CSS] Metas V2 -->
-
-</body>
-
-
-
-<!-- =========================================================
-     [END] PATCHES FINAIS / COMPATIBILIDADE
-     Não mover sem validar dependências.
-     ========================================================= -->
-</html>
