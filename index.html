@@ -10870,7 +10870,8 @@ function openNewEntryModal() {
       totalInstallments,
       installmentValue,
       initialInstallment: Math.min(totalInstallments, Math.max(1, Number(record.initialInstallment) || 1)),
-      obs: String(record.obs || '').trim()
+      obs: String(record.obs || '').trim(),
+      status: existing?.status || (type === 'avista' ? 'finalizada' : 'pendente')
     };
   }
   function openCardModal(id = null) {
@@ -11508,15 +11509,19 @@ VALOR: ${fmt(pseudoBill.amount)}
           ${cardPurchases.length ? cardPurchases.map(p => {
             const cat = categories.find(c => c.id === p.categoryId)?.name || 'Sem categoria';
             const parcel = p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
-            return `<div class="credit-card-purchase-row">
+            const statusBadge = p.status === 'finalizada' ? '<span class="purchase-status finalizada">✓ Finalizada</span>' : (p.status === 'parcial' ? '<span class="purchase-status parcial">⏳ Parcial</span>' : '<span class="purchase-status pendente">⏳ Pendente</span>');
+            const finalizeBtn = p.status !== 'finalizada' ? `<button type="button" class="action-btn beta-icon-button finalize" onclick="finalizePurchase('${p.id}')" aria-label="Marcar como finalizada" title="Marcar como finalizada">✓</button>` : '';
+            return `<div class="credit-card-purchase-row ${p.status === 'finalizada' ? 'is-finalized' : ''}">
               <span class="credit-card-purchase-dot" aria-hidden="true"></span>
               <div class="credit-card-purchase-main">
                 <strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong>
                 <span>${(p.date || '').split('-').reverse().join('/')} · ${escapeHTML(p.titular || 'Sem titular')}</span>
                 <span class="credit-card-purchase-parcel">${parcel}</span>
+                ${statusBadge}
               </div>
               <strong class="credit-card-purchase-value">${fmt(p.totalValue)}</strong>
               <div class="credit-card-purchase-menu">
+                ${finalizeBtn}
                 <button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar"></button>
                 <button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir"></button>
               </div>
@@ -11583,6 +11588,13 @@ VALOR: ${fmt(pseudoBill.amount)}
     purchases = purchases.filter(p => p.id !== id);
     try { await persistAll(); renderCards(); logInfo('Cartões','Excluir compra','Sucesso','Compra excluída.'); } catch (err) { purchases.push(purchase); logSyncError('exclusão de compra', err); renderCards(); }
   };
+
+  window.finalizePurchase = async id => {
+    const purchase = purchases.find(p => p.id === id); if (!purchase) return;
+    purchase.status = 'finalizada';
+    try { await persistAll(); renderCards(); logInfo('Cartões','Finalizar compra','Sucesso',`Compra "${purchase.description}" marcada como finalizada.`); } catch (err) { logSyncError('finalização de compra', err); }
+  };
+
   function openNewCardModal() { openCardModal(); }
   document.getElementById('cardSalvar').onclick = async () => {
     const name = document.getElementById('cardNome').value.trim();
