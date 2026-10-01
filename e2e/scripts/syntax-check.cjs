@@ -1,4 +1,4 @@
-/* C.O.D.E. — validação de sintaxe (V.20-01).
+/* C.O.D.E. — validação de sintaxe.
    Execução: npm run code:syntax   (sem rede, sem navegador)
 
    O JavaScript do LIVRO-CAIXA é majoritariamente INLINE dentro de

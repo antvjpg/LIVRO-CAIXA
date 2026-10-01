@@ -1,4 +1,4 @@
-/* LIVRO-CAIXA — V.20-01 · AttachmentManager.
+/* LIVRO-CAIXA — AttachmentManager.
    Responsável por: validar o arquivo, normalizar metadados, aplicar
    limites, gerar identificadores temporários, controlar o ciclo de vida
    de Blob/File/ObjectURL, impedir duplicidade de processamento e

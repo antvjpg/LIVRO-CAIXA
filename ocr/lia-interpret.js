@@ -1,4 +1,4 @@
-/* LIVRO-CAIXA — V.20-01 · interpretação pela LIA.
+/* LIVRO-CAIXA — interpretação pela LIA.
    Responsabilidades:
    1. montar o prompt de leitura do anexo (instruções da APLICAÇÃO,
       separadas do dado do documento);
@@ -7,7 +7,7 @@
       (conflito → AMBIGUOUS, nunca chute);
    4. resolver categoria/conta contra o catálogo REAL do usuário.
 
-   Separación técnica exigida pela V.20-01:
+   Separação técnica:
      - instruções do sistema   → worker/src/ai/chat-prompt.js (não mexemos)
      - instruções da aplicação → buildReadPrompt() abaixo
      - dados do documento      → wrapUntrusted() (extractor)

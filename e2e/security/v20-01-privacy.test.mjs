@@ -1,4 +1,4 @@
-/* C.O.D.E. — garantias de segurança V.20-01 (anexos · OCR · revisão).
+/* C.O.D.E. — garantias de segurança (anexos · OCR · revisão).
    Análise estática do repositório: nada aqui usa rede nem navegador.
    Execução: npm run code:security (também roda no CI).
 
@@ -37,7 +37,7 @@ const OCR_MODULES = [
 ];
 
 /* bloco V.20-01 em index.html (do comentário de abertura ao fim do IIFE) */
-const BLOCK_START = html.indexOf('V.20-01 — ANEXOS DA LIA');
+const BLOCK_START = html.indexOf(' ANEXOS DA LIA');
 assert.ok(BLOCK_START !== -1, 'bloco V.20-01 não encontrado em index.html');
 const BLOCK_END = html.indexOf('})();', BLOCK_START) + 5;
 const block = html.slice(BLOCK_START, BLOCK_END);
@@ -57,7 +57,7 @@ const SECRET_PATTERNS = [
   /secret\s*[:=]\s*['"][^'"]{16,}/
 ];
 
-test('V.20-01 segurança: nenhum segredo no código novo', () => {
+test('segurança: nenhum segredo no código novo', () => {
   const sources = OCR_MODULES
     .map((rel) => [rel, read(rel)])
     .concat([
@@ -72,7 +72,7 @@ test('V.20-01 segurança: nenhum segredo no código novo', () => {
   }
 });
 
-test('V.20-01 segurança: nenhuma chave nova foi acrescentada a index.html', () => {
+test('segurança: nenhuma chave nova foi acrescentada a index.html', () => {
   /* A chave web do Firebase é configuração PÚBLICA e pré-existente; a V.20-01
      não pode acrescentar nenhum outro padrão de credencial à página. */
   const keys = html.match(/AIza[0-9A-Za-z_-]{30,}/g) || [];
@@ -81,7 +81,7 @@ test('V.20-01 segurança: nenhuma chave nova foi acrescentada a index.html', () 
   assert.equal(inBlock.length, 0, 'o bloco V.20-01 não pode conter chave');
 });
 
-test('V.20-01 segurança: módulos ocr não fazem rede nem escrevem em console', () => {
+test('segurança: módulos ocr não fazem rede nem escrevem em console', () => {
   const forbidden = [
     ['fetch(', /\bfetch\s*\(/],
     ['XMLHttpRequest', /XMLHttpRequest/],
@@ -105,7 +105,7 @@ test('V.20-01 segurança: módulos ocr não fazem rede nem escrevem em console',
   }
 });
 
-test('V.20-01 segurança: o log é emitido apenas pelo módulo de log', () => {
+test('segurança: o log é emitido apenas pelo módulo de log', () => {
   const logSrc = read('ocr/log.js');
   assert.equal(/console\.(log|info)\s*\(/.test(logSrc), false, 'log.js não usa console.log');
   assert.match(logSrc, /ALLOWED_KEYS/);
@@ -118,7 +118,7 @@ test('V.20-01 segurança: o log é emitido apenas pelo módulo de log', () => {
   }
 });
 
-test('V.20-01 segurança: bloco de anexos não chama console nem persiste sozinho', () => {
+test('segurança: bloco de anexos não chama console nem persiste sozinho', () => {
   for (const needle of ['console.', 'localStorage', 'sessionStorage', 'eval(', 'document.write']) {
     assert.equal(block.includes(needle), false, `bloco V.20-01 contém ${needle}`);
   }
@@ -131,7 +131,7 @@ test('V.20-01 segurança: bloco de anexos não chama console nem persiste sozinh
   }
 });
 
-test('V.20-01 segurança: HTML interpolado passa por escapeHTML', () => {
+test('segurança: HTML interpolado passa por escapeHTML', () => {
   const assignments = block.match(/innerHTML\s*=\s*[^;]+;/g) || [];
   assert.ok(assignments.length >= 3, 'esperava-se renderização por innerHTML no preview');
   for (const stmt of assignments) {
@@ -145,7 +145,7 @@ test('V.20-01 segurança: HTML interpolado passa por escapeHTML', () => {
   assert.match(block, /function ocrControlHtml/);
 });
 
-test('V.20-01 segurança: confirmação é validada ANTES do fluxo financeiro', () => {
+test('segurança: confirmação é validada ANTES do fluxo financeiro', () => {
   const confirmIdx = block.indexOf("getElementById('btnOcrReviewConfirm')");
   assert.ok(confirmIdx !== -1, 'botão de confirmação deve existir');
   const handler = block.slice(confirmIdx);
@@ -169,7 +169,7 @@ test('V.20-01 segurança: confirmação é validada ANTES do fluxo financeiro', 
   assert.match(lockLine, /'fSalvar'/);
 });
 
-test('V.20-01 segurança: revisão não pode ser pulada pelo atalho do formulário', () => {
+test('segurança: revisão não pode ser pulada pelo atalho do formulário', () => {
   /* o painel só fecha com ação explícita e todo caminho de saída zera o estado */
   assert.match(block, /function ocrAbortReview/);
   assert.match(block, /function ocrReleaseAll/);
@@ -181,13 +181,13 @@ test('V.20-01 segurança: revisão não pode ser pulada pelo atalho do formulár
   assert.match(block, /MutationObserver/);
 });
 
-test('V.20-01 segurança: entrada manual continua disponível sem anexo', () => {
+test('segurança: entrada manual continua disponível sem anexo', () => {
   assert.match(block, /btnLiaManualEntry/);
   assert.match(html, /id="liaAttachmentFallback"/);
   assert.match(html, /id="btnLiaAttach"/);
 });
 
-test('V.20-01 segurança: módulos carregados são de origem local', () => {
+test('segurança: módulos carregados são de origem local', () => {
   const scripts = html.match(/<script[^>]*src="[^"]+"[^>]*>/g) || [];
   const added = scripts.filter((tag) => /ocr\//.test(tag));
   assert.equal(added.length, 7, `esperavam-se 7 módulos ocr, há ${added.length}`);
@@ -202,7 +202,7 @@ test('V.20-01 segurança: módulos carregados são de origem local', () => {
   }
 });
 
-test('V.20-01 segurança: Service Worker não guarda anexo nem texto OCR', () => {
+test('segurança: Service Worker não guarda anexo nem texto OCR', () => {
   assert.equal(/ocr\//.test(sw), false, 'sw.js não deve precachear módulos ocr');
   assert.equal(/attachment/i.test(sw), false, 'sw.js não deve tratar anexos');
   assert.equal(/CACHE_NAME/.test(sw), true, 'CACHE_NAME deve continuar existindo');
@@ -212,7 +212,7 @@ test('V.20-01 segurança: Service Worker não guarda anexo nem texto OCR', () =>
   assert.match(cacheLine[1], /^livro-caixa-/);
 });
 
-test('V.20-01 segurança: package.json continua sem dependências nem hooks', () => {
+test('segurança: package.json continua sem dependências nem hooks', () => {
   assert.equal(pkg.dependencies, undefined, 'package.json não pode ganhar dependencies');
   assert.equal(pkg.optionalDependencies, undefined);
   assert.equal(pkg.peerDependencies, undefined);
@@ -232,7 +232,7 @@ test('V.20-01 segurança: package.json continua sem dependências nem hooks', ()
   }
 });
 
-test('V.20-01 segurança: fixture não contém dado pessoal real', () => {
+test('segurança: fixture não contém dado pessoal real', () => {
   const fixture = read('e2e/fixtures/v20-01-fixtures.js');
   assert.match(fixture, /CODE_V2001/);
   assert.equal(/\d{3}\.\d{3}\.\d{3}-\d{2}/.test(fixture), false, 'CPF detectado na fixture');
@@ -242,7 +242,7 @@ test('V.20-01 segurança: fixture não contém dado pessoal real', () => {
   assert.match(fixture, /SINTÉTICOS|sintéticos/);
 });
 
-test('V.20-01 segurança: diagnóstico do fluxo nunca registra conteúdo do documento', () => {
+test('segurança: diagnóstico do fluxo nunca registra conteúdo do documento', () => {
   const calls = [...block.matchAll(/LivroCaixaOCRLog\.(?:event|failure)\(\s*'([^']+)'\s*,\s*([^)]*)\)/g)];
   assert.ok(calls.length > 0, 'o fluxo deve registrar eventos com lista branca');
   const allowed = new Set(require('../../ocr/log.js').ALLOWED_KEYS);
@@ -255,16 +255,16 @@ test('V.20-01 segurança: diagnóstico do fluxo nunca registra conteúdo do docu
   }
 });
 
-test('V.20-01 segurança: linha de apoio — bloco localizado corretamente', () => {
+test('segurança: linha de apoio — bloco localizado corretamente', () => {
   assert.ok(BLOCK_END > BLOCK_START);
   assert.ok(block.length > 10000, 'o bloco V.20-01 parece truncado');
-  assert.equal(lineOf('index.html', 'V.20-01 — ANEXOS DA LIA') > 10000, true);
+  assert.equal(lineOf('index.html', ' ANEXOS DA LIA') > 10000, true);
   assert.match(block, /LivroCaixaReview/);
   assert.match(block, /LivroCaixaExtract/);
   assert.match(block, /LivroCaixaOCRLia/);
 });
 
-test('V.20-01 segurança: cancelamento (signal) chega até o Worker', () => {
+test('segurança: cancelamento (signal) chega até o Worker', () => {
   const start = html.indexOf('async generateViaWorker');
   assert.ok(start !== -1, 'generateViaWorker ausente');
   const body = html.slice(start, html.indexOf('\n  },', start));

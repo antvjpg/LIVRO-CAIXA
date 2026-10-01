@@ -1,4 +1,4 @@
-/* LIVRO-CAIXA — V.20-01 · LivroCaixaOCR — camada de abstração de OCR.
+/* LIVRO-CAIXA — LivroCaixaOCR — camada de abstração de OCR.
    Contrato estável e independente de fornecedor/plataforma:
 
        const r = await LivroCaixaOCR.extract(file, { reader, signal });
@@ -88,7 +88,7 @@
       /* seleção de arquivo/galeria: API padrão da web, presente em todo PWA */
       attachmentSelection: 'AVAILABLE',
       /* OCR nativo no Android: camada de abstração pronta, plugin ainda
-         NÃO implementado nem validado (V.20-01) */
+         NÃO implementado nem validado */
       nativeOcr: environment === 'CAPACITOR' ? 'NOT_IMPLEMENTED' : 'UNSUPPORTED_PLATFORM',
       /* leitura assistida (visão do modelo) — mecanismo já em produção */
       assistedRead: assisted ? 'AVAILABLE' : 'UNAVAILABLE',

@@ -1,4 +1,4 @@
-/* LIVRO-CAIXA — V.20-01 · log seguro do pipeline de anexos/OCR.
+/* LIVRO-CAIXA — log seguro do pipeline de anexos/OCR.
    Arquivos financeiros são dados sensíveis. Este módulo existe para
    imPOSSIBILITAR o vazamento por log: só chaves de metadado da lista
    branca sobrevivem; qualquer outra propriedade é descartada à vista,
@@ -62,7 +62,7 @@
 
   function emit(level, event, meta) {
     const safe = sanitize(meta);
-    const line = ['[V20-01]', String(event || 'evento'), safe];
+    const line = [String(event || 'evento'), safe];
     try {
       if (level === 'error' && typeof console !== 'undefined' && console.warn) console.warn(...line);
       else if (typeof console !== 'undefined' && console.debug) console.debug(...line);

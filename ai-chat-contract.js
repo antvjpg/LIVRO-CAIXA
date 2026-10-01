@@ -1,4 +1,4 @@
-/* Contrato e núcleo compartilhado do Chat IA — LIVRO-CAIXA (V.20-01).
+/* Contrato e núcleo compartilhado do Chat IA — LIVRO-CAIXA.
    FONT ÚNICA dos limites, da validação de payload e do ciclo de vida do
    contexto da conversa.
 
@@ -6,7 +6,7 @@
    - index.html  → carrega este arquivo como <script type="module"> e lê
                    globalThis.LivroCaixaChatContract.
    - worker/src/index.js → importa a validação para repetir tudo no
-                   servidor. O Worker NUNCA confia nos limites do cliente.
+                       servidor. O Worker NUNCA confia nos limites do cliente.
    - testes      → importam o mesmo arquivo e conferem limites, validação,
                    ciclo de vida do contexto e a fiação declarada no
                    index.html (uma fonte, zero duplicação).
@@ -18,7 +18,7 @@
        "financialSnapshot": {},          // objeto, até 64 KB serializado
        "conversationContext": [          // até 12 mensagens, até 24 KB
          { "role": "user" | "assistant", "content": "string" }
-       ]
+       }
      }
      → { "text": "string", "model": "string" }   (mesmo envelope de /ai)
 
@@ -370,7 +370,7 @@ export function snapshotHasData(snapshot) {
 }
 
 /* =====================================================================
-   Sugestões rápidas dinâmicas (V.20-01).
+   Sugestões rápidas dinâmicas.
 
    Gera exatamente 3 sugestões contextuais baseadas no snapshot financeiro.
    Função pura, determinística, sem side effects.
@@ -470,7 +470,7 @@ export function generateQuickSuggestions(snapshot) {
 }
 
 /* =====================================================================
-   Sugestões contextuais avançadas (V.20-02).
+   Sugestões contextuais avançadas.
 
    Usa o snapshot COMPLETO (antes da redução) para detectar sinais
    financeiros reais e priorizar sugestões relevantes.

@@ -1,4 +1,4 @@
-/* LIVRO-CAIXA — V.20-01 · limites operacionais de anexos/OCR.
+/* LIVRO-CAIXA — limites operacionais de anexos/OCR.
    Fonte ÚNICA dos limites do pipeline de anexos. Aplicados ANTES de
    qualquer processamento pesado (leitura de bytes, OCR, envio à LIA).
 

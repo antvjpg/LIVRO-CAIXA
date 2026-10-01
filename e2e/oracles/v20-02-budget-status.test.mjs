@@ -1,4 +1,4 @@
-/* C.O.D.E. — oráculo V.20-02 (orçamento: status textual sem emoji).
+/* C.O.D.E. — oráculo (orçamento: status textual sem emoji).
    Execução local: npm run code:oracles
    Testa se o status do orçamento é calculado corretamente e NÃO usa emoji no nome da categoria. */
 import test from 'node:test';
@@ -10,24 +10,24 @@ function budgetStatus(pct) {
   return { label: 'Normal', class: 'normal' };
 }
 
-test('V.20-02 oráculo: status Normal para pct < 80', () => {
+test('oráculo: status Normal para pct < 80', () => {
   assert.deepEqual(budgetStatus(0), { label: 'Normal', class: 'normal' });
   assert.deepEqual(budgetStatus(50), { label: 'Normal', class: 'normal' });
   assert.deepEqual(budgetStatus(79), { label: 'Normal', class: 'normal' });
 });
 
-test('V.20-02 oráculo: status Atenção para 80 <= pct < 100', () => {
+test('oráculo: status Atenção para 80 <= pct < 100', () => {
   assert.deepEqual(budgetStatus(80), { label: 'Atenção', class: 'atencao' });
   assert.deepEqual(budgetStatus(85), { label: 'Atenção', class: 'atencao' });
   assert.deepEqual(budgetStatus(99), { label: 'Atenção', class: 'atencao' });
 });
 
-test('V.20-02 oráculo: status Excedido para pct >= 100', () => {
+test('oráculo: status Excedido para pct >= 100', () => {
   assert.deepEqual(budgetStatus(100), { label: 'Excedido', class: 'excedido' });
   assert.deepEqual(budgetStatus(150), { label: 'Excedido', class: 'excedido' });
 });
 
-test('V.20-02 oráculo: nome da categoria NÃO contém emoji', () => {
+test('oráculo: nome da categoria NÃO contém emoji', () => {
   const categoryName = 'Alimentação';
   const status = budgetStatus(90);
   const renderedLabel = `${categoryName}`; // sem emoji
@@ -37,7 +37,7 @@ test('V.20-02 oráculo: nome da categoria NÃO contém emoji', () => {
   assert.equal(renderedLabel, 'Alimentação');
 });
 
-test('V.20-02 oráculo: status é apresentado separadamente (badge)', () => {
+test('oráculo: status é apresentado separadamente (badge)', () => {
   const categoryName = 'Transporte';
   const status = budgetStatus(110);
   // Simula estrutura: label da categoria + badge de status separado
@@ -50,7 +50,7 @@ test('V.20-02 oráculo: status é apresentado separadamente (badge)', () => {
   assert.ok(!label.includes('🟢'));
 });
 
-test('V.20-02 oráculo: thresholds preservados (80% e 100%)', () => {
+test('oráculo: thresholds preservados (80% e 100%)', () => {
   assert.deepEqual(budgetStatus(79), { label: 'Normal', class: 'normal' });
   assert.deepEqual(budgetStatus(80), { label: 'Atenção', class: 'atencao' });
   assert.deepEqual(budgetStatus(99), { label: 'Atenção', class: 'atencao' });

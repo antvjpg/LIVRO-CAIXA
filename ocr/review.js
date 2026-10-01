@@ -1,4 +1,4 @@
-/* LIVRO-CAIXA — V.20-01 · revisão humana antes de qualquer persistência.
+/* LIVRO-CAIXA — revisão humana antes de qualquer persistência.
    A revisão é OBRIGATÓRIA: nenhum valor aqui cria movimentação. Este módulo
    só modela o que o usuário vê/edita e valida o que ele confirmou.
 

@@ -1,4 +1,4 @@
-/* C.O.D.E. — oráculos V.20-01 (anexos · leitura/OCR · revisão humana).
+/* C.O.D.E. — oráculos (anexos · leitura/OCR · revisão humana).
    Execução local (sem browser, sem rede): npm run code:oracles
    Também roda em CI via `node --test "e2e/oracles/*.test.mjs"`.
 

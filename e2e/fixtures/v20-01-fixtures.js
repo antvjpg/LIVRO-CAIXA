@@ -1,4 +1,4 @@
-/* C.O.D.E. — fixtures V.20-01 (anexos · leitura/OCR · revisão humana).
+/* C.O.D.E. — fixtures (anexos · leitura/OCR · revisão humana).
    Documentos SINTÉTICOS. Nenhum dado real de usuário.
 
    Marcador único CODE_V2001_* identifica o dado em qualquer tela, log ou

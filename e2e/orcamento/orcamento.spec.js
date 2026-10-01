@@ -1,4 +1,4 @@
-/* C.O.D.E. — E2E V.20-02 (Orçamento).
+/* C.O.D.E. — E2E (Orçamento).
    Cobertura: criação, edição, exclusão, persistência, reload, Firestore,
    status sem emoji, troca de conta, tema claro/escuro, viewport mobile. */
 'use strict';
@@ -10,7 +10,7 @@ const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials } = require('../helpers/env');
 const qa = require('../helpers/qa-account');
 
-test.describe('V.20-02 Orçamento — UX finalizada', () => {
+test.describe('Orçamento — UX finalizada', () => {
   let watchAtual = null;
   test.afterEach(async ({ page }, testInfo) => {
     watchAtual?.attach(testInfo);

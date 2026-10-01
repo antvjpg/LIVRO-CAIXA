@@ -1,4 +1,4 @@
-/* LIVRO-CAIXA — V.20-01 · extração estruturada determinística.
+/* LIVRO-CAIXA — extração estruturada determinística.
    Converte texto OCR em campos candidatos com confiança e status.
 
    Regras (determinísticas, testáveis, sem rede):

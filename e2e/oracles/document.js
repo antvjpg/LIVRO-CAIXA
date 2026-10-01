@@ -1,4 +1,4 @@
-/* C.O.D.E. — oráculo INDEPENDENTE do documento V.20-01.
+/* C.O.D.E. — oráculo INDEPENDENTE do documento.
    Nenhuma função do LIVRO-CAIXA é importada (regra dos oracles §9).
 
    Estratégia deliberadamente diferente da implementação: leitura POR LINHA

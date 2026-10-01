@@ -1,4 +1,4 @@
-/* C.O.D.E. — oráculo V.20-02 (sugestões contextuais LIA).
+/* C.O.D.E. — oráculo (sugestões contextuais LIA).
    Execução local: npm run code:oracles
    Testa a seleção determinística de sugestões baseada em sinais financeiros reais. */
 import test from 'node:test';
@@ -125,13 +125,13 @@ function generateContextualSuggestions(snapshot) {
   return suggestions.slice(0, 3);
 }
 
-test('V.20-02 oráculo: snapshot vazio → fallback', () => {
+test('oráculo: snapshot vazio → fallback', () => {
   const suggestions = generateContextualSuggestions(null);
   assert.equal(suggestions.length, 3);
   assert.ok(suggestions[0].includes('Cadastre uma conta'));
 });
 
-test('V.20-02 oráculo: budgetOver prioridade máxima', () => {
+test('oráculo: budgetOver prioridade máxima', () => {
   const snapshot = {
     budgets: [
       { categoryId: 'c_alimentacao', amount: 1000, spent: 1200 }
@@ -141,7 +141,7 @@ test('V.20-02 oráculo: budgetOver prioridade máxima', () => {
   assert.ok(suggestions.some(s => s.includes('acima do orçamento') || s.includes('excedidas')));
 });
 
-test('V.20-02 oráculo: budgetNearLimit quando próximo do limite', () => {
+test('oráculo: budgetNearLimit quando próximo do limite', () => {
   const snapshot = {
     budgets: [
       { categoryId: 'c_transporte', amount: 1000, spent: 850 }
@@ -151,7 +151,7 @@ test('V.20-02 oráculo: budgetNearLimit quando próximo do limite', () => {
   assert.ok(suggestions.some(s => s.includes('ainda posso gastar') || s.includes('perto do limite')));
 });
 
-test('V.20-02 oráculo: topExpenseCategory detectada', () => {
+test('oráculo: topExpenseCategory detectada', () => {
   const snapshot = {
     budgets: [
       { categoryId: 'c_alimentacao', amount: 2000, spent: 1500 },
@@ -162,7 +162,7 @@ test('V.20-02 oráculo: topExpenseCategory detectada', () => {
   assert.ok(suggestions.some(s => s.includes('categoria mais pesou') || s.includes('comparar esta categoria')));
 });
 
-test('V.20-02 oráculo: goalNearDeadline prioridade alta', () => {
+test('oráculo: goalNearDeadline prioridade alta', () => {
   const snapshot = {
     goals: [
       { id: 'g1', targetDate: '2026-10-15', targetAmount: 5000, currentAmount: 1000 }
@@ -172,7 +172,7 @@ test('V.20-02 oráculo: goalNearDeadline prioridade alta', () => {
   assert.ok(suggestions.some(s => s.includes('guardar para atingir') || s.includes('meta está no prazo')));
 });
 
-test('V.20-02 oráculo: goalNeedsFunding quando meta precisa aporte', () => {
+test('oráculo: goalNeedsFunding quando meta precisa aporte', () => {
   const snapshot = {
     goals: [
       { id: 'g1', targetDate: '2027-06-01', targetAmount: 10000, currentAmount: 2000 }
@@ -182,7 +182,7 @@ test('V.20-02 oráculo: goalNeedsFunding quando meta precisa aporte', () => {
   assert.ok(suggestions.some(s => s.includes('falta para completar') || s.includes('valor mensal necessário')));
 });
 
-test('V.20-02 oráculo: hasInvestments quando há investimentos', () => {
+test('oráculo: hasInvestments quando há investimentos', () => {
   const snapshot = {
     investments: [{ name: 'Tesouro Selic', value: 5000 }]
   };
@@ -190,7 +190,7 @@ test('V.20-02 oráculo: hasInvestments quando há investimentos', () => {
   assert.ok(suggestions.some(s => s.includes('rentabilidade') || s.includes('concentração')));
 });
 
-test('V.20-02 oráculo: negativeCashFlow detectado', () => {
+test('oráculo: negativeCashFlow detectado', () => {
   const snapshot = {
     cashFlow: { net: -500, transactionCount: 10 }
   };
@@ -198,7 +198,7 @@ test('V.20-02 oráculo: negativeCashFlow detectado', () => {
   assert.ok(suggestions.some(s => s.includes('fluxo de caixa') || s.includes('equilibrar')));
 });
 
-test('V.20-02 oráculo: exatamente 3 sugestões', () => {
+test('oráculo: exatamente 3 sugestões', () => {
   const snapshot = {
     budgets: [
       { categoryId: 'c1', amount: 1000, spent: 1200 },
@@ -214,14 +214,14 @@ test('V.20-02 oráculo: exatamente 3 sugestões', () => {
   assert.equal(suggestions.length, 3);
 });
 
-test('V.20-02 oráculo: determinístico (ordem alfabética)', () => {
+test('oráculo: determinístico (ordem alfabética)', () => {
   const snapshot = { budgets: [{ categoryId: 'c1', amount: 1000, spent: 1200 }] };
   const s1 = generateContextualSuggestions(snapshot);
   const s2 = generateContextualSuggestions(snapshot);
   assert.deepEqual(s1, s2);
 });
 
-test('V.20-02 oráculo: sem duplicatas', () => {
+test('oráculo: sem duplicatas', () => {
   const snapshot = {
     budgets: [
       { categoryId: 'c1', amount: 1000, spent: 1200 }
