@@ -2252,6 +2252,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let invoiceLaunches = [];
   let cards = [];
   let purchases = [];
+let archivedPurchases = [];
   let editingCardId = null;
   let editingPurchaseId = null;
   let pendingImport = [];
@@ -11534,6 +11535,73 @@ VALOR: ${fmt(pseudoBill.amount)}
         </div>
       </article>`;
     }).join('');
+
+  // Archived purchases section
+  const archivedPurchasesByCard = archivedPurchases.filter(p => p.cardId === card.id);
+  const archivedHtml = archivedPurchasesByCard.length ? archivedPurchasesByCard.map(p => {
+    const parcel = p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
+    return `<div class="credit-card-purchase-row is-archived">
+      <span class="credit-card-purchase-dot" aria-hidden="true"></span>
+      <div class="credit-card-purchase-main">
+        <strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong>
+        <span>${(p.date || '').split('-').reverse().join('/')} · ${escapeHTML(p.titular || 'Sem titular')}</span>
+        <span class="credit-card-purchase-parcel">${p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista'}</span>
+        <span class="purchase-status arquivada">📦 Arquivada</span>
+      </div>
+      <strong class="credit-card-purchase-value">${fmt(p.totalValue)}</strong>
+      <div class="credit-card-purchase-menu">
+        <button type="button" class="action-btn beta-icon-button unarchive" onclick="unarchivePurchase('${p.id}')" aria-label="Restaurar" title="Restaurar compra">↩</button>
+        <button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir permanentemente"></button>
+      </div>
+    </div>`;
+  }).join('') : '';
+  
+  return `<article class="credit-card" data-card-id="${card.id}">
+      <div class="credit-card-head">
+        <div class="credit-card-icon" style="background:${categoryColor(card)}"><i class="fi fi-rr-credit-card" aria-hidden="true"></i></div>
+        <div class="credit-card-title">
+          <h3>${escapeHTML(card.name)}</h3>
+          <span class="credit-card-bank">${escapeHTML(bank?.name || 'Sem banco')}</span>
+        </div>
+        <button type="button" class="card-toggle" onclick="this.closest('.credit-card').classList.toggle('is-expanded')" aria-expanded="false" aria-controls="cardBody_${card.id}"></button>
+      </div>
+      <div class="credit-card-body" id="cardBody_${card.id}">
+        <div class="credit-card-purchases">
+          <div class="credit-card-purchases-head">
+            <strong>Compras</strong>
+            <div class="credit-card-purchases-actions">
+              <button type="button" class="credit-card-pill" onclick="this.closest('.credit-card-purchases').classList.toggle('is-expanded')">Detalhar</button>
+              <button type="button" class="credit-card-pill primary" onclick="openPurchaseModal('${card.id}')" ${card.active === false ? 'disabled' : ''}>+ Compra</button>
+            </div>
+          </div>
+          ${cardPurchases.length ? cardPurchases.map(p => {
+            const cat = categories.find(c => c.id === p.categoryId)?.name || 'Sem categoria';
+            const parcel = p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
+            const statusBadge = p.status === 'finalizada' ? '<span class="purchase-status finalizada">✓ Finalizada</span>' : (p.status === 'parcial' ? '<span class="purchase-status parcial">⏳ Parcial</span>' : '<span class="purchase-status pendente">⏳ Pendente</span>');
+            const finalizeBtn = p.status !== 'finalizada' ? `<button type="button" class="action-btn beta-icon-button finalize" onclick="finalizePurchase('${p.id}')" aria-label="Marcar como finalizada" title="Marcar como finalizada">✓</button>` : '';
+            return `<div class="credit-card-purchase-row ${p.status === 'finalizada' ? 'is-finalized' : ''}">
+              <span class="credit-card-purchase-dot" aria-hidden="true"></span>
+              <div class="credit-card-purchase-main">
+                <strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong>
+                <span>${(p.date || '').split('-').reverse().join('/')} · ${escapeHTML(p.titular || 'Sem titular')}</span>
+                <span class="credit-card-purchase-parcel">${parcel}</span>
+                ${statusBadge}
+              </div>
+              <strong class="credit-card-purchase-value">${fmt(p.totalValue)}</strong>
+              <div class="credit-card-purchase-menu">
+                ${finalizeBtn}
+                <button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar"></button>
+                <button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir"></button>
+              </div>
+            </div>`;
+          }).join('') : '<div class="credit-card-empty">Nenhuma compra vinculada a este cartão.</div>'}
+        ${archivedHtml}
+        <div class="credit-card-footer-actions">
+          <button type="button" class="credit-card-footer-btn" onclick="editCard('${card.id}')">✎ Editar</button>
+          <button type="button" class="credit-card-footer-btn" onclick="toggleCardActive('${card.id}')">${card.active === false ? 'Ativar' : '⊘ Desativar'}</button>
+        </div>
+      </article>`;
+    }).join('');
   }
   window.editCard = id => openCardModal(id);
   window.shiftCardInvoice = (cardId, delta) => {
@@ -11592,7 +11660,19 @@ VALOR: ${fmt(pseudoBill.amount)}
   window.finalizePurchase = async id => {
     const purchase = purchases.find(p => p.id === id); if (!purchase) return;
     purchase.status = 'finalizada';
-    try { await persistAll(); renderCards(); logInfo('Cartões','Finalizar compra','Sucesso',`Compra "${purchase.description}" marcada como finalizada.`); } catch (err) { logSyncError('finalização de compra', err); }
+    purchase.archivedAt = new Date().toISOString();
+    archivedPurchases.push(purchase);
+    purchases = purchases.filter(p => p.id !== id);
+    try { await persistAll(); renderCards(); logInfo('Cartões','Arquivar compra','Sucesso',`Compra "${purchase.description}" arquivada.`); } catch (err) { logSyncError('arquivar compra', err); }
+  };
+
+  window.unarchivePurchase = async id => {
+    const purchase = archivedPurchases.find(p => p.id === id); if (!purchase) return;
+    purchase.status = 'pendente';
+    delete purchase.archivedAt;
+    archivedPurchases = archivedPurchases.filter(p => p.id !== id);
+    purchases.push(purchase);
+    try { await persistAll(); renderCards(); logInfo('Cartões','Restaurar compra','Sucesso',`Compra "${purchase.description}" restaurada.`); } catch (err) { logSyncError('restaurar compra', err); }
   };
 
   function openNewCardModal() { openCardModal(); }
