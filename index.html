@@ -1834,8 +1834,8 @@ document.addEventListener('visibilitychange', () => {
 });
 
 </script>
-/* Diagnóstico acessível na tela de login — robusto contra ordem de carregamento do DOM. */
 <script>
+/* Diagnóstico acessível na tela de login — robusto contra ordem de carregamento do DOM. */
 (function initLoginDiagnostic() {
   const maxLines = 180;
   const state = { lines: [] };
@@ -2166,13 +2166,12 @@ document.addEventListener('visibilitychange', () => {
     }
   );
 
+  // Inicializa Firebase ANTES do diagnóstico para que 'auth' esteja disponível
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
   ensureInitialized();
 })();
-</script>
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-window.loginDebugLog?.(
   'FIREBASE',
   'Firebase Auth inicializado',
   {
