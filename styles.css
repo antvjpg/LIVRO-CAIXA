@@ -2184,12 +2184,18 @@
 .purchase-status.pendente{background:var(--gold-soft);color:var(--gold);}
 .purchase-status.parcial{background:var(--gold-soft);color:var(--gold);}
 .purchase-status.finalizada{background:var(--green-soft);color:var(--green);}
+.purchase-status.arquivada{background:var(--ink-soft);color:var(--ink);}
 
 .credit-card-purchase-row.is-finalized{opacity:.7;}
 .credit-card-purchase-row.is-finalized .credit-card-purchase-value{color:var(--ink-soft);}
 
+.credit-card-purchase-row.is-archived{opacity:.5;background:var(--paper-2);}
+.credit-card-purchase-row.is-archived .credit-card-purchase-value{color:var(--ink-soft);}
+
 .credit-card-purchase-menu .finalize{color:var(--green);opacity:.7;}
 .credit-card-purchase-menu .finalize:hover{opacity:1;background:var(--green-soft);}
+.credit-card-purchase-menu .unarchive{color:var(--accent);opacity:.7;}
+.credit-card-purchase-menu .unarchive:hover{opacity:1;background:var(--accent-soft);}
 
 .emoji-float-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(13,42,30,.56);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
     .emoji-float-overlay.open{display:flex;}
