@@ -2248,10 +2248,10 @@
   .mobile-bottom-nav button.is-active{background:transparent!important;box-shadow:none!important;}
   .mobile-bottom-nav button:active{transform:scale(.94);}
   .tab-content{animation:tab-content-enter 220ms var(--v1616-ease) both;}
-  @keyframes tab-content-enter{from{opacity:.45;transform:translateY(4px)}to{opacity:1;transform:none}}
-  @keyframes v1616-pulse{0%,100%{opacity:.58}50%{opacity:1}}
-  @keyframes v1616-value{0%{transform:translateY(3px);opacity:.5}100%{transform:none;opacity:1}}
-  .value-refresh{animation:v1616-value 260ms var(--v1616-ease) both;}
+@keyframes v1616-pulse{0%,100%{opacity:.58}50%{opacity:1}}
+@keyframes v1616-value{0%{transform:translateY(3px);opacity:.5}100%{transform:none;opacity:1}}
+@keyframes diag-pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+.value-refresh{animation:v1616-value 260ms var(--v1616-ease) both;}
   body.is-data-loading .balance-card > *,body.is-data-loading #categorySummary > *,body.is-data-loading #ledgerBody > *,body.is-data-loading #pocketBalanceStrip > *,body.is-data-loading #viewInvest .invest-grid > *,body.is-data-loading #pocketGrid > *{visibility:hidden;}
   body.is-data-loading .balance-card,body.is-data-loading #categorySummary,body.is-data-loading #ledgerBody,body.is-data-loading #pocketBalanceStrip,body.is-data-loading #viewInvest .invest-grid > *,body.is-data-loading #pocketGrid > *{position:relative;overflow:hidden;}
   body.is-data-loading .balance-card::after,body.is-data-loading #categorySummary::after,body.is-data-loading #ledgerBody::after,body.is-data-loading #pocketBalanceStrip::after,body.is-data-loading #viewInvest .invest-grid > *::after,body.is-data-loading #pocketGrid > *::after{content:"";position:absolute;inset:16px;border-radius:10px;background:linear-gradient(100deg,color-mix(in srgb,var(--line) 35%,transparent) 20%,color-mix(in srgb,var(--surface-raised) 86%,transparent) 45%,color-mix(in srgb,var(--line) 35%,transparent) 70%);background-size:220% 100%;animation:v1616-pulse 1.2s ease-in-out infinite;}
@@ -8612,7 +8612,29 @@ body[data-tab="dashboard"] #viewDashboard.active {
   min-height:40px;
 }
 @media (max-width:600px){
-  #authDiagnosticOverlay .panel{
+/* Diagnostic toggle button indicator */
+#authDiagnosticToggle{
+  position:relative;
+}
+#authDiagnosticToggle::after{
+  content:'';
+  position:absolute;
+  top:-4px;
+  right:-4px;
+  width:8px;
+  height:8px;
+  background:var(--gold);
+  border-radius:50%;
+  border:2px solid var(--paper);
+  animation:diag-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes diag-pulse{
+  0%,100%{opacity:.4;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.15)}
+}
+
+#authDiagnosticOverlay .panel{
     border-radius:22px !important;
   }
   .tech-diag-actions{
