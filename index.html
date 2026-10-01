@@ -1833,7 +1833,9 @@ document.addEventListener('visibilitychange', () => {
   window.LivroCaixaAI?.refreshQuota?.({ silent: true, throttleMs: 60000 });
 });
 
+</script>
 /* Diagnóstico acessível na tela de login — robusto contra ordem de carregamento do DOM. */
+<script>
 (function initLoginDiagnostic() {
   const maxLines = 180;
   const state = { lines: [] };
@@ -2166,6 +2168,7 @@ document.addEventListener('visibilitychange', () => {
 
   ensureInitialized();
 })();
+</script>
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
@@ -15014,8 +15017,7 @@ list.innerHTML = pendingImport.map((row, i) => `
   </div>
 </div>
 
-
-
+</script>
 <script>
 // [PATCH] Contas/Faturas — menus contextuais
 function closeBillMenus(){
