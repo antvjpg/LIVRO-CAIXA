@@ -525,6 +525,7 @@
     opacity:0;
     pointer-events:none;
     transition:opacity 0.2s ease;
+    overflow:hidden;
   }
   .modal-overlay.open{
     opacity:1;
@@ -540,6 +541,7 @@
     overflow-y:auto;
     box-shadow:0 10px 30px var(--shadow);
     display:none;
+    flex-shrink:0;
   }
   .panel.open{display:block;}
   .panel h3{

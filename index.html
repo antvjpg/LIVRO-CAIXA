@@ -13990,7 +13990,7 @@ document.getElementById('tSalvar').onclick = async () => {
       doc.setFont('helvetica','normal'); doc.setFontSize(10);
       doc.text(`Período: ${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`, margin, y); y+=5;
       doc.text(`Saldo Inicial: ${fmt(initial)} | Saldo Final: ${fmt(final)}`, margin, y); y+=8;
-      doc.setDrawColor(200,200,200); doc.line(margin, y, pageWidth - margin, y); y+=6;
+      doc.setDrawColor(200,200,200); doc.line(margin, y, pageWidth - margin, y); y+=10;
     };
 
     const addFooter = () => {
@@ -14016,24 +14016,24 @@ document.getElementById('tSalvar').onclick = async () => {
       doc.setFillColor(240,240,240);
       let x = margin;
       cols.forEach((col, i) => {
-        doc.rect(x, y, widths[i], 6, 'F');
-        doc.text(col, x + 2, y + 4.5);
+        doc.rect(x, y, widths[i], 7, 'F');
+        doc.text(col, x + 3, y + 5);
         x += widths[i];
       });
-      y += 6;
-      doc.setDrawColor(0,0,0); doc.line(margin, y, pageWidth - margin, y); y += 2;
+      y += 8;
+      doc.setDrawColor(0,0,0); doc.line(margin, y, pageWidth - margin, y); y += 3;
     };
 
     const drawRow = (cells, widths, running) => {
-      addPageIfNeeded(8);
+      addPageIfNeeded(10);
       doc.setFont('helvetica','normal'); doc.setFontSize(8);
       let x = margin;
       cells.forEach((cell, i) => {
         const w = widths[i];
-        doc.text(String(cell), x + 1, y + 4, {maxWidth: w - 2});
+        doc.text(String(cell), x + 2, y + 5, {maxWidth: w - 4});
         x += w;
       });
-      y += 5;
+      y += 7;
       if (running !== undefined) {
         doc.setFont('helvetica','normal'); doc.setFontSize(7);
         doc.setTextColor(100,100,100);
@@ -14060,7 +14060,7 @@ document.getElementById('tSalvar').onclick = async () => {
       doc.text(`Saldo inicial: ${fmt(group.initialBalance)}  |  Saldo final: ${fmt(group.finalBalance)}`, margin, y); y+=5;
       doc.setDrawColor(200,200,200); doc.line(margin, y, pageWidth - margin, y); y+=4;
 
-      const widths = [25, 55, 30, 25, 25, 30];
+      const widths = [25, 58, 32, 25, 25, 32];
       drawTableHeader(['Data','Descrição','Categoria','Entrada','Saída','Saldo'], widths);
 
       let running = group.initialBalance;
@@ -14098,7 +14098,8 @@ document.getElementById('tSalvar').onclick = async () => {
     // Caixinhas
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     if (pocketsBlock.length) {
-      doc.addPage(); y = 14;
+      // Don't force new page if there's space
+      addPageIfNeeded(50);
       doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(40,40,40);
       doc.text('2. Caixinhas', margin, y); y+=10;
       pocketsBlock.forEach(p => {
@@ -14120,7 +14121,7 @@ document.getElementById('tSalvar').onclick = async () => {
     // Investimentos
     const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     if (investBlock.length) {
-      doc.addPage(); y = 14;
+      addPageIfNeeded(50);
       doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(40,40,40);
       doc.text('3. Investimentos', margin, y); y+=10;
       investBlock.forEach(inv => {
