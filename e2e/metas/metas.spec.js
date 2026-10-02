@@ -596,9 +596,10 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
     await waitGoalFormClosed(page);
     await expect.poll(() => countGoals(page), { timeout: 20_000, message: 'total após cancelar' }).toBe(5);
     const still = await expectGoal(page, nameM1Edited, e.m1Edited, { badge: 'Pausada' });
-    expect((await card(page, nameM1Edited).locator('strong').textContent()).trim(), 'nome fantasma').toBe(
-      nameM1Edited
-    );
+    expect(
+      (await card(page, nameM1Edited).locator('.goal-card-v2-title strong').textContent()).trim(),
+      'nome fantasma'
+    ).toBe(nameM1Edited);
 
     await testInfo.attach('edicao-vs-oracle.txt', {
       body: [
