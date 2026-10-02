@@ -26,3 +26,12 @@ e2e/scripts/android-platform-shim.cjs
 .env
 .env.*
 !.env.example
+
+# Lixo de auditoria/depuração local — nunca versionar
+.code-inline-1.js
+check_syntax.js
+first_script.js
+.livro-caixa-*
+.local-auth-tail.js
+.remote-auth-tail.html
+

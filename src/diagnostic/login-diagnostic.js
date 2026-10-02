@@ -335,11 +335,8 @@
     }
   );
 
-  // Inicializa Firebase ANTES do diagnóstico para que 'auth' esteja disponível
+  // Aguarda o Firebase estar disponível antes de inicializar o diagnóstico
   if (typeof firebase !== 'undefined') {
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
     ensureInitialized();
   } else {
     // Firebase not yet loaded, wait for it
@@ -347,5 +344,4 @@
       ensureInitialized();
     });
   }
-})();
 })();

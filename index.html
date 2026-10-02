@@ -126,10 +126,11 @@
   <div class="app-header-actions">
     <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><i class="fi fi-rs-bell-notification-social-media" aria-hidden="true"></i><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
     <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><i class="fi fi-rr-night-day" aria-hidden="true"></i></button>
-    <button type="button" id="btnGitHub" class="header-icon-button" title="Repositório no GitHub" aria-label="Abrir repositório no GitHub" onclick="window.open('https://github.com/seu-usuario/LIVRO-CAIXA', '_blank', 'width=800,height=600')">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.036 1.835 2.807 1.301 3.498.998.077-.78.27-1.305.502-1.604-1.758-.196-4.312-.794-4.312-4.593 0-1.005.386-1.828 1.02-2.467-.103-.232-.444-1.172.098-2.44 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.719-.679 3.059-1.795 3.059-3.285 0-.728-.228-1.405-.632-1.905.376-.15.77-.231 1.174-.231.437 0 .81.071 1.185.218.689-.071 1.324-.307 1.603-.586C21.325 5.507 24 6.976 24 8.701c0 6.627-5.373 12-12 12z"/>
-</svg>
+    <button type="button" id="btnGitHub" class="header-icon-button" title="Repositório no GitHub" aria-label="Abrir repositório no GitHub" onclick="window.open('https://github.com/antvjpg/LIVRO-CAIXA', '_blank', 'width=800,height=600')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546 1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.036 1.835 2.807 1.301 3.498.998.077-.78.27-1.305.502-1.604-1.758-.196-4.312-.794-4.312-4.593 0-1.005.386-1.828 1.02-2.467-.103-.232-.444-1.172.098-2.44 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.719-.679 3.059-1.795 3.059-3.285 0-.728-.228-1.405-.632-1.905.376-.15.77-.231 1.174-.231.437 0 .81.071 1.185.218.689-.071 1.324-.307 1.603-.586C21.325 5.507 24 6.976 24 8.701c0 6.627-5.373 12-12 12z"/>
+      </svg>
+    </button>
     <div id="userBar"></div>
   </div>
 </header>
@@ -1433,7 +1434,6 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
 =========================================================
 -->
 <script>
-</script>
 if (typeof Chart !== 'undefined') {
   Chart.defaults.font.family = 'Plus Jakarta Sans';
   Chart.defaults.font.weight = '500';
@@ -1834,7 +1834,19 @@ document.addEventListener('visibilitychange', () => {
   window.LivroCaixaAI?.refreshQuota?.({ silent: true, throttleMs: 60000 });
 });
 
-<script type="module" src="./src/diagnostic/login-diagnostic.js"></script>
+/* [BOOT FIREBASE] Precisa estar ANTES de qualquer firebase.firestore()/auth():
+   sem initializeApp() a primeira chamada lança e derruba todo o resto do script. */
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+window.loginDebugLog?.(
+  'FIREBASE',
+  'Firebase Auth inicializado',
+  {
+    authDomain: firebaseConfig.authDomain,
+    projectId: firebaseConfig.projectId
+  }
+);
 
 firebase.firestore().enablePersistence().catch(err => {
   console.log("A persistência offline não pôde ser ativada:", err);
@@ -1915,7 +1927,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let invoiceLaunches = [];
   let cards = [];
   let purchases = [];
-let archivedPurchases = [];
   let editingCardId = null;
   let editingPurchaseId = null;
   let pendingImport = [];
@@ -11198,74 +11209,8 @@ VALOR: ${fmt(pseudoBill.amount)}
         </div>
       </article>`;
     }).join('');
-
-  // Archived purchases section
-  const archivedPurchasesByCard = archivedPurchases.filter(p => p.cardId === card.id);
-  const archivedHtml = archivedPurchasesByCard.length ? archivedPurchasesByCard.map(p => {
-    const parcel = p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
-    return `<div class="credit-card-purchase-row is-archived">
-      <span class="credit-card-purchase-dot" aria-hidden="true"></span>
-      <div class="credit-card-purchase-main">
-        <strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong>
-        <span>${(p.date || '').split('-').reverse().join('/')} · ${escapeHTML(p.titular || 'Sem titular')}</span>
-        <span class="credit-card-purchase-parcel">${p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista'}</span>
-        <span class="purchase-status arquivada">📦 Arquivada</span>
-      </div>
-      <strong class="credit-card-purchase-value">${fmt(p.totalValue)}</strong>
-      <div class="credit-card-purchase-menu">
-        <button type="button" class="action-btn beta-icon-button unarchive" onclick="unarchivePurchase('${p.id}')" aria-label="Restaurar" title="Restaurar compra">↩</button>
-        <button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir permanentemente"></button>
-      </div>
-    </div>`;
-  }).join('') : '';
-  
-  return `<article class="credit-card" data-card-id="${card.id}">
-      <div class="credit-card-head">
-        <div class="credit-card-icon" style="background:${categoryColor(card)}"><i class="fi fi-rr-credit-card" aria-hidden="true"></i></div>
-        <div class="credit-card-title">
-          <h3>${escapeHTML(card.name)}</h3>
-          <span class="credit-card-bank">${escapeHTML(bank?.name || 'Sem banco')}</span>
-        </div>
-        <button type="button" class="card-toggle" onclick="this.closest('.credit-card').classList.toggle('is-expanded')" aria-expanded="false" aria-controls="cardBody_${card.id}"></button>
-      </div>
-      <div class="credit-card-body" id="cardBody_${card.id}">
-        <div class="credit-card-purchases">
-          <div class="credit-card-purchases-head">
-            <strong>Compras</strong>
-            <div class="credit-card-purchases-actions">
-              <button type="button" class="credit-card-pill" onclick="this.closest('.credit-card-purchases').classList.toggle('is-expanded')">Detalhar</button>
-              <button type="button" class="credit-card-pill primary" onclick="openPurchaseModal('${card.id}')" ${card.active === false ? 'disabled' : ''}>+ Compra</button>
-            </div>
-          </div>
-          ${cardPurchases.length ? cardPurchases.map(p => {
-            const cat = categories.find(c => c.id === p.categoryId)?.name || 'Sem categoria';
-            const parcel = p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
-            const statusBadge = p.status === 'finalizada' ? '<span class="purchase-status finalizada">✓ Finalizada</span>' : (p.status === 'parcial' ? '<span class="purchase-status parcial">⏳ Parcial</span>' : '<span class="purchase-status pendente">⏳ Pendente</span>');
-            const finalizeBtn = p.status !== 'finalizada' ? `<button type="button" class="action-btn beta-icon-button finalize" onclick="finalizePurchase('${p.id}')" aria-label="Marcar como finalizada" title="Marcar como finalizada">✓</button>` : '';
-            return `<div class="credit-card-purchase-row ${p.status === 'finalizada' ? 'is-finalized' : ''}">
-              <span class="credit-card-purchase-dot" aria-hidden="true"></span>
-              <div class="credit-card-purchase-main">
-                <strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong>
-                <span>${(p.date || '').split('-').reverse().join('/')} · ${escapeHTML(p.titular || 'Sem titular')}</span>
-                <span class="credit-card-purchase-parcel">${parcel}</span>
-                ${statusBadge}
-              </div>
-              <strong class="credit-card-purchase-value">${fmt(p.totalValue)}</strong>
-              <div class="credit-card-purchase-menu">
-                ${finalizeBtn}
-                <button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar"></button>
-                <button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir"></button>
-              </div>
-            </div>`;
-          }).join('') : '<div class="credit-card-empty">Nenhuma compra vinculada a este cartão.</div>'}
-        ${archivedHtml}
-        <div class="credit-card-footer-actions">
-          <button type="button" class="credit-card-footer-btn" onclick="editCard('${card.id}')">✎ Editar</button>
-          <button type="button" class="credit-card-footer-btn" onclick="toggleCardActive('${card.id}')">${card.active === false ? 'Ativar' : '⊘ Desativar'}</button>
-        </div>
-      </article>`;
-    }).join('');
   }
+
   window.editCard = id => openCardModal(id);
   window.shiftCardInvoice = (cardId, delta) => {
     const card = cards.find(c => c.id === cardId);
@@ -11322,20 +11267,20 @@ VALOR: ${fmt(pseudoBill.amount)}
 
   window.finalizePurchase = async id => {
     const purchase = purchases.find(p => p.id === id); if (!purchase) return;
+    /* A compra NUNCA sai de `purchases` (único array persistido/exportado).
+       Arquivamento é só um flag derivado — evita perda definitiva de dado. */
+    const previousStatus = purchase.status;
     purchase.status = 'finalizada';
     purchase.archivedAt = new Date().toISOString();
-    archivedPurchases.push(purchase);
-    purchases = purchases.filter(p => p.id !== id);
-    try { await persistAll(); renderCards(); logInfo('Cartões','Arquivar compra','Sucesso',`Compra "${purchase.description}" arquivada.`); } catch (err) { logSyncError('arquivar compra', err); }
+    try { await persistAll(); renderCards(); logInfo('Cartões','Arquivar compra','Sucesso',`Compra "${purchase.description}" arquivada.`); } catch (err) { purchase.status = previousStatus; delete purchase.archivedAt; logSyncError('arquivar compra', err); renderCards(); }
   };
 
   window.unarchivePurchase = async id => {
-    const purchase = archivedPurchases.find(p => p.id === id); if (!purchase) return;
+    const purchase = purchases.find(p => p.id === id); if (!purchase) return;
+    const previousStatus = purchase.status;
     purchase.status = 'pendente';
     delete purchase.archivedAt;
-    archivedPurchases = archivedPurchases.filter(p => p.id !== id);
-    purchases.push(purchase);
-    try { await persistAll(); renderCards(); logInfo('Cartões','Restaurar compra','Sucesso',`Compra "${purchase.description}" restaurada.`); } catch (err) { logSyncError('restaurar compra', err); }
+    try { await persistAll(); renderCards(); logInfo('Cartões','Restaurar compra','Sucesso',`Compra "${purchase.description}" restaurada.`); } catch (err) { purchase.status = previousStatus; logSyncError('restaurar compra', err); renderCards(); }
   };
 
   function openNewCardModal() { openCardModal(); }
@@ -14672,9 +14617,8 @@ list.innerHTML = pendingImport.map((row, i) => `
   </div>
 </div>
 
-</script>
+<script type="module" src="./src/diagnostic/login-diagnostic.js"></script>
 <script>
-</script>
 // [PATCH] Contas/Faturas — menus contextuais
 function closeBillMenus(){
   document.querySelectorAll('.bill-more-menu').forEach(menu => {
@@ -14708,7 +14652,6 @@ document.addEventListener('click', (event) => {
 
 
 <script>
-</script>
 // [PATCH] Metas — isolamento de aba / switchTab
 /* Metas como aba própria — resolve switchTabOriginal em tempo de chamada (nunca captura undefined) */
 (function () {
@@ -14818,6 +14761,7 @@ document.addEventListener('click', (event) => {
 
 
 <!-- [PATCH CSS] Metas V2 -->
+
 
 </body>
 
