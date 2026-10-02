@@ -301,7 +301,10 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
       card(page, NAME_USDT).locator('.asset-card-meta span').first(),
       'quantidade após a conciliação'
     ).toHaveText(`Qtd: ${UNITS_REAL_BR} ${NAME_USDT}`);
-    await expect(card(page, NAME_USDT).locator('.asset-card-units-warning')).toHaveCount(0);
+    await expect(
+      card(page, NAME_USDT).locator('.asset-card-units-warning'),
+      'o registro legado segue sem quantidade, então o aviso não some com a conciliação'
+    ).toHaveText(AVISO_1);
 
     const hist = await openHistory(page, NAME_USDT);
     await expect(hist).toContainText(AJUSTE_DESC);
