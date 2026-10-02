@@ -9555,9 +9555,17 @@ VALOR: ${fmt(bill.amount)}
             <button type="button" class="bill-action-btn bill-more-button" disabled aria-hidden="true">•••</button>`;
       };
 
+      const carriedOut = Number(row.invoice?.carriedOut || 0);
+      const carriedBadge = carriedOut > 0.004
+        ? `<span class="bill-status is-carried" title="Saldo em aberto levado para a fatura seguinte">Seguinte</span>`
+        : '';
+
       // 1 titular: idêntico à conta (sem bloco interno extra)
       if (titulars.length <= 1) {
-        const b = titulars[0] || { titular: '', total: displayTotal, status: statusLabel, remaining: displayTotal };
+        const b = titulars[0] || { titular: '', total: displayTotal, status: statusLabel, remaining: displayTotal, carry: 0 };
+        const carryLine = Number(b.carry || 0) > 0.004
+          ? `<div class="hint invoice-carry-line">Saldo anterior em aberto: <strong>${fmt(b.carry)}</strong></div>`
+          : '';
         const meta = [
           `Venc. ${dueLabel}`,
           'Cartão',
@@ -9568,9 +9576,10 @@ VALOR: ${fmt(bill.amount)}
             <div class="commitment-card-main">
               <strong>Fatura ${escapeHTML(row.card.name)}</strong>
               <div class="bill-list-item-amount">${fmt(displayTotal)}</div>
+              ${carryLine}
               <div class="hint">${meta}</div>
             </div>
-            <span class="bill-status ${statusClass}">${statusLabel}</span>
+            <span class="bill-status ${statusClass}">${statusLabel}</span>${carriedBadge}
           </div>
           <div class="bill-actions commitment-actions">${actionPair(b)}</div>
         </div>`;
@@ -9578,8 +9587,12 @@ VALOR: ${fmt(bill.amount)}
 
       // N titulares: mesmo card, sublinhas só com meta + mesma grade full-width
       const blocks = titulars.map(b => {
+        const carryLine = Number(b.carry || 0) > 0.004
+          ? `<div class="hint invoice-carry-line">Saldo anterior em aberto: <strong>${fmt(b.carry)}</strong></div>`
+          : '';
         return `<div class="commitment-subblock">
           <div class="hint"><strong>${escapeHTML(b.titular || 'Sem titular')}</strong> · ${fmt(b.total)} · ${escapeHTML(b.status)}</div>
+          ${carryLine}
           <div class="bill-actions commitment-actions">${actionPair(b)}</div>
         </div>`;
       }).join('');
@@ -9590,7 +9603,7 @@ VALOR: ${fmt(bill.amount)}
             <div class="bill-list-item-amount">${fmt(displayTotal)}</div>
             <div class="hint">Venc. ${dueLabel} · Cartão · ${titulars.length} titulares</div>
           </div>
-          <span class="bill-status ${statusClass}">${statusLabel}</span>
+          <span class="bill-status ${statusClass}">${statusLabel}</span>${carriedBadge}
         </div>
         <div class="commitment-subblocks">${blocks}</div>
       </div>`;
@@ -9664,11 +9677,15 @@ VALOR: ${fmt(bill.amount)}
         ? 'Pago'
         : (invoiceOverdue(row) ? 'Atrasado' : 'Pendente');
       const total = invoiceDisplayTotalFor(row, titularFilter);
+      const carry = titularFilter
+        ? (row.breakdown || []).reduce((sum, b) => sum + Number(b.carry || 0), 0)
+        : Number(row.invoice?.carry || 0);
+      const carryText = carry > 0.004 ? ` · anterior ${fmt(carry)}` : '';
 
       return `<div class="bill-day-panel-item">
         <div>
           <strong>Fatura ${escapeHTML(row.card.name)}</strong>
-          <span>${fmt(total)} · ${status}</span>
+          <span>${fmt(total)}${carryText} · ${status}</span>
         </div>
         <span class="bill-day-panel-type">Cartão</span>
       </div>`;
@@ -10724,6 +10741,12 @@ function openNewEntryModal() {
   }
   // ===== Fase D — Vencimento da fatura + integração com o Calendário =====
   function invoiceDueDateForPeriod(card, periodKey) {
+    // Fonte de verdade: o motor (mesma regra usada no cálculo de saldo
+    // anterior). O cálculo local abaixo fica apenas como fallback.
+    const engineRef = window.LivroCaixaCardEngineV3;
+    if (engineRef && typeof engineRef.dueDateForPeriod === 'function') {
+      return engineRef.dueDateForPeriod(card, periodKey);
+    }
     const [y, m] = periodKey.split('-').map(Number);
     const closing = Math.min(31, Math.max(1, Number(card.closingDay) || 1));
     const due = Math.min(31, Math.max(1, Number(card.dueDay) || closing));
@@ -10793,27 +10816,60 @@ function openNewEntryModal() {
     const entryId = 'e' + Date.now() + Math.random().toString(36).slice(2, 7);
     const willBeFullyPaid = amount + 0.004 >= remaining;
     const entry = { id: entryId, date: dueDate, desc: `Fatura ${card.name}${titular && titular !== 'Sem titular' ? ' — ' + titular : ''}${willBeFullyPaid ? '' : ' (parcial)'}`, bank: card.bank || '', category: card.category || categories[0]?.id || '', amount, type: 'out', invoiceLaunchId: launchId };
-    const wasNew = !existing;
-    const previousSnapshot = existing ? JSON.parse(JSON.stringify(existing)) : null;
-    let launchRecord;
-    if (existing) {
-      if (!Array.isArray(existing.payments)) existing.payments = existing.amount ? [{ entryId: existing.entryId, amount: existing.amount, date: existing.launchedAt }] : [];
-      existing.payments.push({ entryId, amount, date: new Date().toISOString() });
-      existing.updatedAt = new Date().toISOString();
-      launchRecord = existing;
-    } else {
-      launchRecord = { id: launchId, cardId, closingPeriodKey, titular, payments: [{ entryId, amount, date: new Date().toISOString() }], updatedAt: new Date().toISOString() };
-      invoiceLaunches.push(launchRecord);
+
+    // O total pagável do período inclui o saldo anterior já vencido, então o
+    // pagamento é distribuído entre os períodos anteriores (mais antigo
+    // primeiro) e o período atual. Uma única entrada é criada no Livro-Caixa;
+    // cada período recebe seu registro em invoiceLaunches apontando para o
+    // mesmo entryId, o que mantém o rollback consistente.
+    const engineRef = window.LivroCaixaCardEngineV3;
+    let plan = engineRef && typeof engineRef.planInvoicePayment === 'function'
+      ? engineRef.planInvoicePayment(cardId, closingPeriodKey, titular, amount, purchases, cards, invoiceLaunches)
+      : [];
+    if (!Array.isArray(plan) || !plan.length) {
+      plan = [{ periodKey: closingPeriodKey, amount: amount }];
     }
+
+    const nowIso = new Date().toISOString();
+    const touched = [];
+    plan.forEach(part => {
+      const partId = invoiceLaunchId(cardId, part.periodKey, titular);
+      const launch = invoiceLaunches.find(x => x.id === partId);
+      if (!launch) {
+        invoiceLaunches.push({
+          id: partId,
+          cardId,
+          closingPeriodKey: part.periodKey,
+          titular,
+          payments: [{ entryId, amount: part.amount, date: nowIso }],
+          updatedAt: nowIso
+        });
+        touched.push({ id: partId, wasNew: true, snapshot: null });
+        return;
+      }
+      const snapshot = JSON.parse(JSON.stringify(launch));
+      if (!Array.isArray(launch.payments)) launch.payments = launch.amount ? [{ entryId: launch.entryId, amount: launch.amount, date: launch.launchedAt }] : [];
+      launch.payments.push({ entryId, amount: part.amount, date: nowIso });
+      launch.updatedAt = nowIso;
+      touched.push({ id: partId, wasNew: false, snapshot });
+    });
+
     entries.push(entry);
     render(); renderBills();
     try {
       await persistAll();
-      logInfo('Cartões', willBeFullyPaid ? 'Lançar fatura por titular' : 'Pagamento parcial de fatura', 'Sucesso', `${card.name} — ${titular}: ${fmt(amount)} lançado${willBeFullyPaid ? ' (quitado)' : ' (parcial, restam ' + fmt(remaining - amount) + ')'}.`, { cardId, closingPeriodKey, titular });
+      const spreadCount = plan.filter(part => part.periodKey !== closingPeriodKey).length;
+      logInfo('Cartões', willBeFullyPaid ? 'Lançar fatura por titular' : 'Pagamento parcial de fatura', 'Sucesso', `${card.name} — ${titular}: ${fmt(amount)} lançado${willBeFullyPaid ? ' (quitado)' : ' (parcial, restam ' + fmt(remaining - amount) + ')'}${spreadCount ? ` · abrangindo ${spreadCount} fatura(s) anterior(es)` : ''}.`, { cardId, closingPeriodKey, titular });
     } catch (err) {
       entries = entries.filter(item => item.id !== entryId);
-      if (wasNew) invoiceLaunches = invoiceLaunches.filter(item => item.id !== launchId);
-      else { const idx = invoiceLaunches.findIndex(x => x.id === launchId); if (idx >= 0) invoiceLaunches[idx] = previousSnapshot; }
+      touched.forEach(t => {
+        if (t.wasNew) {
+          invoiceLaunches = invoiceLaunches.filter(item => item.id !== t.id);
+        } else {
+          const idx = invoiceLaunches.findIndex(x => x.id === t.id);
+          if (idx >= 0) invoiceLaunches[idx] = t.snapshot;
+        }
+      });
       logSyncError('lançamento de fatura por titular', err);
       alert('Não foi possível registrar esse pagamento agora. Verifique sua conexão e tente novamente.');
     } finally {
@@ -10831,7 +10887,7 @@ function openNewEntryModal() {
     const target = Array.isArray(invoiceState?.titulars)
       ? invoiceState.titulars.find(item => item.titular === titular)
       : null;
-    const remaining = Number(target?.remaining ?? amount);
+    const remaining = Number(target?.payableRemaining ?? target?.remaining ?? amount);
     window.recordInvoicePayment(
       cardId,
       closingPeriodKey,
@@ -10864,7 +10920,7 @@ function openNewEntryModal() {
     const target = Array.isArray(invoiceState?.titulars)
       ? invoiceState.titulars.find(item => item.titular === titular)
       : null;
-    const remaining = Number(target?.remaining ?? amount);
+    const remaining = Number(target?.payableRemaining ?? target?.remaining ?? amount);
     const dueDate = invoiceDueDateForPeriod(card, closingPeriodKey);
     const pseudoBill = { name: `Fatura ${card.name}`, titular: titular === 'Sem titular' ? '' : titular, amount: remaining > 0.004 ? remaining : Number(amount) };
     const dueLabel = dueDate.split('-').reverse().join('/');
@@ -10913,7 +10969,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     if (
       existing &&
       target &&
-      target.status === 'Pago' &&
+      (target.payableStatus || target.status) === 'Pago' &&
       target.markedPaidOnly !== true
     ) {
       alert('Esta fatura já foi lançada no Livro-Caixa.');
@@ -10936,9 +10992,44 @@ VALOR: ${fmt(pseudoBill.amount)}
     } else {
       invoiceLaunches.push(record);
     }
+
+    // Cascata: a quitação deste período cobre também o saldo anterior que ele
+    // arrastava, então esses períodos são marcados junto. Sem isso,
+    // calculateLimit()/cardCommittedAmount() continuariam contando uma
+    // dívida que o usuário acabou de quitar. Ao desmarcar, apenas o período
+    // escolhido volta a ficar em aberto (use "Desmarcar pago" nos períodos
+    // anteriores, se quiser reabrí-los também).
+    const engineRef = window.LivroCaixaCardEngineV3;
+    const sources = engineRef && typeof engineRef.carrySourcePeriods === 'function'
+      ? engineRef.carrySourcePeriods(cardId, closingPeriodKey, titular, purchases, cards, invoiceLaunches)
+      : [];
+    const cascade = [];
+    sources.forEach(source => {
+      const sourceId = invoiceLaunchId(cardId, source.periodKey, titular);
+      const found = invoiceLaunches.find(x => x.id === sourceId);
+      if (found && found.markedPaidOnly) return;
+      const snapshot = found ? JSON.parse(JSON.stringify(found)) : null;
+      if (found) {
+        const idx = invoiceLaunches.findIndex(x => x.id === sourceId);
+        invoiceLaunches[idx] = { ...found, markedPaidOnly: true, updatedAt: todayISO() };
+      } else {
+        invoiceLaunches.push({
+          id: sourceId,
+          cardId,
+          closingPeriodKey: source.periodKey,
+          titular: titular || '',
+          markedPaidOnly: true,
+          amount: 0,
+          payments: [],
+          updatedAt: todayISO()
+        });
+      }
+      cascade.push({ id: sourceId, snapshot });
+    });
+
     try {
       await persistAll();
-      logInfo('Cartões', 'Marcar fatura como paga', 'Sucesso', `Fatura ${card.name} (${closingPeriodKey}) marcada como paga sem lançamento.`);
+      logInfo('Cartões', 'Marcar fatura como paga', 'Sucesso', `Fatura ${card.name} (${closingPeriodKey}) marcada como paga sem lançamento${cascade.length ? ` · ${cascade.length} fatura(s) anterior(es) do saldo também marcada(s)` : ''}.`);
     } catch (err) {
       if (prev) {
         const idx = invoiceLaunches.findIndex(x => x.id === id);
@@ -10946,6 +11037,14 @@ VALOR: ${fmt(pseudoBill.amount)}
       } else {
         invoiceLaunches = invoiceLaunches.filter(x => x.id !== id);
       }
+      cascade.forEach(item => {
+        if (!item.snapshot) {
+          invoiceLaunches = invoiceLaunches.filter(x => x.id !== item.id);
+          return;
+        }
+        const idx = invoiceLaunches.findIndex(x => x.id === item.id);
+        if (idx >= 0) invoiceLaunches[idx] = item.snapshot;
+      });
       logSyncError('marcar fatura como paga', err);
       alert('Não foi possível salvar. Tente novamente.');
     } finally {
@@ -11011,29 +11110,43 @@ VALOR: ${fmt(pseudoBill.amount)}
         }
 
         const breakdown = Array.isArray(invoiceState.titulars)
-          ? invoiceState.titulars.map(item => ({
-              titular: item.titular,
-              total: Number(item.total || 0),
-              count: Number(item.count || 0),
-              paid: Number(item.paid || 0),
-              remaining: Number(item.remaining || 0),
-              status: item.status || 'Pendente',
-              launched: item.status === 'Pago' &&
-                        item.markedPaidOnly !== true &&
-                        Number(item.paid || 0) > 0.004,
-              paidOnly: item.markedPaidOnly === true
-            }))
+          ? invoiceState.titulars.map(item => {
+              // Os valores exibidos são os PAGÁVEIS: somam a parcela do
+              // próprio período com o saldo anterior já vencido (arrasto).
+              // `own*` preserva a parcela do período para consulta/diagnóstico.
+              return {
+                titular: item.titular,
+                total: Number(item.payableTotal != null ? item.payableTotal : item.total || 0),
+                count: Number(item.count || 0),
+                paid: Number(item.payablePaid != null ? item.payablePaid : item.paid || 0),
+                remaining: Number(item.payableRemaining != null ? item.payableRemaining : item.remaining || 0),
+                status: item.payableStatus || item.status || 'Pendente',
+                carry: Number(item.carry || 0),
+                ownTotal: Number(item.total || 0),
+                ownPaid: Number(item.paid || 0),
+                ownRemaining: Number(item.remaining || 0),
+                ownStatus: item.status || 'Pendente',
+                launched: item.status === 'Pago' &&
+                          item.markedPaidOnly !== true &&
+                          Number(item.paid || 0) > 0.004,
+                paidOnly: item.markedPaidOnly === true
+              };
+            })
           : [];
 
         const invoice = {
           cardId: invoiceState.cardId,
           periodKey: invoiceState.periodKey,
           lines: [],
-          total: Number(invoiceState.total || 0),
+          total: Number(invoiceState.payableTotal || 0),
           count: invoiceState.titulars.reduce(
             (sum, item) => sum + Number(item.count || 0),
             0
-          )
+          ),
+          carry: Number(invoiceState.carry || 0),
+          payableTotal: Number(invoiceState.payableTotal || 0),
+          payableRemaining: Number(invoiceState.payableRemaining || 0),
+          carriedOut: Number(invoiceState.carriedOut || 0)
         };
 
         return {
@@ -11155,8 +11268,10 @@ VALOR: ${fmt(pseudoBill.amount)}
               <strong>Fatura de ${invoicePeriodLabel(dueMonth)}</strong>
               <span class="hint">${invoice.count} compra(s)/parcela(s) neste período. Cálculo automático</span>
             </div>
-            <strong class="credit-card-invoice-total">${fmt(invoice.total)}</strong>
+            ${Number(invoice.carriedOut || 0) > 0.004 ? `<span class="bill-status is-carried" title="Saldo em aberto levado para a fatura seguinte">Seguinte</span>` : ''}
+            <strong class="credit-card-invoice-total">${fmt(Number(invoice.payableTotal || 0) > 0 ? invoice.payableTotal : invoice.total)}</strong>
           </div>
+          ${Number(invoice.carry || 0) > 0.004 ? `<div class="hint invoice-carry-line">Saldo anterior em aberto: <strong>${fmt(invoice.carry)}</strong></div>` : ''}
           <div class="credit-card-invoice-nav">
             <button type="button" class="credit-card-invoice-nav-btn" onclick="shiftCardInvoice('${card.id}', -1)" aria-label="Fatura anterior" ${nav.canPrev ? '' : 'disabled'}>‹</button>
             <span class="credit-card-invoice-range">${invoiceCycleLabel(card, period)} · vence ${(invoiceDueDateForPeriod(card, period) || '').split('-').reverse().join('/')}</span>
@@ -11215,16 +11330,17 @@ VALOR: ${fmt(pseudoBill.amount)}
                     <div class="credit-card-titular-main">
                       <strong>${escapeHTML(t.titular)}</strong>
                       <span>${t.count || 0} lançamento(s)</span>
+                      ${Number(t.carry || 0) > 0.004 ? `<span class="hint invoice-carry-line">Saldo anterior: <strong>${fmt(t.carry)}</strong></span>` : ''}
                     </div>
 
                     <div class="credit-card-titular-values">
-                      <span>Total <b>${fmt(t.total)}</b></span>
-                      <span>Pago <b>${fmt(t.paid)}</b></span>
-                      <span>Restante <b>${fmt(t.remaining)}</b></span>
+                      <span>Total <b>${fmt(Number(t.payableTotal != null ? t.payableTotal : t.total))}</b></span>
+                      <span>Pago <b>${fmt(Number(t.payablePaid != null ? t.payablePaid : t.paid))}</b></span>
+                      <span>Restante <b>${fmt(Number(t.payableRemaining != null ? t.payableRemaining : t.remaining))}</b></span>
                     </div>
 
-                    <span class="credit-card-titular-status is-${String(t.status || 'Pendente').toLowerCase().replace(/[^a-z]+/g, '-')}">
-                      ${escapeHTML(t.status || 'Pendente')}
+                    <span class="credit-card-titular-status is-${String(t.payableStatus || t.status || 'Pendente').toLowerCase().replace(/[^a-z]+/g, '-')}">
+                      ${escapeHTML(t.payableStatus || t.status || 'Pendente')}
                     </span>
                   </div>
                 `).join('')}

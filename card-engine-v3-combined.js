@@ -136,16 +136,46 @@
     };
   }
 
-  function invoicePeriods(
-    card,
-    purchases,
-    cards,
-    invoiceLaunches,
-    referenceDate
-  ) {
+  function todayISO() {
+    const now = new Date();
+    return `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
+  }
+
+  // Data de vencimento de uma fatura. Se o vencimento é anterior ao
+  // fechamento (fecha dia 29, vence dia 05), o vencimento cai no mês
+  // seguinte ao fechamento.
+  function dueDateForPeriod(card, periodKeyValue) {
+    const parsed = parsePeriodKey(periodKeyValue);
+    if (!parsed) return '';
+
+    const closing = clampDay(card?.closingDay, 1);
+    // Mesmo critério de invoiceDueDateForPeriod() no index.html: valor
+    // falso/zerado de dueDay cai no dia de fechamento.
+    const due = clampDay(Number(card?.dueDay) || closing, closing);
+    const dueMonthOffset = due < closing ? 1 : 0;
+    const base = new Date(
+      parsed.year,
+      parsed.monthIndex + dueMonthOffset,
+      1
+    );
+    const lastDayOfDueMonth = new Date(
+      base.getFullYear(),
+      base.getMonth() + 1,
+      0
+    ).getDate();
+    const finalDay = Math.min(due, lastDayOfDueMonth);
+
+    return `${base.getFullYear()}-${pad2(base.getMonth() + 1)}-${pad2(finalDay)}`;
+  }
+
+  // Conjunto ordenado de períodos de fatura conhecidos para um cartão
+  // (compras/parcelas + lançamentos + referência). Extraído de
+  // invoicePeriods() para permitir que o cálculo de saldo anterior (carry)
+  // navegue pelos períodos sem reentrar em invoiceState().
+  function periodSet(card, purchases, cards, invoiceLaunches, referenceDate) {
     const today =
       referenceDate ||
-      new Date().toISOString().slice(0, 10);
+      todayISO();
 
     const referencePeriod = invoicePeriodKeyForDate(
       card,
@@ -153,12 +183,7 @@
     );
 
     if (!referencePeriod) {
-      return {
-        current: null,
-        previous: null,
-        next: null,
-        periods: []
-      };
+      return { referencePeriod: null, periods: [] };
     }
 
     const periods = new Set();
@@ -189,9 +214,37 @@
 
     periods.add(referencePeriod);
 
-    const sorted = Array.from(periods)
-      .filter(Boolean)
-      .sort();
+    return {
+      referencePeriod,
+      periods: Array.from(periods)
+        .filter(Boolean)
+        .sort()
+    };
+  }
+
+  function invoicePeriods(
+    card,
+    purchases,
+    cards,
+    invoiceLaunches,
+    referenceDate
+  ) {
+    const { referencePeriod, periods: sorted } = periodSet(
+      card,
+      purchases,
+      cards,
+      invoiceLaunches,
+      referenceDate
+    );
+
+    if (!referencePeriod) {
+      return {
+        current: null,
+        previous: null,
+        next: null,
+        periods: []
+      };
+    }
 
     let current = referencePeriod;
 
@@ -451,7 +504,8 @@
     periodKey,
     purchases,
     cards,
-    invoiceLaunches
+    invoiceLaunches,
+    referenceDate
   ) {
     const invoice = cardInvoiceForPeriod(
       cardId,
@@ -478,7 +532,8 @@
         group.titular,
         purchases,
         cards,
-        invoiceLaunches
+        invoiceLaunches,
+        referenceDate
       )
     );
 
@@ -491,6 +546,29 @@
     const remaining = titulars.reduce(
       (sum, titular) =>
         sum + Math.max(0, number(titular.remaining)),
+      0
+    );
+
+    const carry = titulars.reduce(
+      (sum, titular) =>
+        sum + Math.max(0, number(titular.carry)),
+      0
+    );
+
+    const payableTotal = Math.max(
+      0,
+      number(invoice.total) + carry
+    );
+
+    const payablePaid = titulars.reduce(
+      (sum, titular) =>
+        sum + Math.max(0, number(titular.payablePaid)),
+      0
+    );
+
+    const payableRemaining = titulars.reduce(
+      (sum, titular) =>
+        sum + Math.max(0, number(titular.payableRemaining)),
       0
     );
 
@@ -510,6 +588,16 @@
       }
     }
 
+    let payableStatus = 'Pendente';
+
+    if (payableTotal > EPSILON) {
+      if (markedPaidOnly || payableRemaining <= EPSILON) {
+        payableStatus = 'Pago';
+      } else if (payablePaid > EPSILON) {
+        payableStatus = 'Parcial';
+      }
+    }
+
     return {
       ...invoice,
       paid: Math.min(
@@ -522,7 +610,15 @@
       ),
       markedPaidOnly,
       status,
-      paymentCount: launches.length
+      paymentCount: launches.length,
+      carry,
+      payableTotal,
+      payablePaid: Math.min(payableTotal, payablePaid),
+      payableRemaining: Math.min(
+        payableTotal,
+        Math.max(0, payableRemaining)
+      ),
+      payableStatus
     };
   }
 
@@ -583,6 +679,33 @@
     ]);
 
     let committed = 0;
+
+    // Saldo arrastado de períodos ANTERIORES à janela considerada. Sem isso,
+    // uma fatura com saldo anterior em aberto seria medida só pela parcela do
+    // período atual e o limite usado ficaria menor que o valor exibido na
+    // fatura. Quando não há saldo arrastado, titularCarry() devolve 0 e o
+    // resultado é idêntico ao de antes.
+    const carryReferenceDate = /^\d{4}-\d{2}$/.test(suppliedReference)
+      ? undefined
+      : (suppliedReference || undefined);
+    const anchorTitulares = new Set();
+    [...new Set([...relevantPeriods, ...periodKeys])].forEach(period => {
+      if (!period) return;
+      invoiceByTitular(cardId, period, purchases, cards).forEach(group => {
+        anchorTitulares.add(normalizeTitular(group.titular));
+      });
+    });
+    anchorTitulares.forEach(titular => {
+      committed += Math.max(0, number(titularCarry(
+        cardId,
+        previousPeriod,
+        titular,
+        purchases,
+        cards,
+        invoiceLaunches,
+        carryReferenceDate
+      )));
+    });
 
     for (const periodKey of relevantPeriods) {
       if (!periodKey) continue;
@@ -803,13 +926,76 @@
     return Array.from(groups.values());
   }
 
+  // Saldo anterior ("carry") de um titular num período: encadeamento do que
+  // ficou em aberto nos períodos ANTERIORES cujo vencimento JÁ passou.
+  // Regra de contagem exata: cada saldo aparece uma única vez — o período
+  // "dono" é o último da cadeia (aquele cujo carry ainda não foi quitado).
+  // O gate de vencimento evita arrastar faturas que ainda não venceram.
+  function titularCarry(
+    cardId,
+    periodKey,
+    titular,
+    purchases,
+    cards,
+    invoiceLaunches,
+    referenceDate
+  ) {
+    if (!periodKey) return 0;
+
+    const cardsById = new Map((cards || []).map(c => [c.id, c]));
+    const card = cardsById.get(cardId);
+    if (!card) return 0;
+
+    const normalizedTitular = normalizeTitular(titular);
+    const today = referenceDate || todayISO();
+    const { periods } = periodSet(
+      card,
+      purchases,
+      cards,
+      invoiceLaunches,
+      referenceDate
+    );
+
+    let carry = 0;
+
+    for (const earlier of periods) {
+      if (!(earlier < periodKey)) continue;
+
+      const due = dueDateForPeriod(card, earlier);
+      if (!due || due >= today) continue;
+
+      const own = titularInvoice(
+        cardId,
+        earlier,
+        normalizedTitular,
+        purchases,
+        cards,
+        invoiceLaunches,
+        referenceDate,
+        true
+      );
+
+      if (own.markedPaidOnly) {
+        carry = 0;
+        continue;
+      }
+
+      const payableTotal = own.total + carry;
+      carry = Math.max(0, payableTotal - Math.min(payableTotal, own.paidRaw));
+    }
+
+    return carry;
+  }
+
   function titularInvoice(
     cardId,
     periodKey,
     titular,
     purchases,
     cards,
-    invoiceLaunches
+    invoiceLaunches,
+    referenceDate,
+    skipCarry
   ) {
     const normalizedTitular = normalizeTitular(titular);
 
@@ -831,9 +1017,11 @@
     const launch = (Array.isArray(invoiceLaunches) ? invoiceLaunches : [])
       .find(x => x && x.id === id) || null;
 
+    const paidRaw = launchPaidAmount(launch);
+
     const paid = Math.min(
       total,
-      launchPaidAmount(launch)
+      paidRaw
     );
 
     const markedPaidOnly = launch?.markedPaidOnly === true;
@@ -841,6 +1029,26 @@
     const remaining = markedPaidOnly
       ? 0
       : Math.max(0, total - paid);
+
+    const carry = skipCarry
+      ? 0
+      : titularCarry(
+          cardId,
+          periodKey,
+          normalizedTitular,
+          purchases,
+          cards,
+          invoiceLaunches,
+          referenceDate
+        );
+
+    const payableTotal = Math.max(0, total + carry);
+    const payablePaid = markedPaidOnly
+      ? payableTotal
+      : Math.min(payableTotal, paidRaw);
+    const payableRemaining = markedPaidOnly
+      ? 0
+      : Math.max(0, payableTotal - payablePaid);
 
     return {
       cardId,
@@ -859,8 +1067,131 @@
             : 'Pago',
       markedPaidOnly,
       launchId: launch?.id || id,
-      lines: group?.lines || []
+      lines: group?.lines || [],
+      // Campos pagáveis: incluem o saldo anterior já vencido de períodos
+      // anteriores. `total`/`paid`/`remaining` permanecem SEM o carry — o
+      // saldo de períodos fora da janela é somado uma única vez, e só em
+      // cardCommittedAmount(), para o limite usar o mesmo número exibido na
+      // fatura. Projeções futuras (futureRemaining) continuam sem carry.
+      paidRaw,
+      carry,
+      payableTotal,
+      payablePaid,
+      payableRemaining,
+      payableStatus: markedPaidOnly
+        ? 'Pago'
+        : payablePaid <= EPSILON
+          ? 'Pendente'
+          : payablePaid + EPSILON < payableTotal
+            ? 'Parcial'
+            : 'Pago'
     };
+  }
+
+  // Períodos anteriores que formam o saldo arrastado ("carry") do período
+  // informado, na ordem em que serão quitados (mais antigo primeiro).
+  // Espelha titularCarry(): só períodos já vencidos; uma fatura marcada como
+  // paga sem lançamento zera tudo o que vem antes dela (a quitação dela já
+  // cobriu o saldo que ela própria arrastava).
+  function carrySourcePeriods(
+    cardId,
+    periodKey,
+    titular,
+    purchases,
+    cards,
+    invoiceLaunches,
+    referenceDate
+  ) {
+    if (!periodKey) return [];
+
+    const card = (cards || []).find(item => item && item.id === cardId);
+    if (!card) return [];
+
+    const normalized = normalizeTitular(titular);
+    const today = referenceDate || todayISO();
+    const { periods } = periodSet(
+      card,
+      purchases,
+      cards,
+      invoiceLaunches,
+      referenceDate
+    );
+
+    let collected = [];
+
+    for (const earlier of periods) {
+      if (!(earlier < periodKey)) continue;
+
+      const due = dueDateForPeriod(card, earlier);
+      if (!due || due >= today) continue;
+
+      const own = titularInvoice(
+        cardId,
+        earlier,
+        normalized,
+        purchases,
+        cards,
+        invoiceLaunches,
+        referenceDate,
+        true
+      );
+
+      if (own.markedPaidOnly) {
+        collected = [];
+        continue;
+      }
+
+      const remaining = Math.max(0, own.remaining);
+      if (remaining > EPSILON) {
+        collected.push({ periodKey: earlier, remaining: remaining });
+      }
+    }
+
+    return collected;
+  }
+
+  // Distribui um pagamento de fatura entre os períodos anteriores que já
+  // venceram (mais antigo primeiro) e o período informado. Sem essa
+  // propagação, quitar o "saldo anterior" deixaria cardCommittedAmount() e
+  // calculateLimit() apontando dívida que já foi paga.
+  function planInvoicePayment(
+    cardId,
+    periodKey,
+    titular,
+    amount,
+    purchases,
+    cards,
+    invoiceLaunches,
+    referenceDate
+  ) {
+    const plan = [];
+    let left = Math.max(0, number(amount));
+
+    if (left <= EPSILON || !periodKey) return plan;
+
+    const sources = carrySourcePeriods(
+      cardId,
+      periodKey,
+      titular,
+      purchases,
+      cards,
+      invoiceLaunches,
+      referenceDate
+    );
+
+    for (const source of sources) {
+      if (left <= EPSILON) break;
+      const part = Math.min(source.remaining, left);
+      if (part <= EPSILON) continue;
+      plan.push({ periodKey: source.periodKey, amount: part });
+      left -= part;
+    }
+
+    if (left > EPSILON) {
+      plan.push({ periodKey: periodKey, amount: left });
+    }
+
+    return plan;
   }
 
   function invoice(
@@ -868,7 +1199,8 @@
     periodKey,
     purchases,
     cards,
-    invoiceLaunches
+    invoiceLaunches,
+    referenceDate
   ) {
     const base = cardInvoiceForPeriod(
       cardId,
@@ -882,7 +1214,8 @@
       periodKey,
       purchases,
       cards,
-      invoiceLaunches
+      invoiceLaunches,
+      referenceDate
     );
 
     const lines = invoiceLines(
@@ -904,9 +1237,39 @@
         group.titular,
         purchases,
         cards,
-        invoiceLaunches
+        invoiceLaunches,
+        referenceDate
       )
     );
+
+    // Quanto deste período é levado para o mês seguinte. Usado para o
+    // rótulo "Seguinte" no mês anterior: carry do mês seguinte > 0 implica
+    // que o saldo vencido de {periodKey} (ou de um anterior) ainda está
+    // em aberto.
+    const nextPeriodKey = addMonthsToPeriodKey(periodKey, 1);
+    const carriedOut = nextPeriodKey
+      ? titulars.reduce(
+          (sum, titular) =>
+            sum + titularCarry(
+              cardId,
+              nextPeriodKey,
+              titular.titular,
+              purchases,
+              cards,
+              invoiceLaunches,
+              referenceDate
+            ),
+          0
+        )
+      : 0;
+
+    const carry = Math.max(0, number(state?.carry));
+    const payableTotal = Math.max(
+      0,
+      number(state?.payableTotal, number(state?.total) + carry)
+    );
+    const payablePaid = Math.max(0, number(state?.payablePaid));
+    const payableRemaining = Math.max(0, number(state?.payableRemaining));
 
     return {
       ...base,
@@ -916,7 +1279,13 @@
       markedPaidOnly: state?.markedPaidOnly === true,
       count: lines.length,
       lines,
-      titulars
+      titulars,
+      carry,
+      payableTotal,
+      payablePaid,
+      payableRemaining,
+      payableStatus: state?.payableStatus || 'Pendente',
+      carriedOut: Math.max(0, carriedOut)
     };
   }
 
@@ -948,24 +1317,24 @@
       invoiceLaunches
     );
 
-    if (target.total <= EPSILON) {
+    if (target.payableTotal <= EPSILON) {
       return {
         valid: false,
         reason: 'empty_invoice',
-        total: target.total,
-        alreadyPaid: target.paid,
-        remaining: target.remaining,
+        total: target.payableTotal,
+        alreadyPaid: target.payablePaid,
+        remaining: target.payableRemaining,
         requested
       };
     }
 
-    if (requested > target.remaining + EPSILON) {
+    if (requested > target.payableRemaining + EPSILON) {
       return {
         valid: false,
         reason: 'payment_exceeds_titular_invoice',
-        total: target.total,
-        alreadyPaid: target.paid,
-        remaining: target.remaining,
+        total: target.payableTotal,
+        alreadyPaid: target.payablePaid,
+        remaining: target.payableRemaining,
         requested
       };
     }
@@ -973,9 +1342,9 @@
     return {
       valid: true,
       reason: 'ok',
-      total: target.total,
-      alreadyPaid: target.paid,
-      remaining: target.remaining,
+      total: target.payableTotal,
+      alreadyPaid: target.payablePaid,
+      remaining: target.payableRemaining,
       requested
     };
   }
@@ -986,6 +1355,11 @@
     invoicePeriodKeyForDate,
     invoiceCycleRange,
     invoicePeriods,
+    periodSet,
+    dueDateForPeriod,
+    titularCarry,
+    carrySourcePeriods,
+    planInvoicePayment,
     purchaseInstallmentOccurrences,
     buildInstallments,
     cardInvoiceForPeriod,
@@ -1039,14 +1413,21 @@
 
   function readInvoice(eng, card, periodKey, c) {
     if (!periodKey) return null;
-    const state = eng.invoice(card.id, periodKey, c.purchases, c.cards, c.invoiceLaunches);
+    const state = eng.invoice(card.id, periodKey, c.purchases, c.cards, c.invoiceLaunches, c.referenceDate);
     if (!state) return null;
     return {
       periodKey: periodKey,
       total: Math.max(0, adapterNumber(state.total)),
       paid: Math.max(0, adapterNumber(state.paid)),
       remaining: Math.max(0, adapterNumber(state.remaining)),
+      // Campos pagáveis: total/restante do período incluindo o saldo
+      // anterior já vencido (o que o usuário efetivamente deve nesta fatura).
+      carry: Math.max(0, adapterNumber(state.carry)),
+      payableTotal: Math.max(0, adapterNumber(state.payableTotal)),
+      payablePaid: Math.max(0, adapterNumber(state.payablePaid)),
+      payableRemaining: Math.max(0, adapterNumber(state.payableRemaining)),
       status: state.status || 'Pendente',
+      payableStatus: state.payableStatus || state.status || 'Pendente',
       dueDate: dueDateFor(card, periodKey, c)
     };
   }
@@ -1078,7 +1459,7 @@
 
     known.forEach(function (key) {
       if (!currentKey || key <= currentKey) return;
-      const state = eng.invoice(card.id, key, c.purchases, c.cards, c.invoiceLaunches);
+      const state = eng.invoice(card.id, key, c.purchases, c.cards, c.invoiceLaunches, c.referenceDate);
       const remaining = Math.max(0, adapterNumber(state && state.remaining));
       if (remaining <= 0) return;
       futureRemaining += remaining;
@@ -1171,29 +1552,60 @@
         out.totalAvailable += row.limitAvailable || 0;
       }
 
-      if (row.previous && row.previous.remaining > 0) {
-        out.previousInvoiceRemaining += row.previous.remaining;
-        if (row.previous.dueDate) {
-          out.dueDates.push({
-            cardId: row.cardId,
-            label: row.name,
-            periodKey: row.previous.periodKey,
-            dueDate: row.previous.dueDate,
-            amount: row.previous.remaining
-          });
+      // Quando o saldo da fatura anterior já foi arrastado para a fatura
+      // atual (carry > 0), ele NÃO pode ser somado de novo: senão o mesmo
+      // dinheiro apareceria duas vezes (anterior + atual). O alerta de
+      // vencimento continua em dueDates().
+      const currentCarried = row.current
+        ? adapterNumber(row.current.carry) > EPSILON
+        : false;
+
+      if (row.previous) {
+        const previousRemaining = adapterNumber(row.previous.payableRemaining) > 0
+          ? adapterNumber(row.previous.payableRemaining)
+          : adapterNumber(row.previous.remaining);
+
+        if (previousRemaining > 0) {
+          if (!currentCarried) {
+            out.previousInvoiceRemaining += previousRemaining;
+          }
+          if (row.previous.dueDate) {
+            // O alerta de vencimento é sempre mantido (mesmo com o saldo
+            // já arrastado), para não perder o aviso de fatura vencida.
+            out.dueDates.push({
+              cardId: row.cardId,
+              label: row.name,
+              periodKey: row.previous.periodKey,
+              dueDate: row.previous.dueDate,
+              amount: previousRemaining
+            });
+          }
         }
       }
 
       if (row.current) {
-        out.currentInvoiceTotal += row.current.total;
-        out.currentInvoiceRemaining += row.current.remaining;
-        if (row.current.remaining > 0 && row.current.dueDate) {
+        const currentTotal = adapterNumber(row.current.payableTotal) > 0
+          ? adapterNumber(row.current.payableTotal)
+          : adapterNumber(row.current.total);
+        const currentRemaining = adapterNumber(row.current.payableRemaining) > 0
+          ? adapterNumber(row.current.payableRemaining)
+          : adapterNumber(row.current.remaining);
+        // dueDates() é uma lista POR VENCIMENTO: cada período entra com a
+        // parcela que nasceu nele. Somar o payable aqui duplicaria o saldo
+        // anterior (que já foi lançado na linha do período anterior).
+        const currentDueAmount = adapterNumber(row.current.remaining) > EPSILON
+          ? adapterNumber(row.current.remaining)
+          : currentRemaining;
+
+        out.currentInvoiceTotal += currentTotal;
+        out.currentInvoiceRemaining += currentRemaining;
+        if (currentDueAmount > 0 && row.current.dueDate) {
           out.dueDates.push({
             cardId: row.cardId,
             label: row.name,
             periodKey: row.current.periodKey,
             dueDate: row.current.dueDate,
-            amount: row.current.remaining
+            amount: currentDueAmount
           });
         }
       }
