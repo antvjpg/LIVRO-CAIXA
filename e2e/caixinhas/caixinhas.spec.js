@@ -212,6 +212,17 @@ test.describe.serial('Caixinhas — criação, saldo, progresso, persistência e
     );
     await expect.poll(() => stripTotal(page), { timeout: 20_000, message: 'total em caixinhas' }).toBe(total1);
 
+    await openMovement(page, nameC1, 'resgate');
+    await page.fill('#pmData', p.date);
+    await fillMoney(page, '#pmValor', oracle1 + 100);
+    await clickGuarded(page, '#pmSalvar');
+    await waitDialog(dialogs, 'O resgate não pode ser maior que o saldo disponível.');
+    await expect(page.locator('#panelPocketMovement.open')).toBeVisible();
+    await page.click('#panelPocketMovement .modal-close');
+    await waitMovementPanelClosed(page);
+    expect(await cardBalance(page, nameC1), 'resgate acima do saldo não pode alterar o saldo').toBe(oracle1);
+    expect(await stripTotal(page), 'resgate acima do saldo não pode alterar o total').toBe(total1);
+
     const evidencia = [
       `UI    : saldo=${await cardBalance(page, nameC1)} progresso=${await cardProgress(page, nameC1)} total=${await stripTotal(page)}`,
       `ORACLE: saldo=${oracle1} progresso=${progresso1} total=${total1}`,
