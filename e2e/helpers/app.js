@@ -22,12 +22,55 @@ async function authOverlayHidden(page) {
   return page.evaluate(() => document.getElementById('authOverlay')?.classList.contains('hidden') === true);
 }
 
+/* O SDK restaura a sessão de forma assíncrona: até o primeiro estado ser
+   resolvido, #authOverlay segue visível e isLoggedIn responderia "sem sessão"
+   mesmo com sessão válida no disco. O login começaria e o formulário sumiria
+   no meio do clique quando a sessão antiga fosse aplicada (flake nos testes de
+   isolamento por conta). Assinando o próprio SDK — o build compat expõe
+   window.firebase — espera-se o estado resolvido sem depender de detalhes do
+   app. Sem listeners órfãos: a inscrição é cancelada ao resolver. */
+async function waitForAuthResolved(page, timeout = 15_000) {
+  await page
+    .evaluate(
+      (ms) =>
+        new Promise((resolve) => {
+          let settled = false;
+          let unsub = null;
+          const done = () => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            try {
+              if (typeof unsub === 'function') unsub();
+            } catch (_) {
+              /* unsubscribe nunca derruba a espera */
+            }
+            resolve(true);
+          };
+          const timer = setTimeout(done, ms);
+          try {
+            const auth = window.firebase && window.firebase.auth && window.firebase.auth();
+            if (!auth) return done();
+            unsub = auth.onAuthStateChanged(done, done);
+          } catch (_) {
+            done();
+          }
+        }),
+      timeout
+    )
+    .catch(() => {});
+}
+
 async function isLoggedIn(page) {
   /* O overlay começa visível e só some quando o SDK aplica a sessão
      persistida no primeiro onAuthStateChanged (asincrônico). Uma leitura
      imediata enxerga a corrida e devolveria falso mesmo com sessão válida
      (BLOCKED falso no smoke). Havendo sessão persistida, espera a aplicação
-     (com limite) antes de responder; sem sessão persistida, responde na hora. */
+     (com limite) antes de responder; sem sessão persistida, responde na hora.
+     O gate anterior cobre só o caso de a chave já estar em localStorage; sem
+     ela a mesma corrida persiste — por isso o estado do SDK é resolvido
+     primeiro. */
+  await waitForAuthResolved(page);
   const persistida = await page
     .evaluate(() => Object.keys(localStorage).some((k) => k.indexOf('firebase:authUser:') === 0))
     .catch(() => false);
