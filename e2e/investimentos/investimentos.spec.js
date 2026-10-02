@@ -6,7 +6,7 @@ const app = require('../helpers/app');
 const qa = require('../helpers/qa-account');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials, guardReasonText } = require('../helpers/env');
-const { signIn, listCollection } = require('../helpers/firestore-rest');
+const { resetWithSession, listCollection } = require('../helpers/firestore-rest');
 
 /* Investimentos — cobre a separação entre quantidade (unidades) e valor em BRL:
    1. aviso de movimentações legadas sem 'units' + saldo auditável em unidades;
@@ -72,6 +72,30 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
     }
     await app.waitForDataReady(page);
     return dialogs;
+  }
+
+  /* Sessão REST lida da PRÓPRIA página logada (uid + idToken do SDK) em vez de
+     accounts:signInWithPassword: essa última consome a cota de verificação de
+     senha do Identity Toolkit, que estoura quando as suítes rodam em rajada
+     (QUOTA_EXCEEDED) e derruba toda a suíte em série. O idToken emitido pelo
+     login da UI serve para as mesmas leituras do Firestore REST. */
+  async function sessionFromPage(page) {
+    const sessao = await page.evaluate(async () => {
+      try {
+        const usuario = window.firebase?.auth?.()?.currentUser;
+        const projectId = window.firebase?.app?.()?.options?.projectId;
+        if (!usuario || !projectId) return null;
+        return { uid: usuario.uid, idToken: await usuario.getIdToken(), projectId };
+      } catch {
+        return null;
+      }
+    });
+    if (!sessao) {
+      const err = new Error('BLOCKED: a página não tem sessão Firebase autenticada');
+      err.code = 'CODE_BLOCKED';
+      throw err;
+    }
+    return sessao;
   }
 
   function fillMoney(page, selector, value) {
@@ -154,9 +178,11 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
     test.setTimeout(300_000);
     const creds = skipSemCredencial();
 
+    await startPage(page, creds);
+
     let reset1;
     try {
-      reset1 = await qa.reset();
+      reset1 = await resetWithSession(await sessionFromPage(page));
     } catch (err) {
       if (err.code === 'CODE_BLOCKED') {
         test.skip(true, `BLOCKED: reset do ambiente QA — ${err.message}`);
@@ -165,7 +191,14 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
     }
     testInfo.annotations.push({ type: 'reset', description: `antes: ${reset1.deleted} doc(s)` });
 
-    await startPage(page, creds);
+    /* Recarrega sobre o Firestore já limpo: a aplicação volta a subir vendo o
+       estado pós-reset, como no fluxo reset → abertura. A sessão fica no disco
+       (localStorage), então o login não se repete. */
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#authOverlay', { state: 'attached' });
+    expect(await app.isLoggedIn(page), 'sessão preservada após o reload').toBe(true);
+    await app.waitForDataReady(page);
+
     await openInvest(page);
 
     await openNewAsset(page);
@@ -257,7 +290,7 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
     await expect(page.locator('#diagnosticoList')).toContainText(`no saldo de ${NAME_USDT}`);
     await page.evaluate(() => window.closeAllPanels());
 
-    const rest = await signIn(creds.email, creds.password);
+    const rest = await sessionFromPage(page);
     const storedYields = await listCollection(rest.uid, rest.idToken, rest.projectId, 'yieldsLog');
     const legado = storedYields
       .map((d) => d.fields)
@@ -275,7 +308,7 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
     await startPage(page, creds);
     await openInvest(page);
 
-    const rest = await signIn(creds.email, creds.password);
+    const rest = await sessionFromPage(page);
     const antes = await snapshot(rest);
     const usdt = antes.investments.find((d) => d.fields.name === NAME_USDT);
     expect(usdt, 'ativo USDT ausente no Firestore').toBeTruthy();
