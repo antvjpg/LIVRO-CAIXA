@@ -1232,6 +1232,23 @@
       </div>
     </div>
 
+    <div class="panel" id="panelCryptoReconcile">
+      <h3 id="panelCryptoReconcileTitle">Conciliar com a corretora <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <p class="hint" id="panelCryptoReconcileHint" style="margin:0 0 12px;"></p>
+      <div class="form-grid">
+        <div>
+          <label for="crSaldoReal" id="crSaldoRealLabel">Saldo na corretora (quantidade)</label>
+          <input type="number" id="crSaldoReal" step="0.00000001" min="0" placeholder="Ex: 11.95432727">
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <div id="crPreview" class="hint" aria-live="polite">Informe o saldo da corretora para ver a prévia do ajuste.</div>
+        </div>
+        <div style="grid-column: 1 / -1; margin-top: 8px;">
+          <button class="primary" id="crConfirmar" style="width:100%">Aplicar ajuste</button>
+        </div>
+      </div>
+    </div>
+
     <div class="panel" id="panelExportFormat">
       <h3>Exportar Extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:-6px;">Confira a prévia respeitando os filtros atuais antes de escolher o formato.</p>
@@ -1960,6 +1977,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const fmt = (n) => {
     const v = normalizeMoney(n);
     return (v < 0 ? '-' : '') + 'R$ ' + Math.abs(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  /* Valores abaixo de 1 centavo não podem passar por normalizeMoney (que zera
+     |v| < 0,005) — senão 0,0049 sai como R$ 0,00. Mantém no mínimo 4 casas
+     (acima de 1 centavo continua igual ao fmt) e até 8 para preservar precisão. */
+  const fmtPrecise = (n) => {
+    const v = Number(n);
+    if (!Number.isFinite(v)) return fmt(0);
+    const abs = Math.abs(v);
+    if (abs > 0 && abs < 0.01) return (v < 0 ? '-' : '') + 'R$ ' + abs.toLocaleString('pt-BR', { minimumFractionDigits: 4, maximumFractionDigits: 8 });
+    return fmt(v);
   };
   const MONEY_FORMATTER = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -4043,16 +4070,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function cryptoMovementTotal(item, excludeId = null) {
     if (!item) return 0;
-    return yieldsLog
+    const total = yieldsLog
       .filter(y => y.targetType === 'invest' && y.targetId === item.id && y.id !== excludeId && y.units != null)
       .reduce((sum, y) => sum + (y.kind === 'resgate' ? -1 : 1) * (Number(y.units) || 0), 0);
+    return Number(total.toFixed(8));
   }
   function cryptoInitialUnits(item) {
     if (Number.isFinite(Number(item?.initialUnits))) return Number(item.initialUnits);
     return Number(item?.units || 0) - cryptoMovementTotal(item);
   }
   function cryptoCurrentUnits(item, excludeId = null) {
-    return Math.max(0, cryptoInitialUnits(item) + cryptoMovementTotal(item, excludeId));
+    const current = Math.max(0, cryptoInitialUnits(item) + cryptoMovementTotal(item, excludeId));
+    return isBitcoinType(item?.type) ? Math.round(current) : Number(current.toFixed(8));
+  }
+  /* Movimentações legadas/importadas podem não ter 'units'. Elas já ficam de fora
+     do saldo (ver filtro de y.units em cryptoMovementTotal) — este contador serve
+     para o card avisar, em vez de deixar a divergência silenciosa. */
+  function cryptoMissingUnitsCount(item) {
+    if (!item) return 0;
+    return yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === item.id && y.units == null).length;
   }
   function syncDerivedCryptoValue(item, priceOverride = null) {
     if (!item || !isCryptoType(item.type)) return item;
@@ -4136,20 +4172,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // mesmo quando julho ou meses anteriores estiverem ocultos pela interface.
     const allItems = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId)
       .sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')) || String(a.id || '').localeCompare(String(b.id || '')));
-    let running = item && targetType === 'invest' && isCryptoType(item.type) ? cryptoInitialUnits(item) : (item && targetType === 'invest' ? fixedIncomeInitialValue(item) : Number(item?.initial ?? item?.value ?? 0) || 0);
+    const isCryptoTarget = !!(item && targetType === 'invest' && isCryptoType(item.type));
+    let running = isCryptoTarget ? cryptoInitialUnits(item) : (item && targetType === 'invest' ? fixedIncomeInitialValue(item) : Number(item?.initial ?? item?.value ?? 0) || 0);
     const rows = [];
     allItems.forEach(y => {
       const before = running;
-      const delta = y.units != null && item && targetType === 'invest' && isCryptoType(item.type) ? (y.kind === 'resgate' ? -1 : 1) * Number(y.units || 0) : movementDelta(y);
+      /* Movimentação cripto sem 'units' não tem variação conhecida em unidades:
+         somar movementDelta(y) aqui misturaria reais no saldo auditável.
+         O registro continua listado, apenas sem alterar o saldo. */
+      const delta = !isCryptoTarget ? movementDelta(y) : (y.units != null ? (y.kind === 'resgate' ? -1 : 1) * Number(y.units || 0) : 0);
       running += delta;
-      if (periodMatchesMovement(y)) rows.push({ y, before, delta, after: running, item });
+      if (periodMatchesMovement(y)) rows.push({ y, before, delta, after: running, item, isCrypto: isCryptoTarget });
     });
     return rows;
   }
   function yieldHistoryHTML(targetType, targetId) {
     const rowsData = movementHistoryRows(targetType, targetId);
     if (rowsData.length === 0) return '';
-    const rows = rowsData.slice().reverse().map(({ y, before, delta, after, item }) => {
+    const rows = rowsData.slice().reverse().map(({ y, before, delta, after, item, isCrypto }) => {
       const kind = y.kind || 'rendimento';
       const positive = kind !== 'resgate';
       const sign = positive ? '+' : '−';
@@ -4157,11 +4197,15 @@ document.addEventListener('DOMContentLoaded', () => {
       let description = String(y.desc || '').trim();
       const duplicateLabel = new RegExp(`^${label}\\s*[-–—:]?\\s*`, 'i');
       description = description.replace(duplicateLabel, '');
-      const isCrypto = item && targetType === 'invest' && isCryptoType(item.type) && y.units != null;
-      const valueLabel = isCrypto ? `${sign}${formatCryptoUnits(item.type, Math.abs(y.units), item.name)} · ≈ ${fmt(Math.abs(y.amount || 0))}` : `${sign}${fmt(Math.abs(y.amount || 0))}`;
-      const beforeLabel = isCrypto ? formatCryptoUnits(item.type, before, item.name) : fmt(before);
-      const deltaLabel = isCrypto ? `${sign}${formatCryptoUnits(item.type, Math.abs(delta), item.name)}` : `${sign}${fmt(Math.abs(delta))}`;
-      const afterLabel = isCrypto ? formatCryptoUnits(item.type, after, item.name) : fmt(after);
+      const hasUnits = !!(isCrypto && y.units != null);
+      /* Unidade conhecida: quantidade + valor aproximado. Sem unidade (registro
+         legado) só há o valor a mostrar — o saldo auditável segue em unidades. */
+      const valueLabel = hasUnits
+        ? `${sign}${formatCryptoUnits(item.type, Math.abs(y.units), item.name)} · ≈ ${fmtPrecise(Math.abs(y.amount || 0))}`
+        : `${sign}${fmtPrecise(Math.abs(y.amount || 0))}`;
+      const beforeLabel = isCrypto ? formatCryptoUnits(item.type, before, item.name) : fmtPrecise(before);
+      const deltaLabel = isCrypto ? `${sign}${formatCryptoUnits(item.type, Math.abs(delta), item.name)}` : `${sign}${fmtPrecise(Math.abs(delta))}`;
+      const afterLabel = isCrypto ? formatCryptoUnits(item.type, after, item.name) : fmtPrecise(after);
       return `<article class="yield-row">
         <div class="history-main">
           <div class="history-head"><strong class="history-date">${escapeHTML(formatMovementPeriod(y))}</strong><span class="history-kind ${positive ? '' : 'negative'}">${escapeHTML(label)}</span></div>
@@ -4205,6 +4249,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* Dedupe: logInfo/logWarn gravam no Firestore, então cada render não pode
+     reemitir o mesmo aviso. Limpa sozinho quando a contagem volta a zero. */
+  const unitsWarningLogged = new Set();
   function renderInvestments() {
     applyCachedQuotesToInvestments();
     const container = document.getElementById('investGrid');
@@ -4219,6 +4266,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const displayVal = inv.type === 'Renda Fixa'
         ? fixedIncomeCurrentValue(inv)
         : (Number(inv.value) > 0 ? inv.value : cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0));
+      const missingUnits = isCryptoType(inv.type) ? cryptoMissingUnitsCount(inv) : 0;
+      if (missingUnits > 0) {
+        if (!unitsWarningLogged.has(inv.id)) {
+          unitsWarningLogged.add(inv.id);
+          logWarn('Investimentos', 'Movimentações sem quantidade', 'Atenção',
+            `${missingUnits} ${missingUnits === 1 ? 'movimentação' : 'movimentações'} sem quantidade não ${missingUnits === 1 ? 'entra' : 'entram'} no saldo de ${inv.name}.`,
+            { investmentId: inv.id, count: missingUnits });
+        }
+      } else {
+        unitsWarningLogged.delete(inv.id);
+      }
       const typeShort = ({
         'Stablecoin':'STABLE', 'Bitcoin':'BTC', 'Cripto':'CRIPTO', 'Ações':'AÇÕES',
         'Renda Fixa':'RF', 'FII':'FII', 'ETF':'ETF', 'Tesouro':'TESOURO'
@@ -4241,6 +4299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="asset-card-meta">
           ${isCryptoType(inv.type) ? `<span>Qtd: ${formatCryptoUnits(inv.type, cryptoCurrentUnits(inv), inv.name)}</span>` : ''}
           ${isCryptoType(inv.type) ? `<span>${fmt(inv.price || 0)} · ${inv.quoteSource === 'api' ? 'Auto' : 'Manual'} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</span>` : ''}
+          ${missingUnits > 0 ? `<span class="asset-card-units-warning">${missingUnits} ${missingUnits === 1 ? 'movimentação' : 'movimentações'} sem quantidade não ${missingUnits === 1 ? 'entra' : 'entram'} no saldo</span>` : ''}
           ${inv.institution ? `<span>${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</span>` : ''}
           ${investmentReferenceHTML(inv)}
           ${inv.dueDate ? `<span>Venc.: ${inv.dueDate.split('-').reverse().join('/')}</span>` : ''}
@@ -4253,6 +4312,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',1)" ${index===investments.length-1?'disabled':''} aria-label="Mover para baixo">↓</button>
           </div>
           <button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações"></button>
+          ${isCryptoType(inv.type) ? `<button type="button" class="action-btn reconcile-btn" onclick="openCryptoReconcileModal('${inv.id}')" aria-label="Conciliar saldo com a corretora">Conciliar</button>` : ''}
           <button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar"></button>
           <button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir"></button>
         </div>
@@ -12099,7 +12159,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     const type = document.getElementById('iTipo').value;
     const isCrypto = isCryptoType(type);
     const rawUnitsInput = isCrypto ? (parseFloat(document.getElementById('iUnidades').value) || null) : null;
-    const initialUnits = (isCrypto && rawUnitsInput != null && isBitcoinType(type)) ? Math.round(rawUnitsInput) : rawUnitsInput;
+    const initialUnits = rawUnitsInput == null ? null : (isBitcoinType(type) ? Math.round(rawUnitsInput) : Number(rawUnitsInput.toFixed(8)));
     const quoteRaw = isCrypto ? readMoneyInput('iCotacao') : NaN;
     const quote = isFinite(quoteRaw) && quoteRaw > 0 ? quoteRaw : null;
     const existingItem = editingInvestId ? investments.find(i => i.id === editingInvestId) : null;
@@ -12256,6 +12316,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     if (isCrypto) {
       units = parseFloat(document.getElementById('imQuantidade').value);
       if (isBitcoinType(item.type) && isFinite(units)) units = Math.round(units);
+      else if (isFinite(units)) units = Number(units.toFixed(8));
       price = readMoneyInput('imCotacao');
       if (!isFinite(units) || units <= 0) { alert('Informe uma quantidade válida.'); return; }
       if (!isFinite(price) || price <= 0) { alert('Informe uma cotação válida ou use o botão de cotação para buscá-la.'); return; }
@@ -12336,6 +12397,92 @@ VALOR: ${fmt(pseudoBill.amount)}
       closeAllPanels();
     } catch (err) {
       logSyncError('movimentação de investimento', err, operation);
+    } finally {
+      render();
+    }
+  };
+
+  /* Conciliação com a corretora: compara a quantidade informada pela corretora
+     com o saldo derivado das movimentações e grava UM lançamento de ajuste.
+     Não altera cotação, priceHistory nem lastQuoteAt — preço é dado do ativo. */
+  let cryptoReconcileTarget = null;
+  window.openCryptoReconcileModal = function(id) {
+    const item = investments.find(x => x.id === id);
+    if (!item || !isCryptoType(item.type)) return;
+    cryptoReconcileTarget = item.id;
+    const isBtc = isBitcoinType(item.type);
+    document.getElementById('panelCryptoReconcileTitle').innerHTML = `Conciliar — ${escapeHTML(item.alias || item.name)} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
+    document.getElementById('panelCryptoReconcileHint').textContent =
+      `Informe a quantidade total que consta na corretora. A diferença em relação ao saldo atual (${formatCryptoUnits(item.type, cryptoCurrentUnits(item), item.name)}) vira um lançamento de ajuste.`;
+    const input = document.getElementById('crSaldoReal');
+    document.getElementById('crSaldoRealLabel').textContent = isBtc ? 'Saldo na corretora (SAT)' : 'Saldo na corretora (quantidade)';
+    input.step = isBtc ? '1' : '0.00000001';
+    input.value = '';
+    updateCryptoReconcilePreview();
+    openModal('panelCryptoReconcile');
+    setTimeout(() => input.focus(), 80);
+  };
+  function cryptoReconcileNumbers() {
+    const item = investments.find(x => x.id === cryptoReconcileTarget);
+    if (!item) return null;
+    const raw = parseFloat(document.getElementById('crSaldoReal').value);
+    const current = cryptoCurrentUnits(item);
+    if (!isFinite(raw) || raw < 0) return { item, current, informed: null, diff: null };
+    const informed = isBitcoinType(item.type) ? Math.round(raw) : Number(raw.toFixed(8));
+    return { item, current, informed, diff: Number((informed - current).toFixed(8)) };
+  }
+  function updateCryptoReconcilePreview() {
+    const box = document.getElementById('crPreview');
+    const ctx = cryptoReconcileNumbers();
+    if (!ctx || !box) return;
+    const { item, current, informed, diff } = ctx;
+    if (informed == null) {
+      box.textContent = `Saldo atual: ${formatCryptoUnits(item.type, current, item.name)}`;
+      return;
+    }
+    if (diff === 0) {
+      box.innerHTML = `Saldo atual: <b>${formatCryptoUnits(item.type, current, item.name)}</b><br>Sem diferença — nada a conciliar.`;
+      return;
+    }
+    const kind = diff > 0 ? 'rendimento' : 'resgate';
+    box.innerHTML = `Saldo atual: <b>${formatCryptoUnits(item.type, current, item.name)}</b><br>`
+      + `Saldo informado: <b>${formatCryptoUnits(item.type, informed, item.name)}</b><br>`
+      + `Diferença: <b>${diff > 0 ? '+' : '−'}${formatCryptoUnits(item.type, Math.abs(diff), item.name)}</b> → ${movementKindLabel(kind)}`;
+  }
+  document.getElementById('crSaldoReal')?.addEventListener('input', updateCryptoReconcilePreview);
+  document.getElementById('crConfirmar').onclick = async () => {
+    const ctx = cryptoReconcileNumbers();
+    if (!ctx) return;
+    const { item, informed, diff } = ctx;
+    if (informed == null) { alert('Informe um saldo válido na corretora.'); return; }
+    if (diff === 0) { alert('O saldo informado já confere com o saldo atual.'); return; }
+    const units = Math.abs(diff);
+    const kind = diff > 0 ? 'rendimento' : 'resgate';
+    const price = Number(item.price) || 0;
+    const amount = cryptoValueFromUnits(item.type, units, price);
+    const operation = beginLogOperation('Investimentos', `Conciliação — ${movementKindLabel(kind)}`);
+    logInfo('Investimentos', 'Conciliação', 'Em andamento', `Ajuste de ${formatCryptoUnits(item.type, units, item.name)} iniciado para ${item.name}.`, null, operation);
+    yieldsLog.push({
+      id: 'imv' + Date.now() + Math.random().toString(36).slice(2, 7),
+      targetType: 'invest',
+      targetId: item.id,
+      kind,
+      date: todayISO(),
+      dateEnd: todayISO(),
+      units,
+      price,
+      amount,
+      desc: 'Ajuste de conciliação com a corretora'
+    });
+    syncDerivedCryptoValue(item);
+    render();
+    try {
+      await persistAll(operation);
+      logInfo('Investimentos', 'Conciliação', 'Sucesso', `Ajuste de conciliação aplicado em ${item.name}.`, { kind, units }, operation);
+      cryptoReconcileTarget = null;
+      closeAllPanels();
+    } catch (err) {
+      logSyncError('conciliação de investimento', err, operation);
     } finally {
       render();
     }
@@ -13615,7 +13762,12 @@ document.getElementById('tSalvar').onclick = async () => {
         units: isCrypto && inv.units != null ? formatCryptoUnits(inv.type, inv.units) : (inv.units != null ? String(inv.units) : ''),
         price: inv.price || null,
         currentValue: inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : Number(inv.value || 0),
-        movements: movs.map(m => ({ date: m.date, kind: m.kind === 'aporte' ? 'Aporte' : m.kind === 'resgate' ? 'Resgate' : 'Rendimento', amount: Number(m.amount) || 0 }))
+        movements: movs.map(m => ({
+          date: m.date,
+          kind: m.kind === 'aporte' ? 'Aporte' : m.kind === 'resgate' ? 'Resgate' : 'Rendimento',
+          amount: Number(m.amount) || 0,
+          units: isCrypto && m.units != null ? formatCryptoUnits(inv.type, m.units, inv.name) : ''
+        }))
       };
     });
   }
@@ -13665,7 +13817,7 @@ document.getElementById('tSalvar').onclick = async () => {
 
     const investHtml = investBlock.length ? `<section class="export-preview-bank"><h4>Investimentos <small>no período</small></h4>${investBlock.map(inv => {
       const label = inv.alias || inv.name;
-      const rows = inv.movements.slice(0, 4).map(m => `<div class="export-preview-row"><span>${escapeHTML(m.date.split('-').reverse().join('/'))}</span><strong>${escapeHTML(label)} · ${escapeHTML(m.kind)}</strong><span>${escapeHTML(inv.type)}</span><b class="${m.kind === 'Resgate' ? 'negative' : 'positive'}">${m.kind === 'Resgate' ? '−' : '+'} ${fmt(Math.abs(m.amount))}</b></div>`).join('');
+      const rows = inv.movements.slice(0, 4).map(m => `<div class="export-preview-row"><span>${escapeHTML(m.date.split('-').reverse().join('/'))}</span><strong>${escapeHTML(label)} · ${escapeHTML(m.kind)}</strong><span>${escapeHTML(inv.type)}${m.units ? ` · ${m.units}` : ''}</span><b class="${m.kind === 'Resgate' ? 'negative' : 'positive'}">${m.kind === 'Resgate' ? '−' : '+'} ${fmtPrecise(Math.abs(m.amount))}</b></div>`).join('');
       return `<div class="export-preview-sub"><strong>${escapeHTML(label)}</strong> <small>${fmt(inv.currentValue)}</small></div>${rows || '<div class="export-preview-more">Sem movimentos no período</div>'}`;
     }).join('')}</section>` : '';
 
@@ -13830,7 +13982,7 @@ document.getElementById('tSalvar').onclick = async () => {
         inv.movements.forEach(m => {
           addPageIfNeeded(8);
           doc.setFontSize(9); doc.setTextColor(0,0,0);
-          doc.text(`${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}`, margin + 4, y); y+=6;
+          doc.text(`${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmtPrecise(m.amount)}${m.units ? ` · ${m.units}` : ''}`, margin + 4, y); y+=6;
         });
         y += 6;
       });
@@ -13931,8 +14083,8 @@ document.getElementById('tSalvar').onclick = async () => {
       const rows = [['3. Investimentos'], []];
       investBlock.forEach(inv => {
         rows.push([`${inv.name}${inv.alias ? ' (' + inv.alias + ')' : ''}`, `Tipo: ${inv.type}`, inv.units ? `Quantidade: ${inv.units}` : '', inv.price ? `Cotação: ${inv.price}` : '', `Valor atual: ${inv.currentValue}`]);
-        rows.push(['Data', 'Tipo', 'Valor']);
-        inv.movements.forEach(m => rows.push([m.date.split('-').reverse().join('/'), m.kind, m.amount]));
+        rows.push(['Data', 'Tipo', 'Valor', 'Quantidade']);
+        inv.movements.forEach(m => rows.push([m.date.split('-').reverse().join('/'), m.kind, m.amount, m.units || '']));
         rows.push([]);
       });
       const ws = XLSX.utils.aoa_to_sheet(rows); ws['!cols']=[{wch:26},{wch:18},{wch:16},{wch:16},{wch:16}];
@@ -14029,7 +14181,7 @@ document.getElementById('tSalvar').onclick = async () => {
           detailLine('Cotação atual: ', inv.price ? fmt(inv.price) : '—'),
           detailLine('Valor atual: ', fmt(inv.currentValue))
         );
-        inv.movements.forEach(m => children.push(new d.Paragraph({ text: `${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmt(m.amount)}`, spacing: { after: 40 } })));
+        inv.movements.forEach(m => children.push(new d.Paragraph({ text: `${m.date.split('-').reverse().join('/')} — ${m.kind}: ${fmtPrecise(m.amount)}${m.units ? ` · ${m.units}` : ''}`, spacing: { after: 40 } })));
       });
     }
 
