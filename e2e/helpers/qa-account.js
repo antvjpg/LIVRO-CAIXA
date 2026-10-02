@@ -34,8 +34,16 @@ async function toggleMode(page) {
 }
 
 async function submit(page, creds) {
+  /* #syncOverlay é full-screen (position:fixed; inset:0; z-index:90) e cobre o
+     formulário enquanto o app carrega dados. Sem esse gate o clique em
+     #authSubmit é interceptado pelo .sync-box e estoura o timeout do Playwright
+     (o overlay é removido pelo próprio onAuthStateChanged ao aplicar sessão).
+     Reusa o gate real do app em vez de reimplementar a espera. */
+  await app.waitForDataReady(page, 30_000).catch(() => {});
+  await page.waitForSelector('#authSubmit', { state: 'visible', timeout: 15_000 });
   await page.fill('#authEmail', creds.email);
   await page.fill('#authPass', creds.password);
+  await app.waitForDataReady(page, 30_000).catch(() => {});
   await page.click('#authSubmit');
   return page.waitForFunction(
     () => {

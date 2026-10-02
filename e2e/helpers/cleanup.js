@@ -12,8 +12,12 @@ const rest = require('./firestore-rest');
 
 /* O teardown não tem timeout de teste: aqui vale esperar a cota de
    verificação de senha recuar (minutos) em vez de largar conta efêmera e
-   docs órfãos invisíveis. Esse backoff não é para quem roda dentro de spec. */
-const TEARDOWN_QUOTA_RETRY_DELAYS_MS = [2000, 5000, 15000, 30000];
+   docs órfãos invisíveis. Esse backoff não é para quem roda dentro de spec.
+   O Identity Toolkit limita ~25 verificações de senha por conta em janela
+   rolante de 10 min — o backoff anterior somava 52 s e reprovava a run no
+   --strict quando a cota estourava exatamente no teardown. A série abaixo
+   cobre ~8 min, suficiente para as entradas mais antigas saírem da janela. */
+const TEARDOWN_QUOTA_RETRY_DELAYS_MS = [2000, 5000, 15000, 30000, 60000, 120000, 240000];
 
 async function runCleanup({ log = () => {} } = {}) {
   const summary = {
