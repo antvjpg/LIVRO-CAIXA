@@ -9,6 +9,7 @@ const {
   goalProgressPercent,
   goalProgressLabel,
   goalStatusLabel,
+  goalStatusFromLabel,
   goalSaveStatus,
   goalDaysRemaining,
   goalDeadlineLabel,
@@ -53,6 +54,17 @@ test('meta: rótulos de status', () => {
   assert.strictEqual(goalStatusLabel('paused'), 'Pausada');
   assert.strictEqual(goalStatusLabel('cancelled'), 'Cancelada');
   assert.strictEqual(goalStatusLabel(undefined), 'Ativa');
+});
+
+test('meta: rótulo PT-BR reverte para o status canônico (ida e volta)', () => {
+  assert.strictEqual(goalStatusFromLabel('Ativa'), 'active');
+  assert.strictEqual(goalStatusFromLabel('Concluída'), 'completed');
+  assert.strictEqual(goalStatusFromLabel('Pausada'), 'paused');
+  assert.strictEqual(goalStatusFromLabel('Cancelada'), 'cancelled');
+  assert.strictEqual(goalStatusFromLabel('Desconhecida'), 'active');
+  for (const status of ['active', 'completed', 'paused', 'cancelled']) {
+    assert.strictEqual(goalStatusLabel(goalStatusFromLabel(goalStatusLabel(status))), goalStatusLabel(status), status);
+  }
 });
 
 test('meta: ao salvar, vinculada no alvo conclui; sem fonte nunca conclui', () => {

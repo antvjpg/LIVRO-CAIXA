@@ -19,10 +19,21 @@ function goalProgressLabel(target, current) {
   return `${goalProgressPercent(target, current).toFixed(0)}%`;
 }
 
+const GOAL_STATUS_LABELS = {
+  active: 'Ativa',
+  completed: 'Concluída',
+  paused: 'Pausada',
+  cancelled: 'Cancelada',
+};
+
 function goalStatusLabel(status) {
-  return (
-    { active: 'Ativa', completed: 'Concluída', paused: 'Pausada', cancelled: 'Cancelada' }[status] || 'Ativa'
-  );
+  return GOAL_STATUS_LABELS[status] || 'Ativa';
+}
+
+/* Rótulo PT-BR → status canônico. Espelho de goalStatusLabel para que as specs
+   possam expressar a espera no formato da UI sem perder o vínculo com o oráculo. */
+function goalStatusFromLabel(label) {
+  return Object.keys(GOAL_STATUS_LABELS).find((k) => GOAL_STATUS_LABELS[k] === label) || 'active';
 }
 
 /* Regra de status esperada ao salvar (independente do app):
@@ -69,6 +80,7 @@ module.exports = {
   goalProgressPercent,
   goalProgressLabel,
   goalStatusLabel,
+  goalStatusFromLabel,
   goalSaveStatus,
   goalDaysRemaining,
   goalDeadlineLabel,

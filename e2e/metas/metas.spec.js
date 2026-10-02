@@ -15,6 +15,7 @@ const {
   goalRemaining,
   goalProgressLabel,
   goalStatusLabel,
+  goalStatusFromLabel,
   goalSaveStatus,
   goalDaysRemaining,
   goalDeadlineLabel,
@@ -180,7 +181,7 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
     expect(s.target, `${name}: valor alvo na UI`).toBe(exp.target);
     expect(`${s.percent}%`, `${name}: progresso na UI diverge do ORACLE`).toBe(exp.percent);
     expect(s.badge, `${name}: status na UI`).toBe(badge);
-    expect(s.badge, `${name}: status na UI diverge do ORACLE`).toBe(goalStatusLabel(badge === 'Ativa' ? 'active' : badge));
+    expect(s.badge, `${name}: status na UI diverge do ORACLE`).toBe(goalStatusLabel(goalStatusFromLabel(badge)));
     if (meta != null) expect(s.meta, `${name}: linha de prazo/restante`).toBe(meta);
     return s;
   }
