@@ -2195,6 +2195,7 @@
 .credit-card-purchase-menu .finalize{color:var(--green);opacity:.7;}
 .credit-card-purchase-menu .finalize:hover{opacity:1;background:var(--green-soft);}
 .credit-card-purchase-menu .unarchive{color:var(--accent);opacity:.7;}
+.credit-card-purchase-menu .unarchive::after{content:"⟲";font-size:17px;font-weight:700;line-height:26px;}
 .credit-card-purchase-menu .unarchive:hover{opacity:1;background:var(--accent-soft);}
 
 .emoji-float-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(13,42,30,.56);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}

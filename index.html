@@ -10623,7 +10623,9 @@ function openNewEntryModal() {
       installmentValue,
       initialInstallment: Math.min(totalInstallments, Math.max(1, Number(record.initialInstallment) || 1)),
       obs: String(record.obs || '').trim(),
-      status: existing?.status || (type === 'avista' ? 'finalizada' : 'pendente')
+      status: existing?.status || (type === 'avista' ? 'finalizada' : 'pendente'),
+      ...(existing?.archivedAt ? { archivedAt: existing.archivedAt } : {}),
+      ...(existing?.statusBeforeArchive ? { statusBeforeArchive: existing.statusBeforeArchive } : {})
     };
   }
   function openCardModal(id = null) {
@@ -11362,6 +11364,7 @@ VALOR: ${fmt(pseudoBill.amount)}
             const parcel = p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
             const statusBadge = p.status === 'finalizada' ? '<span class="purchase-status finalizada">✓ Finalizada</span>' : (p.status === 'parcial' ? '<span class="purchase-status parcial">⏳ Parcial</span>' : '<span class="purchase-status pendente">⏳ Pendente</span>');
             const finalizeBtn = p.status !== 'finalizada' ? `<button type="button" class="action-btn beta-icon-button finalize" onclick="finalizePurchase('${p.id}')" aria-label="Marcar como finalizada" title="Marcar como finalizada">✓</button>` : '';
+            const reopenBtn = (p.status === 'finalizada' && p.archivedAt) ? `<button type="button" class="action-btn beta-icon-button unarchive" onclick="unarchivePurchase('${p.id}')" aria-label="Reabrir compra" title="Reabrir compra"></button>` : '';
             return `<div class="credit-card-purchase-row ${p.status === 'finalizada' ? 'is-finalized' : ''}">
               <span class="credit-card-purchase-dot" aria-hidden="true"></span>
               <div class="credit-card-purchase-main">
@@ -11373,6 +11376,7 @@ VALOR: ${fmt(pseudoBill.amount)}
               <strong class="credit-card-purchase-value">${fmt(p.totalValue)}</strong>
               <div class="credit-card-purchase-menu">
                 ${finalizeBtn}
+                ${reopenBtn}
                 <button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar"></button>
                 <button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir"></button>
               </div>
@@ -11446,17 +11450,21 @@ VALOR: ${fmt(pseudoBill.amount)}
     /* A compra NUNCA sai de `purchases` (único array persistido/exportado).
        Arquivamento é só um flag derivado — evita perda definitiva de dado. */
     const previousStatus = purchase.status;
+    purchase.statusBeforeArchive = previousStatus;
     purchase.status = 'finalizada';
     purchase.archivedAt = new Date().toISOString();
-    try { await persistAll(); renderCards(); logInfo('Cartões','Arquivar compra','Sucesso',`Compra "${purchase.description}" arquivada.`); } catch (err) { purchase.status = previousStatus; delete purchase.archivedAt; logSyncError('arquivar compra', err); renderCards(); }
+    try { await persistAll(); renderCards(); logInfo('Cartões','Arquivar compra','Sucesso',`Compra "${purchase.description}" arquivada.`); } catch (err) { purchase.status = previousStatus; delete purchase.archivedAt; delete purchase.statusBeforeArchive; logSyncError('arquivar compra', err); renderCards(); }
   };
 
   window.unarchivePurchase = async id => {
     const purchase = purchases.find(p => p.id === id); if (!purchase) return;
     const previousStatus = purchase.status;
-    purchase.status = 'pendente';
+    const previousArchivedAt = purchase.archivedAt;
+    const previousBeforeArchive = purchase.statusBeforeArchive;
+    purchase.status = previousBeforeArchive || 'pendente';
     delete purchase.archivedAt;
-    try { await persistAll(); renderCards(); logInfo('Cartões','Restaurar compra','Sucesso',`Compra "${purchase.description}" restaurada.`); } catch (err) { purchase.status = previousStatus; logSyncError('restaurar compra', err); renderCards(); }
+    delete purchase.statusBeforeArchive;
+    try { await persistAll(); renderCards(); logInfo('Cartões','Restaurar compra','Sucesso',`Compra "${purchase.description}" reaberta.`); } catch (err) { purchase.status = previousStatus; purchase.archivedAt = previousArchivedAt; if (previousBeforeArchive !== undefined) purchase.statusBeforeArchive = previousBeforeArchive; logSyncError('restaurar compra', err); renderCards(); }
   };
 
   function openNewCardModal() { openCardModal(); }
