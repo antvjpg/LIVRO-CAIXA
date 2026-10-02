@@ -2468,6 +2468,7 @@
 .export-preview-sub small{color:var(--ink-soft);font-size:8px;display:block;margin-top:2px;}
 .export-preview-more{margin-top:6px;padding:8px;text-align:center;background:var(--paper-2);border:1px dashed var(--line);border-radius:6px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:8px;}
 .export-preview-caption{margin-bottom:8px;padding:6px 12px;background:var(--paper-2);border:1px solid var(--line);border_radius:8px;font_size:11px;color:var(--ink_soft);line_height:1.3;}
+#panelFiltros .filter-choice-option input{
   width:21px;
   height:21px;
   min-width:21px;
