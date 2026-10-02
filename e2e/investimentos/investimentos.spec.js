@@ -66,12 +66,25 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
     dialogsAtual = dialogs;
     const watch = watchPage(page);
     watchAtual = watch;
-    const sessao = await qa.ensureUiSession(page, creds);
+    const sessao = await garantirSessao(page, creds);
     if (sessao.status !== 'ok') {
       test.skip(true, `BLOCKED: sessão QA indisponível — ${sessao.error} | ${sessao.hint || ''}`);
     }
     await app.waitForDataReady(page);
     return dialogs;
+  }
+
+  /* O login da UI falha de forma transitória (cota/limite do Identity Toolkit e
+     rede) e se recupera sozinho em segundos — a mesma execução registrou falha
+     em T e sucesso em T+2s. Uma nova tentativa antes de bloquear converte esse
+     ruído em passagem; o bloqueio continua explícito quando a sessão não vem. */
+  async function garantirSessao(page, creds) {
+    let sessao = await qa.ensureUiSession(page, creds);
+    for (let tentativa = 0; sessao.status !== 'ok' && tentativa < 3; tentativa += 1) {
+      await page.waitForTimeout(5_000);
+      sessao = await qa.ensureUiSession(page, creds);
+    }
+    return sessao;
   }
 
   /* Sessão REST lida da PRÓPRIA página logada (uid + idToken do SDK) em vez de
