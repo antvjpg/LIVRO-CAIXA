@@ -31,17 +31,37 @@ function readFirebaseWebConfig() {
   return { apiKey, projectId: projectId };
 }
 
-async function signIn(email, password) {
+/* A cota de verificação de senha do Identity Toolkit ("Exceeded quota for
+   verifying passwords") é por projeto e curta. O teardown roda logo após a
+   rajada de login/logout das suítes e é justamente ali que ela estoura: sem
+   conseguir autenticar, a conta efêmera criada pela run não é excluída e os
+   docs dela ficam órfãos. Só cota é retentada — senha inválida, conta
+   inexistente e falha de rede caem na hora. */
+const SIGNIN_QUOTA_RETRY_DELAYS_MS = [2000, 5000];
+
+function isPasswordQuota(res, body) {
+  if (res.status === 429) return true;
+  return String((body && body.error && body.error.message) || '').includes('QUOTA_EXCEEDED');
+}
+
+async function signIn(email, password, { retryDelaysMs = SIGNIN_QUOTA_RETRY_DELAYS_MS } = {}) {
   const { apiKey, projectId } = readFirebaseWebConfig();
-  const res = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, returnSecureToken: true }),
-    }
-  );
-  const body = await res.json().catch(() => ({}));
+  const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
+  const init = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, returnSecureToken: true }),
+  };
+
+  let res;
+  let body;
+  for (let attempt = 0; ; attempt += 1) {
+    res = await fetch(url, init);
+    body = await res.json().catch(() => ({}));
+    if (!isPasswordQuota(res, body) || attempt >= retryDelaysMs.length) break;
+    await new Promise((r) => setTimeout(r, retryDelaysMs[attempt]));
+  }
+
   if (!res.ok) {
     const err = new Error(`BLOCKED: login REST da conta QA falhou (${body?.error?.message || res.status})`);
     err.code = 'CODE_BLOCKED';

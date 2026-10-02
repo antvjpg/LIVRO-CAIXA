@@ -777,3 +777,73 @@ test('cliques de salvamento esperam a trava anti-clique-duplo do app liberar', (
   );
   assert.ok(src.includes('travaAntiDuplo'), 'a evidência de falha deve registrar a trava anti-duplo');
 });
+
+/* ==== Cota de verificação de senha não pode deixar conta efêmera órfã ====
+   O teardown chega logo após a rajada de login/logout das suítes e é ali que
+   o Identity Toolkit estoura "Exceeded quota for verifying passwords". Sem
+   conseguir autenticar, a conta criada pela run não é excluída e o gate
+   --strict reprovaria a run inteira. */
+test('signIn: cota de verificação de senha é retentada até o login voltar', async () => {
+  const okRes = { ok: true, status: 200, json: async () => ({ localId: 'UIDQA', idToken: 'T', email: 'a@b.c' }) };
+  const quotaRes = () => ({
+    ok: false,
+    status: 429,
+    json: async () => ({ error: { message: 'QUOTA_EXCEEDED : Exceeded quota for verifying passwords' } }),
+  });
+  let tentativas = 0;
+  const stub = stubFetch(() => {
+    tentativas += 1;
+    return tentativas <= 2 ? quotaRes() : okRes;
+  });
+  try {
+    /* delays zerados: aqui só se testa a decisão de retentar, não o tempo */
+    const sessao = await rest.signIn('a@b.c', 'pw', { retryDelaysMs: [0, 0] });
+    assert.equal(sessao.uid, 'UIDQA', 'o login deveria ter se recuperado da cota');
+    assert.equal(tentativas, 3, `esperava 3 tentativas (2 cotas + 1 sucesso), houve ${tentativas}`);
+  } finally {
+    stub.restore();
+  }
+});
+
+test('signIn: falha que NÃO é cota não é retentada e o motivo sobrevive', async () => {
+  const errRes = (status, message) => ({ ok: false, status, json: async () => ({ error: { message } }) });
+  const casos = [
+    [400, 'INVALID_PASSWORD'],
+    [400, 'EMAIL_NOT_FOUND'],
+    [400, 'USER_NOT_FOUND'],
+  ];
+  for (const [status, message] of casos) {
+    let tentativas = 0;
+    const stub = stubFetch(() => {
+      tentativas += 1;
+      return errRes(status, message);
+    });
+    try {
+      await assert.rejects(
+        () => rest.signIn('a@b.c', 'pw', { retryDelaysMs: [0, 0, 0] }),
+        (e) => e.reason === message,
+        `o motivo "${message}" deve chegar intacto ao caller`
+      );
+      assert.equal(tentativas, 1, `"${message}" não é cota e não deve ser retentada`);
+    } finally {
+      stub.restore();
+    }
+  }
+});
+
+test('signIn: cota persistente termina em erro explícito, nunca em loop', async () => {
+  let tentativas = 0;
+  const stub = stubFetch(() => {
+    tentativas += 1;
+    return { ok: false, status: 429, json: async () => ({ error: { message: 'QUOTA_EXCEEDED : quota' } }) };
+  });
+  try {
+    await assert.rejects(
+      () => rest.signIn('a@b.c', 'pw', { retryDelaysMs: [0, 0] }),
+      (e) => e.reason.includes('QUOTA_EXCEEDED') && e.code === 'CODE_BLOCKED'
+    );
+    assert.equal(tentativas, 3, 'deve parar no limite de retentativas');
+  } finally {
+    stub.restore();
+  }
+});

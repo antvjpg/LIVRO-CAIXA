@@ -10,6 +10,11 @@ const { resolveCredentials, guardReasonText } = require('./env');
 const identity = require('./identity');
 const rest = require('./firestore-rest');
 
+/* O teardown não tem timeout de teste: aqui vale esperar a cota de
+   verificação de senha recuar (minutos) em vez de largar conta efêmera e
+   docs órfãos invisíveis. Esse backoff não é para quem roda dentro de spec. */
+const TEARDOWN_QUOTA_RETRY_DELAYS_MS = [2000, 5000, 15000, 30000];
+
 async function runCleanup({ log = () => {} } = {}) {
   const summary = {
     runId: identity.newRunId(),
@@ -60,7 +65,9 @@ async function runCleanup({ log = () => {} } = {}) {
     /* --- autenticação (signIn REST; senha só em memória) --- */
     let session;
     try {
-      session = await rest.signIn(creds.email, creds.password);
+      session = await rest.signIn(creds.email, creds.password, {
+        retryDelaysMs: TEARDOWN_QUOTA_RETRY_DELAYS_MS,
+      });
     } catch (err) {
       const reason = err.reason || err.message || 'signIn falhou';
       summary.notes.push(`signIn: ${reason}`);
