@@ -319,18 +319,13 @@
     <div class="toolbar bills-toolbar-v19-16">
       <div class="bills-toolbar-actions">
         <button type="button" id="btnBillsToday"><span class="quick-action-icon" aria-hidden="true" style="width:16px;height:16px;display:inline-flex;vertical-align:-3px;margin-right:6px;"><i class="fi fi-rr-calendar-day" aria-hidden="true"></i></span>Mês atual</button>
-        <button type="button" id="btnExportBillsPdf">📄 Exportar PDF</button>
-        <button type="button" id="btnExportBillsXlsx">📊 Exportar Excel</button>
+        <button type="button" id="btnExportBillsPdf"><i class="fi fi-rr-file-pdf" aria-hidden="true"></i>Exportar PDF</button>
+        <button type="button" id="btnExportBillsXlsx"><i class="fi fi-rr-file-excel" aria-hidden="true"></i>Exportar Excel</button>
       </div>
       <div class="bills-toolbar-titular">
         <label class="calendar-filter-control" for="billTitularFilter"><span>Titular</span><select id="billTitularFilter"><option value="">Todos</option></select></label>
+        <label class="calendar-filter-control" for="billsStatusFilter"><span>Estado</span><select id="billsStatusFilter"><option value="">Todos</option><option value="pendente">Pendentes</option><option value="atrasado">Atrasadas</option><option value="pago">Pagas</option></select></label>
       </div>
-    </div>
-    <div class="bills-status-filter" id="billsStatusFilter" role="group" aria-label="Filtrar por estado">
-      <button type="button" data-bills-status="" class="is-active">Todos</button>
-      <button type="button" data-bills-status="pendente">Pendentes</button>
-      <button type="button" data-bills-status="atrasado">Atrasadas</button>
-      <button type="button" data-bills-status="pago">Pagas</button>
     </div>
     <div class="card" style="padding:16px; margin-bottom:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
@@ -1255,9 +1250,9 @@
       <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:-6px;">Confira a prévia respeitando os filtros atuais antes de escolher o formato.</p>
       <div id="exportPreview" class="export-preview" aria-live="polite"></div>
       <div class="toolbar" style="grid-template-columns: 1fr 1fr; margin-top:14px;">
-        <button class="primary" id="btnExportFormatPdf">📄 PDF</button>
-        <button class="primary" id="btnExportFormatXlsx">📊 Excel (.xlsx)</button>
-        <button class="primary" id="btnExportFormatDocx">📝 Word (.docx)</button>
+        <button class="primary" id="btnExportFormatPdf"><i class="fi fi-rr-file-pdf" aria-hidden="true"></i>PDF</button>
+        <button class="primary" id="btnExportFormatXlsx"><i class="fi fi-rr-file-excel" aria-hidden="true"></i>Excel (.xlsx)</button>
+        <button class="primary" id="btnExportFormatDocx"><i class="fi fi-rr-file-word" aria-hidden="true"></i>Word (.docx)</button>
       </div>
     </div>
 
@@ -1451,6 +1446,7 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
 [PATCH] CORREÇÕES / COMPATIBILIDADE
 =========================================================
 -->
+<script src="./emoji-catalog.js?v=20-02"></script>
 <script src="./app.js?v=20-02"></script>
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
@@ -1467,6 +1463,9 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
       <button type="button" class="emoji-float-close" id="emojiFloatClose" aria-label="Fechar">✕</button>
     </div>
     <div class="emoji-float-body">
+      <div class="emoji-float-search">
+        <input type="search" id="emojiFloatSearch" placeholder="Buscar por nome ou emoji…" aria-label="Buscar emoji">
+      </div>
       <div class="emoji-float-grid" id="emojiFloatGrid" aria-live="polite"></div>
     </div>
     <div class="emoji-float-footer">

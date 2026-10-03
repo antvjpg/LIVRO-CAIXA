@@ -3,6 +3,7 @@ const CACHE_NAME = "livro-caixa-shell-v20-02-opencode2";
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./emoji-catalog.js",
   "./app.js",
   "./patches.js",
   "./styles.css",

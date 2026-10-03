@@ -37,6 +37,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 
 const JS_FILES = [
   'app.js',
+  'emoji-catalog.js',
   'patches.js',
   'card-engine-v3-combined.js',
   'financial-client.js',

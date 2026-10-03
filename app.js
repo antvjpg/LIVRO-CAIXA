@@ -2518,15 +2518,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return match ? match[1] : (flow === 'out' ? '↘' : '↗');
   }
 
-  const EMOJI_CATALOG = [
-    ['🏦','Banco','Finanças'],['💳','Cartão','Finanças'],['💰','Renda','Finanças'],['📈','Investimento','Finanças'],['🧾','Conta','Finanças'],['🤝','Transferência','Finanças'],
-    ['🏠','Moradia','Casa'],['🔑','Aluguel','Casa'],['💡','Luz','Casa'],['💧','Água','Casa'],['🛠️','Manutenção','Casa'],['🪴','Decoração','Casa'],
-    ['🍔','Alimentação','Alimentação'],['☕','Café','Alimentação'],['🛒','Mercado','Alimentação'],['🍕','Restaurante','Alimentação'],['🥗','Refeição','Alimentação'],['🍰','Doce','Alimentação'],
-    ['🚗','Carro','Transporte'],['🚌','Ônibus','Transporte'],['⛽','Combustível','Transporte'],['✈️','Viagem','Transporte'],['🚕','Táxi','Transporte'],['🛵','Moto','Transporte'],
-    ['💼','Trabalho','Trabalho'],['💻','Tecnologia','Trabalho'],['📚','Educação','Trabalho'],['📦','Freelance','Trabalho'],['📞','Serviço','Trabalho'],['🗂️','Organização','Trabalho'],
-    ['❤️','Saúde','Saúde'],['💊','Farmácia','Saúde'],['🏥','Médico','Saúde'],['🧘','Bem-estar','Saúde'],['🏋️','Academia','Saúde'],['🪥','Cuidados','Saúde'],
-    ['🎮','Jogos','Lazer'],['🎬','Cinema','Lazer'],['🎵','Música','Lazer'],['🎁','Presentes','Lazer'],['🐾','Pets','Lazer'],['✨','Outros','Lazer']
-  ];
+  const EMOJI_CATALOG = window.LC_EMOJI_CATALOG || [];
   function emojiLabel(icon) {
     return (EMOJI_CATALOG.find(([emoji]) => emoji === icon) || [icon, 'Emoji personalizado'])[1];
   }
@@ -2540,11 +2532,57 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cEmojiLabel').textContent = emojiLabel(value);
   }
   let emojiFloatPending = null;
+  let categoryIconTouched = false;
+  let categoryIconSuggested = null;
+  function normalizeEmojiSearch(value) {
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+  function suggestEmojiForCategoryName(name) {
+    const query = normalizeEmojiSearch(name);
+    if (!query) return null;
+    const entries = EMOJI_CATALOG.map(([emoji, label, group]) => ({ emoji, l: normalizeEmojiSearch(label), g: normalizeEmojiSearch(group) }));
+    const match = entries.find(e => e.l === query)
+      || entries.find(e => e.l.startsWith(query))
+      || entries.find(e => e.l.includes(query))
+      || entries.find(e => e.g === query)
+      || entries.find(e => query.includes(e.l));
+    return match ? match.emoji : null;
+  }
+  function applyCategoryNameSuggestion() {
+    if (categoryIconTouched) return;
+    const suggestion = suggestEmojiForCategoryName(document.getElementById('cNome').value);
+    const current = document.getElementById('cIcon').value || '📦';
+    if (suggestion) {
+      if (current !== suggestion) {
+        categoryIconSuggested = suggestion;
+        setCategoryDraftIcon(suggestion);
+      }
+    } else if (categoryIconSuggested && current === categoryIconSuggested) {
+      categoryIconSuggested = null;
+      setCategoryDraftIcon('📦');
+    }
+  }
   function renderEmojiFloatGrid() {
     const current = emojiFloatPending || document.getElementById('cIcon').value || '📦';
-    document.getElementById('emojiFloatGrid').innerHTML = EMOJI_CATALOG.map(([emoji, label]) =>
-      `<button type="button" class="${emoji === current ? 'selected' : ''}" data-emoji="${emoji}" title="${escapeHTML(label)}" aria-label="${escapeHTML(label)}" aria-pressed="${emoji === current}">${emoji}</button>`
-    ).join('');
+    const rawQuery = document.getElementById('emojiFloatSearch')?.value || '';
+    const query = normalizeEmojiSearch(rawQuery);
+    const matches = EMOJI_CATALOG.filter(([emoji, label, group]) => !query
+      || normalizeEmojiSearch(label).includes(query)
+      || normalizeEmojiSearch(group).includes(query)
+      || emoji.includes(query));
+    let html = '';
+    let lastGroup = '';
+    for (const [emoji, label, group] of matches) {
+      if (group && group !== lastGroup) {
+        lastGroup = group;
+        html += `<div class="emoji-float-group">${escapeHTML(group)}</div>`;
+      }
+      html += `<button type="button" class="${emoji === current ? 'selected' : ''}" data-emoji="${emoji}" title="${escapeHTML(label)}" aria-label="${escapeHTML(label)}" aria-pressed="${emoji === current}"><span class="emoji-float-btn-emoji">${emoji}</span><span class="emoji-float-btn-label">${escapeHTML(label)}</span></button>`;
+    }
+    if (!matches.length) {
+      html = `<div class="emoji-float-empty">Nenhum emoji encontrado para “${escapeHTML(rawQuery)}”</div>`;
+    }
+    document.getElementById('emojiFloatGrid').innerHTML = html;
     updateEmojiFloatPreview(current);
   }
   function updateEmojiFloatPreview(icon) {
@@ -2555,6 +2593,7 @@ document.addEventListener('DOMContentLoaded', () => {
     emojiFloatPending = document.getElementById('cIcon').value || '📦';
     document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
     document.getElementById('emojiFloatNativeInput').value = '';
+    document.getElementById('emojiFloatSearch').value = '';
     renderEmojiFloatGrid();
     document.getElementById('emojiFloatOverlay').classList.add('open');
   }
@@ -2563,6 +2602,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function initCategoryEmojiPicker() {
     document.getElementById('btnEmojiCatalog').onclick = openEmojiFloat;
+    document.getElementById('emojiFloatSearch').addEventListener('input', renderEmojiFloatGrid);
+    document.getElementById('cNome').addEventListener('input', applyCategoryNameSuggestion);
     document.getElementById('emojiFloatClose').onclick = closeEmojiFloat;
     document.getElementById('emojiFloatOverlay').onclick = event => {
       if (event.target.id === 'emojiFloatOverlay') closeEmojiFloat();
@@ -2587,6 +2628,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderEmojiFloatGrid();
     };
     document.getElementById('emojiFloatConfirm').onclick = () => {
+      categoryIconTouched = true;
       setCategoryDraftIcon(emojiFloatPending || document.getElementById('cIcon').value);
       closeEmojiFloat();
     };
@@ -7618,7 +7660,6 @@ window.deletePocket = function(id) {
 
   let editingBillId = null;
   let billViewDate = new Date();
-  let billsStatusFilter = ''; // ""|pendente|atrasado|pago
   function billMonthKey(date){ return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`; }
   function billAppliesToMonth(bill, year, month){
     if (!bill.active) return false;
@@ -8009,10 +8050,7 @@ VALOR: ${fmt(bill.amount)}
     document.getElementById('billMonthLabel').textContent=billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
     populateBillTitularFilter();
     const titularFilter = document.getElementById('billTitularFilter')?.value || '';
-    const statusFilter = billsStatusFilter || '';
-    document.querySelectorAll('#billsStatusFilter [data-bills-status]').forEach(btn => {
-      btn.classList.toggle('is-active', (btn.getAttribute('data-bills-status') || '') === statusFilter);
-    });
+    const statusFilter = document.getElementById('billsStatusFilter')?.value || '';
     const rows=calendarBillRows();
     const allInvoiceRows=calendarInvoiceRows(y,m);
     const invoiceRows=titularFilter?allInvoiceRows.map(inv=>({...inv, breakdown:inv.breakdown.filter(b=>b.titular===titularFilter)})).filter(inv=>inv.breakdown.length):allInvoiceRows;
@@ -8063,7 +8101,9 @@ VALOR: ${fmt(bill.amount)}
       const payBtn = row.launched ? '' : (row.paidOnly
         ? `<button type="button" class="bill-action-btn" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`
         : `<button type="button" class="bill-action-btn" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`);
+      const dueLabel = row.dueDate.split('-').reverse().join('/');
       const meta = [
+        `Venc. ${dueLabel}`,
         b.recurrenceType === 'nao_recorrente' ? 'Não recorrente' : (row.installmentLabel ? 'Parcelada' : 'Recorrente'),
         'Banco: ' + escapeHTML(row.bank),
         b.titular ? 'Titular: ' + escapeHTML(b.titular) : ''
@@ -8293,12 +8333,7 @@ function billsExportRows() { return calendarBillRows().map(({bill,dueDate,status
   function exportBillsXlsx() { const rows=billsExportRows(); if (!window.XLSX) { alert('A biblioteca de Excel não está disponível.'); return; } const sheet=XLSX.utils.json_to_sheet(rows); sheet['!cols']=[{wch:24},{wch:18},{wch:13},{wch:14},{wch:22},{wch:14},{wch:12},{wch:15},{wch:36}]; const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,sheet,'Calendário'); XLSX.writeFile(book,`calendario-${billMonthKey(billViewDate)}.xlsx`); logInfo('Calendário','Exportar Excel','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
   function exportBillsPdf() { const rows=billsExportRows(); const Pdf=window.jspdf?.jsPDF; if (!Pdf) { alert('A biblioteca de PDF não está disponível.'); return; } const doc=new Pdf({unit:'pt',format:'a4'}); const margin=36; let y=42; doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text('Calendário financeiro',margin,y); y+=22; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(`Período: ${billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`,margin,y); doc.text(`Total de contas: ${rows.length} · Total previsto: ${fmt(rows.reduce((sum,row)=>sum+Number(row.Valor||0),0))}`,margin,y+14); y+=38; doc.setFontSize(8); rows.forEach(row=>{ if(y>760){doc.addPage();y=42;} const line=`${row['Vencimento']} · ${row['Conta/Fatura']} · ${row['Titular']||'Sem titular'} · ${fmt(row['Valor'])} · ${row['Status']}`; doc.text(doc.splitTextToSize(line,520),margin,y); y+=14; }); doc.save(`calendario-${billMonthKey(billViewDate)}.pdf`); logInfo('Calendário','Exportar PDF','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
   document.getElementById('billTitularFilter').addEventListener('change', renderBills);
-  document.getElementById('billsStatusFilter')?.addEventListener('click', (ev) => {
-    const btn = ev.target.closest('[data-bills-status]');
-    if (!btn) return;
-    billsStatusFilter = btn.getAttribute('data-bills-status') || '';
-    renderBills();
-  });
+  document.getElementById('billsStatusFilter')?.addEventListener('change', renderBills);
   document.getElementById('btnExportBillsPdf').addEventListener('click', exportBillsPdf);
   document.getElementById('btnExportBillsXlsx').addEventListener('click', exportBillsXlsx);
   document.getElementById('btnCopyBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { await navigator.clipboard.writeText(text); } catch (err) { const field=document.getElementById('billShareMessage'); field.focus(); field.select(); document.execCommand('copy'); } document.getElementById('billShareStatus').textContent='Mensagem copiada. Nenhum envio foi realizado.'; logInfo('Calendário','Copiar compartilhamento','Sucesso','Mensagem individual copiada para revisão do usuário.'); });
@@ -10359,6 +10394,8 @@ VALOR: ${fmt(pseudoBill.amount)}
   document.getElementById('btnCategoria').onclick = () => {
     returnToEntryAfterCategory = false;
     editingCategoryId = null;
+    categoryIconTouched = false;
+    categoryIconSuggested = null;
     document.getElementById('cNome').value = '';
     document.getElementById('cIcon').value = '📦';
     document.getElementById('cSalvar').textContent = 'Adicionar';
@@ -10379,6 +10416,8 @@ VALOR: ${fmt(pseudoBill.amount)}
   document.getElementById('btnQuickCat').onclick = () => {
     returnToEntryAfterCategory = true;
     editingCategoryId = null;
+    categoryIconTouched = false;
+    categoryIconSuggested = null;
     document.getElementById('cNome').value = '';
     document.getElementById('cIcon').value = '📦';
     document.getElementById('cSalvar').textContent = 'Adicionar categoria';
@@ -11712,6 +11751,8 @@ VALOR: ${fmt(pseudoBill.amount)}
     const cat = categories.find(c => c.id === id);
     if (!cat) return;
     editingCategoryId = id;
+    categoryIconTouched = true;
+    categoryIconSuggested = null;
     document.getElementById('cNome').value = cat.name;
     setCategoryDraftIcon(categoryIcon(cat));
     document.getElementById('cSalvar').textContent = 'Salvar Alteração';
