@@ -506,12 +506,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingInvestId = null;
   let editingPocketId = null;
   let investmentMovementTarget = null; // { kind: 'aporte'|'resgate'|'rendimento', id }
-  let catChartInstance = null;
+  let catChartInstances = { out: null, in: null };
   const catChartBreakpoint = window.matchMedia('(max-width: 680px)');
   if (typeof catChartBreakpoint.addEventListener === 'function') {
-    catChartBreakpoint.addEventListener('change', () => { if (catChartInstance) renderCategorySummary(); });
+    catChartBreakpoint.addEventListener('change', () => { if (catChartInstances.out || catChartInstances.in) renderCategorySummary(); });
   } else if (typeof catChartBreakpoint.addListener === 'function') {
-    catChartBreakpoint.addListener(() => { if (catChartInstance) renderCategorySummary(); });
+    catChartBreakpoint.addListener(() => { if (catChartInstances.out || catChartInstances.in) renderCategorySummary(); });
   }
 
   /* [JS 03] UTILITÁRIOS / FORMATAÇÃO / DOM */
@@ -937,7 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function setThemeToggleIcon(isDark) {
     if (!themeBtn) return;
-    themeBtn.innerHTML = `<i class="fi fi-rr-contrast" aria-hidden="true"></i>`;
+    themeBtn.innerHTML = `<i class="fi fi-sr-contrast" aria-hidden="true"></i>`;
   }
   themeBtn.onclick = () => {
     document.body.classList.toggle('dark-mode');
@@ -3120,52 +3120,74 @@ document.addEventListener('DOMContentLoaded', () => {
     const set = transferCatIds || transferCategoryIds();
     return set.has(entry.category) || normalizeTextKey(entry.desc).startsWith('transferencia para ');
   }
-
-  function renderCategorySummary() {
-    const wrap = document.getElementById('categorySummary');
-    const activeEntries = getFilteredEntries();
-
+  function categoryTypeTotals(mode, list) {
     const transferCatIds = transferCategoryIds();
-    const spend = categories
+    return categories
       .map(c => ({
         cat: c,
-        total: activeEntries.filter(e => e.type === 'out' && e.category === c.id && !isTransferEntry(e, transferCatIds)).reduce((s, e) => s + e.amount, 0)
+        total: list.filter(e => e.type === mode && e.category === c.id && !isTransferEntry(e, transferCatIds)).reduce((s, e) => s + e.amount, 0)
       })).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
+  }
+  function groupCategoryRowsForChart(totals) {
+    return totals.length > 7
+      ? [...totals.slice(0, 6), { cat: { id: '__others__', name: 'Outras', color: '#8B9A92' }, total: totals.slice(6).reduce((sum, item) => sum + item.total, 0) }]
+      : totals;
+  }
 
-    if (spend.length === 0) {
-      if (catChartInstance) {
-        catChartInstance.destroy();
-        catChartInstance = null;
+  function renderCategorySummary() {
+    const flowVal = document.getElementById('filterFlow').value;
+    renderCategoryChartCard('categorySummary', flowVal === 'in' ? 'in' : 'out');
+  }
+
+  function destroyCatCharts() {
+    ['out', 'in'].forEach(key => {
+      if (catChartInstances[key]) {
+        catChartInstances[key].destroy();
+        catChartInstances[key] = null;
       }
+    });
+  }
+
+  function renderCategoryChartCard(wrapId, mode) {
+    const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    const activeEntries = getFilteredEntries();
+    const totals = categoryTypeTotals(mode, activeEntries);
+
+    if (totals.length === 0) {
+      destroyCatCharts();
       wrap.innerHTML = '';
       return;
     }
-    const totalSpend = spend.reduce((sum, item) => sum + item.total, 0);
-    const leader = spend[0];
-    const chartSpend = spend.length > 7
-      ? [...spend.slice(0, 6), { cat: { id: '__others__', name: 'Outras', color: '#8B9A92' }, total: spend.slice(6).reduce((sum, item) => sum + item.total, 0) }]
-      : spend;
+    const totalSpend = totals.reduce((sum, item) => sum + item.total, 0);
+    const leader = totals[0];
+    const chartSpend = groupCategoryRowsForChart(totals);
     const max = chartSpend[0].total;
+    const isIncome = mode === 'in';
+    const canvasId = isIncome ? 'catIncomePieChart' : 'catPieChart';
 
     const flowVal = document.getElementById('filterFlow').value;
     const ds = document.getElementById('filterDateStart').value;
     const de = document.getElementById('filterDateEnd').value;
     let subtitle = '';
-    if (flowVal === 'in') subtitle = '— Entradas';
-    else if (flowVal === 'out') subtitle = '— Saídas';
+    if (!isIncome) {
+      if (flowVal === 'in') subtitle = '— Entradas';
+      else if (flowVal === 'out') subtitle = '— Saídas';
+    }
     if (ds || de) subtitle += `${subtitle ? ' · ' : '— '}${ds ? ds.split('-').reverse().join('/') : 'Início'} até ${de ? de.split('-').reverse().join('/') : 'Hoje'}`;
 
-    if (catChartInstance) {
-      catChartInstance.destroy();
-      catChartInstance = null;
-    }
+    destroyCatCharts();
+
+    const title = isIncome ? 'Entradas por Categoria' : 'Gastos por Categoria';
+    const leaderLabel = isIncome ? 'Maior entrada' : 'Maior gasto';
+    const totalLabel = isIncome ? 'Total de entradas' : 'Total de gastos';
 
     wrap.innerHTML = `<div class="cat-summary">
-      <h3>Gastos por Categoria ${subtitle}</h3>
-      <p class="cat-summary-leader">Maior gasto: <strong>${escapeHTML(leader.cat.name)}</strong> · ${(leader.total / totalSpend * 100).toFixed(1).replace('.', ',')}%</p>
+      <h3>${title} ${subtitle}</h3>
+      <p class="cat-summary-leader">${leaderLabel}: <strong>${escapeHTML(leader.cat.name)}</strong> · ${(leader.total / totalSpend * 100).toFixed(1).replace('.', ',')}%</p>
       <div class="cat-summary-content">
         <div class="chart-container">
-          <canvas id="catPieChart"></canvas>
+          <canvas id="${canvasId}"></canvas>
         </div>
         <div class="cat-bars-list">
           <div class="cat-legend-head"><span>Categoria</span><span>Movimentação</span><span>%</span></div>
@@ -3179,17 +3201,17 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
       </div>
-      <div class="cat-summary-total"><span>Total de gastos</span><strong>${fmt(totalSpend)}</strong></div>
+      <div class="cat-summary-total"><span>${totalLabel}</span><strong>${fmt(totalSpend)}</strong></div>
     </div>`;
 
-    const ctx = document.getElementById('catPieChart');
+    const ctx = document.getElementById(canvasId);
     if (ctx && typeof Chart !== 'undefined') {
       const isDark = document.body.classList.contains('dark-mode');
       const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
       const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
       const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
 
-      catChartInstance = new Chart(ctx, {
+      catChartInstances[mode] = new Chart(ctx, {
         type: 'doughnut',
         data: {
           labels: chartSpend.map(x => x.cat.name),
@@ -4332,6 +4354,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const budgetCycle = currentFinancialCycleKey();
     const budgetRows = categories.map(cat => { const budget = budgetFor(cat.id); if (!budget || !(budget.amount > 0)) return ''; const spent = budgetSpent(cat.id, budgetCycle); const pct = Math.max(0, spent / budget.amount * 100); const visualPct = Math.min(100, pct); const overLabel = pct >= 100 ? ' · limite excedido' : ''; return `<div class="budget-summary-row"><div><strong>${escapeHTML(cat.name)}</strong><span>${fmt(spent)} de ${fmt(budget.amount)}${overLabel}</span></div><div class="budget-summary-track"><span class="${pct >= 100 ? 'over' : ''}" style="width:${visualPct.toFixed(2)}%" data-real-percent="${pct.toFixed(2)}"></span></div><b>${pct.toFixed(0).replace('.', ',')}%</b></div>`; }).filter(Boolean).join('');
 
+    const incomeCats = categoryTypeTotals('in', entries.filter(entry => String(entry.date || '').startsWith(month)));
+    const incomeCatSectionHTML = buildIncomeCatSectionHTML(month, incomeCats);
+
     (function updateNextPaymentCard(){
       const host = document.getElementById('dashboardNextPayment');
       if (!host) return;
@@ -4382,8 +4407,83 @@ document.addEventListener('DOMContentLoaded', () => {
     const advanceDays = Number(featureSettings.reminderAdvanceDays) || 0; const advanceBills = advanceDays ? pendingBills.filter(bill => { const due = new Date(`${month}-${String(billDueDateForMonth(bill, year, monthIndex).slice(-2)).padStart(2, '0')}T23:59:59`); return due >= new Date() && (due - new Date()) / 86400000 <= advanceDays; }) : []; if (advanceBills.length) alerts.push(`<div class="dashboard-alert-row"><span>i</span><div><strong>Fatura próxima</strong><small>${advanceBills.length} conta(s) vencem nos próximos ${advanceDays} dia(s).</small></div></div>`);
     if (!alerts.length) alerts.push(`<div class="dashboard-alert-row positive"><span>✓</span><div><strong>Nenhum alerta importante</strong><small>Seu painel não encontrou pendências críticas neste momento.</small></div></div>`);
 
-    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dash-chart-box dashboard-monthly-flow-box" id="dashMonthlyFlowChartBox"><canvas id="dashMonthlyFlowChart" role="img" aria-label="Gráfico de entradas, saídas e patrimônio estimado dos últimos meses"></canvas></div><div class="dash-chart-fallback dashboard-monthly-flow-fallback" id="dashMonthlyFlowFallback" hidden></div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta ou fatura encontrada para o filtro/titular selecionado neste mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
+    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dash-chart-box dashboard-monthly-flow-box" id="dashMonthlyFlowChartBox"><canvas id="dashMonthlyFlowChart" role="img" aria-label="Gráfico de entradas, saídas e patrimônio estimado dos últimos meses"></canvas></div><div class="dash-chart-fallback dashboard-monthly-flow-fallback" id="dashMonthlyFlowFallback" hidden></div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${incomeCatSectionHTML}${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta ou fatura encontrada para o filtro/titular selecionado neste mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
     renderDashboardMonthlyFlowChart(series);
+    renderDashboardIncomeCatChart(incomeCats);
+  }
+
+  let dashboardIncomeCatChartInstance = null;
+
+  function destroyDashboardIncomeCatChart() {
+    if (!dashboardIncomeCatChartInstance) return;
+    try {
+      dashboardIncomeCatChartInstance.destroy();
+    } catch (err) {}
+    dashboardIncomeCatChartInstance = null;
+  }
+
+  function buildIncomeCatSectionHTML(month, incomeCats) {
+    if (!incomeCats.length) return '';
+    const total = incomeCats.reduce((sum, item) => sum + item.total, 0);
+    const chartRows = groupCategoryRowsForChart(incomeCats);
+    const max = chartRows[0].total;
+    return `<div class="dashboard-trend dashboard-income-cats"><div class="dashboard-trend-head"><div><strong>Entradas por categoria</strong><span>Como as entradas do mês se distribuem</span></div><span>${escapeHTML(formatMonthLabel(month))}</span></div><div class="cat-summary-content"><div class="chart-container"><canvas id="dashIncomeCatChart" role="img" aria-label="Gráfico de entradas por categoria do mês"></canvas></div><div class="cat-bars-list"><div class="cat-legend-head"><span>Categoria</span><span>Movimentação</span><span>%</span></div>${chartRows.map(x => `
+      <div class="cat-row" style="--category-color:${categoryColor(x.cat)}">
+        <span class="cat-name">${escapeHTML(x.cat.name)}</span>
+        <span class="cat-bar-wrap"><div class="cat-bar" style="width:${(x.total / max * 100).toFixed(0)}%"></div></span>
+        <span class="cat-amt">${fmt(x.total)}</span>
+        <span class="cat-pct">${(x.total / total * 100).toFixed(1).replace('.', ',')}%</span>
+      </div>`).join('')}</div></div></div>`;
+  }
+
+  function renderDashboardIncomeCatChart(incomeCats) {
+    const canvas = document.getElementById('dashIncomeCatChart');
+    destroyDashboardIncomeCatChart();
+    if (!canvas || !incomeCats.length || typeof Chart === 'undefined') return;
+    const chartRows = groupCategoryRowsForChart(incomeCats);
+    const isDark = document.body.classList.contains('dark-mode');
+    const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
+    const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
+    const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
+
+    dashboardIncomeCatChartInstance = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels: chartRows.map(x => x.cat.name),
+        datasets: [{
+          data: chartRows.map(x => x.total),
+          backgroundColor: chartRows.map(x => categoryColor(x.cat)),
+          borderColor: borderColor,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: isMobileLayout ? '67%' : '62%',
+        plugins: {
+          legend: {
+            display: !isMobileLayout,
+            position: 'bottom',
+            labels: {
+              font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' },
+              color: textColor,
+              boxWidth: 12
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const head = ' ' + context.label + ': ';
+                if (document.body.classList.contains('balances-hidden')) return head + '••••••';
+                const val = context.raw || 0;
+                return head + 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+              }
+            }
+          }
+        }
+      }
+    });
   }
 
   /* Gráfico de barras "Entradas e saídas por mês" (aba Visão geral).
@@ -5703,6 +5803,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const advance = document.getElementById('featureReminderAdvanceDays'); if (advance) advance.value = featureSettings.reminderAdvanceDays;
     const savings = document.getElementById('featureSavingsGoalAmount'); if (savings) setMoneyInput('featureSavingsGoalAmount', featureSettings.monthlySavingsGoal);
     const whatIf = document.getElementById('featureWhatIfExpense'); if (whatIf) setMoneyInput('featureWhatIfExpense', 0);
+    const ciInitial = document.getElementById('ciInitial'); if (ciInitial && !ciInitial.value) setMoneyInput('ciInitial', 1000);
+    const ciMonthly = document.getElementById('ciMonthly'); if (ciMonthly && !ciMonthly.value) setMoneyInput('ciMonthly', 100);
+    const ciRate = document.getElementById('ciRate'); if (ciRate && !ciRate.value) ciRate.value = '0,8';
+    const ciMonths = document.getElementById('ciMonths'); if (ciMonths && !ciMonths.value) ciMonths.value = '24';
+    const ciBenchmark = document.getElementById('ciBenchmark');
+    const ciBenchmarkRate = document.getElementById('ciBenchmarkRate'); if (ciBenchmarkRate && !ciBenchmarkRate.value) ciBenchmarkRate.value = compoundRateInputValue(compoundBenchmarkRatePct(ciBenchmark?.value || 'cdi'));
     const pinInput = document.getElementById('featurePin'); if (pinInput) pinInput.value = '';
     window.renderAiQuotaStatus?.();
     window.LivroCaixaAI?.refreshQuota?.();
@@ -5787,7 +5893,6 @@ document.addEventListener('DOMContentLoaded', () => {
   FEATURE_AUTOSAVE_IDS.forEach(id => document.getElementById(id)?.addEventListener('change', scheduleFeatureSettingsAutosave));
   document.getElementById('featureBudgetRows')?.addEventListener('change', scheduleFeatureSettingsAutosave);
   document.getElementById('featureBudgetRows')?.addEventListener('input', scheduleFeatureSettingsAutosave);
-  document.getElementById('btnRunFeatureCycle')?.addEventListener('click', async () => { const status = document.getElementById('featureProfileStatus'); status.textContent = 'Executando ciclo de recorrências, lembretes e cotações…'; const result = await runFeatureAutomation({ manual: true }); status.textContent = result?.cancelled ? 'Ciclo cancelado; nenhum lançamento foi criado.' : result?.skipped ? 'Faça login para executar alterações financeiras.' : 'Ciclo concluído. Verifique o calendário, os avisos e os cards de investimento.'; });
   function suggestCategoryForDescription(description) { const text = String(description || '').toLocaleLowerCase('pt-BR'); const scores = new Map(); entries.forEach(entry => { const entryText = String(entry.desc || '').toLocaleLowerCase('pt-BR'); const category = categories.find(item => item.id === entry.category); if (!category || !entryText) return; const tokens = text.split(/\s+/).filter(token => token.length >= 4); const matches = tokens.filter(token => entryText.includes(token)).length; if (matches) scores.set(category.id, (scores.get(category.id) || 0) + matches); }); const best = [...scores.entries()].sort((a, b) => b[1] - a[1])[0]; return best ? best[0] : ''; }
   function applySimpleAutoCategorization(rows) { return rows.map(row => { if (!row.category && featureSettings.autoCategorization) { const suggested = suggestCategoryForDescription(row.desc); if (suggested) { row.category = suggested; row.matchStatus = 'Categoria sugerida pelo histórico · revise antes de confirmar'; } } return row; }); }
   function detectSpendingAnomalies() { const currentMonth = currentMonthYM(); const byCategory = new Map(); entries.filter(entry => entry.type === 'out').forEach(entry => { const month = String(entry.date || '').slice(0, 7); const key = `${entry.category || 'sem-categoria'}|${month}`; byCategory.set(key, (byCategory.get(key) || 0) + Number(entry.amount || 0)); }); const current = new Map(); entries.filter(entry => entry.type === 'out' && String(entry.date || '').startsWith(currentMonth)).forEach(entry => current.set(entry.category || 'sem-categoria', (current.get(entry.category || 'sem-categoria') || 0) + Number(entry.amount || 0))); const anomalies = []; current.forEach((value, categoryId) => { const history = [...byCategory.entries()].filter(([key]) => key.startsWith(`${categoryId}|`) && !key.endsWith(`|${currentMonth}`)).map(([, amount]) => amount).slice(-6); if (history.length < 2) return; const average = history.reduce((sum, amount) => sum + amount, 0) / history.length; if (value > average * 1.75 && value > average + 50) anomalies.push({ category: categories.find(cat => cat.id === categoryId)?.name || 'Sem categoria', value, average }); }); return anomalies.sort((a, b) => b.value - b.average - (a.value - a.average)); }
@@ -5828,10 +5933,338 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logInfo('Análise', 'Simulador E se', 'Sucesso', 'Cenário simulado com média líquida dos últimos seis meses, sem alteração dos dados.');
   }
+  let compoundCalcChartInstance = null;
+  function destroyCompoundCalcChart() {
+    if (compoundCalcChartInstance) {
+      compoundCalcChartInstance.destroy();
+      compoundCalcChartInstance = null;
+    }
+  }
+  function parseCompoundRate(value) {
+    const text = String(value ?? '').trim().replace(/\s/g, '').replace(',', '.');
+    const rate = Number(text);
+    return Number.isFinite(rate) && rate >= 0 ? rate : 0;
+  }
+  function compoundFutureValue(principal, payment, monthlyRate, months) {
+    let balance = Math.max(0, principal);
+    const paymentValue = Math.max(0, payment);
+    const points = [balance];
+    for (let month = 1; month <= months; month++) {
+      balance = balance * (1 + monthlyRate) + paymentValue;
+      points.push(balance);
+    }
+    const invested = Math.max(0, principal) + paymentValue * months;
+    return { final: balance, invested, interest: balance - invested, points };
+  }
+  function compoundTaxRates(days) {
+    const prazo = Math.max(1, Math.round(Number(days) || 1));
+    const ir = prazo <= 180 ? 0.225 : prazo <= 360 ? 0.2 : prazo <= 720 ? 0.175 : 0.15;
+    const iof = Math.max(0, 96 - 3.5 * (prazo - 1)) / 100;
+    return { ir, iof, days: prazo };
+  }
+  function compoundApplyTaxes(result, days) {
+    const rates = compoundTaxRates(days);
+    const interest = Math.max(0, result.interest);
+    const taxIof = interest * rates.iof;
+    const taxIr = interest * rates.ir;
+    const taxTotal = taxIof + taxIr;
+    return { ...result, irPct: rates.ir * 100, iofPct: rates.iof * 100, taxDays: rates.days, taxIr, taxIof, taxTotal, netInterest: interest - taxTotal, netFinal: result.final - taxTotal };
+  }
+  function indicatorMonthlyRate(key) {
+    try {
+      const info = typeof financialIndicatorsState === 'function' ? financialIndicatorsState() : null;
+      const item = info && info.indicators ? info.indicators[key] : null;
+      const daily = item ? Number(item.value) : NaN;
+      if (Number.isFinite(daily) && daily > 0) {
+        const annual = Math.pow(1 + daily / 100, 252) - 1;
+        return Math.pow(1 + annual, 1 / 12) - 1;
+      }
+    } catch (_) { }
+    return null;
+  }
+  function compoundBenchmarkRatePct(kind) {
+    if (kind === 'selic') { const live = indicatorMonthlyRate('selic'); return live === null ? 1 : live * 100; }
+    if (kind === 'cdi') { const live = indicatorMonthlyRate('cdi'); return live === null ? 0.9 : live * 100; }
+    return 0.5;
+  }
+  function compoundPctLabel(pct) { return String(Number(Number(pct).toFixed(2))).replace('.', ','); }
+  function compoundRateInputValue(pct) { return String(Number(Number(pct).toFixed(3))).replace('.', ','); }
+  function renderCompoundCalcChart(months, scenario, benchmark) {
+    const box = document.getElementById('ciChartBox');
+    const canvas = document.getElementById('ciChart');
+    destroyCompoundCalcChart();
+    if (!box || !canvas) return;
+    if (typeof Chart === 'undefined') { box.hidden = true; return; }
+    box.hidden = false;
+    const labels = scenario.points.map((_, index) => index === 0 ? 'Início' : String(index));
+    const bodyStyle = getComputedStyle(document.body);
+    const textColor = bodyStyle.getPropertyValue('--ink-soft').trim() || '#55635B';
+    const gridColor = bodyStyle.getPropertyValue('--line').trim() || '#D8D2C1';
+    compoundCalcChartInstance = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Cenário', data: scenario.points, borderColor: '#2F6F4F', backgroundColor: 'transparent', borderWidth: 2.5, tension: 0.25, pointRadius: months > 36 ? 0 : 2, pointBackgroundColor: '#2F6F4F' },
+          { label: 'Benchmark', data: benchmark.points, borderColor: '#B3432B', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6, 4], tension: 0.25, pointRadius: 0, pointBackgroundColor: '#B3432B' }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: textColor, boxWidth: 14, boxHeight: 2, padding: 12, font: { size: 11 } } },
+          tooltip: { callbacks: { label: (ctx) => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` } }
+        },
+        scales: {
+          x: { ticks: { color: textColor, maxTicksLimit: 9, font: { size: 10 } }, grid: { display: false } },
+          y: { ticks: { color: textColor, font: { size: 10 }, callback: (value) => { const v = Number(value); if (Math.abs(v) >= 1000) return 'R$ ' + (v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil'; return fmt(v); } }, grid: { color: gridColor } }
+        }
+      }
+    });
+  }
+  function compoundAllocationOptions(days) {
+    const info = typeof financialIndicatorsState === 'function' ? financialIndicatorsState() : null;
+    const ind = info && info.indicators ? info.indicators : {};
+    const normalized = (text) => String(text || '').toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const pickTitle = (needle) => {
+      const titles = ind.tesouro && Array.isArray(ind.tesouro.titles) ? ind.tesouro.titles : [];
+      const pool = titles.filter(title => title && normalized(title.name).includes(needle)
+        && Number.isFinite(title.saleRate) && title.saleRate > 0 && /^\d{4}-\d{2}-\d{2}$/.test(title.maturity || ''));
+      if (!pool.length) return null;
+      const horizon = new Date(Date.now() + Math.max(1, Math.round(days)) * 86400000).toISOString().slice(0, 10);
+      const still = pool.filter(title => title.maturity >= horizon);
+      const source = still.length ? still : pool;
+      return source.slice().sort((a, b) => (a.maturity <= b.maturity ? -1 : 1))[0];
+    };
+    const annualFromBenchmark = (kind) => Math.pow(1 + compoundBenchmarkRatePct(kind) / 100, 12) - 1;
+    const options = [];
+    const selicTitle = pickTitle('selic');
+    const selicAnnual = selicTitle ? selicTitle.saleRate / 100 : annualFromBenchmark('selic');
+    options.push({
+      name: 'Tesouro Selic',
+      ref: selicTitle
+        ? `${compoundPctLabel(selicAnnual * 100)}% a.a. · liquidez diária (Tesouro)`
+        : `${compoundPctLabel(selicAnnual * 100)}% a.a. · ${indicatorMonthlyRate('selic') !== null ? 'Selic BCB' : 'ref. offline'} · liquidez diária`,
+      annual: selicAnnual,
+      irExempt: false
+    });
+    const ipcaTitle = pickTitle('ipca');
+    const ipcaMonthlyPct = ind.ipca ? Number(ind.ipca.value) : NaN;
+    const ipcaAnnual = Number.isFinite(ipcaMonthlyPct) && ipcaMonthlyPct > -100 ? Math.pow(1 + ipcaMonthlyPct / 100, 12) - 1 : null;
+    if (ipcaTitle && ipcaAnnual !== null) {
+      options.push({
+        name: 'Tesouro IPCA+',
+        ref: `${compoundPctLabel(ipcaTitle.saleRate)}% a.a. real + IPCA estimado (${compoundPctLabel(ipcaAnnual * 100)}%)`,
+        annual: (1 + ipcaTitle.saleRate / 100) * (1 + ipcaAnnual) - 1,
+        irExempt: false
+      });
+    }
+    const cdiAnnual = annualFromBenchmark('cdi');
+    const cdiLive = indicatorMonthlyRate('cdi') !== null;
+    options.push({
+      name: 'CDB 100% do CDI',
+      ref: `${compoundPctLabel(cdiAnnual * 100)}% a.a. · ${cdiLive ? 'CDI vigente BCB' : 'ref. offline'} · FGC até R$ 250 mil`,
+      annual: cdiAnnual,
+      irExempt: false
+    });
+    options.push({
+      name: 'LCI/LCA típico 90% do CDI',
+      ref: `${compoundPctLabel(cdiAnnual * 90)}% a.a. · isento IR${days >= 90 ? ' (90 dias cumpridos)' : ' (carência de 90 dias)'}`,
+      annual: cdiAnnual * 0.9,
+      irExempt: days >= 90
+    });
+    return options;
+  }
+  function compoundAllocationCard(initial, monthly, months, days, scenario) {
+    const options = compoundAllocationOptions(days)
+      .filter(option => Number.isFinite(option.annual) && option.annual > 0)
+      .map(option => {
+        const monthlyRate = Math.pow(1 + option.annual, 1 / 12) - 1;
+        const taxed = compoundApplyTaxes(compoundFutureValue(initial, monthly, monthlyRate, months), days);
+        const netFinal = option.irExempt ? taxed.final - taxed.taxIof : taxed.netFinal;
+        return { ...option, netFinal, delta: netFinal - scenario.netFinal };
+      })
+      .sort((a, b) => b.netFinal - a.netFinal);
+    if (!options.length) return '';
+    const rows = options.map(option => {
+      const pct = scenario.netFinal > 0 ? (option.delta / scenario.netFinal) * 100 : null;
+      const color = option.delta >= 0 ? '#2F6F4F' : '#B3432B';
+      const sign = option.delta >= 0 ? '+' : '−';
+      const deltaText = pct === null ? '' : ` <em style="color:${color}">${sign}${fmt(Math.abs(option.delta))} (${sign}${compoundPctLabel(Math.abs(pct))}%)</em>`;
+      return `<div class="compound-calc-row"><span>${escapeHTML(option.name)} · ${escapeHTML(option.ref)}</span><b>${fmt(option.netFinal)}${deltaText}</b></div>`;
+    }).join('');
+    return `
+        <div class="compound-calc-card compound-calc-card-aloc">
+          <strong class="compound-calc-card-title">Onde alocar · melhor líquido primeiro (mesmo valor e prazo do cenário)</strong>
+          ${rows}
+          <p class="compound-calc-note">Estimativas com IR/IOF pelo prazo; isenção de LCI/LCA só vale após 90 dias de carência. Fontes: BCB (Selic/CDI/IPCA) e Tesouro Nacional quando há conexão; CDB e LCI/LCA usam percentuais típicos do CDI (referência do mercado, não cotação). Conteúdo educativo — não é recomendação de investimento.</p>
+        </div>`;
+  }
+  function runCompoundInterest() {
+    const initial = Math.max(0, readMoneyInput(document.getElementById('ciInitial')));
+    const monthly = Math.max(0, readMoneyInput(document.getElementById('ciMonthly')));
+    const unitDays = document.getElementById('ciTermUnit')?.value === 'd';
+    const termRaw = String(document.getElementById('ciMonths')?.value ?? '').trim();
+    const termDefault = unitDays ? 365 : 12;
+    const termValue = termRaw === '' ? termDefault : (Number(termRaw.replace(',', '.')) || termDefault);
+    const days = unitDays
+      ? Math.min(18000, Math.max(1, Math.round(termValue)))
+      : Math.min(18000, Math.max(1, Math.round(termValue) * 30));
+    const months = unitDays
+      ? Math.max(1, Math.ceil(days / 30))
+      : Math.min(600, Math.max(1, Math.round(termValue)));
+    const scenarioRatePct = parseCompoundRate(document.getElementById('ciRate')?.value);
+    const scenarioPeriod = document.getElementById('ciRatePeriod')?.value || 'm';
+    const scenarioAnnual = scenarioPeriod === 'y';
+    const scenarioCdiMode = scenarioPeriod === 'c';
+    const scenarioMonthlyRate = scenarioCdiMode
+      ? (scenarioRatePct / 100) * (compoundBenchmarkRatePct('cdi') / 100)
+      : scenarioAnnual
+        ? Math.pow(1 + scenarioRatePct / 100, 1 / 12) - 1
+        : scenarioRatePct / 100;
+    const benchmarkKind = document.getElementById('ciBenchmark')?.value || 'cdi';
+    const benchmarkRatePct = parseCompoundRate(document.getElementById('ciBenchmarkRate')?.value);
+    const benchmarkMonthlyRate = benchmarkRatePct / 100;
+    const benchmarkName = { poupanca: 'Poupança', cdi: 'CDI', selic: 'Selic' }[benchmarkKind] || 'Benchmark';
+
+    const scenario = compoundApplyTaxes(compoundFutureValue(initial, monthly, scenarioMonthlyRate, months), days);
+    const benchmark = compoundApplyTaxes(compoundFutureValue(initial, monthly, benchmarkMonthlyRate, months), days);
+
+    const results = document.getElementById('ciResults');
+    if (results) {
+      const card = (title, result) => `
+        <div class="compound-calc-card">
+          <strong class="compound-calc-card-title">${escapeHTML(title)}</strong>
+          <div class="compound-calc-row"><span>Montante final (bruto)</span><b>${fmt(result.final)}</b></div>
+          <div class="compound-calc-row"><span>Total aportado</span><b>${fmt(result.invested)}</b></div>
+          <div class="compound-calc-row"><span>Juros (bruto)</span><b>${fmt(result.interest)}</b></div>
+          <div class="compound-calc-row"><span>IR (regressivo ${compoundPctLabel(result.irPct)}%)</span><b>− ${fmt(result.taxIr)}</b></div>
+          <div class="compound-calc-row"><span>IOF${result.taxIof > 0 ? ` (${compoundPctLabel(result.iofPct)}%)` : ' (isento)'}</span><b>${fmt(result.taxIof)}</b></div>
+          <div class="compound-calc-row compound-calc-row-net"><span>Montante líquido</span><b>${fmt(result.netFinal)}</b></div>
+        </div>`;
+      const diffNet = scenario.netFinal - benchmark.netFinal;
+      const diffGross = scenario.final - benchmark.final;
+      const diffPct = benchmark.netFinal > 0 ? Math.abs(diffNet / benchmark.netFinal) * 100 : null;
+      const diffTitle = diffNet >= 0 ? 'O cenário termina acima do benchmark' : 'O benchmark termina acima do cenário';
+      const iofLabel = scenario.taxIof > 0 ? `${compoundPctLabel(scenario.iofPct)}%` : 'isento';
+      const scenarioTitle = scenarioCdiMode
+        ? `Cenário · ${compoundPctLabel(scenarioRatePct)}% do CDI (${compoundPctLabel(scenarioMonthlyRate * 100)}% a.m.)`
+        : `Cenário · ${compoundPctLabel(scenarioRatePct)}% ${scenarioAnnual ? 'a.a.' : 'a.m.'}`;
+      results.innerHTML = `
+        ${card(scenarioTitle, scenario)}
+        ${card(`${benchmarkName} · ${compoundPctLabel(benchmarkRatePct)}% a.m.`, benchmark)}
+        <div class="compound-calc-card compound-calc-card-delta">
+          <strong class="compound-calc-card-title">Diferença</strong>
+          <div class="compound-calc-row"><span>Líquido (cenário − benchmark)</span><b>${fmt(diffNet)}</b></div>
+          <div class="compound-calc-row"><span>Bruto (cenário − benchmark)</span><b>${fmt(diffGross)}</b></div>
+          <div class="compound-calc-row"><span>${diffTitle}${diffPct !== null ? ` em ${compoundPctLabel(diffPct)}%` : ''}</span></div>
+          <div class="compound-calc-row"><span>Impostos no prazo: IR ${compoundPctLabel(scenario.irPct)}% · IOF ${iofLabel} · ${scenario.taxDays} dias</span></div>
+        </div>
+        ${compoundAllocationCard(initial, monthly, months, days, scenario)}`;
+    }
+
+    renderCompoundCalcChart(months, scenario, benchmark);
+    logInfo('Análise', 'Calculadora de juros compostos', 'Sucesso', 'Cenário e benchmark calculados localmente com IR/IOF, sem alterar os dados.');
+  }
+  function parsePtNumberValue(raw) {
+    const text = String(raw || '').trim();
+    if (!text) return 0;
+    if (text.includes(',') && text.includes('.')) return Number(text.replace(/\./g, '').replace(',', '.')) || 0;
+    if (text.includes(',')) return Number(text.replace(',', '.')) || 0;
+    if (/^\d{1,3}(?:\.\d{3})+$/.test(text)) return Number(text.replace(/\./g, '')) || 0;
+    return Number(text) || 0;
+  }
+  function buildCompoundInterestReply(message) {
+    const text = String(message || '').toLocaleLowerCase('pt-BR');
+    if (!/\d/.test(text)) return null;
+    if (!/(juros compost|quanto (?:rende|acumula|cresce|eu teria|teria)|montante|simul\w*\s+(?:o |um )?(?:investiment|rendiment|aplic))/.test(text)) return null;
+    const rateMatch = text.match(/(\d+(?:[.,]\d+)?)\s*%(?!\s*(?:do|da|de)\b)/);
+    if (!rateMatch) return null;
+    const ratePct = parseCompoundRate(rateMatch[1]);
+    if (ratePct <= 0) return null;
+    const mentionsYear = /(?:ao\s+ano|no\s+ano|por\s+ano|anual|a\.a\.?)/.test(text);
+    const mentionsMonth = /(?:ao\s+m[êe]s|no\s+m[êe]s|por\s+m[êe]s|mensal|cada\s+m[êe]s|a\.m\.?)/.test(text);
+    const annual = mentionsYear && !mentionsMonth;
+    const monthlyRate = annual ? Math.pow(1 + ratePct / 100, 1 / 12) - 1 : ratePct / 100;
+    if (monthlyRate <= 0 || monthlyRate > 0.1) return null;
+    const termMonths = text.match(/(\d+)\s*meses/);
+    const termDaysMatch = text.match(/(\d+)\s*dias?/);
+    const termYears = text.match(/(\d+)\s*anos?/);
+    let days = 0;
+    if (termDaysMatch) days = Number(termDaysMatch[1]);
+    else if (termMonths) days = Number(termMonths[1]) * 30;
+    else if (termYears) days = Number(termYears[1]) * 365;
+    if (!Number.isFinite(days) || days < 1) return null;
+    days = Math.min(18000, Math.round(days));
+    const aporteMatch = text.match(/(?:aporte|aportando|depositando|guardando|aplicando)[^0-9%]{0,24}(\d+(?:[.,]\d+)?)/);
+    const valueTokens = [...text.matchAll(/(?:r\$\s*(\d+(?:[.,]\d+)?)|(\d+(?:[.,]\d+)?)\s*reais\b)/g)];
+    const bareInitial = text.match(/(\d+(?:[.,]\d+)?)\s*(?:reais\s*)?com\s+(?:o\s+)?(?:aporte|juros)/);
+    let aporte = aporteMatch ? parsePtNumberValue(aporteMatch[1]) : 0;
+    let inicial = 0;
+    let foundInicial = false;
+    for (const match of valueTokens) {
+      const rawValue = match[1] || match[2];
+      const start = match.index || 0;
+      const end = start + match[0].length;
+      const marker = /(?:\/\s*m[êe]s|ao\s+m[êe]s|por\s+m[êe]s|cada\s+m[êe]s|no\s+m[êe]s|mensal)/;
+      const after = text.slice(end, end + 16).match(/^[^\d%]*/)?.[0] || '';
+      const beforeRaw = text.slice(Math.max(0, start - 16), start);
+      const before = beforeRaw.match(/[\d%][^\d%]*$/)?.[0] || beforeRaw;
+      const monthlyContext = marker.test(after) || marker.test(before);
+      if (monthlyContext) { if (!aporte) aporte = parsePtNumberValue(rawValue); continue; }
+      if (!foundInicial) { inicial = parsePtNumberValue(rawValue); foundInicial = true; }
+    }
+    if (!foundInicial && bareInitial) { inicial = parsePtNumberValue(bareInitial[1]); foundInicial = true; }
+    if (!aporte) { const monthlyAporte = text.match(/(\d+(?:[.,]\d+)?)\s*(?:por|ao|no|cada)\s*m[êe]s\b/); if (monthlyAporte) aporte = parsePtNumberValue(monthlyAporte[1]); }
+    if (!foundInicial && !aporte) return null;
+    let benchmarkKind = 'poupanca';
+    if (/selic/.test(text)) benchmarkKind = 'selic';
+    else if (/\bcdi\b/.test(text) || /\bcdb\b/.test(text)) benchmarkKind = 'cdi';
+    const benchmarkName = { poupanca: 'Poupança', cdi: 'CDI', selic: 'Selic' }[benchmarkKind];
+    const benchmarkRatePct = compoundBenchmarkRatePct(benchmarkKind);
+    const months = Math.max(1, Math.ceil(days / 30));
+    const scenario = compoundApplyTaxes(compoundFutureValue(inicial, aporte, monthlyRate, months), days);
+    const benchmark = compoundApplyTaxes(compoundFutureValue(inicial, aporte, benchmarkRatePct / 100, months), days);
+    const diffNet = scenario.netFinal - benchmark.netFinal;
+    const diffPct = benchmark.netFinal > 0 ? Math.abs(diffNet / benchmark.netFinal) * 100 : null;
+    const winner = diffNet >= 0 ? 'O cenário termina acima' : 'O benchmark termina acima';
+    const rateLabel = annual
+      ? `${compoundPctLabel(ratePct)}% ao ano (${compoundPctLabel(monthlyRate * 100)}% a.m.)`
+      : `${compoundPctLabel(ratePct)}% ao mês`;
+    const iofLabel = scenario.taxIof > 0 ? ` · IOF ${fmt(scenario.taxIof)}` : ' · IOF isento (prazo ≥ 30 dias)';
+    return [
+      'Simulação local de juros compostos (calculadora do LABS — sem chamada de IA):',
+      `Cenário: ${rateLabel} em ${days} dias, com ${fmt(inicial)} inicial e aporte de ${fmt(aporte)} por mês.`,
+      `Bruto: montante ${fmt(scenario.final)} · aportado ${fmt(scenario.invested)} · juros ${fmt(scenario.interest)}.`,
+      `Impostos: IR ${compoundPctLabel(scenario.irPct)}% = ${fmt(scenario.taxIr)}${iofLabel} (${scenario.taxDays} dias).`,
+      `Líquido: montante ${fmt(scenario.netFinal)} · juros ${fmt(scenario.netInterest)}.`,
+      `Comparativo ${benchmarkName} (${compoundPctLabel(benchmarkRatePct)}% a.m.): líquido ${fmt(benchmark.netFinal)} · juros ${fmt(benchmark.netInterest)}.`,
+      `Diferença líquida (cenário − benchmark): ${diffNet >= 0 ? '+' : ''}${fmt(diffNet)} — ${winner}${diffPct !== null ? ` em ${compoundPctLabel(diffPct)}%` : ''}.`,
+      'Estimativa sem inflação; a Poupança pode ter isenção própria de IR. Ajuste os parâmetros na calculadora do LABS.'
+    ].join('\n');
+  }
   function exportPatrimonyChartPng() { const series = dashboardMonthSeries(6); const canvas = document.createElement('canvas'); canvas.width = 1400; canvas.height = 820; const ctx = canvas.getContext('2d'); ctx.fillStyle = '#F7F5EF'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#1C2B24'; ctx.font = '700 36px Plus Jakarta Sans, sans-serif'; ctx.fillText('Livro-Caixa · Patrimônio estimado', 80, 90); ctx.font = '20px Plus Jakarta Sans, sans-serif'; ctx.fillStyle = '#4C5A52'; ctx.fillText('Últimos seis meses · imagem gerada localmente', 80, 130); const left = 110, top = 210, width = 1160, height = 470; const values = series.map(item => Number(item.patrimony || 0)); const min = Math.min(0, ...values), max = Math.max(1, ...values); ctx.strokeStyle = '#D8D2C1'; ctx.lineWidth = 2; for (let i = 0; i <= 4; i++) { const y = top + height - (height * i / 4); ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(left + width, y); ctx.stroke(); } const xFor = i => left + (series.length <= 1 ? width / 2 : i * width / (series.length - 1)); const yFor = value => top + height - ((value - min) / (max - min || 1)) * height; ctx.strokeStyle = '#2F6F4F'; ctx.lineWidth = 7; ctx.beginPath(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); if (!i) ctx.moveTo(x, y); else ctx.lineTo(x, y); }); ctx.stroke(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); ctx.fillStyle = '#2F6F4F'; ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1C2B24'; ctx.font = '18px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.fillText(item.label, x, top + height + 42); ctx.font = '16px IBM Plex Mono, monospace'; ctx.fillText(fmt(item.patrimony), x, y - 20); }); const link = document.createElement('a'); link.download = `patrimonio-livro-caixa-${todayISO()}.png`; link.href = canvas.toDataURL('image/png'); link.click(); logInfo('Exportação', 'Exportar patrimônio PNG', 'Sucesso', 'Gráfico de patrimônio exportado como imagem.'); }
 document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnomalyScan);
   document.getElementById('btnGenerateMonthlyReview')?.addEventListener('click', generateMonthlyReview);
   document.getElementById('btnRunWhatIf')?.addEventListener('click', runWhatIf);
+  document.getElementById('btnRunCompoundCalc')?.addEventListener('click', runCompoundInterest);
+  document.getElementById('ciBenchmark')?.addEventListener('change', (event) => {
+    const rate = document.getElementById('ciBenchmarkRate');
+    if (rate) rate.value = compoundRateInputValue(compoundBenchmarkRatePct(event.target.value));
+  });
+  document.getElementById('ciTermUnit')?.addEventListener('change', (event) => {
+    const months = document.getElementById('ciMonths');
+    if (months) months.max = event.target.value === 'd' ? '18000' : '600';
+  });
+  document.getElementById('ciRatePeriod')?.addEventListener('change', (event) => {
+    const rate = document.getElementById('ciRate');
+    if (!rate) return;
+    const cdiMode = event.target.value === 'c';
+    rate.placeholder = cdiMode ? '100' : '0,80';
+    if (cdiMode && (rate.value === '' || rate.value === '0,8')) rate.value = '100';
+    if (!cdiMode && rate.value === '100') rate.value = '0,8';
+  });
   document.getElementById('btnExportPatrimonyPng')?.addEventListener('click', exportPatrimonyChartPng);
 
   let pendingReconciliation = null;
@@ -6527,6 +6960,23 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     if (aiChat.session.isBusy()) return;
 
     const originalText = String(rawText ?? '');
+
+    const localCompoundReply = buildCompoundInterestReply(originalText);
+    if (localCompoundReply) {
+      const started = aiChat.session.begin(originalText);
+      if (started.ok) {
+        const token = started.token;
+        const input = document.getElementById('aiChatInput');
+        if (input) input.value = '';
+        aiChat.session.commit(token, originalText, localCompoundReply);
+        aiChat.session.settle(token);
+        aiChatNotice('');
+        if (aiChat.session.isOpen() && aiChat.session.getSessionId() === token.sessionId) aiChatRender();
+        logInfo('Análise', 'LIA · cálculo local de juros compostos', 'Sucesso', 'Resposta calculada localmente sem chamada de IA.');
+        return;
+      }
+    }
+
     const prepared = aiChatPrepare(originalText);
 
     if (!prepared.ok) {
@@ -7083,7 +7533,10 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   }
   function startFeatureAutomation() {
     if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
-    // V18-12: cotações não dependem de timer dos Labs.
+    if (!currentUser) return;
+    if (!featureSettings.autoLaunchRecurring && !featureSettings.autoRefreshQuotes) return;
+    const minutes = Math.min(1440, Math.max(1, Number(featureSettings.quoteRefreshMinutes) || 15));
+    featureAutomationTimer = setInterval(() => { runFeatureAutomation({ manual: false }); }, minutes * 60000);
   }
 
   function render() {

@@ -52,6 +52,7 @@
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-circular/css/uicons-thin-circular.css">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-brands/css/uicons-brands.css">
 </head>
 <body>
 <div id="authOverlay" class="hidden">
@@ -125,11 +126,9 @@
   </div>
   <div class="app-header-actions">
     <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><i class="fi fi-rs-bell-notification-social-media" aria-hidden="true"></i><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
-    <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><i class="fi fi-rr-night-day" aria-hidden="true"></i></button>
+    <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><i class="fi fi-sr-contrast" aria-hidden="true"></i></button>
     <button type="button" id="btnGitHub" class="header-icon-button" title="Repositório no GitHub" aria-label="Abrir repositório no GitHub" onclick="window.open('https://github.com/antvjpg/LIVRO-CAIXA', '_blank', 'width=800,height=600')">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546 1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.036 1.835 2.807 1.301 3.498.998.077-.78.27-1.305.502-1.604-1.758-.196-4.312-.794-4.312-4.593 0-1.005.386-1.828 1.02-2.467-.103-.232-.444-1.172.098-2.44 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.719-.679 3.059-1.795 3.059-3.285 0-.728-.228-1.405-.632-1.905.376-.15.77-.231 1.174-.231.437 0 .81.071 1.185.218.689-.071 1.324-.307 1.603-.586C21.325 5.507 24 6.976 24 8.701c0 6.627-5.373 12-12 12z"/>
-      </svg>
+      <i class="fi fi-brands-github" aria-hidden="true"></i>
     </button>
     <div id="userBar"></div>
   </div>
@@ -726,15 +725,63 @@
         <button type="button" class="modal-close feature-profile-close" onclick="closeAllPanels()" aria-label="Fechar recursos completos">×</button>
       </div>
 
-      <div class="feature-profile-warning">
-        <span class="feature-profile-warning-icon" aria-hidden="true"><i class="fi fi-rr-triangle-exclamation" aria-hidden="true"></i></span>
-        <div><strong>Área de testes</strong><span>Algumas opções podem executar ações reais no seu Livro-Caixa. Recursos automáticos começam desativados.</span></div>
-      </div>
-
-        <div class="feature-profile-primary-actions">
-        <button type="button" id="btnRunFeatureCycle">Executar ciclo agora <span aria-hidden="true">→</span></button>
-      </div>
       <div id="featureProfileStatus" class="feature-profile-feedback" aria-live="polite"></div>
+
+      <div class="compound-calc">
+        <div class="compound-calc-head">
+          <h4>Calculadora de juros compostos</h4>
+          <span>Compare seu cenário com uma referência (Poupança, CDI ou Selic). Nada aqui é salvo.</span>
+        </div>
+        <div class="form-grid">
+          <div>
+            <label for="ciInitial">Valor inicial (R$)</label>
+            <input type="text" id="ciInitial" data-money="true" inputmode="numeric" placeholder="R$ 0,00">
+          </div>
+          <div>
+            <label for="ciMonthly">Aporte mensal (R$)</label>
+            <input type="text" id="ciMonthly" data-money="true" inputmode="numeric" placeholder="R$ 0,00">
+          </div>
+          <div>
+            <label for="ciRate">Taxa do cenário</label>
+            <div class="compound-calc-rate">
+              <input type="text" id="ciRate" inputmode="decimal" placeholder="0,80">
+              <select id="ciRatePeriod" aria-label="Período da taxa do cenário">
+                <option value="m">% ao mês</option>
+                <option value="y">% ao ano</option>
+                <option value="c">% do CDI</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="ciMonths">Prazo</label>
+            <div class="compound-calc-rate">
+              <input type="number" id="ciMonths" min="1" max="600" step="1" inputmode="numeric" placeholder="24">
+              <select id="ciTermUnit" aria-label="Unidade do prazo">
+                <option value="m">meses</option>
+                <option value="d">dias</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="ciBenchmark">Benchmark</label>
+            <select id="ciBenchmark">
+              <option value="poupanca">Poupança</option>
+              <option value="cdi" selected>CDI (vigente)</option>
+              <option value="selic">Selic (vigente)</option>
+            </select>
+          </div>
+          <div>
+            <label for="ciBenchmarkRate">Taxa do benchmark (% ao mês)</label>
+            <input type="text" id="ciBenchmarkRate" inputmode="decimal" placeholder="0,50">
+          </div>
+        </div>
+        <button type="button" id="btnRunCompoundCalc" class="primary compound-calc-run">Calcular comparação</button>
+        <div id="ciResults" class="compound-calc-results" aria-live="polite"></div>
+        <div id="ciChartBox" class="compound-calc-chart" hidden>
+          <canvas id="ciChart" role="img" aria-label="Evolução do montante do cenário e do benchmark"></canvas>
+        </div>
+        <p class="compound-calc-note">Estimativa ilustrativa: IR regressivo pelo prazo e IOF (operações com menos de 30 dias) são descontados dos juros; não considera inflação nem taxas de administração. Os presets CDI/Selic e a opção % do CDI usam a taxa vigente do Banco Central quando disponível (offline: referência fixa editável). A Poupança pode ter isenção própria de IR.</p>
+      </div>
     </div>
 
 

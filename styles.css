@@ -1761,9 +1761,6 @@
   .feature-profile-status-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 12%,transparent);}
   .feature-profile-intro{margin:7px 0 0;max-width:560px;color:var(--ink-soft);font-size:12px;line-height:1.5;}
   .feature-profile-close{flex:0 0 auto;align-self:flex-start;border-radius:9px;font-size:22px;line-height:1;}
-  .feature-profile-warning{display:flex;gap:11px;align-items:flex-start;margin:18px 26px 4px;padding:12px 13px;border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--gold) 8%,var(--paper));}
-  .feature-profile-warning-icon{font-size:18px;line-height:1.1;}
-  .feature-profile-warning strong,.feature-profile-warning span{display:block;}
   /* ===== Conciliação Bancária - Redesenhada ===== */
 .reconciliation-card {
   background: var(--paper);
@@ -2090,7 +2087,6 @@
   }
 }
 
-.feature-profile-warning strong{font-size:12px;margin-bottom:2px;}
   .feature-profile-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
   .feature-profile-section-head>div{display:flex;align-items:center;gap:9px;min-width:0;}
   .feature-profile-section-number{display:grid;place-items:center;width:25px;height:25px;border-radius:8px;background:var(--accent-soft);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:800;}
@@ -2128,6 +2124,30 @@
   .feature-profile-primary-actions button:not(.primary){flex:1;}
   .feature-profile-feedback{min-height:0;margin:8px 26px 0;color:var(--ink-soft);font-size:10.5px;line-height:1.4;}
   .feature-profile-section .feature-profile-feedback{margin:9px 0 0;}
+  .compound-calc{margin:18px 26px 0;}
+  .compound-calc-head{display:flex;flex-direction:column;gap:3px;margin-bottom:13px;}
+  .compound-calc-head h4{margin:0;font-size:14.5px;color:var(--ink);}
+  .compound-calc-head span{font-size:10.5px;color:var(--ink-soft);}
+  .compound-calc-rate{display:flex;gap:6px;}
+  .compound-calc-rate input{flex:1;min-width:0;}
+  .compound-calc-rate select{width:auto;min-width:98px;flex:none;}
+  .compound-calc-run{width:100%;min-height:42px;margin-top:13px;}
+  .compound-calc-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:13px;}
+  .compound-calc-results:empty{display:none;}
+  .compound-calc-card{border:1px solid var(--line);border-radius:11px;background:var(--paper-2);padding:10px 11px;display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .compound-calc-card-title{font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);font-weight:800;}
+  .compound-calc-row{display:flex;justify-content:space-between;align-items:baseline;gap:9px;font-size:11px;min-width:0;}
+  .compound-calc-row span{color:var(--ink-soft);}
+  .compound-calc-row b{font-family:'IBM Plex Mono',monospace;font-size:11.5px;white-space:nowrap;}
+  .compound-calc-rate select#ciTermUnit{min-width:74px;}
+  .compound-calc-row-net{border-top:1px dashed var(--line);padding-top:5px;}
+  .compound-calc-row-net b{font-size:12.5px;}
+  .compound-calc-card-delta{grid-column:1/-1;}
+  .compound-calc-card-aloc{grid-column:1/-1;}
+  .compound-calc-card-aloc em{font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:10px;white-space:nowrap;}
+  .compound-calc-chart{position:relative;height:210px;margin-top:13px;}
+  .compound-calc-chart[hidden]{display:none;}
+  .compound-calc-note{margin:11px 0 0;font-size:10px;line-height:1.45;color:var(--ink-soft);}
   .feature-profile-security{margin-bottom:26px;}
   .feature-profile-pin-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;}
   .feature-profile-pin-actions{display:flex;gap:7px;}
@@ -2136,10 +2156,12 @@
     .feature-profile-panel{max-width:100%;max-height:92vh;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:15px;}
     .feature-profile-header{padding:20px 17px 16px;}
     .feature-profile-panel .feature-profile-header h3{font-size:20px;}
-    .feature-profile-warning{margin:14px 17px 0;}
     .feature-profile-section{margin:14px 17px 0;padding:13px;}
     .feature-profile-primary-actions{margin:14px 17px 0;flex-direction:column;}
     .feature-profile-feedback{margin-left:17px;margin-right:17px;}
+    .compound-calc{margin:14px 17px 0;}
+    .compound-calc-results{grid-template-columns:1fr;}
+    .compound-calc-chart{height:175px;}
     .feature-profile-fields,.feature-profile-pin-row,.feature-profile-actions{grid-template-columns:1fr;}
     .feature-profile-pin-actions{display:grid;grid-template-columns:1fr 1fr;}
     .feature-budget-row{grid-template-columns:minmax(0,1fr) 105px;}
@@ -2656,7 +2678,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   body.dark-mode .nav-tab.active{background:var(--accent-muted);border-color:color-mix(in srgb,var(--accent) 35%,var(--line));color:var(--ink);}
   body.dark-mode .nav-tab:hover,body.dark-mode .nav-tab:focus-visible{background:var(--surface-accent);border-color:var(--accent);color:var(--ink);}
   body.dark-mode .toolbar button.primary,body.dark-mode .panel button.primary,body.dark-mode .feature-profile-primary-actions .primary{color:var(--accent-ink);}
-  body.dark-mode .feature-profile-warning{background:color-mix(in srgb,var(--gold) 12%,var(--paper));}
   body.dark-mode .bill-event{color:var(--ink);}.dark-mode .bill-event:hover{background:var(--accent);color:var(--accent-ink);}
   @media(max-width:680px){.nav-tab{min-height:44px}.toolbar button{min-height:44px}.feature-profile-section{box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ink) 4%,transparent);}}
   body.dark-mode .toolbar button:not(.primary),body.dark-mode .period-bar button,body.dark-mode .ledger-filter-button{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
@@ -10074,3 +10095,10 @@ body[data-tab="dashboard"] #viewDashboard.active {
 #viewProfile .feature-budget-row span.budget-status{font-weight:800;color:var(--ink);}
 #viewProfile .feature-budget-row span.budget-status.normal{color:var(--green);}
 #viewProfile .feature-budget-row span.budget-status.excedido{color:var(--red);}
+@media (min-width:1024px){
+  main{max-width:1120px;}
+  .panel{max-width:700px;}
+  .feature-profile-panel{max-width:880px;}
+  .compound-calc .form-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+  .compound-calc-chart{height:250px;}
+}
