@@ -36,6 +36,8 @@ const { spawnSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..', '..');
 
 const JS_FILES = [
+  'app.js',
+  'patches.js',
   'card-engine-v3-combined.js',
   'financial-client.js',
   'ai-chat-contract.js',

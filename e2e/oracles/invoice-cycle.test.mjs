@@ -148,8 +148,8 @@ function invoiceDueDateForPeriodReference(card, periodKey) {
   return `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(Math.min(due, last)).padStart(2, '0')}`;
 }
 
-test('invoiceCycle: index.html expõe a navegação de períodos da fatura', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+test('invoiceCycle: app.js expõe a navegação de períodos da fatura', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
   for (const trecho of [
     'cardInvoiceSelection',
     'cardInvoiceNavState',
@@ -158,7 +158,7 @@ test('invoiceCycle: index.html expõe a navegação de períodos da fatura', () 
     'invoiceCycleLabel',
     'credit-card-invoice-nav'
   ]) {
-    assert.ok(html.includes(trecho), `index.html deveria conter "${trecho}"`);
+    assert.ok(html.includes(trecho), `app.js deveria conter "${trecho}"`);
   }
   const css = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
   assert.ok(css.includes('.credit-card-invoice-nav'), 'styles.css deveria estilizar a navegação da fatura');

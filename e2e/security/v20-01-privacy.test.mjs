@@ -23,6 +23,7 @@ const ROOT = path.resolve(HERE, '..', '..');
 
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const html = read('index.html');
+const js = read('app.js');
 const sw = read('sw.js');
 const pkg = JSON.parse(read('package.json'));
 
@@ -36,11 +37,11 @@ const OCR_MODULES = [
   'ocr/review.js'
 ];
 
-/* bloco V.20-01 em index.html (do comentário de abertura ao fim do IIFE) */
-const BLOCK_START = html.indexOf(' ANEXOS DA LIA');
-assert.ok(BLOCK_START !== -1, 'bloco V.20-01 não encontrado em index.html');
-const BLOCK_END = html.indexOf('})();', BLOCK_START) + 5;
-const block = html.slice(BLOCK_START, BLOCK_END);
+/* bloco V.20-01 em app.js (do comentário de abertura ao fim do IIFE) */
+const BLOCK_START = js.indexOf(' ANEXOS DA LIA');
+assert.ok(BLOCK_START !== -1, 'bloco V.20-01 não encontrado em app.js');
+const BLOCK_END = js.indexOf('})();', BLOCK_START) + 5;
+const block = js.slice(BLOCK_START, BLOCK_END);
 const lineOf = (rel, needle) => {
   const src = read(rel);
   const i = src.indexOf(needle);
@@ -61,7 +62,7 @@ test('segurança: nenhum segredo no código novo', () => {
   const sources = OCR_MODULES
     .map((rel) => [rel, read(rel)])
     .concat([
-      ['index.html (bloco V.20-01)', block],
+      ['app.js (bloco V.20-01)', block],
       ['e2e/fixtures/v20-01-fixtures.js', read('e2e/fixtures/v20-01-fixtures.js')]
     ]);
   for (const [label, src] of sources) {
@@ -72,11 +73,11 @@ test('segurança: nenhum segredo no código novo', () => {
   }
 });
 
-test('segurança: nenhuma chave nova foi acrescentada a index.html', () => {
+test('segurança: nenhuma chave nova foi acrescentada ao JS do app', () => {
   /* A chave web do Firebase é configuração PÚBLICA e pré-existente; a V.20-01
-     não pode acrescentar nenhum outro padrão de credencial à página. */
-  const keys = html.match(/AIza[0-9A-Za-z_-]{30,}/g) || [];
-  assert.ok(keys.length <= 2, `chaves demais em index.html: ${keys.length}`);
+     não pode acrescentar nenhum outro padrão de credencial ao código. */
+  const keys = js.match(/AIza[0-9A-Za-z_-]{30,}/g) || [];
+  assert.ok(keys.length <= 2, `chaves demais em app.js: ${keys.length}`);
   const inBlock = block.match(/AIza[0-9A-Za-z_-]{30,}/g) || [];
   assert.equal(inBlock.length, 0, 'o bloco V.20-01 não pode conter chave');
 });
@@ -164,7 +165,7 @@ test('segurança: confirmação é validada ANTES do fluxo financeiro', () => {
   /* trava anti-clique-duplo */
   assert.match(handler, /ocrState\.confirming/);
   /* o botão entra na lista global de trava única de ações */
-  const lockLine = html.split('\n').find((l) => l.includes("'btnOcrReviewConfirm']"));
+  const lockLine = js.split('\n').find((l) => l.includes("'btnOcrReviewConfirm']"));
   assert.ok(lockLine, 'btnOcrReviewConfirm fora da lista de trava única');
   assert.match(lockLine, /'fSalvar'/);
 });
@@ -258,19 +259,19 @@ test('segurança: diagnóstico do fluxo nunca registra conteúdo do documento', 
 test('segurança: linha de apoio — bloco localizado corretamente', () => {
   assert.ok(BLOCK_END > BLOCK_START);
   assert.ok(block.length > 10000, 'o bloco V.20-01 parece truncado');
-  assert.equal(lineOf('index.html', ' ANEXOS DA LIA') > 10000, true);
+  assert.equal(lineOf('app.js', ' ANEXOS DA LIA') > 10000, true);
   assert.match(block, /LivroCaixaReview/);
   assert.match(block, /LivroCaixaExtract/);
   assert.match(block, /LivroCaixaOCRLia/);
 });
 
 test('segurança: cancelamento (signal) chega até o Worker', () => {
-  const start = html.indexOf('async generateViaWorker');
+  const start = js.indexOf('async generateViaWorker');
   assert.ok(start !== -1, 'generateViaWorker ausente');
-  const body = html.slice(start, html.indexOf('\n  },', start));
+  const body = js.slice(start, js.indexOf('\n  },', start));
   assert.match(body, /async generateViaWorker\(\{ prompt, imagePart, maxTokens, signal \}\)/);
   assert.match(body, /\{\s*signal\s*\}/, 'postWorker deve receber { signal }');
 
-  assert.match(html, /generate\(\{ prompt, imagePart, maxTokens, signal \} = \{\}\)/);
-  assert.match(html, /maxTokens: tokenCap, signal \}\);/);
+  assert.match(js, /generate\(\{ prompt, imagePart, maxTokens, signal \} = \{\}\)/);
+  assert.match(js, /maxTokens: tokenCap, signal \}\);/);
 });

@@ -17,14 +17,14 @@ const COLLECTIONS = [
   'invoiceLaunches', 'diagnostics',
 ];
 
-/* Config pública do frontend é lida do próprio index.html (nada é copiado
+/* Config pública do frontend é lida do próprio app.js (nada é copiado
    para o repositório e nada é logado). */
 function readFirebaseWebConfig() {
-  const html = fs.readFileSync(path.join(config.root, 'index.html'), 'utf8');
+  const html = fs.readFileSync(path.join(config.root, 'app.js'), 'utf8');
   const apiKey = /apiKey:\s*"([^"]+)"/.exec(html)?.[1];
   const projectId = /projectId:\s*"([^"]+)"/.exec(html)?.[1];
   if (!apiKey || !projectId) {
-    const err = new Error('BLOCKED: não foi possível ler a config pública do Firebase em index.html');
+    const err = new Error('BLOCKED: não foi possível ler a config pública do Firebase em app.js');
     err.code = 'CODE_BLOCKED';
     throw err;
   }
