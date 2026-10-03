@@ -38,13 +38,15 @@ e2e/
   oracles/                 cálculo INDEPENDENTE do app + testes unitários (node:test)
     document.js            oráculo por LINHA do documento (algoritmo distinto)
     v20-01-ocr-extraction.test.mjs  18 garantias da extração/revisão (sem browser)
-  security/security.test.mjs  35 garantias auditáveis do próprio C.O.D.E.
+  security/security.test.mjs  44 garantias auditáveis do próprio C.O.D.E.
   security/v20-01-privacy.test.mjs  16 garantias do fluxo de anexos/OCR
+  security/v20-02-prompt-injection.test.mjs  8 garantias contra prompt injection
   seeds/reset.cjs          cleanup manual de dados (só Firestore)
   seeds/cleanup.cjs        cleanup manual completo (Firestore + Auth efêmera)
   reports/generate-report.cjs  relatório + QA ENVIRONMENT (gitignored)
   scripts/list-tests.cjs   listagem de testes no Termux (shim, sem browser)
-  scripts/syntax-check.cjs sintaxe do JS inline de index.html + módulos ocr/
+  scripts/syntax-check.cjs sintaxe de app.js, patches.js + módulos ocr/
+                           (index.html é HTML puro desde 208c0eb)
   .env.example             contrato do fallback manual (opcional)
 worker/test/v20-01-ocr-modules.test.mjs  25 testes da abstração OCR (node:test)
 .github/workflows/code-e2e.yml  CI sem secrets: sintaxe → oracles → segurança →
@@ -61,8 +63,8 @@ nenhum segredo no Git nem em artefato; bloqueio aparece como `BLOCKED`, nunca so
 |---|---|---|
 | `npm run code:oracles` | testes unitários dos oracles (sem browser) | sim |
 | `npm run code:list` | descobre/lista os testes (shim de plataforma) | sim |
-| `npm run code:security` | 51 garantias do próprio C.O.D.E. (offline) | sim |
-| `npm run code:syntax` | valida sintaxe do JS inline de `index.html` + módulos `ocr/` | sim |
+| `npm run code:security` | 68 garantias do próprio C.O.D.E. (offline) | sim |
+| `npm run code:syntax` | valida sintaxe de `app.js`, `patches.js` + módulos `ocr/` | sim |
 | `npm run code:v20` | suíte V.20-01 (anexos/OCR): worker + oracles + segurança | sim |
 | `npm run code:test` | suítes + relatório `--strict` (sai 1 se FAIL/BLOCKED) | **não** |
 | `npm run code:smoke` / `code:movimentacoes` | suíte individual | **não** |
@@ -170,7 +172,7 @@ sobrou arquivo de identidade (run abortada).
 | Sessão QA (login/criação) | `auth/qa.setup` | — | não |
 | Criar banco + entrada + saída + saldo | `movimentacoes` | `balance`, `movement`, `money` | não |
 | Persistência (reload + Firestore REST) | `movimentacoes` | idem | não |
-| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (35) | — | não precisa |
+| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (44) | — | não precisa |
 | Edição/exclusão de lançamentos | pendente | pendente | — |
 | Caixinhas | `caixinhas` | `pocket`, `money` | não (CI/PC pendente) |
 | Metas (criação, fontes, progresso, edição, exclusão) | `metas` | `goal`, `money` | não (CI/PC pendente) |

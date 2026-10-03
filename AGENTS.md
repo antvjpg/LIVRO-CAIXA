@@ -94,7 +94,7 @@ O projeto historicamente possui:
 
 - uma aplicação SPA;
 - JavaScript vanilla;
-- HTML/CSS/JavaScript concentrados em arquivos principais;
+- HTML/CSS/JavaScript concentrados em arquivos principais (no momento desta documentação, após a refatoração de 03/10/2026: `index.html` é HTML puro, sem JS inline — o JS vive em `app.js` (principal) e `patches.js` (remendos));
 - Firebase;
 - Firestore;
 - autenticação por Firebase;
