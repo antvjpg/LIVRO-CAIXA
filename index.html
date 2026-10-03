@@ -54,7 +54,7 @@
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
 </head>
 <body>
-<div id="authOverlay">
+<div id="authOverlay" class="hidden">
   <div class="auth-box">
     <h2 id="authTitle">Entrar</h2>
     <p class="sub">Livro-Caixa · sincronizado</p>
@@ -103,10 +103,10 @@
         </div>
       </div>
 
-<div id="syncOverlay" class="hidden">
+<div id="syncOverlay">
   <div class="sync-box">
     <div class="sync-spinner"></div>
-    <p id="syncOverlayText">Sincronizando seus dados...</p>
+    <p id="syncOverlayText">Abrindo seu Livro-Caixa...</p>
   </div>
 </div>
 
@@ -2414,8 +2414,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Alternância de Abas
+  const LAST_TAB_STORAGE_KEY = 'livrocaixa_last_tab';
+  const TAB_NAMES = ['dash', 'dashboard', 'caixa', 'invest', 'pockets', 'cards', 'receivables', 'bills', 'profile', 'goals'];
   let currentTab = 'caixa';
+  let lastTabRestored = false;
   try { document.body.dataset.tab = currentTab; } catch (e) {}
+  /* sessionStorage (e não localStorage): a aba vale só durante a sessão —
+     sobrevive a F5/atualização, mas some ao fechar o app (volta no Livro-Caixa). */
+  try { localStorage.removeItem(LAST_TAB_STORAGE_KEY); } catch (e) {}
+
+  function persistLastTab(tab) {
+    try {
+      if (tab && TAB_NAMES.includes(tab)) sessionStorage.setItem(LAST_TAB_STORAGE_KEY, tab);
+    } catch (e) {}
+  }
 
   document.getElementById('btnTogglePeriodBar')?.addEventListener('click', () => {
     const bar = document.getElementById('universalPeriodBar');
@@ -2446,6 +2458,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* [JS 09] EVENTOS / INTERAÇÕES / MODAIS */
   window.switchTabOriginal = function(tabName) {
     currentTab = tabName;
+    persistLastTab(tabName);
     try { document.body.dataset.tab = tabName || 'caixa'; } catch (e) {}
     document.body.classList.add('tab-changing');
     window.setTimeout(() => document.body.classList.remove('tab-changing'), 240);
@@ -3157,6 +3170,15 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
       if (thisLoadGeneration === loadGeneration && currentUser?.uid === loadUserUid) {
+        if (!lastTabRestored) {
+          lastTabRestored = true;
+          try {
+            const savedTab = sessionStorage.getItem(LAST_TAB_STORAGE_KEY);
+            if (savedTab && TAB_NAMES.includes(savedTab) && savedTab !== currentTab && typeof window.switchTab === 'function') {
+              window.switchTab(savedTab);
+            }
+          } catch (e) {}
+        }
         if (syncOverlay) syncOverlay.classList.add('hidden');
         document.body.classList.remove('is-data-loading');
         markValueRefresh();
@@ -15061,7 +15083,20 @@ list.innerHTML = pendingImport.map((row, i) => `
   initMoneyMasks();
   markSingleActionButtons();
 
+  /* Rede de segurança: se a sessão não resolver em 8s (callback do Firebase
+     pendurado), revela o login em vez de deixar o loader preso. Se a sessão
+     chegar depois do timeout, o fluxo normal esconde o login e segue. */
+  let authResolved = false;
+  setTimeout(() => {
+    if (authResolved) return;
+    const loginOv = document.getElementById('authOverlay');
+    const loaderOv = document.getElementById('syncOverlay');
+    if (loaderOv) loaderOv.classList.add('hidden');
+    if (loginOv) loginOv.classList.remove('hidden');
+  }, 8000);
+
   auth.onAuthStateChanged(user => {
+    authResolved = true;
     loadGeneration++;
     currentUser = user;
 
@@ -15219,6 +15254,7 @@ document.addEventListener('click', (event) => {
       if (goalsButton) goalsButton.classList.add('active');
 
       if (typeof currentTab !== 'undefined') currentTab = 'goals';
+      if (typeof persistLastTab === 'function') persistLastTab('goals');
 
       document.querySelectorAll('.mobile-bottom-nav button').forEach(function(button) {
         button.classList.remove('is-active');
