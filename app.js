@@ -1069,16 +1069,39 @@ document.addEventListener('DOMContentLoaded', () => {
   let lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
   let realtimeUnsubscribers = [];
 
+  /* Firestore rejeita undefined ("Unsupported field value") e rejeita o
+     batch INTEIRO da coleção; structuredClone preserva chaves undefined
+     que o JSON.stringify descartaria. Remove no ponto de sincronização
+     (lastSynced + payload de escrita do commitDiff) — o diff por JSON
+     já as ignorava, então a detecção de mudanças não muda. */
+  function stripUndefinedSyncValues(value) {
+    if (Array.isArray(value)) {
+      return value.map(v => (v === undefined ? null : stripUndefinedSyncValues(v)));
+    }
+    if (value && typeof value === 'object') {
+      Object.keys(value).forEach(key => {
+        if (value[key] === undefined) delete value[key];
+        else value[key] = stripUndefinedSyncValues(value[key]);
+      });
+      return value;
+    }
+    return value;
+  }
+
   function cloneSyncItem(item) {
     if (!item || typeof item !== 'object') return item;
+    let cloned = null;
     try {
-      if (typeof structuredClone === 'function') return structuredClone(item);
+      if (typeof structuredClone === 'function') cloned = structuredClone(item);
     } catch (_) {}
-    try {
-      return JSON.parse(JSON.stringify(item));
-    } catch (_) {
-      return Array.isArray(item) ? [...item] : { ...item };
+    if (cloned === null) {
+      try {
+        cloned = JSON.parse(JSON.stringify(item));
+      } catch (_) {
+        cloned = Array.isArray(item) ? [...item] : { ...item };
+      }
     }
+    return stripUndefinedSyncValues(cloned);
   }
 
   function arrToMap(arr) {
@@ -12558,7 +12581,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       const idx = investments.findIndex(i => i.id === editingInvestId);
       if (idx !== -1) {
         const old = investments[idx];
-        investments[idx] = { id: editingInvestId, createdAt: old.createdAt, order: old.order, priceHistory: old.priceHistory, ...record };
+        investments[idx] = { id: editingInvestId, createdAt: old.createdAt, order: old.order, ...(Array.isArray(old.priceHistory) ? { priceHistory: old.priceHistory } : {}), ...record };
         targetItem = investments[idx];
       }
       editingInvestId = null;
