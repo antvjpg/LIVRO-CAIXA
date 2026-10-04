@@ -160,6 +160,6 @@ test('invoiceCycle: app.js expõe a navegação de períodos da fatura', () => {
   ]) {
     assert.ok(html.includes(trecho), `app.js deveria conter "${trecho}"`);
   }
-  const css = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  const css = fs.readFileSync(path.join(ROOT, 'style', 'styles.css'), 'utf8');
   assert.ok(css.includes('.credit-card-invoice-nav'), 'styles.css deveria estilizar a navegação da fatura');
 });

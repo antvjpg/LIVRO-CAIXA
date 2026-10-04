@@ -24,7 +24,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
 const js = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
-const css = fs.readFileSync(path.join(ROOT, "styles.css"), "utf8");
+const css = fs.readFileSync(path.join(ROOT, "style", "styles.css"), "utf8");
 
 /* ---------------------------- snapshots de teste ---------------------------- */
 

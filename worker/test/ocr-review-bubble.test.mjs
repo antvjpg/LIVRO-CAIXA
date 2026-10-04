@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const js = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
-const css = fs.readFileSync(path.join(ROOT, "styles.css"), "utf8");
+const css = fs.readFileSync(path.join(ROOT, "style", "styles.css"), "utf8");
 
 const sliceBetween = (from, to) => {
   const start = js.indexOf(from);

@@ -1,0 +1,139 @@
+/* =========================================================
+   LIVRO-CAIXA — TEMAS (paletas claro/escuro + pickers)
+   Arquivo único de definição de tema.
+   Carrega ANTES de styles.css (index.html) — a ordem importa.
+
+   CHECKLIST — como criar um tema novo:
+   1. Paleta aqui neste arquivo:
+      - claro:  body:not(.dark-mode)[data-light-theme="N"] { ...variáveis... }
+      - escuro: body.dark-mode[data-dark-theme="N"] { ...variáveis... }
+   2. Swatch aqui neste arquivo (botão do picker):
+      .light-theme-option[data-theme="N"]{--swatch:...}
+      .dark-theme-option[data-theme="N"]{--swatch:...}
+   3. index.html: novo <button class="light-theme-option|dark-theme-option"
+      data-theme="N"> em #lightThemePicker / #darkThemePicker (≈ linhas 197-209).
+   4. app.js: entrada 'N' em LIGHT_THEME_COLORS / DARK_THEME_COLORS (cor do
+      <meta name="theme-color">) — se omitida, validLightTheme/validDarkTheme
+      voltam ao padrão '1'.
+      IDs já usados: claro 1,4,5 / escuro 1,3,4,5 (2 e 3 no claro são legados,
+      mapeados para 1 por validLightTheme — não reutilizar).
+   ========================================================= */
+:root{
+    --font-ui:'Plus Jakarta Sans',sans-serif;
+    --paper:#F7F5EF;
+    --paper-2:#EFEBE0;
+    --ink:#1C2B24;
+    --ink-soft:#4C5A52;
+    --green:#2F6F4F;
+    --green-soft:#DCEBE2;
+    --red:#B3432B;
+    --red-soft:#F3E2DC;
+    --line:#D8D2C1;
+    --gold:#B08D3E;
+    --gold-rgb:176,141,62;
+    --gold-soft:#F2E8D0;
+    --on-accent:#FFFFFF;
+    --overlay:rgba(0,0,0,0.65);
+    --shadow:rgba(0,0,0,0.18);
+    --hover-soft:rgba(0,0,0,0.03);
+    --surface:#FFFEFA;
+    --surface-raised:#FCFDF9;
+    --surface-accent:#18382C;
+    --accent:#327957;
+    --accent-rgb:50,121,87;
+    --accent-to:#3A8A62;
+    --accent-ink:#FFFEF9;
+    --accent-muted:#E8F2EB;
+    --header-from:#153429;
+    --header-to:#1D3B30;
+    --header-ink:#F9F8F3;
+    --header-control-bg:rgba(9,30,21,.42);
+    --action-border:#C9D9CC;
+    /* Cores fixas do gráfico de fluxo do Dashboard — não são redefinidas por tema. */
+    --dash-flow-income:#3E9B6E;
+    --dash-flow-expense:#C2553B;
+    --dash-flow-patrimony:#B08D3E;
+  }
+  body:not(.dark-mode)[data-light-theme="4"] {
+    --paper:#FBF6EF; --paper-2:#F2E8DC; --ink:#342C25; --ink-soft:#81766B; --green:#5F8A70; --green-soft:#E0ECE2; --line:#E2D3C0; --gold:#C66F50; --gold-rgb:198,111,80; --gold-soft:#F7E7E0;
+    --surface:#FFFDF8; --surface-raised:#FFFBF5; --surface-accent:#8F4F3C; --accent:#C66F50; --accent-rgb:198,111,80; --accent-to:#D88766; --accent-ink:#FFFFFF; --accent-muted:#F7E7E0; --header-from:#8F4F3C; --header-to:#BD7657; --header-ink:#FFFFFF; --header-control-bg:rgba(74,37,27,.30); --action-border:#E1C8B5;
+  }
+  /* Branding Orange — modo claro */
+  body:not(.dark-mode)[data-light-theme="5"] {
+    --paper:#F9F9F9; --paper-2:#F0F0F0; --ink:#1A1A1A; --ink-soft:#646464;
+    --green:#E85002; --green-soft:#FFF0E8; --line:#E8E8E8; --gold:#F16001; --gold-rgb:241,96,1; --gold-soft:#FFEDDF;
+    --red:#C10801; --red-soft:#FFE8E0;
+    --surface:#FFFFFF; --surface-raised:#FFFFFF; --surface-accent:#E85002;
+    --accent:#E85002; --accent-rgb:232,80,2; --accent-to:#F16001; --accent-ink:#FFFFFF; --accent-muted:#FFF0E8;
+    --header-from:#C10801; --header-to:#E85002; --header-ink:#FFFFFF;
+    --header-control-bg:rgba(0,0,0,.28); --action-border:#FFD4B8;
+    --on-accent:#FFFFFF; --shadow:rgba(232,80,2,.12); --hover-soft:rgba(232,80,2,.06);
+  }
+  body.dark-mode {
+    --paper:#0F1712;
+    --paper-2:#16211A;
+    --surface:#16211A;
+    --surface-raised:#203025;
+    --surface-accent:#2A3A2E;
+    --ink:#F3EFE4;
+    --ink-soft:#8FA396;
+    --green:#C9A86A;
+    --green-soft:#2A3A2E;
+    --red:#E06B54;
+    --red-soft:#48241D;
+    --line:#2A3A2E;
+    --gold:#C9A86A;
+    --gold-rgb:201,168,106;
+    --gold-soft:#3A3420;
+    --accent:#C9A86A;
+    --accent-rgb:201,168,106;
+    --accent-to:#C9A86A;
+    --accent-ink:#16211A;
+    --accent-muted:#3B3525;
+    --header-from:#0F1712;
+    --header-to:#1A271D;
+    --on-accent:#16211A;
+    --overlay:rgba(0,0,0,0.78);
+    --shadow:rgba(0,0,0,0.34);
+    --hover-soft:rgba(255,255,255,0.06);
+      --action-border:color-mix(in srgb,var(--accent) 35%,var(--line));
+  }
+  body.dark-mode[data-dark-theme="3"] {
+    --paper:#141410; --paper-2:#1E1F17; --surface:#1E1F17; --surface-raised:#292A20; --surface-accent:#403126;
+    --ink:#F5F1E6; --ink-soft:#A6A48F; --green:#D08860; --green-soft:#403126; --line:#33342A; --gold:#D08860; --gold-rgb:208,136,96; --gold-soft:#3A2C22;
+    --accent:#D08860; --accent-rgb:208,136,96; --accent-to:#D08860; --accent-ink:#1E1408; --accent-muted:#493127; --header-from:#141410; --header-to:#2A241B; --on-accent:#1E1408;
+  }
+  body.dark-mode[data-dark-theme="4"] {
+    --paper:#121212; --paper-2:#1C1C1E; --surface:#1C1C1E; --surface-raised:#262628; --surface-accent:#27362C;
+    --ink:#FFFFFF; --ink-soft:#9A9A9E; --green:#22C55E; --green-soft:#263D2D; --line:#2C2C2E; --gold:#22C55E; --gold-rgb:34,197,94; --gold-soft:#1E3A27;
+    --accent:#22C55E; --accent-rgb:34,197,94; --accent-to:#22C55E; --accent-ink:#0A2415; --accent-muted:#1E3A27; --header-from:#121212; --header-to:#1A251D; --on-accent:#0A2415;
+  }
+  /* Branding Orange — modo escuro */
+  body.dark-mode[data-dark-theme="5"] {
+    --paper:#000000; --paper-2:#121212; --surface:#121212; --surface-raised:#1A1A1A; --surface-accent:#2A1208;
+    --ink:#F9F9F9; --ink-soft:#A7A7A7; --green:#E85002; --green-soft:#2A1208; --line:#333333; --gold:#F16001; --gold-rgb:241,96,1; --gold-soft:#2A1208;
+    --red:#FF5A3A; --red-soft:#3A1210;
+    --accent:#E85002; --accent-rgb:232,80,2; --accent-to:#F16001; --accent-ink:#FFFFFF; --accent-muted:#4A1C08;
+    --header-from:#000000; --header-to:#C10801; --on-accent:#FFFFFF;
+    --overlay:rgba(0,0,0,.82); --shadow:rgba(0,0,0,.45); --hover-soft:rgba(255,255,255,.06);
+  }
+  .light-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:-12px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
+  body:not(.dark-mode) .light-theme-picker{display:flex;}
+  .light-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
+  .light-theme-option{width:28px;min-width:28px;height:28px;min-height:28px;padding:0;border:2px solid transparent;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);}
+  .light-theme-option[data-theme="1"]{--swatch:#327957;}
+      .light-theme-option[data-theme="4"]{--swatch:linear-gradient(135deg,#C66F50,#5F8A70);}
+  .light-theme-option[data-theme="5"]{--swatch:linear-gradient(135deg,#E85002,#F16001);}
+  .light-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.36);}
+  .dark-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:-12px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
+  body.dark-mode .dark-theme-picker{display:flex;}
+  .dark-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
+  .dark-theme-option{width:28px;min-width:28px;height:28px;min-height:28px;padding:0;border:2px solid transparent;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);}
+  .dark-theme-option[data-theme="1"]{--swatch:#C9A86A;}
+    .dark-theme-option[data-theme="3"]{--swatch:#D08860;}
+  .dark-theme-option[data-theme="4"]{--swatch:#22C55E;}
+  .dark-theme-option[data-theme="5"]{--swatch:linear-gradient(135deg,#E85002,#C10801);}
+  .dark-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.24);}
+  /* O seletor global `button:hover` tem especificidade maior que a das amostras e sobrescrevia o swatch. */
+  .light-theme-option:hover,.light-theme-option:focus-visible,.light-theme-option:active,
+  .dark-theme-option:hover,.dark-theme-option:focus-visible,.dark-theme-option:active{background:var(--swatch);color:inherit;}
