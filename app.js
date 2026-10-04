@@ -6453,6 +6453,88 @@ document.addEventListener('DOMContentLoaded', () => {
       'Estimativa sem inflação; a Poupança pode ter isenção própria de IR. Ajuste os parâmetros na calculadora do LABS.'
     ].join('\n');
   }
+  /* Movimentação por texto digitado (sem chamada de IA): casa SÓ com
+     valor + verbo de direção ("gastei 30 reais no mercado",
+     "recebi 1500 de salário", "paguei R$ 45,90 no restaurante").
+     Perguntas, textos sem verbo, sem valor ou sem conta cadastrada não
+     disparam — o texto segue para a IA. Categoria: palavras-chave nas
+     categorias padrão, depois o histórico; banco = primeiro cadastrado
+     (o comprovante tem Editar para corrigir). */
+  function parseMovementFromText(rawText) {
+    const raw = String(rawText || '').trim();
+    if (!raw || raw.includes('?')) return null;
+    if (!banks.length) return null;
+    const stripAccents = (v) => String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const plain = stripAccents(raw.toLocaleLowerCase('pt-BR'));
+    if (/\b(?:quanto|quanta|quando|onde|quem|qual|quais|como|por que|porque|sera)\b/.test(plain)) return null;
+
+    const outVerb = /\b(?:gastei|gastamos|paguei|pagamos|comprei|compramos|saiu|retirei|desembolsei|perdi|custou)\b/.test(plain);
+    const inVerb = /\b(?:recebi|recebemos|ganhei|ganhamos|entrou|caiu|lucrei|rendeu|depositou|depositaram|reembolsou)\b/.test(plain);
+    if (!outVerb && !inVerb) return null;
+    const type = outVerb ? 'out' : 'in';
+
+    /* Valor: "R$ 45,90" / "45,90 reais" tem prioridade; senão o número
+       que segue o verbo de direção. Sem valor > 0 → não casa. */
+    let amount = 0;
+    let amountSpan = '';
+    const moneyMatch = raw.match(/r\$\s*(\d+(?:[.,]\d+)?)|(\d+(?:[.,]\d+)?)\s*reais\b/i);
+    if (moneyMatch) {
+      amount = parsePtNumberValue(moneyMatch[1] || moneyMatch[2]);
+      amountSpan = moneyMatch[0];
+    } else {
+      const numAfterVerb = plain.match(/\b(?:gastei|gastamos|paguei|pagamos|comprei|compramos|saiu|retirei|desembolsei|perdi|custou|recebi|recebemos|ganhei|ganhamos|entrou|caiu|lucrei|rendeu|depositou|depositaram|reembolsou)\b[^0-9]{0,24}(\d+(?:[.,]\d+)?)/);
+      if (numAfterVerb) {
+        amount = parsePtNumberValue(numAfterVerb[1]);
+        amountSpan = numAfterVerb[0];
+      }
+    }
+    if (!(amount > 0)) return null;
+
+    /* Descrição: remove o valor reconhecido e os verbos de direção e
+       encolhe o resto (fallback: o texto original). O span vem do texto
+       em minúsculas — comparação case-insensitive. */
+    let desc = raw;
+    if (amountSpan) {
+      const spanPattern = amountSpan.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      desc = desc.replace(new RegExp(spanPattern, 'i'), ' ');
+    }
+    desc = desc
+      .replace(/\b(?:gastei|gastamos|paguei|pagamos|comprei|compramos|saiu|retirei|desembolsei|perdi|custou|recebi|recebemos|ganhei|ganhamos|entrou|caiu|lucrei|rendeu|depositou|depositaram|reembolsou)\b/gi, ' ')
+      .replace(/\d+(?:[.,]\d+)?\s*reais\b/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/^(?:em|no|na|nos|nas|de|do|da|para|pelo|pela|com|por|e)\s+/i, '')
+      .trim();
+    if (!desc) desc = raw;
+    if (desc.length > 160) desc = desc.slice(0, 157) + '...';
+
+    const categoryKeywords = [
+      { key: 'alimentacao', words: ['mercado', 'supermercado', 'restaurante', 'lanche', 'comida', 'ifood', 'padaria', 'acougue', 'cafe', 'cafeteria', 'almoco', 'jantar', 'pizza', 'hamburguer', 'marmita'] },
+      { key: 'transporte', words: ['uber', 'onibus', 'metro', 'gasolina', 'combustivel', 'estacionamento', 'passagem', 'taxi', 'pedagio'] },
+      { key: 'saude', words: ['farmacia', 'medico', 'dentista', 'consulta', 'remedio', 'exame', 'hospital', 'psicologo', 'terapia'] },
+      { key: 'lazer', words: ['cinema', 'show', 'bar', 'viagem', 'hotel', 'passeio', 'netflix', 'spotify', 'steam', 'jogo', 'presente'] },
+      { key: 'moradia', words: ['aluguel', 'condominio', 'luz', 'agua', 'energia', 'internet', 'gas', 'iptu', 'reforma', 'mensalidade'] },
+      { key: 'salario', words: ['salario', 'pagamento', 'folha', 'prolabore'] },
+      { key: 'renda extra', words: ['freela', 'bico', 'venda', 'cashback', 'rendimento'] }
+    ];
+    const plainDesc = stripAccents(desc.toLowerCase());
+    let category = '';
+    for (const entry of categoryKeywords) {
+      if (!entry.words.some((word) => plainDesc.includes(word))) continue;
+      const hit = categories.find((c) => stripAccents(String(c.name || '').toLowerCase()) === entry.key);
+      if (hit) { category = hit.id; break; }
+    }
+    if (!category) category = suggestCategoryForDescription(desc) || '';
+
+    return {
+      type,
+      amount: Math.round(amount * 100) / 100,
+      desc,
+      category,
+      bank: banks[0].id,
+      date: todayISO()
+    };
+  }
   function exportPatrimonyChartPng() { const series = dashboardMonthSeries(6); const canvas = document.createElement('canvas'); canvas.width = 1400; canvas.height = 820; const ctx = canvas.getContext('2d'); ctx.fillStyle = '#F7F5EF'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#1C2B24'; ctx.font = '700 36px Plus Jakarta Sans, sans-serif'; ctx.fillText('Livro-Caixa · Patrimônio estimado', 80, 90); ctx.font = '20px Plus Jakarta Sans, sans-serif'; ctx.fillStyle = '#4C5A52'; ctx.fillText('Últimos seis meses · imagem gerada localmente', 80, 130); const left = 110, top = 210, width = 1160, height = 470; const values = series.map(item => Number(item.patrimony || 0)); const min = Math.min(0, ...values), max = Math.max(1, ...values); ctx.strokeStyle = '#D8D2C1'; ctx.lineWidth = 2; for (let i = 0; i <= 4; i++) { const y = top + height - (height * i / 4); ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(left + width, y); ctx.stroke(); } const xFor = i => left + (series.length <= 1 ? width / 2 : i * width / (series.length - 1)); const yFor = value => top + height - ((value - min) / (max - min || 1)) * height; ctx.strokeStyle = '#2F6F4F'; ctx.lineWidth = 7; ctx.beginPath(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); if (!i) ctx.moveTo(x, y); else ctx.lineTo(x, y); }); ctx.stroke(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); ctx.fillStyle = '#2F6F4F'; ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1C2B24'; ctx.font = '18px IBM Plex Mono, monospace'; ctx.textAlign = 'center'; ctx.fillText(item.label, x, top + height + 42); ctx.font = '16px IBM Plex Mono, monospace'; ctx.fillText(fmt(item.patrimony), x, y - 20); }); const link = document.createElement('a'); link.download = `patrimonio-livro-caixa-${todayISO()}.png`; link.href = canvas.toDataURL('image/png'); link.click(); logInfo('Exportação', 'Exportar patrimônio PNG', 'Sucesso', 'Gráfico de patrimônio exportado como imagem.'); }
 document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnomalyScan);
   document.getElementById('btnGenerateMonthlyReview')?.addEventListener('click', generateMonthlyReview);
@@ -7100,9 +7182,10 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
       );
     });
 
-    /* V.20-01 — balões da revisão de anexo: derivados de ocrState.model
-       (sem tocar no contrato do chat); somem quando o estado é liberado. */
-    parts.push(...ocrChatBubblesParts());
+    /* V.20-01 — comprovante da proposta no chat: derivado de
+       chatProposal (sem tocar no contrato do chat); some quando a
+       proposta é descartada ou liberada. */
+    parts.push(...chatProposalParts());
 
     if (pending) {
       parts.push(`<div class="ai-chat-msg is-user is-pending">${escapeHTML(pending.content)}</div>`);
@@ -7217,30 +7300,14 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   }
 
   function onAiChatMessagesClick(event) {
-    /* Botão "Revisar" do balão de anexo — antes do guard de mensagens
-       do usuário: o balão é do assistente e não tem data-msg-index.
-       Convencional → modal de revisão; transferência → Transferência
-       universal (pré-preenchida), o "modal respectivo". */
-    const reviewBtn = event.target.closest?.('[data-ocr-review]');
-    if (reviewBtn) {
-      if (ocrState.model) {
-        const isTransfer = ocrChatIsTransfer(ocrState.model.fields);
-        const canTransfer = banks.length + pockets.length + investments.length >= 2;
-        if (isTransfer && canTransfer) {
-          ocrPrefillTransferForm();
-          ocrState.openedTransfer = true;
-          openModal('panelTransferencia');
-        } else {
-          /* Sem dois destinos a transferência é inválida — mesma regra
-             do botão manual — e a revisão convencional assume. */
-          if (isTransfer) {
-            alert('Você precisa ter pelo menos dois destinos cadastrados para realizar transferências. Revise como movimentação comum.');
-          }
-          ocrRenderReview();
-          ocrReviewNotice('');
-          openModal('panelOcrReview');
-        }
-      }
+    /* Ações do comprovante no chat (Confirmar/Editar/Descartar) — antes
+       do guard de mensagens do usuário: o balão é do assistente e não
+       tem data-msg-index. */
+    const proposalAction = event.target.closest?.('[data-chat-confirm],[data-chat-edit],[data-chat-discard]');
+    if (proposalAction) {
+      if (proposalAction.hasAttribute('data-chat-confirm')) chatProposalConfirm();
+      else if (proposalAction.hasAttribute('data-chat-edit')) chatProposalEdit();
+      else chatProposalDiscard();
       return;
     }
 
@@ -7370,6 +7437,30 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
         aiChatNotice('');
         if (aiChat.session.isOpen() && aiChat.session.getSessionId() === token.sessionId) aiChatRender();
         logInfo('Análise', 'LIA · cálculo local de juros compostos', 'Sucesso', 'Resposta calculada localmente sem chamada de IA.');
+        return;
+      }
+    }
+
+    /* Movimentação por texto digitado: casa localmente (sem chamada de
+       IA) e monta o comprovante na conversa para confirmação. Não casa
+       em edição nem com anexo pendente; se não entender, o texto segue
+       normalmente para a IA. */
+    const parsedMovement = (!editing && !ocrState.attachment)
+      ? parseMovementFromText(originalText)
+      : null;
+    if (parsedMovement) {
+      const started = aiChat.session.begin(originalText);
+      if (started.ok) {
+        const token = started.token;
+        const inputField = document.getElementById('aiChatInput');
+        if (inputField) inputField.value = '';
+        chatProposalFromText(parsedMovement);
+        await aiChat.session.commit(token, originalText,
+          'Ok — identifiquei a movimentação. Confira o comprovante abaixo e toque em Confirmar para lançar.');
+        aiChat.session.settle(token);
+        aiChatNotice('');
+        if (aiChat.session.isOpen() && aiChat.session.getSessionId() === token.sessionId) aiChatRender();
+        logInfo('Análise', 'LIA · movimentação por texto', 'Sucesso', 'Comprovante criado localmente sem chamada de IA.');
         return;
       }
     }
@@ -11434,7 +11525,42 @@ VALOR: ${fmt(pseudoBill.amount)}
      Nenhum código aqui conhece Android, Capacitor ou plugin nativo.
      ================================================================== */
 
-  const ocrState = { attachment: null, model: null, controller: null, busy: false, confirming: false, openedTransfer: false };
+  const ocrState = { attachment: null, model: null, controller: null, busy: false, confirming: false, openedTransfer: false, sameHolder: null };
+
+  /* Proposta de movimentação exibida no chat como comprovante (estilo
+     Itaú/WhatsApp): nasce da leitura de anexo OU de texto digitado,
+     aguarda confirmação na conversa e vira comprovante final. Snapshot
+     próprio (linhas/valor prontos) — não entra no session do chat nem
+     no contexto enviado à IA. */
+  const chatProposal = {
+    source: null, status: null, kind: null, rows: [], amount: null,
+    attachmentId: null, data: null, error: null, saving: false
+  };
+
+  function chatProposalClear() {
+    chatProposal.source = null;
+    chatProposal.status = null;
+    chatProposal.kind = null;
+    chatProposal.rows = [];
+    chatProposal.amount = null;
+    chatProposal.attachmentId = null;
+    chatProposal.data = null;
+    chatProposal.error = null;
+    chatProposal.saving = false;
+  }
+
+  /* Transferência salva pelo painel → o comprovante confirmado fica no
+     chat. Disparado por tSalvar; o listener só age se há proposta de
+     transferência pendente (fechar o painel sem salvar descarta pelo
+     observador do fluxo OCR). Registrado antes de tSalvar existir — a
+     ordem não importa, o evento só sobe no clique. */
+  window.addEventListener('lc-transfer-saved', () => {
+    if (chatProposal.status === 'awaiting' && chatProposal.kind === 'transfer') {
+      chatProposal.status = 'confirmed';
+      chatProposal.error = null;
+      window.LivroCaixaChat?.open?.();
+    }
+  });
   const OCR_FIELD_ORDER = ['date', 'amount', 'description', 'type', 'category', 'account', 'merchant', 'paymentMethod', 'documentNumber'];
   /* Exibidos na revisão mas SEM campo equivalente no modelo de movimentação:
      são informações do documento, nunca persistidas. */
@@ -11505,13 +11631,16 @@ VALOR: ${fmt(pseudoBill.amount)}
     ocrState.model = null;
     ocrState.busy = false;
     ocrState.openedTransfer = false;
+    ocrState.sameHolder = null;
     const input = document.getElementById('liaAttachmentFile');
     if (input) input.value = '';
     const chip = document.getElementById('liaAttachmentChip');
     if (chip) { chip.hidden = true; chip.textContent = ''; }
     const attachBtn = document.getElementById('btnLiaAttach');
     if (attachBtn) attachBtn.disabled = false;
-    /* Sem modelo → balões da revisão somem do chat. */
+    /* Comprovante confirmado fica no chat como histórico final; uma
+       proposta pendente é descartada junto com o anexo. */
+    if (chatProposal.status !== 'confirmed') chatProposalClear();
     aiChatRender();
   }
 
@@ -11566,21 +11695,21 @@ VALOR: ${fmt(pseudoBill.amount)}
     return String(raw);
   }
 
-  function ocrChatLine(label, value) {
-    return label + ': ' + (value == null || value === '' ? '—' : value);
-  }
-
   /* Sinais já usados pelo extrator (categoria/pagamento "Transferência",
      TED, DOC, "pix enviado"): quando a leitura indica transferência, o
      balão usa o modelo "Transferência universal" e o Revisar abre
      panelTransferencia em vez do modal de revisão convencional. */
-  function ocrChatIsTransfer(fields) {
+  function ocrChatIsTransfer(fields, sameHolder) {
+    if (sameHolder && sameHolder.sameHolder) return true;
     if (!fields) return false;
-    const transferRe = /\btransfer[eê]ncia\b|\bpix enviado\b|\bted\b|\bdoc\b/i;
+    const transferRe = /\btransfer|\bpix enviado\b|\bted\b|\bdoc\b/i;
     const strip = (v) => String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     const category = fields.category ? fields.category.value : null;
-    if (category && strip(category) === 'transferencia') return true;
-    if (category && transferRe.test(String(category))) return true;
+    /* suggestion: "Transferência" não resolvida no catálogo zera o value,
+       mas a intenção do documento continua legível ali. */
+    const categoryHint = category || (fields.category && fields.category.suggestion) || null;
+    if (categoryHint && strip(categoryHint) === 'transferencia') return true;
+    if (categoryHint && transferRe.test(String(categoryHint))) return true;
     const payment = fields.paymentMethod ? fields.paymentMethod.value : null;
     if (payment && /transfer/i.test(String(payment))) return true;
     const desc = (fields.description && fields.description.value) || '';
@@ -11588,67 +11717,248 @@ VALOR: ${fmt(pseudoBill.amount)}
     return transferRe.test(String(desc) + ' ' + String(merchant));
   }
 
-  /* UM balão de texto com cabeçalho + linhas "Rótulo: valor" + o anexo
-     dentro do balão + botão Revisar. Templates: "Informações
-     reconhecidas" (convencional) ou "Transferência universal".
-     Derivado de ocrState.model: existe só enquanto a revisão está
-     pendente (confirmar/cancelar/fechar/remover libera e some com ele).
-     Nada entra no session do chat nem no contexto enviado à IA. */
-  function ocrChatBubblesParts() {
+  /* ---- proposta no chat: criação a partir da leitura de anexo ---- */
+  function chatProposalFromOcr() {
     const model = ocrState && ocrState.model;
-    if (!model) return [];
+    chatProposalClear();
+    if (!model) return;
     const fields = model.fields || {};
-    const value = (key) => {
+    const val = (key) => {
       const field = fields[key];
       return field && field.value != null && field.value !== '' ? ocrChatDisplayValue(key, field) : null;
     };
-
-    let text;
-    if (ocrChatIsTransfer(fields)) {
+    const isTransfer = ocrChatIsTransfer(fields, ocrState.sameHolder);
+    const account = val('account');
+    const isIn = !!(fields.type && fields.type.value === 'in');
+    const rows = [];
+    const push = (label, value) => { if (value != null && value !== '') rows.push({ label, value: String(value) }); };
+    push('Data', val('date'));
+    if (isTransfer) {
       /* A leitura da LIA tem UMA conta: em entrada ela é o destino,
          nos demais casos a origem — o usuário ajusta no modal. */
-      const account = value('account');
-      const isIn = !!(fields.type && fields.type.value === 'in');
-      text = [
-        'Transferência universal',
-        ocrChatLine('Data', value('date')),
-        ocrChatLine('Origem', isIn ? null : account),
-        ocrChatLine('Destino', isIn ? account : null),
-        ocrChatLine('Valor', value('amount')),
-        ocrChatLine('Descrição', value('description'))
-      ].join('\n');
+      push('Origem', isIn ? null : account);
+      push('Destino', isIn ? account : null);
     } else {
-      const hasAnyValue = ['date', 'amount', 'description', 'type', 'category', 'account']
-        .some((key) => value(key) != null);
-      text = hasAnyValue
-        ? [
-          'Informações reconhecidas',
-          ocrChatLine('Data', value('date')),
-          ocrChatLine('Tipo', value('type')),
-          ocrChatLine('Banco', value('account')),
-          ocrChatLine('Valor', value('amount')),
-          ocrChatLine('Descrição', value('description')),
-          ocrChatLine('Categoria', value('category'))
-        ].join('\n')
-        : 'Não consegui reconhecer os dados deste anexo. Abra a revisão e preencha manualmente.';
+      push('Tipo', val('type'));
+      push('Banco', account);
+      push('Categoria', val('category'));
     }
+    push('Descrição', val('description'));
+    const amountRaw = fields.amount ? fields.amount.value : null;
+    const amount = Number(amountRaw);
+    chatProposal.source = 'ocr';
+    chatProposal.status = 'awaiting';
+    chatProposal.kind = isTransfer ? 'transfer' : 'movement';
+    chatProposal.rows = rows;
+    chatProposal.amount = Number.isFinite(amount) && amount > 0 ? amount : null;
+    chatProposal.attachmentId = (ocrState.attachment && ocrState.attachment.id)
+      || (model.attachment && model.attachment.id) || null;
+  }
 
-    const attachment = ocrState.attachment || model.attachment;
+  /* ---- proposta no chat: criação a partir de texto digitado ---- */
+  function chatProposalFromText(parsed) {
+    chatProposalClear();
+    if (!parsed) return;
+    const bank = banks.find((b) => b.id === parsed.bank);
+    const category = categories.find((c) => c.id === parsed.category);
+    const rows = [
+      { label: 'Data', value: parsed.date },
+      { label: 'Tipo', value: parsed.type === 'in' ? 'Entrada' : 'Saída' }
+    ];
+    if (bank) rows.push({ label: 'Banco', value: bank.name });
+    if (category) rows.push({ label: 'Categoria', value: category.name });
+    rows.push({ label: 'Descrição', value: parsed.desc });
+    chatProposal.source = 'text';
+    chatProposal.status = 'awaiting';
+    chatProposal.kind = 'movement';
+    chatProposal.rows = rows;
+    chatProposal.amount = parsed.amount;
+    chatProposal.data = {
+      date: parsed.date,
+      desc: parsed.desc,
+      bank: bank ? bank.id : '',
+      category: category ? category.id : '',
+      amount: parsed.amount,
+      type: parsed.type
+    };
+  }
+
+  /* UM cartão-comprovante no chat (estilo Itaú/WhatsApp): status +
+     anexo + valor grande + linhas "Rótulo: valor" + Confirmar/Editar/
+     Descartar; depois de confirmar vira o comprovante final ✅ e fica
+     como histórico. Derivado de chatProposal (fora do session do chat
+     e fora do contexto enviado à IA). */
+  function chatProposalParts() {
+    if (!chatProposal.status) return [];
+    const title = chatProposal.kind === 'transfer' ? 'Transferência universal' : 'Informações reconhecidas';
+    const statusHtml = chatProposal.status === 'confirmed'
+      ? '<div class="ai-ocr-status">' + (chatProposal.kind === 'transfer'
+        ? '✅ Transferência registrada com sucesso'
+        : '✅ Movimento lançado com sucesso') + '</div>'
+      : '<div class="ai-ocr-status">✅ Dados reconhecidos — confirme para lançar</div>';
+
     let imageHtml = '';
-    if (attachment && attachment.category === 'image') {
+    if (chatProposal.source === 'ocr' && chatProposal.attachmentId) {
       try {
-        const url = globalThis.LivroCaixaAttachments.manager.previewUrl(attachment.id);
+        const url = globalThis.LivroCaixaAttachments.manager.previewUrl(chatProposal.attachmentId);
         if (url) imageHtml = '<img class="ai-ocr-attach" src="' + url + '" alt="Anexo lido">';
       } catch (err) { /* pré-visualização é best-effort */ }
     }
 
+    const amountHtml = chatProposal.amount != null && chatProposal.amount > 0
+      ? '<div class="ai-ocr-amount">' + escapeHTML(MONEY_FORMATTER.format(chatProposal.amount)) + '</div>'
+      : '';
+
+    const rowsHtml = chatProposal.rows.length
+      ? '<div class="ai-ocr-section-title">' + escapeHTML(title) + '</div>' +
+        '<div class="ai-ocr-rows">' + chatProposal.rows.map((row) =>
+          '<div class="ai-ocr-row"><span class="ai-ocr-label">' + escapeHTML(row.label) + '</span>' +
+          '<span class="ai-ocr-value">' + escapeHTML(String(row.value)) + '</span></div>'
+        ).join('') + '</div>'
+      : '<div class="ai-ocr-error">Não consegui reconhecer os dados. Toque em Editar para preencher.</div>';
+
+    const errorHtml = chatProposal.error
+      ? '<div class="ai-ocr-error">' + escapeHTML(chatProposal.error) + '</div>'
+      : '';
+
+    let actionsHtml = '';
+    if (chatProposal.status === 'awaiting') {
+      if (chatProposal.amount != null && chatProposal.amount > 0) {
+        actionsHtml += '<button type="button" class="ai-ocr-confirm-btn" data-chat-confirm' +
+          (chatProposal.saving ? ' disabled' : '') + '>' +
+          (chatProposal.saving ? 'Confirmando…' : 'Confirmar') + '</button>';
+      }
+      actionsHtml += '<button type="button" class="ai-ocr-secondary-btn" data-chat-edit>Editar</button>' +
+        '<button type="button" class="ai-ocr-secondary-btn" data-chat-discard>Descartar</button>';
+    }
+
     return [
       '<div class="ai-chat-msg is-assistant is-ocr-summary">' +
-      '<span class="ai-ocr-text">' + escapeHTML(text) + '</span>' +
-      imageHtml +
-      '<button type="button" class="ai-ocr-review-btn" data-ocr-review>Revisar</button>' +
+      statusHtml + imageHtml + amountHtml + rowsHtml + errorHtml + actionsHtml +
       '</div>'
     ];
+  }
+
+  /* Confirmar: valida e grava pelo fluxo EXISTENTE de criação (mesmas
+     validações, mesmo saldo, mesma persistência). Movimentação salva
+     aqui mesmo — transferência apenas abre a Transferência universal
+     pré-preenchida (o salvamento acontece no tSalvar, que dispara
+     lc-transfer-saved). */
+  async function chatProposalConfirm() {
+    if (chatProposal.status !== 'awaiting' || chatProposal.saving) return;
+    chatProposal.error = null;
+
+    if (chatProposal.kind === 'transfer') {
+      const canTransfer = banks.length + pockets.length + investments.length >= 2;
+      if (!canTransfer) { chatProposalEdit(); return; }
+      if (ocrState.model) ocrPrefillTransferForm();
+      ocrState.openedTransfer = true;
+      openModal('panelTransferencia');
+      return;
+    }
+
+    chatProposal.saving = true;
+    aiChatRender();
+    try {
+      if (chatProposal.source === 'ocr') {
+        const model = ocrState.model;
+        if (!model) {
+          chatProposal.error = 'A leitura não está mais disponível. Toque em Editar para preencher.';
+          return;
+        }
+        const bankSelect = document.getElementById('fBanco');
+        const categorySelect = document.getElementById('fCategoria');
+        const bankOptions = bankSelect ? Array.from(bankSelect.options).map((o) => o.value) : [];
+        const categoryOptions = categorySelect ? Array.from(categorySelect.options).map((o) => o.value) : [];
+        const result = globalThis.LivroCaixaReview.validate(model, { bankOptions, categoryOptions });
+        if (!result.ok) {
+          chatProposal.error = 'Alguns dados precisam de ajuste. Toque em Editar para revisar.';
+          return;
+        }
+        ocrFillLaunchForm(result.value);
+      } else {
+        const d = chatProposal.data;
+        if (!d || !(d.amount > 0) || !String(d.desc || '').trim() || !banks.some((b) => b.id === d.bank)) {
+          chatProposal.error = 'Alguns dados precisam de ajuste. Toque em Editar para revisar.';
+          return;
+        }
+        ocrFillLaunchForm(d);
+      }
+      const saved = await saveMovementFromForm();
+      if (saved) {
+        chatProposal.status = 'confirmed';
+        chatProposal.error = null;
+        ocrReleaseAll();
+        window.LivroCaixaChat?.open?.();
+      } else {
+        chatProposal.error = 'O lançamento não foi concluído. Revise e tente novamente.';
+      }
+    } catch (err) {
+      chatProposal.error = 'Falha inesperada ao confirmar. Nada foi gravado duas vezes.';
+    } finally {
+      chatProposal.saving = false;
+      aiChatRender();
+    }
+  }
+
+  /* Editar: leva ao MESMO modal de sempre — revisão da leitura (ou
+     Transferência universal) para origem anexo; formulário comum já
+     preenchido para origem texto. */
+  function chatProposalEdit() {
+    if (chatProposal.status !== 'awaiting') return;
+    if (chatProposal.source === 'ocr') {
+      const isTransfer = chatProposal.kind === 'transfer';
+      const canTransfer = banks.length + pockets.length + investments.length >= 2;
+      if (isTransfer && canTransfer && ocrState.model) {
+        ocrPrefillTransferForm();
+        ocrState.openedTransfer = true;
+        openModal('panelTransferencia');
+        return;
+      }
+      /* Sem dois destinos a transferência é inválida — mesma regra
+         do botão manual — e a revisão convencional assume. */
+      if (isTransfer && !canTransfer) {
+        alert('Você precisa ter pelo menos dois destinos cadastrados para realizar transferências. Revise como movimentação comum.');
+      }
+      if (ocrState.model) {
+        ocrRenderReview();
+        ocrReviewNotice('');
+        openModal('panelOcrReview');
+        return;
+      }
+    }
+    chatProposalFillManualForm();
+  }
+
+  /* Formulário comum já preenchido com o snapshot da proposta. */
+  function chatProposalFillManualForm() {
+    const d = chatProposal.data;
+    chatProposalClear();
+    openNewEntryModal();
+    if (d) {
+      const dateEl = document.getElementById('fData');
+      if (dateEl && d.date) dateEl.value = d.date;
+      const descEl = document.getElementById('fDesc');
+      if (descEl) descEl.value = d.desc || '';
+      const bankEl = document.getElementById('fBanco');
+      if (bankEl && d.bank) bankEl.value = d.bank;
+      const catEl = document.getElementById('fCategoria');
+      if (catEl && d.category) catEl.value = d.category;
+      setMoneyInput('fValor', d.amount || 0);
+      if (d.type && currentType !== d.type) {
+        const toggle = document.getElementById(d.type === 'in' ? 'tglIn' : 'tglOut');
+        if (toggle) toggle.click();
+      }
+    }
+    aiChatRender();
+  }
+
+  /* Descartar: some com o cartão; origem anexo também libera o anexo. */
+  function chatProposalDiscard() {
+    const wasOcr = chatProposal.source === 'ocr';
+    chatProposalClear();
+    if (wasOcr) ocrReleaseAll();
+    else aiChatRender();
   }
 
   /* Pré-preenche panelTransferencia com o que a leitura da LIA tem:
@@ -11993,12 +12303,16 @@ VALOR: ${fmt(pseudoBill.amount)}
         provider: read.provider,
         extractStatus: read.status
       });
+      /* Mesmo titular nos lados De/Para (CPF/nome) é o sinal que o
+         keyword-match não alcança: Pix entre contas do próprio usuário. */
+      ocrState.sameHolder = globalThis.LivroCaixaExtract.detectSameHolder(read.text || '');
 
       ocrSetFallback(false);
       ocrAttachmentNotice('');
-      /* Balões com os dados + botão "Revisar" entram pelo render do chat;
-         o modal só abre no clique — sem abertura automática. O intro do
-         balão cobre NO_TEXT e os badges cobrem AMBIGUOUS. */
+      /* Comprovante com os dados reconhecidos entra pelo render do chat
+         antes da repintura — o modal de revisão só abre no clique em
+         Editar. O status cobre NO_TEXT e os badges cobrem AMBIGUOUS. */
+      chatProposalFromOcr();
       aiChatRender();
     } catch (err) {
       ocrAttachmentNotice('Não foi possível ler o anexo.', 'error');
@@ -12127,7 +12441,11 @@ VALOR: ${fmt(pseudoBill.amount)}
              mesma persistência, mesmos eventos e mesmo tratamento de erro */
           const saved = await saveMovementFromForm();
           if (saved) {
+            /* Comprovante final no chat também para quem confirmou pela
+               revisão: marca ANTES do release (que preserva "confirmed"). */
+            if (chatProposal.status === 'awaiting') chatProposal.status = 'confirmed';
             ocrReleaseAll();
+            window.LivroCaixaChat?.open?.();
           } else {
             ocrReviewNotice('O lançamento não foi concluído. Revise e tente novamente.', 'error');
           }
@@ -12209,8 +12527,12 @@ VALOR: ${fmt(pseudoBill.amount)}
     const coinGeckoId = document.getElementById('iCoinGeckoId').value.trim().toLowerCase();
     const type = document.getElementById('iTipo').value;
     const isCrypto = isCryptoType(type);
-    const rawUnitsInput = isCrypto ? (parseFloat(document.getElementById('iUnidades').value) || null) : null;
-    const initialUnits = rawUnitsInput == null ? null : (isBitcoinType(type) ? Math.round(rawUnitsInput) : Number(rawUnitsInput.toFixed(8)));
+    const rawUnitsInput = isCrypto ? parseFloat(document.getElementById('iUnidades').value) : NaN;
+    const initialUnits = isCrypto
+      ? (Number.isFinite(rawUnitsInput)
+        ? (isBitcoinType(type) ? Math.round(rawUnitsInput) : Number(rawUnitsInput.toFixed(8)))
+        : 0)
+      : null;
     const quoteRaw = isCrypto ? readMoneyInput('iCotacao') : NaN;
     const quote = isFinite(quoteRaw) && quoteRaw > 0 ? quoteRaw : null;
     const existingItem = editingInvestId ? investments.find(i => i.id === editingInvestId) : null;
@@ -12225,7 +12547,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     const dueDate = type === 'Renda Fixa' ? document.getElementById('iVencimento').value : '';
 
     if (!name) { alert('Informe o nome do ativo.'); return; }
-    if (isCrypto && (initialUnits == null || initialUnits < 0)) { alert('Informe um saldo inicial válido de unidades/tokens.'); return; }
+    if (isCrypto && (initialUnits == null || initialUnits < 0)) { alert('O saldo inicial não pode ser negativo.'); return; }
 
     const operation = beginLogOperation('Investimentos', editingInvestId ? 'Editar ativo' : 'Salvar ativo');
     logInfo('Investimentos', editingInvestId ? 'Editar ativo' : 'Salvar ativo', 'Em andamento', 'Operação de ativo iniciada.', null, operation);
@@ -13661,6 +13983,11 @@ document.getElementById('tSalvar').onclick = async () => {
     setMoneyInput('tValor', 0);
     document.getElementById('tDesc').value = '';
     closeAllPanels();
+    /* Comprovante no chat: mesmo task do closeAllPanels, ANTES do
+       microtask do observador que libera o anexo (a proposta passa a
+       "confirmed" e o release a preserva). Só age se há proposta de
+       transferência pendente — o fluxo manual não tem nenhuma. */
+    window.dispatchEvent(new Event('lc-transfer-saved'));
     render();
   };
 

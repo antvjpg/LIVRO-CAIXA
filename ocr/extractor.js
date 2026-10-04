@@ -333,18 +333,153 @@
     'BANCO MORADA', 'MORADA', 'SICREDI', 'BANRISUL', 'BANCO ORIGINAL', 'ORIGINAL'
   ];
 
+  /* Limite de palavra sem lookbehind (Safari antigo não suporta):
+     "INTER" não pode casar dentro de "INTERNET", "BB" dentro de NSU/hex. */
+  const WORD_CHAR_RE = /[A-ZÀ-ÖØ-öø-ÿ0-9]/;
+
   function detectAccount(text) {
     const upper = String(text || '').toLocaleUpperCase('pt-BR');
     const hits = [];
     for (const name of INSTITUTIONS) {
-      const idx = upper.indexOf(name);
-      if (idx !== -1) hits.push({ name, idx });
+      let idx = upper.indexOf(name);
+      while (idx !== -1) {
+        const before = idx > 0 ? upper.charAt(idx - 1) : '';
+        const after = upper.charAt(idx + name.length);
+        const insideWord = (before && WORD_CHAR_RE.test(before)) || (after && WORD_CHAR_RE.test(after));
+        if (!insideWord) {
+          hits.push({ name, idx });
+          break;
+        }
+        idx = upper.indexOf(name, idx + 1);
+      }
     }
     if (!hits.length) return missingField('account');
     hits.sort((a, b) => a.idx - b.idx);
     const unique = [...new Set(hits.map((h) => h.name))];
     if (unique.length > 1) return ambiguousField('account', unique.slice(0, 3));
     return field('account', unique[0], 0.7, STATUS.CONFIRMED_BY_EXTRACTION, { candidates: unique });
+  }
+
+  /* ------------------------------------- mesmo titular nos lados De/Para */
+
+  /* Comprovante com blocos "De" e "Para": os dois extremos são a MESMA
+     pessoa (transferência entre contas do próprio titular)?
+     - CPF: compara os 6 primeiros dígitos — as máscaras de banco cortam
+       o mesmo trecho nos dois lados ("*** 243.923-" e "***243923**");
+     - Nome (fallback): sobreposição de tokens quando um dos lados não
+       traz CPF utilizável.
+     Sem os DOIS lados não decide. Sinal determinístico: dado não
+     confiável não vira comando, vira candidato de fluxo. */
+  const SIDE_STOP_RE = /^(dados da transa|autenticacao|id da transacao|central de atendimento|chave pix|compartilhar|valor|total)/;
+
+  function sideNormalize(value) {
+    return String(value == null ? '' : value)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+
+  function parseSideMarker(line) {
+    const n = sideNormalize(line).trim();
+    const withColon = /^(de|para)\s*:\s*(.*)$/.exec(n);
+    if (withColon) return { side: withColon[1], inline: withColon[2].trim() };
+    if (n === 'de' || n === 'para') return { side: n, inline: '' };
+    return null;
+  }
+
+  function collectSide(lines, markerIdx) {
+    const out = [];
+    for (let i = markerIdx + 1; i < lines.length && out.length < 8; i++) {
+      const raw = String(lines[i] || '').trim();
+      if (!raw) continue;
+      if (parseSideMarker(raw)) break;
+      const n = sideNormalize(raw);
+      if (SIDE_STOP_RE.test(n)) break;
+      out.push(raw);
+    }
+    return out;
+  }
+
+  function sideCpfPrefix(block) {
+    for (const line of block) {
+      const n = sideNormalize(line);
+      const idx = n.indexOf('cpf');
+      if (idx === -1) continue;
+      const digits = (n.slice(idx).match(/\d/g) || []).join('');
+      if (digits.length >= 6) return digits.slice(0, 6);
+    }
+    return null;
+  }
+
+  function sideName(block) {
+    for (const line of block) {
+      const n = sideNormalize(line);
+      if (/cpf|instituicao|conta|agencia|chave|@|r\$|\d{3,}/.test(n)) continue;
+      if (n.replace(/[^a-z]/g, '').length < 4) continue;
+      return line;
+    }
+    return null;
+  }
+
+  function sideNameTokens(value) {
+    return sideNormalize(value).split(/[^a-z0-9]+/).filter((t) => t.length >= 3);
+  }
+
+  /* Cada token do lado A precisa se relacionar (prefixo) com um token do
+     lado B, com no mínimo 2 correspondências e score >= 0.6 — abreviação
+     de nome ("P" por "Pinheiro") não derruba, nome de outra pessoa sim. */
+  function sideNamesLookSame(a, b) {
+    const ta = sideNameTokens(a);
+    const tb = sideNameTokens(b);
+    if (ta.length < 2 || tb.length < 2) return false;
+    const used = new Set();
+    let matched = 0;
+    for (const t of ta) {
+      const hit = tb.findIndex((u, j) => !used.has(j) && (u.startsWith(t) || t.startsWith(u)));
+      if (hit !== -1) { used.add(hit); matched += 1; }
+    }
+    return matched >= 2 && (2 * matched) / (ta.length + tb.length) >= 0.6;
+  }
+
+  function detectSameHolder(rawText) {
+    const text = sanitizeText(rawText);
+    const result = { sameHolder: false, method: null, sender: null, receiver: null };
+    if (!text) return result;
+
+    const lines = text.split('\n');
+    let deIdx = -1;
+    let paraIdx = -1;
+    for (let i = 0; i < lines.length; i++) {
+      const marker = parseSideMarker(lines[i]);
+      if (!marker) continue;
+      if (marker.side === 'de' && deIdx === -1) deIdx = i;
+      else if (marker.side === 'para' && deIdx !== -1 && paraIdx === -1) paraIdx = i;
+    }
+    if (deIdx === -1 || paraIdx <= deIdx) return result;
+
+    const senderMarker = parseSideMarker(lines[deIdx]);
+    const receiverMarker = parseSideMarker(lines[paraIdx]);
+    const senderBlock = collectSide(lines, deIdx);
+    const receiverBlock = collectSide(lines, paraIdx);
+    if (senderMarker && senderMarker.inline) senderBlock.unshift(senderMarker.inline);
+    if (receiverMarker && receiverMarker.inline) receiverBlock.unshift(receiverMarker.inline);
+    if (!senderBlock.length || !receiverBlock.length) return result;
+
+    result.sender = sideName(senderBlock);
+    result.receiver = sideName(receiverBlock);
+
+    const senderCpf = sideCpfPrefix(senderBlock);
+    const receiverCpf = sideCpfPrefix(receiverBlock);
+    if (senderCpf && receiverCpf) {
+      result.method = 'cpf';
+      result.sameHolder = senderCpf === receiverCpf;
+      return result;
+    }
+    if (result.sender && result.receiver) {
+      result.method = 'name';
+      result.sameHolder = sideNamesLookSame(result.sender, result.receiver);
+    }
+    return result;
   }
 
   const DOC_NUMBER_RE = /\b(?:NSU|RECIBO|NOTA FISCAL|NF-?E|CODIGO DE AUTENTICIDADE|C[OÓ]DIGO|AUTORIZA[ÇC][AA]O|PROTOCOLO|DOCUMENTO|COMPROVANTE|PEDIDO)\b(?:\s*N[O°º]?)?\s*[:\-]?\s*([A-Z0-9][A-Z0-9./-]{3,23})/i;
@@ -364,8 +499,9 @@
     /cr[ée]dit/i, /\brecebid/i, /\bd[eé]posit/i, /\bestorn/i,
     /\brecebiment/i, /\bentrad/i, /\bcredidad/i
   ];
+  /* \bcompr puro casa "Comprovante" — todo comprovante virava saída. */
   const TYPE_OUT = [
-    /d[ée]bit/i, /\bpagament/i, /\bpagto/i, /\bcompr/i, /\bsaque/i,
+    /d[ée]bit/i, /\bpagament/i, /\bpagto/i, /\bcompr(?:a|as|ado|ada|amos|ar|ou)\b/i, /\bsaque/i,
     /\bcobran[çc]/i, /\bsa[íi]da/i, /\bvalor pago/i, /\bdebitad/i
   ];
 
@@ -526,6 +662,7 @@
     detectAccount,
     detectDocumentNumber,
     detectType,
+    detectSameHolder,
     extractFromText,
     round2
   };
