@@ -2150,6 +2150,11 @@
   .compound-calc-chart{position:relative;height:210px;margin-top:13px;}
   .compound-calc-chart[hidden]{display:none;}
   .compound-calc-note{margin:11px 0 0;font-size:10px;line-height:1.45;color:var(--ink-soft);}
+  .compound-calc-group-label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-soft);margin-bottom:5px;}
+  .ci-benchmark-picks{display:flex;flex-wrap:wrap;gap:6px;}
+  .ci-benchmark-pick{display:flex;align-items:center;gap:6px;margin:0;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--paper-2);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink);cursor:pointer;user-select:none;min-height:34px;}
+  .ci-benchmark-pick input{margin:0;accent-color:var(--accent);}
+  .ci-benchmark-pick:has(input:checked){border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--paper));}
   .feature-profile-security{margin-bottom:26px;}
   .feature-profile-pin-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;}
   .feature-profile-pin-actions{display:flex;gap:7px;}
@@ -9662,6 +9667,12 @@ body[data-tab="dashboard"] #viewDashboard.active {
   margin-top:4px;
   min-height:1.3em;
 }
+.ai-chat-indicators{
+  display:block;
+  margin-top:4px;
+  color:var(--red);
+}
+.ai-chat-indicators[hidden]{display:none;}
 .ai-chat-notice{
   margin:0 0 10px;
   padding:9px 11px;
@@ -9746,6 +9757,24 @@ body[data-tab="dashboard"] #viewDashboard.active {
   cursor:pointer;
 }
 .ai-chat-action:hover{background:rgba(255,255,255,.16);}
+.ai-chat-msg.is-ocr-summary{max-width:94%;}
+.ai-ocr-text{display:block;white-space:pre-wrap;overflow-wrap:anywhere;}
+.ai-ocr-attach{display:block;max-width:220px;max-height:220px;border-radius:10px;border:1px solid var(--line);margin-top:8px;object-fit:contain;}
+.ai-ocr-review-btn{
+  -webkit-appearance:none;
+  appearance:none;
+  border:1px solid var(--accent);
+  background:var(--accent);
+  color:var(--accent-ink);
+  font:inherit;
+  font-size:12px;
+  font-weight:600;
+  padding:8px 16px;
+  border-radius:9px;
+  cursor:pointer;
+  min-height:36px;
+}
+.ai-ocr-review-btn:hover{filter:brightness(1.06);}
 .ai-chat-action:active{background:rgba(255,255,255,.26);}
 .ai-chat-action-status{font-size:10.5px;opacity:.9;}
 .ai-chat-composer{

@@ -435,7 +435,7 @@ test("index.html: botão de enviar usa paper-plane-top", () => {
 test("index.html: contador de leitura de IA reusa [data-ai-quota] no intro", () => {
   assert.match(html, /id="aiChatIntro"[\s\S]{0,300}?class="ai-chat-quota" data-ai-quota aria-live="polite"/,
     "contador deve ser um nó data-ai-quota dentro do texto de intro");
-  assert.match(js, /window\.renderAiQuotaStatus\?\.\(\);\s*\n\s*window\.LivroCaixaAI\?\.refreshQuota\?\.\(\{ silent: true, throttleMs: 15000 \}\);/,
+  assert.match(js, /window\.renderAiQuotaStatus\?\.\(\);[\s\S]{0,160}?window\.LivroCaixaAI\?\.refreshQuota\?\.\(\{ silent: true, throttleMs: 15000 \}\);/,
     "abrir o chat atualiza o contador (padrão throttle do app)");
 });
 
@@ -511,4 +511,20 @@ test("app: ações de copiar/editar na mensagem do usuário (edição estilo Cha
     "mensagem ainda em envio não oferece ações");
   assert.ok(js.includes('aiChat.editing = null') && js.includes('aiChat.editing = { index }'),
     "estado de edição existe e é limpo");
+});
+
+test("index.html/app/styles: chip de indicadores indisponíveis no chat", () => {
+  assert.match(html, /class="ai-chat-indicators" data-ai-indicators aria-live="polite" hidden/,
+    "chip existe, anuncia mudanças e começa oculto");
+  assert.match(html, /data-ai-quota aria-live="polite"><\/span>\s*<span class="ai-chat-indicators"/,
+    "chip de indicadores acompanha o chip de cota no intro");
+  assert.ok(js.includes("function renderAiIndicatorsStatus()"), "render do chip existe");
+  assert.match(js, /function renderAiIndicatorsStatus\(\) \{[\s\S]{0,400}financialIndicatorsState\(\)/,
+    "chip deriva do estado real dos indicadores");
+  assert.match(js, /\} finally \{\s*renderAiIndicatorsStatus\(\);\s*\}/,
+    "todo refresh de indicadores repinta o chip");
+  assert.match(js, /window\.renderAiQuotaStatus\?\.\(\);\s*renderAiIndicatorsStatus\(\);/,
+    "abrir o chat repinta o chip");
+  assert.ok(css.includes(".ai-chat-indicators{"), "estilo do chip");
+  assert.ok(css.includes(".ai-chat-indicators[hidden]{display:none;}"), "chip oculto some de vez");
 });

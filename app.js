@@ -3704,6 +3704,8 @@ document.addEventListener('DOMContentLoaded', () => {
       logWarn('Indicadores', 'Consulta ao Worker', 'Falha', `Sem indicadores externos (${code}). Saldos locais não foram afetados.`);
       renderIndicatorsSection();
       return null;
+    } finally {
+      renderAiIndicatorsStatus();
     }
   }
 
@@ -3716,6 +3718,26 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       console.warn('[Livro-Caixa] Repaint do Dashboard falhou:', err?.message || err);
     }
+  }
+
+  /* Chip no cabeçalho do chat da LIA: diz quais indicadores externos estão
+     faltando, para a recusa de simulação não parecer misteriosa. */
+  function renderAiIndicatorsStatus() {
+    const el = document.querySelector('[data-ai-indicators]');
+    if (!el) return;
+    try {
+      const info = financialIndicatorsState();
+      const ind = info && info.indicators ? info.indicators : {};
+      const names = { cdi: 'CDI', selic: 'Selic', ipca: 'IPCA', tesouro: 'Tesouro' };
+      const missing = ['cdi', 'selic', 'ipca', 'tesouro'].filter((key) => !ind[key]);
+      if (!missing.length) {
+        el.hidden = true;
+        el.textContent = '';
+        return;
+      }
+      el.hidden = false;
+      el.textContent = `Indicadores indisponíveis: ${missing.map((key) => names[key]).join(', ')}. Simulações da LIA com essas referências podem ficar limitadas até a consulta voltar.`;
+    } catch (err) { /* chip é informativo; falha aqui não pode derrubar o refresh */ }
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -5957,8 +5979,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ciMonthly = document.getElementById('ciMonthly'); if (ciMonthly && !ciMonthly.value) setMoneyInput('ciMonthly', 100);
     const ciRate = document.getElementById('ciRate'); if (ciRate && !ciRate.value) ciRate.value = '0,8';
     const ciMonths = document.getElementById('ciMonths'); if (ciMonths && !ciMonths.value) ciMonths.value = '24';
-    const ciBenchmark = document.getElementById('ciBenchmark');
-    const ciBenchmarkRate = document.getElementById('ciBenchmarkRate'); if (ciBenchmarkRate && !ciBenchmarkRate.value) ciBenchmarkRate.value = compoundRateInputValue(compoundBenchmarkRatePct(ciBenchmark?.value || 'cdi'));
+    const ciBenchmarkRate = document.getElementById('ciBenchmarkRate'); if (ciBenchmarkRate && !ciBenchmarkRate.value) ciBenchmarkRate.value = compoundRateInputValue(compoundBenchmarkRatePct('cdi'));
     const pinInput = document.getElementById('featurePin'); if (pinInput) pinInput.value = '';
     window.renderAiQuotaStatus?.();
     window.LivroCaixaAI?.refreshQuota?.();
@@ -6139,7 +6160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function compoundPctLabel(pct) { return String(Number(Number(pct).toFixed(2))).replace('.', ','); }
   function compoundRateInputValue(pct) { return String(Number(Number(pct).toFixed(3))).replace('.', ','); }
-  function renderCompoundCalcChart(months, scenario, benchmark) {
+  function renderCompoundCalcChart(months, scenario, benchmarks) {
     const box = document.getElementById('ciChartBox');
     const canvas = document.getElementById('ciChart');
     destroyCompoundCalcChart();
@@ -6150,13 +6171,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const bodyStyle = getComputedStyle(document.body);
     const textColor = bodyStyle.getPropertyValue('--ink-soft').trim() || '#55635B';
     const gridColor = bodyStyle.getPropertyValue('--line').trim() || '#D8D2C1';
+    const benchmarkColors = { 'CDI': '#B3432B', 'Selic': '#3B6FA8', 'Poupança': '#8A6A2F', 'Personalizado': '#7A4B9E' };
+    const benchmarkDatasets = (benchmarks || []).map((item) => {
+      const color = benchmarkColors[item.name] || '#B3432B';
+      return {
+        label: `${item.name} · ${compoundPctLabel(item.ratePct)}%`,
+        data: item.result.points,
+        borderColor: color,
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderDash: [6, 4],
+        tension: 0.25,
+        pointRadius: 0,
+        pointBackgroundColor: color
+      };
+    });
     compoundCalcChartInstance = new Chart(canvas, {
       type: 'line',
       data: {
         labels,
         datasets: [
           { label: 'Cenário', data: scenario.points, borderColor: '#2F6F4F', backgroundColor: 'transparent', borderWidth: 2.5, tension: 0.25, pointRadius: months > 36 ? 0 : 2, pointBackgroundColor: '#2F6F4F' },
-          { label: 'Benchmark', data: benchmark.points, borderColor: '#B3432B', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6, 4], tension: 0.25, pointRadius: 0, pointBackgroundColor: '#B3432B' }
+          ...benchmarkDatasets
         ]
       },
       options: {
@@ -6273,13 +6309,17 @@ document.addEventListener('DOMContentLoaded', () => {
       : scenarioAnnual
         ? Math.pow(1 + scenarioRatePct / 100, 1 / 12) - 1
         : scenarioRatePct / 100;
-    const benchmarkKind = document.getElementById('ciBenchmark')?.value || 'cdi';
-    const benchmarkRatePct = parseCompoundRate(document.getElementById('ciBenchmarkRate')?.value);
-    const benchmarkMonthlyRate = benchmarkRatePct / 100;
-    const benchmarkName = { poupanca: 'Poupança', cdi: 'CDI', selic: 'Selic' }[benchmarkKind] || 'Benchmark';
-
     const scenario = compoundApplyTaxes(compoundFutureValue(initial, monthly, scenarioMonthlyRate, months), days);
-    const benchmark = compoundApplyTaxes(compoundFutureValue(initial, monthly, benchmarkMonthlyRate, months), days);
+    const benchmarkDefs = [];
+    if (document.getElementById('ciBenchCdi')?.checked) benchmarkDefs.push({ name: 'CDI', ratePct: compoundBenchmarkRatePct('cdi') });
+    if (document.getElementById('ciBenchSelic')?.checked) benchmarkDefs.push({ name: 'Selic', ratePct: compoundBenchmarkRatePct('selic') });
+    if (document.getElementById('ciBenchPoupanca')?.checked) benchmarkDefs.push({ name: 'Poupança', ratePct: compoundBenchmarkRatePct('poupanca') });
+    if (document.getElementById('ciBenchCustom')?.checked) benchmarkDefs.push({ name: 'Personalizado', ratePct: parseCompoundRate(document.getElementById('ciBenchmarkRate')?.value) });
+    const benchmarks = benchmarkDefs.map((def) => ({
+      name: def.name,
+      ratePct: def.ratePct,
+      result: compoundApplyTaxes(compoundFutureValue(initial, monthly, def.ratePct / 100, months), days)
+    }));
 
     const results = document.getElementById('ciResults');
     if (results) {
@@ -6293,29 +6333,48 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="compound-calc-row"><span>IOF${result.taxIof > 0 ? ` (${compoundPctLabel(result.iofPct)}%)` : ' (isento)'}</span><b>${fmt(result.taxIof)}</b></div>
           <div class="compound-calc-row compound-calc-row-net"><span>Montante líquido</span><b>${fmt(result.netFinal)}</b></div>
         </div>`;
-      const diffNet = scenario.netFinal - benchmark.netFinal;
-      const diffGross = scenario.final - benchmark.final;
-      const diffPct = benchmark.netFinal > 0 ? Math.abs(diffNet / benchmark.netFinal) * 100 : null;
-      const diffTitle = diffNet >= 0 ? 'O cenário termina acima do benchmark' : 'O benchmark termina acima do cenário';
       const iofLabel = scenario.taxIof > 0 ? `${compoundPctLabel(scenario.iofPct)}%` : 'isento';
       const scenarioTitle = scenarioCdiMode
         ? `Cenário · ${compoundPctLabel(scenarioRatePct)}% do CDI (${compoundPctLabel(scenarioMonthlyRate * 100)}% a.m.)`
         : `Cenário · ${compoundPctLabel(scenarioRatePct)}% ${scenarioAnnual ? 'a.a.' : 'a.m.'}`;
+      if (!benchmarks.length) {
+        results.innerHTML = `
+          ${card(scenarioTitle, scenario)}
+          <div class="compound-calc-card compound-calc-card-delta">
+            <strong class="compound-calc-card-title">Benchmark</strong>
+            <div class="compound-calc-row"><span>Marque pelo menos um benchmark (CDI, Selic, Poupança ou Personalizado) para comparar com o cenário.</span></div>
+          </div>`;
+        destroyCompoundCalcChart();
+        const chartBox = document.getElementById('ciChartBox');
+        if (chartBox) chartBox.hidden = true;
+        logInfo('Análise', 'Calculadora de juros compostos', 'Aguardando benchmark', 'Nenhum benchmark marcado; apenas o cenário foi calculado.');
+        return;
+      }
+      const benchmarkCards = benchmarks.map((item) => card(`${item.name} · ${compoundPctLabel(item.ratePct)}% a.m.`, item.result)).join('');
+      const diffRows = benchmarks.map((item) => {
+        const diffNet = scenario.netFinal - item.result.netFinal;
+        const diffGross = scenario.final - item.result.final;
+        const diffPct = item.result.netFinal > 0 ? Math.abs(diffNet / item.result.netFinal) * 100 : null;
+        const diffTitle = diffNet >= 0 ? 'O cenário termina acima' : 'O benchmark termina acima';
+        return `
+          <strong class="compound-calc-card-title">${escapeHTML(item.name)}</strong>
+          <div class="compound-calc-row"><span>Líquido (cenário − ${escapeHTML(item.name)})</span><b>${fmt(diffNet)}</b></div>
+          <div class="compound-calc-row"><span>Bruto (cenário − ${escapeHTML(item.name)})</span><b>${fmt(diffGross)}</b></div>
+          <div class="compound-calc-row"><span>${diffTitle}${diffPct !== null ? ` em ${compoundPctLabel(diffPct)}%` : ''}</span></div>`;
+      }).join('');
       results.innerHTML = `
         ${card(scenarioTitle, scenario)}
-        ${card(`${benchmarkName} · ${compoundPctLabel(benchmarkRatePct)}% a.m.`, benchmark)}
+        ${benchmarkCards}
         <div class="compound-calc-card compound-calc-card-delta">
           <strong class="compound-calc-card-title">Diferença</strong>
-          <div class="compound-calc-row"><span>Líquido (cenário − benchmark)</span><b>${fmt(diffNet)}</b></div>
-          <div class="compound-calc-row"><span>Bruto (cenário − benchmark)</span><b>${fmt(diffGross)}</b></div>
-          <div class="compound-calc-row"><span>${diffTitle}${diffPct !== null ? ` em ${compoundPctLabel(diffPct)}%` : ''}</span></div>
+          ${diffRows}
           <div class="compound-calc-row"><span>Impostos no prazo: IR ${compoundPctLabel(scenario.irPct)}% · IOF ${iofLabel} · ${scenario.taxDays} dias</span></div>
         </div>
         ${compoundAllocationCard(initial, monthly, months, days, scenario)}`;
     }
 
-    renderCompoundCalcChart(months, scenario, benchmark);
-    logInfo('Análise', 'Calculadora de juros compostos', 'Sucesso', 'Cenário e benchmark calculados localmente com IR/IOF, sem alterar os dados.');
+    renderCompoundCalcChart(months, scenario, benchmarks);
+    logInfo('Análise', 'Calculadora de juros compostos', 'Sucesso', 'Cenário e benchmarks calculados localmente com IR/IOF, sem alterar os dados.');
   }
   function parsePtNumberValue(raw) {
     const text = String(raw || '').trim();
@@ -6399,9 +6458,9 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   document.getElementById('btnGenerateMonthlyReview')?.addEventListener('click', generateMonthlyReview);
   document.getElementById('btnRunWhatIf')?.addEventListener('click', runWhatIf);
   document.getElementById('btnRunCompoundCalc')?.addEventListener('click', runCompoundInterest);
-  document.getElementById('ciBenchmark')?.addEventListener('change', (event) => {
+  document.getElementById('ciBenchCustom')?.addEventListener('change', (event) => {
     const rate = document.getElementById('ciBenchmarkRate');
-    if (rate) rate.value = compoundRateInputValue(compoundBenchmarkRatePct(event.target.value));
+    if (event.target.checked && rate && !rate.value) rate.value = compoundRateInputValue(compoundBenchmarkRatePct('cdi'));
   });
   document.getElementById('ciTermUnit')?.addEventListener('change', (event) => {
     const months = document.getElementById('ciMonths');
@@ -7040,6 +7099,11 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
         `</div>`
       );
     });
+
+    /* V.20-01 — balões da revisão de anexo: derivados de ocrState.model
+       (sem tocar no contrato do chat); somem quando o estado é liberado. */
+    parts.push(...ocrChatBubblesParts());
+
     if (pending) {
       parts.push(`<div class="ai-chat-msg is-user is-pending">${escapeHTML(pending.content)}</div>`);
       parts.push('<div class="ai-chat-msg is-assistant is-pending">Pensando…</div>');
@@ -7153,6 +7217,33 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   }
 
   function onAiChatMessagesClick(event) {
+    /* Botão "Revisar" do balão de anexo — antes do guard de mensagens
+       do usuário: o balão é do assistente e não tem data-msg-index.
+       Convencional → modal de revisão; transferência → Transferência
+       universal (pré-preenchida), o "modal respectivo". */
+    const reviewBtn = event.target.closest?.('[data-ocr-review]');
+    if (reviewBtn) {
+      if (ocrState.model) {
+        const isTransfer = ocrChatIsTransfer(ocrState.model.fields);
+        const canTransfer = banks.length + pockets.length + investments.length >= 2;
+        if (isTransfer && canTransfer) {
+          ocrPrefillTransferForm();
+          ocrState.openedTransfer = true;
+          openModal('panelTransferencia');
+        } else {
+          /* Sem dois destinos a transferência é inválida — mesma regra
+             do botão manual — e a revisão convencional assume. */
+          if (isTransfer) {
+            alert('Você precisa ter pelo menos dois destinos cadastrados para realizar transferências. Revise como movimentação comum.');
+          }
+          ocrRenderReview();
+          ocrReviewNotice('');
+          openModal('panelOcrReview');
+        }
+      }
+      return;
+    }
+
     const bubble = event.target.closest?.('.ai-chat-msg.is-user[data-msg-index]');
     if (!bubble) {
       closeAiChatActions();
@@ -7395,6 +7486,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
        viewport e preserva a âncora do fim da conversa do aiChatRender(). */
     aiChatApplyViewportFix();
     window.renderAiQuotaStatus?.();
+    renderAiIndicatorsStatus();
     window.LivroCaixaAI?.refreshQuota?.({ silent: true, throttleMs: 15000 });
 
     /* Aguarda indicadores (não bloqueia a UI, mas enriquece o snapshot se chegar a tempo). */
@@ -11342,7 +11434,7 @@ VALOR: ${fmt(pseudoBill.amount)}
      Nenhum código aqui conhece Android, Capacitor ou plugin nativo.
      ================================================================== */
 
-  const ocrState = { attachment: null, model: null, controller: null, busy: false, confirming: false };
+  const ocrState = { attachment: null, model: null, controller: null, busy: false, confirming: false, openedTransfer: false };
   const OCR_FIELD_ORDER = ['date', 'amount', 'description', 'type', 'category', 'account', 'merchant', 'paymentMethod', 'documentNumber'];
   /* Exibidos na revisão mas SEM campo equivalente no modelo de movimentação:
      são informações do documento, nunca persistidas. */
@@ -11412,12 +11504,15 @@ VALOR: ${fmt(pseudoBill.amount)}
     }
     ocrState.model = null;
     ocrState.busy = false;
+    ocrState.openedTransfer = false;
     const input = document.getElementById('liaAttachmentFile');
     if (input) input.value = '';
     const chip = document.getElementById('liaAttachmentChip');
     if (chip) { chip.hidden = true; chip.textContent = ''; }
     const attachBtn = document.getElementById('btnLiaAttach');
     if (attachBtn) attachBtn.disabled = false;
+    /* Sem modelo → balões da revisão somem do chat. */
+    aiChatRender();
   }
 
   function ocrHolderLabel() {
@@ -11448,6 +11543,147 @@ VALOR: ${fmt(pseudoBill.amount)}
         ocrAttachmentNotice('Anexo removido. Nada foi gravado.');
       });
     }
+  }
+
+  /* ------------------------------------------- balões da revisão no chat */
+  function ocrChatDisplayValue(key, field) {
+    const raw = field.value;
+    if (raw == null || raw === '') return null;
+    if (key === 'date') {
+      const parts = String(raw).split('-');
+      if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+      return String(raw);
+    }
+    if (key === 'amount') {
+      const num = Number(raw);
+      return Number.isFinite(num) ? MONEY_FORMATTER.format(num) : String(raw);
+    }
+    if (key === 'type') {
+      if (raw === 'in') return 'Entrada';
+      if (raw === 'out') return 'Saída';
+      return String(raw);
+    }
+    return String(raw);
+  }
+
+  function ocrChatLine(label, value) {
+    return label + ': ' + (value == null || value === '' ? '—' : value);
+  }
+
+  /* Sinais já usados pelo extrator (categoria/pagamento "Transferência",
+     TED, DOC, "pix enviado"): quando a leitura indica transferência, o
+     balão usa o modelo "Transferência universal" e o Revisar abre
+     panelTransferencia em vez do modal de revisão convencional. */
+  function ocrChatIsTransfer(fields) {
+    if (!fields) return false;
+    const transferRe = /\btransfer[eê]ncia\b|\bpix enviado\b|\bted\b|\bdoc\b/i;
+    const strip = (v) => String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const category = fields.category ? fields.category.value : null;
+    if (category && strip(category) === 'transferencia') return true;
+    if (category && transferRe.test(String(category))) return true;
+    const payment = fields.paymentMethod ? fields.paymentMethod.value : null;
+    if (payment && /transfer/i.test(String(payment))) return true;
+    const desc = (fields.description && fields.description.value) || '';
+    const merchant = (fields.merchant && fields.merchant.value) || '';
+    return transferRe.test(String(desc) + ' ' + String(merchant));
+  }
+
+  /* UM balão de texto com cabeçalho + linhas "Rótulo: valor" + o anexo
+     dentro do balão + botão Revisar. Templates: "Informações
+     reconhecidas" (convencional) ou "Transferência universal".
+     Derivado de ocrState.model: existe só enquanto a revisão está
+     pendente (confirmar/cancelar/fechar/remover libera e some com ele).
+     Nada entra no session do chat nem no contexto enviado à IA. */
+  function ocrChatBubblesParts() {
+    const model = ocrState && ocrState.model;
+    if (!model) return [];
+    const fields = model.fields || {};
+    const value = (key) => {
+      const field = fields[key];
+      return field && field.value != null && field.value !== '' ? ocrChatDisplayValue(key, field) : null;
+    };
+
+    let text;
+    if (ocrChatIsTransfer(fields)) {
+      /* A leitura da LIA tem UMA conta: em entrada ela é o destino,
+         nos demais casos a origem — o usuário ajusta no modal. */
+      const account = value('account');
+      const isIn = !!(fields.type && fields.type.value === 'in');
+      text = [
+        'Transferência universal',
+        ocrChatLine('Data', value('date')),
+        ocrChatLine('Origem', isIn ? null : account),
+        ocrChatLine('Destino', isIn ? account : null),
+        ocrChatLine('Valor', value('amount')),
+        ocrChatLine('Descrição', value('description'))
+      ].join('\n');
+    } else {
+      const hasAnyValue = ['date', 'amount', 'description', 'type', 'category', 'account']
+        .some((key) => value(key) != null);
+      text = hasAnyValue
+        ? [
+          'Informações reconhecidas',
+          ocrChatLine('Data', value('date')),
+          ocrChatLine('Tipo', value('type')),
+          ocrChatLine('Banco', value('account')),
+          ocrChatLine('Valor', value('amount')),
+          ocrChatLine('Descrição', value('description')),
+          ocrChatLine('Categoria', value('category'))
+        ].join('\n')
+        : 'Não consegui reconhecer os dados deste anexo. Abra a revisão e preencha manualmente.';
+    }
+
+    const attachment = ocrState.attachment || model.attachment;
+    let imageHtml = '';
+    if (attachment && attachment.category === 'image') {
+      try {
+        const url = globalThis.LivroCaixaAttachments.manager.previewUrl(attachment.id);
+        if (url) imageHtml = '<img class="ai-ocr-attach" src="' + url + '" alt="Anexo lido">';
+      } catch (err) { /* pré-visualização é best-effort */ }
+    }
+
+    return [
+      '<div class="ai-chat-msg is-assistant is-ocr-summary">' +
+      '<span class="ai-ocr-text">' + escapeHTML(text) + '</span>' +
+      imageHtml +
+      '<button type="button" class="ai-ocr-review-btn" data-ocr-review>Revisar</button>' +
+      '</div>'
+    ];
+  }
+
+  /* Pré-preenche panelTransferencia com o que a leitura da LIA tem:
+     data, valor, observação e a conta lida (quando bater com um banco)
+     na direção correta. Origem/destino completos ficam com o usuário —
+     o modal tem o próprio "Ler comprovante com IA". */
+  function ocrPrefillTransferForm() {
+    const model = ocrState.model;
+    if (!model) return false;
+    const fields = model.fields || {};
+    const dateEl = document.getElementById('tData');
+    const rawDate = fields.date && fields.date.value ? String(fields.date.value) : '';
+    if (dateEl) dateEl.value = /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? rawDate : todayISO();
+    const amountRaw = fields.amount ? fields.amount.value : null;
+    const amount = Number(amountRaw);
+    setMoneyInput('tValor', Number.isFinite(amount) && amount > 0 ? amount : 0);
+    const descEl = document.getElementById('tDesc');
+    if (descEl) descEl.value = (fields.description && fields.description.value) || '';
+
+    const deSelect = document.getElementById('tDe');
+    const paraSelect = document.getElementById('tPara');
+    const accountName = (fields.account && fields.account.value) || '';
+    const matched = accountName ? matchTransferReceiptTarget(accountName) : null;
+    const matchedBank = matched && matched.id && (banks || []).some((bank) => bank.id === matched.id)
+      ? matched.id
+      : '';
+    if (matchedBank && deSelect && paraSelect) {
+      const isIn = !!(fields.type && fields.type.value === 'in');
+      const side = isIn ? paraSelect : deSelect;
+      const other = isIn ? deSelect : paraSelect;
+      /* Só preenche quando não colide com o outro lado (senão
+         origem === destino e o salvamento é bloqueado). */
+      if (other.value !== matchedBank) side.value = matchedBank;
+    }
+    return true;
   }
 
   /* ------------------------------------------------------- render preview */
@@ -11760,11 +11996,10 @@ VALOR: ${fmt(pseudoBill.amount)}
 
       ocrSetFallback(false);
       ocrAttachmentNotice('');
-      ocrRenderReview();
-      ocrReviewNotice(read.status === 'NO_TEXT'
-        ? 'Não consegui reconhecer texto neste anexo. Preencha os dados manualmente.'
-        : read.status === 'AMBIGUOUS' ? 'Alguns campos precisam da sua revisão.' : '');
-      openModal('panelOcrReview');
+      /* Balões com os dados + botão "Revisar" entram pelo render do chat;
+         o modal só abre no clique — sem abertura automática. O intro do
+         balão cobre NO_TEXT e os badges cobrem AMBIGUOUS. */
+      aiChatRender();
     } catch (err) {
       ocrAttachmentNotice('Não foi possível ler o anexo.', 'error');
       ocrSetFallback(true);
@@ -11930,6 +12165,23 @@ VALOR: ${fmt(pseudoBill.amount)}
         wasOpen = open;
       });
       observer.observe(reviewPanel, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    /* Mesma semântica para a Transferência universal aberta pelo balão:
+       fechar (Escape, clique fora, salvar) encerra o estado da revisão —
+       mas só quando o painel foi aberto pelo balão, para não afetar o
+       fluxo manual de transferência. */
+    const transferPanel = document.getElementById('panelTransferencia');
+    if (transferPanel && typeof MutationObserver === 'function') {
+      let wasOpen = false;
+      const observer = new MutationObserver(() => {
+        const open = transferPanel.classList.contains('open');
+        if (wasOpen && !open && ocrState.openedTransfer) {
+          ocrReleaseAll();
+        }
+        wasOpen = open;
+      });
+      observer.observe(transferPanel, { attributes: true, attributeFilter: ['class'] });
     }
   })();
 
