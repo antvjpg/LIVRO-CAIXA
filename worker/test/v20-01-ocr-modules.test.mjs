@@ -391,7 +391,7 @@ test('V.20-01 log: nada sensível chega ao console da aplicação', () => {
   assert.equal(dump.includes('1.234,56'), false, 'valor não pode ser logado');
   assert.equal(dump.includes('nota-fiscal'), false, 'nome de arquivo não pode ser logado');
   assert.equal(dump.includes('000.000.000-00'), false);
-  assert.match(dump, /\[V20-01\]/);
+  assert.match(dump, /\bocr\.teste\b/, 'o emit do Log chega ao console (prefixo de tag saiu no cbaf588)');
   /* restaura o console para processos seguintes */
   console.debug = originalDebug;
   console.warn = originalWarn;

@@ -135,7 +135,7 @@ test("limites do chat são exatamente os documentados", () => {
   assert.equal(CHAT_LIMITS.PAYLOAD_MAX_BYTES, 96 * 1024);
   assert.equal(CHAT_LIMITS.PROVIDER_TIMEOUT_MS, 30000);
   assert.equal(UPSTREAM_TIMEOUT_MS, 45000, "o caminho legado mantém o teto de 45 s");
-  assert.equal(CHAT_SYSTEM_PROMPT_VERSION, 3);
+  assert.equal(CHAT_SYSTEM_PROMPT_VERSION, 4);
 });
 
 test("index.html carrega o contrato compartilhado (sem limites duplicados)", async () => {
@@ -332,6 +332,22 @@ test("instrução de sistema define a formatação das respostas (v2)", () => {
   assert.ok(prompt.includes("compacto"), "resposta curta, sem bloco de Resumo duplicado");
   assert.ok(prompt.includes("agosto de 2026") && prompt.includes("174,86%"),
     "período por extenso e percentual com vírgula decimal");
+});
+
+test("instrução de sistema permite simulação hipotética com premissas (v4), mantendo a proibição sobre valores reais", () => {
+  const prompt = buildChatSystemPrompt({});
+  assert.ok(prompt.includes("simulações hipotéticas"),
+    "projeção pedida pelo usuário deve ser permitida como simulação");
+  assert.ok(prompt.includes("SIMULAÇÃO"),
+    "a resposta deve ser identificada como SIMULAÇÃO");
+  assert.ok(prompt.includes("declare a premissa") && prompt.includes("manutenção da taxa"),
+    "a premissa (taxa mantida) deve ser declarada");
+  assert.ok(prompt.includes("data de referência do indicador"),
+    "a data de referência do indicador é obrigatória");
+  assert.ok(prompt.includes("nunca como garantia"),
+    "resultado hipotético nunca pode ser apresentado como garantia");
+  assert.ok(prompt.includes("recalcular valores reais de saldo"),
+    "a proibição de recalcular valores REAIS permanece");
 });
 
 /* ------------------------------------------------------------------ */
