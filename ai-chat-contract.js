@@ -753,6 +753,17 @@ export function createChatSession(persistence = {}) {
       pending = null;
       busy = false;
       return true;
+    },
+
+    /* Edição estilo ChatGPT: descarta a partir do índice informado (a
+       pergunta editada e tudo que veio depois). Não mexe em busy, em
+       requestId nem em sessionId — quem chama está no meio do reenvio e
+       o token corrente continua válido. */
+    async truncateFrom(index) {
+      if (!Number.isInteger(index) || index < 0 || index >= messages.length) return false;
+      messages = messages.slice(0, index);
+      await persistSave();
+      return true;
     }
   };
 }

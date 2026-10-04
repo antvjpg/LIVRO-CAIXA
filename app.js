@@ -6938,7 +6938,8 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
       begin: () => ({ ok: false, token: null }),
       isCurrent: () => false,
       commit: () => false,
-      settle: () => false
+      settle: () => false,
+      truncateFrom: async () => false
     };
   }
 
@@ -6946,7 +6947,8 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     session: createAiChatSession(),
     controller: null,
     opener: null,
-    pageScroll: null
+    pageScroll: null,
+    editing: null
   };
 
   function aiChatContract() {
@@ -7020,10 +7022,23 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
         parts.push('</div>');
       }
     }
-    messages.forEach((item) => {
-      const cls = item.role === 'user' ? 'is-user' : 'is-assistant';
-      const body = item.role === 'assistant' ? aiChatStripEmphasis(escapeHTML(item.content)) : escapeHTML(item.content);
-      parts.push(`<div class="ai-chat-msg ${cls}">${body}</div>`);
+    messages.forEach((item, index) => {
+      if (item.role !== 'user') {
+        const body = aiChatStripEmphasis(escapeHTML(item.content));
+        parts.push(`<div class="ai-chat-msg is-assistant">${body}</div>`);
+        return;
+      }
+      const body = escapeHTML(item.content);
+      parts.push(
+        `<div class="ai-chat-msg is-user" data-msg-index="${index}" tabindex="0">` +
+        `<span class="ai-chat-msg-text">${body}</span>` +
+        `<span class="ai-chat-msg-actions" hidden>` +
+        `<button type="button" class="ai-chat-action" data-chat-action="copy">Copiar</button>` +
+        `<button type="button" class="ai-chat-action" data-chat-action="edit">Editar</button>` +
+        `<span class="ai-chat-action-status" aria-live="polite"></span>` +
+        `</span>` +
+        `</div>`
+      );
     });
     if (pending) {
       parts.push(`<div class="ai-chat-msg is-user is-pending">${escapeHTML(pending.content)}</div>`);
@@ -7044,6 +7059,8 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     const suggestion = btn.getAttribute('data-suggestion');
     if (!suggestion) return;
 
+    aiChatCancelEdit();
+
     const input = document.getElementById('aiChatInput');
     if (!input) return;
 
@@ -7056,6 +7073,108 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
       const submitEvent = new Event('submit', { cancelable: true, bubbles: true });
       form.dispatchEvent(submitEvent);
     }
+  }
+
+  /* ------------------- ações na mensagem do usuário ------------------------ */
+
+  function closeAiChatActions() {
+    document.querySelectorAll('#aiChatMessages .ai-chat-msg-actions').forEach((el) => { el.hidden = true; });
+    document.querySelectorAll('#aiChatMessages .is-actions-open').forEach((el) => el.classList.remove('is-actions-open'));
+  }
+
+  function toggleAiChatActions(bubble) {
+    const actions = bubble.querySelector('.ai-chat-msg-actions');
+    if (!actions) return;
+    const wasOpen = bubble.classList.contains('is-actions-open');
+    closeAiChatActions();
+    if (!wasOpen) {
+      actions.hidden = false;
+      bubble.classList.add('is-actions-open');
+    }
+  }
+
+  async function aiChatCopyMessage(index, bubble) {
+    const item = aiChat.session.getMessages()[index];
+    if (!item || item.role !== 'user') return;
+
+    let copied = false;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(item.content);
+        copied = true;
+      }
+    } catch (err) { copied = false; }
+    if (!copied) {
+      try {
+        const area = document.createElement('textarea');
+        area.value = item.content;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        copied = document.execCommand('copy');
+        area.remove();
+      } catch (err) { copied = false; }
+    }
+
+    const status = bubble.querySelector('.ai-chat-action-status');
+    if (status) {
+      status.textContent = copied ? 'Copiado!' : 'Não foi possível copiar.';
+      window.setTimeout(() => { if (status.isConnected) status.textContent = ''; }, 1600);
+    }
+  }
+
+  function aiChatStartEdit(index) {
+    if (aiChat.session.isBusy()) {
+      aiChatNotice('Aguarde a resposta atual antes de editar uma pergunta.', 'error');
+      return;
+    }
+    const item = aiChat.session.getMessages()[index];
+    if (!item || item.role !== 'user') return;
+
+    aiChat.editing = { index };
+    const input = document.getElementById('aiChatInput');
+    if (input) {
+      input.value = item.content;
+      input.focus({ preventScroll: true });
+      try { input.setSelectionRange(input.value.length, input.value.length); } catch (err) { /* input sem seleção */ }
+    }
+    aiChatNotice('Editando sua pergunta: ajuste e envie para reenviar — as respostas a partir dela serão atualizadas. Esc cancela.');
+  }
+
+  function aiChatCancelEdit() {
+    if (!aiChat.editing) return;
+    if (aiChat.session.isBusy()) return;
+    aiChat.editing = null;
+    const input = document.getElementById('aiChatInput');
+    if (input) input.value = '';
+    aiChatNotice('');
+  }
+
+  function onAiChatMessagesClick(event) {
+    const bubble = event.target.closest?.('.ai-chat-msg.is-user[data-msg-index]');
+    if (!bubble) {
+      closeAiChatActions();
+      return;
+    }
+
+    const action = event.target.closest?.('[data-chat-action]');
+    if (action) {
+      const index = Number(bubble.dataset.msgIndex);
+      if (action.dataset.chatAction === 'copy') {
+        aiChatCopyMessage(index, bubble);
+        return;
+      }
+      if (action.dataset.chatAction === 'edit') {
+        aiChatStartEdit(index);
+        closeAiChatActions();
+      }
+      return;
+    }
+
+    if (event.target.closest('.ai-chat-msg-actions')) return;
+    toggleAiChatActions(bubble);
   }
 
   const AI_CHAT_ERROR_MESSAGES = {
@@ -7087,8 +7206,12 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
 
   /* Monta e valida o payload ANTES de qualquer requisição. Repete a mesma
      validação que o Worker fará (validateChatPayload) para falhar cedo e
-     com mensagem útil — o Worker continua sendo a garantia real. */
-  function aiChatPrepare(text) {
+     com mensagem útil — o Worker continua sendo a garantia real.
+
+     historyIndex — edição estilo ChatGPT: o contexto considera só as
+     mensagens anteriores à pergunta editada (o resto será descartado
+     no reenvio). */
+  function aiChatPrepare(text, historyIndex) {
     const contract = aiChatContract();
     if (!contract) return { ok: false, code: 'contract_unavailable' };
 
@@ -7101,7 +7224,11 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     const fitted = contract.fitChatSnapshotToBudget(rawSnapshot);
     if (!fitted.ok) return { ok: false, code: fitted.reason };
 
-    const context = contract.normalizeConversationContext(aiChat.session.getMessages());
+    const history = aiChat.session.getMessages();
+    const source = Number.isInteger(historyIndex) && historyIndex >= 0 && historyIndex <= history.length
+      ? history.slice(0, historyIndex)
+      : history;
+    const context = contract.normalizeConversationContext(source);
     const payload = {
       message: message.value,
       financialSnapshot: fitted.snapshot,
@@ -7119,11 +7246,32 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
 
     const originalText = String(rawText ?? '');
 
+    /* Edição estilo ChatGPT: o índice capturado aqui vale pelo envio
+       inteiro; a validação garante que truncateFrom não falhará. */
+    const editing = aiChat.editing ? { ...aiChat.editing } : null;
+    if (editing) {
+      const target = aiChat.session.getMessages()[editing.index];
+      if (!target || target.role !== 'user') {
+        aiChat.editing = null;
+        aiChatNotice('Não foi possível editar essa mensagem — a conversa mudou. Ajuste o texto e envie como nova pergunta.', 'error');
+        return;
+      }
+    }
+
     const localCompoundReply = buildCompoundInterestReply(originalText);
     if (localCompoundReply) {
       const started = aiChat.session.begin(originalText);
       if (started.ok) {
         const token = started.token;
+        if (editing) {
+          const truncated = await aiChat.session.truncateFrom(editing.index);
+          if (!truncated) {
+            aiChat.session.settle(token);
+            aiChatNotice('Não foi possível atualizar a conversa. Tente editar novamente.', 'error');
+            return;
+          }
+          aiChat.editing = null;
+        }
         const input = document.getElementById('aiChatInput');
         if (input) input.value = '';
         aiChat.session.commit(token, originalText, localCompoundReply);
@@ -7135,7 +7283,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
       }
     }
 
-    const prepared = aiChatPrepare(originalText);
+    const prepared = aiChatPrepare(originalText, editing ? editing.index : null);
 
     if (!prepared.ok) {
       aiChatNotice(
@@ -7181,6 +7329,19 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
       /* Guardas de sessão: conta, sessão do modal, cancelamento e
          pertencimento à pergunta enviada. Falhou alguma → descarta. */
       if (!isCurrent()) return;
+
+      /* Edição: só descarta o trecho antigo quando a resposta chegou —
+         falhou a IA, o histórico fica intacto e o rascunho é recuperado. */
+      if (editing) {
+        const truncated = await aiChat.session.truncateFrom(editing.index);
+        if (!truncated) {
+          aiChatNotice('Não foi possível atualizar a conversa. Edite a pergunta novamente.', 'error');
+          const field = document.getElementById('aiChatInput');
+          if (field && !field.value) field.value = originalText;
+          return;
+        }
+        aiChat.editing = null;
+      }
 
       aiChat.session.commit(token, prepared.payload.message, reply);
     } catch (err) {
@@ -7256,6 +7417,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
 
     const input = document.getElementById('aiChatInput');
     if (input) input.value = '';
+    aiChat.editing = null;
 
     const opener = aiChat.opener;
     aiChat.opener = null;
@@ -7285,6 +7447,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   function resetAiChatContext() {
     const snapshot = buildGeminiFinancialSnapshot();
     aiChat.session.resetContext();
+    aiChat.editing = null;
 
     if (aiChat.controller) {
       try { aiChat.controller.abort(); } catch (err) { /* já encerrado */ }
@@ -7319,6 +7482,15 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     event.preventDefault();
     const input = document.getElementById('aiChatInput');
     aiChatSend(input ? input.value : '');
+  });
+
+  /* Editando: Esc cancela a edição em vez de fechar o modal — o handler
+     de Escape global está no document (fase de bubbling). */
+  document.getElementById('aiChatInput')?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !aiChat.editing) return;
+    event.preventDefault();
+    event.stopPropagation();
+    aiChatCancelEdit();
   });
 
   /* O navegador rola a PÁGINA (body/documentElement) e as caixas
@@ -7404,6 +7576,14 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   const aiChatMessagesBox = document.getElementById('aiChatMessages');
   aiChatMessagesBox?.addEventListener('pointerdown', () => requestAnimationFrame(() => aiChatResetModalScroll(true)));
   aiChatMessagesBox?.addEventListener('focus', () => requestAnimationFrame(() => aiChatResetModalScroll(true)));
+  aiChatMessagesBox?.addEventListener('click', onAiChatMessagesClick);
+  aiChatMessagesBox?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    const bubble = event.target.closest?.('.ai-chat-msg.is-user[data-msg-index]');
+    if (!bubble || event.target !== bubble) return;
+    event.preventDefault();
+    toggleAiChatActions(bubble);
+  });
 
   ['modalOverlay', 'panelAiChat'].forEach((id) => {
     const el = document.getElementById(id);

@@ -267,6 +267,59 @@ test("máquina: fluxo completo de uma pergunta (begin→commit→settle)", async
   );
 });
 
+test("máquina: truncateFrom descarta a partir do índice e persiste (edição estilo ChatGPT)", async () => {
+  const saved = [];
+  const session = createChatSession({
+    onSave: async (uid, sessionId, messages) => { saved.push(messages.map((m) => m.content)); }
+  });
+  await session.openFor("user-1");
+
+  for (const [q, a] of [["p1", "r1"], ["p2", "r2"], ["p3", "r3"]]) {
+    const started = session.begin(q);
+    await session.commit(started.token, q, a);
+    session.settle(started.token);
+  }
+
+  assert.equal(await session.truncateFrom(4), true);
+  assert.deepEqual(session.getMessages().map((m) => m.content), ["p1", "r1", "p2", "r2"],
+    "mantém o que veio antes do índice e descarta a partir dele");
+  assert.ok(saved.length > 0, "persistência chamada após o corte");
+  assert.deepEqual(saved[saved.length - 1], ["p1", "r1", "p2", "r2"],
+    "a persistência guarda o histórico já cortado");
+
+  assert.equal(await session.truncateFrom(-1), false, "índice negativo recusado");
+  assert.equal(await session.truncateFrom(1.5), false, "índice não inteiro recusado");
+  assert.equal(await session.truncateFrom(4), false, "índice fora do tamanho atual recusado");
+  assert.equal(session.getMessages().length, 4, "recusa não altera o histórico");
+});
+
+test("máquina: edição no meio do voo preserva o token (truncate antes do commit)", async () => {
+  const session = createChatSession();
+  await session.openFor("user-1");
+
+  let started = session.begin("p1");
+  await session.commit(started.token, "p1", "r1");
+  session.settle(started.token);
+  started = session.begin("p2");
+  await session.commit(started.token, "p2", "r2");
+  session.settle(started.token);
+
+  const flight = session.begin("p1 editada");
+  assert.equal(flight.ok, true, "reenvio de edição começa como qualquer envio");
+  assert.equal(session.isBusy(), true);
+
+  assert.equal(await session.truncateFrom(0), true, "corta a pergunta antiga e a resposta antiga");
+  assert.equal(session.isBusy(), true, "o truncate não encerra o envio em andamento");
+  assert.equal(await session.commit(flight.token, "p1 editada", "r1 editado"), true,
+    "o token segue válido após o truncate");
+  session.settle(flight.token);
+
+  assert.deepEqual(
+    session.getMessages().map((m) => `${m.role}:${m.content}`),
+    ["user:p1 editada", "assistant:r1 editado"]
+  );
+});
+
 /* ----------------------------- fiação no HTML ------------------------------ */
 
 test("index.html: contrato carregado como módulo antes do DOMContentLoaded", () => {
@@ -445,4 +498,17 @@ test("index.html: textos da tela do chat (LIA)", () => {
     "intro antiga removida");
   assert.ok(!/Enter envia a pergunta\./.test(client), "dica de Enter removida");
   assert.ok(!/aria-describedby="aiChatHint"/.test(client), "aria-describedby removido junto da dica");
+});
+
+test("app: ações de copiar/editar na mensagem do usuário (edição estilo ChatGPT)", () => {
+  assert.match(js, /data-msg-index="\$\{index\}"/, "mensagem enviada carrega seu índice");
+  assert.match(js, /data-chat-action="copy"/, "opção copiar");
+  assert.match(js, /data-chat-action="edit"/, "opção editar");
+  assert.match(js, /function aiChatCancelEdit\(\)/, "cancelamento da edição (Esc)");
+  assert.match(js, /history\.slice\(0, historyIndex\)/, "contexto do reenvio usa só o que veio antes da edição");
+  assert.match(js, /session\.truncateFrom\(editing\.index\)/, "reenvio descarta o trecho antigo");
+  assert.ok(js.includes('<div class="ai-chat-msg is-user is-pending">${escapeHTML(pending.content)}</div>'),
+    "mensagem ainda em envio não oferece ações");
+  assert.ok(js.includes('aiChat.editing = null') && js.includes('aiChat.editing = { index }'),
+    "estado de edição existe e é limpo");
 });
