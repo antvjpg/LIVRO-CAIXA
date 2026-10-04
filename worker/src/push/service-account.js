@@ -51,8 +51,7 @@ async function signJwt(serviceAccount, scopes) {
   const unsigned = `${header}.${claims}`;
   const keyBytes = b64urlToBytes(
     serviceAccount.private_key
-      .replace(/-----BEGIN PRIVATE KEY-----/g, "")
-      .replace(/-----END PRIVATE KEY-----/g, "")
+      .replace(/-----[A-Z ]+-----/g, "")
       .replace(/\s+/g, "")
   );
   const key = await crypto.subtle.importKey(

@@ -105,6 +105,19 @@
         </div>
       </div>
 
+<div id="pinOverlay" class="pin-overlay hidden" aria-hidden="true">
+  <section class="pin-box" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+    <div class="pin-lock-icon">▣</div>
+    <h2 id="pinTitle">Aplicativo bloqueado</h2>
+    <p class="hint">Use a biometria ou digite o PIN local para continuar. Isso não substitui o login da conta.</p>
+    <input type="password" id="pinUnlockInput" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="PIN de 4 a 8 dígitos" aria-label="PIN local">
+    <div id="pinUnlockError" class="auth-error" aria-live="polite"></div>
+    <button type="button" class="primary" id="btnPinUnlock" style="width:100%;margin-top:12px;">Desbloquear com PIN</button>
+    <button type="button" id="btnBiometricUnlock" style="width:100%;margin-top:8px;" hidden>Usar biometria</button>
+    <button type="button" id="btnPinLogout" style="width:100%;margin-top:8px;">Sair da conta</button>
+  </section>
+</div>
+
 <div id="syncOverlay">
   <div class="sync-box">
     <div class="sync-spinner"></div>
@@ -539,13 +552,22 @@
         </div>
       </div>
 
-      <div class="profile-group profile-group-hidden" hidden aria-hidden="true"><div class="profile-group-title">Proteção local</div>
+      <div class="profile-group"><div class="profile-group-title">Proteção local</div>
         <div class="feature-profile-section feature-profile-security">
+          <label class="feature-profile-toggle">
+            <input type="checkbox" id="chkLockOnOpen" checked>
+            <span class="feature-profile-toggle-copy"><strong>Proteção ao abrir o app</strong><small>Ao abrir ou voltar ao app, pede o PIN ou a biometria para desbloquear. Desligue para abrir direto; "Bloquear agora" continua disponível.</small></span>
+            <span class="feature-profile-switch" aria-hidden="true"></span>
+          </label>
           <p class="feature-profile-section-desc">Proteja o acesso local ao aplicativo com um PIN de 4 a 8 dígitos.</p>
           <div class="feature-profile-pin-row">
             <div><label for="featurePin">PIN local</label><input type="password" id="featurePin" inputmode="numeric" autocomplete="new-password" maxlength="8" placeholder="4 a 8 dígitos"></div>
             <div class="feature-profile-pin-actions"><button type="button" id="btnSaveLocalPin" class="primary">Ativar / alterar</button><button type="button" id="btnClearLocalPin">Remover</button></div>
           </div>
+          <div class="feature-profile-pin-row feature-lock-grace-row">
+            <div><label for="featureLockGrace">Rebloquear após inatividade</label><div class="feature-profile-input-suffix"><input type="number" id="featureLockGrace" min="0" max="30" step="1" value="5"><span>min</span></div></div>
+          </div>
+          <p class="feature-profile-section-desc">Minutos sem atividade antes de pedir o PIN ou a biometria ao voltar ao app ou deixá-lo parado. 0 = pedir sempre.</p>
           <div class="feature-profile-actions"><button type="button" id="btnLockNow"><span class="quick-action-icon" aria-hidden="true" style="width:15px;height:15px;display:inline-flex;vertical-align:-2px;margin-right:5px;"><i class="fi fi-rr-lock" aria-hidden="true"></i></span>Bloquear agora</button></div>
           <div class="feature-profile-actions" style="margin-top:8px;flex-wrap:wrap;gap:8px;">
             <button type="button" id="btnEnableBiometric">Usar biometria neste aparelho</button>

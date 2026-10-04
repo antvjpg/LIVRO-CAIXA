@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingPurchaseId = null;
   let pendingImport = [];
   const FEATURE_SETTINGS_KEY = 'livrocaixa-feature-settings';
-  let featureSettings = { autoLaunchRecurring: false, reminders: true, autoRefreshQuotes: false, quoteRefreshMinutes: 15, projectionMonths: 6, autoCategorization: false, reminderAdvanceDays: 3, monthlySavingsGoal: 0, pushNotifications: false };
+  let featureSettings = { autoLaunchRecurring: false, reminders: true, autoRefreshQuotes: false, quoteRefreshMinutes: 15, projectionMonths: 6, autoCategorization: false, reminderAdvanceDays: 3, monthlySavingsGoal: 0, pushNotifications: false, lockOnOpen: true, lockGraceMinutes: 5 };
   const FCM_TOKEN_KEY = 'livrocaixa-fcm-token';
   let pushForegroundBound = false;
   let featureAutomationTimer = null;
@@ -3362,6 +3362,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function normalizeFeatureSettings(raw = {}) {
     const source = raw && typeof raw === 'object' ? raw : {};
+    const graceRaw = String(source.lockGraceMinutes ?? '').trim();
+    const graceNum = Number(graceRaw);
     return {
       autoLaunchRecurring: source.autoLaunchRecurring === true,
       reminders: source.reminders !== false,
@@ -3371,7 +3373,9 @@ document.addEventListener('DOMContentLoaded', () => {
       projectionMonths: Math.min(24, Math.max(1, Number(source.projectionMonths) || 6)),
       autoCategorization: source.autoCategorization === true,
       reminderAdvanceDays: Math.min(30, Math.max(0, Number(source.reminderAdvanceDays) || 0)),
-      monthlySavingsGoal: Math.max(0, Number(source.monthlySavingsGoal) || 0)
+      monthlySavingsGoal: Math.max(0, Number(source.monthlySavingsGoal) || 0),
+      lockOnOpen: source.lockOnOpen !== false,
+      lockGraceMinutes: graceRaw !== '' && Number.isFinite(graceNum) ? Math.min(30, Math.max(0, Math.round(graceNum))) : 5
     };
   }
   function loadFeatureSettings() {
@@ -3869,12 +3873,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const PIN_UNLOCKED_KEY = 'livrocaixa_pin_unlocked';
   let pinUnlocked = false;
+  let lastPinActivity = 0;
   function localPinKey() { return `livrocaixa-local-pin-${currentUser?.uid || 'anonymous'}`; }
   function getLocalPinRecord() { try { return JSON.parse(localStorage.getItem(localPinKey()) || 'null'); } catch (err) { return null; } }
   async function hashLocalPin(pin) { const bytes = new TextEncoder().encode(String(pin)); const digest = await crypto.subtle.digest('SHA-256', bytes); return Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join(''); }
   function validLocalPin(pin) { return /^\d{4,8}$/.test(String(pin || '')); }
-  async function saveLocalPin(pin) { if (!validLocalPin(pin)) throw new Error('O PIN deve ter entre 4 e 8 dígitos.'); localStorage.setItem(localPinKey(), JSON.stringify({ hash: await hashLocalPin(pin), createdAt: new Date().toISOString() })); pinUnlocked = true; }
-  function removeLocalPin() { localStorage.removeItem(localPinKey()); removeBiometric(); pinUnlocked = true; hidePinOverlay(); }
+  async function saveLocalPin(pin) { if (!validLocalPin(pin)) throw new Error('O PIN deve ter entre 4 e 8 dígitos.'); localStorage.setItem(localPinKey(), JSON.stringify({ hash: await hashLocalPin(pin), createdAt: new Date().toISOString() })); pinUnlocked = true; markPinActivity(); }
+  function removeLocalPin() { localStorage.removeItem(localPinKey()); removeBiometric(); pinUnlocked = true; hidePinOverlay(); clearPinActivity(); }
   function hasLocalPin() { const record = getLocalPinRecord(); return Boolean(record && typeof record.hash === 'string' && record.hash.length === 64); }
   function biometricKey() { return `livrocaixa-webauthn-${currentUser?.uid || 'anonymous'}`; }
   function getBiometricRecord() {
@@ -3957,9 +3962,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showPinOverlay() { if (!currentUser || !hasLocalPin() || pinUnlocked) return; const overlay = document.getElementById('pinOverlay'); overlay?.classList.remove('hidden'); overlay?.setAttribute('aria-hidden', 'false'); document.body.classList.add('is-pin-locked'); const bioBtn = document.getElementById('btnBiometricUnlock'); if (bioBtn) bioBtn.hidden = !(hasBiometric() && supportsWebAuthn()); setTimeout(() => { document.getElementById('pinUnlockInput')?.focus(); tryBiometricUnlockOnShow(); }, 0); }
-  function hidePinOverlay() { const overlay = document.getElementById('pinOverlay'); overlay?.classList.add('hidden'); overlay?.setAttribute('aria-hidden', 'true'); document.body.classList.remove('is-pin-locked'); }
+  function hidePinOverlay() { markPinActivity(); const overlay = document.getElementById('pinOverlay'); overlay?.classList.add('hidden'); overlay?.setAttribute('aria-hidden', 'true'); document.body.classList.remove('is-pin-locked'); }
   async function unlockWithLocalPin(pin) { const record = getLocalPinRecord(); if (!record) { pinUnlocked = true; hidePinOverlay(); return true; } const valid = (await hashLocalPin(pin)) === record.hash; if (!valid) return false; pinUnlocked = true; hidePinOverlay(); return true; }
-  function checkLocalPinLock() { pinUnlocked = !hasLocalPin(); if (!pinUnlocked) showPinOverlay(); }
+  function pinGraceMs() { const m = Number(featureSettings.lockGraceMinutes); return Number.isFinite(m) && m > 0 ? Math.round(m) * 60000 : 0; }
+  function markPinActivity() { lastPinActivity = Date.now(); }
+  function persistPinActivity() { try { if (pinUnlocked && hasLocalPin() && featureSettings.lockOnOpen !== false) sessionStorage.setItem('livrocaixa-pin-grace', String(lastPinActivity)); } catch (err) {} }
+  function clearPinActivity() { lastPinActivity = 0; try { sessionStorage.removeItem('livrocaixa-pin-grace'); } catch (err) {} }
+  function lockPinNow() { pinUnlocked = false; clearPinActivity(); showPinOverlay(); }
+  function checkLocalPinLock() {
+    if (!hasLocalPin() || featureSettings.lockOnOpen === false) { pinUnlocked = true; clearPinActivity(); return; }
+    const grace = pinGraceMs();
+    if (grace > 0) {
+      let saved = 0;
+      try { saved = Number(sessionStorage.getItem('livrocaixa-pin-grace')) || 0; } catch (err) {}
+      if (saved > 0 && Date.now() - saved < grace) { pinUnlocked = true; lastPinActivity = saved; return; }
+    }
+    lockPinNow();
+  }
+  document.addEventListener('pointerdown', () => { if (pinUnlocked) lastPinActivity = Date.now(); }, { passive: true });
+  document.addEventListener('keydown', () => { if (pinUnlocked) lastPinActivity = Date.now(); }, { passive: true });
+  window.addEventListener('pagehide', () => { if (pinUnlocked && hasLocalPin()) markPinActivity(); persistPinActivity(); });
+  setInterval(() => {
+    if (!pinUnlocked || !currentUser || !hasLocalPin() || featureSettings.lockOnOpen === false) return;
+    const grace = pinGraceMs();
+    if (grace > 0 && Date.now() - lastPinActivity >= grace) lockPinNow();
+  }, 20000);
   loadFeatureSettings();
   loadViewPeriod();
   setupPushForegroundHandler();
@@ -5917,6 +5944,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const autoBills = document.getElementById('featureAutoBills'); if (autoBills) autoBills.checked = featureSettings.autoLaunchRecurring;
     const reminders = document.getElementById('featureReminders'); if (reminders) reminders.checked = featureSettings.reminders;
     const push = document.getElementById('featurePushNotifications'); if (push) push.checked = featureSettings.pushNotifications;
+    const lockOnOpen = document.getElementById('chkLockOnOpen'); if (lockOnOpen) lockOnOpen.checked = featureSettings.lockOnOpen;
+    const lockGrace = document.getElementById('featureLockGrace'); if (lockGrace) lockGrace.value = featureSettings.lockGraceMinutes;
     const autoQuotes = document.getElementById('featureAutoQuotes'); if (autoQuotes) autoQuotes.checked = featureSettings.autoRefreshQuotes;
     const interval = document.getElementById('featureQuoteInterval'); if (interval) interval.value = featureSettings.quoteRefreshMinutes;
     const projection = document.getElementById('featureProjectionMonths'); if (projection) projection.value = featureSettings.projectionMonths;
@@ -5970,7 +5999,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function saveFeatureSettings({ silent = false } = {}) {
     const statusEl = document.getElementById('profileSettingsStatus');
-    featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, pushNotifications: document.getElementById('featurePushNotifications')?.checked ?? featureSettings.pushNotifications, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization') ? document.getElementById('featureAutoCategorization').checked : featureSettings.autoCategorization, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
+    featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, pushNotifications: document.getElementById('featurePushNotifications')?.checked ?? featureSettings.pushNotifications, lockOnOpen: document.getElementById('chkLockOnOpen')?.checked ?? featureSettings.lockOnOpen, lockGraceMinutes: document.getElementById('featureLockGrace')?.value ?? featureSettings.lockGraceMinutes, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization') ? document.getElementById('featureAutoCategorization').checked : featureSettings.autoCategorization, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
         ? readMoneyInput(document.getElementById('featureSavingsGoalAmount'))
         : featureSettings.monthlySavingsGoal });
     budgets = budgets.filter(item => !document.getElementById(`budget-${item.categoryId}`));
@@ -6009,7 +6038,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const FEATURE_AUTOSAVE_IDS = [
     'featureAutoBills', 'featureReminders', 'featureAutoQuotes', 'featureQuoteInterval',
     'featureProjectionMonths', 'featureAutoCategorization', 'featureReminderAdvanceDays',
-    'featureSavingsGoalAmount'
+    'featureSavingsGoalAmount', 'chkLockOnOpen', 'featureLockGrace'
   ];
   FEATURE_AUTOSAVE_IDS.forEach(id => document.getElementById(id)?.addEventListener('change', scheduleFeatureSettingsAutosave));
   document.getElementById('featureBudgetRows')?.addEventListener('change', scheduleFeatureSettingsAutosave);
@@ -6411,7 +6440,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     const error = document.getElementById('pinUnlockError');
     try {
       const ok = await unlockWithBiometric();
-      if (!ok) { if (error) error.textContent = 'Biometria não disponível. Use o PIN.'; return; }
+      if (!ok) { if (error) error.textContent = 'Biometria não concluída. Ative em Perfil → Proteção local ou use o PIN.'; return; }
       if (error) error.textContent = '';
       logInfo('Segurança', 'Desbloquear biometria', 'Sucesso', 'Aplicativo desbloqueado por biometria.');
     } catch (err) {
@@ -6419,7 +6448,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     }
   });
   document.getElementById('btnClearLocalPin')?.addEventListener('click', () => { removeLocalPin(); const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'PIN removido deste dispositivo.'; logInfo('Segurança', 'Remover PIN local', 'Sucesso', 'Proteção local removida deste dispositivo.'); });
-  document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; closeAllPanels(); showPinOverlay(); });
+  document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; clearPinActivity(); closeAllPanels(); showPinOverlay(); });
 
   // Autosave para PIN (debounce 1s ao sair do campo)
   let pinAutosaveTimer = 0;
@@ -6514,6 +6543,12 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   });
   const profilePush = document.getElementById('featurePushNotifications');
   profilePush?.addEventListener('change', () => { setPushNotifications(profilePush.checked); });
+  const profileLockOnOpen = document.getElementById('chkLockOnOpen');
+  profileLockOnOpen?.addEventListener('change', () => {
+    featureSettings = normalizeFeatureSettings({ ...featureSettings, lockOnOpen: profileLockOnOpen.checked });
+    persistFeatureSettings();
+    persistProfileSettings().catch(err => logSyncError('preferência de proteção ao abrir', err));
+  });
   const autoQuotes = document.getElementById('featureAutoQuotes');
   const quoteIntervalRow = document.querySelector('label[for="featureQuoteInterval"]')?.parentElement;
   function toggleQuoteInterval() {
@@ -7455,7 +7490,14 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; logInfo('Segurança', 'Desbloquear PIN local', 'Sucesso', 'Aplicativo desbloqueado neste dispositivo.'); } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; logSyncError('desbloqueio por PIN', err); } });
   document.getElementById('pinUnlockInput')?.addEventListener('keydown', event => { if (event.key === 'Enter') document.getElementById('btnPinUnlock')?.click(); });
   document.getElementById('btnPinLogout')?.addEventListener('click', () => auth.signOut());
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && currentUser && hasLocalPin()) { pinUnlocked = false; showPinOverlay(); } });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') { if (pinUnlocked && hasLocalPin()) markPinActivity(); persistPinActivity(); return; }
+    if (currentUser && hasLocalPin() && featureSettings.lockOnOpen !== false) {
+      const grace = pinGraceMs();
+      if (grace > 0 && pinUnlocked && Date.now() - lastPinActivity < grace) return;
+      lockPinNow();
+    }
+  });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && currentUser) refreshStaleInvestmentQuotes(); });
   document.getElementById('btnRunReconciliation')?.addEventListener('click', () => {
     const bankId = document.getElementById('reconcileBank')?.value;
@@ -14314,6 +14356,7 @@ list.innerHTML = pendingImport.map((row, i) => `
       stopSessionSecurity();
       pinUnlocked = false;
       hidePinOverlay();
+      clearPinActivity();
       if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
       realtimeUnsubscribers.forEach(unsub => unsub());
       realtimeUnsubscribers = [];
