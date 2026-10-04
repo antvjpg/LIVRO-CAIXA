@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "livro-caixa-54357"
+  },
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20"
+  }
+}

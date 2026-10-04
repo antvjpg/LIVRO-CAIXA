@@ -38,6 +38,7 @@ import {
   emptyReplyFailure
 } from "./ai/openrouter.js";
 import { handleFinancial } from "./financial/gateway.js";
+import { runPushDispatch } from "./push/sender.js";
 
 /* Rate limit em memória como fallback quando KV não disponível */
 const RATE_LIMIT_WINDOW_MS = 60000;
@@ -346,5 +347,10 @@ export default {
       failureStatus,
       failureStatus === 429 ? withHeaders(cors, quotaHeaders()) : cors
     );
+  },
+
+  async scheduled(event, env) {
+    const summary = await runPushDispatch(env);
+    console.log(JSON.stringify({ event: "push_dispatch", cron: event && event.cron, ...summary }));
   }
 };

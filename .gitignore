@@ -27,6 +27,10 @@ e2e/scripts/android-platform-shim.cjs
 .env.*
 !.env.example
 
+# Firebase CLI / Cloud Functions (estado local e dependências)
+.firebase/
+functions/lib/
+
 # Lixo de auditoria/depuração local — nunca versionar
 .code-inline-1.js
 check_syntax.js

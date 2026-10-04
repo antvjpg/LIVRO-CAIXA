@@ -126,3 +126,36 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+self.addEventListener("push", (event) => {
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch (err) {
+    payload = { body: event.data ? event.data.text() : "" };
+  }
+  const data = payload && payload.data ? payload.data : payload;
+  const notice = payload && payload.notification ? payload.notification : {};
+  const title = notice.title || (payload && payload.title) || (data && data.title) || "Livro-Caixa";
+  const options = {
+    body: notice.body || (payload && payload.body) || (data && data.body) || "",
+    icon: "./icon-192.png",
+    badge: "./icon-192.png",
+    tag: (data && data.tag) || undefined,
+    data: { url: (data && data.url) || "./" }
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+      for (const client of list) {
+        if ("focus" in client) return client.focus();
+      }
+      const target = (event.notification.data && event.notification.data.url) || "./";
+      return self.clients.openWindow(target);
+    })
+  );
+});

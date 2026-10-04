@@ -25,6 +25,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
   <script src="./card-engine-v3-combined.js"></script>
   <script src="./financial-client.js"></script>
   <!-- V.20-02 — camada de abstração de anexos/OCR (contrato estável
@@ -345,17 +346,30 @@
   <!-- P3.1 — Valores a Receber (módulo independente; não mexe em caixa/patrimônio) -->
   <!-- [VIEW] Valores a Receber -->
   <div id="viewReceivables" class="tab-content">
-    <div class="balance-strip section-balance-strip" id="receivablesSummary"></div>
-    <div class="toolbar" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));">
-      <select id="receivableStatusFilter" aria-label="Filtrar por status">
-        <option value="">Todos os status</option>
-        <option value="pendente">Pendentes</option>
-        <option value="recebido">Recebidos</option>
-        <option value="cancelado">Cancelados</option>
-      </select>
+    <div class="cards-toolbar">
+      <div>
+        <h2 style="margin:0 0 4px;font-size:20px;">Valores a Receber</h2>
+        <p class="hint">Módulo independente: marcar como recebido <strong>não</strong> cria lançamento no Livro-Caixa, nem altera caixinhas, investimentos ou patrimônio.</p>
+      </div>
+      <button type="button" id="btnNewReceivable" class="primary"><i class="fi fi-rr-plus" aria-hidden="true"></i> Novo valor a receber</button>
     </div>
-    <p class="hint" style="margin:0 0 12px;">Módulo independente: marcar como recebido <strong>não</strong> cria lançamento no Livro-Caixa, nem altera caixinhas, investimentos ou patrimônio.</p>
-    <div id="receivablesList" class="receivables-list"></div>
+    <div class="balance-strip section-balance-strip" id="receivablesSummary"></div>
+    <div class="toolbar">
+      <label class="calendar-filter-control" for="receivableStatusFilter"><span>Status</span>
+        <select id="receivableStatusFilter" aria-label="Filtrar por status">
+          <option value="">Todos os status</option>
+          <option value="pendente">Pendentes</option>
+          <option value="recebido">Recebidos</option>
+          <option value="cancelado">Cancelados</option>
+        </select>
+      </label>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
+        <div><strong>Registros</strong><div class="hint">Cada linha mostra o valor, o status e as ações disponíveis — marcar recebido, cancelar ou editar.</div></div>
+      </div>
+      <div id="receivablesList" class="receivables-list"></div>
+    </div>
   </div>
 
   <!-- ABA 2: CRIPTO E INVESTIMENTOS -->
@@ -416,6 +430,7 @@
           </div>
           <div class="profile-item"><span class="profile-item-icon"><i class="fi fi-rr-bell" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
           <label class="feature-profile-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
+          <label class="feature-profile-toggle"><input type="checkbox" id="featurePushNotifications"><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Notificações push</strong><small>Alertas de contas, faturas, metas e recebíveis direto no dispositivo, mesmo com o app fechado. Requer chave VAPID e envio configurados no Firebase.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
         </div>
       </div>
 

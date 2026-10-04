@@ -29,3 +29,7 @@ OPENROUTER_MODELS = "google/gemma-4-26b-a4b-it:free,nvidia/nemotron-3-nano-omni-
 AI_RATE_LIMIT_PER_MINUTE = "30"
 # Consultas externas por minuto por IP/origem nas rotas /financial (públicas).
 FINANCIAL_RATE_LIMIT_PER_MINUTE = "20"
+
+[triggers]
+# 08:00 America/Sao_Paulo = 11:00 UTC (horário de verão não muda o UTC fixo)
+crons = ["0 11 * * *"]

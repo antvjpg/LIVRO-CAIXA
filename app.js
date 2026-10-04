@@ -12,6 +12,7 @@ const firebaseConfig = {
   appId: "1:508374087306:web:43a797d57ca6e548655f73"
 };
 window.__firebaseConfig = firebaseConfig;
+window.__FCM_VAPID_KEY = "BJ_SAUk9tFJPLKxXGNqu0v3uDpyyhPeqyKaz7myEixa3an_MZQ79jk9zMypKIq0ZjuKS0j_V_8Cz1clFtfsPhu8";
 
 /* [JS AI] Cliente único de IA. Modo principal: Worker do Cloudflare (chave no servidor, sessão Firebase).
    Modo fallback: chave OpenRouter digitada pelo usuário, guardada só neste dispositivo (localStorage). */
@@ -495,7 +496,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingPurchaseId = null;
   let pendingImport = [];
   const FEATURE_SETTINGS_KEY = 'livrocaixa-feature-settings';
-  let featureSettings = { autoLaunchRecurring: false, reminders: true, autoRefreshQuotes: false, quoteRefreshMinutes: 15, projectionMonths: 6, autoCategorization: false, reminderAdvanceDays: 3, monthlySavingsGoal: 0 };
+  let featureSettings = { autoLaunchRecurring: false, reminders: true, autoRefreshQuotes: false, quoteRefreshMinutes: 15, projectionMonths: 6, autoCategorization: false, reminderAdvanceDays: 3, monthlySavingsGoal: 0, pushNotifications: false };
+  const FCM_TOKEN_KEY = 'livrocaixa-fcm-token';
+  let pushForegroundBound = false;
   let featureAutomationTimer = null;
   let pendingImportSource = '';
   let currentType = 'in';
@@ -1209,8 +1212,13 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(state.timer);
       }
 
+      if (state.scrollRaf) {
+        cancelAnimationFrame(state.scrollRaf);
+      }
+
       if (state.card) {
         state.card.classList.remove('is-dragging');
+        state.card.classList.remove('is-holding');
         state.card.style.transform = '';
         state.card.style.width = '';
         state.card.style.height = '';
@@ -1408,6 +1416,39 @@ document.addEventListener('DOMContentLoaded', () => {
       }, STABLE_TARGET_MS);
     };
 
+    const SCROLL_EDGE = 48;
+    const SCROLL_MAX_SPEED = 12;
+
+    const scrollTick = () => {
+      if (!state || !state.active) {
+        if (state) state.scrollRaf = null;
+        return;
+      }
+
+      const maxY = (window.innerHeight || 0) - SCROLL_EDGE;
+      let delta = 0;
+
+      if (state.lastY < SCROLL_EDGE) {
+        const factor = Math.min(
+          1,
+          1 - Math.max(0, state.lastY) / SCROLL_EDGE
+        );
+        delta = -Math.max(1, Math.round(SCROLL_MAX_SPEED * factor));
+      } else if (state.lastY > maxY) {
+        const factor = Math.min(
+          1,
+          (state.lastY - maxY) / SCROLL_EDGE
+        );
+        delta = Math.max(1, Math.round(SCROLL_MAX_SPEED * factor));
+      }
+
+      if (delta) {
+        window.scrollBy(0, delta);
+      }
+
+      state.scrollRaf = requestAnimationFrame(scrollTick);
+    };
+
     container.addEventListener('pointerdown', event => {
       const handle = event.target.closest('.drag-handle');
 
@@ -1424,6 +1465,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       event.preventDefault();
 
+      card.classList.add('is-holding');
+
       const rect = card.getBoundingClientRect();
 
       state = {
@@ -1433,6 +1476,8 @@ document.addEventListener('DOMContentLoaded', () => {
         pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
+        lastX: event.clientX,
+        lastY: event.clientY,
         startLeft: rect.left,
         startTop: rect.top,
         width: rect.width,
@@ -1447,11 +1492,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
           state.active = true;
           container.classList.add('is-dragging-active');
+          state.scrollRaf = requestAnimationFrame(scrollTick);
 
           state.placeholder = createPlaceholder(card);
           card.before(state.placeholder);
 
           card.classList.add('is-dragging');
+          card.classList.remove('is-holding');
 
           card.style.width = `${state.width}px`;
           card.style.height = `${state.height}px`;
@@ -1478,6 +1525,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!state.active) return;
 
       event.preventDefault();
+
+      state.lastX = event.clientX;
+      state.lastY = event.clientY;
 
       const dx = event.clientX - state.startX;
       const dy = event.clientY - state.startY;
@@ -1508,32 +1558,19 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
 
       const cards = getCards();
-      const orderedWithoutDragged =
-        cards.filter(card => card !== current.card);
 
-      let targetIndex =
-        Number.isInteger(current.targetIndex)
-          ? current.targetIndex
-          : orderedWithoutDragged.length;
-
-      targetIndex = Math.max(
-        0,
-        Math.min(targetIndex, orderedWithoutDragged.length)
-      );
-
-      const currentIndex = cards.indexOf(current.card);
-
-      if (targetIndex > currentIndex) {
-        targetIndex -= 1;
-      }
+      const targetIndex =
+        Number.isInteger(current.targetIndex) &&
+        current.targetIndex >= 0
+          ? Math.max(
+              0,
+              Math.min(current.targetIndex, cards.length)
+            )
+          : -1;
 
       clearDrag();
 
-      if (
-        targetIndex !== currentIndex &&
-        targetIndex >= 0 &&
-        targetIndex < orderedWithoutDragged.length + 1
-      ) {
+      if (targetIndex >= 0) {
         await reorderDisplayItem(
           collectionName,
           current.id,
@@ -1545,6 +1582,22 @@ document.addEventListener('DOMContentLoaded', () => {
     container.addEventListener(
       'pointercancel',
       clearDrag
+    );
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && state) {
+        clearDrag();
+      }
+    });
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (state?.active) {
+          updatePlaceholder(state.lastX, state.lastY);
+        }
+      },
+      { passive: true }
     );
   }
 
@@ -3312,6 +3365,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return {
       autoLaunchRecurring: source.autoLaunchRecurring === true,
       reminders: source.reminders !== false,
+      pushNotifications: source.pushNotifications === true,
       autoRefreshQuotes: source.autoRefreshQuotes === true,
       quoteRefreshMinutes: Math.min(1440, Math.max(1, Number(source.quoteRefreshMinutes) || 15)),
       projectionMonths: Math.min(24, Math.max(1, Number(source.projectionMonths) || 6)),
@@ -3428,6 +3482,71 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     await docRef().set({ profileSettings }, { merge: true });
+  }
+
+  function sanitizePushToken(token) {
+    return String(token || '').replace(/\//g, '_');
+  }
+
+  function setupPushForegroundHandler() {
+    if (pushForegroundBound) return;
+    if (typeof firebase === 'undefined' || !firebase.messaging || !firebase.messaging.isSupported()) return;
+    pushForegroundBound = true;
+    firebase.messaging().onMessage(payload => {
+      const data = payload && payload.data ? payload.data : {};
+      const notice = payload && payload.notification ? payload.notification : {};
+      const title = notice.title || data.title || 'Livro-Caixa';
+      const body = notice.body || data.body || '';
+      navigator.serviceWorker.ready.then(reg => {
+        reg.showNotification(title, { body, icon: './icon-192.png', badge: './icon-192.png', tag: data.tag || undefined });
+      }).catch(() => {});
+    });
+  }
+
+  async function setPushNotifications(enabled) {
+    const toggle = document.getElementById('featurePushNotifications');
+    if (!enabled) {
+      featureSettings = normalizeFeatureSettings({ ...featureSettings, pushNotifications: false });
+      persistFeatureSettings();
+      if (toggle) toggle.checked = false;
+      try {
+        const savedToken = localStorage.getItem(FCM_TOKEN_KEY);
+        if (savedToken && currentUser) await docRef().collection('pushTokens').doc(sanitizePushToken(savedToken)).delete();
+        localStorage.removeItem(FCM_TOKEN_KEY);
+      } catch (err) { logSyncError('notificações push', err); }
+      persistProfileSettings().catch(err => logSyncError('preferência de notificações', err));
+      return;
+    }
+    try {
+      if (!('Notification' in window)) throw new Error('Este navegador não suporta notificações.');
+      if (typeof firebase === 'undefined' || !firebase.messaging || !firebase.messaging.isSupported()) throw new Error('Notificações push não são suportadas neste navegador.');
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') { if (toggle) toggle.checked = false; return; }
+      const vapidKey = window.__FCM_VAPID_KEY;
+      if (!vapidKey) {
+        if (toggle) toggle.checked = false;
+        alert('Configure a chave VAPID (Web Push) em app.js no campo window.__FCM_VAPID_KEY antes de ativar as notificações push.');
+        return;
+      }
+      const registration = await navigator.serviceWorker.ready;
+      const token = await firebase.messaging().getToken({ vapidKey, serviceWorkerRegistration: registration });
+      if (!token) throw new Error('Não foi possível gerar o token de notificação.');
+      localStorage.setItem(FCM_TOKEN_KEY, token);
+      if (currentUser) {
+        await docRef().collection('pushTokens').doc(sanitizePushToken(token)).set({ token, createdAt: todayISO(), updatedAt: new Date().toISOString() }, { merge: true });
+      }
+      featureSettings = normalizeFeatureSettings({ ...featureSettings, pushNotifications: true });
+      persistFeatureSettings();
+      if (toggle) toggle.checked = true;
+      setupPushForegroundHandler();
+      await persistProfileSettings();
+    } catch (err) {
+      if (toggle) toggle.checked = false;
+      featureSettings = normalizeFeatureSettings({ ...featureSettings, pushNotifications: false });
+      persistFeatureSettings();
+      logSyncError('notificações push', err);
+      alert('Não foi possível ativar as notificações push: ' + (err && err.message ? err.message : String(err)));
+    }
   }
 
   /* =====================================================================
@@ -3843,6 +3962,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function checkLocalPinLock() { pinUnlocked = !hasLocalPin(); if (!pinUnlocked) showPinOverlay(); }
   loadFeatureSettings();
   loadViewPeriod();
+  setupPushForegroundHandler();
 
   function budgetFor(categoryId) {
     const matches = budgets.filter(item => item.categoryId === categoryId);
@@ -5796,6 +5916,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderFeatureProfile() {
     const autoBills = document.getElementById('featureAutoBills'); if (autoBills) autoBills.checked = featureSettings.autoLaunchRecurring;
     const reminders = document.getElementById('featureReminders'); if (reminders) reminders.checked = featureSettings.reminders;
+    const push = document.getElementById('featurePushNotifications'); if (push) push.checked = featureSettings.pushNotifications;
     const autoQuotes = document.getElementById('featureAutoQuotes'); if (autoQuotes) autoQuotes.checked = featureSettings.autoRefreshQuotes;
     const interval = document.getElementById('featureQuoteInterval'); if (interval) interval.value = featureSettings.quoteRefreshMinutes;
     const projection = document.getElementById('featureProjectionMonths'); if (projection) projection.value = featureSettings.projectionMonths;
@@ -5849,7 +5970,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function saveFeatureSettings({ silent = false } = {}) {
     const statusEl = document.getElementById('profileSettingsStatus');
-    featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization') ? document.getElementById('featureAutoCategorization').checked : featureSettings.autoCategorization, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
+    featureSettings = normalizeFeatureSettings({ autoLaunchRecurring: document.getElementById('featureAutoBills')?.checked, reminders: document.getElementById('featureReminders')?.checked, pushNotifications: document.getElementById('featurePushNotifications')?.checked ?? featureSettings.pushNotifications, autoRefreshQuotes: document.getElementById('featureAutoQuotes')?.checked, quoteRefreshMinutes: document.getElementById('featureQuoteInterval')?.value, projectionMonths: document.getElementById('featureProjectionMonths')?.value, autoCategorization: document.getElementById('featureAutoCategorization') ? document.getElementById('featureAutoCategorization').checked : featureSettings.autoCategorization, reminderAdvanceDays: document.getElementById('featureReminderAdvanceDays')?.value, monthlySavingsGoal: document.getElementById('featureSavingsGoalAmount')
         ? readMoneyInput(document.getElementById('featureSavingsGoalAmount'))
         : featureSettings.monthlySavingsGoal });
     budgets = budgets.filter(item => !document.getElementById(`budget-${item.categoryId}`));
@@ -6391,6 +6512,8 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     persistProfileSettings().catch(err => logSyncError('preferência de avisos', err));
     render();
   });
+  const profilePush = document.getElementById('featurePushNotifications');
+  profilePush?.addEventListener('change', () => { setPushNotifications(profilePush.checked); });
   const autoQuotes = document.getElementById('featureAutoQuotes');
   const quoteIntervalRow = document.querySelector('label[for="featureQuoteInterval"]')?.parentElement;
   function toggleQuoteInterval() {
@@ -8194,6 +8317,26 @@ window.deletePocket = function(id) {
     const v = String(s || 'pendente').toLowerCase();
     return ['pendente', 'recebido', 'cancelado'].includes(v) ? v : 'pendente';
   }
+  function receivableTotalsOf(list) {
+    const totals = { pendingCount: 0, pendingTotal: 0, receivedTotal: 0 };
+    if (!Array.isArray(list)) return totals;
+    for (const item of list) {
+      const status = normalizeReceivableStatus(item?.status);
+      const value = Math.max(0, normalizeMoney(item?.amount));
+      if (status === 'pendente') {
+        totals.pendingCount += 1;
+        totals.pendingTotal += value;
+      } else if (status === 'recebido') {
+        totals.receivedTotal += value;
+      }
+    }
+    return totals;
+  }
+  function receivableStatusClass(receivable) {
+    const status = normalizeReceivableStatus(receivable?.status);
+    const expected = String(receivable?.expectedAt || '');
+    return status === 'pendente' && expected && expected < todayISO() ? 'overdue' : '';
+  }
   function openReceivableModal(id = null) {
     editingReceivableId = id;
     const item = id ? receivables.find(r => r.id === id) : null;
@@ -8216,13 +8359,11 @@ window.deletePocket = function(id) {
       .filter(r => !filter || normalizeReceivableStatus(r.status) === filter)
       .slice()
       .sort((a, b) => String(b.registeredAt || '').localeCompare(String(a.registeredAt || '')) || String(b.id || '').localeCompare(String(a.id || '')));
-    const pending = receivables.filter(r => normalizeReceivableStatus(r.status) === 'pendente');
-    const pendingTotal = pending.reduce((s, r) => s + Number(r.amount || 0), 0);
-    const receivedTotal = receivables.filter(r => normalizeReceivableStatus(r.status) === 'recebido').reduce((s, r) => s + Number(r.amount || 0), 0);
+    const totals = receivableTotalsOf(receivables);
     summary.innerHTML = `
-      <div class="balance-card"><span class="label">Pendentes</span><span class="amount">${pending.length}</span></div>
-      <div class="balance-card"><span class="label">A receber</span><span class="amount">${fmt(pendingTotal)}</span></div>
-      <div class="balance-card"><span class="label">Já recebidos</span><span class="amount">${fmt(receivedTotal)}</span></div>
+      <div class="balance-card"><span class="label">Pendentes</span><span class="amount">${totals.pendingCount}</span></div>
+      <div class="balance-card"><span class="label">A receber</span><span class="amount">${fmt(totals.pendingTotal)}</span></div>
+      <div class="balance-card"><span class="label">Já recebidos</span><span class="amount">${fmt(totals.receivedTotal)}</span></div>
       <div class="balance-card"><span class="label">Registros</span><span class="amount">${receivables.length}</span></div>`;
     if (!rows.length) {
       list.innerHTML = `<div class="empty">Nenhum valor a receber${filter ? ' neste filtro' : ''}. Use “+ Novo valor a receber”.</div>`;
@@ -8230,7 +8371,7 @@ window.deletePocket = function(id) {
     }
     list.innerHTML = rows.map(r => {
       const st = normalizeReceivableStatus(r.status);
-      const stClass = st === 'pendente' ? 'overdue' : (st === 'recebido' ? '' : '');
+      const stClass = receivableStatusClass(r);
       const expected = r.expectedAt ? r.expectedAt.split('-').reverse().join('/') : '—';
       const registered = r.registeredAt ? r.registeredAt.split('-').reverse().join('/') : '—';
       const actions = st === 'pendente'
@@ -8246,7 +8387,7 @@ window.deletePocket = function(id) {
         </div>
         <div style="text-align:right;">
           <div class="js-money" style="font-family:'IBM Plex Mono',monospace;font-weight:700;">${fmt(r.amount)}</div>
-          <span class="bill-status ${stClass}">${RECV_STATUS_LABEL[st]}</span>
+          <span class="bill-status recv-${st} ${stClass}">${RECV_STATUS_LABEL[st]}</span>
         </div>
         <div class="bill-actions">
           ${actions}
@@ -8277,8 +8418,8 @@ window.deletePocket = function(id) {
           ...prev,
           ...base,
           createdAt: prev.createdAt || registeredAt,
-          receivedAt: status === 'recebido' ? (prev.receivedAt || todayISO()) : (status === 'pendente' ? null : prev.receivedAt),
-          cancelledAt: status === 'cancelado' ? (prev.cancelledAt || todayISO()) : (status === 'pendente' ? null : prev.cancelledAt),
+          receivedAt: status === 'recebido' ? (prev.receivedAt || todayISO()) : null,
+          cancelledAt: status === 'cancelado' ? (prev.cancelledAt || todayISO()) : null,
           history: Array.isArray(prev.history) ? prev.history : []
         };
         if (prev.status !== status) {
@@ -8317,8 +8458,8 @@ window.deletePocket = function(id) {
       ...prev,
       status: next,
       updatedAt: new Date().toISOString(),
-      receivedAt: next === 'recebido' ? todayISO() : (next === 'pendente' ? null : prev.receivedAt),
-      cancelledAt: next === 'cancelado' ? todayISO() : (next === 'pendente' ? null : prev.cancelledAt),
+      receivedAt: next === 'recebido' ? todayISO() : null,
+      cancelledAt: next === 'cancelado' ? todayISO() : null,
       history: [...(Array.isArray(prev.history) ? prev.history : []), { at: new Date().toISOString(), from: prev.status, to: next }]
     };
     try {
@@ -8341,6 +8482,7 @@ window.deletePocket = function(id) {
   window.reopenReceivable = id => setReceivableStatus(id, 'pendente');
   document.getElementById('recvSalvar')?.addEventListener('click', () => saveReceivableRecord());
   document.getElementById('receivableStatusFilter')?.addEventListener('change', () => renderReceivables());
+  document.getElementById('btnNewReceivable')?.addEventListener('click', () => openReceivableModal());
   function populateBillForm(){
     const options = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
     document.getElementById('billBanco').innerHTML = `<option value="a-definir">A definir</option>${options}`;
