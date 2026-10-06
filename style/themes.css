@@ -11,12 +11,16 @@
       .light-theme-option[data-theme="N"]{--swatch:...}
       .dark-theme-option[data-theme="N"]{--swatch:...}
    3. index.html: novo <button class="light-theme-option|dark-theme-option"
-      data-theme="N"> em #lightThemePicker / #darkThemePicker (≈ linhas 197-209).
+      data-theme="N"> em #lightThemePicker / #darkThemePicker (paleta dentro do
+      Perfil → item "Aparência").
    4. app.js: entrada 'N' em LIGHT_THEME_COLORS / DARK_THEME_COLORS (cor do
       <meta name="theme-color">) — se omitida, validLightTheme/validDarkTheme
       voltam ao padrão '1'.
-      IDs já usados: claro 1,4,5 / escuro 1,3,4,5 (2 e 3 no claro são legados,
-      mapeados para 1 por validLightTheme — não reutilizar).
+       IDs já usados: claro 1–5 (1=Oliva, 2=Verde, 3=Lima, 4=Terracota,
+       5=Laranja; Azul removido) / escuro 1–5 (1=Oliva, 2=Verde, 3=Bege,
+       4=Terracota, 5=Laranja). Valores antigos migram 1× via migrateThemeIds
+       (estágios 2 e 3; legados claro 2,3 e escuro 2,6,7 viram '1'; 6/7 escuro =
+       Mint/Ardósia removidos — não reutilizar sem migração).
    ========================================================= */
 :root{
     --font-ui:'Plus Jakarta Sans',sans-serif;
@@ -69,6 +73,28 @@
     --header-control-bg:rgba(0,0,0,.28); --action-border:#FFD4B8;
     --on-accent:#FFFFFF; --shadow:rgba(232,80,2,.12); --hover-soft:rgba(232,80,2,.06);
   }
+  /* Forest / Grass — modo claro */
+  body:not(.dark-mode)[data-light-theme="3"] {
+    --paper:#FAF9F6; --paper-2:#eeeee5; --ink:#31572C; --ink-soft:#3D7A5C;
+    --line:color-mix(in srgb,#90A955 35%,#FAF9F6);
+    --surface:#ffffff; --surface-raised:#ffffff; --surface-accent:#31572C;
+    --green:#357A57; --green-soft:#f2f6c6;
+    --gold:#90A955; --gold-rgb:144,169,85; --gold-soft:#f2f6c6;
+    --accent:#40916C; --accent-rgb:64,145,108; --accent-to:#4EA77B; --accent-ink:#FAF9F6; --accent-muted:color-mix(in srgb,#ECF39E 55%,#FAF9F6);
+    --on-accent:#FAF9F6; --action-border:color-mix(in srgb,var(--accent) 35%,var(--line));
+    --header-from:#31572C; --header-to:#40916C; --header-ink:#FAF9F6; --header-control-bg:rgba(49,87,44,.32);
+  }
+  /* Soft Sage / Deep Olive — modo claro */
+  body:not(.dark-mode)[data-light-theme="1"] {
+    --paper:#EFF4EC; --paper-2:#E3EBDF; --ink:#1A2417; --ink-soft:#47563F; --line:#C9D8C1;
+    --surface:#F7FAF6; --surface-raised:#FFFFFF; --surface-accent:#1A2417;
+    --green:#3F6B4A; --green-soft:#DFEBD8;
+    --gold:#ABC8A2; --gold-rgb:171,200,162; --gold-soft:#E9F2E4;
+    --accent:#54664F; --accent-rgb:84,102,79; --accent-to:#71866A; --accent-ink:#F7FAF6; --accent-muted:color-mix(in srgb,#54664F 14%,#EFF4EC);
+    --on-accent:#F7FAF6; --action-border:color-mix(in srgb,#54664F 35%,#C9D8C1);
+    --header-from:#1A2417; --header-to:#3F5248; --header-ink:#EFF4EC; --header-control-bg:rgba(26,36,23,.35);
+    --overlay:rgba(26,36,23,0.55);
+  }
   body.dark-mode {
     --paper:#0F1712;
     --paper-2:#16211A;
@@ -98,12 +124,12 @@
     --hover-soft:rgba(255,255,255,0.06);
       --action-border:color-mix(in srgb,var(--accent) 35%,var(--line));
   }
-  body.dark-mode[data-dark-theme="3"] {
+  body.dark-mode[data-dark-theme="4"] {
     --paper:#141410; --paper-2:#1E1F17; --surface:#1E1F17; --surface-raised:#292A20; --surface-accent:#403126;
     --ink:#F5F1E6; --ink-soft:#A6A48F; --green:#D08860; --green-soft:#403126; --line:#33342A; --gold:#D08860; --gold-rgb:208,136,96; --gold-soft:#3A2C22;
     --accent:#D08860; --accent-rgb:208,136,96; --accent-to:#D08860; --accent-ink:#1E1408; --accent-muted:#493127; --header-from:#141410; --header-to:#2A241B; --on-accent:#1E1408;
   }
-  body.dark-mode[data-dark-theme="4"] {
+  body.dark-mode[data-dark-theme="2"] {
     --paper:#121212; --paper-2:#1C1C1E; --surface:#1C1C1E; --surface-raised:#262628; --surface-accent:#27362C;
     --ink:#FFFFFF; --ink-soft:#9A9A9E; --green:#22C55E; --green-soft:#263D2D; --line:#2C2C2E; --gold:#22C55E; --gold-rgb:34,197,94; --gold-soft:#1E3A27;
     --accent:#22C55E; --accent-rgb:34,197,94; --accent-to:#22C55E; --accent-ink:#0A2415; --accent-muted:#1E3A27; --header-from:#121212; --header-to:#1A251D; --on-accent:#0A2415;
@@ -117,22 +143,35 @@
     --header-from:#000000; --header-to:#C10801; --on-accent:#FFFFFF;
     --overlay:rgba(0,0,0,.82); --shadow:rgba(0,0,0,.45); --hover-soft:rgba(255,255,255,.06);
   }
-  .light-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:-12px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
+  /* Soft Sage / Deep Olive — modo escuro */
+  body.dark-mode[data-dark-theme="1"] {
+    --paper:#1A2417; --paper-2:#243020; --surface:#243020; --surface-raised:#2E3B29; --surface-accent:#31412B;
+    --ink:#E4EDDE; --ink-soft:#9DB696; --green:#8FC596; --green-soft:#243D2A;
+    --red:#E06B54; --red-soft:#3E241D; --line:#35452F;
+    --gold:#ABC8A2; --gold-rgb:171,200,162; --gold-soft:#2A3E24;
+    --accent:#ABC8A2; --accent-rgb:171,200,162; --accent-to:#B9D2B2; --accent-ink:#12190F; --accent-muted:#3E5238;
+    --header-from:#111709; --header-to:#2A3A25; --on-accent:#12190F;
+    --overlay:rgba(10,15,8,0.78); --shadow:rgba(0,0,0,0.45); --hover-soft:rgba(171,200,162,0.07);
+  }
+  .light-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:0 0 6px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
   body:not(.dark-mode) .light-theme-picker{display:flex;}
   .light-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
   .light-theme-option{width:28px;min-width:28px;height:28px;min-height:28px;padding:0;border:2px solid transparent;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);}
-  .light-theme-option[data-theme="1"]{--swatch:#327957;}
-      .light-theme-option[data-theme="4"]{--swatch:linear-gradient(135deg,#C66F50,#5F8A70);}
-  .light-theme-option[data-theme="5"]{--swatch:linear-gradient(135deg,#E85002,#F16001);}
+  .light-theme-option[data-theme="1"]{--swatch:#54664F;}
+  .light-theme-option[data-theme="2"]{--swatch:#327957;}
+  .light-theme-option[data-theme="3"]{--swatch:#40916C;}
+  .light-theme-option[data-theme="4"]{--swatch:#C66F50;}
+  .light-theme-option[data-theme="5"]{--swatch:#E85002;}
   .light-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.36);}
-  .dark-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:-12px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
+  .dark-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:0 0 6px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
   body.dark-mode .dark-theme-picker{display:flex;}
   .dark-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
   .dark-theme-option{width:28px;min-width:28px;height:28px;min-height:28px;padding:0;border:2px solid transparent;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);}
-  .dark-theme-option[data-theme="1"]{--swatch:#C9A86A;}
-    .dark-theme-option[data-theme="3"]{--swatch:#D08860;}
-  .dark-theme-option[data-theme="4"]{--swatch:#22C55E;}
-  .dark-theme-option[data-theme="5"]{--swatch:linear-gradient(135deg,#E85002,#C10801);}
+  .dark-theme-option[data-theme="1"]{--swatch:#3E5238;}
+  .dark-theme-option[data-theme="2"]{--swatch:#22C55E;}
+  .dark-theme-option[data-theme="3"]{--swatch:#C9A86A;}
+  .dark-theme-option[data-theme="4"]{--swatch:#D08860;}
+  .dark-theme-option[data-theme="5"]{--swatch:#E85002;}
   .dark-theme-option[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.24);}
   /* O seletor global `button:hover` tem especificidade maior que a das amostras e sobrescrevia o swatch. */
   .light-theme-option:hover,.light-theme-option:focus-visible,.light-theme-option:active,

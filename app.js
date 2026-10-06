@@ -446,7 +446,7 @@ window.addEventListener('beforeunload', e => {
   }
 
   function markValueRefresh(root = document) {
-    root.querySelectorAll('.balance-card .amount,.card-amount,.cat-summary-total strong').forEach((node) => {
+    root.querySelectorAll('.balance-card .amount,.card-amount').forEach((node) => {
       node.classList.remove('value-refresh');
       requestAnimationFrame(() => node.classList.add('value-refresh'));
     });
@@ -510,6 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let editingPocketId = null;
   let investmentMovementTarget = null; // { kind: 'aporte'|'resgate'|'rendimento', id }
   let catChartInstances = { out: null, in: null };
+  let catChartOutsideClickHandler = null;
   const catChartBreakpoint = window.matchMedia('(max-width: 680px)');
   if (typeof catChartBreakpoint.addEventListener === 'function') {
     catChartBreakpoint.addEventListener('change', () => { if (catChartInstances.out || catChartInstances.in) renderCategorySummary(); });
@@ -850,7 +851,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const lightThemeOptions = Array.from(document.querySelectorAll('.light-theme-option'));
   const LIGHT_THEME_STORAGE_KEY = 'livro-caixa-light-theme';
   const LIGHT_THEME_COLORS = {
-    '1': '#F8F7F2',
+    '1': '#EFF4EC',
+    '2': '#F8F7F2',
+    '3': '#FAF9F6',
     '4': '#FBF6EF',
     '5': '#F9F9F9'
   };
@@ -858,18 +861,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const darkThemeOptions = Array.from(document.querySelectorAll('.dark-theme-option'));
   const DARK_THEME_STORAGE_KEY = 'livro-caixa-dark-theme';
   const DARK_THEME_COLORS = {
-    '1': '#0F1712',
-    '3': '#141410',
-    '4': '#121212',
+    '1': '#1A2417',
+    '2': '#121212',
+    '3': '#0F1712',
+    '4': '#141410',
     '5': '#000000'
   };
 
+  const THEME_IDS_MIGRATED_KEY = 'livro-caixa-theme-ids-v2';
+  function migrateThemeIdsOnce() {
+    try {
+      const stage = localStorage.getItem(THEME_IDS_MIGRATED_KEY);
+      if (stage === '3') return;
+      if (!stage) {
+        // Estágio 1 (pré-numeração contígua) → 2
+        const light0 = localStorage.getItem(LIGHT_THEME_STORAGE_KEY);
+        const lightMapV2 = { '2': '1', '3': '1', '4': '2', '5': '3', '6': '4', '7': '5', '8': '6' };
+        if (light0 !== null && lightMapV2[light0]) localStorage.setItem(LIGHT_THEME_STORAGE_KEY, lightMapV2[light0]);
+        const dark0 = localStorage.getItem(DARK_THEME_STORAGE_KEY);
+        const darkMapV2 = { '2': '1', '3': '2', '4': '3', '5': '4', '6': '1', '7': '1' };
+        if (dark0 !== null && darkMapV2[dark0]) localStorage.setItem(DARK_THEME_STORAGE_KEY, darkMapV2[dark0]);
+        localStorage.setItem(THEME_IDS_MIGRATED_KEY, '2');
+      }
+      // Estágio 2 → 3: claro Oliva/Verde/Lima/Terracota/Laranja (Azul removido);
+      // escuro Oliva/Verde/Bege/Terracota/Laranja. Ids que sumiram caem no padrão '1'.
+      const light = localStorage.getItem(LIGHT_THEME_STORAGE_KEY);
+      const lightMapV3 = { '1': '2', '2': '4', '3': '5', '4': '1', '5': '3', '6': '1' };
+      if (light !== null && lightMapV3[light]) localStorage.setItem(LIGHT_THEME_STORAGE_KEY, lightMapV3[light]);
+      const dark = localStorage.getItem(DARK_THEME_STORAGE_KEY);
+      const darkMapV3 = { '1': '3', '2': '4', '3': '2', '4': '5', '5': '1' };
+      if (dark !== null && darkMapV3[dark]) localStorage.setItem(DARK_THEME_STORAGE_KEY, darkMapV3[dark]);
+      localStorage.setItem(THEME_IDS_MIGRATED_KEY, '3');
+    } catch (e) {}
+  }
+
   function validLightTheme(value) {
-    if (value === '2' || value === '3') return '1';
     return Object.prototype.hasOwnProperty.call(LIGHT_THEME_COLORS, value) ? value : '1';
   }
 
   function getSavedLightTheme() {
+    migrateThemeIdsOnce();
     return validLightTheme(localStorage.getItem(LIGHT_THEME_STORAGE_KEY));
   }
 
@@ -889,11 +920,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function validDarkTheme(value) {
-    if (value === '2') return '1';
     return Object.prototype.hasOwnProperty.call(DARK_THEME_COLORS, value) ? value : '1';
   }
 
   function getSavedDarkTheme() {
+    migrateThemeIdsOnce();
     return validDarkTheme(localStorage.getItem(DARK_THEME_STORAGE_KEY));
   }
 
@@ -925,6 +956,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderInvestments();
       renderPockets();
       renderPocketBalances();
+      renderBalances();
     });
   });
   darkThemeOptions.forEach(option => {
@@ -935,6 +967,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderInvestments();
       renderPockets();
       renderPocketBalances();
+      renderBalances();
     });
   });
 
@@ -954,8 +987,20 @@ document.addEventListener('DOMContentLoaded', () => {
     renderInvestments();
     renderPockets();
     renderPocketBalances();
+    renderBalances();
     renderDashboardTab();
   };
+
+  // Perfil → Aparência: mostrar/ocultar as paletas (única entrada das paletas no app)
+  document.getElementById('btnAparencia')?.addEventListener('click', () => {
+    const wrap = document.getElementById('aparenciaPaletas');
+    const btn = document.getElementById('btnAparencia');
+    if (!wrap || !btn) return;
+    const willOpen = wrap.hasAttribute('hidden');
+    if (willOpen) wrap.removeAttribute('hidden');
+    else wrap.setAttribute('hidden', '');
+    btn.setAttribute('aria-expanded', String(willOpen));
+  });
 
   // Suporte a tecla ESC para fechar modais
   document.addEventListener('keydown', (e) => {
@@ -985,8 +1030,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bar = document.getElementById('universalPeriodBar');
     const btn = document.getElementById('btnTogglePeriodBar');
     if (!bar || !btn) return;
-    const open = bar.classList.toggle('is-collapsed') === false;
-    // class is-collapsed means collapsed; toggle returns true if class now present
+    bar.classList.toggle('is-collapsed');
     const collapsed = bar.classList.contains('is-collapsed');
     btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
   });
@@ -2367,6 +2411,132 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* [JS 08] RENDERIZAÇÃO / VIEWS */
+  let patrimonySparklineInstance = null;
+  const PATRIMONY_SPARK_STORAGE_KEY = 'livro-caixa-patrimony-spark';
+  let patrimonySparkVisible = localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY) !== '0';
+  function renderPatrimonySparkline(enabled) {
+    if (patrimonySparklineInstance) {
+      patrimonySparklineInstance.destroy();
+      patrimonySparklineInstance = null;
+    }
+    const canvas = document.getElementById('patrimonySparkline');
+    if (!enabled || !patrimonySparkVisible || !canvas) return;
+    const series = dashboardMonthSeries(6);
+    const styles = getComputedStyle(document.body);
+    const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
+    const toRgb = (value) => {
+      const v = String(value || '').trim();
+      let match = v.match(/^#([0-9a-fA-F]{6})$/);
+      if (match) {
+        const n = parseInt(match[1], 16);
+        return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+      }
+      match = v.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+      return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : null;
+    };
+    const luminance = (rgb) => {
+      const channel = (value) => {
+        const s = value / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+      };
+      return 0.2126 * channel(rgb[0]) + 0.7152 * channel(rgb[1]) + 0.0722 * channel(rgb[2]);
+    };
+    const contrastRatio = (a, b) => {
+      const la = luminance(a);
+      const lb = luminance(b);
+      return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+    };
+    const toHex = (rgb) => '#' + rgb.map(value => value.toString(16).padStart(2, '0')).join('');
+    const card = canvas.closest('.balance-card');
+    const cardStyles = card ? getComputedStyle(card) : styles;
+    const bgStops = Array.from(String(cardStyles.backgroundImage).matchAll(/rgba?\([^)]+\)/g), match => toRgb(match[0])).filter(Boolean);
+    const bgSolid = toRgb(cardStyles.backgroundColor);
+    const bgRgbs = bgStops.length ? bgStops : (bgSolid ? [bgSolid] : [[28, 43, 36]]);
+    const meanBg = bgRgbs.reduce((acc, rgb) => [acc[0] + rgb[0], acc[1] + rgb[1], acc[2] + rgb[2]], [0, 0, 0]).map(value => Math.round(value / bgRgbs.length));
+    const byContrast = (a, b) => contrastRatio(b, meanBg) - contrastRatio(a, meanBg);
+    const hueCandidates = [readVar('--accent', ''), readVar('--gold', ''), readVar('--green', '')].map(toRgb).filter(Boolean).sort(byContrast);
+    const anchorCandidates = [readVar('--paper', ''), readVar('--ink', '')].map(toRgb).filter(Boolean).sort(byContrast);
+    const chosen = hueCandidates.find(rgb => contrastRatio(rgb, meanBg) >= 3)
+      || anchorCandidates.find(rgb => contrastRatio(rgb, meanBg) >= 3)
+      || hueCandidates[0]
+      || anchorCandidates[0]
+      || [176, 141, 62];
+    const lineColor = toHex(chosen);
+    const masked = () => document.body.classList.contains('balances-hidden');
+    const values = series.map(item => Number(item.patrimony || 0));
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const pad = Math.max((max - min) * 0.15, 1);
+    patrimonySparklineInstance = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: series.map(item => item.label),
+        datasets: [{
+          data: values,
+          borderColor: lineColor,
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true,
+          backgroundColor: (context) => {
+            const chart = context.chart;
+            if (!chart.chartArea) return lineColor + '2E';
+            const gradient = chart.ctx.createLinearGradient(0, chart.chartArea.top, 0, chart.chartArea.bottom);
+            gradient.addColorStop(0, lineColor + '59');
+            gradient.addColorStop(1, lineColor + '0A');
+            return gradient;
+          },
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          pointHitRadius: 10,
+          pointBorderWidth: 0,
+          pointBackgroundColor: lineColor,
+          pointHoverBackgroundColor: lineColor
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            displayColors: false,
+            callbacks: {
+              title: items => (items && items.length && series[items[0].dataIndex] ? series[items[0].dataIndex].label : ''),
+              label: context => masked() ? ' ••••••' : ' ' + fmt(context.parsed.y)
+            }
+          }
+        },
+        scales: {
+          x: { display: false },
+          y: { display: false, min: min - pad, max: max + pad }
+        }
+      }
+    });
+  }
+
+  function togglePatrimonySparkline() {
+    patrimonySparkVisible = !patrimonySparkVisible;
+    try {
+      localStorage.setItem(PATRIMONY_SPARK_STORAGE_KEY, patrimonySparkVisible ? '1' : '0');
+    } catch (error) { /* armazenamento indisponível: estado vale só para a sessão */ }
+    const symbol = document.querySelector('#balanceStrip .balance-card.total .balance-symbol');
+    const box = document.getElementById('patrimonySparkBox');
+    if (symbol) {
+      symbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
+      symbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
+    }
+    if (box) {
+      box.classList.toggle('is-collapsed', !patrimonySparkVisible);
+      box.setAttribute('aria-hidden', String(!patrimonySparkVisible));
+    }
+    if (patrimonySparkVisible) {
+      renderPatrimonySparkline(!!currentUser && !!firstLoadDone);
+    } else {
+      setTimeout(() => { if (!patrimonySparkVisible) renderPatrimonySparkline(false); }, 320);
+    }
+  }
+
   function renderBalances() {
     const strip = document.getElementById('balanceStrip');
     if (!strip) return;
@@ -2390,8 +2560,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let html = `
     <div class="balance-card total">
-      <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-wallet" aria-hidden="true"></i></span></div>
+      <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" role="button" tabindex="0" aria-expanded="${patrimonySparkVisible}" aria-controls="patrimonySparkBox" aria-label="${patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio'}"><i class="fi fi-rr-wallet" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && totalPatrimonio < 0 ? 'neg' : ''}">${totalLabel}</span>
+      ${balancesReady ? `<div class="patrimony-spark-box${patrimonySparkVisible ? '' : ' is-collapsed'}" id="patrimonySparkBox" aria-hidden="${!patrimonySparkVisible}"><canvas id="patrimonySparkline" role="img" aria-label="Evolução do patrimônio nos últimos 6 meses"></canvas></div>` : ''}
       <span class="balance-insight is-${balancesReady ? flowInsight.kind : 'neutral'}"><strong>${escapeHTML(insightValue)}</strong><span>${escapeHTML(insightDetail)}</span></span>
     </div>
     <div class="balance-card bank-summary-card" role="button" tabindex="0" aria-label="Ver saldos dos bancos" title="Ver saldos dos bancos">
@@ -2411,6 +2582,15 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>`;
     strip.innerHTML = html;
     markValueRefresh(strip);
+    renderPatrimonySparkline(balancesReady);
+    const sparkToggleSymbol = strip.querySelector('.balance-card.total .balance-symbol');
+    sparkToggleSymbol?.addEventListener('click', togglePatrimonySparkline);
+    sparkToggleSymbol?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        togglePatrimonySparkline();
+      }
+    });
     const bankSummaryCard = strip.querySelector('.bank-summary-card');
     const openBankPanel = () => openBankManagementPanel();
     bankSummaryCard?.addEventListener('click', openBankPanel);
@@ -3002,7 +3182,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',1)" ${index===investments.length-1?'disabled':''} aria-label="Mover para baixo">↓</button>
           </div>
           <button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações"></button>
-          ${isCryptoType(inv.type) ? `<button type="button" class="action-btn reconcile-btn" onclick="openCryptoReconcileModal('${inv.id}')" aria-label="Conciliar saldo com a corretora">Conciliar</button>` : ''}
+          <button type="button" class="action-btn reconcile-btn" onclick="openCryptoReconcileModal('${inv.id}')" aria-label="Conciliar saldo">Conciliar</button>
           <button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar"></button>
           <button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir"></button>
         </div>
@@ -3216,6 +3396,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function destroyCatCharts() {
+    if (catChartOutsideClickHandler) {
+      document.removeEventListener('click', catChartOutsideClickHandler);
+      catChartOutsideClickHandler = null;
+    }
     ['out', 'in'].forEach(key => {
       if (catChartInstances[key]) {
         catChartInstances[key].destroy();
@@ -3256,7 +3440,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const title = isIncome ? 'Entradas por Categoria' : 'Gastos por Categoria';
     const leaderLabel = isIncome ? 'Maior entrada' : 'Maior gasto';
-    const totalLabel = isIncome ? 'Total de entradas' : 'Total de gastos';
 
     wrap.innerHTML = `<div class="cat-summary">
       <h3>${title} ${subtitle}</h3>
@@ -3264,6 +3447,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="cat-summary-content">
         <div class="chart-container">
           <canvas id="${canvasId}"></canvas>
+          <div class="chart-center-total" aria-hidden="true">
+            <span class="chart-center-total-label">Total</span>
+            <strong class="chart-center-total-value">${fmt(totalSpend)}</strong>
+          </div>
         </div>
         <div class="cat-bars-list">
           <div class="cat-legend-head"><span>Categoria</span><span>Movimentação</span><span>%</span></div>
@@ -3277,7 +3464,6 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
       </div>
-      <div class="cat-summary-total"><span>${totalLabel}</span><strong>${fmt(totalSpend)}</strong></div>
     </div>`;
 
     const ctx = document.getElementById(canvasId);
@@ -3286,14 +3472,64 @@ document.addEventListener('DOMContentLoaded', () => {
       const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
       const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
       const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
+      const tooltipCallbacks = {
+        label: function(context) {
+          const masked = document.body.classList.contains('balances-hidden');
+          const val = context.raw || 0;
+          const formatted = masked ? '••••••' : 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+          return isMobileLayout ? ' ' + formatted : ' ' + context.label + ': ' + formatted;
+        }
+      };
+      if (isMobileLayout) tooltipCallbacks.title = function() { return []; };
+
+      const baseSliceColors = chartSpend.map(x => categoryColor(x.cat));
+      let activeSliceIndex = null;
+      const dimSliceColor = (color) => {
+        if (typeof color !== 'string') return color;
+        if (/^#[0-9a-fA-F]{6}$/.test(color)) return color + '40';
+        const hslMatch = color.match(/^hsl\((.+)\)$/);
+        if (hslMatch) return 'hsla(' + hslMatch[1] + ', 0.3)';
+        return color;
+      };
+      const applyActiveSlice = () => {
+        const valueEl = wrap.querySelector('.chart-center-total-value');
+        if (valueEl) {
+          const slice = activeSliceIndex === null ? null : chartSpend[activeSliceIndex];
+          valueEl.textContent = fmt(slice ? slice.total : totalSpend);
+        }
+        const chart = catChartInstances[mode];
+        if (!chart) return;
+        chart.data.datasets[0].backgroundColor = baseSliceColors.map((color, sliceIndex) => (activeSliceIndex === null || sliceIndex === activeSliceIndex) ? color : dimSliceColor(color));
+        chart.data.datasets[0].offset = chartSpend.map((_, sliceIndex) => sliceIndex === activeSliceIndex ? 6 : 0);
+        chart.update();
+      };
+      const toggleActiveSlice = (index) => {
+        activeSliceIndex = activeSliceIndex === index ? null : index;
+        applyActiveSlice();
+      };
+
+      const centerTotalOverlayPlugin = {
+        id: 'centerTotalOverlay',
+        afterDraw: function(chart) {
+          const overlay = wrap.querySelector('.chart-center-total');
+          const area = chart.chartArea;
+          if (!overlay || !area) return;
+          const width = chart.width || 0;
+          const height = chart.height || 0;
+          if (!width || !height) return;
+          overlay.style.left = (((area.left + area.right) / 2) / width * 100) + '%';
+          overlay.style.top = (((area.top + area.bottom) / 2) / height * 100) + '%';
+        }
+      };
 
       catChartInstances[mode] = new Chart(ctx, {
         type: 'doughnut',
+        plugins: [centerTotalOverlayPlugin],
         data: {
           labels: chartSpend.map(x => x.cat.name),
           datasets: [{
             data: chartSpend.map(x => x.total),
-            backgroundColor: chartSpend.map(x => categoryColor(x.cat)),
+            backgroundColor: baseSliceColors,
             borderColor: borderColor,
             borderWidth: 2
           }]
@@ -3302,29 +3538,37 @@ document.addEventListener('DOMContentLoaded', () => {
           responsive: true,
           maintainAspectRatio: false,
           cutout: isMobileLayout ? '67%' : '62%',
+          onClick: function(event, elements) {
+            if (elements.length) toggleActiveSlice(elements[0].index);
+            else if (activeSliceIndex !== null) {
+              activeSliceIndex = null;
+              applyActiveSlice();
+            }
+          },
           plugins: {
             legend: {
-              display: !isMobileLayout,
-              position: 'bottom',
-              labels: {
-                font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' },
-                color: textColor,
-                boxWidth: 12
-              }
+              display: false
             },
             tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const head = ' ' + context.label + ': ';
-                  if (document.body.classList.contains('balances-hidden')) return head + '••••••';
-                  const val = context.raw || 0;
-                  return head + 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                }
-              }
+              enabled: false
             }
           }
         }
       });
+
+      wrap.querySelectorAll('.cat-bars-list .cat-row').forEach((row, index) => {
+        row.addEventListener('click', () => toggleActiveSlice(index));
+      });
+
+      if (catChartOutsideClickHandler) document.removeEventListener('click', catChartOutsideClickHandler);
+      catChartOutsideClickHandler = (event) => {
+        if (activeSliceIndex === null) return;
+        const target = event.target;
+        if (target instanceof Element && wrap.contains(target) && (target.closest('.chart-container') || target.closest('.cat-bars-list .cat-row'))) return;
+        activeSliceIndex = null;
+        applyActiveSlice();
+      };
+      document.addEventListener('click', catChartOutsideClickHandler);
     }
   }
 
@@ -6298,7 +6542,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!options.length) return '';
     const rows = options.map(option => {
       const pct = scenario.netFinal > 0 ? (option.delta / scenario.netFinal) * 100 : null;
-      const color = option.delta >= 0 ? '#2F6F4F' : '#B3432B';
+      const color = option.delta >= 0 ? 'var(--green,#327957)' : 'var(--red,#B3432B)';
       const sign = option.delta >= 0 ? '+' : '−';
       const deltaText = pct === null ? '' : ` <em style="color:${color}">${sign}${fmt(Math.abs(option.delta))} (${sign}${compoundPctLabel(Math.abs(pct))}%)</em>`;
       return `<div class="compound-calc-row"><span>${escapeHTML(option.name)} · ${escapeHTML(option.ref)}</span><b>${fmt(option.netFinal)}${deltaText}</b></div>`;
@@ -7874,7 +8118,22 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     });
   }
   document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; logInfo('Segurança', 'Desbloquear PIN local', 'Sucesso', 'Aplicativo desbloqueado neste dispositivo.'); } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; logSyncError('desbloqueio por PIN', err); } });
-  document.getElementById('pinUnlockInput')?.addEventListener('keydown', event => { if (event.key === 'Enter') document.getElementById('btnPinUnlock')?.click(); });
+  (function bindPinUnlockKeys() {
+    const input = document.getElementById('pinUnlockInput');
+    if (!input) return;
+    const isSubmitKey = (event) => event.key === 'Enter' || event.key === 'Go' || event.key === 'Send' || event.key === 'Done' || event.key === 'Search' || event.code === 'Enter' || event.keyCode === 13;
+    let lastTriggerAt = 0;
+    const trigger = (event) => {
+      if (!isSubmitKey(event)) return;
+      event.preventDefault();
+      const now = Date.now();
+      if (now - lastTriggerAt < 900) return;
+      lastTriggerAt = now;
+      document.getElementById('btnPinUnlock')?.click();
+    };
+    input.addEventListener('keydown', trigger);
+    input.addEventListener('keyup', trigger);
+  })();
   document.getElementById('btnPinLogout')?.addEventListener('click', () => auth.signOut());
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') { if (pinUnlocked && hasLocalPin()) markPinActivity(); persistPinActivity(); return; }
@@ -12804,24 +13063,44 @@ VALOR: ${fmt(pseudoBill.amount)}
   let cryptoReconcileTarget = null;
   window.openCryptoReconcileModal = function(id) {
     const item = investments.find(x => x.id === id);
-    if (!item || !isCryptoType(item.type)) return;
+    if (!item) return;
     cryptoReconcileTarget = item.id;
     const isBtc = isBitcoinType(item.type);
+    const isCrypto = isCryptoType(item.type);
     document.getElementById('panelCryptoReconcileTitle').innerHTML = `Conciliar — ${escapeHTML(item.alias || item.name)} <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>`;
-    document.getElementById('panelCryptoReconcileHint').textContent =
-      `Informe a quantidade total que consta na corretora. A diferença em relação ao saldo atual (${formatCryptoUnits(item.type, cryptoCurrentUnits(item), item.name)}) vira um lançamento de ajuste.`;
     const input = document.getElementById('crSaldoReal');
-    document.getElementById('crSaldoRealLabel').textContent = isBtc ? 'Saldo na corretora (SAT)' : 'Saldo na corretora (quantidade)';
-    input.step = isBtc ? '1' : '0.00000001';
+    if (isCrypto) {
+      document.getElementById('panelCryptoReconcileHint').textContent =
+        `Informe a quantidade total que consta na corretora. A diferença em relação ao saldo atual (${formatCryptoUnits(item.type, cryptoCurrentUnits(item), item.name)}) vira um lançamento de ajuste.`;
+      document.getElementById('crSaldoRealLabel').textContent = isBtc ? 'Saldo na corretora (SAT)' : 'Saldo na corretora (quantidade)';
+      input.step = isBtc ? '1' : '0.00000001';
+      input.placeholder = 'Ex: 11.95432727';
+    } else {
+      document.getElementById('panelCryptoReconcileHint').textContent =
+        `Informe o saldo atual desta posição. A diferença em relação ao valor exibido (${fmt(reconcileCurrentValue(item))}) vira um lançamento de ajuste.`;
+      document.getElementById('crSaldoRealLabel').textContent = 'Saldo atual na instituição (R$)';
+      input.step = '0.01';
+      input.placeholder = 'Ex: 1234.56';
+    }
     input.value = '';
     updateCryptoReconcilePreview();
     openModal('panelCryptoReconcile');
     setTimeout(() => input.focus(), 80);
   };
+  function reconcileCurrentValue(item) {
+    if (item.type === 'Renda Fixa') return fixedIncomeCurrentValue(item);
+    return Number(item.value) || 0;
+  }
   function cryptoReconcileNumbers() {
     const item = investments.find(x => x.id === cryptoReconcileTarget);
     if (!item) return null;
     const raw = parseFloat(document.getElementById('crSaldoReal').value);
+    if (!isCryptoType(item.type)) {
+      const current = reconcileCurrentValue(item);
+      if (!isFinite(raw) || raw < 0) return { item, current, informed: null, diff: null };
+      const informed = Number(raw.toFixed(2));
+      return { item, current, informed, diff: Number((informed - current).toFixed(2)) };
+    }
     const current = cryptoCurrentUnits(item);
     if (!isFinite(raw) || raw < 0) return { item, current, informed: null, diff: null };
     const informed = isBitcoinType(item.type) ? Math.round(raw) : Number(raw.toFixed(8));
@@ -12832,49 +13111,91 @@ VALOR: ${fmt(pseudoBill.amount)}
     const ctx = cryptoReconcileNumbers();
     if (!ctx || !box) return;
     const { item, current, informed, diff } = ctx;
+    const show = isCryptoType(item.type) ? (value) => formatCryptoUnits(item.type, value, item.name) : (value) => fmt(value);
     if (informed == null) {
-      box.textContent = `Saldo atual: ${formatCryptoUnits(item.type, current, item.name)}`;
+      box.textContent = `Saldo atual: ${show(current)}`;
       return;
     }
     if (diff === 0) {
-      box.innerHTML = `Saldo atual: <b>${formatCryptoUnits(item.type, current, item.name)}</b><br>Sem diferença — nada a conciliar.`;
+      box.innerHTML = `Saldo atual: <b>${show(current)}</b><br>Sem diferença — nada a conciliar.`;
       return;
     }
     const kind = diff > 0 ? 'rendimento' : 'resgate';
-    box.innerHTML = `Saldo atual: <b>${formatCryptoUnits(item.type, current, item.name)}</b><br>`
-      + `Saldo informado: <b>${formatCryptoUnits(item.type, informed, item.name)}</b><br>`
-      + `Diferença: <b>${diff > 0 ? '+' : '−'}${formatCryptoUnits(item.type, Math.abs(diff), item.name)}</b> → ${movementKindLabel(kind)}`;
+    box.innerHTML = `Saldo atual: <b>${show(current)}</b><br>`
+      + `Saldo informado: <b>${show(informed)}</b><br>`
+      + `Diferença: <b>${diff > 0 ? '+' : '−'}${show(Math.abs(diff))}</b> → ${movementKindLabel(kind)}`;
   }
   document.getElementById('crSaldoReal')?.addEventListener('input', updateCryptoReconcilePreview);
   document.getElementById('crConfirmar').onclick = async () => {
     const ctx = cryptoReconcileNumbers();
     if (!ctx) return;
     const { item, informed, diff } = ctx;
-    if (informed == null) { alert('Informe um saldo válido na corretora.'); return; }
+    const isCrypto = isCryptoType(item.type);
+    if (informed == null) { alert(isCrypto ? 'Informe um saldo válido na corretora.' : 'Informe um saldo válido.'); return; }
     if (diff === 0) { alert('O saldo informado já confere com o saldo atual.'); return; }
-    const units = Math.abs(diff);
     const kind = diff > 0 ? 'rendimento' : 'resgate';
-    const price = Number(item.price) || 0;
-    const amount = cryptoValueFromUnits(item.type, units, price);
     const operation = beginLogOperation('Investimentos', `Conciliação — ${movementKindLabel(kind)}`);
-    logInfo('Investimentos', 'Conciliação', 'Em andamento', `Ajuste de ${formatCryptoUnits(item.type, units, item.name)} iniciado para ${item.name}.`, null, operation);
-    yieldsLog.push({
-      id: 'imv' + Date.now() + Math.random().toString(36).slice(2, 7),
-      targetType: 'invest',
-      targetId: item.id,
-      kind,
-      date: todayISO(),
-      dateEnd: todayISO(),
-      units,
-      price,
-      amount,
-      desc: 'Ajuste de conciliação com a corretora'
-    });
-    syncDerivedCryptoValue(item);
+    let units = null;
+    let price = null;
+    let amount = Math.abs(diff);
+    if (isCrypto) {
+      units = Math.abs(diff);
+      price = Number(item.price) || 0;
+      amount = cryptoValueFromUnits(item.type, units, price);
+    }
+    logInfo('Investimentos', 'Conciliação', 'Em andamento', `Ajuste de ${isCrypto ? formatCryptoUnits(item.type, units, item.name) : fmt(amount)} iniciado para ${item.name}.`, null, operation);
+    if (isCrypto) {
+      yieldsLog.push({
+        id: 'imv' + Date.now() + Math.random().toString(36).slice(2, 7),
+        targetType: 'invest',
+        targetId: item.id,
+        kind,
+        date: todayISO(),
+        dateEnd: todayISO(),
+        units,
+        price,
+        amount,
+        desc: 'Ajuste de conciliação com a corretora'
+      });
+      syncDerivedCryptoValue(item);
+    } else if (item.type === 'Renda Fixa') {
+      yieldsLog.push({
+        id: 'imv' + Date.now() + Math.random().toString(36).slice(2, 7),
+        targetType: 'invest',
+        targetId: item.id,
+        kind,
+        date: todayISO(),
+        dateEnd: todayISO(),
+        units,
+        price,
+        amount,
+        desc: 'Ajuste de conciliação'
+      });
+      syncDerivedInvestmentValue(item);
+    } else {
+      const previousMovements = yieldsLog
+        .filter(y => y.targetType === 'invest' && y.targetId === item.id)
+        .reduce((sum, y) => sum + movementDelta(y), 0);
+      item.value = informed;
+      if (Math.abs(previousMovements) >= 0.005) {
+        yieldsLog.push({
+          id: 'imv' + Date.now() + Math.random().toString(36).slice(2, 7),
+          targetType: 'invest',
+          targetId: item.id,
+          kind: previousMovements > 0 ? 'resgate' : 'rendimento',
+          date: todayISO(),
+          dateEnd: todayISO(),
+          units: null,
+          price: null,
+          amount: Math.abs(previousMovements),
+          desc: 'Ajuste de conciliação'
+        });
+      }
+    }
     render();
     try {
       await persistAll(operation);
-      logInfo('Investimentos', 'Conciliação', 'Sucesso', `Ajuste de conciliação aplicado em ${item.name}.`, { kind, units }, operation);
+      logInfo('Investimentos', 'Conciliação', 'Sucesso', `Ajuste de conciliação aplicado em ${item.name}.`, { kind, amount }, operation);
       cryptoReconcileTarget = null;
       closeAllPanels();
     } catch (err) {

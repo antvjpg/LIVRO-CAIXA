@@ -47,8 +47,8 @@
 
 
 
-  <link rel="stylesheet" href="./style/themes.css?v=20-03">
-  <link rel="stylesheet" href="./style/styles.css?v=20-03">
+  <link rel="stylesheet" href="./style/themes.css?v=20-13">
+  <link rel="stylesheet" href="./style/styles.css?v=20-23">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
@@ -111,7 +111,7 @@
     <div class="pin-lock-icon">▣</div>
     <h2 id="pinTitle">Aplicativo bloqueado</h2>
     <p class="hint">Use a biometria ou digite o PIN local para continuar. Isso não substitui o login da conta.</p>
-    <input type="password" id="pinUnlockInput" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="PIN de 4 a 8 dígitos" aria-label="PIN local">
+    <input type="password" id="pinUnlockInput" inputmode="numeric" enterkeyhint="go" autocomplete="one-time-code" maxlength="8" placeholder="PIN de 4 a 8 dígitos" aria-label="PIN local">
     <div id="pinUnlockError" class="auth-error" aria-live="polite"></div>
     <button type="button" class="primary" id="btnPinUnlock" style="width:100%;margin-top:12px;">Desbloquear com PIN</button>
     <button type="button" id="btnBiometricUnlock" style="width:100%;margin-top:8px;" hidden>Usar biometria</button>
@@ -142,9 +142,6 @@
   <div class="app-header-actions">
     <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><i class="fi fi-rs-bell-notification-social-media" aria-hidden="true"></i><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
     <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><i class="fi fi-sr-contrast" aria-hidden="true"></i></button>
-    <button type="button" id="btnGitHub" class="header-icon-button" title="Repositório no GitHub" aria-label="Abrir repositório no GitHub" onclick="window.open('https://github.com/antvjpg/LIVRO-CAIXA', '_blank', 'width=800,height=600')">
-      <i class="fi fi-brands-github" aria-hidden="true"></i>
-    </button>
     <div id="userBar"></div>
   </div>
 </header>
@@ -187,27 +184,12 @@
   <div class="nav-tabs">
     <button class="nav-tab" id="tabBtnDash" onclick="switchTab('dash')"><i class="fi fi-rr-ballot" aria-hidden="true"></i> Dashboard</button>
     <button class="nav-tab" id="tabBtnDashboard" onclick="switchTab('dashboard')"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i> Visão geral</button>
-    <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')"><i class="fi fi-rr-book" aria-hidden="true"></i> Livro-Caixa</button>
+    <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')"><i class="fi fi-rr-book-bookmark" aria-hidden="true"></i> Livro-Caixa</button>
     <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i> Caixinhas</button>
     <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')"><i class="fi fi-rr-credit-card" aria-hidden="true"></i> Cartões</button>
     <button class="nav-tab" id="tabBtnReceivables" onclick="switchTab('receivables')"><i class="fi fi-rr-arrow-down-triangle-square" aria-hidden="true"></i> A Receber</button>
     <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i> Investimentos</button>
     <button class="nav-tab" id="tabBtnGoals" onclick="switchTab('goals')"><i class="fi fi-rr-bullseye-arrow" aria-hidden="true"></i> Metas</button>
-  </div>
-
-  <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
-    <span class="light-theme-picker-label">Paleta clara</span>
-    <button type="button" class="light-theme-option" data-theme="1" aria-label="Verde original" aria-pressed="true" title="Verde original"></button>
-    <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracotta e Sage" aria-pressed="false" title="Terracotta & Sage"></button>
-    <button type="button" class="light-theme-option" data-theme="5" aria-label="Branding Orange" aria-pressed="false" title="Branding Orange"></button>
-  </div>
-
-  <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
-    <span class="dark-theme-picker-label">Paleta escura</span>
-    <button type="button" class="dark-theme-option" data-theme="1" aria-label="Verde e Dourado" aria-pressed="true" title="Verde + Dourado"></button>
-    <button type="button" class="dark-theme-option" data-theme="3" aria-label="Verde-oliva e Terracota" aria-pressed="false" title="Verde-oliva + Terracota"></button>
-    <button type="button" class="dark-theme-option" data-theme="4" aria-label="Grafite neutro" aria-pressed="false" title="Grafite neutro"></button>
-    <button type="button" class="dark-theme-option" data-theme="5" aria-label="Branding Orange" aria-pressed="false" title="Branding Orange"></button>
   </div>
 
   <div class="balance-strip" id="balanceStrip"></div>
@@ -219,6 +201,7 @@
       <span class="period-bar-chevron" aria-hidden="true">▾</span>
     </button>
     <div class="period-bar-body" id="periodBarBody">
+    <div class="period-bar-body-inner">
     <div class="period-bar-copy">
       <div class="period-hint" id="periodActiveHint">O filtro afeta somente os históricos e lançamentos exibidos.</div>
       <strong class="period-active-label" id="periodActiveLabel" hidden aria-hidden="true">Agosto / 2026</strong>
@@ -231,6 +214,7 @@
       </div>
       <button type="button" class="period-nav" id="btnPeriodNext" aria-label="Próximo mês" title="Próximo mês">›</button>
       <button type="button" class="period-all" id="btnPeriodAll" aria-pressed="false">Todos</button>
+    </div>
     </div>
   </div>
   </section>
@@ -435,7 +419,25 @@
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-settings" aria-hidden="true"></i></span> Configurações gerais</div>
         <div class="profile-list">
-          <div class="profile-item"><span class="profile-item-icon"><i class="fi fi-rr-palette" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta, no cabeçalho</span></span></div>
+          <div class="profile-item" id="btnAparencia" role="button" tabindex="0" aria-expanded="false" aria-controls="aparenciaPaletas"><span class="profile-item-icon"><i class="fi fi-rr-palette" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta do aplicativo — clique para escolher.</span></span><span class="profile-item-arrow" aria-hidden="true">›</span></div>
+          <div id="aparenciaPaletas" hidden>
+            <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
+              <span class="light-theme-picker-label">Paleta clara</span>
+              <button type="button" class="light-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"></button>
+              <button type="button" class="light-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"></button>
+              <button type="button" class="light-theme-option" data-theme="3" aria-label="Lima" aria-pressed="false" title="Lima"></button>
+              <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"></button>
+              <button type="button" class="light-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"></button>
+            </div>
+            <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
+              <span class="dark-theme-picker-label">Paleta escura</span>
+              <button type="button" class="dark-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"></button>
+              <button type="button" class="dark-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"></button>
+              <button type="button" class="dark-theme-option" data-theme="3" aria-label="Bege" aria-pressed="false" title="Bege"></button>
+              <button type="button" class="dark-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"></button>
+              <button type="button" class="dark-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"></button>
+            </div>
+          </div>
           <div class="profile-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><i class="fi fi-rr-tags"></i></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamentos — criar, editar e excluir.</span></span><span class="profile-item-arrow">›</span></div>
           <div class="profile-item">
             <span class="profile-item-icon"><i class="fi fi-rr-calendar" aria-hidden="true"></i></span>
@@ -728,12 +730,12 @@
         </div>
         <div class="filter-choice-field">
           <label for="filterBankTrigger">Banco / conta</label>
-          <button type="button" class="filter-choice-trigger" id="filterBankTrigger" aria-haspopup="dialog" aria-controls="filterChoiceSheet"><span><strong>Banco / conta</strong><small id="filterBankSummary">Todos os bancos</small></span><b aria-hidden="true">⌄</b></button>
+          <button type="button" class="filter-choice-trigger" id="filterBankTrigger" aria-haspopup="dialog" aria-controls="filterChoiceSheet"><span><small id="filterBankSummary">Todos os bancos</small></span><b aria-hidden="true"><i class="fi fi-rr-caret-down" aria-hidden="true"></i></b></button>
           <select id="filterBank" class="filter-state-select" multiple aria-hidden="true" tabindex="-1"></select>
         </div>
         <div class="filter-choice-field">
           <label for="filterCategoryTrigger">Categorias</label>
-          <button type="button" class="filter-choice-trigger" id="filterCategoryTrigger" aria-haspopup="dialog" aria-controls="filterChoiceSheet"><span><strong>Categorias</strong><small id="filterCategorySummary">Todas as categorias</small></span><b aria-hidden="true">⌄</b></button>
+          <button type="button" class="filter-choice-trigger" id="filterCategoryTrigger" aria-haspopup="dialog" aria-controls="filterChoiceSheet"><span><small id="filterCategorySummary">Todas as categorias</small></span><b aria-hidden="true"><i class="fi fi-rr-caret-down" aria-hidden="true"></i></b></button>
           <select id="filterCategory" class="filter-state-select" multiple aria-hidden="true" tabindex="-1"></select>
         </div>
         <div style="grid-column:1/-1;">
@@ -1534,12 +1536,12 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
 =========================================================
 -->
 <script src="./emoji-catalog.js?v=20-02"></script>
-<script src="./app.js?v=20-02"></script>
+  <script src="./app.js?v=20-16"></script>
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i></span><span>Visão geral</span></button>
   <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span><span>Caixinhas</span></button>
-  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><i class="fi fi-rr-book" aria-hidden="true"></i></span><span>Livro-Caixa</span></button>
+  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><i class="fi fi-rr-book-bookmark" aria-hidden="true"></i></span><span>Livro-Caixa</span></button>
 <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span><span>Investimentos</span></button>
   <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><i class="fi fi-rr-user" aria-hidden="true"></i></span><span>Perfil</span></button>
 </nav>
