@@ -9611,9 +9611,32 @@ VALOR: ${fmt(bill.amount)}
 
   window.openBillDayPanel = openBillDayPanel;
 
-function billsExportRows() { return calendarBillRows().map(({bill,dueDate,status,launched,bank}) => ({ 'Conta/Fatura': bill.name || '', 'Titular': bill.titular || '', 'Valor': Number(bill.amount || 0), 'Vencimento': dueDate.split('-').reverse().join('/'), 'Banco': bank, 'Status': status, 'Recorrente': bill.recurrenceType === 'nao_recorrente' ? 'Não' : 'Sim', 'Periodicidade': bill.frequency === 'once' ? 'Única' : 'Mensal', 'Observação': bill.desc || '' })); }
-  function exportBillsXlsx() { const rows=billsExportRows(); if (!window.XLSX) { alert('A biblioteca de Excel não está disponível.'); return; } const sheet=XLSX.utils.json_to_sheet(rows); sheet['!cols']=[{wch:24},{wch:18},{wch:13},{wch:14},{wch:22},{wch:14},{wch:12},{wch:15},{wch:36}]; const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,sheet,'Calendário'); XLSX.writeFile(book,`calendario-${billMonthKey(billViewDate)}.xlsx`); logInfo('Calendário','Exportar Excel','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
-  function exportBillsPdf() { const rows=billsExportRows(); const Pdf=window.jspdf?.jsPDF; if (!Pdf) { alert('A biblioteca de PDF não está disponível.'); return; } const doc=new Pdf({unit:'pt',format:'a4'}); const margin=36; let y=42; doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text('Calendário financeiro',margin,y); y+=22; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(`Período: ${billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`,margin,y); doc.text(`Total de contas: ${rows.length} · Total previsto: ${fmt(rows.reduce((sum,row)=>sum+Number(row.Valor||0),0))}`,margin,y+14); y+=38; doc.setFontSize(8); rows.forEach(row=>{ if(y>760){doc.addPage();y=42;} const line=`${row['Vencimento']} · ${row['Conta/Fatura']} · ${row['Titular']||'Sem titular'} · ${fmt(row['Valor'])} · ${row['Status']}`; doc.text(doc.splitTextToSize(line,520),margin,y); y+=14; }); doc.save(`calendario-${billMonthKey(billViewDate)}.pdf`); logInfo('Calendário','Exportar PDF','Sucesso',`${rows.length} conta(s) exportada(s) respeitando o filtro de titular.`); }
+function billsExportRows() {
+    const titularFilter = document.getElementById('billTitularFilter')?.value || '';
+    const rows = calendarBillRows().map(({bill,dueDate,status,launched,bank}) => ({ 'Conta/Fatura': bill.name || '', 'Titular': bill.titular || '', 'Valor': Number(bill.amount || 0), 'Vencimento': dueDate.split('-').reverse().join('/'), 'Banco': bank, 'Status': status, 'Recorrente': bill.recurrenceType === 'nao_recorrente' ? 'Não' : 'Sim', 'Periodicidade': bill.frequency === 'once' ? 'Única' : 'Mensal', 'Observação': bill.desc || '' }));
+    let invoiceRows = [];
+    try { invoiceRows = calendarInvoiceRows(billViewDate.getFullYear(), billViewDate.getMonth()); } catch (err) { logWarn('Calendário','Exportar contas/faturas','Atenção','Card Engine indisponível; faturas de cartão ficaram fora da exportação.'); }
+    invoiceRows.forEach(row => {
+      const breakdown = (Array.isArray(row.breakdown) ? row.breakdown : []).filter(b => !titularFilter || String(b.titular || '').trim() === titularFilter);
+      if (titularFilter && !breakdown.length) return;
+      const filteredRow = { ...row, breakdown };
+      const settled = invoiceSettled(filteredRow);
+      const overdue = invoiceOverdue(filteredRow);
+      const vencimento = String(row.dueDate || '').split('-').reverse().join('/');
+      const banco = cardBankName(row.card);
+      const items = breakdown.length ? breakdown : [{ titular: '', total: Number(row.invoice?.payableTotal || row.invoice?.total || 0), count: Number(row.invoice?.count || 0), carry: Number(row.invoice?.carry || 0) }];
+      items.forEach(b => {
+        const status = (b.status === 'Pago' || settled) ? 'Pago' : (overdue ? 'Atrasado' : (b.status || 'Pendente'));
+        const obs = [];
+        if (Number(b.count || 0) > 0) obs.push(`${b.count} compra(s) no período`);
+        if (Number(b.carry || 0) > 0.004) obs.push(`Saldo anterior em aberto: ${fmt(b.carry)}`);
+        rows.push({ 'Conta/Fatura': `Fatura ${row.card?.name || ''}`, 'Titular': b.titular || '', 'Valor': Number(b.total || 0), 'Vencimento': vencimento, 'Banco': banco, 'Status': status, 'Recorrente': 'Não', 'Periodicidade': 'Mensal', 'Observação': obs.join(' · ') });
+      });
+    });
+    return rows;
+  }
+  function exportBillsXlsx() { const rows=billsExportRows(); if (!window.XLSX) { alert('A biblioteca de Excel não está disponível.'); return; } const sheet=XLSX.utils.json_to_sheet(rows); sheet['!cols']=[{wch:24},{wch:18},{wch:13},{wch:14},{wch:22},{wch:14},{wch:12},{wch:15},{wch:36}]; const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,sheet,'Calendário'); XLSX.writeFile(book,`calendario-${billMonthKey(billViewDate)}.xlsx`); logInfo('Calendário','Exportar Excel','Sucesso',`${rows.length} conta(s)/fatura(s) exportada(s) respeitando o filtro de titular.`); }
+  function exportBillsPdf() { const rows=billsExportRows(); const Pdf=window.jspdf?.jsPDF; if (!Pdf) { alert('A biblioteca de PDF não está disponível.'); return; } const doc=new Pdf({unit:'pt',format:'a4'}); const margin=36; let y=42; doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text('Calendário financeiro',margin,y); y+=22; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(`Período: ${billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`,margin,y); doc.text(`Total de contas/faturas: ${rows.length} · Total previsto: ${fmt(rows.reduce((sum,row)=>sum+Number(row.Valor||0),0))}`,margin,y+14); y+=38; doc.setFontSize(8); rows.forEach(row=>{ if(y>760){doc.addPage();y=42;} const line=`${row['Vencimento']} · ${row['Conta/Fatura']} · ${row['Titular']||'Sem titular'} · ${fmt(row['Valor'])} · ${row['Status']}`; doc.text(doc.splitTextToSize(line,520),margin,y); y+=14; }); doc.save(`calendario-${billMonthKey(billViewDate)}.pdf`); logInfo('Calendário','Exportar PDF','Sucesso',`${rows.length} conta(s)/fatura(s) exportada(s) respeitando o filtro de titular.`); }
   document.getElementById('billTitularFilter').addEventListener('change', renderBills);
   document.getElementById('billsStatusFilter')?.addEventListener('change', renderBills);
   document.getElementById('btnExportBillsPdf').addEventListener('click', exportBillsPdf);
