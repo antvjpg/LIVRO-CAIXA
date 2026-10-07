@@ -84,15 +84,17 @@
     --on-accent:#FAF9F6; --action-border:color-mix(in srgb,var(--accent) 35%,var(--line));
     --header-from:#31572C; --header-to:#40916C; --header-ink:#FAF9F6; --header-control-bg:rgba(49,87,44,.32);
   }
-  /* Soft Sage / Deep Olive — modo claro */
+  /* Soft Sage / Deep Olive — modo claro (chrome neutro creme + oliva com
+     croma de verdade no accent/header/verde: antes a oliva era S≈13% e o
+     conjunto lia como escala de cinza). */
   body:not(.dark-mode)[data-light-theme="1"] {
-    --paper:#EFF4EC; --paper-2:#E3EBDF; --ink:#1A2417; --ink-soft:#47563F; --line:#C9D8C1;
-    --surface:#F7FAF6; --surface-raised:#FFFFFF; --surface-accent:#1A2417;
-    --green:#3F6B4A; --green-soft:#DFEBD8;
-    --gold:#ABC8A2; --gold-rgb:171,200,162; --gold-soft:#E9F2E4;
-    --accent:#54664F; --accent-rgb:84,102,79; --accent-to:#71866A; --accent-ink:#F7FAF6; --accent-muted:color-mix(in srgb,#54664F 14%,#EFF4EC);
-    --on-accent:#F7FAF6; --action-border:color-mix(in srgb,#54664F 35%,#C9D8C1);
-    --header-from:#1A2417; --header-to:#3F5248; --header-ink:#EFF4EC; --header-control-bg:rgba(26,36,23,.35);
+    --paper:#F7F5EF; --paper-2:#EFEBE0; --ink:#1A2417; --ink-soft:#4C5A52; --line:#D8D2C1;
+    --surface:#FFFEFA; --surface-raised:#FCFDF9; --surface-accent:#1E2E16;
+    --green:#437A4E; --green-soft:#DFEBD8;
+    --gold:#B08D3E; --gold-rgb:176,141,62; --gold-soft:#F2E8D0;
+    --accent:#5F7A43; --accent-rgb:95,122,67; --accent-to:#7A9A57; --accent-ink:#F7FAF6; --accent-muted:color-mix(in srgb,#5F7A43 14%,#F7F5EF);
+    --on-accent:#F7FAF6; --action-border:color-mix(in srgb,#5F7A43 35%,#D8D2C1);
+    --header-from:#1E2E16; --header-to:#3E5C26; --header-ink:#F7F5EF; --header-control-bg:rgba(30,46,22,.35);
     --overlay:rgba(26,36,23,0.55);
   }
   body.dark-mode {
@@ -143,21 +145,87 @@
     --header-from:#000000; --header-to:#C10801; --on-accent:#FFFFFF;
     --overlay:rgba(0,0,0,.82); --shadow:rgba(0,0,0,.45); --hover-soft:rgba(255,255,255,.06);
   }
-  /* Soft Sage / Deep Olive — modo escuro */
+  /* Soft Sage / Deep Olive — modo escuro (fórmula dos outros temas: chrome
+     neutro grafite-quente + a cor do tema — oliva — em accent/header/verde;
+     dourado=preto+dourado, verde=grafite+verde, oliva=grafite+oliva). */
   body.dark-mode[data-dark-theme="1"] {
-    --paper:#1A2417; --paper-2:#243020; --surface:#243020; --surface-raised:#2E3B29; --surface-accent:#31412B;
-    --ink:#E4EDDE; --ink-soft:#9DB696; --green:#8FC596; --green-soft:#243D2A;
-    --red:#E06B54; --red-soft:#3E241D; --line:#35452F;
-    --gold:#ABC8A2; --gold-rgb:171,200,162; --gold-soft:#2A3E24;
-    --accent:#ABC8A2; --accent-rgb:171,200,162; --accent-to:#B9D2B2; --accent-ink:#12190F; --accent-muted:#3E5238;
+    --paper:#1A1917; --paper-2:#232120; --surface:#232120; --surface-raised:#2D2B28; --surface-accent:#33301E;
+    --ink:#F1EDE1; --ink-soft:#A6A091; --green:#8FC596; --green-soft:#2A3224;
+    --red:#E06B54; --red-soft:#3E241D; --line:#37342D;
+    --gold:#F5F5F4; --gold-rgb:245,245,244; --gold-soft:#3A3936;
+    --accent:#9DD08B; --accent-rgb:157,208,139; --accent-to:#B5DDA2; --accent-ink:#12190F; --accent-muted:#3A4331;
     --header-from:#111709; --header-to:#2A3A25; --on-accent:#12190F;
-    --overlay:rgba(10,15,8,0.78); --shadow:rgba(0,0,0,0.45); --hover-soft:rgba(171,200,162,0.07);
+    --overlay:rgba(6,6,5,0.78); --shadow:rgba(0,0,0,0.45); --hover-soft:rgba(157,208,139,0.07);
+  }
+  /* ——— PALETA SECUNDÁRIA — Oliva escuro (Branco fixo) ———
+     A secundária do Oliva escuro é o branco quente #F5F5F4, definida direto
+     em --gold* no bloco acima (sem seletor de variante). Redefine APENAS
+     --gold* (seleção, badges, foco, chips, abas ativas, sync, diagnósticos…);
+     chrome, accent, header e verde da paleta principal não mudam. Abaixo, os
+     pontos decorativos que também seguem --gold com o Oliva escuro ativo. */
+/* Expansão da paleta secundária — pontos decorativos que seguem --gold
+      sempre que o Oliva escuro está ativo (sem seletor de variante): indicador
+      e ícone da nav inferior, ícone dos cards de saldo, eyebrows, ícone de
+      notificação e do drawer, chip de período, link de fluxo, ícones do Perfil
+      (linha de perigo mantém a cor semântica), ícone de diagnóstico, roadmap
+      do perfil, card de projeção do dashboard, linha de compartilhamento do
+      banco, ícones de ação rápida da barra do Livro-Caixa (Transferência,
+      Colar texto, Importar, Exportar, Restaurar) e borda de hover da toolbar,
+      e barras de progresso (estouro do orçamento continua vermelho). */
+  body.dark-mode[data-dark-theme="1"] .mobile-bottom-nav::before{
+    background:color-mix(in srgb,var(--gold) 16%,var(--surface));
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 24%,transparent),0 5px 13px color-mix(in srgb,var(--gold) 10%,transparent);
+  }
+  body.dark-mode[data-dark-theme="1"] .mobile-bottom-nav button.is-active .nav-icon{color:var(--gold);}
+  body.dark-mode[data-dark-theme="1"] .balance-card:not(.total) .balance-symbol{
+    background:color-mix(in srgb,var(--gold) 14%,var(--surface));
+    color:var(--gold);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 24%,transparent);
+  }
+  body.dark-mode[data-dark-theme="1"] .period-eyebrow,
+  body.dark-mode[data-dark-theme="1"] .notification-heading .eyebrow,
+  body.dark-mode[data-dark-theme="1"] .notification-item-icon,
+  body.dark-mode[data-dark-theme="1"] .drawer-nav button span,
+  body.dark-mode[data-dark-theme="1"] .dashboard-period,
+  body.dark-mode[data-dark-theme="1"] .cashflow-mini-link{color:var(--gold);}
+  body.dark-mode[data-dark-theme="1"] .profile-avatar,
+  body.dark-mode[data-dark-theme="1"] #viewProfile .profile-avatar,
+  body.dark-mode[data-dark-theme="1"] .profile-item:not(.is-danger) .profile-item-icon,
+  body.dark-mode[data-dark-theme="1"] #viewProfile .profile-item:not(.is-danger) .profile-item-icon{
+    background:color-mix(in srgb,var(--gold) 14%,var(--surface));
+    border-color:color-mix(in srgb,var(--gold) 26%,transparent);
+    color:var(--gold);
+  }
+  body.dark-mode[data-dark-theme="1"] .toolbar .quick-action-icon{
+    background:color-mix(in srgb,var(--gold) 13%,var(--surface-raised));
+    border-color:color-mix(in srgb,var(--gold) 22%,transparent);
+    color:var(--gold);
+  }
+  body.dark-mode[data-dark-theme="1"] .budget-summary-track span:not(.over),
+  body.dark-mode[data-dark-theme="1"] .pocket-goal-track span:not(.over){background:var(--gold);}
+  body.dark-mode[data-dark-theme="1"] #viewProfile .diagnostic-summary-icon{
+    background:color-mix(in srgb,var(--gold) 14%,var(--surface));
+    border-color:color-mix(in srgb,var(--gold) 26%,transparent);
+    color:var(--gold);
+  }
+  body.dark-mode[data-dark-theme="1"] #viewProfile .profile-roadmap{
+    background:color-mix(in srgb,var(--gold) 10%,var(--surface));
+    border-color:color-mix(in srgb,var(--gold) 22%,var(--line));
+  }
+  body.dark-mode[data-dark-theme="1"] #viewProfile .profile-roadmap b{color:var(--gold);}
+  body.dark-mode[data-dark-theme="1"] .dashboard-projection-card{
+    background:color-mix(in srgb,var(--gold) 8%,var(--paper));
+    border-color:color-mix(in srgb,var(--gold) 18%,var(--line));
+  }
+  body.dark-mode[data-dark-theme="1"] .bank-share-line{color:var(--gold);}
+  body.dark-mode[data-dark-theme="1"] .toolbar button:hover{
+    border-color:color-mix(in srgb,var(--gold) 28%,transparent)!important;
   }
   .light-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:0 0 6px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
   body:not(.dark-mode) .light-theme-picker{display:flex;}
   .light-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
   .light-theme-option{width:28px;min-width:28px;height:28px;min-height:28px;padding:0;border:2px solid transparent;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);}
-  .light-theme-option[data-theme="1"]{--swatch:#54664F;}
+  .light-theme-option[data-theme="1"]{--swatch:#5F7A43;}
   .light-theme-option[data-theme="2"]{--swatch:#327957;}
   .light-theme-option[data-theme="3"]{--swatch:#40916C;}
   .light-theme-option[data-theme="4"]{--swatch:#C66F50;}
@@ -167,7 +235,7 @@
   body.dark-mode .dark-theme-picker{display:flex;}
   .dark-theme-picker-label{margin-right:auto;color:var(--ink-soft);font-size:10px;font-weight:700;letter-spacing:.04em;}
   .dark-theme-option{width:28px;min-width:28px;height:28px;min-height:28px;padding:0;border:2px solid transparent;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);}
-  .dark-theme-option[data-theme="1"]{--swatch:#3E5238;}
+  .dark-theme-option[data-theme="1"]{--swatch:#9DD08B;}
   .dark-theme-option[data-theme="2"]{--swatch:#22C55E;}
   .dark-theme-option[data-theme="3"]{--swatch:#C9A86A;}
   .dark-theme-option[data-theme="4"]{--swatch:#D08860;}

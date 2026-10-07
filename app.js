@@ -851,7 +851,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const lightThemeOptions = Array.from(document.querySelectorAll('.light-theme-option'));
   const LIGHT_THEME_STORAGE_KEY = 'livro-caixa-light-theme';
   const LIGHT_THEME_COLORS = {
-    '1': '#EFF4EC',
+    '1': '#F7F5EF',
     '2': '#F8F7F2',
     '3': '#FAF9F6',
     '4': '#FBF6EF',
@@ -861,7 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const darkThemeOptions = Array.from(document.querySelectorAll('.dark-theme-option'));
   const DARK_THEME_STORAGE_KEY = 'livro-caixa-dark-theme';
   const DARK_THEME_COLORS = {
-    '1': '#1A2417',
+    '1': '#1A1917',
     '2': '#121212',
     '3': '#0F1712',
     '4': '#141410',
@@ -970,6 +970,8 @@ document.addEventListener('DOMContentLoaded', () => {
       renderBalances();
     });
   });
+
+  try { localStorage.removeItem('livro-caixa-oliva-sec'); } catch (e) {}
 
   function setThemeToggleIcon(isDark) {
     if (!themeBtn) return;
