@@ -12,10 +12,11 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { readAppCss } from "./helpers/css.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const js = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
-const css = fs.readFileSync(path.join(ROOT, "style", "styles.css"), "utf8");
+const css = readAppCss(ROOT);
 
 const sliceBetween = (from, to) => {
   const start = js.indexOf(from);
@@ -246,7 +247,7 @@ test("fechar a Transferência aberta pelo chat encerra o estado", () => {
   assert.match(flow, /ocrReleaseAll\(\);/, "fechamento libera o estado");
 });
 
-test("styles.css tem os estilos do comprovante e remove os antigos", () => {
+test("o CSS do app tem os estilos do comprovante e remove os antigos", () => {
   assert.match(css, /\.ai-chat-msg\.is-ocr-summary\{/);
   assert.match(css, /\.ai-ocr-status\{/);
   assert.match(css, /\.ai-ocr-attach\{/);

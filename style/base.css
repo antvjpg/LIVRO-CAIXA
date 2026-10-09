@@ -1,0 +1,323 @@
+/* LIVRO-CAIXA · base.css — reset, tipografia, header, drawer, notificações, abas e cards de saldo (styles.css: 1-322). Cascata: themes → base → components → layout → features → dashboard-chat. */
+[hidden]{display:none!important;}
+.feature-lock-grace-row{margin-top:12px;}
+/* Temas (paletas claro/escuro, dark mode base e pickers) → themes.css — este arquivo carrega depois dela. */
+  *{box-sizing:border-box;}
+  body,body *{font-family:var(--font-ui)!important;}
+  html{overflow-x:hidden;width:100%;}
+  /* P2.4 / P2.4.4 — saldos ocultos com pontos fixos (sem blur), overview + contas + caixinhas + invest */
+  body.balances-hidden .balance-card .amount,
+  body.balances-hidden .card-amount,
+  body.balances-hidden .period-summary-card strong,
+  body.balances-hidden .invest-box .val,
+  body.balances-hidden .cat-row .cat-amt,
+  body.balances-hidden .chart-center-total-value,
+  body.balances-hidden .manage-item-value,
+  body.balances-hidden .dashboard-metrics strong,
+  body.balances-hidden .pocket-goal-values,
+  body.balances-hidden .yield-row .yield-amount,
+  body.balances-hidden .rentability-box strong,
+  body.balances-hidden .export-preview-row b,
+  body.balances-hidden .js-money{
+    color: transparent !important;
+    text-shadow: none;
+    position: relative;
+    user-select: none;
+    cursor: pointer;
+  }
+  body.balances-hidden .balance-card .amount::after,
+  body.balances-hidden .card-amount::after,
+  body.balances-hidden .period-summary-card strong::after,
+  body.balances-hidden .invest-box .val::after,
+  body.balances-hidden .cat-row .cat-amt::after,
+  body.balances-hidden .chart-center-total-value::after,
+  body.balances-hidden .manage-item-value::after,
+  body.balances-hidden .dashboard-metrics strong::after,
+  body.balances-hidden .pocket-goal-values::after,
+  body.balances-hidden .yield-row .yield-amount::after,
+  body.balances-hidden .rentability-box strong::after,
+  body.balances-hidden .export-preview-row b::after,
+  body.balances-hidden .js-money::after{
+    content: '••••••';
+    color: var(--ink);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: inherit;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  body.balances-hidden .balance-card.total .amount::after{color: inherit;}
+  body.balances-hidden .card-amount::after,
+  body.balances-hidden .cat-row .cat-amt::after,
+  body.balances-hidden .manage-item-value::after,
+  body.balances-hidden .export-preview-row b::after{justify-content: flex-end;}
+  /* P2.4.3 — prévia do extrato (formato original + blocos extra) */
+  .export-preview{max-height:280px;overflow:auto;margin-top:12px;padding-right:2px;min-width:0;}
+  .export-preview-bank{margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);min-width:0;}
+  .export-preview-bank h4{margin:0 0 6px;font-size:13px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  .export-preview-bank h4 small{font-weight:500;color:var(--ink-soft);font-size:11px;}
+  .export-preview-sub{margin:6px 0 4px;font-size:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  .export-preview-sub small{color:var(--ink-soft);}
+  .export-preview-row{
+    display:grid;
+    grid-template-columns:72px minmax(0,1.2fr) minmax(0,.8fr) auto;
+    gap:8px;
+    align-items:start;
+    min-width:0;
+    font-size:11px;
+    padding:4px 0;
+  }
+  .export-preview-row strong{
+    font-weight:600;color:var(--ink);min-width:0;
+    overflow-wrap:break-word;word-break:normal;line-height:1.3;
+  }
+  .export-preview-row b{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .export-preview-row b.positive{color:var(--green);}
+  .export-preview-row b.negative{color:var(--red);}
+  .export-preview-more{margin-top:4px;color:var(--ink-soft);font-size:11px;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    transition: background 0.2s, color 0.2s;
+    overflow-x: hidden;
+    width:100%;
+  }
+  ::selection{background:var(--gold);color:var(--paper);}
+  header{
+    padding:36px 24px 20px;
+    border-bottom:2px solid var(--ink);
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    max-width:980px;
+    margin:0 auto;
+  }
+  header h1{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-optical-sizing:auto;
+    font-size:clamp(28px,4vw,40px);
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  header .subtitle{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+  main{max-width:980px;margin:0 auto;padding:28px 24px 80px;}
+  header.app-header{position:relative;overflow:hidden;}
+  .header-icon-button{width:42px;min-width:42px;height:42px;min-height:42px;padding:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:20px;line-height:1;letter-spacing:0;box-shadow:0 3px 10px var(--shadow);position:relative;z-index:2;}
+  .header-icon-button:hover{background:var(--green-soft);color:var(--accent);border-color:var(--accent);}
+  #btnOpenDrawer{margin-right:2px;}
+  .notification-button{font-size:18px;}
+  .notification-badge{position:absolute;top:-7px;right:-7px;display:grid;place-items:center;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:var(--gold);color:var(--accent-ink);font-size:10px;font-weight:800;line-height:1;box-shadow:0 0 0 2px var(--surface);}
+  .app-drawer-overlay,.notification-overlay{position:fixed;inset:0;z-index:120;display:none;background:rgba(9,16,12,.48);backdrop-filter:blur(5px);}
+  .app-drawer-overlay.is-open,.notification-overlay.is-open{display:block;}
+  .app-drawer{width:min(330px,86vw);height:100%;padding:24px 18px;background:var(--surface);color:var(--ink);border-right:1px solid var(--line);box-shadow:18px 0 42px rgba(0,0,0,.22);transform:translateX(-102%);transition:transform .24s cubic-bezier(.23,1,.32,1);}
+  .app-drawer-overlay.is-open .app-drawer{transform:translateX(0);}
+  .drawer-heading,.notification-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .drawer-heading>span{font-size:19px;font-weight:800;letter-spacing:-.03em;}
+  .drawer-caption{margin:8px 0 22px;color:var(--ink-soft);font-size:12px;line-height:1.45;}
+  .drawer-close{width:34px;min-width:34px;height:34px;min-height:34px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink-soft);font-size:22px;line-height:1;letter-spacing:0;}
+  .drawer-close:hover{background:var(--green-soft);border-color:var(--accent);color:var(--accent);}
+  .drawer-nav{display:grid;gap:5px;}
+  .drawer-nav button{justify-content:flex-start;gap:12px;min-height:44px;padding:10px 11px;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--ink);font-size:12px;font-weight:650;letter-spacing:0;text-transform:none;}
+  .drawer-nav button span{width:20px;display:inline-grid;place-items:center;color:var(--accent);font-size:17px;}
+  .drawer-nav button:hover{background:var(--green-soft);border-color:var(--line);color:var(--ink);}
+  .drawer-divider{height:1px;margin:18px 3px;background:var(--line);}
+  .drawer-nav-secondary button{color:var(--ink-soft);}
+  .notification-center{width:min(420px,calc(100vw - 28px));max-height:min(620px,calc(100svh - 32px));margin:72px 14px 0 auto;overflow:auto;padding:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:17px;box-shadow:0 18px 46px rgba(0,0,0,.27);}
+  .notification-heading .eyebrow{display:block;margin-bottom:3px;color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+  .notification-heading h2{margin:0;font-size:22px;letter-spacing:-.04em;}
+  .notification-list{display:grid;gap:9px;margin-top:18px;}
+  .notification-item{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--paper);}
+  .notification-item-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--green-soft);color:var(--accent);font-size:16px;}
+  .notification-item strong{display:block;font-size:12px;line-height:1.3;}
+  .notification-item p{margin:3px 0 0;color:var(--ink-soft);font-size:11px;line-height:1.4;}
+  .notification-empty{padding:20px 10px;text-align:center;color:var(--ink-soft);font-size:12px;line-height:1.5;}
+
+  /* Navegação entre Abas */
+  .nav-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .nav-tab {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .nav-tab:hover {
+    background: var(--paper-2);
+  }
+  .nav-tab.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
+
+  /* P2.4.2 — faixa genérica auto-fit; a tela principal (#balanceStrip) força 3 colunas quando há espaço */
+  .balance-strip{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+    gap:12px;
+    margin-bottom:32px;
+    width:100%;
+    max-width:100%;
+  }
+  #balanceStrip{
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+  }
+  .balance-card{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:10px;
+    padding:20px 18px;
+    border:1px solid var(--line);
+    position:relative;
+    box-shadow:0 1px 3px var(--shadow);
+    min-width:0;
+    max-width:100%;
+    overflow-wrap:break-word;
+  }
+  .balance-card.total{
+    grid-column:1 / -1;
+    background:var(--ink);
+    color:var(--paper);
+    border:1.5px solid var(--ink);
+  }
+  .balance-detail-link{
+    display:block;
+    margin-top:auto;
+    padding-top:12px;
+    color:var(--ink-soft);
+    font-family:var(--font-ui);
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0;
+    word-break:normal;
+    overflow-wrap:normal;
+  }
+  .bank-summary-card,
+  .pocket-summary-card,
+  .invest-summary-card{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    min-height:0;
+    padding:16px 14px 14px;
+    border-radius:16px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    box-shadow:0 2px 8px color-mix(in srgb,var(--accent) 6%,transparent);
+    cursor:pointer;
+    transition:transform .16s ease, box-shadow .16s ease;
+  }
+  .bank-summary-card:active,
+  .pocket-summary-card:active,
+  .invest-summary-card:active{
+    transform:scale(.98);
+  }
+  .bank-summary-card:focus-visible,
+  .pocket-summary-card:focus-visible,
+  .invest-summary-card:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:2px;
+  }
+  .balance-card .label{
+    font-family:var(--font-ui);
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--ink);
+    opacity:0.92;
+    display:block;
+    margin-bottom:0;
+    min-width:0;
+    flex:1;
+    line-height:1.25;
+    word-break:normal;
+    overflow-wrap:normal;
+    white-space:nowrap;
+  }
+  .balance-card .amount{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+    color:inherit;
+    margin-top:4px;
+  }
+  .bank-summary-card .amount,
+  .pocket-summary-card .amount,
+  .invest-summary-card .amount{
+    font-size:clamp(18px, 2.4vw, 24px);
+    letter-spacing:-0.02em;
+    color:var(--ink);
+  }
+  .balance-card .amount.neg{color:var(--red);}
+  .balance-card.total .amount.neg{color:var(--red);}
+  .balance-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin-bottom:10px;}
+  .balance-symbol{display:grid;place-items:center;width:36px;height:36px;min-width:36px;border-radius:12px;background:var(--green-soft);color:var(--accent);line-height:1;flex-shrink:0;}
+  .balance-symbol svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .balance-card.total .balance-symbol{background:rgba(255,255,255,.14);}
+  .balance-insight{display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:inherit;font-size:11px;font-weight:650;opacity:.92;}
+  .patrimony-spark-box{display:block;width:100%;height:64px;margin-top:12px;position:relative;overflow:hidden;opacity:1;transition:height .3s ease,margin-top .3s ease,opacity .3s ease;}
+  .patrimony-spark-box.is-collapsed{height:0;margin-top:0;opacity:0;pointer-events:none;}
+  @media (prefers-reduced-motion:reduce){.patrimony-spark-box{transition:none;}}
+  .balance-insight strong{font-size:12px;}
+  .balance-insight.is-positive strong{color:#BCE8CA;}
+  .balance-insight.is-negative strong{color:#FFD0C4;}
+  .balance-share{
+    display:inline-flex;
+    align-items:center;
+    margin-top:10px;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));
+    background:color-mix(in srgb,var(--accent) 8%,var(--surface));
+    color:var(--accent);
+    font-size:11px;
+    font-weight:650;
+    line-height:1.2;
+    max-width:100%;
+  }
+  .balance-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
+  .invest-summary-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
+  .cat-legend-head{display:none;}
+

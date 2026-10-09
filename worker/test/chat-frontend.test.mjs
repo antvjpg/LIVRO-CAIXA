@@ -4,9 +4,9 @@
    Sem DOM e sem dependência extra: exercita a máquina de estados da
    conversa e o orçamento de snapshot que o app importa de
    ai-chat-contract.js, e confere por leitura dos arquivos a fiação
-   declarada: index.html (estrutura/IDs), app.js (comportamento — o JS
-   saiu do HTML na refatoração V.20-02) e styles.css (estilos), além da
-   ausência de código legado/otimizado. */
+    declarada: index.html (estrutura/IDs), app.js (comportamento — o JS
+    saiu do HTML na refatoração V.20-02) e o CSS splitado em style/
+    (estilos), além da ausência de código legado/otimizado. */
 
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -20,11 +20,12 @@ import {
   fitChatSnapshotToBudget,
   snapshotHasData
 } from "../../ai-chat-contract.js";
+import { readAppCss } from "./helpers/css.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
 const js = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
-const css = fs.readFileSync(path.join(ROOT, "style", "styles.css"), "utf8");
+const css = readAppCss(ROOT);
 
 /* ---------------------------- snapshots de teste ---------------------------- */
 

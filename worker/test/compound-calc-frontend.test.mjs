@@ -3,8 +3,8 @@
 
    Sem DOM: confere por leitura dos arquivos a fiação da comparação
    múltipla de benchmarks — index.html (checkboxes/estrutura), app.js
-   (seleção dos marcadores, cartões, gráfico e listener) e styles.css
-   (estilos dos picks) — e garante que o antigo <select id="ciBenchmark">
+   (seleção dos marcadores, cartões, gráfico e listener) e o CSS
+   splitado (estilos dos picks) — e garante que o antigo <select id="ciBenchmark">
    não permanece em nenhuma camada. */
 
 import test from "node:test";
@@ -12,11 +12,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { readAppCss } from "./helpers/css.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
 const js = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
-const css = fs.readFileSync(path.join(ROOT, "style", "styles.css"), "utf8");
+const css = readAppCss(ROOT);
 
 test("index.html expõe os quatro benchmarks como múltipla escolha", () => {
   assert.match(html, /id="ciBenchCdi" checked/);
@@ -49,7 +50,7 @@ test("app.js traça uma linha tracejada por benchmark no gráfico", () => {
   assert.ok(js.includes("borderDash: [6, 4]"), "benchmarks devem continuar tracejados");
 });
 
-test("styles.css estiliza os picks de benchmark", () => {
+test("o CSS do app estiliza os picks de benchmark", () => {
   assert.ok(css.includes(".ci-benchmark-picks{"));
   assert.ok(css.includes(".ci-benchmark-pick{"));
   assert.match(css, /\.ci-benchmark-pick:has\(input:checked\)/);

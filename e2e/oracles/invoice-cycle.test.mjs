@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { readAppCss } from '../../worker/test/helpers/css.mjs';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -160,6 +161,6 @@ test('invoiceCycle: app.js expõe a navegação de períodos da fatura', () => {
   ]) {
     assert.ok(html.includes(trecho), `app.js deveria conter "${trecho}"`);
   }
-  const css = fs.readFileSync(path.join(ROOT, 'style', 'styles.css'), 'utf8');
-  assert.ok(css.includes('.credit-card-invoice-nav'), 'styles.css deveria estilizar a navegação da fatura');
+  const css = readAppCss(ROOT);
+  assert.ok(css.includes('.credit-card-invoice-nav'), 'o CSS do app deveria estilizar a navegação da fatura');
 });
