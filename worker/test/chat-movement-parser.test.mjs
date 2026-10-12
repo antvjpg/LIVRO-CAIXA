@@ -11,9 +11,10 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { readAppJs } from "./helpers/js.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const js = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
+const js = readAppJs(ROOT);
 
 const sliceBetween = (from, to) => {
   const start = js.indexOf(from);

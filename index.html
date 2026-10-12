@@ -44,6 +44,10 @@
   <script type="module" src="./ai-chat-contract.js"></script>
   <!-- Persistência do histórico do chat no IndexedDB (V.20-02). -->
   <script type="module" src="./chat-persistence.js"></script>
+  <!-- Contrato da Ponte de IA (Fase 1): exposição global
+       window.LivroCaixaMcpContract, usada por js/33-mcp-bridge.js para
+       montar/sanitizar o envelope externo depositado no Worker. -->
+  <script type="module" src="./mcp-financial-contract.js"></script>
 
 
 
@@ -541,6 +545,19 @@
           <label class="feature-profile-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-profile-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias usando descrições já categorizadas no seu histórico; nenhuma alteração é feita sem confirmação.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
           <div class="feature-profile-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
           <div id="profileAnalysisStatus" class="feature-profile-feedback" aria-live="polite"></div>
+        </div>
+        <div class="feature-profile-heading"><strong>Conexão externa (MCP)</strong></div>
+        <div class="feature-profile-section profile-plus-section">
+          <p class="feature-profile-section-desc">Consulte seus dados em uma IA externa compatível com MCP. Somente leitura: a ponte nunca cria, edita ou apaga nada. Os dados são atualizados automaticamente a cada 15 minutos enquanto você estiver logado.</p>
+          <div class="feature-profile-actions">
+            <button type="button" id="btnMcpBridgeDeposit">Atualizar dados externos</button>
+            <button type="button" id="btnMcpBridgeCreateToken">Gerar token de acesso</button>
+          </div>
+          <div class="feature-profile-pin-row" id="mcpBridgeTokenRow" hidden>
+            <div><label for="inputMcpBridgeToken">Token de acesso (exibido uma única vez)</label><input type="text" id="inputMcpBridgeToken" autocomplete="off" spellcheck="false" placeholder="mxc_… — cole aqui um token antigo para revogá-lo"></div>
+            <div class="feature-profile-pin-actions"><button type="button" id="btnMcpBridgeCopyToken">Copiar</button><button type="button" id="btnMcpBridgeRevokeToken">Revogar</button></div>
+          </div>
+          <div id="mcpBridgeStatus" class="feature-profile-feedback" aria-live="polite"></div>
         </div>
         <div class="feature-profile-heading"><strong>Diagnóstico</strong></div>
         <div class="profile-list">
@@ -1540,7 +1557,32 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
 =========================================================
 -->
 <script src="./emoji-catalog.js?v=20-02"></script>
-  <script src="./app.js?v=20-19"></script>
+  <script src="./js/00-bootstrap.js?v=20-25"></script>
+  <script src="./js/10-state-utils.js?v=20-25"></script>
+  <script src="./js/11-financial-domain.js?v=20-25"></script>
+  <script src="./js/12-auth-session.js?v=20-25"></script>
+  <script src="./js/13-backup.js?v=20-25"></script>
+  <script src="./js/14-theme.js?v=20-25"></script>
+  <script src="./js/15-tabs-nav.js?v=20-25"></script>
+  <script src="./js/16-events-modals.js?v=20-25"></script>
+  <script src="./js/17-sync-persistence.js?v=20-25"></script>
+  <script src="./js/18-render-core.js?v=20-25"></script>
+  <script src="./js/19-goals.js?v=20-25"></script>
+  <script src="./js/20-dashboard.js?v=20-25"></script>
+  <script src="./js/21-ai-features.js?v=20-25"></script>
+  <script src="./js/22-profile.js?v=20-25"></script>
+  <script src="./js/23-ai-chat.js?v=20-25"></script>
+  <script src="./js/24-automation-render.js?v=20-25"></script>
+  <script src="./js/25-bills-receivables.js?v=20-25"></script>
+  <script src="./js/26-receipts.js?v=20-25"></script>
+  <script src="./js/27-cards.js?v=20-25"></script>
+  <script src="./js/28-ocr-lia.js?v=20-25"></script>
+  <script src="./js/29-invest-movements.js?v=20-25"></script>
+  <script src="./js/30-transfer-receipts.js?v=20-25"></script>
+  <script src="./js/31-import-export.js?v=20-25"></script>
+  <script src="./js/32-auth-wiring.js?v=20-25"></script>
+  <script src="./js/33-mcp-bridge.js?v=20-25"></script>
+  <script src="./js/99-init.js?v=20-25"></script>
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i></span><span>Visão geral</span></button>

@@ -21,10 +21,11 @@ import {
   snapshotHasData
 } from "../../ai-chat-contract.js";
 import { readAppCss } from "./helpers/css.mjs";
+import { readAppJs } from "./helpers/js.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
-const js = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
+const js = readAppJs(ROOT);
 const css = readAppCss(ROOT);
 
 /* ---------------------------- snapshots de teste ---------------------------- */
@@ -377,7 +378,7 @@ test("index.html: abertura e fechamento do modal seguem o caminho comum", () => 
 });
 
 test("index.html: tratamento de erro cobre os códigos do contrato e do Worker", () => {
-  const block = js.match(/const AI_CHAT_ERROR_MESSAGES = \{([\s\S]*?)\n  \};/);
+  const block = js.match(/AI_CHAT_ERROR_MESSAGES = \{([\s\S]*?)\n  \};/);
   assert.ok(block, "AI_CHAT_ERROR_MESSAGES declarado (app.js)");
 
   const covered = [
@@ -492,7 +493,7 @@ test("index.html/css: chat centralizado na região visível (teclado mobile)", (
 
 test("index.html: textos da tela do chat (LIA)", () => {
   assert.match(html, /<h3 id="aiChatTitle">LIA • IA Financeira/, "título com LIA");
-  assert.ok(/const AI_CHAT_GREETING = 'Olá! Eu sou a LIA\.\\nEstou aqui para ajudar você a entender melhor suas finanças — suas contas, gastos, metas, caixinhas e investimentos\.'/
+  assert.ok(/AI_CHAT_GREETING = 'Olá! Eu sou a LIA\.\\nEstou aqui para ajudar você a entender melhor suas finanças — suas contas, gastos, metas, caixinhas e investimentos\.'/
     .test(js), "saudação da LIA (app.js)");
   const client = `${html}\n${js}`;
   assert.ok(!/Pergunte sobre seus dados financeiros\. Nada é alterado sem você pedir\./.test(client),

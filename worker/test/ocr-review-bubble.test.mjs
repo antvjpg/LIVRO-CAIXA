@@ -13,9 +13,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readAppCss } from "./helpers/css.mjs";
+import { readAppJs } from "./helpers/js.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const js = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
+const js = readAppJs(ROOT);
 const css = readAppCss(ROOT);
 
 const sliceBetween = (from, to) => {
@@ -27,13 +28,13 @@ const sliceBetween = (from, to) => {
 };
 
 const clickHandler = () =>
-  sliceBetween("function onAiChatMessagesClick", "const AI_CHAT_ERROR_MESSAGES");
+  sliceBetween("function onAiChatMessagesClick", "AI_CHAT_ERROR_MESSAGES = {");
 const pipeline = () =>
   sliceBetween("async function ocrRunPipeline", "function ocrFillLaunchForm");
 const releaseAll = () =>
   sliceBetween("function ocrReleaseAll", "function ocrHolderLabel");
 const state = () =>
-  sliceBetween("const chatProposal = {", "const OCR_FIELD_ORDER");
+  sliceBetween("function chatProposalClear", "OCR_FIELD_ORDER = ");
 const builders = () =>
   sliceBetween("function chatProposalFromOcr()", "function ocrPrefillTransferForm");
 const confirmFn = () =>
@@ -41,13 +42,16 @@ const confirmFn = () =>
 const editFn = () =>
   sliceBetween("function chatProposalEdit()", "function chatProposalFillManualForm()");
 const transferSaved = () =>
-  sliceBetween("document.getElementById('tSalvar').onclick", "let pastePreviewInProgress");
+  sliceBetween("document.getElementById('tSalvar').onclick", "document.getElementById('btnReadClipboard').onclick");
 const sendFn = () =>
   sliceBetween("const localCompoundReply = buildCompoundInterestReply", "function updateInvestmentMainValue");
 const prefill = () =>
   sliceBetween("function ocrPrefillTransferForm", "render preview */");
-const wireUp = () =>
-  sliceBetween("(function ocrWireUp()", "function updateInvestmentMainValue");
+const wireUp = () => {
+  const start = js.indexOf("(function ocrWireUp()");
+  assert.ok(start !== -1, "marcador inicial não encontrado: (function ocrWireUp()");
+  return js.slice(start);
+};
 
 test("aiChatRender injeta o comprovante derivado de chatProposal", () => {
   assert.match(js, /parts\.push\(\.\.\.chatProposalParts\(\)\);/,

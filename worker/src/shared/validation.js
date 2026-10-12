@@ -47,27 +47,31 @@ function fail(status, error, code, extra) {
   return Object.assign({ ok: false, status, body: { error, code } }, extra || {});
 }
 
-/* Lê o corpo respeitando MAX_BODY_BYTES e faz o parse do JSON.
+/* Lê o corpo respeitando o teto (MAX_BODY_BYTES por padrão) e faz o parse
+   do JSON. `options.maxBytes` permite um teto MENOR por rota (ex.: /mcp
+   aceita só JSON-RPC minúsculo; /bridge aceita só o envelope externo) —
+   nunca maior que MAX_BODY_BYTES.
    content-length é a checagem primária (exata, evita ler corpo grande);
    text.length é a salvaguarda para requisições sem esse header
    (unidades UTF-16 ≤ bytes UTF-8, portanto sempre conservadora). */
-export async function readJsonBody(request) {
+export async function readJsonBody(request, options = {}) {
+  const maxBytes =
+    Number.isFinite(options.maxBytes) && options.maxBytes > 0
+      ? Math.min(Math.floor(options.maxBytes), MAX_BODY_BYTES)
+      : MAX_BODY_BYTES;
+  const limitLabel =
+    maxBytes >= MAX_BODY_BYTES
+      ? `${Math.floor(MAX_BODY_BYTES / (1024 * 1024))} MB`
+      : `${Math.floor(maxBytes / 1024)} KB`;
+
   const declared = Number(request.headers.get("content-length"));
-  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) {
-    return fail(
-      413,
-      `Corpo da requisição acima do limite de ${Math.floor(MAX_BODY_BYTES / (1024 * 1024))} MB.`,
-      "payload_too_large"
-    );
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    return fail(413, `Corpo da requisição acima do limite de ${limitLabel}.`, "payload_too_large");
   }
 
   const text = await request.text();
-  if (text.length > MAX_BODY_BYTES) {
-    return fail(
-      413,
-      `Corpo da requisição acima do limite de ${Math.floor(MAX_BODY_BYTES / (1024 * 1024))} MB.`,
-      "payload_too_large"
-    );
+  if (text.length > maxBytes) {
+    return fail(413, `Corpo da requisição acima do limite de ${limitLabel}.`, "payload_too_large");
   }
 
   let payload;

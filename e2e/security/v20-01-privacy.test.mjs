@@ -16,6 +16,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readAppJs } from '../../worker/test/helpers/js.mjs';
 
 const require = createRequire(import.meta.url);
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -23,7 +24,7 @@ const ROOT = path.resolve(HERE, '..', '..');
 
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const html = read('index.html');
-const js = read('app.js');
+const js = readAppJs(ROOT);
 const sw = read('sw.js');
 const pkg = JSON.parse(read('package.json'));
 
@@ -37,11 +38,25 @@ const OCR_MODULES = [
   'ocr/review.js'
 ];
 
-/* bloco V.20-01 em app.js (do comentário de abertura ao fim do IIFE) */
+/* bloco V.20-01 no JS dividido: o arquivo de responsabilidade
+   (funções/estado do fluxo de anexos) mais os trechos do dispatcher
+   DOMContentLoaded que vivem na mesma faixa original — atribuições de
+   ocrState/chatProposal, listener lc-transfer-saved e a IIFE do
+   ocrWireUp (o fim do bloco). */
+const file28 = fs.readFileSync(path.join(ROOT, 'js', '28-ocr-lia.js'), 'utf8');
+const FILE28_START = file28.indexOf(' ANEXOS DA LIA');
+assert.ok(FILE28_START !== -1, 'bloco V.20-01 não encontrado em js/28-ocr-lia.js');
 const BLOCK_START = js.indexOf(' ANEXOS DA LIA');
-assert.ok(BLOCK_START !== -1, 'bloco V.20-01 não encontrado em app.js');
-const BLOCK_END = js.indexOf('})();', BLOCK_START) + 5;
-const block = js.slice(BLOCK_START, BLOCK_END);
+assert.ok(BLOCK_START !== -1, 'bloco V.20-01 não encontrado no JS do app');
+const DISPATCH_START = js.indexOf('ocrState = { attachment');
+assert.ok(DISPATCH_START !== -1, 'atribuição de ocrState não encontrada no dispatcher');
+const WIRE = js.indexOf('(function ocrWireUp()');
+assert.ok(WIRE !== -1 && WIRE > DISPATCH_START, 'ocrWireUp não encontrado após o início do bloco');
+const BLOCK_END = js.indexOf('})();', WIRE) + 5;
+const block =
+  file28.slice(FILE28_START) +
+  '\n' +
+  js.slice(DISPATCH_START, BLOCK_END);
 const lineOf = (rel, needle) => {
   const src = read(rel);
   const i = src.indexOf(needle);
@@ -259,7 +274,7 @@ test('segurança: diagnóstico do fluxo nunca registra conteúdo do documento', 
 test('segurança: linha de apoio — bloco localizado corretamente', () => {
   assert.ok(BLOCK_END > BLOCK_START);
   assert.ok(block.length > 10000, 'o bloco V.20-01 parece truncado');
-  assert.equal(lineOf('app.js', ' ANEXOS DA LIA') > 10000, true);
+  assert.equal(js.indexOf(' ANEXOS DA LIA') > 10000, true);
   assert.match(block, /LivroCaixaReview/);
   assert.match(block, /LivroCaixaExtract/);
   assert.match(block, /LivroCaixaOCRLia/);

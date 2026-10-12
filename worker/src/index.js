@@ -11,6 +11,13 @@
       GET      /financial/  → gateway financeiro  → BCB (SGS) e Tesouro
                              (sem autenticação: dado público; Origin na
                              allowlist + rate limit próprio por IP/origem)
+      POST     /mcp         → token MCP + rate limit → JSON-RPC MCP
+                             (somente leitura; sem exigência de Origin:
+                             cliente é servidor externo, não navegador)
+      POST     /bridge/snapshot → auth Firebase → deposita snapshot
+                             externo (Fase 1) no KV, TTL 1 h
+      POST/DELETE /bridge/token → auth Firebase → emite/revoga token
+                             MCP dedicado (o bruto aparece só 1 vez)
    Qualquer outra rota → 404 { error, code: "not_found" }.
 
    Envelope interno de falha de provedor: { code, message, provider,
@@ -39,11 +46,23 @@ import {
 } from "./ai/openrouter.js";
 import { handleFinancial } from "./financial/gateway.js";
 import { runPushDispatch } from "./push/sender.js";
+import { validateExternalSnapshotResult, MCP_LIMITS } from "../../mcp-financial-contract.js";
+import { handleMcpMessage } from "./mcp/protocol.js";
+import { authenticateMcp, issueMcpToken, revokeMcpToken, putSnapshot } from "./mcp/store.js";
 
 /* Rate limit em memória como fallback quando KV não disponível */
 const RATE_LIMIT_WINDOW_MS = 60000;
 const DEFAULT_RATE_LIMIT = 30;
 const DEFAULT_FINANCIAL_RATE_LIMIT = 20;
+const DEFAULT_MCP_RATE_LIMIT = 20;
+const DEFAULT_MCP_ANON_RATE_LIMIT = 60;
+const DEFAULT_BRIDGE_RATE_LIMIT = 20;
+/* Tetos de corpo por rota da ponte: JSON-RPC é minúsculo; o envelope do
+   snapshot é limitado pelo contrato (64 KB) e aqui só evita ler 24 MB
+   antes de validar; revogação leva um token de ~50 chars. */
+const MCP_MAX_BODY_BYTES = 64 * 1024;
+const BRIDGE_SNAPSHOT_MAX_BODY_BYTES = MCP_LIMITS.SNAPSHOT_MAX_BYTES * 2;
+const BRIDGE_TOKEN_MAX_BODY_BYTES = 8 * 1024;
 const MAX_RATE_BUCKETS = 500;
 const rateBuckets = new Map();
 
@@ -76,8 +95,26 @@ async function isRateLimited(key, env, options = {}) {
 }
 
 export default {
+  /* Defesa de última camada: qualquer exceção não tratada vira JSON 500
+     estruturado, nunca a página HTML de erro do runtime (conectores MCP
+     esperam JSON). Log mínimo: método + caminho, sem query nem credencial. */
   async fetch(request, env) {
-    const url = new URL(request.url);
+    try {
+      return await handleFetch(request, env);
+    } catch (error) {
+      console.error(`erro interno em ${request.method} ${new URL(request.url).pathname}: ${error && error.message}`);
+      return json({ error: "Erro interno do servidor.", code: "internal_error" }, 500, null);
+    }
+  },
+
+  async scheduled(event, env) {
+    const summary = await runPushDispatch(env);
+    console.log(JSON.stringify({ event: "push_dispatch", cron: event && event.cron, ...summary }));
+  }
+};
+
+async function handleFetch(request, env) {
+  const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";
     const cors = corsHeaders(origin, env);
 
@@ -151,6 +188,161 @@ export default {
         200,
         cors
       );
+    }
+
+    /* ---------------------------------------------------------------- */
+    /* Ponte de IA — POST /mcp (JSON-RPC, somente leitura).              */
+    /* Autenticação: token MCP dedicado (Bearer), NÃO o ID token.        */
+    /* Sem exigência de Origin: o chamador é um servidor MCP externo.    */
+    /* ---------------------------------------------------------------- */
+    if (url.pathname === "/mcp") {
+      if (request.method !== "POST") {
+        return json({ error: "Método não permitido.", code: "method_not_allowed" }, 405, cors || {});
+      }
+
+      /* Rate limit ANTES da autenticação, por IP: sem token válido o
+         atacante só consume hash + leitura de KV; este bucket corta o
+         volume sem depender de token algum. Prefixo separado do bucket
+         autenticado (nunca disputam janela). */
+      const anonKey = request.headers.get("cf-connecting-ip") || "unknown";
+      const anonLimited = await isRateLimited(anonKey, env, {
+        limitEnvVar: "MCP_ANON_RATE_LIMIT_PER_MINUTE",
+        defaultLimit: DEFAULT_MCP_ANON_RATE_LIMIT,
+        prefix: "mcp-anon:"
+      });
+      if (anonLimited) {
+        return json(
+          { error: "Muitas consultas MCP agora. Aguarde alguns segundos e tente novamente.", code: "mcp_rate_limited" },
+          429,
+          cors || {}
+        );
+      }
+
+      const mcpAuth = await authenticateMcp(request, env);
+      if (mcpAuth.error) {
+        return json({ error: "Token MCP inválido ou ausente.", code: mcpAuth.error }, mcpAuth.status, cors || {});
+      }
+
+      const limited = await isRateLimited(mcpAuth.hash, env, {
+        limitEnvVar: "MCP_RATE_LIMIT_PER_MINUTE",
+        defaultLimit: DEFAULT_MCP_RATE_LIMIT,
+        prefix: "mcp:"
+      });
+      if (limited) {
+        return json(
+          { error: "Muitas consultas MCP agora. Aguarde alguns segundos e tente novamente.", code: "mcp_rate_limited" },
+          429,
+          cors || {}
+        );
+      }
+
+      const body = await readJsonBody(request, { maxBytes: MCP_MAX_BODY_BYTES });
+      if (!body.ok) return json(body.body, body.status, cors || {});
+
+      let response;
+      try {
+        response = await handleMcpMessage(body.payload, env, mcpAuth.uid);
+      } catch (mcpError) {
+        /* Falha interna (KV/protocolo) vira erro JSON-RPC, nunca 500 cru. */
+        response = {
+          jsonrpc: "2.0",
+          id: body.payload && "id" in body.payload ? body.payload.id : null,
+          error: { code: -32603, message: "Erro interno ao processar a requisição." }
+        };
+      }
+      if (response === null) {
+        /* Notificação JSON-RPC: aceita sem corpo (Streamable HTTP). */
+        return new Response(null, { status: 202, headers: cors || {} });
+      }
+      return json(response, 200, cors || {});
+    }
+
+    /* ---------------------------------------------------------------- */
+    /* Ponte de IA — ponte do app autenticado (ID token do Firebase).    */
+    /* ---------------------------------------------------------------- */
+    if (url.pathname === "/bridge/snapshot" || url.pathname === "/bridge/token") {
+      if (!cors) return json({ error: "Origem não autorizada.", code: "origin_blocked" }, 403, null);
+
+      const isSnapshot = url.pathname === "/bridge/snapshot";
+      const methodAllowed = isSnapshot
+        ? request.method === "POST"
+        : request.method === "POST" || request.method === "DELETE";
+      if (!methodAllowed) {
+        return json({ error: "Método não permitido.", code: "method_not_allowed" }, 405, cors);
+      }
+
+      const appCheck = await requireAppCheck(request, env, cors);
+      if (!appCheck.ok) return appCheck.response;
+
+      const authResult = await authenticate(request, env, cors);
+      if (authResult instanceof Response) return authResult;
+      const uid = authResult.claims.sub;
+
+      const limited = await isRateLimited(uid, env, {
+        limitEnvVar: "BRIDGE_RATE_LIMIT_PER_MINUTE",
+        defaultLimit: DEFAULT_BRIDGE_RATE_LIMIT,
+        prefix: "bridge:"
+      });
+      if (limited) {
+        return json(
+          { error: "Muitas operações na ponte agora. Aguarde alguns segundos e tente novamente.", code: "bridge_rate_limited" },
+          429,
+          cors
+        );
+      }
+
+      if (isSnapshot) {
+        const body = await readJsonBody(request, { maxBytes: BRIDGE_SNAPSHOT_MAX_BODY_BYTES });
+        if (!body.ok) return json(body.body, body.status, cors);
+
+        /* Validação autoritativa do contrato externo (Fase 1) — o mesmo
+           envelope que a ferramenta MCP servirá depois. */
+        const validated = validateExternalSnapshotResult(body.payload);
+        if (!validated.ok) return json(validated.body, validated.status, cors);
+
+        const stored = await putSnapshot(env, uid, validated.value);
+        if (!stored.ok) {
+          return json(
+            { error: "Armazenamento da ponte indisponível.", code: stored.code },
+            503,
+            cors
+          );
+        }
+        return json({ ok: true, bytes: stored.bytes, expiresIn: stored.expiresIn }, 200, cors);
+      }
+
+      /* /bridge/token — emissão e revogação. */
+      if (request.method === "POST") {
+        const issued = await issueMcpToken(env, uid);
+        if (!issued.ok) {
+          if (issued.code === "token_limit") {
+            /* Teto de tokens ativos por conta: evita inflação do KV. */
+            return json(
+              { error: "Você atingiu o limite de tokens ativos. Revogue um token antes de gerar outro.", code: "token_limit" },
+              409,
+              cors
+            );
+          }
+          return json({ error: "Armazenamento da ponte indisponível.", code: issued.code }, 503, cors);
+        }
+        /* O token bruto aparece só nesta resposta; o KV guarda apenas o hash. */
+        return json({ token: issued.token, createdAt: issued.createdAt, expiresInSeconds: issued.expiresInSeconds }, 201, cors);
+      }
+
+      const body = await readJsonBody(request, { maxBytes: BRIDGE_TOKEN_MAX_BODY_BYTES });
+      if (!body.ok) return json(body.body, body.status, cors);
+      const token = body.payload && typeof body.payload.token === "string" ? body.payload.token : "";
+      if (!token) {
+        return json({ error: 'Informe o token a revogar em "token".', code: "missing_token_field" }, 400, cors);
+      }
+      const revoked = await revokeMcpToken(env, uid, token);
+      if (!revoked.ok) {
+        if (revoked.code === "store_unavailable") {
+          return json({ error: "Armazenamento da ponte indisponível.", code: revoked.code }, 503, cors);
+        }
+        return json({ error: "Este token pertence a outra conta.", code: revoked.code }, 403, cors);
+      }
+      return json({ ok: true, revoked: revoked.revoked }, 200, cors);
     }
 
     if (url.pathname !== "/ai") {
@@ -347,10 +539,4 @@ export default {
       failureStatus,
       failureStatus === 429 ? withHeaders(cors, quotaHeaders()) : cors
     );
-  },
-
-  async scheduled(event, env) {
-    const summary = await runPushDispatch(env);
-    console.log(JSON.stringify({ event: "push_dispatch", cron: event && event.cron, ...summary }));
-  }
-};
+}

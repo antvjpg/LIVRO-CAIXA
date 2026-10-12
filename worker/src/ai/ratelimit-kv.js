@@ -27,14 +27,22 @@ export async function isRateLimitedKV(key, env, options = {}) {
   const limit = Number.isFinite(configured) && configured > 0 ? configured : defaultLimit;
 
   const rlKey = rateLimitKey(prefix, key);
-  const current = await env.RATE_LIMIT_KV.get(rlKey);
-  const count = current ? Number(current) : 0;
+  try {
+    const current = await env.RATE_LIMIT_KV.get(rlKey);
+    const count = current ? Number(current) : 0;
 
-  if (count >= limit) {
-    return true;
+    if (count >= limit) {
+      return true;
+    }
+
+    // Incrementa com TTL de 2 minutos
+    await env.RATE_LIMIT_KV.put(rlKey, String(count + 1), { expirationTtl: 120 });
+    return false;
+  } catch {
+    /* KV indisponível: rate limit falha ABERTO para não derrubar a rota
+       com 500 (uma exceção aqui hoje estouraria como página de erro do
+       runtime). O abuso ainda é contido pela franquia diária do plano
+       Free do Workers. */
+    return false;
   }
-
-  // Incrementa com TTL de 2 minutos
-  await env.RATE_LIMIT_KV.put(rlKey, String(count + 1), { expirationTtl: 120 });
-  return false;
 }

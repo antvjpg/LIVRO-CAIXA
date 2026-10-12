@@ -13,10 +13,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readAppCss } from "./helpers/css.mjs";
+import { readAppJs } from "./helpers/js.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
-const js = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
+const js = readAppJs(ROOT);
 const css = readAppCss(ROOT);
 
 test("index.html expõe os quatro benchmarks como múltipla escolha", () => {

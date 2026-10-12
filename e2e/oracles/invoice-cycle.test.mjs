@@ -9,6 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { readAppCss } from '../../worker/test/helpers/css.mjs';
+import { readAppJs } from '../../worker/test/helpers/js.mjs';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -150,7 +151,7 @@ function invoiceDueDateForPeriodReference(card, periodKey) {
 }
 
 test('invoiceCycle: app.js expõe a navegação de períodos da fatura', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  const html = readAppJs(ROOT);
   for (const trecho of [
     'cardInvoiceSelection',
     'cardInvoiceNavState',

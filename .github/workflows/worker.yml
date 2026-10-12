@@ -8,11 +8,23 @@ on:
     paths:
       - "worker/**"
       - "financial-client.js"
+      # Contratos importados pelo Worker (worker/src/mcp/*.js) vivem na raiz:
+      - "mcp-financial-contract.js"
+      - "ai-chat-contract.js"
+      # Frontend que deposita o snapshot (testes de fiação da ponte):
+      - "index.html"
+      - "sw.js"
+      - "js/**"
       - ".github/workflows/worker.yml"
   pull_request:
     paths:
       - "worker/**"
       - "financial-client.js"
+      - "mcp-financial-contract.js"
+      - "ai-chat-contract.js"
+      - "index.html"
+      - "sw.js"
+      - "js/**"
       - ".github/workflows/worker.yml"
   workflow_dispatch:
 
