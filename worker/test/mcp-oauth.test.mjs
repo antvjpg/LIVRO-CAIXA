@@ -392,7 +392,7 @@ test("token: troca de code devolve access + refresh (uso único do code)", async
   assert.equal(tokenRes.status, 200);
   assert.ok(tokens.access_token.startsWith("oat_"));
   assert.ok(tokens.refresh_token.startsWith("oat_"));
-  assert.equal(tokens.expires_in, 3600);
+  assert.equal(tokens.expires_in, 30 * 24 * 3600);
   assert.equal(tokens.token_type, "Bearer");
 
   const replay = await postToken({

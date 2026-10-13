@@ -34,7 +34,12 @@ import { resolveMcpToken } from "./store.js";
 import { readJsonBody } from "../shared/validation.js";
 
 const DEFAULT_ISSUER = "https://livro-caixa-ai.livro-caixa-ai.workers.dev";
-const ACCESS_TTL_SECONDS = 3600;
+/* Access token OAuth: 30 dias (mesmo prazo do mxc_). App pessoal de
+   uso único — prazo curto de 1 h só adicionava fricção sem ganho real.
+   O refresh token (também 30 dias) renova automaticamente quando o
+   access expira, então a sessão pode durar indefinidamente com o app
+   conectado. */
+const ACCESS_TTL_SECONDS = 30 * 24 * 3600;
 const REFRESH_TTL_SECONDS = 30 * 24 * 3600;
 const CODE_TTL_SECONDS = 300;
 /* Ticket do consentimento: o usuário precisa de tempo para sair, gerar o
