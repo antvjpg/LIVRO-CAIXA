@@ -223,10 +223,56 @@ test("isolamento: token de uid-b não enxerga o snapshot de uid-a", async () => 
   await depositFor("uid-a");
   const tokenB = await issueTokenFor("uid-b");
 
-  const res = await mcp(tokenB, { jsonrpc: "2.0", id: 7, method: "tools/call", params: { name: MCP_TOOL_GET_FINANCIAL_SNAPSHOT } });
+  const res = await mcp(tokenB, { jsonrpc: "2.0", id: 7, method: "tools/call", params: { name: MCP_TOOL_GET_FINANCIAL_SNAPSHOT, arguments: {} } });
   const body = await res.json();
   assert.equal(body.result.isError, true);
   assert.ok(body.result.content[0].text.includes("snapshot_unavailable"));
+});
+
+test("snapshot vazio: depósito aceito e tools/call não inventa domínios", async () => {
+  /* Conta nova: o builder emite só envelope/período, nenhum domínio com valor. */
+  const built = buildExternalSnapshotResult({
+    schemaVersion: "P3.5",
+    generatedAt: "2026-10-12T12:00:00.000Z",
+    period: { currentMonth: "2026-10" }
+  });
+  assert.equal(built.ok, true, JSON.stringify(built.body));
+  await depositFor("uid-vazio", built.value);
+
+  const token = await issueTokenFor("uid-vazio");
+  const res = await mcp(token, { jsonrpc: "2.0", id: 8, method: "tools/call", params: { name: MCP_TOOL_GET_FINANCIAL_SNAPSHOT, arguments: {} } });
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.ok(!body.result.isError, JSON.stringify(body.result));
+
+  const payload = JSON.parse(body.result.content[0].text);
+  assert.equal(payload.contractVersion, 1);
+  assert.deepEqual(payload.data, {}, "snapshot vazio não pode ganhar domínios fabricados");
+});
+
+test("snapshot parcial: domínios ausentes continuam ausentes, sem valores inventados", async () => {
+  const built = buildExternalSnapshotResult({
+    schemaVersion: "P3.5",
+    generatedAt: "2026-10-12T12:00:00.000Z",
+    period: { currentMonth: "2026-10" },
+    accounts: [{ name: "Nubank", balance: 4000 }],
+    goals: [{ name: "Reserva", target: 10000, current: 4000 }]
+  });
+  assert.equal(built.ok, true, JSON.stringify(built.body));
+  await depositFor("uid-parcial", built.value);
+
+  const token = await issueTokenFor("uid-parcial");
+  const res = await mcp(token, { jsonrpc: "2.0", id: 9, method: "tools/call", params: { name: MCP_TOOL_GET_FINANCIAL_SNAPSHOT, arguments: {} } });
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.ok(!body.result.isError, JSON.stringify(body.result));
+
+  const payload = JSON.parse(body.result.content[0].text);
+  assert.equal(payload.data.accounts[0].name, "Nubank");
+  assert.equal(payload.data.goals[0].name, "Reserva");
+  for (const dominioAusente of ["cards", "budgets", "investments", "pockets", "cashFlow", "patrimony"]) {
+    assert.ok(!(dominioAusente in payload.data), `domínio ausente (${dominioAusente}) não pode aparecer no retorno`);
+  }
 });
 
 /* ------------------------------------------------------------------ */

@@ -11,13 +11,18 @@
       GET      /financial/  → gateway financeiro  → BCB (SGS) e Tesouro
                              (sem autenticação: dado público; Origin na
                              allowlist + rate limit próprio por IP/origem)
-      POST     /mcp         → token MCP + rate limit → JSON-RPC MCP
-                             (somente leitura; sem exigência de Origin:
-                             cliente é servidor externo, não navegador)
-      POST     /bridge/snapshot → auth Firebase → deposita snapshot
-                             externo (Fase 1) no KV, TTL 1 h
-      POST/DELETE /bridge/token → auth Firebase → emite/revoga token
-                             MCP dedicado (o bruto aparece só 1 vez)
+       POST     /mcp         → token MCP (mxc_ ou OAuth) + rate limit
+                              → JSON-RPC MCP (somente leitura; sem
+                              exigência de Origin: cliente é servidor
+                              externo, não navegador)
+       GET      /.well-known/oauth-* → discovery OAuth (RFC 9728/8414)
+       POST     /register    → DCR (RFC 7591), rate limit por IP
+       GET/POST /authorize   → consentimento (cole o token mxc_)
+       POST     /token       → code+PKCE S256 / refresh rotativo
+       POST     /bridge/snapshot → auth Firebase → deposita snapshot
+                              externo (Fase 1) no KV, TTL 1 h
+       POST/DELETE /bridge/token → auth Firebase → emite/revoga token
+                              MCP dedicado (o bruto aparece só 1 vez)
    Qualquer outra rota → 404 { error, code: "not_found" }.
 
    Envelope interno de falha de provedor: { code, message, provider,
@@ -48,7 +53,8 @@ import { handleFinancial } from "./financial/gateway.js";
 import { runPushDispatch } from "./push/sender.js";
 import { validateExternalSnapshotResult, MCP_LIMITS } from "../../mcp-financial-contract.js";
 import { handleMcpMessage } from "./mcp/protocol.js";
-import { authenticateMcp, issueMcpToken, revokeMcpToken, putSnapshot } from "./mcp/store.js";
+import { issueMcpToken, revokeMcpToken, putSnapshot } from "./mcp/store.js";
+import { authenticateMcpAny, oauthChallenge, handleOAuthRequest, isOAuthPath } from "./mcp/oauth.js";
 
 /* Rate limit em memória como fallback quando KV não disponível */
 const RATE_LIMIT_WINDOW_MS = 60000;
@@ -218,9 +224,16 @@ async function handleFetch(request, env) {
         );
       }
 
-      const mcpAuth = await authenticateMcp(request, env);
+      const mcpAuth = await authenticateMcpAny(request, env);
       if (mcpAuth.error) {
-        return json({ error: "Token MCP inválido ou ausente.", code: mcpAuth.error }, mcpAuth.status, cors || {});
+        /* 401 carrega WWW-Authenticate apontando o metadata OAuth: é o
+           gatilho do "Entrar agora" no claude.ai (RFC 9728 + exigência
+           da Anthropic; eles ignoram o header em respostas 200). */
+        return json(
+          { error: "Token MCP inválido ou ausente.", code: mcpAuth.error },
+          mcpAuth.status,
+          withHeaders(cors || {}, { "WWW-Authenticate": oauthChallenge(env) })
+        );
       }
 
       const limited = await isRateLimited(mcpAuth.hash, env, {
@@ -343,6 +356,16 @@ async function handleFetch(request, env) {
         return json({ error: "Este token pertence a outra conta.", code: revoked.code }, 403, cors);
       }
       return json({ ok: true, revoked: revoked.revoked }, 200, cors);
+    }
+
+    /* ---------------------------------------------------------------- */
+    /* OAuth 2.1 da ponte (AS + resource server): discovery RFC 9728/   */
+    /* 8414, DCR, authorize (consentimento colando o mxc_) e token      */
+    /* (code+PKCE S256, refresh com rotação). Habilita o "Entrar agora" */
+    /* do claude.ai sem depender do beta de headers.                    */
+    /* ---------------------------------------------------------------- */
+    if (isOAuthPath(url.pathname)) {
+      return handleOAuthRequest(request, env, { isRateLimited });
     }
 
     if (url.pathname !== "/ai") {
