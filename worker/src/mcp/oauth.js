@@ -219,6 +219,30 @@ async function kvDelete(kv, key) {
   }
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/* Um ticket ausente pode ser: reenvio do formulário (retry/duplo clique),
+   leitura KV instável (propagação entre colos ou erro transitório — o
+   catch do kvGetJson vira null) ou gravação perdida. Reler uma vez antes
+   de declarar "não encontrado" evita falso expirado logo após o clique. */
+async function readTicketRecord(kv, ticket) {
+  const key = ticketKey(ticket);
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const record = await kvGetJson(kv, key);
+    if (record) return record;
+    if (attempt === 0) await sleep(150);
+  }
+  return null;
+}
+
+/* Motivo do desfecho do POST /authorize — só o motivo, sem token/ticket/
+   code/uid (log sanitizado para diagnosticar recorrência em produção). */
+function logAuthorize(outcome) {
+  console.log(JSON.stringify({ event: "mcp_oa_authorize", outcome }));
+}
+
 function methodNotAllowed() {
   return jsonResponse({ error: "Método não permitido.", code: "method_not_allowed" }, 405);
 }
@@ -492,17 +516,24 @@ async function authorizePost(request, env) {
   if (!kv) return htmlErrorPage("Indisponível", "Armazenamento da ponte indisponível.");
 
   const ticket = form.ticket || "";
-  if (!ticket) return htmlErrorPage("Sessão expirada", "Ticket ausente. Volte ao aplicativo e inicie a conexão novamente.");
+  if (!ticket) return htmlErrorPage("Sessão indisponível", "Ticket ausente. Volte ao aplicativo e inicie a conexão novamente.");
 
-  /* Uso único: get+delete antes de qualquer validação — um replay do
-     mesmo formulário nunca reemite código. */
-  const record = await kvGetJson(kv, ticketKey(ticket));
-  await kvDelete(kv, ticketKey(ticket));
+  const record = await readTicketRecord(kv, ticket);
+  if (!record) {
+    logAuthorize("ticket_not_found");
+    return htmlErrorPage(
+      "Sessão indisponível",
+      "Este pedido de conexão já foi usado ou não foi encontrado. Volte ao aplicativo e clique em Conectar novamente para gerar uma nova tela."
+    );
+  }
   if (isExpired(record)) {
+    await kvDelete(kv, ticketKey(ticket));
+    logAuthorize("ticket_expired");
     return htmlErrorPage("Sessão expirada", "Este pedido expirou (30 minutos). Volte ao aplicativo e tente novamente.");
   }
 
   if (form.action === "deny") {
+    await kvDelete(kv, ticketKey(ticket));
     return redirectError(record.redirect_uri, "access_denied", record.state, "O usuário negou o acesso.");
   }
   if (form.action !== "allow") {
@@ -512,40 +543,26 @@ async function authorizePost(request, env) {
   const token = typeof form.token === "string" ? form.token.trim() : "";
   const resolved = token ? await resolveMcpToken(env, token) : null;
   if (!resolved) {
-    /* Ticket já foi consumido (uso único). Em vez de página morta,
-       re-renderiza o consentimento com ticket novo — o usuário pode
-       colar o token corrigido sem reiniciar a conexão no claude.ai. */
-    const freshTicket = randomB64Url(24);
-    const stored = await kvPutJson(
-      kv,
-      ticketKey(freshTicket),
-      {
-        client_id: record.client_id,
-        client_name: record.client_name,
-        redirect_uri: record.redirect_uri,
-        challenge: record.challenge,
-        state: record.state,
-        scope: record.scope,
-        resource: record.resource,
-        exp: expIn(TICKET_TTL_SECONDS)
-      },
-      TICKET_TTL_SECONDS
-    );
-    if (!stored) {
-      return htmlErrorPage(
-        "Token inválido",
-        "Token inválido ou revogado. Gere um novo em Perfil → Conexão externa (MCP) e inicie a conexão novamente."
-      );
-    }
+    /* Ticket ainda não foi consumido (a gravação é adiada até o sucesso):
+       re-renderiza o mesmo form — o usuário cola o token corrigido sem
+       reiniciar a conexão e sem depender de um ticket novo ser gravado. */
+    logAuthorize("token_invalid");
     return renderConsentPage({
       clientName: record.client_name,
       redirectUri: record.redirect_uri,
       scope: record.scope,
-      ticket: freshTicket,
+      ticket,
       error: "Token inválido ou revogado. Gere um novo em Perfil → Conexão externa (MCP) e cole abaixo."
     });
   }
 
+  /* Grava o code antes de consumir o ticket: se a gravação falhar, o
+     ticket segue vivo e o usuário pode simplesmente tentar de novo.
+     Depois disso o consumo torna o ticket de uso único — replay
+     sequencial cai em ticket_not_found. Se dois Allows chegarem em
+     paralelo, ambos podem ler antes do delete e emitir dois codes —
+     cada code é de uso único e o PKCE impede que terceiros troquem
+     qualquer um deles. */
   const code = randomB64Url(32);
   const codeHash = await sha256Hex(code);
   const stored = await kvPutJson(
@@ -564,6 +581,9 @@ async function authorizePost(request, env) {
     CODE_TTL_SECONDS
   );
   if (!stored) return htmlErrorPage("Indisponível", "Armazenamento da ponte indisponível.");
+
+  await kvDelete(kv, ticketKey(ticket));
+  logAuthorize("ok");
 
   const location = appendQuery(record.redirect_uri, {
     code,

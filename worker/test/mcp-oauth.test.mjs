@@ -336,8 +336,22 @@ test("authorize POST com token inválido → re-renderiza consentimento com erro
   assert.equal(res.headers.get("location"), null);
   const html = await res.text();
   assert.ok(html.includes("Token inválido"));
-  /* Um ticket novo está embutido no form para retry sem reiniciar. */
-  assert.ok(ticketFrom(html) && ticketFrom(html) !== ticket, "form deve trazer ticket novo");
+  /* O ticket não é consumido em falha: o mesmo form serve para retry. */
+  assert.equal(ticketFrom(html), ticket, "form deve manter o mesmo ticket para retry");
+});
+
+test("authorize POST token inválido → retry com token válido no mesmo ticket → 302", async () => {
+  const { body: client } = await registerClient();
+  const page = await getAuthorize(authorizeUrl(client.client_id, CLAUDE_REDIRECT, { challenge: challengeOf(makeVerifier()), state: "r1" }));
+  const ticket = ticketFrom(await page.text());
+
+  const invalid = await postAuthorize({ ticket, token: "mxc_invalido", action: "allow" });
+  assert.equal(invalid.status, 200);
+
+  const mxc = await issueTokenFor("uid-retry-ticket");
+  const retry = await postAuthorize({ ticket, token: mxc, action: "allow" });
+  assert.equal(retry.status, 302, "retry no mesmo ticket deve funcionar");
+  assert.equal(locationParams(retry).state, "r1");
 });
 
 test("authorize POST negar → 302 access_denied", async () => {
@@ -350,7 +364,7 @@ test("authorize POST negar → 302 access_denied", async () => {
   assert.equal(locationParams(res).error, "access_denied");
 });
 
-test("ticket é de uso único (replay → 400)", async () => {
+test("ticket é de uso único (replay → 400 com mensagem de já usado)", async () => {
   const { body: client } = await registerClient();
   const page = await getAuthorize(authorizeUrl(client.client_id, CLAUDE_REDIRECT, { challenge: challengeOf(makeVerifier()) }));
   const ticket = ticketFrom(await page.text());
@@ -360,6 +374,26 @@ test("ticket é de uso único (replay → 400)", async () => {
   assert.equal(first.status, 302);
   const second = await postAuthorize({ ticket, token: mxc, action: "deny" });
   assert.equal(second.status, 400);
+  /* Ticket ausente ≠ expirado: a mensagem não pode culpar o TTL de 30 min. */
+  const html = await second.text();
+  assert.ok(html.includes("já foi usado"), "deve dizer que a tela já foi usada");
+  assert.ok(!html.includes("30 minutos"), "não deve dizer 'expirou (30 minutos)'");
+});
+
+test("ticket realmente expirado → 400 Sessão expirada (30 minutos)", async () => {
+  const { body: client } = await registerClient();
+  const page = await getAuthorize(authorizeUrl(client.client_id, CLAUDE_REDIRECT, { challenge: challengeOf(makeVerifier()) }));
+  const ticket = ticketFrom(await page.text());
+  const key = `mcp-oa:auth:${ticket}`;
+  const record = JSON.parse(await env.RATE_LIMIT_KV.get(key));
+  record.exp = Date.now() - 1000;
+  await env.RATE_LIMIT_KV.put(key, JSON.stringify(record));
+
+  const res = await postAuthorize({ ticket, token: "mxc_qualquer", action: "allow" });
+  assert.equal(res.status, 400);
+  const html = await res.text();
+  assert.ok(html.includes("Sessão expirada"));
+  assert.ok(html.includes("30 minutos"));
 });
 
 /* ------------------------------------------------------------------ */
