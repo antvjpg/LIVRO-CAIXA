@@ -207,39 +207,43 @@ test("/mcp: limite por IP ANTES do token (sem token válido não isenta)", async
 });
 
 /* ------------------------------------------------------------------ */
-/* Teto de tokens ativos por conta                                     */
+/* Um token ativo por conta: gerar novo revoga os anteriores          */
 /* ------------------------------------------------------------------ */
 
-test("teto de 5 tokens ativos: 6º → 409 token_limit; revogar libera vaga", async () => {
-  const tokens = [];
-  for (let i = 0; i < 5; i++) tokens.push(await issueTokenFor("uid-limit"));
+test("gerar novo token revoga o anterior automaticamente", async () => {
+  const first = await issueTokenFor("uid-single");
 
-  const sixth = await request("/bridge/token", {
-    headers: { "content-type": "application/json", Origin: ORIGIN, Authorization: `Bearer ${makeIdToken("uid-limit")}` }
+  const second = await request("/bridge/token", {
+    headers: { "content-type": "application/json", Origin: ORIGIN, Authorization: `Bearer ${makeIdToken("uid-single")}` }
   });
-  assert.equal(sixth.status, 409);
-  assert.equal((await sixth.json()).code, "token_limit");
+  assert.equal(second.status, 201);
+  const secondToken = (await second.json()).token;
+  assert.notEqual(secondToken, first);
 
-  /* Revogar libera uma vaga. */
-  const revoked = await request("/bridge/token", {
-    method: "DELETE",
-    headers: { "content-type": "application/json", Origin: ORIGIN, Authorization: `Bearer ${makeIdToken("uid-limit")}` },
-    body: JSON.stringify({ token: tokens[0] })
+  /* O token antigo parou de autenticar. */
+  const mcpOld = await request("/mcp", {
+    method: "POST",
+    headers: { "content-type": "application/json", Authorization: `Bearer ${first}` },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" })
   });
-  assert.equal(revoked.status, 200);
+  assert.equal(mcpOld.status, 401);
 
-  const again = await request("/bridge/token", {
-    headers: { "content-type": "application/json", Origin: ORIGIN, Authorization: `Bearer ${makeIdToken("uid-limit")}` }
+  /* O novo autentica. */
+  const mcpNew = await request("/mcp", {
+    method: "POST",
+    headers: { "content-type": "application/json", Authorization: `Bearer ${secondToken}` },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" })
   });
-  assert.equal(again.status, 201, "revogação deve liberar uma vaga");
+  assert.equal(mcpNew.status, 200);
 });
 
-test("teto de tokens é por conta: outra conta não é afetada", async () => {
-  for (let i = 0; i < 5; i++) await issueTokenFor("uid-a-limited");
-  const other = await request("/bridge/token", {
-    headers: { "content-type": "application/json", Origin: ORIGIN, Authorization: `Bearer ${makeIdToken("uid-b-limited")}` }
-  });
-  assert.equal(other.status, 201);
+test("emissão não é bloqueada por teto: 6 emissões seguidas sempre retornam 201", async () => {
+  for (let i = 0; i < 6; i++) {
+    const res = await request("/bridge/token", {
+      headers: { "content-type": "application/json", Origin: ORIGIN, Authorization: `Bearer ${makeIdToken("uid-nofence")}` }
+    });
+    assert.equal(res.status, 201, `emissão ${i + 1} deve ser 201`);
+  }
 });
 
 /* ------------------------------------------------------------------ */

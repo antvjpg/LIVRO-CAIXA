@@ -37,7 +37,10 @@ const DEFAULT_ISSUER = "https://livro-caixa-ai.livro-caixa-ai.workers.dev";
 const ACCESS_TTL_SECONDS = 3600;
 const REFRESH_TTL_SECONDS = 30 * 24 * 3600;
 const CODE_TTL_SECONDS = 300;
-const TICKET_TTL_SECONDS = 300;
+/* Ticket do consentimento: o usuário precisa de tempo para sair, gerar o
+   mxc_ no app e voltar — 5 min estourava na prática. 30 min cobre o
+   fluxo sem criar janela longa de reuso (é uso único mesmo). */
+const TICKET_TTL_SECONDS = 1800;
 const OA_TOKEN_PREFIX = "oat_";
 const CLIENT_PREFIX = "mcpcli_";
 const DEFAULT_OAUTH_RATE_LIMIT = 30;
@@ -491,7 +494,7 @@ async function authorizePost(request, env) {
   const record = await kvGetJson(kv, ticketKey(ticket));
   await kvDelete(kv, ticketKey(ticket));
   if (isExpired(record)) {
-    return htmlErrorPage("Sessão expirada", "Este pedido expirou (5 minutos). Volte ao aplicativo e tente novamente.");
+    return htmlErrorPage("Sessão expirada", "Este pedido expirou (30 minutos). Volte ao aplicativo e tente novamente.");
   }
 
   if (form.action === "deny") {
@@ -504,12 +507,38 @@ async function authorizePost(request, env) {
   const token = typeof form.token === "string" ? form.token.trim() : "";
   const resolved = token ? await resolveMcpToken(env, token) : null;
   if (!resolved) {
-    /* Ticket já foi consumido acima (uso único): não há como re-renderizar
-       o form aproveitável. Erro 400 instrui a reiniciar a conexão. */
-    return htmlErrorPage(
-      "Token inválido",
-      "Token inválido ou revogado. Gere um novo em Perfil → Conexão externa (MCP) e inicie a conexão novamente."
+    /* Ticket já foi consumido (uso único). Em vez de página morta,
+       re-renderiza o consentimento com ticket novo — o usuário pode
+       colar o token corrigido sem reiniciar a conexão no claude.ai. */
+    const freshTicket = randomB64Url(24);
+    const stored = await kvPutJson(
+      kv,
+      ticketKey(freshTicket),
+      {
+        client_id: record.client_id,
+        client_name: record.client_name,
+        redirect_uri: record.redirect_uri,
+        challenge: record.challenge,
+        state: record.state,
+        scope: record.scope,
+        resource: record.resource,
+        exp: expIn(TICKET_TTL_SECONDS)
+      },
+      TICKET_TTL_SECONDS
     );
+    if (!stored) {
+      return htmlErrorPage(
+        "Token inválido",
+        "Token inválido ou revogado. Gere um novo em Perfil → Conexão externa (MCP) e inicie a conexão novamente."
+      );
+    }
+    return renderConsentPage({
+      clientName: record.client_name,
+      redirectUri: record.redirect_uri,
+      scope: record.scope,
+      ticket: freshTicket,
+      error: "Token inválido ou revogado. Gere um novo em Perfil → Conexão externa (MCP) e cole abaixo."
+    });
   }
 
   const code = randomB64Url(32);

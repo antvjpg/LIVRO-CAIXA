@@ -324,18 +324,11 @@ async function handleFetch(request, env) {
         return json({ ok: true, bytes: stored.bytes, expiresIn: stored.expiresIn }, 200, cors);
       }
 
-      /* /bridge/token — emissão e revogação. */
+      /* /bridge/token — emissão e revogação. Um token ativo por conta:
+         gerar novo revoga os anteriores automaticamente. */
       if (request.method === "POST") {
         const issued = await issueMcpToken(env, uid);
         if (!issued.ok) {
-          if (issued.code === "token_limit") {
-            /* Teto de tokens ativos por conta: evita inflação do KV. */
-            return json(
-              { error: "Você atingiu o limite de tokens ativos. Revogue um token antes de gerar outro.", code: "token_limit" },
-              409,
-              cors
-            );
-          }
           return json({ error: "Armazenamento da ponte indisponível.", code: issued.code }, 503, cors);
         }
         /* O token bruto aparece só nesta resposta; o KV guarda apenas o hash. */

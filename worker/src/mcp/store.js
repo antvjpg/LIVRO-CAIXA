@@ -12,9 +12,9 @@
 
    O token bruto aparece UMA vez na resposta de criação; só o hash vai
    para o KV. Comprometer o KV expira sozinho e não expõe o token.
-   Teto de MAX_ACTIVE_TOKENS por conta evita inflação do KV por uma
-   conta autenticada (índice é melhor esforço: falha de KV não bloqueia
-   a emissão, apenas relaxa o teto naquele momento).
+   Um token ativo por conta: gerar novo revoga os anteriores
+   automaticamente (sem teto nem dependência de o usuário guardar
+   o valor antigo).
 
    Toda operação de KV é envolvida em try/catch: indisponibilidade vira
    { ok: false, code: "store_unavailable" } (ou null na leitura) em vez
@@ -24,7 +24,6 @@ import { MCP_LIMITS } from "../../../mcp-financial-contract.js";
 
 export const MCP_SNAPSHOT_TTL_SECONDS = 3600;
 export const MCP_TOKEN_TTL_SECONDS = 30 * 24 * 3600;
-export const MAX_ACTIVE_TOKENS = 5;
 
 const TOKEN_PREFIX = "mxc_";
 
@@ -135,15 +134,14 @@ export async function deleteSnapshot(env, uid) {
 /* ------------------------------------------------------------------ */
 
 /* Cria o token já vinculado ao uid e devolve { ok, token, ... }.
-   Teto de MAX_ACTIVE_TOKENS ativos por conta (código "token_limit"). */
+   Um token ativo por conta: gerar novo revoga os anteriores
+   automaticamente — sem teto e sem depender de o usuário guardar
+   o valor antigo para revogar. */
 export async function issueMcpToken(env, uid) {
   const kv = kvOf(env);
   if (!kv) return { ok: false, code: "store_unavailable" };
 
   const index = await readTokenIndex(kv, uid);
-  if (index.length >= MAX_ACTIVE_TOKENS) {
-    return { ok: false, code: "token_limit" };
-  }
 
   const token = randomToken();
   const hash = await sha256Hex(token);
@@ -159,11 +157,19 @@ export async function issueMcpToken(env, uid) {
     return { ok: false, code: "store_unavailable" };
   }
 
-  /* Índice é melhor esforço: se esta escrita falhar, o token já emitido
-     segue válido e o teto apenas relaxa até a próxima emissão. */
-  if (!index.includes(hash)) {
-    await writeTokenIndex(kv, uid, [...index, hash]);
+  /* Revoga os tokens anteriores da conta (best effort: o novo já está
+     gravado; falha em limpar o antigo não bloqueia a emissão). */
+  for (const oldHash of index) {
+    if (oldHash === hash) continue;
+    try {
+      await kv.delete(tokenKey(oldHash));
+    } catch {
+      /* ignora — o antigo expira pelo TTL ou na próxima emissão */
+    }
   }
+
+  /* Índice vira sempre só o hash atual. */
+  await writeTokenIndex(kv, uid, [hash]);
 
   return { ok: true, token, createdAt, expiresInSeconds: MCP_TOKEN_TTL_SECONDS };
 }

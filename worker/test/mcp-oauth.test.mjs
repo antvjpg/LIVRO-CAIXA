@@ -326,16 +326,18 @@ test("authorize POST permitir com mxc_ válido → 302 com code e state", async 
   assert.equal(params.state, "xyz");
 });
 
-test("authorize POST com token inválido → 400 e sem code", async () => {
+test("authorize POST com token inválido → re-renderiza consentimento com erro", async () => {
   const { body: client } = await registerClient();
   const page = await getAuthorize(authorizeUrl(client.client_id, CLAUDE_REDIRECT, { challenge: challengeOf(makeVerifier()) }));
   const ticket = ticketFrom(await page.text());
 
   const res = await postAuthorize({ ticket, token: "mxc_invalido", action: "allow" });
-  assert.equal(res.status, 400);
+  assert.equal(res.status, 200, "re-renderiza o form, não página morta");
   assert.equal(res.headers.get("location"), null);
   const html = await res.text();
   assert.ok(html.includes("Token inválido"));
+  /* Um ticket novo está embutido no form para retry sem reiniciar. */
+  assert.ok(ticketFrom(html) && ticketFrom(html) !== ticket, "form deve trazer ticket novo");
 });
 
 test("authorize POST negar → 302 access_denied", async () => {
