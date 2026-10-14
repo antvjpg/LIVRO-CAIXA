@@ -257,8 +257,14 @@ async function verifyBridgeIdToken(request, env) {
   if (!idToken) {
     return { ok: false, body: { error: "Autenticação necessária.", code: "missing_token" }, status: 401, cors: { "access-control-allow-origin": "*" } };
   }
+  let verifyFirebaseIdToken;
   try {
-    const { verifyFirebaseIdToken } = await import("../ai/auth.js");
+    const mod = await import("../ai/auth.js");
+    verifyFirebaseIdToken = mod.verifyFirebaseIdToken;
+  } catch (e) {
+    return { ok: false, body: { error: "Serviço de autenticação indisponível.", code: "auth_unavailable" }, status: 503, cors: { "access-control-allow-origin": "*" } };
+  }
+  try {
     const claims = await verifyFirebaseIdToken(idToken, env);
     return { ok: true, claims };
   } catch (e) {
