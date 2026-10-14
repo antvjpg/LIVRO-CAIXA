@@ -397,9 +397,12 @@ VALOR: ${fmt(bill.amount)}
     const titularFilter = document.getElementById('billTitularFilter')?.value || '';
     const statusFilter = document.getElementById('billsStatusFilter')?.value || '';
     const rows=calendarBillRows();
-    const allInvoiceRows=calendarInvoiceRows(y,m);
+    let allInvoiceRows=[];
+    try { allInvoiceRows = calendarInvoiceRows(y,m); } catch { allInvoiceRows = []; }
     const invoiceRows=titularFilter?allInvoiceRows.map(inv=>({...inv, breakdown:inv.breakdown.filter(b=>b.titular===titularFilter)})).filter(inv=>inv.breakdown.length):allInvoiceRows;
-    const invoiceDisplayTotal = (row) => invoiceDisplayTotalFor(row, titularFilter);
+    const invoiceDisplayTotal = (row) => {
+      try { return invoiceDisplayTotalFor(row, titularFilter); } catch { return 0; }
+    };
 
     const matchBillStatus = (row) => {
       if (!statusFilter) return true;
@@ -594,7 +597,8 @@ VALOR: ${fmt(bill.amount)}
     const m = Number(parts[1]) - 1;
 
     const billRows = calendarBillRows().filter(row => row.dueDate === date);
-    const allInvoices = calendarInvoiceRows(y, m);
+    let allInvoices = [];
+    try { allInvoices = calendarInvoiceRows(y, m); } catch { allInvoices = []; }
     const titularFilter = document.getElementById('billTitularFilter')?.value || '';
     const invoiceRows = titularFilter
       ? allInvoices.map(inv => ({
