@@ -122,6 +122,14 @@ export default {
 async function handleFetch(request, env) {
   const url = new URL(request.url);
     const origin = request.headers.get("Origin") || "";
+
+    /* OAuth paths (incl. /mcp/auth-code, /mcp/connect-claude) usam seu
+       próprio CORS (OAUTH_CORS = *), inclusive para OPTIONS preflight.
+       Precisam ser despachados ANTES do middleware de CORS principal. */
+    if (isOAuthPath(url.pathname)) {
+      return handleOAuthRequest(request, env, { isRateLimited });
+    }
+
     const cors = corsHeaders(origin, env);
 
     if (request.method === "OPTIONS") {
@@ -349,16 +357,6 @@ async function handleFetch(request, env) {
         return json({ error: "Este token pertence a outra conta.", code: revoked.code }, 403, cors);
       }
       return json({ ok: true, revoked: revoked.revoked }, 200, cors);
-    }
-
-    /* ---------------------------------------------------------------- */
-    /* OAuth 2.1 da ponte (AS + resource server): discovery RFC 9728/   */
-    /* 8414, DCR, authorize (consentimento colando o mxc_) e token      */
-    /* (code+PKCE S256, refresh com rotação). Habilita o "Entrar agora" */
-    /* do claude.ai sem depender do beta de headers.                    */
-    /* ---------------------------------------------------------------- */
-    if (isOAuthPath(url.pathname)) {
-      return handleOAuthRequest(request, env, { isRateLimited });
     }
 
     if (url.pathname !== "/ai") {
