@@ -283,7 +283,8 @@
     openModal('panelBillLaunch');
   }
   async function launchBill(bill, monthKey, selectedBankId = null){
-    if(!currentUser || billGeneratedForMonth(bill,monthKey)) return;
+    if(!currentUser) { alert('Sessão expirada. Entre novamente para lançar.'); return; }
+    if(billGeneratedForMonth(bill,monthKey)) { alert('Esta conta já foi lançada este mês.'); return; }
     if (bill.bank === 'a-definir' && !selectedBankId) { openBillLaunchPanel(bill, monthKey); return; }
     if (!confirm(`Confirmar lançamento de ${bill.name} no Livro-Caixa?`)) return;
     const [year,month] = monthKey.split('-').map(Number);
