@@ -547,9 +547,7 @@ async function authorizePost(request, env) {
     await kvDelete(kv, ticketKey(ticket));
     return redirectError(record.redirect_uri, "access_denied", record.state, "O usuário negou o acesso.");
   }
-  if (form.action !== "allow") {
-    return htmlErrorPage("Requisição inválida", "Ação desconhecida.");
-  }
+  /* Enter no campo de token não envia o botão → action ausente = allow. */
 
   const token = typeof form.token === "string" ? form.token.trim() : "";
   const resolved = token ? await resolveMcpToken(env, token) : null;
