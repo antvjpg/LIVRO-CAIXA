@@ -1528,10 +1528,12 @@ receiptAIResponseText = '';
   document.getElementById('purchaseValue').addEventListener('input', () => { if (document.getElementById('purchaseType')?.value === 'parcelado') { purchaseCalcMode = 'total'; recalcInstallmentFromTotal(); } });
   document.getElementById('purchaseInstallments').addEventListener('input', recalcFromCount);
   window.recordInvoicePayment = async function(cardId, closingPeriodKey, titular, totalAmount, paymentAmount) {
+    if (!currentUser) { alert('Sessão expirada. Entre novamente para lançar.'); return; }
     const card = cards.find(c => c.id === cardId);
-    if (!card) return;
+    if (!card) { alert('Cartão não encontrado.'); return; }
     const amount = Number(paymentAmount);
     if (!(amount > 0)) { alert('Informe um valor de pagamento válido.'); return; }
+    if (!window.LivroCaixaCardEngineV3) { alert('Motor de cartões não carregado. Recarregue a página.'); return; }
     const validation = window.LivroCaixaCardEngineV3.validatePaymentForTitular(
       cardId,
       closingPeriodKey,
