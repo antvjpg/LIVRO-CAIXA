@@ -280,28 +280,29 @@ async function limited(request, env, deps, prefix) {
 /* ------------------------------------------------------------------ */
 
 function htmlPage(title, bodyHtml, status = 200) {
-  return new Response(`<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; form-action 'self'">
-<title>${escapeHtml(title)}</title>
-<style>
-body{font-family:system-ui,-apple-system,sans-serif;max-width:26rem;margin:3rem auto;padding:0 1rem;color:#1a1a1a;line-height:1.5}
-h1{font-size:1.25rem}
-.bole{background:#f4f6f8;border:1px solid #d8dee4;border-radius:8px;padding:1rem;margin:1rem 0}
-.erro{background:#fdecea;border:1px solid #f5c6c2;color:#8a1f11;padding:.75rem 1rem;border-radius:8px}
-label{display:block;margin:1rem 0 .35rem;font-weight:600}
-input[type=password]{width:100%;padding:.6rem .7rem;border:1px solid #c9d1d9;border-radius:6px;font-size:1rem;box-sizing:border-box}
-button{margin-top:1rem;margin-right:.5rem;padding:.6rem 1.1rem;border-radius:6px;border:1px solid #0b5fff;background:#0b5fff;color:#fff;font-size:1rem;cursor:pointer}
-button.secundario{background:#fff;color:#1a1a1a;border-color:#c9d1d9}
-.rodape{font-size:.85rem;color:#57606a;margin-top:1.25rem}
-</style>
-</head>
-<body>
-${bodyHtml}
-</body>
+return new Response(`<!doctype html>
+ <html lang="pt-BR">
+ <head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; form-action 'self'">
+ <title>${escapeHtml(title)}</title>
+ <style>
+ body{font-family:system-ui,-apple-system,sans-serif;max-width:26rem;margin:3rem auto;padding:0 1rem;color:#1a1a1a;line-height:1.5}
+ h1{font-size:1.25rem}
+ .bole{background:#f4f6f8;border:1px solid #d8dee4;border-radius:8px;padding:1rem;margin:1rem 0}
+ .erro{background:#fdecea;border:1px solid #f5c6c2;color:#8a1f11;padding:.75rem 1rem;border-radius:8px}
+ label{display:block;margin:1rem 0 .35rem;font-weight:600}
+ input[type=password]{width:100%;padding:.6rem .7rem;border:1px solid #c9d1d9;border-radius:6px;font-size:1rem;box-sizing:border-box}
+ button{margin-top:1rem;margin-right:.5rem;padding:.6rem 1.1rem;border-radius:6px;border:1px solid #0b5fff;background:#0b5fff;color:#fff;font-size:1rem;cursor:pointer}
+ button.secundario{background:#fff;color:#1a1a1a;border-color:#c9d1d9}
+ button:disabled{opacity:.5;cursor:not-allowed}
+ .rodape{font-size:.85rem;color:#57606a;margin-top:1.25rem}
+ </style>
+ </head>
+ <body>
+ ${bodyHtml}
+ </body>
 </html>`,
     {
       status,
@@ -324,21 +325,31 @@ function renderConsentPage({ clientName, redirectUri, scope, ticket, error, stat
   return htmlPage(
     "LIVRO-CAIXA — Autorização",
     `<h1>Conexão externa (MCP)</h1>
-<div class="bole">
-<p><strong>${escapeHtml(clientName)}</strong> quer acessar dados do seu LIVRO-CAIXA.</p>
-<p>Aplicativo: <strong>${escapeHtml(hostname)}</strong></p>
-<p>Permissão: somente leitura do snapshot financeiro (${escapeHtml(scope)}). Nada será criado, editado ou apagado.</p>
-</div>
-${erroHtml}
-<form method="post" action="/authorize">
-<input type="hidden" name="ticket" value="${escapeHtml(ticket)}">
-<label for="token">Token de acesso</label>
-<p style="margin:.25rem 0;font-size:.9rem;color:#57606a">Cole o token gerado no app: <em>Perfil → Conexão externa (MCP) → Gerar token de acesso</em> (começa com <code>mxc_</code>).</p>
-<input id="token" name="token" type="password" autocomplete="off" spellcheck="false" placeholder="mxc_…" required>
-<button type="submit" name="action" value="allow">Permitir</button>
-<button type="submit" name="action" value="deny" class="secundario">Negar</button>
-</form>
-<p class="rodape">Somente leitura. Revogue o token no app a qualquer momento para cortar o acesso (vale também para esta conexão).</p>`,
+ <div class="bole">
+ <p><strong>${escapeHtml(clientName)}</strong> quer acessar dados do seu LIVRO-CAIXA.</p>
+ <p>Aplicativo: <strong>${escapeHtml(hostname)}</strong></p>
+ <p>Permissão: somente leitura do snapshot financeiro (${escapeHtml(scope)}). Nada será criado, editado ou apagado.</p>
+ </div>
+ ${erroHtml}
+ <form method="post" action="/authorize">
+ <input type="hidden" name="ticket" value="${escapeHtml(ticket)}">
+ <label for="token">Token de acesso</label>
+ <p style="margin:.25rem 0;font-size:.9rem;color:#57606a">Cole o token gerado no app: <em>Perfil → Conexão externa (MCP) → Gerar token de acesso</em> (começa com <code>mxc_</code>).</p>
+ <input id="token" name="token" type="password" autocomplete="off" spellcheck="false" placeholder="mxc_…" required>
+ <button type="submit" name="action" value="allow">Permitir</button>
+ <button type="submit" name="action" value="deny" class="secundario">Negar</button>
+ </form>
+ <p class="rodape">Somente leitura. Revogue o token no app a qualquer momento para cortar o acesso (vale também para esta conexão).</p>
+ <script>
+ (function(){
+   var form = document.querySelector('form');
+   if(!form) return;
+   var btns = form.querySelectorAll('button[type=submit]');
+   form.addEventListener('submit', function(){
+     btns.forEach(function(b){ b.disabled = true; b.textContent = b.value==='allow' ? 'Permitindo...' : 'Negando...'; });
+   });
+ })();
+ </script>`,
     status
   );
 }
