@@ -810,32 +810,36 @@ export async function handleToken(request, env) {
    por um código curto acc_ (TTL 5 min, uso único) para abrir o
    consentimento já preenchido e auto-submeter "Permitir". */
 export async function handleAuthCode(request, env) {
-  if (request.method !== "POST") return methodNotAllowed();
+  try {
+    if (request.method !== "POST") return methodNotAllowed();
 
-  const auth = await verifyBridgeIdToken(request, env);
-  if (!auth.ok) return json(auth.body, auth.status, auth.cors);
+    const auth = await verifyBridgeIdToken(request, env);
+    if (!auth.ok) return json(auth.body, auth.status, auth.cors);
 
-  const uid = auth.claims.sub;
-  const kv = kvOf(env);
-  if (!kv) return oauthError("temporarily_unavailable", "Armazenamento indisponível.", 503);
+    const uid = auth.claims.sub;
+    const kv = kvOf(env);
+    if (!kv) return oauthError("temporarily_unavailable", "Armazenamento indisponível.", 503);
 
-  /* Resolve o mxc_ atual do usuário (único por conta). */
-  const tokens = await loadUserMcpTokens(env, uid);
-  if (!tokens || tokens.length === 0) {
-    return json({ error: "Nenhum token mxc_ ativo. Gere um em Perfil → Conexão externa.", code: "no_mcp_token" }, 400);
+    /* Resolve o mxc_ atual do usuário (único por conta). */
+    const tokens = await loadUserMcpTokens(env, uid);
+    if (!tokens || tokens.length === 0) {
+      return json({ error: "Nenhum token mxc_ ativo. Gere um em Perfil → Conexão externa.", code: "no_mcp_token" }, 400);
+    }
+    const mxc = tokens[0];
+
+    const code = `acc_${randomB64Url(24)}`;
+    const stored = await kvPutJson(
+      kv,
+      accKey(code),
+      { uid, mxc },
+      ACC_TTL_SECONDS
+    );
+    if (!stored) return oauthError("temporarily_unavailable", "Armazenamento indisponível.", 503);
+
+    return jsonResponse({ code }, 200);
+  } catch (e) {
+    return jsonResponse({ error: "Erro interno", code: "internal_error", detail: String(e?.message || e) }, 500);
   }
-  const mxc = tokens[0];
-
-  const code = `acc_${randomB64Url(24)}`;
-  const stored = await kvPutJson(
-    kv,
-    accKey(code),
-    { uid, mxc },
-    ACC_TTL_SECONDS
-  );
-  if (!stored) return oauthError("temporarily_unavailable", "Armazenamento indisponível.", 503);
-
-  return jsonResponse({ code }, 200);
 }
 
 /* /mcp/connect-claude — abre o fluxo OAuth do claude.ai já com acc_.
