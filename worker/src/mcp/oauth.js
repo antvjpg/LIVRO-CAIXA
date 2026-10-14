@@ -32,7 +32,6 @@
 
 import { resolveMcpToken } from "./store.js";
 import { readJsonBody } from "../shared/validation.js";
-import { verifyFirebaseIdToken } from "../ai/auth.js";
 
 const DEFAULT_ISSUER = "https://livro-caixa-ai.livro-caixa-ai.workers.dev";
 /* Access token OAuth: 30 dias (mesmo prazo do mxc_). App pessoal de
@@ -259,6 +258,7 @@ async function verifyBridgeIdToken(request, env) {
     return { ok: false, body: { error: "Autenticação necessária.", code: "missing_token" }, status: 401, cors: { "access-control-allow-origin": "*" } };
   }
   try {
+    const { verifyFirebaseIdToken } = await import("../ai/auth.js");
     const claims = await verifyFirebaseIdToken(idToken, env);
     return { ok: true, claims };
   } catch (e) {
