@@ -1527,102 +1527,107 @@ receiptAIResponseText = '';
   document.getElementById('purchaseInstallmentValue').addEventListener('input', () => { purchaseCalcMode = 'installment'; recalcTotalFromInstallment(); });
   document.getElementById('purchaseValue').addEventListener('input', () => { if (document.getElementById('purchaseType')?.value === 'parcelado') { purchaseCalcMode = 'total'; recalcInstallmentFromTotal(); } });
   document.getElementById('purchaseInstallments').addEventListener('input', recalcFromCount);
-  window.recordInvoicePayment = async function(cardId, closingPeriodKey, titular, totalAmount, paymentAmount) {
-    if (!currentUser) { alert('Sessão expirada. Entre novamente para lançar.'); return; }
-    const card = cards.find(c => c.id === cardId);
-    if (!card) { alert('Cartão não encontrado.'); return; }
-    const amount = Number(paymentAmount);
-    if (!(amount > 0)) { alert('Informe um valor de pagamento válido.'); return; }
-    if (!window.LivroCaixaCardEngineV3) { alert('Motor de cartões não carregado. Recarregue a página.'); return; }
-    const validation = window.LivroCaixaCardEngineV3.validatePaymentForTitular(
-      cardId,
-      closingPeriodKey,
-      titular,
-      amount,
-      purchases,
-      cards,
-      invoiceLaunches
-    );
+  window.recordInvoicePayment = async function(cardId, closingPeriodKey, titular, totalAmount, paymentAmount, btn=null) {
+    if(btn){ btn.disabled=true; btn.textContent='Lançando...'; }
+    try {
+      if (!currentUser) { alert('Sessão expirada. Entre novamente para lançar.'); return; }
+      const card = cards.find(c => c.id === cardId);
+      if (!card) { alert('Cartão não encontrado.'); return; }
+      const amount = Number(paymentAmount);
+      if (!(amount > 0)) { alert('Informe um valor de pagamento válido.'); return; }
+      if (!window.LivroCaixaCardEngineV3) { alert('Motor de cartões não carregado. Recarregue a página.'); return; }
+      const validation = window.LivroCaixaCardEngineV3.validatePaymentForTitular(
+        cardId,
+        closingPeriodKey,
+        titular,
+        amount,
+        purchases,
+        cards,
+        invoiceLaunches
+      );
 
-    if (!validation.valid) {
-      if (validation.reason === 'invalid_amount') {
-        alert('Informe um valor de pagamento válido.');
-      } else if (validation.reason === 'empty_invoice') {
-        alert('Não há saldo de fatura para este titular.');
-      } else if (validation.reason === 'payment_exceeds_titular_invoice') {
-        alert(`O valor não pode ser maior que o restante (${fmt(validation.remaining)}).`);
-      } else {
-        alert('Não foi possível validar este pagamento.');
-      }
-      return;
-    }
-
-    const launchId = invoiceLaunchId(cardId, closingPeriodKey, titular);
-    const existing = invoiceLaunches.find(x => x.id === launchId);
-    const alreadyPaid = validation.alreadyPaid;
-    const remaining = validation.remaining;
-    const dueDate = invoiceDueDateForPeriod(card, closingPeriodKey);
-    const entryId = 'e' + Date.now() + Math.random().toString(36).slice(2, 7);
-    const willBeFullyPaid = amount + 0.004 >= remaining;
-    const entry = { id: entryId, date: dueDate, desc: `Fatura ${card.name}${titular && titular !== 'Sem titular' ? ' — ' + titular : ''}${willBeFullyPaid ? '' : ' (parcial)'}`, bank: card.bank || '', category: card.category || categories[0]?.id || '', amount, type: 'out', invoiceLaunchId: launchId };
-
-    // O total pagável do período inclui o saldo anterior já vencido, então o
-    // pagamento é distribuído entre os períodos anteriores (mais antigo
-    // primeiro) e o período atual. Uma única entrada é criada no Livro-Caixa;
-    // cada período recebe seu registro em invoiceLaunches apontando para o
-    // mesmo entryId, o que mantém o rollback consistente.
-    const engineRef = window.LivroCaixaCardEngineV3;
-    let plan = engineRef && typeof engineRef.planInvoicePayment === 'function'
-      ? engineRef.planInvoicePayment(cardId, closingPeriodKey, titular, amount, purchases, cards, invoiceLaunches)
-      : [];
-    if (!Array.isArray(plan) || !plan.length) {
-      plan = [{ periodKey: closingPeriodKey, amount: amount }];
-    }
-
-    const nowIso = new Date().toISOString();
-    const touched = [];
-    plan.forEach(part => {
-      const partId = invoiceLaunchId(cardId, part.periodKey, titular);
-      const launch = invoiceLaunches.find(x => x.id === partId);
-      if (!launch) {
-        invoiceLaunches.push({
-          id: partId,
-          cardId,
-          closingPeriodKey: part.periodKey,
-          titular,
-          payments: [{ entryId, amount: part.amount, date: nowIso }],
-          updatedAt: nowIso
-        });
-        touched.push({ id: partId, wasNew: true, snapshot: null });
+      if (!validation.valid) {
+        if (validation.reason === 'invalid_amount') {
+          alert('Informe um valor de pagamento válido.');
+        } else if (validation.reason === 'empty_invoice') {
+          alert('Não há saldo de fatura para este titular.');
+        } else if (validation.reason === 'payment_exceeds_titular_invoice') {
+          alert(`O valor não pode ser maior que o restante (${fmt(validation.remaining)}).`);
+        } else {
+          alert('Não foi possível validar este pagamento.');
+        }
         return;
       }
-      const snapshot = JSON.parse(JSON.stringify(launch));
-      if (!Array.isArray(launch.payments)) launch.payments = launch.amount ? [{ entryId: launch.entryId, amount: launch.amount, date: launch.launchedAt }] : [];
-      launch.payments.push({ entryId, amount: part.amount, date: nowIso });
-      launch.updatedAt = nowIso;
-      touched.push({ id: partId, wasNew: false, snapshot });
-    });
 
-    entries.push(entry);
-    render(); renderBills();
-    try {
-      await persistAll();
-      const spreadCount = plan.filter(part => part.periodKey !== closingPeriodKey).length;
-      logInfo('Cartões', willBeFullyPaid ? 'Lançar fatura por titular' : 'Pagamento parcial de fatura', 'Sucesso', `${card.name} — ${titular}: ${fmt(amount)} lançado${willBeFullyPaid ? ' (quitado)' : ' (parcial, restam ' + fmt(remaining - amount) + ')'}${spreadCount ? ` · abrangindo ${spreadCount} fatura(s) anterior(es)` : ''}.`, { cardId, closingPeriodKey, titular });
-    } catch (err) {
-      entries = entries.filter(item => item.id !== entryId);
-      touched.forEach(t => {
-        if (t.wasNew) {
-          invoiceLaunches = invoiceLaunches.filter(item => item.id !== t.id);
-        } else {
-          const idx = invoiceLaunches.findIndex(x => x.id === t.id);
-          if (idx >= 0) invoiceLaunches[idx] = t.snapshot;
+      const launchId = invoiceLaunchId(cardId, closingPeriodKey, titular);
+      const existing = invoiceLaunches.find(x => x.id === launchId);
+      const alreadyPaid = validation.alreadyPaid;
+      const remaining = validation.remaining;
+      const dueDate = invoiceDueDateForPeriod(card, closingPeriodKey);
+      const entryId = 'e' + Date.now() + Math.random().toString(36).slice(2, 7);
+      const willBeFullyPaid = amount + 0.004 >= remaining;
+      const entry = { id: entryId, date: dueDate, desc: `Fatura ${card.name}${titular && titular !== 'Sem titular' ? ' — ' + titular : ''}${willBeFullyPaid ? '' : ' (parcial)'}`, bank: card.bank || '', category: card.category || categories[0]?.id || '', amount, type: 'out', invoiceLaunchId: launchId };
+
+      // O total pagável do período inclui o saldo anterior já vencido, então o
+      // pagamento é distribuído entre os períodos anteriores (mais antigo
+      // primeiro) e o período atual. Uma única entrada é criada no Livro-Caixa;
+      // cada período recebe seu registro em invoiceLaunches apontando para o
+      // mesmo entryId, o que mantém o rollback consistente.
+      const engineRef = window.LivroCaixaCardEngineV3;
+      let plan = engineRef && typeof engineRef.planInvoicePayment === 'function'
+        ? engineRef.planInvoicePayment(cardId, closingPeriodKey, titular, amount, purchases, cards, invoiceLaunches)
+        : [];
+      if (!Array.isArray(plan) || !plan.length) {
+        plan = [{ periodKey: closingPeriodKey, amount: amount }];
+      }
+
+      const nowIso = new Date().toISOString();
+      const touched = [];
+      plan.forEach(part => {
+        const partId = invoiceLaunchId(cardId, part.periodKey, titular);
+        const launch = invoiceLaunches.find(x => x.id === partId);
+        if (!launch) {
+          invoiceLaunches.push({
+            id: partId,
+            cardId,
+            closingPeriodKey: part.periodKey,
+            titular,
+            payments: [{ entryId, amount: part.amount, date: nowIso }],
+            updatedAt: nowIso
+          });
+          touched.push({ id: partId, wasNew: true, snapshot: null });
+          return;
         }
+        const snapshot = JSON.parse(JSON.stringify(launch));
+        if (!Array.isArray(launch.payments)) launch.payments = launch.amount ? [{ entryId: launch.entryId, amount: launch.amount, date: launch.launchedAt }] : [];
+        launch.payments.push({ entryId, amount: part.amount, date: nowIso });
+        launch.updatedAt = nowIso;
+        touched.push({ id: partId, wasNew: false, snapshot });
       });
-      logSyncError('lançamento de fatura por titular', err);
-      alert('Não foi possível registrar esse pagamento agora. Verifique sua conexão e tente novamente.');
-    } finally {
+
+      entries.push(entry);
       render(); renderBills();
+      try {
+        await persistAll();
+        const spreadCount = plan.filter(part => part.periodKey !== closingPeriodKey).length;
+        logInfo('Cartões', willBeFullyPaid ? 'Lançar fatura por titular' : 'Pagamento parcial de fatura', 'Sucesso', `${card.name} — ${titular}: ${fmt(amount)} lançado${willBeFullyPaid ? ' (quitado)' : ' (parcial, restam ' + fmt(remaining - amount) + ')'}${spreadCount ? ` · abrangindo ${spreadCount} fatura(s) anterior(es)` : ''}.`, { cardId, closingPeriodKey, titular });
+      } catch (err) {
+        entries = entries.filter(item => item.id !== entryId);
+        touched.forEach(t => {
+          if (t.wasNew) {
+            invoiceLaunches = invoiceLaunches.filter(item => item.id !== t.id);
+          } else {
+            const idx = invoiceLaunches.findIndex(x => x.id === t.id);
+            if (idx >= 0) invoiceLaunches[idx] = t.snapshot;
+          }
+        });
+        logSyncError('lançamento de fatura por titular', err);
+        alert('Não foi possível registrar esse pagamento agora. Verifique sua conexão e tente novamente.');
+      } finally {
+        render(); renderBills();
+      }
+    } finally {
+      if(btn){ btn.disabled=false; btn.textContent='Lançar'; }
     }
   };
   window.launchInvoiceTitular = function(cardId, closingPeriodKey, titular, amount) {

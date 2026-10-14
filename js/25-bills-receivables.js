@@ -42,38 +42,48 @@
     const dueDate = billDueDateForMonth(bill, year, month - 1);
     return billIsOverdue(dueDate) ? 'Atrasado' : 'Pendente';
   }
-  async function markBillPaid(id, monthKey) {
-    const bill = recurringBills.find(b => b.id === id);
-    if (!bill || billGeneratedForMonth(bill, monthKey)) return;
-    if (!Array.isArray(bill.paidMonths)) bill.paidMonths = [];
-    if (!bill.paidMonths.includes(monthKey)) bill.paidMonths.push(monthKey);
+  async function markBillPaid(id, monthKey, btn=null) {
+    if(btn){ btn.disabled=true; btn.textContent='Marcando...'; }
     try {
-      await persistAll();
-      logInfo('Calendário', 'Marcar como pago', 'Sucesso', `${bill.name} marcado como pago sem lançamento (${monthKey}).`);
-    } catch (err) {
-      bill.paidMonths = bill.paidMonths.filter(k => k !== monthKey);
-      logSyncError('marcar conta como paga', err);
-      alert('Não foi possível salvar o status pago. Tente novamente.');
+      const bill = recurringBills.find(b => b.id === id);
+      if (!bill || billGeneratedForMonth(bill, monthKey)) return;
+      if (!Array.isArray(bill.paidMonths)) bill.paidMonths = [];
+      if (!bill.paidMonths.includes(monthKey)) bill.paidMonths.push(monthKey);
+      try {
+        await persistAll();
+        logInfo('Calendário', 'Marcar como pago', 'Sucesso', `${bill.name} marcado como pago sem lançamento (${monthKey}).`);
+      } catch (err) {
+        bill.paidMonths = bill.paidMonths.filter(k => k !== monthKey);
+        logSyncError('marcar conta como paga', err);
+        alert('Não foi possível salvar o status pago. Tente novamente.');
+      } finally {
+        renderBills();
+        renderNotifications();
+      }
     } finally {
-      renderBills();
-      renderNotifications();
+      if(btn){ btn.disabled=false; btn.textContent='Marcar pago'; }
     }
   }
-  async function unmarkBillPaid(id, monthKey) {
-    const bill = recurringBills.find(b => b.id === id);
-    if (!bill) return;
-    const previous = Array.isArray(bill.paidMonths) ? bill.paidMonths.slice() : [];
-    bill.paidMonths = previous.filter(k => k !== monthKey);
+  async function unmarkBillPaid(id, monthKey, btn=null) {
+    if(btn){ btn.disabled=true; btn.textContent='Desmarcando...'; }
     try {
-      await persistAll();
-      logInfo('Calendário', 'Desmarcar pago', 'Sucesso', `${bill.name}: status pago removido (${monthKey}).`);
-    } catch (err) {
-      bill.paidMonths = previous;
-      logSyncError('desmarcar conta paga', err);
-      alert('Não foi possível atualizar o status. Tente novamente.');
+      const bill = recurringBills.find(b => b.id === id);
+      if (!bill) return;
+      const previous = Array.isArray(bill.paidMonths) ? bill.paidMonths.slice() : [];
+      bill.paidMonths = previous.filter(k => k !== monthKey);
+      try {
+        await persistAll();
+        logInfo('Calendário', 'Desmarcar pago', 'Sucesso', `${bill.name}: status pago removido (${monthKey}).`);
+      } catch (err) {
+        bill.paidMonths = previous;
+        logSyncError('desmarcar conta paga', err);
+        alert('Não foi possível atualizar o status. Tente novamente.');
+      } finally {
+        renderBills();
+        renderNotifications();
+      }
     } finally {
-      renderBills();
-      renderNotifications();
+      if(btn){ btn.disabled=false; btn.textContent='Desmarcar pago'; }
     }
   }
 
@@ -282,37 +292,42 @@
     document.getElementById('billLaunchBank').innerHTML = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
     openModal('panelBillLaunch');
   }
-  async function launchBill(billId, monthKey, selectedBankId = null){
-    if(!currentUser) { alert('Sessão expirada. Entre novamente para lançar.'); return; }
-    const bill = recurringBills.find(b => b.id === billId);
-    if (!bill) { alert('Conta não encontrada.'); return; }
-    if(billGeneratedForMonth(bill,monthKey)) { alert('Esta conta já foi lançada este mês.'); return; }
-    if (bill.bank === 'a-definir' && !selectedBankId) { openBillLaunchPanel(bill, monthKey); return; }
-    if (!confirm(`Confirmar lançamento de ${bill.name} no Livro-Caixa?`)) return;
-    const [year,month] = monthKey.split('-').map(Number);
-    const date=billDueDateForMonth(bill,year,month-1);
-    const bankId = selectedBankId || bill.bank;
-    if (!bankId || bankId === 'a-definir') { openBillLaunchPanel(bill, monthKey); return; }
-    const entry={id:'e'+Date.now()+Math.random().toString(36).slice(2,7),date,desc:bill.name,bank:bankId,category:bill.category||'',amount:Number(bill.amount)||0,type:'out',recurringBillId:bill.id};
-    const previousBank = bill.bank;
-    const previousGeneratedMonths = Array.isArray(bill.generatedMonths) ? bill.generatedMonths.slice() : [];
-    entries.push(entry);
-    bill.bank = bankId;
-    bill.generatedMonths=previousGeneratedMonths.slice();
-    bill.generatedMonths.push(monthKey);
-    render(); renderBills();
+  async function launchBill(billId, monthKey, selectedBankId = null, btn=null){
+    if(btn){ btn.disabled=true; btn.textContent='Lançando...'; }
     try {
-      await persistAll();
-      logInfo('Calendário','Lançar no Livro-Caixa','Sucesso',`${bill.name} lançado em ${date}.`,{bankId, recurringBillId: bill.id});
-      closeAllPanels();
-    } catch (err) {
-      entries = entries.filter(item => item.id !== entry.id);
-      bill.bank = previousBank;
-      bill.generatedMonths = previousGeneratedMonths;
-      logSyncError('lançamento de conta', err);
-      alert('Não foi possível confirmar o lançamento no servidor. A conta continua como pendente — verifique sua conexão e tente novamente.');
-    } finally {
+      if(!currentUser) { alert('Sessão expirada. Entre novamente para lançar.'); return; }
+      const bill = recurringBills.find(b => b.id === billId);
+      if (!bill) { alert('Conta não encontrada.'); return; }
+      if(billGeneratedForMonth(bill,monthKey)) { alert('Esta conta já foi lançada este mês.'); return; }
+      if (bill.bank === 'a-definir' && !selectedBankId) { openBillLaunchPanel(bill, monthKey); return; }
+      if (!confirm(`Confirmar lançamento de ${bill.name} no Livro-Caixa?`)) return;
+      const [year,month] = monthKey.split('-').map(Number);
+      const date=billDueDateForMonth(bill,year,month-1);
+      const bankId = selectedBankId || bill.bank;
+      if (!bankId || bankId === 'a-definir') { openBillLaunchPanel(bill, monthKey); return; }
+      const entry={id:'e'+Date.now()+Math.random().toString(36).slice(2,7),date,desc:bill.name,bank:bankId,category:bill.category||'',amount:Number(bill.amount)||0,type:'out',recurringBillId:bill.id};
+      const previousBank = bill.bank;
+      const previousGeneratedMonths = Array.isArray(bill.generatedMonths) ? bill.generatedMonths.slice() : [];
+      entries.push(entry);
+      bill.bank = bankId;
+      bill.generatedMonths=previousGeneratedMonths.slice();
+      bill.generatedMonths.push(monthKey);
       render(); renderBills();
+      try {
+        await persistAll();
+        logInfo('Calendário','Lançar no Livro-Caixa','Sucesso',`${bill.name} lançado em ${date}.`,{bankId, recurringBillId: bill.id});
+        closeAllPanels();
+      } catch (err) {
+        entries = entries.filter(item => item.id !== entry.id);
+        bill.bank = previousBank;
+        bill.generatedMonths = previousGeneratedMonths;
+        logSyncError('lançamento de conta', err);
+        alert('Não foi possível confirmar o lançamento no servidor. A conta continua como pendente — verifique sua conexão e tente novamente.');
+      } finally {
+        render(); renderBills();
+      }
+    } finally {
+      if(btn){ btn.disabled=false; btn.textContent='Lançar'; }
     }
   }
   function billTitularValues() {
@@ -447,8 +462,8 @@ VALOR: ${fmt(bill.amount)}
       const statusClass = row.settled ? 'is-paid' : (row.status === 'Atrasado' ? 'overdue' : '');
       const statusLabel = row.status === 'Pago — não lançado' ? 'Pago' : (row.status === 'Lançado' ? 'Lançado' : row.status);
       const payBtn = row.launched ? '' : (row.paidOnly
-        ? `<button type="button" class="bill-action-btn" onclick="unmarkBillPaid('${b.id}','${key}')">Desmarcar pago</button>`
-        : `<button type="button" class="bill-action-btn" onclick="markBillPaid('${b.id}','${key}')">Marcar pago</button>`);
+        ? `<button type="button" class="bill-action-btn" onclick="unmarkBillPaid('${b.id}','${key}',this)">Desmarcar pago</button>`
+        : `<button type="button" class="bill-action-btn" onclick="markBillPaid('${b.id}','${key}',this)">Marcar pago</button>`);
       const dueLabel = row.dueDate.split('-').reverse().join('/');
       const meta = [
         `Venc. ${dueLabel}`,
@@ -466,7 +481,7 @@ VALOR: ${fmt(bill.amount)}
           <span class="bill-status ${statusClass}">${statusLabel}</span>
         </div>
         <div class="bill-actions commitment-actions">
-          <button type="button" class="bill-action-btn primary-outline" onclick="launchBill('${b.id}','${key}')" ${row.launched ? 'disabled' : ''}>${row.launched ? 'Já lançada' : 'Lançar'}</button>
+          <button type="button" class="bill-action-btn primary-outline" onclick="launchBill('${b.id}','${key}',null,this)" ${row.launched ? 'disabled' : ''}>${row.launched ? 'Já lançada' : 'Lançar'}</button>
           ${payBtn}
           <button type="button" class="bill-action-btn" onclick="openBillShare('${b.id}')">Compartilhar</button>
           <div class="bill-more-wrap">
@@ -503,13 +518,13 @@ VALOR: ${fmt(bill.amount)}
         }
         if (b.status === 'Pago' && b.paidOnly) {
           return `
-            <button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${cid}','${pk}','${safeTitular}',${total},${total})">Lançar</button>
+            <button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${cid}','${pk}','${safeTitular}',${total},${total},this)">Lançar</button>
             <button type="button" class="bill-action-btn" onclick="unmarkInvoicePaidOnly('${cid}','${pk}','${safeTitular}')">Desmarcar pago</button>
             <button type="button" class="bill-action-btn" onclick="shareInvoiceTitular('${cid}','${pk}','${safeTitular}',${total})">Compartilhar</button>
             <button type="button" class="bill-action-btn bill-more-button" disabled aria-hidden="true">•••</button>`;
         }
         return `
-            <button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${cid}','${pk}','${safeTitular}',${total},${remaining})">Lançar</button>
+            <button type="button" class="bill-action-btn primary-outline" onclick="recordInvoicePayment('${cid}','${pk}','${safeTitular}',${total},${remaining},this)">Lançar</button>
             <button type="button" class="bill-action-btn" onclick="markInvoicePaidOnly('${cid}','${pk}','${safeTitular}',${total})">Marcar pago</button>
             <button type="button" class="bill-action-btn" onclick="shareInvoiceTitular('${cid}','${pk}','${safeTitular}',${total})">Compartilhar</button>
             <button type="button" class="bill-action-btn bill-more-button" disabled aria-hidden="true">•••</button>`;
@@ -592,6 +607,7 @@ VALOR: ${fmt(bill.amount)}
   }
 
   function openBillDayPanel(date) {
+    closeBillDayPanel();
     const parts = String(date).split('-');
     const y = Number(parts[0]);
     const m = Number(parts[1]) - 1;
