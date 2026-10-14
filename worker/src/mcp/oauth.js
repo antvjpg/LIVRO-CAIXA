@@ -900,6 +900,9 @@ export function isOAuthPath(pathname) {
 }
 
 export async function handleOAuthRequest(request, env, deps) {
+  if (request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: OAUTH_CORS });
+  }
   const url = new URL(request.url);
   const path = url.pathname;
 
