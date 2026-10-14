@@ -806,7 +806,7 @@ export async function handleToken(request, env) {
 export async function handleAuthCode(request, env) {
   if (request.method !== "POST") return methodNotAllowed();
 
-  const auth = await authenticateBridgeRequest(request, env);
+  const auth = await verifyBridgeIdToken(request, env);
   if (!auth.ok) return json(auth.body, auth.status, auth.cors);
 
   const uid = auth.claims.sub;
