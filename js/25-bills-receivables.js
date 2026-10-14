@@ -282,8 +282,10 @@
     document.getElementById('billLaunchBank').innerHTML = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
     openModal('panelBillLaunch');
   }
-  async function launchBill(bill, monthKey, selectedBankId = null){
+  async function launchBill(billId, monthKey, selectedBankId = null){
     if(!currentUser) { alert('Sessão expirada. Entre novamente para lançar.'); return; }
+    const bill = recurringBills.find(b => b.id === billId);
+    if (!bill) { alert('Conta não encontrada.'); return; }
     if(billGeneratedForMonth(bill,monthKey)) { alert('Esta conta já foi lançada este mês.'); return; }
     if (bill.bank === 'a-definir' && !selectedBankId) { openBillLaunchPanel(bill, monthKey); return; }
     if (!confirm(`Confirmar lançamento de ${bill.name} no Livro-Caixa?`)) return;
