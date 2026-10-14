@@ -32,6 +32,7 @@
 
 import { resolveMcpToken } from "./store.js";
 import { readJsonBody } from "../shared/validation.js";
+import { json } from "../shared/http.js";
 
 const DEFAULT_ISSUER = "https://livro-caixa-ai.livro-caixa-ai.workers.dev";
 /* Access token OAuth: 30 dias (mesmo prazo do mxc_). App pessoal de
