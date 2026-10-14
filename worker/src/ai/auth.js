@@ -59,8 +59,11 @@ function textToBytes(text) {
 /* force=true ignora o cache (rotação de chaves do Firebase): quando o
    token traz um kid desconhecido, buscamos os JWKS de novo antes de
    rejeitar. O fetch só acontece nesses casos, não em todo request. */
+function hasCache() {
+  return typeof caches !== "undefined" && caches.default;
+}
 async function getJwks(force = false) {
-  if (!force) {
+  if (!force && hasCache()) {
     try {
       const cache = caches.default;
       const hit = await cache.match(JWKS_CACHE_URL);
@@ -76,18 +79,20 @@ async function getJwks(force = false) {
   if (!response.ok) throw new Error("jwks_unavailable");
 
   const data = await response.json();
-  try {
-    await caches.default.put(
-      JWKS_CACHE_URL,
-      new Response(JSON.stringify(data), {
-        headers: {
-          "content-type": "application/json",
-          "cache-control": "public, max-age=3600"
-        }
-      })
-    );
-  } catch (cacheError) {
-    /* cache é opcional */
+  if (hasCache()) {
+    try {
+      await caches.default.put(
+        JWKS_CACHE_URL,
+        new Response(JSON.stringify(data), {
+          headers: {
+            "content-type": "application/json",
+            "cache-control": "public, max-age=3600"
+          }
+        })
+      );
+    } catch (cacheError) {
+      /* cache é opcional */
+    }
   }
   return data;
 }
@@ -178,3 +183,5 @@ async function verifyFirebaseIdToken(token, env) {
 
   return payload;
 }
+
+export { verifyFirebaseIdToken };
