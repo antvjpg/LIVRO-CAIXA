@@ -223,6 +223,54 @@
     }
   }
 
+  /* Conecta no claude.ai via fluxo "um clique":
+     1) Pede código curto acc_ ao Worker (autenticado com ID token do Firebase)
+     2) Abre /mcp/connect-claude?acc=acc_... — Worker faz DCR e redireciona para /authorize
+        que auto-submete "Permitir" com o mxc_
+     3) Redirect volta pro claude.ai */
+  async function connectClaude() {
+    const base = workerBase();
+    if (!base) {
+      setStatus('Ponte não configurada.', 'error');
+      return;
+    }
+    const user = currentUser();
+    if (!user) {
+      setStatus('Entre na sua conta para usar a conexão externa.', 'error');
+      return;
+    }
+    let idToken = '';
+    try {
+      idToken = await user.getIdToken();
+    } catch (err) {
+      setStatus('Não foi possível validar a sessão.', 'error');
+      return;
+    }
+    try {
+      setStatus('Preparando conexão...', 'info');
+      const res = await fetch(`${base}/mcp/auth-code`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${idToken}` }
+      });
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        setStatus(errBody.error || `Falha ao preparar conexão (${res.status}).`, 'error');
+        return;
+      }
+      const { code } = await res.json();
+      if (!code || !code.startsWith('acc_')) {
+        setStatus('Código de conexão inválido.', 'error');
+        return;
+      }
+      /* Abre /mcp/connect-claude?acc=... — Worker faz DCR e redireciona para /authorize auto-submit. */
+      const connectUrl = `${base}/mcp/connect-claude?acc=${encodeURIComponent(code)}`;
+      setStatus('Abrindo tela de autorização...', 'info');
+      window.open(connectUrl, '_blank', 'noopener,noreferrer');
+    } catch (err) {
+      setStatus(`Erro ao conectar: ${err.message || 'erro desconhecido.'}`, 'error');
+    }
+  }
+
   /* Depósito periódico enquanto há sessão: mantém o TTL de 1 h sempre
      preenchido sem nenhuma ação do usuário. */
   function scheduleAutoDeposit() {
@@ -251,6 +299,7 @@
     on('btnMcpBridgeCreateToken', () => { createToken(); });
     on('btnMcpBridgeCopyToken', () => { copyToken(); });
     on('btnMcpBridgeRevokeToken', () => { revokeToken(); });
+    on('btnMcpBridgeConnectClaude', () => { connectClaude(); });
   }
 
   try {

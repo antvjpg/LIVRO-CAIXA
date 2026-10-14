@@ -215,6 +215,28 @@ export async function revokeMcpToken(env, uid, token) {
   return { ok: true, revoked: true };
 }
 
+/* Lista todos os mxc_ ativos do usuário (mais novo primeiro). */
+export async function listUserMcpTokens(env, uid) {
+  const kv = env.RATE_LIMIT_KV || null;
+  if (!kv) return [];
+  const index = await readTokenIndex(kv, uid);
+  if (!index.length) return [];
+  const out = [];
+  for (const hash of index) {
+    const raw = await kv.get(tokenKey(hash));
+    if (!raw) continue;
+    try {
+      const rec = JSON.parse(raw);
+      if (rec && rec.token && rec.token.startsWith("mxc_")) {
+        out.push(rec.token);
+      }
+    } catch {
+      /* ignora registro corrompido */
+    }
+  }
+  return out;
+}
+
 /* Extrai e resolve o token Bearer de uma requisição /mcp. */
 export async function authenticateMcp(request, env) {
   const header = request.headers.get("Authorization") || "";

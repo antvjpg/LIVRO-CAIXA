@@ -32,6 +32,7 @@
 
 import { resolveMcpToken } from "./store.js";
 import { readJsonBody } from "../shared/validation.js";
+import { verifyFirebaseIdToken } from "../ai/auth.js";
 
 const DEFAULT_ISSUER = "https://livro-caixa-ai.livro-caixa-ai.workers.dev";
 /* Access token OAuth: 30 dias (mesmo prazo do mxc_). App pessoal de
@@ -46,6 +47,9 @@ const CODE_TTL_SECONDS = 300;
    mxc_ no app e voltar — 5 min estourava na prática. 30 min cobre o
    fluxo sem criar janela longa de reuso (é uso único mesmo). */
 const TICKET_TTL_SECONDS = 1800;
+/* Código de auto-conexão (acc_): app troca mxc_ por código curto,
+   válido 5 min, uso único — elimina copy-paste no consentimento. */
+const ACC_TTL_SECONDS = 300;
 const OA_TOKEN_PREFIX = "oat_";
 const CLIENT_PREFIX = "mcpcli_";
 const DEFAULT_OAUTH_RATE_LIMIT = 30;
@@ -118,6 +122,9 @@ function atKey(hash) {
 }
 function rtKey(hash) {
   return `mcp-oa:rt:${hash}`;
+}
+function accKey(code) {
+  return `mcp-oa:acc:${code}`;
 }
 
 function expIn(ttlSeconds) {
@@ -243,6 +250,28 @@ function logAuthorize(outcome) {
   console.log(JSON.stringify({ event: "mcp_oa_authorize", outcome }));
 }
 
+/* Verifica ID token do Firebase no header Authorization: Bearer <id_token>.
+   Devolve { ok: true, claims } ou { ok: false, body, status, cors }. */
+async function verifyBridgeIdToken(request, env) {
+  const authHeader = request.headers.get("Authorization") || "";
+  const idToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+  if (!idToken) {
+    return { ok: false, body: { error: "Autenticação necessária.", code: "missing_token" }, status: 401, cors: { "access-control-allow-origin": "*" } };
+  }
+  try {
+    const claims = await verifyFirebaseIdToken(idToken, env);
+    return { ok: true, claims };
+  } catch (e) {
+    return { ok: false, body: { error: "Sessão inválida ou expirada. Entre novamente.", code: "invalid_token" }, status: 401, cors: { "access-control-allow-origin": "*" } };
+  }
+}
+
+/* Carrega todos os mxc_ ativos do usuário (ordem: mais novo primeiro). */
+async function loadUserMcpTokens(env, uid) {
+  const { listUserMcpTokens } = await import("./store.js");
+  return listUserMcpTokens(env, uid);
+}
+
 function methodNotAllowed() {
   return jsonResponse({ error: "Método não permitido.", code: "method_not_allowed" }, 405);
 }
@@ -314,7 +343,7 @@ function htmlErrorPage(title, message, status = 400) {
   return htmlPage(title, `<h1>${escapeHtml(title)}</h1><p class="erro">${escapeHtml(message)}</p>`, status);
 }
 
-function renderConsentPage({ clientName, redirectUri, scope, ticket, error, status = 200 }) {
+function renderConsentPage({ clientName, redirectUri, scope, ticket, error, status = 200, autoAllow, autoToken }) {
   let hostname = "(desconhecido)";
   try {
     hostname = new URL(redirectUri).hostname;
@@ -322,6 +351,11 @@ function renderConsentPage({ clientName, redirectUri, scope, ticket, error, stat
     /* redirecionamento já validado antes; fallback defensivo */
   }
   const erroHtml = error ? `<p class="erro">${escapeHtml(error)}</p>` : "";
+  const autoHtml = autoAllow && autoToken
+    ? `<input type="hidden" name="token" value="${escapeHtml(autoToken)}"><script>document.querySelector('form').submit();</script>`
+    : `<label for="token">Token de acesso</label>
+ <p style="margin:.25rem 0;font-size:.9rem;color:#57606a">Cole o token gerado no app: <em>Perfil → Conexão externa (MCP) → Gerar token de acesso</em> (começa com <code>mxc_</code>).</p>
+ <input id="token" name="token" type="password" autocomplete="off" spellcheck="false" placeholder="mxc_…" required>`;
   return htmlPage(
     "LIVRO-CAIXA — Autorização",
     `<h1>Conexão externa (MCP)</h1>
@@ -333,10 +367,8 @@ function renderConsentPage({ clientName, redirectUri, scope, ticket, error, stat
  ${erroHtml}
  <form method="post" action="/authorize">
  <input type="hidden" name="ticket" value="${escapeHtml(ticket)}">
- <label for="token">Token de acesso</label>
- <p style="margin:.25rem 0;font-size:.9rem;color:#57606a">Cole o token gerado no app: <em>Perfil → Conexão externa (MCP) → Gerar token de acesso</em> (começa com <code>mxc_</code>).</p>
- <input id="token" name="token" type="password" autocomplete="off" spellcheck="false" placeholder="mxc_…" required>
- <button type="submit" name="action" value="allow">Permitir</button>
+ ${autoHtml}
+ <button type="submit" name="action" value="allow">${autoAllow ? "Conectando..." : "Permitir"}</button>
  <button type="submit" name="action" value="deny" class="secundario">Negar</button>
  </form>
  <p class="rodape">Somente leitura. Revogue o token no app a qualquer momento para cortar o acesso (vale também para esta conexão).</p>
@@ -467,6 +499,7 @@ async function authorizeGet(request, env) {
   const state = url.searchParams.get("state") || "";
   const scope = url.searchParams.get("scope") || SUPPORTED_SCOPE;
   const resourceParam = url.searchParams.get("resource");
+  const accCode = url.searchParams.get("acc") || "";
 
   /* client_id/redirect_uri inválidos NUNCA redirecionam (anti open
      redirect): só depois que os dois batem é que erros vão no 302. */
@@ -492,6 +525,48 @@ async function authorizeGet(request, env) {
 
   const kv = kvOf(env);
   if (!kv) return htmlErrorPage("Indisponível", "Armazenamento da ponte indisponível. Tente novamente em instantes.");
+
+  /* Código de auto-conexão (acc_): valida, consome e auto-submete "Permitir". */
+  if (accCode) {
+    const record = await kvGetJson(kv, accKey(accCode));
+    if (!record) {
+      return htmlErrorPage("Código inválido", "Este código de conexão expirou ou já foi usado. Gere outro no app.");
+    }
+    if (isExpired(record)) {
+      await kvDelete(kv, accKey(accCode));
+      return htmlErrorPage("Código expirado", "Este código de conexão expirou (5 minutos). Gere outro no app.");
+    }
+    /* Consome o código de uso único. */
+    await kvDelete(kv, accKey(accCode));
+
+    const ticket = randomB64Url(24);
+    const stored = await kvPutJson(
+      kv,
+      ticketKey(ticket),
+      {
+        client_id: clientId,
+        client_name: client.client_name,
+        redirect_uri: redirectUri,
+        challenge,
+        state,
+        scope,
+        resource,
+        exp: expIn(TICKET_TTL_SECONDS)
+      },
+      TICKET_TTL_SECONDS
+    );
+    if (!stored) return htmlErrorPage("Indisponível", "Armazenamento da ponte indisponível. Tente novamente em instantes.");
+
+    /* Renderiza página que auto-submete "Permitir" com o mxc_ do acc_. */
+    return renderConsentPage({
+      clientName: client.client_name,
+      redirectUri,
+      scope,
+      ticket,
+      autoAllow: true,
+      autoToken: record.mxc
+    });
+  }
 
   const ticket = randomB64Url(24);
   const stored = await kvPutJson(
@@ -725,6 +800,77 @@ export async function handleToken(request, env) {
   return oauthError("unsupported_grant_type", "grant_type não suportado.");
 }
 
+/* /mcp/auth-code — app autenticado (Firebase ID token) troca o mxc_
+   por um código curto acc_ (TTL 5 min, uso único) para abrir o
+   consentimento já preenchido e auto-submeter "Permitir". */
+export async function handleAuthCode(request, env) {
+  if (request.method !== "POST") return methodNotAllowed();
+
+  const auth = await authenticateBridgeRequest(request, env);
+  if (!auth.ok) return json(auth.body, auth.status, auth.cors);
+
+  const uid = auth.claims.sub;
+  const kv = kvOf(env);
+  if (!kv) return oauthError("temporarily_unavailable", "Armazenamento indisponível.", 503);
+
+  /* Resolve o mxc_ atual do usuário (único por conta). */
+  const tokens = await loadUserMcpTokens(env, uid);
+  if (!tokens || tokens.length === 0) {
+    return json({ error: "Nenhum token mxc_ ativo. Gere um em Perfil → Conexão externa.", code: "no_mcp_token" }, 400);
+  }
+  const mxc = tokens[0];
+
+  const code = `acc_${randomB64Url(24)}`;
+  const stored = await kvPutJson(
+    kv,
+    accKey(code),
+    { uid, mxc },
+    ACC_TTL_SECONDS
+  );
+  if (!stored) return oauthError("temporarily_unavailable", "Armazenamento indisponível.", 503);
+
+  return jsonResponse({ code }, 200);
+}
+
+/* /mcp/connect-claude — abre o fluxo OAuth do claude.ai já com acc_.
+   1) Valida acc_ (criado pelo app via /mcp/auth-code)
+   2) Faz DCR para o claude.ai (redirect_uri fixa)
+   3) Redireciona para /authorize com client_id do DCR + acc_ */
+export async function handleConnectClaude(request, env) {
+  const url = new URL(request.url);
+  const accCode = url.searchParams.get("acc") || "";
+  if (!accCode || !accCode.startsWith("acc_")) {
+    return htmlErrorPage("Código inválido", "Código de conexão ausente ou malformado.");
+  }
+
+  const kv = kvOf(env);
+  if (!kv) return htmlErrorPage("Indisponível", "Armazenamento indisponível.", 503);
+
+  const record = await kvGetJson(kv, accKey(accCode));
+  if (!record || isExpired(record)) {
+    return htmlErrorPage("Código expirado", "Este código de conexão expirou (5 minutos) ou já foi usado. Gere outro no app.");
+  }
+  /* O acc_ NÃO é consumido aqui — ele é consumido no /authorize. */
+
+  /* DCR para o claude.ai (redirect_uri fixa conhecida). */
+  const clientId = `${CLIENT_PREFIX}${randomB64Url(18)}`;
+  const redirectUri = "https://claude.ai/api/mcp/auth_callback";
+  const stored = await kvPutJson(
+    kv,
+    clientKey(clientId),
+    { redirect_uris: [redirectUri], client_name: "Claude", createdAt: new Date().toISOString() },
+    0
+  );
+  if (!stored) return htmlErrorPage("Indisponível", "Falha ao registrar cliente.", 503);
+
+  /* Redireciona para /authorize com client_id do DCR + acc_ */
+  const authUrl = `${oauthIssuer(env)}/authorize?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&code_challenge=placeholder&code_challenge_method=S256&state=auto&scope=${encodeURIComponent(SUPPORTED_SCOPE + " offline_access")}&resource=${encodeURIComponent(oauthResource(env))}&prompt=consent&acc=${encodeURIComponent(accCode)}`;
+  return new Response(null, {
+    status: 302,
+    headers: { location: authUrl, "cache-control": "no-store", ...OAUTH_CORS }
+  });
+}
+
 /* ------------------------------------------------------------------ */
 /* Roteador OAuth + autenticação do /mcp                               */
 /* ------------------------------------------------------------------ */
@@ -736,7 +882,9 @@ export function isOAuthPath(pathname) {
     pathname.startsWith("/.well-known/oauth-protected-resource/") ||
     pathname === "/register" ||
     pathname === "/authorize" ||
-    pathname === "/token"
+    pathname === "/token" ||
+    pathname === "/mcp/auth-code" ||
+    pathname === "/mcp/connect-claude"
   );
 }
 
@@ -769,6 +917,18 @@ export async function handleOAuthRequest(request, env, deps) {
       return oauthError("slow_down", "Muitas tentativas. Aguarde alguns segundos.", 429);
     }
     return handleToken(request, env);
+  }
+  if (path === "/mcp/auth-code") {
+    if (await limited(request, env, deps, "mcp-oa-authcode:")) {
+      return oauthError("slow_down", "Muitas tentativas. Aguarde alguns segundos.", 429);
+    }
+    return handleAuthCode(request, env);
+  }
+  if (path === "/mcp/connect-claude") {
+    if (await limited(request, env, deps, "mcp-oa-connect:")) {
+      return htmlErrorPage("Muitas tentativas", "Aguarde alguns segundos e tente novamente.");
+    }
+    return handleConnectClaude(request, env);
   }
   return jsonNotFoundError();
 }
