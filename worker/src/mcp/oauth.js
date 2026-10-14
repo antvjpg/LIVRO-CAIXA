@@ -837,7 +837,7 @@ export async function handleAuthCode(request, env) {
     if (!stored) return oauthError("temporarily_unavailable", "Armazenamento indisponível.", 503);
 
     return jsonResponse({ code }, 200);
-  } catch (e) {
+} catch (e) {
     return jsonResponse({ error: "Erro interno", code: "internal_error", detail: String(e?.message || e) }, 500);
   }
 }
