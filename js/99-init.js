@@ -1442,7 +1442,7 @@ window.deletePocket = function(id) {
 
   window.launchBill = async (billId, monthKey, selectedBankId = null, btn=null) => {
     if(!billId || !monthKey) return;
-    await launchBill(billId, monthKey, selectedBankId);
+    await launchBill(billId, monthKey, selectedBankId, btn);
   };
   document.getElementById('billLaunchConfirm').onclick = async () => {
     if (!pendingBillLaunch) return;
