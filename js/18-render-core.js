@@ -1630,7 +1630,7 @@
 
     return `
       <section class="dash-section dash-indicators-section" aria-label="Indicadores do mercado">
-        ${dashSectionHead('07', 'Indicadores do mercado', 'Banco Central (SGS) e Tesouro Nacional — referência externa.', meta)}
+        ${dashSectionHead('08', 'Indicadores do mercado', 'Banco Central (SGS) e Tesouro Nacional — referência externa.', meta)}
         <div class="dash-metrics">${rowsHtml}</div>
         ${missingNote}
         <p class="dashboard-footnote">Fonte: BCB SGS e Tesouro Transparente, consultados pelo Worker do Livro-Caixa. Valores de referência; nenhum saldo seu é calculado a partir deles.</p>
@@ -1653,7 +1653,7 @@
     const detail = codes.length ? ` (código: ${escapeHTML(codes.join(', '))})` : '';
     return `
       <section class="dash-section dash-indicators-section" aria-label="Indicadores do mercado">
-        ${dashSectionHead('07', 'Indicadores do mercado', 'Banco Central (SGS) e Tesouro Nacional — referência externa.', 'indisponível')}
+        ${dashSectionHead('08', 'Indicadores do mercado', 'Banco Central (SGS) e Tesouro Nacional — referência externa.', 'indisponível')}
         <p class="dashboard-footnote">Os indicadores externos não puderam ser consultados agora${detail}. Nada dos seus dados foi afetado: saldos, lançamentos e cálculos continuam locais. A seção volta sozinha quando a consulta funcionar.</p>
       </section>`;
   }

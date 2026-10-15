@@ -60,6 +60,10 @@
     const overdueBills = pendingBills.filter(bill => String(billDueDateForMonth(bill, year, monthIndex)) < todayISO());
     const upcomingBills = pendingBills.slice().sort((a, b) => billDueDateForMonth(a, year, monthIndex).localeCompare(billDueDateForMonth(b, year, monthIndex))).slice(0, 3);
     const health = monthNet < 0 ? { label: 'Atenção', detail: 'As saídas superaram as entradas neste mês.', tone: 'warning', icon: '!' } : overdueBills.length ? { label: 'Revisar compromissos', detail: `${overdueBills.length} conta(s) aguardam atenção.`, tone: 'warning', icon: '!' } : (monthIncome > 0 || monthExpense > 0) ? { label: 'Equilibrado', detail: 'Fluxo positivo e compromissos sob acompanhamento.', tone: 'positive', icon: '✓' } : { label: 'Comece seu acompanhamento', detail: 'Registre movimentações para ver sua saúde financeira.', tone: 'neutral', icon: '○' };
+    const visaoScoreParts = [];
+    if (monthIncome > 0) visaoScoreParts.push(dashClampPct((monthNet / monthIncome) * 100, 20));
+    if (series.length) visaoScoreParts.push((series.filter(item => item.net >= 0).length / series.length) * 100);
+    const visaoScore = dashFinanceScore(visaoScoreParts);
     const budgetCycle = currentFinancialCycleKey();
     const budgetRows = categories.map(cat => { const budget = budgetFor(cat.id); if (!budget || !(budget.amount > 0)) return ''; const spent = budgetSpent(cat.id, budgetCycle); const pct = Math.max(0, spent / budget.amount * 100); const visualPct = Math.min(100, pct); const overLabel = pct >= 100 ? ' · limite excedido' : ''; return `<div class="budget-summary-row"><div><strong>${escapeHTML(cat.name)}</strong><span>${fmt(spent)} de ${fmt(budget.amount)}${overLabel}</span></div><div class="budget-summary-track"><span class="${pct >= 100 ? 'over' : ''}" style="width:${visualPct.toFixed(2)}%" data-real-percent="${pct.toFixed(2)}"></span></div><b>${pct.toFixed(0).replace('.', ',')}%</b></div>`; }).filter(Boolean).join('');
 
@@ -116,7 +120,7 @@
     const advanceDays = Number(featureSettings.reminderAdvanceDays) || 0; const advanceBills = advanceDays ? pendingBills.filter(bill => { const due = new Date(`${month}-${String(billDueDateForMonth(bill, year, monthIndex).slice(-2)).padStart(2, '0')}T23:59:59`); return due >= new Date() && (due - new Date()) / 86400000 <= advanceDays; }) : []; if (advanceBills.length) alerts.push(`<div class="dashboard-alert-row"><span>i</span><div><strong>Fatura próxima</strong><small>${advanceBills.length} conta(s) vencem nos próximos ${advanceDays} dia(s).</small></div></div>`);
     if (!alerts.length) alerts.push(`<div class="dashboard-alert-row positive"><span>✓</span><div><strong>Nenhum alerta importante</strong><small>Seu painel não encontrou pendências críticas neste momento.</small></div></div>`);
 
-    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira</strong><small>${health.detail}</small></div><b>${health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dash-chart-box dashboard-monthly-flow-box" id="dashMonthlyFlowChartBox"><canvas id="dashMonthlyFlowChart" role="img" aria-label="Gráfico de entradas, saídas e patrimônio estimado dos últimos meses"></canvas></div><div class="dash-chart-fallback dashboard-monthly-flow-fallback" id="dashMonthlyFlowFallback" hidden></div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${incomeCatSectionHTML}${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta ou fatura encontrada para o filtro/titular selecionado neste mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
+    wrap.innerHTML = `<section class="advanced-dashboard dashboard-page"><div class="dashboard-page-heading"><div><span class="eyebrow">Visão geral</span><h2>Como está seu dinheiro?</h2><p>Uma leitura simples do mês atual e dos últimos seis meses.</p></div><span class="dashboard-period">${formatMonthLabel(month)}</span></div><div class="dashboard-health-card ${health.tone}"><span class="dashboard-health-icon">${health.icon}</span><div><strong>Saúde financeira${visaoScore ? ` · score ${visaoScore.value}/100` : ''}</strong><small>${health.detail}</small></div><b>${visaoScore ? `${visaoScore.value} · ${health.label}` : health.label}</b></div><div class="dashboard-metrics"><div><small>Entradas no mês</small><strong class="positive">${fmt(current.income)}</strong></div><div><small>Saídas no mês</small><strong class="negative">${fmt(current.expense)}</strong></div><div><small>Fluxo líquido</small><strong class="${current.net >= 0 ? 'positive' : 'negative'}">${fmt(current.net)}</strong></div><div><small>Patrimônio atual</small><strong>${fmt(current.patrimony)}</strong></div></div><div class="dashboard-projection-card"><div><small>Estimativa para os próximos ${projectionMonths} meses</small><strong>${fmt(projected)}</strong></div><p>Baseada no patrimônio atual e no fluxo líquido médio dos últimos seis meses: <b>${fmt(avgNet)}/mês</b>.</p></div>${savingsGoalHTML}<div class="dashboard-trend dashboard-flow-chart"><div class="dashboard-trend-head"><div><strong>Entradas e saídas por mês</strong><span>Compare os valores de cada período</span></div><span>últimos 6 meses</span></div><div class="dash-chart-box dashboard-monthly-flow-box" id="dashMonthlyFlowChartBox"><canvas id="dashMonthlyFlowChart" role="img" aria-label="Gráfico de entradas, saídas e patrimônio estimado dos últimos meses"></canvas></div><div class="dash-chart-fallback dashboard-monthly-flow-fallback" id="dashMonthlyFlowFallback" hidden></div><p class="dashboard-footnote">O patrimônio histórico é uma estimativa quando não existe cotação registrada para cada mês. Ele não altera seus saldos atuais.</p></div>${incomeCatSectionHTML}${budgetRows ? `<div class="dashboard-budgets"><div class="dashboard-section-heading"><strong>Orçamento do mês</strong><span>Acompanhe seus limites</span></div>${budgetRows}</div>` : '<div class="dashboard-empty-state">Defina orçamentos em Perfil → Preferências financeiras para acompanhar limites por categoria nesta visão.</div>'}<div class="dashboard-commitments"><div class="dashboard-section-heading"><strong>Próximos compromissos</strong><span>${upcomingBills.length ? `${upcomingBills.length} pendente(s)` : 'Tudo em dia'}</span></div>${commitments || '<div class="dashboard-empty-state">Nenhuma conta ou fatura encontrada para o filtro/titular selecionado neste mês.</div>'}</div><div class="dashboard-alerts"><div class="dashboard-section-heading"><strong>Avisos importantes</strong><span>Atualizado agora</span></div>${alerts.join('')}</div></section>`;
     renderDashboardMonthlyFlowChart(series);
     renderDashboardIncomeCatChart(incomeCats);
   }
@@ -869,6 +873,134 @@
       || yieldsLog.some(item => String(item.dateEnd || item.date || '') <= start);
   }
 
+  /* ===== Score de saúde (0-100) e análises derivadas ===== */
+
+  function dashClampPct(value, target) {
+    if (!Number.isFinite(value) || !Number.isFinite(target) || target <= 0) return null;
+    return Math.max(0, Math.min(100, (value / target) * 100));
+  }
+
+  /* Nota final = média simples dos componentes disponíveis.
+     Componentes ausentes (sem entrada, sem patrimônio) são ignorados,
+     não pontuados como zero — dado incompleto não pune o usuário. */
+  function dashFinanceScore(parts) {
+    const valid = (parts || []).filter(value => Number.isFinite(value));
+    if (!valid.length) return null;
+    const score = Math.round(valid.reduce((sum, value) => sum + value, 0) / valid.length);
+    return {
+      value: score,
+      label: score >= 70 ? 'Saudável' : score >= 40 ? 'Regular' : 'Atenção',
+      tone: score >= 70 ? 'positive' : score >= 40 ? 'neutral' : 'warning',
+      components: valid.length
+    };
+  }
+
+  function dashScoreComponents(flow, fixedExpenses, committed, patrimony, patrimonyStart) {
+    const parts = [];
+    if (flow && flow.income > 0) {
+      // Poupança: 20% das entradas já é nota máxima.
+      parts.push(dashClampPct((flow.net / flow.income) * 100, 20));
+      if (Number.isFinite(fixedExpenses)) {
+        // Despesas fixas: 0% = nota máxima; 60%+ das entradas = zero.
+        parts.push(dashClampPct(60 - (fixedExpenses / flow.income) * 100, 60));
+      }
+    }
+    if (Number.isFinite(committed) && patrimony > 0) {
+      // Comprometimento (cartões+contas/30d): 0% = nota máxima; 50%+ = zero.
+      parts.push(dashClampPct(50 - (committed / patrimony) * 100, 50));
+    }
+    if (Number.isFinite(patrimonyStart) && patrimonyStart > 0 && patrimony > 0) {
+      // Evolução do patrimônio no período: -10% = zero; +10% = nota máxima.
+      const growth = ((patrimony - patrimonyStart) / patrimonyStart) * 100;
+      parts.push(dashClampPct(growth + 10, 20));
+    }
+    return parts;
+  }
+
+  /* Estimativa do saldo de contas no fim do mês corrente: saldo atual +
+     ritmo líquido médio já registrado no mês × dias restantes.
+     Considera apenas movimentações com conta bancária (as que alteram o
+     saldo exibido) e ignora transferências entre contas. */
+  function dashEndOfMonthProjection(balance) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const monthIndex = now.getMonth();
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+    const day = now.getDate();
+    const remaining = daysInMonth - day;
+    if (remaining < 1 || day < 2 || !Number.isFinite(balance)) return null;
+    const scope = dashBuildScope({
+      start: dashToISO(new Date(year, monthIndex, 1)),
+      end: dashToISO(now)
+    });
+    let net = 0;
+    for (const row of scope) {
+      if (row.transfer || !row.entry.bank) continue;
+      const value = Number(row.entry.amount || 0);
+      net += row.entry.type === 'in' ? value : -value;
+    }
+    const avgDaily = net / day;
+    return {
+      value: balance + avgDaily * remaining,
+      remaining,
+      avgDaily,
+      day,
+      daysInMonth
+    };
+  }
+
+  /* Comparativo do mês corrente com o mês anterior (sempre, independente
+     do filtro de período do dashboard). Respeta o filtro de conta. */
+  function dashMonthComparison() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const monthIndex = now.getMonth();
+    const prevDate = new Date(year, monthIndex - 1, 1);
+    const currentRange = { start: dashToISO(new Date(year, monthIndex, 1)), end: dashToISO(new Date(year, monthIndex + 1, 0)) };
+    const previousRange = { start: dashToISO(prevDate), end: dashToISO(new Date(year, monthIndex, 0)) };
+    const currentScope = dashBuildScope(currentRange);
+    const previousScope = dashBuildScope(previousRange);
+    const current = dashFlowOf(currentScope);
+    const previous = dashFlowOf(previousScope);
+    const pctChange = (a, b) => {
+      if (!Number.isFinite(b) || Math.abs(b) < 0.005) return null;
+      return ((a - b) / Math.abs(b)) * 100;
+    };
+    const outByCategory = scope => {
+      const map = new Map();
+      for (const row of scope) {
+        if (row.transfer || row.entry.type !== 'out') continue;
+        const key = row.entry.category || '__none__';
+        map.set(key, (map.get(key) || 0) + Number(row.entry.amount || 0));
+      }
+      return map;
+    };
+    const currentOut = outByCategory(currentScope);
+    const previousOut = outByCategory(previousScope);
+    let topCategory = null;
+    for (const [id, amount] of currentOut.entries()) {
+      const base = previousOut.get(id) || 0;
+      const delta = amount - base;
+      if (!topCategory || Math.abs(delta) > Math.abs(topCategory.delta)) {
+        const category = id === '__none__' ? null : categories.find(item => item.id === id);
+        topCategory = { name: category ? category.name : 'Sem categoria', delta, amount, base };
+      }
+    }
+    return {
+      currentLabel: formatMonthLabel(`${year}-${String(monthIndex + 1).padStart(2, '0')}`),
+      previousLabel: formatMonthLabel(`${prevDate.getFullYear()}-${String(prevDate.getMonth() + 1).padStart(2, '0')}`),
+      current,
+      previous,
+      incomePct: pctChange(current.income, previous.income),
+      expensePct: pctChange(current.expense, previous.expense),
+      resultPct: pctChange(current.net, previous.net),
+      topCategory,
+      day: now.getDate(),
+      daysInMonth: new Date(year, monthIndex + 1, 0).getDate(),
+      hasData: current.count > 0 || previous.count > 0
+    };
+  }
+
   function buildDashboardSummary() {
     const preset = dashPreset();
     const range = dashRange(false);
@@ -911,6 +1043,9 @@
     const categoriesSummary = dashCategoryRanking(scope, previousScope);
     const budgetsSummary = dashBudgetRows();
     const historyAvailable = dashHistoryAvailable(range);
+    const score = dashFinanceScore(dashScoreComponents(flow, fixedExpenses, committed, patrimony, patrimonyStart));
+    const projectionEOM = dashEndOfMonthProjection(balanceAvailable);
+    const monthComparison = dashMonthComparison();
 
     return {
       schemaVersion: DASH_SCHEMA_VERSION,
@@ -963,6 +1098,9 @@
       fixedExpenses,
       goals: dashGoalRows(),
       health: dashHealthRows(range, flow, fixedExpenses, patrimony, patrimonyStart, committed),
+      score,
+      projectionEOM,
+      monthComparison,
       insights: getDashboardAlerts()
     };
   }
@@ -1000,12 +1138,66 @@
           ${kpi('Saldo disponível', fmt(s.balanceAvailable), '', 'Contas bancárias' + (s.account.id ? ' do filtro' : ''), '', true)}
           ${kpi('Patrimônio', fmt(s.patrimony.current), '', 'Bancos + caixinhas + investimentos', patrimonyDelta ? `<span class="dash-delta ${patrimonyDelta.up ? 'up' : 'down'}">${escapeHTML(patrimonyDelta.text)} no período</span>` : '')}
           ${kpi('Comprometido', fmt(s.committed.total), 'negative', 'Cartões + contas dos próximos 30 dias', '')}
+          ${s.projectionEOM ? kpi('Projeção fim de mês', fmt(s.projectionEOM.value), s.projectionEOM.value >= s.balanceAvailable ? 'positive' : 'negative', `Saldo atual + ritmo médio registrado · ${s.projectionEOM.remaining} dia(s) até o fim do mês`, '', true) : ''}
         </div>
         ${s.flow.transfers ? `<p class="dash-inline-note">${s.flow.transfers} transferência(s) entre contas não contam como entrada/saída.</p>` : ''}
       </section>`;
   }
 
   let dashFlowChartInstance;
+
+  /* Comparativo do mês corrente com o mês anterior de calendário.
+     Sempre calculado (independe do toggle de comparação do período). */
+  function renderDashComparison(s) {
+    const cmp = s.monthComparison;
+    if (!cmp || !cmp.hasData) return '';
+
+    const sentences = [];
+    if (Number.isFinite(cmp.expensePct)) {
+      const dir = cmp.expensePct >= 0 ? 'a mais' : 'a menos';
+      sentences.push(`Você gastou ${Math.abs(cmp.expensePct).toFixed(1).replace('.', ',')}% ${dir} que em ${cmp.previousLabel}.`);
+    } else if (cmp.current.expense > 0 && cmp.previous.expense === 0) {
+      sentences.push(`Saídas iniciadas neste mês (${escapeHTML(fmt(cmp.current.expense))}), sem base em ${escapeHTML(cmp.previousLabel)}.`);
+    } else if (cmp.previous.expense > 0 && cmp.current.expense === 0) {
+      sentences.push(`Você não registrou saídas em ${escapeHTML(cmp.currentLabel)}, após ${escapeHTML(fmt(cmp.previous.expense))} em ${escapeHTML(cmp.previousLabel)}.`);
+    }
+    if (Number.isFinite(cmp.incomePct)) {
+      sentences.push(`Suas entradas ${cmp.incomePct >= 0 ? 'aumentaram' : 'caíram'} ${Math.abs(cmp.incomePct).toFixed(1).replace('.', ',')}%.`);
+    }
+    if (!sentences.length) {
+      sentences.push(`Movimentação registrada: ${escapeHTML(fmt(cmp.current.income))} em entradas e ${escapeHTML(fmt(cmp.current.expense))} em saídas este mês.`);
+    }
+
+    const metric = (label, icon, current, previous, pct, tone) => `
+      <div class="dash-metric">
+        <div class="dash-metric-icon ${tone}" aria-hidden="true">${icon}</div>
+        <div class="dash-metric-content">
+          <small>${escapeHTML(label)}</small>
+          <strong class="dash-metric-value ${tone}">${fmt(current)}</strong>
+          <span class="dash-metric-note">${Number.isFinite(pct)
+            ? `${pct >= 0 ? '+' : ''}${pct.toFixed(1).replace('.', ',')}% vs. ${escapeHTML(fmt(previous))} em ${escapeHTML(cmp.previousLabel)}`
+            : `Em ${escapeHTML(cmp.previousLabel)}: ${escapeHTML(fmt(previous))}`}</span>
+        </div>
+      </div>`;
+
+    const topCategoryNote = cmp.topCategory && cmp.previous.expense > 0 && Math.abs(cmp.topCategory.delta) >= 0.005
+      ? `<p class="dash-inline-note">Maior variação de saídas: <b>${escapeHTML(cmp.topCategory.name)}</b> — ${cmp.topCategory.delta > 0 ? '+' : '−'}${escapeHTML(fmt(Math.abs(cmp.topCategory.delta)))} frente a ${escapeHTML(cmp.previousLabel)}.</p>`
+      : '';
+
+    return `
+      <section class="dash-section" aria-label="Comparativo mês a mês">
+        ${dashSectionHead('07', 'Comparativo mês a mês', `${cmp.currentLabel} frente a ${cmp.previousLabel}.`, `dia ${cmp.day}/${cmp.daysInMonth}`)}
+        <div class="dash-panel">
+          <p class="dash-inline-note">${sentences.join(' ')}</p>
+          <div class="dash-metrics">
+            ${metric('Entradas', '↗', cmp.current.income, cmp.previous.income, cmp.incomePct, Number.isFinite(cmp.incomePct) ? (cmp.incomePct >= 0 ? 'positive' : 'negative') : 'neutral')}
+            ${metric('Saídas', '↘', cmp.current.expense, cmp.previous.expense, cmp.expensePct, Number.isFinite(cmp.expensePct) ? (cmp.expensePct <= 0 ? 'positive' : 'negative') : 'neutral')}
+            ${metric('Resultado', '=', cmp.current.net, cmp.previous.net, cmp.resultPct, cmp.current.net >= 0 ? 'positive' : 'negative')}
+          </div>
+          ${topCategoryNote}
+        </div>
+      </section>`;
+  }
 
 
   function renderDashFlow(s) {
@@ -1387,9 +1579,14 @@
         </div>
       </div>`).join('');
 
+    const score = s.score
+      ? `<div class="dashboard-health-card ${s.score.tone}"><span class="dashboard-health-icon">${s.score.value}</span><div><strong>Score de saúde · 0 a 100</strong><small>Média de ${s.score.components} indicador(es): poupança, despesas fixas, comprometimento e evolução do patrimônio. Quanto maior, melhor.</small></div><b>${escapeHTML(s.score.label)}</b></div>`
+      : '';
+
     return `
       <section class="dash-section dash-health-section" aria-labelledby="dashSec6">
         ${dashSectionHead('06', 'Saúde financeira', 'Indicadores-chave da sua situação financeira.', s.period.text)}
+        ${score}
         <div class="dash-metrics">${rows}</div>
         <p class="dashboard-footnote">Poupança = resultado ÷ entradas · Despesas fixas = contas recorrentes com vencimento no período ÷ entradas · Comprometido = cartões + contas dos próximos 30 dias ÷ patrimônio · Reserva = patrimônio ÷ saída média mensal.</p>
       </section>`;
@@ -1454,6 +1651,7 @@
       renderDashCommitments(summary) +
       renderDashPatrimony(summary) +
       renderDashHealth(summary) +
+      renderDashComparison(summary) +
       renderDashIndicators();
     dashRenderFlowChart(summary);
   }
