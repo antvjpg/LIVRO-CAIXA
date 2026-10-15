@@ -35,6 +35,28 @@
     const today = todayISO().slice(0, 10);
     return due < today;
   }
+  /* Menus contextuais "•••" das contas — restauradas do index.html original
+     (commit 302acf2) que se perderam no split app.js → js/. São chamadas pelos
+     onclick do renderBillItem; sem elas o botão "Mais opções" morria com
+     ReferenceError e "Editar/Excluir" emitiam erro no console. */
+  function closeBillMenus(){
+    document.querySelectorAll('.bill-more-menu').forEach(menu => { menu.hidden = true; });
+    document.querySelectorAll('.bill-more-button').forEach(button => { button.setAttribute('aria-expanded','false'); });
+  }
+  function toggleBillMenu(id){
+    const menu = document.getElementById(`bill-more-${id}`);
+    if(!menu) return;
+    const wasHidden = menu.hidden;
+    closeBillMenus();
+    if(wasHidden){
+      menu.hidden = false;
+      const button = menu.parentElement?.querySelector('.bill-more-button');
+      if(button) button.setAttribute('aria-expanded','true');
+    }
+  }
+  document.addEventListener('click', (event) => {
+    if(!event.target.closest('.bill-more-wrap')) closeBillMenus();
+  });
   function billStatus(bill, key){
     if (billGeneratedForMonth(bill, key)) return 'Lançado';
     if (billPaidForMonth(bill, key)) return 'Pago — não lançado';
@@ -57,7 +79,7 @@
         logSyncError('marcar conta como paga', err);
         showToast('Não foi possível salvar o status pago. Tente novamente.', 'error');
       } finally {
-        render();
+        render(); renderBills();
       }
     } finally {
       if(btn){ btn.disabled=false; btn.textContent='Marcar pago'; }
@@ -78,7 +100,7 @@
         logSyncError('desmarcar conta paga', err);
         showToast('Não foi possível atualizar o status.', 'error');
       } finally {
-        render();
+        render(); renderBills();
       }
     } finally {
       if(btn){ btn.disabled=false; btn.textContent='Desmarcar pago'; }
@@ -292,6 +314,7 @@
     openModal('panelBillLaunch');
   }
   async function launchBill(billId, monthKey, selectedBankId = null, btn=null){
+    if(!billId || !monthKey) return;
     if(btn){ btn.disabled=true; btn.textContent='Lançando...'; }
     try {
       if(!currentUser) { showToast('Sessão expirada. Entre novamente para lançar.', 'error'); return; }
@@ -312,7 +335,7 @@
       bill.bank = bankId;
       bill.generatedMonths=previousGeneratedMonths.slice();
       bill.generatedMonths.push(monthKey);
-      render();
+      render(); renderBills();
       try {
         await persistAll();
         logInfo('Calendário','Lançar no Livro-Caixa','Sucesso',`${bill.name} lançado em ${date}.`,{bankId, recurringBillId: bill.id});
@@ -324,7 +347,7 @@
         bill.generatedMonths = previousGeneratedMonths;
         logSyncError('lançamento de conta', err);
         showToast('Não foi possível confirmar o lançamento no servidor. A conta continua como pendente.', 'error');
-        render();
+        render(); renderBills();
       }
     } finally {
       if(btn){ btn.disabled=false; btn.textContent='Lançar'; }

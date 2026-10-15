@@ -1437,13 +1437,14 @@ window.deletePocket = function(id) {
   document.getElementById('btnNewReceivable')?.addEventListener('click', () => openReceivableModal());
   document.getElementById('billParcelado').addEventListener('change', updateBillInstallmentFieldsVisibility);
   window.editBill = id => openBillModal(id);
-  window.deleteBill = async id => { if(!confirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); logInfo('Calendário','Exclusão de conta','Sucesso','Conta removida; lançamentos já realizados foram preservados.'); renderBills(); };
+  window.deleteBill = async id => { if(!await showConfirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); logInfo('Calendário','Exclusão de conta','Sucesso','Conta removida; lançamentos já realizados foram preservados.'); renderBills(); };
   pendingBillLaunch = null;
 
-  window.launchBill = async (billId, monthKey, selectedBankId = null, btn=null) => {
-    if(!billId || !monthKey) return;
-    await launchBill(billId, monthKey, selectedBankId, btn);
-  };
+  /* launchBill é função global declarada em 25-bills-receivables.js (assinatura
+     billId, monthKey, selectedBankId, btn). NÃO criar wrapper aqui: um wrapper
+     que chamasse `launchBill(...)` se resolvia para ele mesmo (window.launchBill)
+     e estourava RangeError — botão "Lançar" morto. */
+  window.launchBill = launchBill;
   document.getElementById('billLaunchConfirm').onclick = async () => {
     if (!pendingBillLaunch) return;
     const { billId, monthKey } = pendingBillLaunch;
