@@ -1377,6 +1377,11 @@ window.deletePocket = function(id) {
 
   window.closeAllPanels = function() {
     closeFilterChoice();
+    /* Painel "compromissos do dia" é um .modal-overlay dinâmico (#bill-day-panel-v19-16).
+       Sem removê-lo aqui, um Escape (handler global em keydown) escondia só o
+       .panel.open interno e mantinha o overlay escuro preso na tela — deadlock
+       com botão × inacessível, exigindo reload. closeBillDayPanel remove o overlay. */
+    window.closeBillDayPanel?.();
     const overlay = document.getElementById('modalOverlay');
     overlay.classList.remove('open');
     document.querySelectorAll('.panel.open, .panel').forEach(p => p.classList.remove('open'));
@@ -1457,7 +1462,9 @@ window.deletePocket = function(id) {
   window.closeBillDayPanel = closeBillDayPanel;
 
   window.openBillDayPanel = openBillDayPanel;
-  document.getElementById('billTitularFilter').addEventListener('change', renderBills);
+  /* billTitularFilter: NÃO adicionar outro listener 'change' aqui —
+     populateBillTitularFilter (js/25-bills-receivables.js) já atribui select.onchange
+     com persistência em localStorage + renderBills; dois handlers = render duplo. */
   document.getElementById('billsStatusFilter')?.addEventListener('change', renderBills);
   document.getElementById('btnExportBillsPdf').addEventListener('click', exportBillsPdf);
   document.getElementById('btnExportBillsXlsx').addEventListener('click', exportBillsXlsx);

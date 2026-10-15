@@ -489,7 +489,10 @@ VALOR: ${fmt(bill.amount)}
     const today=todayISO();
     for(let d=1;d<=days;d++){
       const date=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const events=rows.filter(row=>row.bill.recurrenceType==='nao_recorrente'||row.bill.frequency==='once'?row.dueDate===date:billDueDayFromStart(row.bill)===d);
+      /* Filtro único por data efetiva do vencimento (mesmo critério do painel do dia
+         e da lista). Antes, contas recorrentes usavam o dia nominal do início:
+         em meses curtos a conta vencia dia 28 mas o ponto sumia do calendário. */
+      const events=rows.filter(row=>row.dueDate===date);
       const invEvents=invoiceRows.filter(row=>row.dueDate===date);
       html+=`<div class="bill-day ${date===today?'today':''}" onclick="window.openBillDayPanel('${date}')"><div class="bill-day-num" role="button" tabindex="0" onclick="event.stopPropagation();window.openBillDayPanel('${date}')" aria-label="Ver compromissos de ${d}">${d}</div>${events.map(row=>`<div class="bill-event ${row.settled?'paid':''}" title="${escapeHTML(row.bill.name)}${row.installmentLabel?' · Parcela '+row.installmentLabel:''} · ${fmt(row.bill.amount)} · ${escapeHTML(row.status)}"></div>`).join('')}${invEvents.map(row=>`<div class="bill-event card-invoice ${invoiceSettled(row)?'paid':''}" title="Fatura ${escapeHTML(row.card.name)} · ${fmt(invoiceDisplayTotal(row))}"></div>`).join('')}</div>`;
     }
