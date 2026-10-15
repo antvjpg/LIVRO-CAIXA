@@ -418,8 +418,19 @@ VALOR: ${fmt(bill.amount)}
     const titularFilter = document.getElementById('billTitularFilter')?.value || '';
     const statusFilter = document.getElementById('billsStatusFilter')?.value || '';
     const rows=calendarBillRows();
+    
+    // Buscar faturas do mês atual + mês anterior (para mostrar faturas vencidas que não foram pagas)
     let allInvoiceRows=[];
-    try { allInvoiceRows = calendarInvoiceRows(y,m); } catch { allInvoiceRows = []; }
+    try { 
+      allInvoiceRows = calendarInvoiceRows(y,m); 
+      // Também buscar mês anterior para faturas vencidas não pagas
+      const prevM = m === 0 ? 11 : m - 1;
+      const prevY = m === 0 ? y - 1 : y;
+      let prevInvoiceRows = [];
+      try { prevInvoiceRows = calendarInvoiceRows(prevY, prevM); } catch { prevInvoiceRows = []; }
+      allInvoiceRows = [...allInvoiceRows, ...prevInvoiceRows];
+    } catch { allInvoiceRows = []; }
+    
     const invoiceRows=titularFilter?allInvoiceRows.map(inv=>({...inv, breakdown:inv.breakdown.filter(b=>b.titular===titularFilter)})).filter(inv=>inv.breakdown.length):allInvoiceRows;
     const invoiceDisplayTotal = (row) => {
       try { return invoiceDisplayTotalFor(row, titularFilter); } catch { return 0; }
@@ -619,8 +630,19 @@ VALOR: ${fmt(bill.amount)}
     const m = Number(parts[1]) - 1;
 
     const billRows = calendarBillRows().filter(row => row.dueDate === date);
+    
+    // Buscar faturas do mês atual + mês anterior
     let allInvoices = [];
-    try { allInvoices = calendarInvoiceRows(y, m); } catch { allInvoices = []; }
+    try { 
+      allInvoices = calendarInvoiceRows(y, m); 
+      // Também buscar mês anterior para faturas vencidas não pagas
+      const prevM = m === 0 ? 11 : m - 1;
+      const prevY = m === 0 ? y - 1 : y;
+      let prevInvoices = [];
+      try { prevInvoices = calendarInvoiceRows(prevY, prevM); } catch { prevInvoices = []; }
+      allInvoices = [...allInvoices, ...prevInvoices];
+    } catch { allInvoices = []; }
+    
     const titularFilter = document.getElementById('billTitularFilter')?.value || '';
     const invoiceRows = titularFilter
       ? allInvoices.map(inv => ({
@@ -700,7 +722,16 @@ function billsExportRows() {
     const titularFilter = document.getElementById('billTitularFilter')?.value || '';
     const rows = calendarBillRows().map(({bill,dueDate,status,launched,bank}) => ({ 'Conta/Fatura': bill.name || '', 'Titular': bill.titular || '', 'Valor': Number(bill.amount || 0), 'Vencimento': dueDate.split('-').reverse().join('/'), 'Banco': bank, 'Status': status, 'Recorrente': bill.recurrenceType === 'nao_recorrente' ? 'Não' : 'Sim', 'Periodicidade': bill.frequency === 'once' ? 'Única' : 'Mensal', 'Observação': bill.desc || '' }));
     let invoiceRows = [];
-    try { invoiceRows = calendarInvoiceRows(billViewDate.getFullYear(), billViewDate.getMonth()); } catch (err) { logWarn('Calendário','Exportar contas/faturas','Atenção','Card Engine indisponível; faturas de cartão ficaram fora da exportação.'); }
+    try { 
+      invoiceRows = calendarInvoiceRows(billViewDate.getFullYear(), billViewDate.getMonth()); 
+      // Também buscar mês anterior
+      const y = billViewDate.getFullYear(), m = billViewDate.getMonth();
+      const prevM = m === 0 ? 11 : m - 1;
+      const prevY = m === 0 ? y - 1 : y;
+      let prevInvoiceRows = [];
+      try { prevInvoiceRows = calendarInvoiceRows(prevY, prevM); } catch { prevInvoiceRows = []; }
+      invoiceRows = [...invoiceRows, ...prevInvoiceRows];
+    } catch (err) { logWarn('Calendário','Exportar contas/faturas','Atenção','Card Engine indisponível; faturas de cartão ficaram fora da exportação.'); }
     invoiceRows.forEach(row => {
       const breakdown = (Array.isArray(row.breakdown) ? row.breakdown : []).filter(b => !titularFilter || String(b.titular || '').trim() === titularFilter);
       if (titularFilter && !breakdown.length) return;
