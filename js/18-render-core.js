@@ -847,6 +847,9 @@
     if (!sheet || !search) return;
 
     // V19-20: submodal de filtro com fechamento determinístico.
+    // Ordem importa: adicionar .open e sheet-open ANTES de renderFilterChoiceList
+    // para que uma exceção no render não deixe o sheet sem .open (invisível,
+    // recortado por overflow:hidden do painel).
     sheet.style.display = 'flex';
     sheet.style.visibility = 'visible';
     sheet.style.pointerEvents = 'auto';
@@ -855,10 +858,16 @@
     document.getElementById('filterChoiceSubtitle').textContent = config.subtitle;
     search.placeholder = config.placeholder;
     search.value = '';
-    renderFilterChoiceList();
     sheet.classList.add('open');
     sheet.setAttribute('aria-hidden', 'false');
     document.getElementById('panelFiltros')?.classList.add('sheet-open');
+    try {
+      renderFilterChoiceList();
+    } catch (err) {
+      console.error('[filterChoice] Falha ao renderizar lista:', err);
+      const list = document.getElementById('filterChoiceList');
+      if (list) list.innerHTML = '<div class="filter-choice-empty">Não foi possível carregar as opções.</div>';
+    }
   }
 
   function closeFilterChoice() {

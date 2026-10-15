@@ -329,7 +329,7 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
     expect(yieldsUsdt(antes, usdtId), 'cenário depende do registro legado do teste anterior').toHaveLength(1);
     await expect(card(page, NAME_USDT).locator('.asset-card-units-warning')).toHaveText(AVISO_1);
 
-    await card(page, NAME_USDT).locator('button[aria-label="Conciliar saldo com a corretora"]').click();
+    await card(page, NAME_USDT).locator('button[aria-label="Conciliar saldo"]').click();
     await page.waitForSelector('#panelCryptoReconcile.open', { timeout: 15_000 });
     await expect(page.locator('#crSaldoRealLabel')).toHaveText('Saldo na corretora (quantidade)');
 
