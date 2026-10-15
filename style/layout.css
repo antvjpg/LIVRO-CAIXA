@@ -1,6 +1,7 @@
 /* LIVRO-CAIXA · layout.css — chrome mobile editorial: header ≤680px, bottom-nav, perfil e pickers nas media queries principais (styles.css: 1161-1676). Cascata: themes → base → components → layout → features → dashboard-chat. */
   /* Direção visual: Livro-Caixa mobile editorial, verde profundo e superfícies de papel. */
   .mobile-bottom-nav { display:none; }
+  header.app-header .subtitle .fi { display:none; }
   @media (max-width:680px) {
     :root { --paper:#F8F7F2; --paper-2:#F0F0EA; --ink:#19352A; --ink-soft:#66746B; --green:#327957; --green-soft:#E7EFE8; --line:#E1E1D9; --gold:#B89034; --shadow:rgba(20,48,36,.08); }
     body { background:var(--paper); padding-bottom:116px; }
@@ -12,7 +13,7 @@
     header.app-header .app-brand { margin-left:50px; padding-right:56px; }
     header.app-header h1 { color:#F9F8F3; font-size:clamp(30px,8.5vw,40px); line-height:.98; letter-spacing:-.045em; margin-bottom:12px; }
     header.app-header .subtitle { color:rgba(248,247,242,.85); font-size:11px; letter-spacing:.05em; text-transform:none; display:flex; align-items:center; gap:7px; }
-    header.app-header .subtitle::before { content:"▣"; color:#B9D0BB; font-size:14px; }
+    header.app-header .subtitle .fi { display:inline-block; color:#B9D0BB; font-size:14px; line-height:1; }
     .app-header-actions { position:absolute; top:33px; right:18px; z-index:3; display:flex; flex-direction:column; align-items:center; gap:10px; }
     #userBar { display:none; }
     #btnOpenDrawer{position:absolute;top:33px;left:18px;z-index:3;}
@@ -452,7 +453,7 @@
     body:not(.dark-mode) header.app-header { background:linear-gradient(135deg,var(--header-from),var(--header-to)); color:var(--header-ink); }
     body:not(.dark-mode) header.app-header h1 { color:var(--header-ink); }
     body:not(.dark-mode) header.app-header .subtitle { color:color-mix(in srgb,var(--header-ink) 84%,transparent); }
-    body:not(.dark-mode) header.app-header .subtitle::before { color:color-mix(in srgb,var(--header-ink) 74%,transparent); }
+    body:not(.dark-mode) header.app-header .subtitle .fi { color:color-mix(in srgb,var(--header-ink) 74%,transparent); }
     body:not(.dark-mode) #btnThemeToggle,body:not(.dark-mode) #btnInstallPWA { background:var(--header-control-bg); border-color:color-mix(in srgb,var(--header-ink) 45%,transparent); color:var(--header-ink); }
     body:not(.dark-mode) .nav-tabs,body:not(.dark-mode) .balance-card,body:not(.dark-mode) .cat-summary,body:not(.dark-mode) .ledger,body:not(.dark-mode) .invest-box { background:var(--surface); border-color:var(--line); }
     body:not(.dark-mode) .nav-tab { color:var(--ink-soft); }

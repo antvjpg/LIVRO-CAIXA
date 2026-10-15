@@ -590,15 +590,17 @@
     position:relative;
     overflow:hidden;
   }
-  .auth-box::before{
-    content:"▣  LIVRO-CAIXA";
-    display:block;
+  .auth-box-brand{
+    display:flex;
+    align-items:center;
+    gap:7px;
     margin-bottom:18px;
     color:var(--green);
     font-size:10px;
     font-weight:700;
     letter-spacing:.12em;
   }
+  .auth-box-brand .fi{font-size:13px;line-height:1;}
   .auth-box h2{
     font-family:var(--font-ui);
     margin:0 0 7px;
@@ -656,12 +658,12 @@
   #authGoogle:hover{background:var(--green-soft);color:var(--ink);}
   body:not(.dark-mode) #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 29%),var(--paper);}
   body:not(.dark-mode) .auth-box{background:var(--surface);border-color:var(--line);box-shadow:0 18px 42px color-mix(in srgb,var(--accent) 18%,transparent);}
-  body:not(.dark-mode) .auth-box::before,body:not(.dark-mode) .auth-toggle a{color:var(--accent);}
+  body:not(.dark-mode) .auth-box-brand,body:not(.dark-mode) .auth-toggle a{color:var(--accent);}
   body:not(.dark-mode) .auth-box input,body:not(.dark-mode) #authGoogle{background:var(--paper);border-color:var(--line);color:var(--ink);}
   body:not(.dark-mode) #authGoogle:hover{background:var(--surface-raised);color:var(--ink);}
   body.dark-mode #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 29%),var(--paper);}
   body.dark-mode .auth-box{background:var(--surface);border-color:var(--line);box-shadow:0 18px 42px rgba(0,0,0,.34);}
-  body.dark-mode .auth-box::before{color:var(--accent);}
+  body.dark-mode .auth-box-brand{color:var(--accent);}
   body.dark-mode .auth-box p.sub{color:var(--ink-soft);}
   body.dark-mode .auth-box input,body.dark-mode #authGoogle{background:var(--paper);border-color:var(--line);color:var(--ink);}
   body.dark-mode #authGoogle:hover{background:var(--surface-raised);color:var(--ink);}
