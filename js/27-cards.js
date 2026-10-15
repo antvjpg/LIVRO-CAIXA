@@ -221,6 +221,7 @@
   async function markInvoicePaidOnly(cardId, closingPeriodKey, titular, totalAmount) {
     const card = cards.find(c => c.id === cardId);
     if (!card) return;
+    showToast('Salvando status da fatura…', 'info', 2000);
     const id = invoiceLaunchId(cardId, closingPeriodKey, titular);
     const existing = invoiceLaunches.find(x => x.id === id);
     const invoiceState = window.LivroCaixaCardEngineV3.invoice(
@@ -329,6 +330,7 @@
     const id = invoiceLaunchId(cardId, closingPeriodKey, titular);
     const existing = invoiceLaunches.find(x => x.id === id);
     if (!existing || !existing.markedPaidOnly) return;
+    showToast('Removendo status pago…', 'info', 2000);
     const prev = JSON.parse(JSON.stringify(existing));
     // se não há payments, remove o registro; senão só tira a flag
     if (!Array.isArray(existing.payments) || existing.payments.length === 0) {

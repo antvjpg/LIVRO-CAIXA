@@ -222,12 +222,15 @@
         transition: transform 0.2s ease;
       `;
       modal.innerHTML = `
-        <p style="margin: 0 0 20px; font-size: 15px; color: #1a1a1a; line-height: 1.5;">${message}</p>
+        <p style="margin: 0 0 20px; font-size: 15px; color: #1a1a1a; line-height: 1.5;"></p>
         <div style="display: flex; gap: 8px; justify-content: flex-end;">
-          <button id="confirm-cancel" style="padding: 10px 16px; border: 1px solid #c9d1d9; background: white; border-radius: 6px; cursor: pointer; font-size: 14px;">${options.cancelText || 'Cancelar'}</button>
-          <button id="confirm-ok" style="padding: 10px 16px; border: 1px solid #0b5fff; background: #0b5fff; color: white; border-radius: 6px; cursor: pointer; font-size: 14px;">${options.okText || 'Confirmar'}</button>
+          <button id="confirm-cancel" style="padding: 10px 16px; border: 1px solid #c9d1d9; background: white; border-radius: 6px; cursor: pointer; font-size: 14px;"></button>
+          <button id="confirm-ok" style="padding: 10px 16px; border: 1px solid #0b5fff; background: #0b5fff; color: white; border-radius: 6px; cursor: pointer; font-size: 14px;"></button>
         </div>
       `;
+      modal.querySelector('p').textContent = message;
+      modal.querySelector('#confirm-cancel').textContent = options.cancelText || 'Cancelar';
+      modal.querySelector('#confirm-ok').textContent = options.okText || 'Confirmar';
       overlay.appendChild(modal);
       document.body.appendChild(overlay);
 

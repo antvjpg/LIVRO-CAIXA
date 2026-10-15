@@ -1377,6 +1377,9 @@ window.deletePocket = function(id) {
 
   window.closeAllPanels = function() {
     closeFilterChoice();
+    /* Limpa o estado do painel de lançamento de conta; sem isso, cancelar o
+       showConfirm interno de launchBill deixava pendingBillLaunch stale. */
+    pendingBillLaunch = null;
     /* Painel "compromissos do dia" é um .modal-overlay dinâmico (#bill-day-panel-v19-16).
        Sem removê-lo aqui, um Escape (handler global em keydown) escondia só o
        .panel.open interno e mantinha o overlay escuro preso na tela — deadlock
@@ -1540,12 +1543,12 @@ receiptAIResponseText = '';
   window.recordInvoicePayment = async function(cardId, closingPeriodKey, titular, totalAmount, paymentAmount, btn=null) {
     if(btn){ btn.disabled=true; btn.textContent='Lançando...'; }
     try {
-      if (!currentUser) { alert('Sessão expirada. Entre novamente para lançar.'); return; }
+      if (!currentUser) { showToast('Sessão expirada. Entre novamente para lançar.', 'error'); return; }
       const card = cards.find(c => c.id === cardId);
-      if (!card) { alert('Cartão não encontrado.'); return; }
+      if (!card) { showToast('Cartão não encontrado.', 'error'); return; }
       const amount = Number(paymentAmount);
-      if (!(amount > 0)) { alert('Informe um valor de pagamento válido.'); return; }
-      if (!window.LivroCaixaCardEngineV3) { alert('Motor de cartões não carregado. Recarregue a página.'); return; }
+      if (!(amount > 0)) { showToast('Informe um valor de pagamento válido.', 'warning'); return; }
+      if (!window.LivroCaixaCardEngineV3) { showToast('Motor de cartões não carregado. Recarregue a página.', 'error'); return; }
       const validation = window.LivroCaixaCardEngineV3.validatePaymentForTitular(
         cardId,
         closingPeriodKey,
@@ -1558,13 +1561,13 @@ receiptAIResponseText = '';
 
       if (!validation.valid) {
         if (validation.reason === 'invalid_amount') {
-          alert('Informe um valor de pagamento válido.');
+          showToast('Informe um valor de pagamento válido.', 'warning');
         } else if (validation.reason === 'empty_invoice') {
-          alert('Não há saldo de fatura para este titular.');
+          showToast('Não há saldo de fatura para este titular.', 'warning');
         } else if (validation.reason === 'payment_exceeds_titular_invoice') {
-          alert(`O valor não pode ser maior que o restante (${fmt(validation.remaining)}).`);
+          showToast(`O valor não pode ser maior que o restante (${fmt(validation.remaining)}).`, 'warning');
         } else {
-          alert('Não foi possível validar este pagamento.');
+          showToast('Não foi possível validar este pagamento.', 'error');
         }
         return;
       }
@@ -1632,7 +1635,7 @@ receiptAIResponseText = '';
           }
         });
         logSyncError('lançamento de fatura por titular', err);
-        alert('Não foi possível registrar esse pagamento agora. Verifique sua conexão e tente novamente.');
+        showToast('Não foi possível registrar esse pagamento agora. Verifique sua conexão e tente novamente.', 'error');
       } finally {
         render(); renderBills();
       }
@@ -2845,13 +2848,13 @@ document.getElementById('tSalvar').onclick = async () => {
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     const hasAnything = activeEntries.length > 0 || pocketsBlock.length > 0 || investBlock.length > 0;
-    if (!hasAnything) { alert('Não há dados para exportar nos filtros/período atuais.'); return; }
+    if (!hasAnything) { showToast('Não há dados para exportar nos filtros/período atuais.', 'warning'); return; }
     renderExportPreview(); openModal('panelExportFormat');
     logInfo('Exportação','Abertura da prévia','Sucesso','Prévia do extrato aberta.',{count: activeEntries.length});
   };
   document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); };
   document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); };
-  document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx().catch(err => { logSyncError('exportação DOCX', err); alert('Não foi possível gerar o arquivo Word.'); }); };
+  document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx().catch(err => { logSyncError('exportação DOCX', err); showToast('Não foi possível gerar o arquivo Word.', 'error'); }); };
 
   const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
   const PDF_IMPORT_MAX_PAGES = 80;
