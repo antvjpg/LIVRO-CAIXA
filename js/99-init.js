@@ -1440,14 +1440,16 @@ window.deletePocket = function(id) {
   window.deleteBill = async id => { if(!confirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); logInfo('Calendário','Exclusão de conta','Sucesso','Conta removida; lançamentos já realizados foram preservados.'); renderBills(); };
   pendingBillLaunch = null;
 
-  window.launchBill = async (id,monthKey) => { const bill=recurringBills.find(b=>b.id===id); if(bill) await launchBill(bill,monthKey); };
+  window.launchBill = async (billId, monthKey, selectedBankId = null, btn=null) => {
+    if(!billId || !monthKey) return;
+    await launchBill(billId, monthKey, selectedBankId);
+  };
   document.getElementById('billLaunchConfirm').onclick = async () => {
     if (!pendingBillLaunch) return;
     const { billId, monthKey } = pendingBillLaunch;
-    const bill = recurringBills.find(b => b.id === billId);
     const bankId = document.getElementById('billLaunchBank').value;
     pendingBillLaunch = null;
-    if (bill) await launchBill(bill, monthKey, bankId);
+    if (billId) await launchBill(billId, monthKey, bankId);
   };
   window.openBillShare = openBillShare;
 
