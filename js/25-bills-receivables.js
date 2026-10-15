@@ -57,8 +57,7 @@
         logSyncError('marcar conta como paga', err);
         showToast('Não foi possível salvar o status pago. Tente novamente.', 'error');
       } finally {
-        renderBills();
-        renderNotifications();
+        render();
       }
     } finally {
       if(btn){ btn.disabled=false; btn.textContent='Marcar pago'; }
@@ -79,8 +78,7 @@
         logSyncError('desmarcar conta paga', err);
         showToast('Não foi possível atualizar o status.', 'error');
       } finally {
-        renderBills();
-        renderNotifications();
+        render();
       }
     } finally {
       if(btn){ btn.disabled=false; btn.textContent='Desmarcar pago'; }
@@ -313,7 +311,7 @@
       bill.bank = bankId;
       bill.generatedMonths=previousGeneratedMonths.slice();
       bill.generatedMonths.push(monthKey);
-      render(); renderBills();
+      render();
       try {
         await persistAll();
         logInfo('Calendário','Lançar no Livro-Caixa','Sucesso',`${bill.name} lançado em ${date}.`,{bankId, recurringBillId: bill.id});
@@ -325,8 +323,7 @@
         bill.generatedMonths = previousGeneratedMonths;
         logSyncError('lançamento de conta', err);
         showToast('Não foi possível confirmar o lançamento no servidor. A conta continua como pendente.', 'error');
-      } finally {
-        render(); renderBills();
+        render();
       }
     } finally {
       if(btn){ btn.disabled=false; btn.textContent='Lançar'; }
