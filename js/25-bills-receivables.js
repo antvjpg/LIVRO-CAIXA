@@ -285,6 +285,7 @@
   let pendingBillLaunch;
 
   function openBillLaunchPanel(bill, monthKey){
+    if (!banks || !banks.length) { showToast('Nenhum banco cadastrado. Cadastre um banco antes de lançar.', 'error'); return; }
     pendingBillLaunch = { billId: bill.id, monthKey };
     document.getElementById('billLaunchDescription').textContent = `${bill.name} · ${fmt(bill.amount)}. O banco “A definir” é temporário; selecione o banco real antes de lançar.`;
     document.getElementById('billLaunchBank').innerHTML = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
