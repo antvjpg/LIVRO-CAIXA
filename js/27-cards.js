@@ -76,7 +76,7 @@
     openModal('panelCard');
   }
   function openPurchaseModal(cardId = '', id = null) {
-    if (!cards.filter(c => c.active !== false).length && !id) { alert('Cadastre pelo menos um cartão ativo antes de registrar uma compra.'); return; }
+    if (!cards.filter(c => c.active !== false).length && !id) { showToast('Cadastre pelo menos um cartão ativo antes de registrar uma compra.', 'error'); return; }
     editingPurchaseId = id;
     const purchase = id ? purchases.find(p => p.id === id) : null;
     renderPurchaseSelects(purchase?.cardId || cardId || cards.find(c => c.active !== false)?.id || '', purchase?.categoryId || categories[0]?.id || '');
@@ -244,7 +244,7 @@
       (target.payableStatus || target.status) === 'Pago' &&
       target.markedPaidOnly !== true
     ) {
-      alert('Esta fatura já foi lançada no Livro-Caixa.');
+      showToast('Esta fatura já foi lançada no Livro-Caixa.', 'warning');
       return;
     }
     const prev = existing ? JSON.parse(JSON.stringify(existing)) : null;
@@ -318,7 +318,7 @@
         if (idx >= 0) invoiceLaunches[idx] = item.snapshot;
       });
       logSyncError('marcar fatura como paga', err);
-      alert('Não foi possível salvar. Tente novamente.');
+      showToast('Não foi possível salvar. Tente novamente.', 'error');
     } finally {
       renderBills();
       renderCards();
@@ -344,7 +344,7 @@
       if (idx >= 0) invoiceLaunches[idx] = prev;
       else invoiceLaunches.push(prev);
       logSyncError('desmarcar fatura paga', err);
-      alert('Não foi possível atualizar. Tente novamente.');
+      showToast('Não foi possível atualizar. Tente novamente.', 'error');
     } finally {
       renderBills();
       renderCards();
@@ -947,7 +947,7 @@
     const dateInput = document.getElementById('fData').value;
 
     if (receiptReaderState?.aiStatus === 'completed' && !dateInput) {
-      alert('A data do comprovante não foi identificada. Informe a data antes de salvar.');
+      showToast('A data do comprovante não foi identificada. Informe a data antes de salvar.', 'error');
       return false;
     }
 
@@ -958,7 +958,7 @@
     const valor = readMoneyInput('fValor');
 
     if (!desc || isNaN(valor) || valor <= 0) {
-      alert('Preencha a descrição e um valor válido.');
+      showToast('Preencha a descrição e um valor válido.', 'error');
       return false;
     }
 

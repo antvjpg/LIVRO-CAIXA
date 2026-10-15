@@ -55,7 +55,7 @@
       } catch (err) {
         bill.paidMonths = bill.paidMonths.filter(k => k !== monthKey);
         logSyncError('marcar conta como paga', err);
-        alert('Não foi possível salvar o status pago. Tente novamente.');
+        showToast('Não foi possível salvar o status pago. Tente novamente.', 'error');
       } finally {
         renderBills();
         renderNotifications();
@@ -77,7 +77,7 @@
       } catch (err) {
         bill.paidMonths = previous;
         logSyncError('desmarcar conta paga', err);
-        alert('Não foi possível atualizar o status. Tente novamente.');
+        showToast('Não foi possível atualizar o status.', 'error');
       } finally {
         renderBills();
         renderNotifications();
@@ -183,8 +183,8 @@
     const expectedAt = document.getElementById('recvDataPrevista').value || '';
     const status = normalizeReceivableStatus(document.getElementById('recvStatus').value);
     const notes = document.getElementById('recvObs').value.trim();
-    if (!person || !desc) { alert('Informe pessoa e descrição.'); return; }
-    if (!(amount > 0)) { alert('Informe um valor válido.'); return; }
+    if (!person || !desc) { showToast('Informe pessoa e descrição.', 'error'); return; }
+    if (!(amount > 0)) { showToast('Informe um valor válido.', 'error'); return; }
     const base = {
       person, desc, amount, registeredAt, expectedAt, status, notes,
       updatedAt: new Date().toISOString()
@@ -224,7 +224,7 @@
       renderReceivables();
     } catch (err) {
       logSyncError('valores a receber', err);
-      alert('Não foi possível salvar. Tente novamente.');
+      showToast('Não foi possível salvar. Tente novamente.', 'error');
     }
   }
   async function setReceivableStatus(id, status) {
@@ -295,12 +295,13 @@
   async function launchBill(billId, monthKey, selectedBankId = null, btn=null){
     if(btn){ btn.disabled=true; btn.textContent='Lançando...'; }
     try {
-      if(!currentUser) { alert('Sessão expirada. Entre novamente para lançar.'); return; }
+      if(!currentUser) { showToast('Sessão expirada. Entre novamente para lançar.', 'error'); return; }
       const bill = recurringBills.find(b => b.id === billId);
-      if (!bill) { alert('Conta não encontrada.'); return; }
-      if(billGeneratedForMonth(bill,monthKey)) { alert('Esta conta já foi lançada este mês.'); return; }
+      if (!bill) { showToast('Conta não encontrada.', 'error'); return; }
+      if(billGeneratedForMonth(bill,monthKey)) { showToast('Esta conta já foi lançada este mês.', 'warning'); return; }
       if (bill.bank === 'a-definir' && !selectedBankId) { openBillLaunchPanel(bill, monthKey); return; }
-      if (!confirm(`Confirmar lançamento de ${bill.name} no Livro-Caixa?`)) return;
+      const confirmed = await showConfirm(`Confirmar lançamento de ${bill.name} no Livro-Caixa?`);
+      if (!confirmed) return;
       const [year,month] = monthKey.split('-').map(Number);
       const date=billDueDateForMonth(bill,year,month-1);
       const bankId = selectedBankId || bill.bank;
@@ -317,12 +318,13 @@
         await persistAll();
         logInfo('Calendário','Lançar no Livro-Caixa','Sucesso',`${bill.name} lançado em ${date}.`,{bankId, recurringBillId: bill.id});
         closeAllPanels();
+        showToast(`${bill.name} lançado com sucesso`, 'success');
       } catch (err) {
         entries = entries.filter(item => item.id !== entry.id);
         bill.bank = previousBank;
         bill.generatedMonths = previousGeneratedMonths;
         logSyncError('lançamento de conta', err);
-        alert('Não foi possível confirmar o lançamento no servidor. A conta continua como pendente — verifique sua conexão e tente novamente.');
+        showToast('Não foi possível confirmar o lançamento no servidor. A conta continua como pendente.', 'error');
       } finally {
         render(); renderBills();
       }
