@@ -337,9 +337,13 @@
   }
   function populateBillTitularFilter() {
     const select = document.getElementById('billTitularFilter'); if (!select) return;
-    const current = select.value; const values = billTitularValues();
+    const saved = localStorage.getItem('billTitularFilter');
+    const current = saved || select.value;
+    const values = billTitularValues();
     select.innerHTML = '<option value="">Todos</option>' + values.map(value => `<option value="${escapeHTML(value)}">${escapeHTML(value)}</option>`).join('');
     if (values.includes(current)) select.value = current;
+    else if (current) { /* saved value not in current list */ }
+    select.onchange = () => { localStorage.setItem('billTitularFilter', select.value); renderBills(); };
   }
   function visibleBillsForCalendar() {
     const titular = document.getElementById('billTitularFilter')?.value || '';
