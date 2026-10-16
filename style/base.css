@@ -122,6 +122,20 @@
   header.app-header{position:relative;overflow:hidden;}
   .header-icon-button{width:42px;min-width:42px;height:42px;min-height:42px;padding:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:20px;line-height:1;letter-spacing:0;box-shadow:0 3px 10px var(--shadow);position:relative;z-index:2;}
   .header-icon-button:hover{background:var(--green-soft);color:var(--accent);border-color:var(--accent);}
+  .header-search-bar{
+    display:flex;align-items:center;justify-content:flex-start;gap:9px;
+    width:100%;max-width:330px;
+    margin:0 0 12px;
+    padding:9px 13px;
+    border:1px solid var(--line);border-radius:12px;
+    background:var(--surface);color:var(--ink-soft);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+    text-align:left;cursor:pointer;
+    box-shadow:0 3px 10px var(--shadow);
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  .header-search-bar .fi{font-size:15px;color:var(--accent);}
+  .header-search-bar:hover{background:var(--green-soft);border-color:var(--accent);color:var(--ink);}
   #btnOpenDrawer{margin-right:2px;}
   .notification-button{font-size:18px;}
   .notification-badge{position:absolute;top:-7px;right:-7px;display:grid;place-items:center;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:var(--gold);color:var(--accent-ink);font-size:10px;font-weight:800;line-height:1;box-shadow:0 0 0 2px var(--surface);}

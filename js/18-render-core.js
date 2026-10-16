@@ -693,13 +693,13 @@
           <button type="button" class="action-btn beta-icon-button edit" onclick="editCategory('${c.id}')" aria-label="Editar categoria" title="Editar categoria"></button>
           <button type="button" class="action-btn beta-icon-button delete" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria" title="Excluir categoria"></button>
         </span>
-      </div>
-      <div class="cat-subs" data-cat="${c.id}">
-        ${chips}
-        <span class="cat-sub-add">
-          <input type="text" class="cat-sub-input" maxlength="40" placeholder="Nova subcategoria" aria-label="Nova subcategoria de ${escapeHTML(c.name)}">
-          <button type="button" class="cat-sub-add-btn" onclick="addSubcategory('${c.id}')" aria-label="Adicionar subcategoria em ${escapeHTML(c.name)}" title="Adicionar subcategoria">+</button>
-        </span>
+        <div class="cat-subs" data-cat="${c.id}">
+          ${chips}
+          <span class="cat-sub-add">
+            <input type="text" class="cat-sub-input" maxlength="40" placeholder="Nova subcategoria" aria-label="Nova subcategoria de ${escapeHTML(c.name)}">
+            <button type="button" class="cat-sub-add-btn" onclick="addSubcategory('${c.id}')" aria-label="Adicionar subcategoria em ${escapeHTML(c.name)}" title="Adicionar subcategoria">+</button>
+          </span>
+        </div>
       </div>
     `;
     }).join('');

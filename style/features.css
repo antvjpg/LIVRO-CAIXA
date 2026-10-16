@@ -737,17 +737,18 @@
 .export-preview-sub small{color:var(--ink-soft);font-size:11px;display:block;margin-top:2px;}
 .export-preview-more{margin-top:10px;padding:12px;text-align:center;background:var(--paper-2);border:1px dashed var(--line);border-radius:10px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:11px;}
 .export-preview-caption{margin-bottom:14px;padding:10px 16px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;font-size:13px;color:var(--ink-soft);line-height:1.5;}
-.export-controls{display:flex;flex-direction:column;gap:12px;margin-top:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);}
-.export-control-label{display:block;margin-bottom:7px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);}
-.export-period-pills{display:flex;flex-wrap:wrap;gap:7px;}
-.export-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;color:var(--ink);cursor:pointer;}
-.export-pill input{margin:0;accent-color:var(--accent);}
-.export-pill:has(input:checked){border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--paper));font-weight:700;}
-.export-custom-range{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--ink-soft);}
+.export-controls{display:flex;flex-direction:column;gap:16px;margin-top:14px;}
+.export-control-label{display:block;margin-bottom:8px;font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--ink);}
+.export-period-pills{display:flex;flex-wrap:wrap;gap:1.5px;border:1.5px solid var(--ink);border-radius:4px;background:var(--ink);overflow:hidden;}
+.export-pill{position:relative;flex:1 1 auto;min-width:104px;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:8px 9px;border:0;border-radius:0;background:var(--paper);font-size:12px;color:var(--ink);cursor:pointer;}
+.export-pill input{position:absolute;opacity:0;pointer-events:none;margin:0;}
+.export-pill:has(input:checked){background:var(--ink);color:var(--paper);font-weight:700;}
+.export-pill:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:-3px;}
+.export-custom-range{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft);}
 .export-custom-range input[type="date"]{min-width:0;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font-size:12px;}
-.export-column-checks{display:flex;flex-wrap:wrap;gap:7px;}
-.export-column-checks label{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:12px;color:var(--ink);cursor:pointer;}
-.export-column-checks label:has(input:checked){border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--paper));font-weight:600;}
+.export-column-checks{display:flex;flex-wrap:wrap;gap:8px 16px;}
+.export-column-checks label{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink);cursor:pointer;}
+.export-column-checks label:has(input:checked){font-weight:600;}
 .export-column-checks input{margin:0;accent-color:var(--accent);}
 #exportGranularHint{margin:8px 0 0;font-size:11px;color:var(--ink-soft);line-height:1.4;}
 #panelExportFormat .toolbar button:disabled{opacity:.5;cursor:not-allowed;}
@@ -4519,7 +4520,8 @@ body[data-tab="profile"] .fab-add{
 .profile-group-icon{
   font-size:14px;line-height:1;opacity:.95;
 }
-.profile-inline-icon{margin-right:4px;}
+.profile-inline-icon{display:inline-flex;align-items:center;margin-right:5px;vertical-align:-2px;font-size:13px;line-height:1;}
+.profile-inline-icon .fi{font-size:14px;line-height:1;}
 
 /* F13 — período ativo retrátil */
 #universalPeriodBar.is-collapsed .period-bar-body{
@@ -5560,17 +5562,19 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   color:var(--ink);
 }
 
-/* Feature 3 — subcategorias no painel de categorias */
+/* Feature 3 — subcategorias no painel de categorias (dentro do próprio card da categoria) */
+#catManageList .cat-list-item{flex-wrap:wrap;}
 .cat-subs{
   display:flex;
   flex-wrap:wrap;
   align-items:center;
   gap:6px;
-  padding:6px 14px 8px;
-  background:var(--paper-2);
-  border:1px solid var(--line);
-  border-top:0;
-  margin:0;
+  flex:0 0 100%;
+  margin:8px 0 0;
+  padding:8px 0 0;
+  background:transparent;
+  border:0;
+  border-top:1px dashed var(--line);
 }
 .cat-sub-chip{
   display:inline-flex;
@@ -6434,6 +6438,7 @@ body:not(.dark-mode) .goals-form-body select {
 }
 
 #btnBillsToday .fi,
+#btnLockNow .fi,
 #btnExportBillsPdf .fi,
 #btnExportBillsXlsx .fi,
 #btnExportFormatPdf .fi,
@@ -6447,6 +6452,7 @@ body:not(.dark-mode) .goals-form-body select {
 }
 
 #btnBillsToday .fi,
+#btnLockNow .fi,
 #btnExportBillsPdf .fi,
 #btnExportBillsXlsx .fi {
   color: var(--accent);

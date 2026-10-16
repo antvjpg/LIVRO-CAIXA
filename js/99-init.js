@@ -217,7 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
      DOMContentLoaded e precisa salvar a aba 'goals' pelo guard typeof. */
   window.persistLastTab = persistLastTab;
 
-  document.getElementById('btnTogglePeriodBar')?.addEventListener('click', () => {
+  document.getElementById('universalPeriodBar')?.addEventListener('click', (event) => {
+    if (event.target && typeof event.target.closest === 'function' && event.target.closest('.period-controls')) return;
     const bar = document.getElementById('universalPeriodBar');
     const btn = document.getElementById('btnTogglePeriodBar');
     if (!bar || !btn) return;

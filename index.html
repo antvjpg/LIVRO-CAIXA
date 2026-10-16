@@ -144,11 +144,13 @@
 <header class="app-header">
   <button type="button" id="btnOpenDrawer" class="header-icon-button" aria-label="Abrir menu" title="Menu"><i class="fi fi-rr-menu-burger" aria-hidden="true"></i></button>
   <div class="app-brand">
+    <button type="button" id="btnUniversalSearch" class="header-search-bar" title="Buscar">
+      <i class="fi fi-rr-search" aria-hidden="true"></i><span>Buscar no Livro-Caixa</span>
+    </button>
     <h1>Livro-Caixa</h1>
     <div class="subtitle"><i class="fi fi-rr-calendar-day" aria-hidden="true"></i><span id="todayLabel">—</span></div>
   </div>
   <div class="app-header-actions">
-    <button type="button" id="btnUniversalSearch" class="header-icon-button" aria-label="Busca universal" title="Buscar"><i class="fi fi-rr-search" aria-hidden="true"></i></button>
     <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><i class="fi fi-rs-bell-notification-social-media" aria-hidden="true"></i><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
     <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><i class="fi fi-sr-contrast" aria-hidden="true"></i></button>
     <div id="userBar"></div>
@@ -605,7 +607,7 @@
             <div><label for="featureLockGrace">Rebloquear após inatividade</label><div class="feature-profile-input-suffix"><input type="number" id="featureLockGrace" min="0" max="30" step="1" value="5"><span>min</span></div></div>
           </div>
           <p class="feature-profile-section-desc">Minutos sem atividade antes de pedir o PIN ou a biometria ao voltar ao app ou deixá-lo parado. 0 = pedir sempre.</p>
-          <div class="feature-profile-actions"><button type="button" id="btnLockNow"><span class="quick-action-icon" aria-hidden="true" style="width:15px;height:15px;display:inline-flex;vertical-align:-2px;margin-right:5px;"><i class="fi fi-rr-lock" aria-hidden="true"></i></span>Bloquear agora</button></div>
+          <div class="feature-profile-actions"><button type="button" id="btnLockNow"><i class="fi fi-rr-lock" aria-hidden="true"></i>Bloquear agora</button></div>
           <div class="feature-profile-actions" style="margin-top:8px;flex-wrap:wrap;gap:8px;">
             <button type="button" id="btnEnableBiometric">Usar biometria neste aparelho</button>
             <button type="button" id="btnDisableBiometric">Desativar biometria</button>
@@ -621,7 +623,7 @@
         <div class="profile-list">
           <label class="feature-profile-toggle">
             <input type="checkbox" id="chkHideBalancesOnOpen">
-            <span class="feature-profile-toggle-copy"><strong><span class="profile-inline-icon" aria-hidden="true">👁</span> Ocultar saldos ao abrir</strong><small>Os valores iniciam como ••••••. Toque em qualquer saldo/valor na tela para alternar a visualização.</small></span>
+            <span class="feature-profile-toggle-copy"><strong><span class="profile-inline-icon" aria-hidden="true"><i class="fi fi-rr-eye"></i></span> Ocultar saldos ao abrir</strong><small>Os valores iniciam como ••••••. Toque em qualquer saldo/valor na tela para alternar a visualização.</small></span>
             <span class="feature-profile-switch" aria-hidden="true"></span>
           </label>
         </div>
@@ -1397,7 +1399,7 @@
           <p class="hint" id="exportGranularHint" aria-live="polite">A prévia e os arquivos usam o período e as colunas escolhidos acima.</p>
         </div>
       </div>
-      <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:-6px;">Confira a prévia com o período e as colunas escolhidos antes de gerar o arquivo.</p>
+      <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:8px;">Confira a prévia com o período e as colunas escolhidos antes de gerar o arquivo.</p>
       <div id="exportPreview" class="export-preview" aria-live="polite"></div>
       <div class="toolbar" style="grid-template-columns: 1fr 1fr; margin-top:14px;">
         <button class="primary" id="btnExportFormatPdf"><i class="fi fi-rr-file-pdf" aria-hidden="true"></i>PDF</button>

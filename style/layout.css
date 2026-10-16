@@ -11,6 +11,20 @@
     header.app-header .app-brand, .app-header-actions { position:relative; z-index:1; }
     header.app-header .app-brand { pointer-events:none; user-select:none; }
     header.app-header .app-brand { margin-left:50px; padding-right:56px; }
+    header.app-header .header-search-bar{
+      pointer-events:auto;
+      max-width:none;
+      margin-bottom:10px;
+      padding:8px 12px;
+      background:rgba(249,248,243,.14);
+      border-color:rgba(249,248,243,.38);
+      color:rgba(249,248,243,.92);
+      box-shadow:none;
+      font-size:10px;
+      letter-spacing:.04em;
+    }
+    header.app-header .header-search-bar .fi{color:#B9D0BB;}
+    header.app-header .header-search-bar:hover{background:rgba(249,248,243,.24);border-color:rgba(249,248,243,.6);color:#F9F8F3;}
     header.app-header h1 { color:#F9F8F3; font-size:clamp(30px,8.5vw,40px); line-height:.98; letter-spacing:-.045em; margin-bottom:12px; }
     header.app-header .subtitle { color:rgba(248,247,242,.85); font-size:11px; letter-spacing:.05em; text-transform:none; display:flex; align-items:center; gap:7px; }
     header.app-header .subtitle .fi { display:inline-block; color:#B9D0BB; font-size:14px; line-height:1; }
