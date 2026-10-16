@@ -236,6 +236,33 @@
         const status = billStatus(bill, key);
         alerts.push({ icon: status === 'Atrasado' ? '!' : '◷', title: `${status}: ${bill.name}`, detail: `Vencimento ${billDueDateForMonth(bill, new Date().getFullYear(), new Date().getMonth())} · ${fmt(bill.amount)}` });
       });
+      // Alerta antes do fechamento da fatura dos cartões: X dias antes do
+      // fechamento, com o valor previsto da fatura em aberto (mesmo motor do app).
+      // X = reminderAdvanceDays (0 = sem antecedência, mesma regra das contas).
+      try {
+        const engine = window.LivroCaixaCardEngineV3;
+        const advance = Math.min(30, Math.max(0, Number(featureSettings.reminderAdvanceDays) || 0));
+        const today = todayISO();
+        if (advance > 0) (Array.isArray(cards) ? cards : []).filter(card => card && card.active !== false).forEach(card => {
+          try {
+            if (typeof engine?.invoicePeriodKeyForDate !== 'function' || typeof engine?.invoiceCycleRange !== 'function') return;
+            const periodKey = engine.invoicePeriodKeyForDate(card, today);
+            const cycle = engine.invoiceCycleRange(card, periodKey);
+            if (!cycle || !cycle.end) return;
+            const daysUntil = Math.round((new Date(`${cycle.end}T00:00:00`) - new Date(`${today}T00:00:00`)) / 86400000);
+            if (daysUntil < 0 || daysUntil > advance) return;
+            if (typeof engine.invoice !== 'function') return;
+            const invoice = engine.invoice(card.id, periodKey, purchases || [], cards || [], invoiceLaunches || []);
+            const value = Number((invoice && (invoice.payableTotal || invoice.total)) || 0);
+            if (!(value > 0)) return;
+            alerts.push({
+              icon: '▤',
+              title: `Fatura de ${card.name || 'cartão'} fecha ${daysUntil === 0 ? 'hoje' : `em ${daysUntil} dia(s)`}`,
+              detail: `Fecha em ${String(cycle.end).split('-').reverse().join('/')} · valor previsto: ${fmt(value)}.`
+            });
+          } catch (err) { /* cartão sem cálculo disponível */ }
+        });
+      } catch (err) { /* motor de cartões indisponível */ }
     }
     return alerts.slice(0, 8);
   }
@@ -271,10 +298,160 @@
 
   function openNotifications() {
     closeDrawer();
+    if (typeof closeUniversalSearch === 'function') closeUniversalSearch();
     renderNotifications();
     const overlay = document.getElementById('notificationOverlay');
     overlay?.classList.add('is-open');
     overlay?.setAttribute('aria-hidden', 'false');
+  }
+
+  /* [Busca universal] — lupa no topo: busca nome de lançamento, banco,
+     categoria ou valor em todo o aplicativo (feature 11). */
+  function universalSearchNormalize(value) {
+    return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+
+  function universalSearchNumber(query) {
+    const raw = String(query ?? '').trim();
+    if (!/^-?\d[\d.,]*$/.test(raw)) return null;
+    const n = Number(raw.replace(/\./g, '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function openUniversalSearch() {
+    closeDrawer();
+    if (typeof closeNotifications === 'function') closeNotifications();
+    const overlay = document.getElementById('universalSearchOverlay');
+    overlay?.classList.add('is-open');
+    overlay?.setAttribute('aria-hidden', 'false');
+    const input = document.getElementById('universalSearchInput');
+    if (input) {
+      renderUniversalSearchResults(input.value);
+      input.focus();
+      input.select();
+    }
+  }
+
+  function closeUniversalSearch() {
+    const overlay = document.getElementById('universalSearchOverlay');
+    overlay?.classList.remove('is-open');
+    overlay?.setAttribute('aria-hidden', 'true');
+  }
+
+  function universalSearchGo(kind, id) {
+    closeUniversalSearch();
+    try {
+      if (kind === 'entry') {
+        window.switchTab('caixa');
+        if (typeof window.editEntry === 'function') window.editEntry(id);
+        return;
+      }
+      if (kind === 'bank' || kind === 'category') {
+        const selectId = kind === 'bank' ? 'filterBank' : 'filterCategory';
+        clearSelectedFilterValues(selectId);
+        const select = document.getElementById(selectId);
+        if (select) Array.from(select.options).forEach(option => { option.selected = option.value === id; });
+        refreshFilterChoiceSummaries();
+        window.switchTab('caixa');
+        refreshFilteredViews();
+        return;
+      }
+      const tabByKind = { bill: 'bills', card: 'cards', purchase: 'cards', pocket: 'pockets', goal: 'goals', investment: 'invest' };
+      if (tabByKind[kind]) window.switchTab(tabByKind[kind]);
+    } catch (err) {
+      console.error('[universalSearch] Falha ao abrir resultado:', err);
+    }
+  }
+
+  function renderUniversalSearchResults(query) {
+    const box = document.getElementById('universalSearchResults');
+    if (!box) return;
+    const q = universalSearchNormalize(query);
+    if (!q) {
+      box.innerHTML = '<div class="universal-search-hint">Busque por nome de lançamento, banco, categoria ou valor.</div>';
+      return;
+    }
+    const num = universalSearchNumber(query);
+    const matchesText = (...values) => values.some(value => universalSearchNormalize(value).includes(q));
+    const matchesAmount = value => num !== null && Math.abs(Number(value || 0) - num) < 0.005;
+    const row = (kind, id, title, meta, value) => ({ kind, id, title, meta, value: value || '' });
+    const groups = [];
+
+    const entryRows = entries
+      .filter(entry => matchesText(entry.description, banks.find(bank => bank.id === entry.bank)?.name, categories.find(cat => cat.id === entry.category)?.name, entry.amount)
+        || matchesAmount(entry.amount))
+      .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
+      .slice(0, 10)
+      .map(entry => row(
+        'entry',
+        entry.id,
+        entry.description || 'Sem descrição',
+        `${String(entry.date || '').split('-').reverse().join('/')} · ${categories.find(cat => cat.id === entry.category)?.name || 'Sem categoria'} · ${banks.find(bank => bank.id === entry.bank)?.name || 'Sem conta'}`,
+        `${entry.type === 'out' ? '−' : '+'}${fmt(entry.amount)}`
+      ));
+    if (entryRows.length) groups.push({ label: 'Lançamentos', rows: entryRows });
+
+    const bankRows = banks
+      .filter(bank => matchesText(bank.name) || matchesAmount(bankBalance(bank.id)))
+      .slice(0, 4)
+      .map(bank => row('bank', bank.id, bank.name, 'Conta bancária', fmt(bankBalance(bank.id))));
+    if (bankRows.length) groups.push({ label: 'Contas', rows: bankRows });
+
+    const categoryRows = categories
+      .filter(cat => matchesText(cat.name))
+      .slice(0, 4)
+      .map(cat => row('category', cat.id, cat.name, 'Categoria'));
+    if (categoryRows.length) groups.push({ label: 'Categorias', rows: categoryRows });
+
+    const billRows = recurringBills
+      .filter(bill => matchesText(bill.name) || matchesAmount(bill.amount))
+      .slice(0, 4)
+      .map(bill => row('bill', bill.id, bill.name, 'Conta recorrente', fmt(bill.amount)));
+    if (billRows.length) groups.push({ label: 'Contas recorrentes', rows: billRows });
+
+    const cardRows = cards
+      .filter(card => matchesText(card.name) || matchesAmount(card.limit))
+      .slice(0, 4)
+      .map(card => row('card', card.id, card.name, 'Cartão de crédito', fmt(card.limit)));
+    if (cardRows.length) groups.push({ label: 'Cartões', rows: cardRows });
+
+    const purchaseRows = purchases
+      .filter(purchase => matchesText(purchase.description) || matchesAmount(purchase.totalValue) || matchesAmount(purchase.installmentValue))
+      .slice(0, 4)
+      .map(purchase => row('purchase', purchase.id, purchase.description || 'Compra sem descrição', 'Compra no cartão', fmt(purchase.totalValue)));
+    if (purchaseRows.length) groups.push({ label: 'Compras', rows: purchaseRows });
+
+    const pocketRows = pockets
+      .filter(pocket => matchesText(pocket.name))
+      .slice(0, 3)
+      .map(pocket => row('pocket', pocket.id, pocket.name, 'Caixinha'));
+    if (pocketRows.length) groups.push({ label: 'Caixinhas', rows: pocketRows });
+
+    const goalRows = goals
+      .filter(goal => matchesText(goal.name))
+      .slice(0, 3)
+      .map(goal => row('goal', goal.id, goal.name, 'Meta'));
+    if (goalRows.length) groups.push({ label: 'Metas', rows: goalRows });
+
+    const investmentRows = investments
+      .filter(inv => matchesText(inv.name, inv.alias))
+      .slice(0, 3)
+      .map(inv => row('investment', inv.id, inv.name || inv.alias || 'Investimento', 'Investimento'));
+    if (investmentRows.length) groups.push({ label: 'Investimentos', rows: investmentRows });
+
+    const total = groups.reduce((sum, group) => sum + group.rows.length, 0);
+    if (!total) {
+      box.innerHTML = `<div class="universal-search-hint">Nenhum resultado para “${escapeHTML(query)}”.</div>`;
+      return;
+    }
+    box.innerHTML = groups.map(group => `
+      <div class="universal-search-group">${escapeHTML(group.label)}</div>
+      ${group.rows.map(item => `
+        <button type="button" class="universal-search-item" data-search-kind="${item.kind}" data-search-id="${escapeHTML(String(item.id))}">
+          <span class="universal-search-copy"><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.meta)}</small></span>
+          ${item.value ? `<b>${escapeHTML(item.value)}</b>` : ''}
+        </button>`).join('')}
+    `).join('');
   }
 
   function renderBankSelects() {

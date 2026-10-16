@@ -1112,6 +1112,14 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
 
   document.getElementById('btnOpenDrawer')?.addEventListener('click', openDrawer);
   document.getElementById('btnNotifications')?.addEventListener('click', openNotifications);
+  document.getElementById('btnUniversalSearch')?.addEventListener('click', openUniversalSearch);
+  document.querySelector('[data-close-search]')?.addEventListener('click', closeUniversalSearch);
+  document.getElementById('universalSearchInput')?.addEventListener('input', event => renderUniversalSearchResults(event.target.value || ''));
+  document.getElementById('universalSearchOverlay')?.addEventListener('click', event => { if (event.target.id === 'universalSearchOverlay') closeUniversalSearch(); });
+  document.getElementById('universalSearchResults')?.addEventListener('click', event => {
+    const item = event.target.closest('[data-search-kind]');
+    if (item) universalSearchGo(item.dataset.searchKind, item.dataset.searchId);
+  });
   document.querySelector('[data-close-drawer]')?.addEventListener('click', closeDrawer);
   document.querySelector('[data-close-notifications]')?.addEventListener('click', closeNotifications);
   document.getElementById('appDrawerOverlay')?.addEventListener('click', event => { if (event.target.id === 'appDrawerOverlay') closeDrawer(); });
@@ -1136,7 +1144,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     if (action === 'theme') document.getElementById('btnThemeToggle')?.click();
     closeDrawer();
   }));
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeDrawer(); closeNotifications(); } });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeDrawer(); closeNotifications(); closeUniversalSearch(); } });
   document.getElementById('btnOpenFilters').onclick = () => { closeFilterChoice(); openModal('panelFiltros'); };
   document.getElementById('filterBankTrigger').onclick = () => openFilterChoice('bank');
   document.getElementById('filterCategoryTrigger').onclick = () => openFilterChoice('category');

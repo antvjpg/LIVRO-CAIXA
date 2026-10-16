@@ -895,7 +895,7 @@
     };
   }
 
-  function dashScoreComponents(flow, fixedExpenses, committed, patrimony, patrimonyStart) {
+  function dashScoreComponents(flow, fixedExpenses, committed, patrimony, patrimonyStart, overdueCount) {
     const parts = [];
     if (flow && flow.income > 0) {
       // Poupança: 20% das entradas já é nota máxima.
@@ -913,6 +913,10 @@
       // Evolução do patrimônio no período: -10% = zero; +10% = nota máxima.
       const growth = ((patrimony - patrimonyStart) / patrimonyStart) * 100;
       parts.push(dashClampPct(growth + 10, 20));
+    }
+    if (Number.isFinite(overdueCount)) {
+      // Atrasados: nenhum vencido = nota máxima; cada vencido remove 30 pontos.
+      parts.push(Math.max(0, 100 - overdueCount * 30));
     }
     return parts;
   }
@@ -1043,7 +1047,9 @@
     const categoriesSummary = dashCategoryRanking(scope, previousScope);
     const budgetsSummary = dashBudgetRows();
     const historyAvailable = dashHistoryAvailable(range);
-    const score = dashFinanceScore(dashScoreComponents(flow, fixedExpenses, committed, patrimony, patrimonyStart));
+    const overdueBucket = (obligations.buckets || []).find(bucket => bucket.key === 'overdue');
+    const overdueCount = overdueBucket && Array.isArray(overdueBucket.rows) ? overdueBucket.rows.length : 0;
+    const score = dashFinanceScore(dashScoreComponents(flow, fixedExpenses, committed, patrimony, patrimonyStart, overdueCount));
     const projectionEOM = dashEndOfMonthProjection(balanceAvailable);
     const monthComparison = dashMonthComparison();
 

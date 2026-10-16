@@ -528,7 +528,8 @@
 
   function purchaseRowHtml(p, concludedMap) {
     const cat = categories.find(c => c.id === p.categoryId)?.name || 'Sem categoria';
-    const parcel = p.paymentType === 'parcelado' ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
+    const parcelado = p.paymentType === 'parcelado';
+    const parcel = parcelado ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
     const concluded = purchaseIsConcluded(p, concludedMap);
     const statusBadge = concluded ? '<span class="purchase-status finalizada">✓ Finalizada</span>' : (p.status === 'parcial' ? '<span class="purchase-status parcial">⏳ Parcial</span>' : '<span class="purchase-status pendente">⏳ Pendente</span>');
     const finalizeBtn = !concluded ? `<button type="button" class="action-btn beta-icon-button finalize" onclick="finalizePurchase('${p.id}')" aria-label="Marcar como finalizada" title="Marcar como finalizada"><i class="fi fi-rr-check" aria-hidden="true"></i></button>` : '';
@@ -538,10 +539,10 @@
       <div class="credit-card-purchase-main">
         <strong>${escapeHTML(p.description || 'Compra sem descrição')}</strong>
         <span>${(p.date || '').split('-').reverse().join('/')} · ${escapeHTML(p.titular || 'Sem titular')}</span>
-        <span class="credit-card-purchase-parcel">${parcel}</span>
+        ${parcelado ? '' : `<span class="credit-card-purchase-parcel">${parcel}</span>`}
       </div>
       ${statusBadge}
-      <strong class="credit-card-purchase-value">${fmt(p.totalValue)}</strong>
+      <strong class="credit-card-purchase-value">${fmt(p.totalValue)}${parcelado ? `<span class="credit-card-purchase-value-parcel">(${parcel})</span>` : ''}</strong>
       <div class="credit-card-purchase-menu">
         ${finalizeBtn}
         ${reopenBtn}

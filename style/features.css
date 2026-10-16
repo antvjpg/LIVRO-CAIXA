@@ -5215,6 +5215,7 @@ body[data-tab="profile"] .fab-add{
 .credit-card-purchase-main span{display:block;font-size:10px;color:var(--ink-soft);margin-top:2px;}
 .credit-card-purchase-parcel{color:var(--ink-soft);}
 .credit-card-purchase-value{grid-area:value;font-size:13px;font-weight:800;color:var(--ink);text-align:right;white-space:nowrap;}
+.credit-card-purchase-value-parcel{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
 .credit-card-purchase-menu{grid-area:menu;display:flex;gap:4px;justify-content:flex-end;}
 .credit-card-purchase-row > .purchase-status{grid-area:badge;justify-self:start;}
 .credit-card-purchases:not(.is-expanded) > .credit-card-purchase-row{

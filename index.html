@@ -148,6 +148,7 @@
     <div class="subtitle"><i class="fi fi-rr-calendar-day" aria-hidden="true"></i><span id="todayLabel">—</span></div>
   </div>
   <div class="app-header-actions">
+    <button type="button" id="btnUniversalSearch" class="header-icon-button" aria-label="Busca universal" title="Buscar"><i class="fi fi-rr-search" aria-hidden="true"></i></button>
     <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><i class="fi fi-rs-bell-notification-social-media" aria-hidden="true"></i><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
     <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><i class="fi fi-sr-contrast" aria-hidden="true"></i></button>
     <div id="userBar"></div>
@@ -179,6 +180,17 @@
   <section class="notification-center" role="dialog" aria-modal="true" aria-label="Avisos">
     <div class="notification-heading"><div><span class="eyebrow">Livro-Caixa</span><h2>Avisos</h2></div><button type="button" class="drawer-close" data-close-notifications aria-label="Fechar avisos">×</button></div>
     <div id="notificationList" class="notification-list"></div>
+  </section>
+</div>
+
+<div id="universalSearchOverlay" class="notification-overlay" aria-hidden="true">
+  <section class="notification-center universal-search-center" role="dialog" aria-modal="true" aria-label="Busca universal">
+    <div class="notification-heading"><div><span class="eyebrow">Livro-Caixa</span><h2>Buscar</h2></div><button type="button" class="drawer-close" data-close-search aria-label="Fechar busca">×</button></div>
+    <div class="universal-search-field">
+      <i class="fi fi-rr-search" aria-hidden="true"></i>
+      <input type="search" id="universalSearchInput" placeholder="Lançamento, banco, categoria ou valor…" autocomplete="off" aria-label="Buscar em todo o aplicativo">
+    </div>
+    <div class="universal-search-results" id="universalSearchResults" aria-live="polite"></div>
   </section>
 </div>
 
