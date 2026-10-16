@@ -15,7 +15,7 @@
       pointer-events:auto;
       max-width:none;
       height:36px;
-      margin:0;
+      margin:32px 0 0;
       padding:0 13px;
       background:var(--paper);
       border-color:var(--gold);
