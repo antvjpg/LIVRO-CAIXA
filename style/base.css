@@ -125,7 +125,7 @@
   .header-search-bar{
     display:flex;align-items:center;justify-content:flex-start;gap:9px;
     width:100%;max-width:330px;
-    margin:0 0 12px;
+    margin:12px 0 0;
     padding:9px 13px;
     border:1px solid var(--line);border-radius:12px;
     background:var(--surface);color:var(--ink-soft);
