@@ -93,7 +93,7 @@
     .toolbar .quick-primary{gap:10px;}
     .quick-primary-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--accent);line-height:0;}
     .quick-primary-icon .add-icon{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;}
-    .toolbar .quick-action{flex-direction:column;gap:6px;min-height:78px;padding:9px 4px;font-size:9px;line-height:1.15;text-transform:none;letter-spacing:0;}
+    .tab-content .toolbar .quick-action{flex-direction:column;gap:6px;min-height:78px;padding:9px 4px;font-size:9px;line-height:1.15;text-transform:none;letter-spacing:0;}
     .quick-action-icon{display:grid;place-items:center;width:31px;height:31px;border:1px solid color-mix(in srgb,var(--accent) 15%,transparent);border-radius:10px;background:var(--green-soft);color:var(--accent);line-height:1;}
     .quick-action-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;}
     #btnUpdateAllPrices { display: inline-flex; align-items: center; gap: 8px; border-color:#8CB9A0; background:#E7F1E9; color:#1C6042; }
