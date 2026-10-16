@@ -124,9 +124,10 @@
   .header-icon-button:hover{background:var(--green-soft);color:var(--accent);border-color:var(--accent);}
   .header-search-bar{
     display:flex;align-items:center;justify-content:flex-start;gap:9px;
-    width:100%;max-width:330px;
-    margin:12px 0 0;
-    padding:9px 13px;
+    width:100%;flex:0 0 100%;max-width:none;
+    margin:0;
+    padding:6px 13px;
+    position:relative;z-index:1;
     border:1px solid var(--line);border-radius:12px;
     background:var(--surface);color:var(--ink-soft);
     font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
