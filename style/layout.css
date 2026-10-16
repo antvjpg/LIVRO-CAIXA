@@ -17,16 +17,15 @@
       height:36px;
       margin:0;
       padding:0 13px;
-      background:rgba(9,30,21,.42);
-      border-color:rgba(248,247,242,.48);
-      color:#FFFFFF;
-      box-shadow:0 3px 10px var(--shadow);
-      text-shadow:0 1px 2px var(--shadow);
+      background:#F8F7F2;
+      border-color:var(--gold);
+      color:var(--ink-soft);
+      box-shadow:0 4px 12px rgba(0,0,0,.22);
       font-size:10px;
       letter-spacing:.04em;
     }
-    header.app-header .header-search-bar .fi{color:#FFFFFF;}
-    header.app-header .header-search-bar:hover{background:rgba(9,30,21,.58);border-color:rgba(248,247,242,.72);color:#FFFFFF;}
+    header.app-header .header-search-bar .fi{color:var(--gold);}
+    header.app-header .header-search-bar:hover{background:var(--green-soft);border-color:var(--accent);color:var(--ink);}
     header.app-header h1 { color:#F9F8F3; font-size:clamp(30px,8.5vw,40px); line-height:.98; letter-spacing:-.045em; margin-bottom:12px; }
     header.app-header .subtitle { color:rgba(248,247,242,.85); font-size:11px; letter-spacing:.05em; text-transform:none; display:flex; align-items:center; gap:7px; }
     header.app-header .subtitle .fi { display:inline-block; color:#B9D0BB; font-size:14px; line-height:1; }
