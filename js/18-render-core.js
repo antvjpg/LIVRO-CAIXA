@@ -378,14 +378,14 @@
     const groups = [];
 
     const entryRows = entries
-      .filter(entry => matchesText(entry.description, banks.find(bank => bank.id === entry.bank)?.name, categories.find(cat => cat.id === entry.category)?.name, entry.amount)
+      .filter(entry => matchesText(entry.desc, banks.find(bank => bank.id === entry.bank)?.name, categories.find(cat => cat.id === entry.category)?.name, entry.amount)
         || matchesAmount(entry.amount))
       .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
       .slice(0, 10)
       .map(entry => row(
         'entry',
         entry.id,
-        entry.description || 'Sem descrição',
+        entry.desc || 'Sem descrição',
         `${String(entry.date || '').split('-').reverse().join('/')} · ${categories.find(cat => cat.id === entry.category)?.name || 'Sem categoria'} · ${banks.find(bank => bank.id === entry.bank)?.name || 'Sem conta'}`,
         `${entry.type === 'out' ? '−' : '+'}${fmt(entry.amount)}`
       ));
