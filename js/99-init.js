@@ -2954,18 +2954,6 @@ document.getElementById('tSalvar').onclick = async () => {
   document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); };
   document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx().catch(err => { logSyncError('exportação DOCX', err); showToast('Não foi possível gerar o arquivo Word.', 'error'); }); };
 
-  // Exportação: colunas selecionáveis no modal (prévia re-renderizada a cada mudança)
-  document.querySelectorAll('#panelExportFormat [data-export-col]').forEach(box => {
-    box.addEventListener('change', () => {
-      const selected = document.querySelectorAll('#panelExportFormat [data-export-col]:checked').length;
-      const hint = document.getElementById('exportGranularHint');
-      if (hint) hint.textContent = selected
-        ? 'A prévia e os arquivos usam as colunas escolhidas acima.'
-        : 'Marque ao menos uma coluna para gerar o arquivo.';
-      renderExportPreview();
-    });
-  });
-
   const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
   const PDF_IMPORT_MAX_PAGES = 80;
   let pdfImportInProgress = false;

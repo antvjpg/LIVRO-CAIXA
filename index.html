@@ -1371,20 +1371,6 @@
 
     <div class="panel" id="panelExportFormat">
       <h3>Exportar Extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <div class="export-controls">
-        <div class="export-control-group">
-          <span class="export-control-label" id="exportColumnsLabel">Colunas do arquivo</span>
-          <div class="export-column-checks" role="group" aria-labelledby="exportColumnsLabel">
-            <label><input type="checkbox" data-export-col="date" checked> Data</label>
-            <label><input type="checkbox" data-export-col="desc" checked> Descrição</label>
-            <label><input type="checkbox" data-export-col="cat" checked> Categoria</label>
-            <label><input type="checkbox" data-export-col="in" checked> Entrada</label>
-            <label><input type="checkbox" data-export-col="out" checked> Saída</label>
-            <label><input type="checkbox" data-export-col="balance" checked> Saldo</label>
-          </div>
-          <p class="hint" id="exportGranularHint" aria-live="polite">A prévia e os arquivos usam as colunas escolhidas acima.</p>
-        </div>
-      </div>
       <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:8px;">Confira a prévia respeitando os filtros atuais antes de escolher o formato.</p>
       <div id="exportPreview" class="export-preview" aria-live="polite"></div>
       <div class="toolbar" style="grid-template-columns: 1fr 1fr; margin-top:14px;">

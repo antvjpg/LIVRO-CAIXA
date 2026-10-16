@@ -4,7 +4,7 @@
 
   function parseCsvLine(line) { const cells = []; let current = '', quoted = false; for (let i = 0; i < line.length; i++) { const char = line[i]; if (char === '"' && line[i + 1] === '"' && quoted) { current += '"'; i++; } else if (char === '"') quoted = !quoted; else if ((char === ',' || char === ';' || char === '\t') && !quoted) { cells.push(current.trim()); current = ''; } else current += char; } cells.push(current.trim()); return cells; }
 
-  // ===== Exportação: colunas selecionáveis; período segue os filtros ativos + período ativo da tela =====
+  // ===== Exportação: colunas fixas do arquivo; período segue os filtros ativos + período ativo da tela =====
   const EXPORT_COLUMN_DEFS = [
     { key: 'date', label: 'Data', width: 25 },
     { key: 'desc', label: 'Descrição', width: 58 },
@@ -13,12 +13,6 @@
     { key: 'out', label: 'Saída', width: 25 },
     { key: 'balance', label: 'Saldo', width: 32 }
   ];
-
-  function getExportColumns() {
-    const boxes = document.querySelectorAll('#panelExportFormat [data-export-col]');
-    if (!boxes.length) return EXPORT_COLUMN_DEFS.slice();
-    return EXPORT_COLUMN_DEFS.filter(def => document.querySelector(`#panelExportFormat [data-export-col="${def.key}"]`)?.checked);
-  }
 
   function getExportRangeBounds() {
     return {
@@ -103,14 +97,13 @@
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     const preview = document.getElementById('exportPreview');
-    const exportCols = getExportColumns();
     const hasNothing = count === 0 && pocketsBlock.length === 0 && investBlock.length === 0;
     ['btnExportFormatPdf', 'btnExportFormatXlsx', 'btnExportFormatDocx'].forEach(id => {
       const btn = document.getElementById(id);
-      if (btn) btn.disabled = hasNothing || exportCols.length === 0;
+      if (btn) btn.disabled = hasNothing;
     });
     document.getElementById('exportPreviewCaption').textContent =
-      `${count} movimentação(ões) · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · ${exportCols.length} de ${EXPORT_COLUMN_DEFS.length} coluna(s) · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
+      `${count} movimentação(ões) · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
 
     const bankHtml = grouped.map(group => {
       const rows = group.entries.slice(0, 6).map(entry => {
@@ -136,14 +129,12 @@
   }
   function exportExtractPdf() {
     if (!window.jspdf || !window.jspdf.jsPDF) { alert('A biblioteca PDF ainda está carregando.'); return; }
-    const exportCols = getExportColumns();
-    if (!exportCols.length) { showToast('Selecione ao menos uma coluna para exportar.', 'warning'); return; }
     const grouped=getOrganizedExportData(); const meta=getExportMeta(); const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4'}); const initial=grouped.reduce((s,g)=>s+g.initialBalance,0); const final=grouped.reduce((s,g)=>s+g.finalBalance,0);
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 14;
     const contentWidth = pageWidth - 2 * margin;
-    const pdfCols = EXPORT_COLUMN_DEFS.filter(def => exportCols.some(c => c.key === def.key));
+    const pdfCols = EXPORT_COLUMN_DEFS;
     const colsTotal = pdfCols.reduce((sum, c) => sum + c.width, 0) || 1;
     const colsScale = Math.min(1, contentWidth / colsTotal);
     const pdfWidths = pdfCols.map(c => c.width * colsScale);
@@ -330,8 +321,7 @@
   }
   function exportExtractXlsx() {
     if(typeof XLSX==='undefined'){alert('A biblioteca de Excel ainda está carregando.');return;}
-    const exportCols = getExportColumns();
-    if (!exportCols.length) { showToast('Selecione ao menos uma coluna para exportar.', 'warning'); return; }
+    const exportCols = EXPORT_COLUMN_DEFS;
     const grouped=getOrganizedExportData(); const meta=getExportMeta(); const wb=XLSX.utils.book_new(); const totalInitial=grouped.reduce((s,g)=>s+g.initialBalance,0); const totalFinal=grouped.reduce((s,g)=>s+g.finalBalance,0);
     const xlsxWidths = { date: 12, desc: 40, cat: 22, in: 14, out: 14, balance: 16 };
 
@@ -442,8 +432,7 @@
   }
   async function exportExtractDocx() {
     if (!window.docx) { alert('A biblioteca Word ainda está carregando.'); return; }
-    const exportCols = getExportColumns();
-    if (!exportCols.length) { showToast('Selecione ao menos uma coluna para exportar.', 'warning'); return; }
+    const exportCols = EXPORT_COLUMN_DEFS;
     const hasCol = key => exportCols.some(c => c.key === key);
     const grouped = getOrganizedExportData();
     const meta = getExportMeta();
