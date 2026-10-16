@@ -957,7 +957,8 @@
     const date = dateInput || todayISO();
     const desc = document.getElementById('fDesc').value.trim();
     const bank = document.getElementById('fBanco').value;
-    const category = document.getElementById('fCategoria').value;
+    const catValue = document.getElementById('fCategoria').value;
+    const [category, subcategory] = catValue.includes('::') ? catValue.split('::') : [catValue, ''];
     const valor = readMoneyInput('fValor');
 
     if (!desc || isNaN(valor) || valor <= 0) {
@@ -986,11 +987,37 @@
     if (editingEntryId) {
       const idx = entries.findIndex(e => e.id === editingEntryId);
       if (idx !== -1) {
-        entries[idx] = { id: editingEntryId, date, desc, bank, category, amount: valor, type: currentType };
+        const prev = entries[idx];
+        const bankLabel = id => banks.find(b => b.id === id)?.name || 'Banco não informado';
+        const catLabel = id => categories.find(c => c.id === id)?.name || 'Sem categoria';
+        const changes = [];
+        if (prev.date !== date) changes.push({ field: 'Data', from: prev.date, to: date });
+        if (String(prev.desc ?? '') !== desc) changes.push({ field: 'Descrição', from: prev.desc, to: desc });
+        if (prev.bank !== bank) changes.push({ field: 'Banco', from: bankLabel(prev.bank), to: bankLabel(bank) });
+        if (prev.category !== category) changes.push({ field: 'Categoria', from: catLabel(prev.category), to: catLabel(category) });
+        if (Number(prev.amount ?? 0) !== Number(valor)) changes.push({ field: 'Valor', from: Number(prev.amount ?? 0), to: Number(valor) });
+        const prevType = prev.type === 'in' ? 'Entrada' : 'Saída';
+        const nextType = currentType === 'in' ? 'Entrada' : 'Saída';
+        if (prevType !== nextType) changes.push({ field: 'Tipo', from: prevType, to: nextType });
+        const subLabel = (catId, subId) => {
+          if (!subId) return '—';
+          const parent = categories.find(x => x.id === catId);
+          const sub = parent && Array.isArray(parent.subcategories) ? parent.subcategories.find(s => s.id === subId) : null;
+          return sub ? `${parent.name} › ${sub.name}` : '—';
+        };
+        if (String(prev.subcategory || '') !== String(subcategory || '')) {
+          changes.push({ field: 'Subcategoria', from: subLabel(prev.category, prev.subcategory), to: subLabel(category, subcategory) });
+        }
+        // Preserva campos extras (history, recurringBillId, automated...) — o objeto antigo era reescrito só com 7 campos.
+        const next = { ...prev, date, desc, bank, category, amount: valor, type: currentType, subcategory };
+        if (changes.length) appendEntryHistory(next, { action: 'update', by: 'user', changes });
+        entries[idx] = next;
       }
       editingEntryId = null;
     } else {
-      entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), date, desc, bank, category, amount: valor, type: currentType });
+      const newEntry = { id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), date, desc, bank, category, amount: valor, type: currentType, subcategory };
+      appendEntryHistory(newEntry, { action: 'create', by: 'user' });
+      entries.push(newEntry);
     }
 
     populateFilterControls();

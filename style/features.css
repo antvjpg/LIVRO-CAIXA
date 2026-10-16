@@ -737,6 +737,20 @@
 .export-preview-sub small{color:var(--ink-soft);font-size:11px;display:block;margin-top:2px;}
 .export-preview-more{margin-top:10px;padding:12px;text-align:center;background:var(--paper-2);border:1px dashed var(--line);border-radius:10px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:11px;}
 .export-preview-caption{margin-bottom:14px;padding:10px 16px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;font-size:13px;color:var(--ink-soft);line-height:1.5;}
+.export-controls{display:flex;flex-direction:column;gap:12px;margin-top:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);}
+.export-control-label{display:block;margin-bottom:7px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);}
+.export-period-pills{display:flex;flex-wrap:wrap;gap:7px;}
+.export-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;color:var(--ink);cursor:pointer;}
+.export-pill input{margin:0;accent-color:var(--accent);}
+.export-pill:has(input:checked){border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--paper));font-weight:700;}
+.export-custom-range{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--ink-soft);}
+.export-custom-range input[type="date"]{min-width:0;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font-size:12px;}
+.export-column-checks{display:flex;flex-wrap:wrap;gap:7px;}
+.export-column-checks label{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:12px;color:var(--ink);cursor:pointer;}
+.export-column-checks label:has(input:checked){border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--paper));font-weight:600;}
+.export-column-checks input{margin:0;accent-color:var(--accent);}
+#exportGranularHint{margin:8px 0 0;font-size:11px;color:var(--ink-soft);line-height:1.4;}
+#panelExportFormat .toolbar button:disabled{opacity:.5;cursor:not-allowed;}
 @media (max-width:768px){
   .export-preview-row{grid-template-columns:72px minmax(0,1fr) 80px auto;gap:6px;font-size:11px;}
   .export-preview-row b{font-size:11px;}
@@ -5459,6 +5473,161 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   display:flex;
   align-items:center;
   gap:6px !important;
+}
+
+/* Feature 14 — botão de histórico no card de lançamento */
+.action-btn.beta-icon-button.history{
+  width:34px;
+  height:34px;
+  min-width:34px;
+  min-height:34px;
+  padding:0;
+  display:inline-grid;
+  place-items:center;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:var(--surface);
+  box-shadow:none;
+  color:var(--ink-soft);
+  font-size:0;
+}
+.action-btn.beta-icon-button.history::before{
+  content:none;
+  display:none;
+}
+.action-btn.beta-icon-button.history::after{
+  content:"";
+  display:block;
+  width:16px;
+  height:16px;
+  background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.action-btn.beta-icon-button.history:hover{
+  color:var(--accent) !important;
+  border-color:color-mix(in srgb, var(--accent) 28%, var(--line)) !important;
+  background:color-mix(in srgb, var(--accent) 10%, var(--surface)) !important;
+}
+
+/* Feature 14 — painel de histórico */
+.history-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:55vh;
+  overflow:auto;
+}
+.history-item{
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:10px 12px;
+  background:var(--paper);
+}
+.history-item-head{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  font-size:12px;
+}
+.history-action{
+  font-weight:700;
+  color:var(--ink);
+}
+.history-by{
+  padding:1px 8px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--surface);
+  font-size:11px;
+  color:var(--ink-soft);
+}
+.history-item-head time{
+  margin-left:auto;
+  color:var(--ink-soft);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+}
+.history-changes{
+  margin:8px 0 0;
+  padding-left:16px;
+  font-size:12px;
+  color:var(--ink-soft);
+  line-height:1.6;
+}
+.history-changes b{
+  color:var(--ink);
+}
+
+/* Feature 3 — subcategorias no painel de categorias */
+.cat-subs{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:6px;
+  padding:6px 14px 8px;
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  border-top:0;
+  margin:0;
+}
+.cat-sub-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:2px 4px 2px 9px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--surface);
+  font-size:12px;
+  color:var(--ink);
+}
+.cat-sub-remove{
+  border:0;
+  background:transparent;
+  color:var(--ink-soft);
+  font-size:14px;
+  line-height:1;
+  cursor:pointer;
+  padding:1px 5px;
+  border-radius:50%;
+}
+.cat-sub-remove:hover{
+  color:var(--red);
+  background:color-mix(in srgb, var(--red) 12%, transparent);
+}
+.cat-sub-add{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  margin-left:auto;
+}
+.cat-sub-input{
+  width:150px;
+  max-width:42vw;
+  padding:4px 8px;
+  font-size:12px;
+  border:1px dashed var(--line);
+  border-radius:8px;
+  background:var(--surface);
+}
+.cat-sub-add-btn{
+  width:24px;
+  height:24px;
+  display:inline-grid;
+  place-items:center;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--surface);
+  color:var(--ink);
+  font-weight:700;
+  cursor:pointer;
+  line-height:1;
+}
+.cat-sub-add-btn:hover{
+  border-color:color-mix(in srgb, var(--accent) 30%, var(--line));
+  color:var(--accent);
 }
 
 /* =========================================================

@@ -40,7 +40,7 @@
     const operation = beginLogOperation('Calendário', 'Geração automática'); let created = 0;
     const generatedEntryIds = [];
     const previousStates = candidates.map(bill => ({ bill, generatedMonths: Array.isArray(bill.generatedMonths) ? bill.generatedMonths.slice() : [] }));
-    candidates.forEach(bill => { const date = billDueDateForMonth(bill, year, month); const entryId = 'auto' + Date.now() + Math.random().toString(36).slice(2, 8); generatedEntryIds.push(entryId); entries.push({ id: entryId, date, desc: `${bill.name} (automático)`, bank: bill.bank, category: bill.category || categories[0]?.id || '', amount: Number(bill.amount) || 0, type: 'out', recurringBillId: bill.id, automated: true }); bill.generatedMonths = Array.isArray(bill.generatedMonths) ? bill.generatedMonths : []; bill.generatedMonths.push(key); created++; });
+    candidates.forEach(bill => { const date = billDueDateForMonth(bill, year, month); const entryId = 'auto' + Date.now() + Math.random().toString(36).slice(2, 8); generatedEntryIds.push(entryId); const entry = { id: entryId, date, desc: `${bill.name} (automático)`, bank: bill.bank, category: bill.category || categories[0]?.id || '', amount: Number(bill.amount) || 0, type: 'out', recurringBillId: bill.id, automated: true }; appendEntryHistory(entry, { action: 'create', by: 'auto' }); entries.push(entry); bill.generatedMonths = Array.isArray(bill.generatedMonths) ? bill.generatedMonths : []; bill.generatedMonths.push(key); created++; });
     try {
       await persistAll(operation);
       logInfo('Calendário', 'Geração automática', 'Sucesso', `${created} conta(s) recorrente(s) gerada(s) sem duplicidade.`, { month: key, created }, operation);

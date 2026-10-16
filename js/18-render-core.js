@@ -668,15 +668,24 @@
   function renderCategorySelect() {
     const sel = document.getElementById('fCategoria');
     const currentVal = sel.value;
-    sel.innerHTML = categories.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('');
-    if (currentVal && categories.some(c => c.id === currentVal)) {
-      sel.value = currentVal;
-    }
+    sel.innerHTML = categories.map(c => {
+      const subs = Array.isArray(c.subcategories) ? c.subcategories.filter(s => s && s.id) : [];
+      const parentOption = `<option value="${c.id}">${escapeHTML(subs.length ? c.name + ' (sem subcategoria)' : c.name)}</option>`;
+      if (!subs.length) return parentOption;
+      const subOptions = subs.map(s => `<option value="${c.id}::${s.id}">${escapeHTML(c.name)} › ${escapeHTML(s.name || '')}</option>`).join('');
+      return `<optgroup label="${escapeHTML(c.name)}">${parentOption}${subOptions}</optgroup>`;
+    }).join('');
+    const isKnown = value => value && (categories.some(c => c.id === value) ||
+      (value.includes('::') && (() => { const [catId, subId] = value.split('::'); return (categories.find(c => c.id === catId)?.subcategories || []).some(s => s.id === subId); })()));
+    if (isKnown(currentVal)) sel.value = currentVal;
   }
 
   function renderCategoryManageList() {
     const container = document.getElementById('catManageList');
-    container.innerHTML = categories.map(c => `
+    container.innerHTML = categories.map(c => {
+      const subs = Array.isArray(c.subcategories) ? c.subcategories.filter(s => s && s.id) : [];
+      const chips = subs.map(s => `<span class="cat-sub-chip">${escapeHTML(s.name || '')}<button type="button" class="cat-sub-remove" onclick="removeSubcategory('${c.id}','${s.id}')" aria-label="Remover subcategoria ${escapeHTML(s.name || '')}" title="Remover subcategoria">×</button></span>`).join('');
+      return `
       <div class="cat-list-item">
         <span class="category-dot" style="background:${categoryColor(c)}">${categoryIcon(c)}</span>
         <strong class="manage-item-copy">${escapeHTML(c.name)}<span>${escapeHTML(categoryIcon(c))} · ${escapeHTML(c.color ? 'cor personalizada' : 'cor automática')}</span></strong>
@@ -685,7 +694,15 @@
           <button type="button" class="action-btn beta-icon-button delete" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria" title="Excluir categoria"></button>
         </span>
       </div>
-    `).join('');
+      <div class="cat-subs" data-cat="${c.id}">
+        ${chips}
+        <span class="cat-sub-add">
+          <input type="text" class="cat-sub-input" maxlength="40" placeholder="Nova subcategoria" aria-label="Nova subcategoria de ${escapeHTML(c.name)}">
+          <button type="button" class="cat-sub-add-btn" onclick="addSubcategory('${c.id}')" aria-label="Adicionar subcategoria em ${escapeHTML(c.name)}" title="Adicionar subcategoria">+</button>
+        </span>
+      </div>
+    `;
+    }).join('');
   }
 
   function updateFixedIncomeFormCurrent() {
@@ -1358,13 +1375,14 @@
             <div class="card-info">
               <span class="card-date">${dateFmt}</span>
               <h3 class="card-title" title="${escapeHTML(e.desc)}" onclick="this.classList.toggle('is-expanded')">${escapeHTML(e.desc)}</h3>
-              <span class="card-meta"><span class="card-badge">${bank ? escapeHTML(bank.name) : 'Banco não informado'}</span><span class="card-category" style="--category-color:${categoryColor(cat)}">${cat ? escapeHTML(cat.name) : 'Sem categoria'}</span></span>
+              <span class="card-meta"><span class="card-badge">${bank ? escapeHTML(bank.name) : 'Banco não informado'}</span><span class="card-category" style="--category-color:${categoryColor(cat)}">${cat ? escapeHTML((() => { const sub = e.subcategory && Array.isArray(cat.subcategories) ? cat.subcategories.find(s => s.id === e.subcategory) : null; return sub ? `${cat.name} › ${sub.name}` : cat.name; })()) : 'Sem categoria'}</span></span>
             </div>
           </div>
 
           <div class="card-right">
             <span class="card-amount ${tipoClasse}">${sinal} ${fmt(Math.abs(e.amount))}</span>
             <div class="card-actions">
+              <button type="button" class="action-btn beta-icon-button history" onclick="openEntryHistory('${e.id}')" aria-label="Histórico do lançamento" title="Histórico do lançamento"></button>
               <button type="button" class="action-btn beta-icon-button edit" onclick="editEntry('${e.id}')" aria-label="Editar lançamento" title="Editar lançamento"></button>
               <button type="button" class="action-btn beta-icon-button delete" onclick="deleteEntry('${e.id}')" aria-label="Excluir lançamento" title="Excluir lançamento"></button>
             </div>

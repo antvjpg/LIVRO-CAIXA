@@ -1191,7 +1191,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     if (confirm('Deseja excluir esta categoria? Os lançamentos vinculados a ela serão movidos para outra categoria.')) {
       const replacementId = categories.find(c => c.id !== id)?.id || '';
       categories = categories.filter(c => c.id !== id);
-      entries = entries.map(entry => entry.category === id ? { ...entry, category: replacementId } : entry);
+      entries = entries.map(entry => entry.category === id ? { ...entry, category: replacementId, subcategory: '' } : entry);
       await Promise.all([saveCategories(), saveEntries()]);
       populateFilterControls();
       render();
@@ -1329,6 +1329,40 @@ window.deletePocket = function(id) {
     render();
   };
 
+  // ===== Feature 14 — Log de alterações: painel de histórico do lançamento =====
+  window.openEntryHistory = function(id) {
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+    const sub = document.getElementById('entryHistorySub');
+    const list = document.getElementById('entryHistoryList');
+    const dateFmt = iso => (typeof iso === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(iso)) ? iso.split('-').reverse().join('/') : '—';
+    const actionLabel = { create: 'Criação', update: 'Alteração' };
+    const byLabel = { user: 'Você', auto: 'Automação' };
+    const escVal = v => typeof v === 'number' ? fmt(v) : escapeHTML(String(v ?? '—'));
+    sub.textContent = `${entry.desc || 'Lançamento'} · ${dateFmt(entry.date)} · ${fmt(entry.amount)}`;
+    const history = Array.isArray(entry.history) ? entry.history : [];
+    if (!history.length) {
+      list.innerHTML = `<div class="empty">Sem registros de alteração para este lançamento. Lançamentos criados a partir desta versão passam a registrar criação, edição e automação aqui.</div>`;
+    } else {
+      list.innerHTML = [...history].reverse().map(item => {
+        const at = item.at ? new Date(item.at) : null;
+        const atStr = at && !isNaN(at) ? at.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+        const changesHtml = (Array.isArray(item.changes) && item.changes.length)
+          ? `<ul class="history-changes">${item.changes.map(ch => `<li><b>${escapeHTML(String(ch.field ?? ''))}</b>: ${escVal(ch.from)} → ${escVal(ch.to)}</li>`).join('')}</ul>`
+          : '';
+        return `<div class="history-item">
+          <div class="history-item-head">
+            <span class="history-action">${actionLabel[item.action] || 'Alteração'}</span>
+            <span class="history-by">${byLabel[item.by] || 'Sistema'}</span>
+            <time>${atStr}</time>
+          </div>
+          ${changesHtml}
+        </div>`;
+      }).join('');
+    }
+    openModal('panelEntryHistory');
+  };
+
   window.editEntry = function(id) {
     const entry = entries.find(e => e.id === id);
     if (!entry) return;
@@ -1336,7 +1370,9 @@ window.deletePocket = function(id) {
     document.getElementById('fData').value = entry.date;
     document.getElementById('fDesc').value = entry.desc;
     document.getElementById('fBanco').value = entry.bank;
-    document.getElementById('fCategoria').value = entry.category;
+    const catSelEntry = document.getElementById('fCategoria');
+    const desiredCatValue = entry.subcategory && entry.category ? `${entry.category}::${entry.subcategory}` : entry.category;
+    catSelEntry.value = Array.from(catSelEntry.options).some(o => o.value === desiredCatValue) ? desiredCatValue : entry.category;
     setMoneyInput('fValor', entry.amount);
 
     if (entry.type === 'in') document.getElementById('tglIn').click();
@@ -2571,6 +2607,59 @@ VALOR: ${fmt(pseudoBill.amount)}
     document.getElementById('cSalvar').textContent = 'Salvar Alteração';
     openModal('panelCategoria');
   };
+
+  // ===== Feature 3 — Subcategorias dentro de uma categoria principal =====
+  window.addSubcategory = async function(catId) {
+    const row = document.querySelector(`.cat-subs[data-cat="${catId}"]`);
+    const input = row ? row.querySelector('.cat-sub-input') : null;
+    if (!input) return;
+    const name = input.value.trim();
+    if (!name) { showToast('Digite o nome da subcategoria.', 'error'); return; }
+    const cat = categories.find(c => c.id === catId);
+    if (!cat) return;
+    const subs = Array.isArray(cat.subcategories) ? cat.subcategories : [];
+    if (subs.some(s => String(s.name || '').toLocaleLowerCase('pt-BR') === name.toLocaleLowerCase('pt-BR'))) {
+      showToast('Esta subcategoria já existe nesta categoria.', 'error');
+      return;
+    }
+    subs.push({ id: 's' + Date.now() + Math.random().toString(36).slice(2, 7), name });
+    cat.subcategories = subs;
+    try {
+      await saveCategories();
+      render();
+      showToast('Subcategoria adicionada.', 'success');
+    } catch (err) {
+      logSyncError('subcategoria', err);
+      showToast('Não foi possível salvar a subcategoria.', 'error');
+    }
+  };
+
+  window.removeSubcategory = async function(catId, subId) {
+    const cat = categories.find(c => c.id === catId);
+    if (!cat || !Array.isArray(cat.subcategories)) return;
+    const sub = cat.subcategories.find(s => s.id === subId);
+    const ok = await showConfirm(`Remover a subcategoria "${sub ? sub.name : ''}"? Os lançamentos dela continuam com a categoria principal.`);
+    if (!ok) return;
+    cat.subcategories = cat.subcategories.filter(s => s.id !== subId);
+    const hadRefs = entries.some(e => e.category === catId && e.subcategory === subId);
+    if (hadRefs) entries = entries.map(e => (e.category === catId && e.subcategory === subId) ? { ...e, subcategory: '' } : e);
+    try {
+      await Promise.all([saveCategories(), hadRefs ? saveEntries() : Promise.resolve()]);
+      render();
+      showToast('Subcategoria removida.', 'success');
+    } catch (err) {
+      logSyncError('subcategoria', err);
+      showToast('Não foi possível remover a subcategoria.', 'error');
+    }
+  };
+
+  document.getElementById('catManageList').addEventListener('keydown', (e) => {
+    if (e.target && e.target.classList && e.target.classList.contains('cat-sub-input') && (e.key === 'Enter' || e.key === 'Go' || e.key === 'Send')) {
+      e.preventDefault();
+      const row = e.target.closest('.cat-subs');
+      if (row) window.addSubcategory(row.dataset.cat);
+    }
+  });
 transferReceiptReaderState = null;
 
 
@@ -2851,7 +2940,7 @@ document.getElementById('tSalvar').onclick = async () => {
   };
 
   document.getElementById('btnExport').onclick = () => {
-    const activeEntries = getFilteredEntries();
+    const activeEntries = getExportEntries();
     const meta = getExportMeta(activeEntries);
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
@@ -2863,6 +2952,27 @@ document.getElementById('tSalvar').onclick = async () => {
   document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); };
   document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); };
   document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx().catch(err => { logSyncError('exportação DOCX', err); showToast('Não foi possível gerar o arquivo Word.', 'error'); }); };
+
+  // Feature 12 — exportação granular: período e colunas no modal (prévia re-renderizada a cada mudança)
+  document.querySelectorAll('#panelExportFormat input[name="exportPeriod"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      exportPeriodMode = document.querySelector('#panelExportFormat input[name="exportPeriod"]:checked')?.value || 'filters';
+      document.getElementById('exportCustomRange').hidden = exportPeriodMode !== 'custom';
+      renderExportPreview();
+    });
+  });
+  document.getElementById('exportDateStart').addEventListener('change', renderExportPreview);
+  document.getElementById('exportDateEnd').addEventListener('change', renderExportPreview);
+  document.querySelectorAll('#panelExportFormat [data-export-col]').forEach(box => {
+    box.addEventListener('change', () => {
+      const selected = document.querySelectorAll('#panelExportFormat [data-export-col]:checked').length;
+      const hint = document.getElementById('exportGranularHint');
+      if (hint) hint.textContent = selected
+        ? 'A prévia e os arquivos usam o período e as colunas escolhidos acima.'
+        : 'Marque ao menos uma coluna para gerar o arquivo.';
+      renderExportPreview();
+    });
+  });
 
   const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
   const PDF_IMPORT_MAX_PAGES = 80;

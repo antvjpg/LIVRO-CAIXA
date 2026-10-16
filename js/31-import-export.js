@@ -4,9 +4,69 @@
 
   function parseCsvLine(line) { const cells = []; let current = '', quoted = false; for (let i = 0; i < line.length; i++) { const char = line[i]; if (char === '"' && line[i + 1] === '"' && quoted) { current += '"'; i++; } else if (char === '"') quoted = !quoted; else if ((char === ',' || char === ';' || char === '\t') && !quoted) { cells.push(current.trim()); current = ''; } else current += char; } cells.push(current.trim()); return cells; }
 
-  function getExportMeta(activeEntries = getFilteredEntries()) {
-    const startFilter = document.getElementById('filterDateStart').value;
-    const endFilter = document.getElementById('filterDateEnd').value;
+  // ===== Feature 12 — Exportação granular: período flexível + colunas selecionáveis =====
+  const EXPORT_COLUMN_DEFS = [
+    { key: 'date', label: 'Data', width: 25 },
+    { key: 'desc', label: 'Descrição', width: 58 },
+    { key: 'cat', label: 'Categoria', width: 32 },
+    { key: 'in', label: 'Entrada', width: 25 },
+    { key: 'out', label: 'Saída', width: 25 },
+    { key: 'balance', label: 'Saldo', width: 32 }
+  ];
+  let exportPeriodMode = 'filters';
+
+  function getExportColumns() {
+    const boxes = document.querySelectorAll('#panelExportFormat [data-export-col]');
+    if (!boxes.length) return EXPORT_COLUMN_DEFS.slice();
+    return EXPORT_COLUMN_DEFS.filter(def => document.querySelector(`#panelExportFormat [data-export-col="${def.key}"]`)?.checked);
+  }
+
+  function getExportPeriodRange() {
+    if (exportPeriodMode === 'filters') return null;
+    const pad = n => String(n).padStart(2, '0');
+    const iso = (y, m, d) => `${y}-${pad(m)}-${pad(d)}`;
+    const today = new Date();
+    if (exportPeriodMode === 'week') {
+      const day = today.getDay() || 7;
+      const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (day - 1));
+      const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+      return { start: iso(monday.getFullYear(), monday.getMonth() + 1, monday.getDate()), end: iso(sunday.getFullYear(), sunday.getMonth() + 1, sunday.getDate()) };
+    }
+    if (exportPeriodMode === 'fortnight') {
+      const y = today.getFullYear();
+      const m = today.getMonth();
+      const lastDay = new Date(y, m + 1, 0).getDate();
+      return today.getDate() <= 15
+        ? { start: iso(y, m + 1, 1), end: iso(y, m + 1, 15) }
+        : { start: iso(y, m + 1, 16), end: iso(y, m + 1, lastDay) };
+    }
+    if (exportPeriodMode === 'custom') {
+      const start = document.getElementById('exportDateStart')?.value || '';
+      const end = document.getElementById('exportDateEnd')?.value || '';
+      if (!start && !end) return null;
+      return { start, end };
+    }
+    return null;
+  }
+
+  function getExportRangeBounds() {
+    const filterStart = document.getElementById('filterDateStart').value;
+    const filterEnd = document.getElementById('filterDateEnd').value;
+    const range = getExportPeriodRange();
+    const start = [filterStart, range?.start || ''].filter(Boolean).sort().pop() || '';
+    const end = [filterEnd, range?.end || ''].filter(Boolean).sort()[0] || '';
+    return { start, end };
+  }
+
+  function getExportEntries() {
+    const base = getFilteredEntries();
+    const range = getExportPeriodRange();
+    if (!range) return base;
+    return base.filter(e => (!range.start || e.date >= range.start) && (!range.end || e.date <= range.end));
+  }
+
+  function getExportMeta(activeEntries = getExportEntries()) {
+    const { start: startFilter, end: endFilter } = getExportRangeBounds();
     const dates = activeEntries.map(e => e.date).filter(Boolean).sort();
     const dateStart = startFilter || dates[0] || todayISO();
     const dateEnd = endFilter || dates[dates.length - 1] || dateStart;
@@ -14,7 +74,7 @@
     return { dateStart, dateEnd, initialForBank };
   }
   function getOrganizedExportData() {
-    const activeEntries = getFilteredEntries();
+    const activeEntries = getExportEntries();
     const meta = getExportMeta(activeEntries);
     const bankIds = [...new Set(activeEntries.map(e => e.bank))];
     return bankIds.map(id => {
@@ -77,8 +137,15 @@
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     const preview = document.getElementById('exportPreview');
+    const periodLabels = { filters: 'filtros atuais', week: 'semana', fortnight: 'quinzena', custom: 'personalizado' };
+    const exportCols = getExportColumns();
+    const hasNothing = count === 0 && pocketsBlock.length === 0 && investBlock.length === 0;
+    ['btnExportFormatPdf', 'btnExportFormatXlsx', 'btnExportFormatDocx'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.disabled = hasNothing || exportCols.length === 0;
+    });
     document.getElementById('exportPreviewCaption').textContent =
-      `${count} movimentação(ões) · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
+      `${count} movimentação(ões) · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · Período: ${periodLabels[exportPeriodMode] || 'filtros atuais'} · ${exportCols.length} de ${EXPORT_COLUMN_DEFS.length} coluna(s) · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
 
     const bankHtml = grouped.map(group => {
       const rows = group.entries.slice(0, 6).map(entry => {
@@ -104,11 +171,18 @@
   }
   function exportExtractPdf() {
     if (!window.jspdf || !window.jspdf.jsPDF) { alert('A biblioteca PDF ainda está carregando.'); return; }
+    const exportCols = getExportColumns();
+    if (!exportCols.length) { showToast('Selecione ao menos uma coluna para exportar.', 'warning'); return; }
     const grouped=getOrganizedExportData(); const meta=getExportMeta(); const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4'}); const initial=grouped.reduce((s,g)=>s+g.initialBalance,0); const final=grouped.reduce((s,g)=>s+g.finalBalance,0);
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 14;
     const contentWidth = pageWidth - 2 * margin;
+    const pdfCols = EXPORT_COLUMN_DEFS.filter(def => exportCols.some(c => c.key === def.key));
+    const colsTotal = pdfCols.reduce((sum, c) => sum + c.width, 0) || 1;
+    const colsScale = Math.min(1, contentWidth / colsTotal);
+    const pdfWidths = pdfCols.map(c => c.width * colsScale);
+    const descWidth = (pdfCols.find(c => c.key === 'desc')?.width || 58) * colsScale - 4;
     let y = 18;
     let pageNum = 1;
     const totalPages = estimateTotalPages(grouped, meta);
@@ -190,8 +264,8 @@
       doc.text(`Saldo inicial: ${fmt(group.initialBalance)}  |  Saldo final: ${fmt(group.finalBalance)}`, margin, y); y+=5;
       doc.setDrawColor(200,200,200); doc.line(margin, y, pageWidth - margin, y); y+=4;
 
-      const widths = [25, 58, 32, 25, 25, 32];
-      drawTableHeader(['Data','Descrição','Categoria','Entrada','Saída','Saldo'], widths);
+      const widths = pdfWidths;
+      drawTableHeader(pdfCols.map(c => c.label), widths);
 
       let running = group.initialBalance;
       group.entries.forEach(e => {
@@ -199,22 +273,32 @@
         const cat = categories.find(c => c.id === e.category);
         const dateFmt = e.date.split('-').reverse().join('/');
         running += e.type === 'in' ? Number(e.amount||0) : -Number(e.amount||0);
-        const descLines = doc.splitTextToSize((e.desc||'Lançamento'), 55);
+        const descLines = doc.splitTextToSize((e.desc||'Lançamento'), descWidth);
         doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(0,0,0);
-        doc.text(e.date.split('-').reverse().join('/'), margin, y);
         const descText = descLines.join(' ');
-        doc.text(escapeHTML(descText).slice(0, 80), margin + 25, y, {maxWidth: 120});
-        const catName = cat ? cat.name.slice(0,18) : '—';
-        doc.text(catName, margin + 25 + 55, y);
-        const movText = (e.type==='in'?'+':'−') + ' ' + fmt(Math.abs(e.amount)).replace('R$ ','');
-        doc.setTextColor(e.type==='in'?0x2F6F4F:0xB44D3A);
-        doc.text(movText, margin + 25 + 55 + 30, y, {align:'right'});
-        doc.setTextColor(0,0,0);
-        const runningText = fmt(running).replace('R$ ','');
-        doc.setFontSize(7); doc.setTextColor(100,100,100);
-        doc.text(runningText, pageWidth - margin - 30, y);
-        doc.setTextColor(0,0,0);
-        doc.setFontSize(8);
+        let x = margin;
+        pdfCols.forEach(col => {
+          if (col.key === 'date') {
+            doc.text(dateFmt, x + 2, y, {maxWidth: col.width * colsScale - 4});
+          } else if (col.key === 'desc') {
+            doc.text(escapeHTML(descText).slice(0, 80), x + 2, y, {maxWidth: col.width * colsScale - 4});
+          } else if (col.key === 'cat') {
+            doc.text(cat ? cat.name.slice(0,18) : '—', x + 2, y, {maxWidth: col.width * colsScale - 4});
+          } else if (col.key === 'in' && e.type === 'in') {
+            doc.setTextColor(0x2F,0x6F,0x4F);
+            doc.text('+' + fmt(Math.abs(e.amount)).replace('R$ ',''), x + col.width * colsScale - 2, y, {align:'right'});
+            doc.setTextColor(0,0,0);
+          } else if (col.key === 'out' && e.type === 'out') {
+            doc.setTextColor(0xB4,0x4D,0x3A);
+            doc.text('−' + fmt(Math.abs(e.amount)).replace('R$ ',''), x + col.width * colsScale - 2, y, {align:'right'});
+            doc.setTextColor(0,0,0);
+          } else if (col.key === 'balance') {
+            doc.setFontSize(7); doc.setTextColor(100,100,100);
+            doc.text(fmt(running).replace('R$ ',''), x + col.width * colsScale - 2, y, {align:'right'});
+            doc.setTextColor(0,0,0); doc.setFontSize(8);
+          }
+          x += col.width * colsScale;
+        });
         y += 7;
       });
       y += 8;
@@ -281,7 +365,10 @@
   }
   function exportExtractXlsx() {
     if(typeof XLSX==='undefined'){alert('A biblioteca de Excel ainda está carregando.');return;}
+    const exportCols = getExportColumns();
+    if (!exportCols.length) { showToast('Selecione ao menos uma coluna para exportar.', 'warning'); return; }
     const grouped=getOrganizedExportData(); const meta=getExportMeta(); const wb=XLSX.utils.book_new(); const totalInitial=grouped.reduce((s,g)=>s+g.initialBalance,0); const totalFinal=grouped.reduce((s,g)=>s+g.finalBalance,0);
+    const xlsxWidths = { date: 12, desc: 40, cat: 22, in: 14, out: 14, balance: 16 };
 
     grouped.forEach(group=>{
       const rows=[
@@ -289,35 +376,42 @@
         ['Período',`${meta.dateStart.split('-').reverse().join('/')} – ${meta.dateEnd.split('-').reverse().join('/')}`],
         ['Saldo Inicial',group.initialBalance],
         [],
-        ['Data','Descrição','Categoria','Entrada','Saída','Saldo']
+        exportCols.map(c => c.label)
       ];
       let running=group.initialBalance;
       group.entries.forEach(e=>{
         const cat=categories.find(c=>c.id===e.category);
         running+=e.type==='in'?Number(e.amount||0):-Number(e.amount||0);
-        rows.push([
-          e.date.split('-').reverse().join('/'),
-          e.desc||'',
-          cat?cat.name:'—',
-          e.type==='in'?e.amount:'',
-          e.type==='out'?e.amount:'',
-          running
-        ]);
+        rows.push(exportCols.map(c => {
+          if (c.key === 'date') return e.date.split('-').reverse().join('/');
+          if (c.key === 'desc') return e.desc||'';
+          if (c.key === 'cat') return cat?cat.name:'—';
+          if (c.key === 'in') return e.type==='in'?e.amount:'';
+          if (c.key === 'out') return e.type==='out'?e.amount:'';
+          return running;
+        }));
       });
-      rows.push([],['','','','','Saldo Final',group.finalBalance]);
-      const ws=XLSX.utils.aoa_to_sheet(rows);
-      ws['!cols']=[
-        {wch:12},{wch:40},{wch:22},{wch:14},{wch:14},{wch:16}
-      ];
-      // Currency formatting for money columns
-      for(let r=5;r<=rows.length;r++){
-        ['E','F','G'].forEach(col=>{
-          const cell = ws[`${col}${r}`];
-          if(cell && cell.v!==null && cell.v!=='') {
-            cell.t='n'; cell.z='#,##0.00';
-          }
-        });
+      const balIdx = exportCols.findIndex(c => c.key === 'balance');
+      if (balIdx > 0) {
+        rows.push([], exportCols.map((c, i) => i === balIdx - 1 ? 'Saldo Final' : (i === balIdx ? group.finalBalance : '')));
+      } else if (balIdx === 0) {
+        rows.push([], ['Saldo Final'], [group.finalBalance]);
+      } else {
+        rows.push([], ['Saldo Final', group.finalBalance]);
       }
+      const ws=XLSX.utils.aoa_to_sheet(rows);
+      ws['!cols'] = exportCols.map(c => ({ wch: xlsxWidths[c.key] }));
+      // Currency formatting for money columns
+      exportCols.forEach((c, i) => {
+        if (!['in','out','balance'].includes(c.key)) return;
+        const colLetter = XLSX.utils.encode_col(i);
+        for (let r = 6; r <= rows.length; r++) {
+          const cell = ws[`${colLetter}${r}`];
+          if (cell && typeof cell.v === 'number') {
+            cell.t = 'n'; cell.z = '#,##0.00';
+          }
+        }
+      });
       const safeName=group.bank.name.replace(/[\/*?:\[\]]/g,'').slice(0,31)||'Banco';
       XLSX.utils.book_append_sheet(wb,ws,safeName);
     });
@@ -383,6 +477,9 @@
   }
   async function exportExtractDocx() {
     if (!window.docx) { alert('A biblioteca Word ainda está carregando.'); return; }
+    const exportCols = getExportColumns();
+    if (!exportCols.length) { showToast('Selecione ao menos uma coluna para exportar.', 'warning'); return; }
+    const hasCol = key => exportCols.some(c => c.key === key);
     const grouped = getOrganizedExportData();
     const meta = getExportMeta();
     const d = window.docx;
@@ -419,16 +516,19 @@
         const date = entry.date.split('-').reverse().join('/');
         const movement = `${entry.type === 'in' ? '+' : '−'} ${fmt(Math.abs(entry.amount))}`;
         const movementColor = entry.type === 'in' ? '2F6F4F' : 'B44D3A';
-        children.push(
-          new d.Paragraph({
+        const entryChildren = [];
+        const title = [hasCol('date') ? date : '', hasCol('desc') ? (entry.desc || 'Lançamento') : ''].filter(Boolean).join(' — ');
+        if (title) {
+          entryChildren.push(new d.Paragraph({
             spacing: { before: 120, after: 60 },
-            children: [new d.TextRun({ text: `${date} — ${entry.desc || 'Lançamento'}`, bold: true, size: 24 })]
-          }),
-          detailLine('Categoria: ', category ? category.name : '—'),
-          detailLine('Movimentação: ', movement, movementColor),
-          detailLine('Saldo após o lançamento: ', fmt(running)),
-          new d.Paragraph({ text: '', spacing: { after: 60 } })
-        );
+            children: [new d.TextRun({ text: title, bold: true, size: 24 })]
+          }));
+        }
+        if (hasCol('cat')) entryChildren.push(detailLine('Categoria: ', category ? category.name : '—'));
+        if (hasCol('in') || hasCol('out')) entryChildren.push(detailLine('Movimentação: ', movement, movementColor));
+        if (hasCol('balance')) entryChildren.push(detailLine('Saldo após o lançamento: ', fmt(running)));
+        entryChildren.push(new d.Paragraph({ text: '', spacing: { after: 60 } }));
+        children.push(...entryChildren);
       });
     });
 

@@ -1369,13 +1369,47 @@
 
     <div class="panel" id="panelExportFormat">
       <h3>Exportar Extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
-      <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:-6px;">Confira a prévia respeitando os filtros atuais antes de escolher o formato.</p>
+      <div class="export-controls">
+        <div class="export-control-group">
+          <span class="export-control-label" id="exportPeriodLabel">Período</span>
+          <div class="export-period-pills" role="group" aria-labelledby="exportPeriodLabel">
+            <label class="export-pill"><input type="radio" name="exportPeriod" value="filters" checked> Filtros atuais</label>
+            <label class="export-pill"><input type="radio" name="exportPeriod" value="week"> Semana</label>
+            <label class="export-pill"><input type="radio" name="exportPeriod" value="fortnight"> Quinzena</label>
+            <label class="export-pill"><input type="radio" name="exportPeriod" value="custom"> Personalizado</label>
+          </div>
+          <div class="export-custom-range" id="exportCustomRange" hidden>
+            <input type="date" id="exportDateStart" aria-label="Início da exportação">
+            <span>até</span>
+            <input type="date" id="exportDateEnd" aria-label="Fim da exportação">
+          </div>
+        </div>
+        <div class="export-control-group">
+          <span class="export-control-label" id="exportColumnsLabel">Colunas do arquivo</span>
+          <div class="export-column-checks" role="group" aria-labelledby="exportColumnsLabel">
+            <label><input type="checkbox" data-export-col="date" checked> Data</label>
+            <label><input type="checkbox" data-export-col="desc" checked> Descrição</label>
+            <label><input type="checkbox" data-export-col="cat" checked> Categoria</label>
+            <label><input type="checkbox" data-export-col="in" checked> Entrada</label>
+            <label><input type="checkbox" data-export-col="out" checked> Saída</label>
+            <label><input type="checkbox" data-export-col="balance" checked> Saldo</label>
+          </div>
+          <p class="hint" id="exportGranularHint" aria-live="polite">A prévia e os arquivos usam o período e as colunas escolhidos acima.</p>
+        </div>
+      </div>
+      <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:-6px;">Confira a prévia com o período e as colunas escolhidos antes de gerar o arquivo.</p>
       <div id="exportPreview" class="export-preview" aria-live="polite"></div>
       <div class="toolbar" style="grid-template-columns: 1fr 1fr; margin-top:14px;">
         <button class="primary" id="btnExportFormatPdf"><i class="fi fi-rr-file-pdf" aria-hidden="true"></i>PDF</button>
         <button class="primary" id="btnExportFormatXlsx"><i class="fi fi-rr-file-excel" aria-hidden="true"></i>Excel (.xlsx)</button>
         <button class="primary" id="btnExportFormatDocx"><i class="fi fi-rr-file-word" aria-hidden="true"></i>Word (.docx)</button>
       </div>
+    </div>
+
+    <div class="panel" id="panelEntryHistory">
+      <h3 id="entryHistoryTitle">Histórico do lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <p class="hint" id="entryHistorySub" style="margin-top:-4px;"></p>
+      <div id="entryHistoryList" class="history-list" aria-live="polite"></div>
     </div>
 
     <div class="panel" id="panelPaste">

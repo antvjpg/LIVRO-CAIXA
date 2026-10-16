@@ -191,6 +191,20 @@
 
   window.showToast = showToast;
 
+  // ===== Feature 14 — Log de alterações embutido em cada lançamento =====
+  // entry.history: array de { at, action: 'create'|'update', by: 'user'|'auto', changes?: [{field, from, to}] }
+  // Mantido no próprio lançamento (sem coleção nova); cap de 20 eventos por lançamento.
+  const ENTRY_HISTORY_LIMIT = 20;
+
+  function appendEntryHistory(entry, event) {
+    if (!entry || typeof entry !== 'object' || !event || typeof event !== 'object') return entry;
+    const item = { at: new Date().toISOString(), action: String(event.action || 'update'), by: String(event.by || 'user') };
+    if (Array.isArray(event.changes) && event.changes.length) item.changes = event.changes;
+    const prev = Array.isArray(entry.history) ? entry.history : [];
+    entry.history = prev.length >= ENTRY_HISTORY_LIMIT ? [...prev.slice(-(ENTRY_HISTORY_LIMIT - 1)), item] : [...prev, item];
+    return entry;
+  }
+
   // ===== Modal de Confirmação Customizado =====
   let confirmResolve = null;
 

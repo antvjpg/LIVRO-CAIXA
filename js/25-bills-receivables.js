@@ -331,6 +331,7 @@
       const entry={id:'e'+Date.now()+Math.random().toString(36).slice(2,7),date,desc:bill.name,bank:bankId,category:bill.category||'',amount:Number(bill.amount)||0,type:'out',recurringBillId:bill.id};
       const previousBank = bill.bank;
       const previousGeneratedMonths = Array.isArray(bill.generatedMonths) ? bill.generatedMonths.slice() : [];
+      appendEntryHistory(entry, { action: 'create', by: 'user' });
       entries.push(entry);
       bill.bank = bankId;
       bill.generatedMonths=previousGeneratedMonths.slice();
