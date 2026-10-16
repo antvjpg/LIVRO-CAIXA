@@ -162,17 +162,17 @@
     <div class="balance-card bank-summary-card" role="button" tabindex="0" aria-label="Ver saldos dos bancos" title="Ver saldos dos bancos">
       <div class="balance-card-head"><span class="label">Bancos</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-bank" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && bankTotal < 0 ? 'neg' : ''}">${bankLabel}</span>
-      ${bankShare === null ? '' : `<span class="balance-share">${bankShare.toFixed(0)}% do patrimônio</span>`}
+      ${bankShare === null ? '' : `<span class="balance-share">${formatIndicatorPercent(bankShare, 1)} do patrimônio</span>`}
     </div>
     <div class="balance-card pocket-summary-card" role="button" tabindex="0" aria-label="Ver caixinhas" title="Ver caixinhas">
       <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && pocketTotal < 0 ? 'neg' : ''}">${pocketLabel}</span>
-      ${pocketShare === null ? '' : `<span class="balance-share">${pocketShare.toFixed(0)}% do patrimônio</span>`}
+      ${pocketShare === null ? '' : `<span class="balance-share">${formatIndicatorPercent(pocketShare, 1)} do patrimônio</span>`}
     </div>
     <div class="balance-card invest-summary-card" role="button" tabindex="0" aria-label="Ver investimentos" title="Ver investimentos">
       <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span></div>
       <span class="amount">${investLabel}</span>
-      ${investShare === null ? '' : `<span class="balance-share">${investShare.toFixed(0)}% do patrimônio</span>`}
+      ${investShare === null ? '' : `<span class="balance-share">${formatIndicatorPercent(investShare, 1)} do patrimônio</span>`}
     </div>`;
     strip.innerHTML = html;
     markValueRefresh(strip);
