@@ -2954,22 +2954,13 @@ document.getElementById('tSalvar').onclick = async () => {
   document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); };
   document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx().catch(err => { logSyncError('exportação DOCX', err); showToast('Não foi possível gerar o arquivo Word.', 'error'); }); };
 
-  // Feature 12 — exportação granular: período e colunas no modal (prévia re-renderizada a cada mudança)
-  document.querySelectorAll('#panelExportFormat input[name="exportPeriod"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-      exportPeriodMode = document.querySelector('#panelExportFormat input[name="exportPeriod"]:checked')?.value || 'filters';
-      document.getElementById('exportCustomRange').hidden = exportPeriodMode !== 'custom';
-      renderExportPreview();
-    });
-  });
-  document.getElementById('exportDateStart').addEventListener('change', renderExportPreview);
-  document.getElementById('exportDateEnd').addEventListener('change', renderExportPreview);
+  // Exportação: colunas selecionáveis no modal (prévia re-renderizada a cada mudança)
   document.querySelectorAll('#panelExportFormat [data-export-col]').forEach(box => {
     box.addEventListener('change', () => {
       const selected = document.querySelectorAll('#panelExportFormat [data-export-col]:checked').length;
       const hint = document.getElementById('exportGranularHint');
       if (hint) hint.textContent = selected
-        ? 'A prévia e os arquivos usam o período e as colunas escolhidos acima.'
+        ? 'A prévia e os arquivos usam as colunas escolhidas acima.'
         : 'Marque ao menos uma coluna para gerar o arquivo.';
       renderExportPreview();
     });

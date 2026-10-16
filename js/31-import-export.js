@@ -4,7 +4,7 @@
 
   function parseCsvLine(line) { const cells = []; let current = '', quoted = false; for (let i = 0; i < line.length; i++) { const char = line[i]; if (char === '"' && line[i + 1] === '"' && quoted) { current += '"'; i++; } else if (char === '"') quoted = !quoted; else if ((char === ',' || char === ';' || char === '\t') && !quoted) { cells.push(current.trim()); current = ''; } else current += char; } cells.push(current.trim()); return cells; }
 
-  // ===== Feature 12 — Exportação granular: período flexível + colunas selecionáveis =====
+  // ===== Exportação: colunas selecionáveis; período segue os filtros ativos + período ativo da tela =====
   const EXPORT_COLUMN_DEFS = [
     { key: 'date', label: 'Data', width: 25 },
     { key: 'desc', label: 'Descrição', width: 58 },
@@ -13,7 +13,6 @@
     { key: 'out', label: 'Saída', width: 25 },
     { key: 'balance', label: 'Saldo', width: 32 }
   ];
-  let exportPeriodMode = 'filters';
 
   function getExportColumns() {
     const boxes = document.querySelectorAll('#panelExportFormat [data-export-col]');
@@ -21,48 +20,15 @@
     return EXPORT_COLUMN_DEFS.filter(def => document.querySelector(`#panelExportFormat [data-export-col="${def.key}"]`)?.checked);
   }
 
-  function getExportPeriodRange() {
-    if (exportPeriodMode === 'filters') return null;
-    const pad = n => String(n).padStart(2, '0');
-    const iso = (y, m, d) => `${y}-${pad(m)}-${pad(d)}`;
-    const today = new Date();
-    if (exportPeriodMode === 'week') {
-      const day = today.getDay() || 7;
-      const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (day - 1));
-      const sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
-      return { start: iso(monday.getFullYear(), monday.getMonth() + 1, monday.getDate()), end: iso(sunday.getFullYear(), sunday.getMonth() + 1, sunday.getDate()) };
-    }
-    if (exportPeriodMode === 'fortnight') {
-      const y = today.getFullYear();
-      const m = today.getMonth();
-      const lastDay = new Date(y, m + 1, 0).getDate();
-      return today.getDate() <= 15
-        ? { start: iso(y, m + 1, 1), end: iso(y, m + 1, 15) }
-        : { start: iso(y, m + 1, 16), end: iso(y, m + 1, lastDay) };
-    }
-    if (exportPeriodMode === 'custom') {
-      const start = document.getElementById('exportDateStart')?.value || '';
-      const end = document.getElementById('exportDateEnd')?.value || '';
-      if (!start && !end) return null;
-      return { start, end };
-    }
-    return null;
-  }
-
   function getExportRangeBounds() {
-    const filterStart = document.getElementById('filterDateStart').value;
-    const filterEnd = document.getElementById('filterDateEnd').value;
-    const range = getExportPeriodRange();
-    const start = [filterStart, range?.start || ''].filter(Boolean).sort().pop() || '';
-    const end = [filterEnd, range?.end || ''].filter(Boolean).sort()[0] || '';
-    return { start, end };
+    return {
+      start: document.getElementById('filterDateStart').value,
+      end: document.getElementById('filterDateEnd').value
+    };
   }
 
   function getExportEntries() {
-    const base = getFilteredEntries();
-    const range = getExportPeriodRange();
-    if (!range) return base;
-    return base.filter(e => (!range.start || e.date >= range.start) && (!range.end || e.date <= range.end));
+    return getFilteredEntries();
   }
 
   function getExportMeta(activeEntries = getExportEntries()) {
@@ -137,7 +103,6 @@
     const pocketsBlock = getPocketsExportBlock(meta.dateStart, meta.dateEnd);
     const investBlock = getInvestmentsExportBlock(meta.dateStart, meta.dateEnd);
     const preview = document.getElementById('exportPreview');
-    const periodLabels = { filters: 'filtros atuais', week: 'semana', fortnight: 'quinzena', custom: 'personalizado' };
     const exportCols = getExportColumns();
     const hasNothing = count === 0 && pocketsBlock.length === 0 && investBlock.length === 0;
     ['btnExportFormatPdf', 'btnExportFormatXlsx', 'btnExportFormatDocx'].forEach(id => {
@@ -145,7 +110,7 @@
       if (btn) btn.disabled = hasNothing || exportCols.length === 0;
     });
     document.getElementById('exportPreviewCaption').textContent =
-      `${count} movimentação(ões) · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · Período: ${periodLabels[exportPeriodMode] || 'filtros atuais'} · ${exportCols.length} de ${EXPORT_COLUMN_DEFS.length} coluna(s) · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
+      `${count} movimentação(ões) · ${meta.dateStart.split('-').reverse().join('/')} a ${meta.dateEnd.split('-').reverse().join('/')} · ${exportCols.length} de ${EXPORT_COLUMN_DEFS.length} coluna(s) · Saldo inicial ${fmt(initial)} · Saldo final ${fmt(final)}.`;
 
     const bankHtml = grouped.map(group => {
       const rows = group.entries.slice(0, 6).map(entry => {

@@ -739,14 +739,7 @@
 .export-preview-caption{margin-bottom:14px;padding:10px 16px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;font-size:13px;color:var(--ink-soft);line-height:1.5;}
 .export-controls{display:flex;flex-direction:column;gap:16px;margin-top:14px;}
 .export-control-label{display:block;margin-bottom:8px;font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--ink);}
-.export-period-pills{display:flex;flex-wrap:wrap;gap:1.5px;border:1.5px solid var(--ink);border-radius:4px;background:var(--ink);overflow:hidden;}
-.export-pill{position:relative;flex:1 1 auto;min-width:104px;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:8px 9px;border:0;border-radius:0;background:var(--paper);font-size:12px;color:var(--ink);cursor:pointer;}
-.export-pill input{position:absolute;opacity:0;pointer-events:none;margin:0;}
-.export-pill:has(input:checked){background:var(--ink);color:var(--paper);font-weight:700;}
-.export-pill:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:-3px;}
-.export-custom-range{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft);}
-.export-custom-range input[type="date"]{min-width:0;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font-size:12px;}
-.export-column-checks{display:flex;flex-wrap:wrap;gap:8px 16px;}
+.export-column-checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:9px 12px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);}
 .export-column-checks label{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink);cursor:pointer;}
 .export-column-checks label:has(input:checked){font-weight:600;}
 .export-column-checks input{margin:0;accent-color:var(--accent);}
