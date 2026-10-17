@@ -591,6 +591,7 @@
     if (!Number.isFinite(previous) || Math.abs(previous) < 0.005) return null;
     const pct = ((current - previous) / Math.abs(previous)) * 100;
     const rounded = Math.abs(pct) < 0.05 ? 0 : pct;
+    if (Math.abs(rounded) > 999) return null;
     return {
       pct: rounded,
       up: rounded >= 0,

@@ -24,21 +24,21 @@
    ========================================================= */
 :root{
     --font-ui:'Plus Jakarta Sans',sans-serif;
-    --paper:#F7F5EF;
-    --paper-2:#EFEBE0;
-    --ink:#1C2B24;
-    --ink-soft:#4C5A52;
-    --green:#2F6F4F;
-    --green-soft:#DCEBE2;
+    --paper:#F8F7F2;
+    --paper-2:#F0F0EA;
+    --ink:#19352A;
+    --ink-soft:#66746B;
+    --green:#327957;
+    --green-soft:#E7EFE8;
     --red:#B3432B;
     --red-soft:#F3E2DC;
-    --line:#D8D2C1;
-    --gold:#B08D3E;
-    --gold-rgb:176,141,62;
+    --line:#E1E1D9;
+    --gold:#B89034;
+    --gold-rgb:184,144,52;
     --gold-soft:#F2E8D0;
     --on-accent:#FFFFFF;
     --overlay:rgba(0,0,0,0.65);
-    --shadow:rgba(0,0,0,0.18);
+    --shadow:rgba(20,48,36,.08);
     --hover-soft:rgba(0,0,0,0.03);
     --surface:#FFFEFA;
     --surface-raised:#FCFDF9;

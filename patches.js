@@ -96,12 +96,15 @@ document.addEventListener('click', (event) => {
 
     var result = runOriginalSwitchTab(tab, this, arguments);
 
-    // Reforço da pílula BNI
+    // Reforço da pílula BNI — usa a aba já resolvida por updateNavIndicator
+    // (fonte única: mapeia 'dash'→'dashboard' e abas secundárias→'caixa'),
+    // em vez do nome cru de 'tab', que não casa com nenhum destino da nav.
     var nav = document.querySelector('.mobile-bottom-nav');
+    var navActive = (nav && nav.dataset.active) || tab || 'caixa';
     document.querySelectorAll('.mobile-bottom-nav button').forEach(function(button) {
-      button.classList.toggle('is-active', button.dataset.destination === tab);
+      button.classList.toggle('is-active', button.dataset.destination === navActive);
     });
-    if (nav) nav.dataset.active = tab || 'caixa';
+    if (nav) nav.dataset.active = navActive;
 
     // Garantir que o body não fique preso em goals
     if (document.body.dataset.tab === 'goals') {

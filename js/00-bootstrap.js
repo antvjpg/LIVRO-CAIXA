@@ -436,6 +436,7 @@ window.addEventListener('beforeunload', e => {
     const nav = document.querySelector('.mobile-bottom-nav');
     if (!nav) return;
     const buttons = Array.from(nav.querySelectorAll('button[data-destination]'));
+    if (tabName === 'dash') tabName = 'dashboard';
     let index = buttons.findIndex(btn => btn.dataset.destination === tabName);
     if (index < 0) {
       index = buttons.findIndex(btn => btn.dataset.destination === 'caixa');

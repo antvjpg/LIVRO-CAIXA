@@ -271,7 +271,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabName === 'dashboard') renderAdvancedDashboard();
     if (tabName === 'dash') renderDashboardTab();
     if (tabName === 'caixa') renderCategorySummary();
-    document.querySelectorAll('.mobile-bottom-nav button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === tabName));
+    const navEl = document.querySelector('.mobile-bottom-nav');
+    const navActive = navEl?.dataset.active || tabName;
+    navEl?.querySelectorAll('button').forEach(button => button.classList.toggle('is-active', button.dataset.destination === navActive));
     if (tabName === 'profile') renderProfile();
   };
   // Base da navegação: BNI e onclick usam switchTab

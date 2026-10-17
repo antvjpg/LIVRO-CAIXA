@@ -3,7 +3,6 @@
   .mobile-bottom-nav { display:none; }
   header.app-header .subtitle .fi { display:none; }
   @media (max-width:680px) {
-    :root { --paper:#F8F7F2; --paper-2:#F0F0EA; --ink:#19352A; --ink-soft:#66746B; --green:#327957; --green-soft:#E7EFE8; --line:#E1E1D9; --gold:#B89034; --shadow:rgba(20,48,36,.08); }
     body { background:var(--paper); padding-bottom:116px; }
     header.app-header { background:linear-gradient(135deg,#153429,#1D3B30); color:#F9F8F3; min-height:174px; max-width:none; margin:0; padding:33px 22px 24px; border:0; align-items:flex-start; position:relative; overflow:hidden; }
     body.dark-mode header.app-header { background:linear-gradient(135deg,var(--header-from),var(--header-to)); }

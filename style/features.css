@@ -358,7 +358,6 @@
   .feature-profile-input-suffix{position:relative;}
   .feature-profile-input-suffix input{padding-right:52px;}
   .feature-profile-input-suffix span{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--ink-soft);} 
-  .feature-profile-budget{}
   .feature-budget-rows{max-height:250px;padding-right:3px;gap:6px;}
   .feature-budget-row{grid-template-columns:minmax(0,1fr) 130px auto;padding:7px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);}
   .feature-budget-row:last-child{border-bottom:0;}
@@ -4394,6 +4393,10 @@ body:not([data-tab="profile"]) .profile-shell{
 }
 /* o perfil tem ações próprias no cabeçalho; o FAB não se aplica aqui */
 body[data-tab="profile"] .fab-add{
+  display:none;
+}
+/* o Dashboard é um relatório com controles próprios; o FAB sobrepõe os cards */
+body[data-tab="dash"] .fab-add{
   display:none;
 }
 

@@ -253,6 +253,9 @@
   gap:9px;
   align-items:stretch;
 }
+#viewDash .dash-kpis > .dash-kpi:last-child:nth-child(odd){
+  grid-column:1 / -1;
+}
 #viewDash .dash-kpi{
   display:flex;
   flex-direction:column;
@@ -266,6 +269,8 @@
 #viewDash .dash-kpi small{
   font-size:9px;
   line-height:1.25;
+  text-transform:uppercase;
+  letter-spacing:0.3px;
   color:var(--ink-soft);
 }
 #viewDash .dash-kpi strong{
@@ -925,7 +930,7 @@
 }
 
 /* [CSS · VISÃO GERAL] tipografia e botão das seções externas, no mesmo
-   padrão das seções internas do card (título 12px, valor em IBM Plex Mono,
+   padrão das seções internas do card (título 12px, valor em Plus Jakarta Sans,
    dicas 10px, primary com raio ~12px como toolbar/painel). */
 #viewDashboard #dashboardNextPayment .next-pay-row strong{
   font-size:12px;
@@ -1204,9 +1209,6 @@
   .ai-chat-msg{max-width:94%;font-size:13px;}
   .ai-chat-action{min-height:36px;padding:7px 12px;}
   .ai-chat-row input{font-size:16px;} /* evita zoom automático do iOS */
-}
-@media (prefers-reduced-motion:reduce){
-  #panelAiChat,.ai-chat-msg{}
 }
 
 /* ==========================================================================
