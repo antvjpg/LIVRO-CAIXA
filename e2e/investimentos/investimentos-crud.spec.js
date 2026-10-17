@@ -272,7 +272,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await page.fill('#iUnidades', '-1');
     await clickGuarded(page, '#iSalvar');
     await waitDialog(dialogs, 'O saldo inicial não pode ser negativo.');
-    await page.click('#btnCloseInvest');
+    await page.click('#panelInvest .modal-close');
 
     // cria os 4 ativos
     await openNewAsset(page);
@@ -330,7 +330,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await fillMoney(page, '#imCotacao', PRICE_ST);
     await clickGuarded(page, '#imSalvar');
     await waitDialog(dialogs, 'O resgate não pode ser maior que o saldo disponível');
-    await page.click('#btnCloseInvestMovement');
+    await page.click('#panelInvestMovement .modal-close');
 
     // --- crypto movimentações ---
     await openMovement(page, NAME_ST, 'aporte');
