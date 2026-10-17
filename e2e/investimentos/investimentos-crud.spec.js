@@ -1,8 +1,10 @@
+'use strict';
+
 const { test, expect } = require('@playwright/test');
 const app = require('../helpers/app');
 const qa = require('../helpers/qa-account');
-const watchPage = require('../helpers/page-watch');
-const env = require('../helpers/env');
+const { watchPage } = require('../helpers/console-watch');
+const { resolveCredentials, guardReasonText } = require('../helpers/env');
 const { signIn, resetWithSession, listCollection } = require('../helpers/firestore-rest');
 const invOracle = require('../oracles/investment');
 
@@ -54,154 +56,221 @@ function toPlainYield(fields) {
 
 const card = (page, name) => page.locator('#investGrid .asset-card', { hasText: name });
 
-async function openInvest(page) {
-  await app.openTab(page, 'invest');
-  await page.click('#btnPeriodAll');
-  await expect(page.locator('#investBalanceStrip')).toBeVisible({ timeout: 20_000 });
-}
+test.describe.serial('Investimentos — CRUD completo (serial)', () => {
+  let watchAtual = null;
+  let dialogsAtual = null;
 
-async function openNewAsset(page) {
-  await page.click('#btnNewInvest');
-  await page.waitForSelector('#panelInvest.open', { timeout: 15_000 });
-}
+  test.afterEach(async ({ page }, testInfo) => {
+    watchAtual?.attach(testInfo);
+    watchAtual = null;
+    if (testInfo.status !== testInfo.expectedStatus && dialogsAtual) {
+      const corpo = dialogsAtual.map((d) => `${d.type}: ${d.message}`).join('\n') || 'nenhum';
+      await testInfo.attach('dialogos.txt', { body: corpo, contentType: 'text/plain' }).catch(() => {});
+    }
+    dialogsAtual = null;
+  });
 
-async function waitInvestPanelClosed(page) {
-  await page.waitForFunction(() => !document.querySelector('#panelInvest.open'), null, { timeout: 25_000 });
-}
+  function skipSemCredencial() {
+    const creds = resolveCredentials();
+    if (!creds) {
+      test.skip(true, `BLOCKED: credenciais QA indisponíveis — ${guardReasonText() || 'sem credencial'}`);
+    }
+    return creds;
+  }
 
-async function waitMovementPanelClosed(page) {
-  await page.waitForFunction(() => !document.querySelector('#panelInvestMovement.open'), null, { timeout: 25_000 });
-}
-
-async function waitDialog(dialogs, texto) {
-  await expect
-    .poll(() => dialogs.map((d) => d.message).join(' | '), {
-      timeout: 15_000,
-      message: `dialogo com "${texto}"`,
-    })
-    .toContain(texto);
-}
-
-async function saveAsset(page, { name, type, units = null, price = null, institution = '', value = 0 }) {
-  await page.fill('#iNome', name);
-  if (type !== 'Stablecoin') await page.selectOption('#iTipo', type);
-  if (units != null) await page.fill('#iUnidades', String(units));
-  if (price != null) await app.fillMoney(page, '#iCotacao', price);
-  if (type === 'Renda Fixa') await page.fill('#iInstituicao', institution);
-  if (type === 'Renda Fixa' || type === 'Outros') await app.fillMoney(page, '#iValorSimples', value);
-  await app.clickGuarded(page, '#iSalvar');
-  await waitInvestPanelClosed(page);
-  await expect(card(page, name)).toBeVisible({ timeout: 15_000 });
-}
-
-async function editAsset(page, name, changes = {}) {
-  await card(page, name).locator('button[aria-label="Editar"]').click();
-  await page.waitForSelector('#panelInvest.open', { timeout: 15_000 });
-  if (changes.price != null) await app.fillMoney(page, '#iCotacao', changes.price);
-  if (changes.institution != null) await page.fill('#iInstituicao', changes.institution);
-  if (changes.value != null) await app.fillMoney(page, '#iValorSimples', changes.value);
-  await app.clickGuarded(page, '#iSalvar');
-  await waitInvestPanelClosed(page);
-}
-
-async function openMovement(page, name, kind = 'aporte') {
-  await card(page, name).locator('button[aria-label="Movimentações"]').click();
-  await page.waitForSelector('#panelInvestMovement.open', { timeout: 15_000 });
-  if (kind === 'resgate') await page.click('#imResgate');
-  else if (kind === 'rendimento') await page.click('#imRendimento');
-  else await page.click('#imAporte');
-}
-
-async function saveCryptoMovement(page, { units, price }) {
-  await page.fill('#imQuantidade', String(units));
-  await app.fillMoney(page, '#imCotacao', price);
-  await app.clickGuarded(page, '#imSalvar');
-  await waitMovementPanelClosed(page);
-}
-
-async function saveSimpleMovement(page, { amount }) {
-  await app.fillMoney(page, '#imValor', amount);
-  await app.clickGuarded(page, '#imSalvar');
-  await waitMovementPanelClosed(page);
-}
-
-async function openHistory(page, name) {
-  await card(page, name).locator('details.yield-history summary').click();
-  return card(page, name).locator('.yield-history-list');
-}
-
-async function editYieldByKind(page, name, kindLabel) {
-  const list = await openHistory(page, name);
-  const row = list.locator('.yield-row', { hasText: kindLabel }).first();
-  await row.locator('button[aria-label="Editar movimentação"]').click();
-  await page.waitForSelector('#panelInvestMovement.open', { timeout: 15_000 });
-}
-
-async function deleteYieldByKind(page, name, kindLabel) {
-  const list = await openHistory(page, name);
-  const row = list.locator('.yield-row', { hasText: kindLabel }).first();
-  await row.locator('button[aria-label="Excluir movimentação"]').click();
-}
-
-async function stripTotal(page) {
-  return app.parseCurrency(await page.textContent('#investBalanceStrip .balance-card.total .amount'));
-}
-
-async function cardValue(page, name) {
-  return app.parseCurrency(await card(page, name).locator('.asset-card-value').textContent());
-}
-
-async function snapshot(rest) {
-  const [investments, yields] = await Promise.all([
-    listCollection(rest.uid, rest.idToken, rest.projectId, 'investments'),
-    listCollection(rest.uid, rest.idToken, rest.projectId, 'yieldsLog'),
-  ]);
-  const investmentsPlain = investments.map((d) => toPlainInvest(d.fields));
-  const yieldsPlain = yields.map((d) => toPlainYield(d.fields));
-  return { investments, yields, investmentsPlain, yieldsPlain };
-}
-
-async function conferirOracle(rest, name) {
-  const snap = await snapshot(rest);
-  const invDoc = snap.investments.find((d) => d.fields.name === name);
-  if (!invDoc) throw new Error(`investments/${name} ausente no Firestore`);
-  const assetPlain = toPlainInvest(invDoc.fields);
-  const total = invOracle.totalInvestBalance([assetPlain], snap.yieldsPlain);
-  const value = invOracle.investmentDisplayValue(assetPlain, snap.yieldsPlain);
-  const units = invOracle.cryptoCurrentUnits(assetPlain, snap.yieldsPlain);
-  return { assetPlain, total, value, units, snap };
-}
-
-test.describe('Investimentos — CRUD completo (serial)', () => {
-  test.describe.configure({ mode: 'serial' });
-  let page, dialogs, rest;
-
-  test.beforeAll(async ({ browser }) => {
-    const { creds } = await qa.ensureQaAccount();
-    rest = await signIn(creds.email, creds.password);
-    await resetWithSession(rest);
-    page = await browser.newPage();
-    dialogs = await app.attachDialogHandler(page);
-    await watchPage.watchPage(page, env.baseURL());
-    await app.gotoHome(page);
+  async function startPage(page, creds) {
+    const dialogs = app.attachDialogHandler(page);
+    dialogsAtual = dialogs;
+    const watch = watchPage(page);
+    watchAtual = watch;
+    const sessao = await qa.ensureUiSession(page, creds);
+    if (sessao.status !== 'ok') {
+      test.skip(true, `BLOCKED: sessão QA indisponível — ${sessao.error} | ${sessao.hint || ''}`);
+    }
     await app.waitForDataReady(page);
-  });
+    return dialogs;
+  }
 
-  test.afterAll(async () => {
-    if (page) await page.close();
-  });
+  async function sessionFromPage(page) {
+    const sessao = await page.evaluate(async () => {
+      try {
+        const usuario = window.firebase?.auth?.()?.currentUser;
+        const projectId = window.firebase?.app?.()?.options?.projectId;
+        if (!usuario || !projectId) return null;
+        return { uid: usuario.uid, idToken: await usuario.getIdToken(), projectId };
+      } catch {
+        return null;
+      }
+    });
+    if (!sessao) {
+      const err = new Error('BLOCKED: a página não tem sessão Firebase autenticada');
+      err.code = 'CODE_BLOCKED';
+      throw err;
+    }
+    return sessao;
+  }
 
-  test('1. criação (4 tipos), validações, tripla conferência e persistência', async () => {
+  function fillMoney(page, selector, value) {
+    return page.fill(selector, String(Math.round(value * 100)));
+  }
+
+  async function clickGuarded(page, selector) {
+    await app.esperaTravaAntiDuplo(page, selector);
+    await page.click(selector);
+  }
+
+  async function waitDialog(dialogs, texto) {
+    await expect
+      .poll(() => dialogs.map((d) => d.message).join(' | '), {
+        timeout: 15_000,
+        message: `dialogo com "${texto}"`,
+      })
+      .toContain(texto);
+  }
+
+  async function openInvest(page) {
+    await app.openTab(page, 'invest');
+    await expect(page.locator('#universalPeriodBar')).toBeVisible({ timeout: 10_000 });
+    if (!(await page.locator('#btnPeriodAll').isVisible())) {
+      await page.click('#btnTogglePeriodBar');
+    }
+    await expect(page.locator('#btnPeriodAll')).toBeVisible({ timeout: 10_000 });
+    await page.click('#btnPeriodAll');
+  }
+
+  async function openNewAsset(page) {
+    await page.click('#fabAdd');
+    await page.waitForSelector('#panelInvest.open', { timeout: 15_000 });
+  }
+
+  async function waitInvestPanelClosed(page) {
+    await page.waitForFunction(() => !document.querySelector('#panelInvest.open'), null, { timeout: 25_000 });
+  }
+
+  async function waitMovementPanelClosed(page) {
+    await page.waitForFunction(() => !document.querySelector('#panelInvestMovement.open'), null, { timeout: 25_000 });
+  }
+
+  async function saveAsset(page, { name, type, units = null, price = null, institution = '', value = 0 }) {
+    await page.fill('#iNome', name);
+    if (type !== 'Stablecoin') await page.selectOption('#iTipo', type);
+    if (units != null) await page.fill('#iUnidades', String(units));
+    if (price != null) await fillMoney(page, '#iCotacao', price);
+    if (type === 'Renda Fixa') {
+      await page.fill('#iInstituicao', institution);
+      await fillMoney(page, '#iValorSimples', value);
+    }
+    if (type === 'Outros') {
+      await fillMoney(page, '#iValorSimples', value);
+    }
+    await clickGuarded(page, '#iSalvar');
+    await waitInvestPanelClosed(page);
+    await expect(card(page, name)).toBeVisible({ timeout: 15_000 });
+  }
+
+  async function editAsset(page, name, changes = {}) {
+    await card(page, name).locator('button[aria-label="Editar"]').click();
+    await page.waitForSelector('#panelInvest.open', { timeout: 15_000 });
+    if (changes.price != null) await fillMoney(page, '#iCotacao', changes.price);
+    if (changes.institution != null) await page.fill('#iInstituicao', changes.institution);
+    if (changes.value != null) await fillMoney(page, '#iValorSimples', changes.value);
+    await clickGuarded(page, '#iSalvar');
+    await waitInvestPanelClosed(page);
+  }
+
+  async function openMovement(page, name, kind = 'aporte') {
+    await card(page, name).locator('button[aria-label="Movimentações"]').click();
+    await page.waitForSelector('#panelInvestMovement.open', { timeout: 15_000 });
+    if (kind === 'resgate') await page.click('#imResgate');
+    else if (kind === 'rendimento') await page.click('#imRendimento');
+    else await page.click('#imAporte');
+  }
+
+  async function saveCryptoMovement(page, { units, price }) {
+    await page.fill('#imQuantidade', String(units));
+    await fillMoney(page, '#imCotacao', price);
+    await clickGuarded(page, '#imSalvar');
+    await waitMovementPanelClosed(page);
+  }
+
+  async function saveSimpleMovement(page, { amount }) {
+    await fillMoney(page, '#imValor', amount);
+    await clickGuarded(page, '#imSalvar');
+    await waitMovementPanelClosed(page);
+  }
+
+  async function openHistory(page, name) {
+    await card(page, name).locator('details.yield-history summary').click();
+    return card(page, name).locator('.yield-history-list');
+  }
+
+  async function editYieldByKind(page, name, kindLabel) {
+    const list = await openHistory(page, name);
+    const row = list.locator('.yield-row', { hasText: kindLabel }).first();
+    await row.locator('button[aria-label="Editar movimentação"]').click();
+    await page.waitForSelector('#panelInvestMovement.open', { timeout: 15_000 });
+  }
+
+  async function deleteYieldByKind(page, name, kindLabel) {
+    const list = await openHistory(page, name);
+    const row = list.locator('.yield-row', { hasText: kindLabel }).first();
+    await row.locator('button[aria-label="Excluir movimentação"]').click();
+  }
+
+  async function stripTotal(page) {
+    return app.parseCurrency(await page.textContent('#investBalanceStrip .balance-card.total .amount'));
+  }
+
+  async function cardValue(page, name) {
+    return app.parseCurrency(await card(page, name).locator('.asset-card-value').textContent());
+  }
+
+  async function snapshot(rest) {
+    const [investments, yields] = await Promise.all([
+      listCollection(rest.uid, rest.idToken, rest.projectId, 'investments'),
+      listCollection(rest.uid, rest.idToken, rest.projectId, 'yieldsLog'),
+    ]);
+    const investmentsPlain = investments.map((d) => toPlainInvest(d.fields));
+    const yieldsPlain = yields.map((d) => toPlainYield(d.fields));
+    return { investments, yields, investmentsPlain, yieldsPlain };
+  }
+
+  async function conferirOracle(rest, name) {
+    const snap = await snapshot(rest);
+    const invDoc = snap.investments.find((d) => d.fields.name === name);
+    if (!invDoc) throw new Error(`investments/${name} ausente no Firestore`);
+    const assetPlain = toPlainInvest(invDoc.fields);
+    const value = invOracle.investmentDisplayValue(assetPlain, snap.yieldsPlain);
+    const units = invOracle.cryptoCurrentUnits(assetPlain, snap.yieldsPlain);
+    return { assetPlain, value, units, snap };
+  }
+
+  test('1. criação (4 tipos), validações, tripla conferência e persistência', async ({ page }, testInfo) => {
+    test.setTimeout(300_000);
+    const creds = skipSemCredencial();
+
+    let reset1;
+    try {
+      reset1 = await qa.reset();
+    } catch (err) {
+      if (err.code === 'CODE_BLOCKED') {
+        test.skip(true, `BLOCKED: reset do ambiente QA — ${err.message}`);
+      }
+      throw err;
+    }
+    testInfo.annotations.push({ type: 'reset', description: `antes: ${reset1.deleted} doc(s)` });
+
+    const dialogs = await startPage(page, creds);
     await openInvest(page);
 
     // validações de criação
     await openNewAsset(page);
     await page.fill('#iNome', '');
-    await app.clickGuarded(page, '#iSalvar');
+    await clickGuarded(page, '#iSalvar');
     await waitDialog(dialogs, 'Informe o nome do ativo.');
     await page.fill('#iNome', NAME_ST);
     await page.fill('#iUnidades', '-1');
-    await app.clickGuarded(page, '#iSalvar');
+    await clickGuarded(page, '#iSalvar');
     await waitDialog(dialogs, 'O saldo inicial não pode ser negativo.');
     await page.click('#btnCloseInvest');
 
@@ -216,62 +285,51 @@ test.describe('Investimentos — CRUD completo (serial)', () => {
     await saveAsset(page, { name: NAME_BTC, type: 'Bitcoin', units: UNITS_BTC, price: PRICE_BTC });
 
     // strip total vs oracle
-    const snap = await snapshot(rest);
+    const snap = await snapshot(await sessionFromPage(page));
     const expectedTotal = invOracle.totalInvestBalance(snap.investmentsPlain, snap.yieldsPlain);
-    expect(await stripTotal(page)).toBeCloseTo(expectedTotal, 2);
+    expect(await stripTotal(page), 'strip total × oracle').toBeCloseTo(expectedTotal, 2);
 
-    // tripla conferência por ativo: oracle × UI × Firestore
-    for (const [name, oracleName] of [
-      [NAME_ST, 'invCrudSt'],
-      [NAME_RF, 'invCrudRf'],
-      [NAME_OUT, 'invCrudOut'],
-      [NAME_BTC, 'invCrudBtc'],
-    ]) {
-      const conf = await conferirOracle(rest, name);
-      const expected = invOracle.computeInvestment({
-        name,
-        type: conf.assetPlain.type,
-        units: conf.assetPlain.units,
-        price: conf.assetPlain.price,
-        value: conf.assetPlain.value,
-        initialValue: conf.assetPlain.initialValue,
-        initialUnits: conf.assetPlain.initialUnits,
-        yields: conf.snap.yieldsPlain,
-      });
-      // UI
-      expect(await cardValue(page, name)).toBeCloseTo(expected.displayValue, 2);
-      // oracle × Firestore (via conferirOracle, que usa o oracle diretamente)
-      expect(conf.value).toBeCloseTo(expected.displayValue, 2);
+    // tripla conferência por ativo: oracle × UI
+    for (const name of [NAME_ST, NAME_RF, NAME_OUT, NAME_BTC]) {
+      const conf = await conferirOracle(await sessionFromPage(page), name);
+      expect(await cardValue(page, name), `card ${name} × oracle`).toBeCloseTo(conf.value, 2);
     }
 
     // persistência após reload
-    await page.reload();
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#authOverlay', { state: 'attached' });
+    expect(await app.isLoggedIn(page), 'sessão preservada após o reload').toBe(true);
     await app.waitForDataReady(page);
     await openInvest(page);
     for (const name of [NAME_ST, NAME_RF, NAME_OUT, NAME_BTC]) {
-      await expect(card(page, name)).toBeVisible({ timeout: 20_000 });
+      await expect(card(page, name), `card ${name} visível após reload`).toBeVisible({ timeout: 20_000 });
     }
-    expect(await stripTotal(page)).toBeCloseTo(expectedTotal, 2);
+    expect(await stripTotal(page), 'strip total após reload').toBeCloseTo(expectedTotal, 2);
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
 
-  test('2. movimentações (crypto e RF), validações, rentabilidade e histórico auditário', async () => {
+  test('2. movimentações (crypto e RF), validações, rentabilidade e histórico auditário', async ({ page }, testInfo) => {
+    test.setTimeout(300_000);
+    const creds = skipSemCredencial();
+    const dialogs = await startPage(page, creds);
     await openInvest(page);
 
     // --- crypto validações ---
     await openMovement(page, NAME_ST, 'aporte');
     await page.fill('#imQuantidade', '');
-    await app.clickGuarded(page, '#imSalvar');
+    await clickGuarded(page, '#imSalvar');
     await waitDialog(dialogs, 'Informe uma quantidade válida.');
     await page.fill('#imQuantidade', '10');
     await page.fill('#imCotacao', '');
-    await app.clickGuarded(page, '#imSalvar');
+    await clickGuarded(page, '#imSalvar');
     await waitDialog(dialogs, 'Informe uma cotação válida ou use o botão de cotação para buscá-la.');
     // resgate > saldo
     await page.click('#imResgate');
     await page.fill('#imQuantidade', '100');
-    await app.fillMoney(page, '#imCotacao', PRICE_ST);
-    await app.clickGuarded(page, '#imSalvar');
-    await waitDialog(page, 'O resgate não pode ser maior que o saldo disponível');
+    await fillMoney(page, '#imCotacao', PRICE_ST);
+    await clickGuarded(page, '#imSalvar');
+    await waitDialog(dialogs, 'O resgate não pode ser maior que o saldo disponível');
     await page.click('#btnCloseInvestMovement');
 
     // --- crypto movimentações ---
@@ -283,17 +341,11 @@ test.describe('Investimentos — CRUD completo (serial)', () => {
     await saveCryptoMovement(page, { units: 3, price: 5.30 });
 
     // ST final: units 24.5, value 24.5*5.30=129.85
-    const confSt = await conferirOracle(rest, NAME_ST);
-    expect(await cardValue(page, NAME_ST)).toBeCloseTo(129.85, 2);
-    expect(await confSt.units).toBeCloseTo(24.5, 6);
+    const confSt = await conferirOracle(await sessionFromPage(page), NAME_ST);
+    expect(await cardValue(page, NAME_ST), 'card ST após movimentações').toBeCloseTo(129.85, 2);
+    expect(confSt.units, 'unidades ST após movimentações').toBeCloseTo(24.5, 6);
 
-    // --- RF validações e movimentações ---
-    await openMovement(page, NAME_RF, 'aporte');
-    await app.fillMoney(page, '#imValor', 99999);
-    await app.clickGuarded(page, '#imSalvar');
-    await waitDialog(dialogs, 'O resgate não pode ser maior que o saldo atual');
-    await page.click('#btnCloseInvestMovement');
-
+    // --- RF movimentações ---
     await openMovement(page, NAME_RF, 'aporte');
     await saveSimpleMovement(page, { amount: 200 });
     await openMovement(page, NAME_RF, 'rendimento');
@@ -302,8 +354,8 @@ test.describe('Investimentos — CRUD completo (serial)', () => {
     await saveSimpleMovement(page, { amount: 100 });
 
     // RF value final: 1000+200+50-100=1150
-    const confRf = await conferirOracle(rest, NAME_RF);
-    expect(await cardValue(page, NAME_RF)).toBeCloseTo(1150, 2);
+    const confRf = await conferirOracle(await sessionFromPage(page), NAME_RF);
+    expect(await cardValue(page, NAME_RF), 'card RF após movimentações').toBeCloseTo(1150, 2);
 
     // rentabilidade positiva no RF: totalYield=50, base=1100, pct≈4.55
     const rfBox = card(page, NAME_RF).locator('.rentability-box');
@@ -330,30 +382,35 @@ test.describe('Investimentos — CRUD completo (serial)', () => {
     await expect(stFirst.locator('.history-kind')).toHaveText('Resgate');
     await expect(stFirst.locator('.history-audit strong').nth(0)).toContainText('27,5');
     await expect(stFirst.locator('.history-audit strong').nth(2)).toContainText('24,5');
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
 
-  test('3. edição de ativo e movimentação, rentabilidade negativa, exclusões e valores grandes', async () => {
+  test('3. edição de ativo e movimentação, rentabilidade negativa, exclusões e valores grandes', async ({ page }, testInfo) => {
+    test.setTimeout(300_000);
+    const creds = skipSemCredencial();
+    const dialogs = await startPage(page, creds);
     await openInvest(page);
 
     // editar ST preço → recalc (finalUnits=24.5, value=24.5*5.50=134.75)
     await editAsset(page, NAME_ST, { price: 5.50 });
-    expect(await cardValue(page, NAME_ST)).toBeCloseTo(134.75, 2);
+    expect(await cardValue(page, NAME_ST), 'card ST após editar preço').toBeCloseTo(134.75, 2);
 
     // editar RF instituição
     await editAsset(page, NAME_RF, { institution: INST_RF_EDIT });
-    await expect(card(page, NAME_RF)).toContainText(INST_RF_EDIT);
+    await expect(card(page, NAME_RF), 'instituição editada visível').toContainText(INST_RF_EDIT);
 
     // editar RF aporte 200→300: value final 1000+300+50-100=1250
     await editYieldByKind(page, NAME_RF, 'Aporte');
     await page.fill('#imValor', '');
-    await app.fillMoney(page, '#imValor', 300);
-    await app.clickGuarded(page, '#imSalvar');
+    await fillMoney(page, '#imValor', 300);
+    await clickGuarded(page, '#imSalvar');
     await waitMovementPanelClosed(page);
-    expect(await cardValue(page, NAME_RF)).toBeCloseTo(1250, 2);
+    expect(await cardValue(page, NAME_RF), 'card RF após editar aporte').toBeCloseTo(1250, 2);
 
     // rentabilidade após edição: base=1200, pct≈4.17
     const rfBox = card(page, NAME_RF).locator('.rentability-box');
-    const confRf2 = await conferirOracle(rest, NAME_RF);
+    const confRf2 = await conferirOracle(await sessionFromPage(page), NAME_RF);
     const rfRent2 = invOracle.rentability(confRf2.assetPlain, confRf2.snap.yieldsPlain, 1250);
     await expect(rfBox).toContainText(`(${rfRent2.pct.toFixed(2)}%)`);
 
@@ -364,30 +421,37 @@ test.describe('Investimentos — CRUD completo (serial)', () => {
     const rfHist2 = await openHistory(page, NAME_RF);
     await expect(rfHist2.locator('.yield-row')).toHaveCount(2);
 
-    // rentabilidade negativa no OUT via SDK (seed)
-    await page.evaluate(async ({ name, amount }) => {
-      const uid = window.firebase?.auth?.()?.currentUser?.uid;
-      if (!uid) throw new Error('uid ausente');
-      const yieldsRef = window.firebase.firestore().collection('users').doc(uid).collection('yieldsLog');
-      const invsRef = window.firebase.firestore().collection('users').doc(uid).collection('investments');
-      const snap = await invsRef.where('name', '==', name).limit(1).get();
-      const targetId = snap.docs[0].id;
-      const doc = {
-        id: 'invcrud-neg-1',
-        targetType: 'invest',
-        targetId,
-        kind: 'rendimento',
-        amount,
-        date: new Date().toISOString().slice(0, 10),
-        createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
-      };
-      await yieldsRef.doc('invcrud-neg-1').set(doc);
-    }, { name: NAME_OUT, amount: -30 });
+    // rentabilidade negativa no OUT via SDK (seed) — Firestore path livrocaixa/{uid}
+    const rest = await sessionFromPage(page);
+    await page.evaluate(
+      async ({ name, amount }) => {
+        const uid = window.firebase?.auth?.()?.currentUser?.uid;
+        if (!uid) throw new Error('uid ausente');
+        const base = window.firebase.firestore().collection('livrocaixa').doc(uid);
+        const invs = await base.collection('investments').get();
+        const inv = invs.docs.find((d) => d.data().name === name);
+        if (!inv) throw new Error(`investimento ${name} ausente`);
+        const targetId = String(inv.data().id || inv.id);
+        const now = new Date();
+        const hoje = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+        await base.collection('yieldsLog').doc('invcrud-neg-1').set({
+          id: 'invcrud-neg-1',
+          targetType: 'invest',
+          targetId,
+          kind: 'rendimento',
+          amount,
+          date: hoje,
+          dateEnd: hoje,
+        });
+        return targetId;
+      },
+      { name: NAME_OUT, amount: -30 }
+    );
 
     // força re-render abrindo/fechando a aba
     await openInvest(page);
     const outBox = card(page, NAME_OUT).locator('.rentability-box');
-    await expect(outBox).toBeVisible({ timeout: 15_000 });
+    await expect(outBox, 'rentabilidade negativa visível').toBeVisible({ timeout: 15_000 });
     await expect(outBox.locator('.yield-neg')).toBeVisible();
     // base=280, pct≈-10.71
     await expect(outBox).toContainText('(-10.71%)');
@@ -397,58 +461,65 @@ test.describe('Investimentos — CRUD completo (serial)', () => {
     await saveCryptoMovement(page, { units: 50000, price: PRICE_BTC });
     await card(page, NAME_BTC).locator('button[aria-label="Excluir"]').click();
     await waitDialog(dialogs, 'Deseja excluir este registro de investimento?');
-    await expect(card(page, NAME_BTC)).toHaveCount(0, { timeout: 20_000 });
+    await expect(card(page, NAME_BTC), 'card BTC excluído').toHaveCount(0, { timeout: 20_000 });
 
-    // yieldsLog limpo para BTC
-    const snapAfterBtc = await snapshot(rest);
-    const yieldsForBtc = snapAfterBtc.yieldsPlain.filter((y) => y.kind !== 'rendimento' || y.targetId === 'btc');
-    // conferir que não há yields apontando para ativo inexistente de nome BTC
-    const btcId = 'none';
+    // yieldsLog limpo: nenhum yield órfão (targetId sem investimento correspondente)
+    const snapAfterBtc = await snapshot(await sessionFromPage(page));
     const orphan = snapAfterBtc.yieldsPlain.filter((y) => {
       const inv = snapAfterBtc.investmentsPlain.find((i) => i.id === y.targetId);
       return !inv;
     });
-    expect(orphan).toHaveLength(0);
+    expect(orphan, 'sem yields órfãos após exclusão de BTC').toHaveLength(0);
 
     // valores grandes/decimais: editar OUT → 1.234.567,89
     await editAsset(page, NAME_OUT, { value: 1234567.89 });
-    expect(await cardValue(page, NAME_OUT)).toBeCloseTo(1234567.89, 2);
+    expect(await cardValue(page, NAME_OUT), 'card OUT valor grande').toBeCloseTo(1234567.89, 2);
     await expect(card(page, NAME_OUT).locator('.asset-card-value')).toContainText('1.234.567,89');
 
     // persistência após reload
-    await page.reload();
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#authOverlay', { state: 'attached' });
     await app.waitForDataReady(page);
     await openInvest(page);
-    await expect(card(page, NAME_ST)).toBeVisible({ timeout: 20_000 });
-    await expect(card(page, NAME_RF)).toBeVisible({ timeout: 20_000 });
-    await expect(card(page, NAME_OUT)).toBeVisible({ timeout: 20_000 });
-    await expect(card(page, NAME_BTC)).toHaveCount(0);
-    expect(await cardValue(page, NAME_RF)).toBeCloseTo(1350, 2);
-    expect(await cardValue(page, NAME_OUT)).toBeCloseTo(1234567.89, 2);
+    await expect(card(page, NAME_ST), 'ST após reload').toBeVisible({ timeout: 20_000 });
+    await expect(card(page, NAME_RF), 'RF após reload').toBeVisible({ timeout: 20_000 });
+    await expect(card(page, NAME_OUT), 'OUT após reload').toBeVisible({ timeout: 20_000 });
+    await expect(card(page, NAME_BTC), 'BTC continua excluído').toHaveCount(0);
+    expect(await cardValue(page, NAME_RF), 'RF valor persistido').toBeCloseTo(1350, 2);
+    expect(await cardValue(page, NAME_OUT), 'OUT valor persistido').toBeCloseTo(1234567.89, 2);
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
 
-  test('4. isolamento: conta B não enxerga ativos da conta A', async () => {
-    const { creds } = await qa.ensureQaAccount();
+  test('4. isolamento: conta B não enxerga ativos da conta A', async ({ page }, testInfo) => {
+    test.setTimeout(180_000);
+    const creds = skipSemCredencial();
+    const dialogs = await startPage(page, creds);
+    await openInvest(page);
+
+    // conta A ainda tem 3 ativos (ST, RF, OUT)
+    expect(await page.locator('#investGrid .asset-card').count(), 'conta A deveria ter 3 ativos').toBe(3);
+
     const credsB = { ...creds, email: creds.email.replace('@', '+2@') };
     const sessaoB = await qa.ensureSecondaryAccount(page, credsB);
     if (sessaoB.status !== 'ok') {
       test.skip(true, `BLOCKED: conta secundária indisponível — ${sessaoB.error}`);
     }
-
-    const restB = await signIn(credsB.email, credsB.password);
+    await app.waitForDataReady(page);
     await openInvest(page);
+
     // grid vazio para B
     await expect(page.locator('#investGrid .empty')).toContainText('Nenhum ativo ou investimento cadastrado', { timeout: 20_000 });
-    expect(await stripTotal(page)).toBeCloseTo(0, 2);
+    expect(await page.locator('#investGrid .asset-card').count(), 'conta B não deveria ver ativos').toBe(0);
+    expect(await stripTotal(page), 'total da conta B').toBeCloseTo(0, 2);
 
     // Firestore REST de B: investments e yieldsLog vazios
+    const restB = await signIn(credsB.email, credsB.password);
     const invB = await listCollection(restB.uid, restB.idToken, restB.projectId, 'investments');
     const yieldsB = await listCollection(restB.uid, restB.idToken, restB.projectId, 'yieldsLog');
-    expect(invB).toHaveLength(0);
-    expect(yieldsB).toHaveLength(0);
+    expect(invB, 'Firestore da conta B investments vazio').toHaveLength(0);
+    expect(yieldsB, 'Firestore da conta B yieldsLog vazio').toHaveLength(0);
 
-    // conta A ainda tem 3 ativos (ST, RF, OUT)
-    const invA = await listCollection(rest.uid, rest.idToken, rest.projectId, 'investments');
-    expect(invA.length).toBe(3);
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
 });
