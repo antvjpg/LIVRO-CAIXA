@@ -903,7 +903,7 @@
         unitsWarningLogged.delete(inv.id);
       }
       const typeShort = ({
-        'Stablecoin':'STABLE', 'Bitcoin':'BTC', 'Cripto':'CRIPTO', 'Ações':'AÇÕES',
+        'Stablecoin':'STABLE', 'Bitcoin':'BTC', 'Cripto':'CRIPTO', 'Criptomoeda':'CRIPTO', 'Ações':'AÇÕES',
         'Renda Fixa':'RF', 'FII':'FII', 'ETF':'ETF', 'Tesouro':'TESOURO'
       })[inv.type] || String(inv.type || '').slice(0, 10);
       return `
@@ -950,20 +950,10 @@
   function renderPocketBalances() {
     const strip = document.getElementById('pocketBalanceStrip');
     const total = totalPocketBalance();
-    let html = `<div class="balance-card total">
+    strip.innerHTML = `<div class="balance-card total">
       <div class="balance-card-head"><span class="label">Total em Caixinhas</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span></div>
       <span class="amount">${fmt(total)}</span>
     </div>`;
-    pockets.forEach(p => {
-      html += `<div class="balance-card">
-        <div class="balance-card-head">
-          <span class="label">${escapeHTML(p.name)}</span>
-          <span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-piggy-bank"></i></span>
-        </div>
-        <span class="amount">${fmt(pocketCurrentBalance(p))}</span>
-      </div>`;
-    });
-    strip.innerHTML = html;
   }
 
   function renderPockets() {

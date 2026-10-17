@@ -138,6 +138,13 @@
   .header-search-bar .fi{font-size:15px;color:var(--gold);}
   .header-search-bar:hover{background:var(--green-soft);border-color:var(--accent);color:var(--ink);}
   #btnOpenDrawer{margin-right:2px;}
+  @media (min-width:681px){
+    header.app-header{justify-content:flex-start;align-items:center;}
+    header.app-header .app-brand{min-width:0;}
+    header.app-header .header-search-bar{flex:1 1 auto;width:auto;min-width:0;max-width:520px;}
+    header.app-header .app-header-actions{display:flex;flex-direction:row;align-items:center;gap:8px;margin-left:auto;}
+    .nav-tabs{flex-wrap:wrap;}
+  }
   .notification-button{font-size:18px;}
   .notification-badge{position:absolute;top:-7px;right:-7px;display:grid;place-items:center;min-width:19px;height:19px;padding:0 4px;border-radius:999px;background:var(--gold);color:var(--accent-ink);font-size:10px;font-weight:800;line-height:1;box-shadow:0 0 0 2px var(--surface);}
   .app-drawer-overlay,.notification-overlay{position:fixed;inset:0;z-index:120;display:none;background:rgba(9,16,12,.48);backdrop-filter:blur(5px);}

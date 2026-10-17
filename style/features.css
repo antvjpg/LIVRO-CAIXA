@@ -5270,12 +5270,6 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 
 
 /* ui8 — invest cards compactos */
-#investGrid{
-  display:flex !important;
-  flex-direction:column !important;
-  gap:10px !important;
-  margin-top:10px !important;
-}
 #investGrid .invest-box,
 #investGrid .invest-box.asset-card{
   padding:12px 14px !important;
