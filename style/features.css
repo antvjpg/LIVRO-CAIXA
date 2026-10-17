@@ -782,22 +782,6 @@
   .export-preview-bank{padding:10px;}
   .export-preview-bank h4{font-size:13px;}
 }
-.export-preview-caption{margin-bottom:10px;padding:8px 12px;background:var(--paper-2);border:1px solid var(--line);border_radius:8px;font_size:11px;color:var(--ink_soft);line_height:1.3;}
-.export-preview_bank{margin:0 0 10px;padding:10px;border:1px solid var(--line);border_radius:10px;background:var(--paper);color:var(--ink);}
-.export-preview_bank h4{display:flex;justify_content:space_between;gap:8px;margin:0 0 8px;padding_bottom:8px;border_bottom:1px solid var(--line);color:var(--ink);font_family:'Fraunces',serif;font_size:15px;font_weight:600;}
-.export-preview_bank h4 small{color:var(--accent);font_family:'IBM Plex Mono',monospace;font_size:9px;font_weight:600;white_space:nowrap;}
-.export-preview_row{display:grid;grid_template_columns:56px minmax(0,1fr) 66px auto;gap:6px;align_items:center;padding:5px 0;border_top:1px solid var(--line);font_family:'IBM Plex Mono',monospace;font_size:8px;color:var(--ink);}
-.export-preview_row:first_child{border_top:none;padding_top:0;}
-.export_preview_row span{color:var(--ink_soft);font_size:8px;}
-.export_preview_row strong,.export_preview_row span{min_width:0;overflow:hidden;text_overflow:ellipsis;white_space:nowrap;}
-.export_preview_row b{font_size:8px;white_space:nowrap;font_variant_numeric:tabular_nums;font_weight:600;}
-.export_preview_row b.positive{color:var(--green);}
-.export_preview_row b.negative{color:var(--red);}
-.export_preview_sub{margin_top:6px;padding_top:4px;border_top:1px dashed var(--line);}
-.export_preview_sub strong{font_size:10px;color:var(--ink);font_weight:600;}
-.export_preview_sub small{color:var(--ink_soft);font_size:8px;display:block;margin_top:2px;}
-.export_preview_more{margin_top:6px;padding:8px;text_align:center;background:var(--paper_2);border:1px dashed var(--line);border_radius:6px;color:var(--ink_soft);font_family:'IBM Plex Mono',monospace;font_size:9px;}
-.export_preview_caption{margin_bottom:8px;padding:6px 12px;background:var(--paper_2);border:1px solid var(--line);border_radius:8px;font_size:11px;color:var(--ink_soft);line_height:1.3;}
 .export-preview-bank{margin:0 0 10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);}
 .export-preview-bank h4{display:flex;justify-content:space-between;gap:8px;margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid var(--line);color:var(--ink);font-size:15px;font-weight:600;}
 .export-preview-bank h4 small{color:var(--accent);font-size:9px;font-weight:600;white-space:nowrap;}
@@ -827,22 +811,6 @@
 .export-preview-sub strong{font-size:10px;color:var(--ink);font-weight:600;}
 .export-preview-sub small{color:var(--ink-soft);font-size:8px;display:block;margin-top:2px;}
 .export-preview-more{margin-top:6px;padding:8px;text-align:center;background:var(--paper-2);border:1px dashed var(--line);border-radius:6px;color:var(--ink-soft);font-size:8px;}
-.export-preview-caption{margin-bottom:8px;padding:6px 12px;background:var(--paper-2);border:1px solid var(--line);border_radius:8px;font_size:11px;color:var(--ink_soft);line_height:1.3;}
-.export-preview_bank{margin:0 0 8px;padding:8px;border:1px solid var(--line);border_radius:8px;background:var(--paper);color:var(--ink);}
-.export-preview_bank h4{display:flex;justify_content:space_between;gap:8px;margin:0 0 6px;padding_bottom:6px;border_bottom:1px solid var(--line);color:var(--ink);font_family:'Fraunces',serif;font_size:13px;font_weight:600;}
-.export-preview_bank h4 small{color:var(--accent);font_family:'IBM Plex Mono',monospace;font_size:8px;font_weight:600;white_space:nowrap;}
-.export-preview_row{display:grid;grid_template_columns:48px minmax(0,1fr) 56px auto;gap:4px;align_items:center;padding:4px 0;border_top:1px solid var(--line);font_family:'IBM Plex Mono',monospace;font_size:7px;color:var(--ink);}
-.export_preview_row:first_child{border_top:none;padding_top:0;}
-.export_preview_row span{color:var(--ink_soft);font_size:7px;}
-.export_preview_row strong,.export_preview_row span{min_width:0;overflow:hidden;text_overflow:ellipsis;white_space:nowrap;}
-.export_preview_row b{font_size:7px;white_space:nowrap;font_variant_numeric:tabular_nums;font_weight:600;}
-.export_preview_row b.positive{color:var(--green);}
-.export_preview_row b.negative{color:var(--red);}
-.export_preview_sub{margin_top:4px;padding_top:3px;border_top:1px dashed var(--line);}
-.export_preview_sub strong{font_size:8px;color:var(--ink);font_weight:600;}
-.export_preview_sub small{color:var(--ink_soft);font_size:7px;display:block;margin_top:2px;}
-.export_preview_more{margin_top:4px;padding:6px;text_align:center;background:var(--paper_2);border:1px dashed var(--line);border_radius:6px;color:var(--ink_soft);font_family:'IBM Plex Mono',monospace;font_size:7px;}
-.export_preview_caption{margin_bottom:6px;padding:5px 10px;background:var(--paper_2);border:1px solid var(--line);border_radius:8px;font_size:9px;color:var(--ink_soft);line_height:1.2;}
 .export-preview-bank{margin:0 0 10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);}
 .export-preview-bank h4{display:flex;justify-content:space-between;gap:8px;margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid var(--line);color:var(--ink);font-size:15px;font-weight:600;}
 .export-preview-bank h4 small{color:var(--accent);font-size:9px;font-weight:600;white-space:nowrap;}
@@ -857,7 +825,6 @@
 .export-preview-sub strong{font-size:10px;color:var(--ink);font-weight:600;}
 .export-preview-sub small{color:var(--ink-soft);font-size:8px;display:block;margin-top:2px;}
 .export-preview-more{margin-top:6px;padding:8px;text-align:center;background:var(--paper-2);border:1px dashed var(--line);border-radius:6px;color:var(--ink-soft);font-size:8px;}
-.export-preview-caption{margin-bottom:8px;padding:6px 12px;background:var(--paper-2);border:1px solid var(--line);border_radius:8px;font_size:11px;color:var(--ink_soft);line_height:1.3;}
 .export-preview-bank h4{flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;}
 #panelFiltros .filter-choice-option input{
   width:21px;
