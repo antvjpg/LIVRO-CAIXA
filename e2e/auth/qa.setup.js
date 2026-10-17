@@ -95,18 +95,25 @@ test('provisiona sessão QA (login/criação autônoma)', async ({ page, context
     expect(metaDepois.createdByCode, 'relogin não pode rebaixar a propriedade da conta').toBe(true);
   }
 
-  await context.storageState({ path: config.statePath });
+  /* indexedDB: true inclui o firebaseLocalStorageDb no arquivo: a sessão do
+     Firebase 10 (compat) vive no IndexedDB e, sem essa flag, toda suíte
+     refaz o login real — cada refazer consome a cota de verificação de
+     senha do projeto Firebase (QUOTA_EXCEEDED em runs longas). */
+  await context.storageState({ path: config.statePath, indexedDB: true });
   /* prova sanitizada do que foi gravado (só contagens/origem — nunca valores) */
   let estadoInfo = 'state ilegível';
   try {
     const estado = JSON.parse(fs.readFileSync(config.statePath, 'utf8'));
     const origens = estado.origins || [];
     const chaves = origens.flatMap((o) => o.localStorage || []);
+    const idbNoState = origens.flatMap((o) => o.indexedDB || []);
     estadoInfo = JSON.stringify({
       origens: origens.length,
       origem: origens[0]?.origin || null,
       chavesLocalStorage: chaves.length,
       sessaoFirebase: chaves.some((it) => String(it.name || '').indexOf('firebase:authUser:') === 0),
+      bancosIndexedDB: idbNoState.length,
+      sessaoFirebaseIndexedDB: idbNoState.some((d) => String(d.name || '').indexOf('firebase') === 0),
     });
   } catch {
     /* evidência de diagnóstico nunca derruba a run */
