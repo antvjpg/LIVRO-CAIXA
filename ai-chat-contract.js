@@ -529,9 +529,12 @@ function analyzeFinancialContext(snapshot) {
   const budgetCycle = (snapshot.budgets && snapshot.budgets[0]?.month) || null;
   const currentMonth = budgetCycle || new Date().toISOString().slice(0, 7);
 
+  /* Escopo da função: hasOver também é lido pelos sinais de meta (570) e
+     fluxo de caixa (582), fora do bloco de budgets. */
+  let hasOver = false;
+  let hasNear = false;
+
   if (snapshot.budgets?.length) {
-    let hasOver = false;
-    let hasNear = false;
     let topExpense = { category: null, spent: 0, pct: 0 };
 
     for (const budget of snapshot.budgets) {
