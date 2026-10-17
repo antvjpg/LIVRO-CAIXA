@@ -200,8 +200,11 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
   }
 
   async function openHistory(page, name) {
-    await card(page, name).locator('details.yield-history summary').click();
-    return card(page, name).locator('.yield-history-list');
+    const details = card(page, name).locator('details.yield-history');
+    const aberto = await details.evaluate((el) => !!el.open).catch(() => false);
+    if (!aberto) await details.locator('summary').click();
+    await expect(details).toHaveJSProperty('open', true);
+    return details.locator('.yield-history-list');
   }
 
   async function editYieldByKind(page, name, kindLabel) {
@@ -286,7 +289,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
 
     // strip total vs oracle
     const snap = await snapshot(await sessionFromPage(page));
-    const expectedTotal = invOracle.totalInvestBalance(snap.investmentsPlain, snap.yieldsPlain);
+    const expectedTotal = invOracle.investmentsTotal(snap.investmentsPlain, snap.yieldsPlain);
     expect(await stripTotal(page), 'strip total × oracle').toBeCloseTo(expectedTotal, 2);
 
     // tripla conferência por ativo: oracle × UI
@@ -463,13 +466,19 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await waitDialog(dialogs, 'Deseja excluir este registro de investimento?');
     await expect(card(page, NAME_BTC), 'card BTC excluído').toHaveCount(0, { timeout: 20_000 });
 
-    // yieldsLog limpo: nenhum yield órfão (targetId sem investimento correspondente)
-    const snapAfterBtc = await snapshot(await sessionFromPage(page));
-    const orphan = snapAfterBtc.yieldsPlain.filter((y) => {
-      const inv = snapAfterBtc.investmentsPlain.find((i) => i.id === y.targetId);
-      return !inv;
-    });
-    expect(orphan, 'sem yields órfãos após exclusão de BTC').toHaveLength(0);
+    // yieldsLog limpo: nenhum yield órfão (targetId sem investimento correspondente).
+    // deleteInvest grava em segundo plano — espera a persistência convergir.
+    await expect
+      .poll(
+        async () => {
+          const snap = await snapshot(await sessionFromPage(page));
+          return snap.yieldsPlain.filter(
+            (y) => !snap.investmentsPlain.find((i) => i.id === y.targetId)
+          ).length;
+        },
+        { timeout: 30_000, message: 'sem yields órfãos após exclusão de BTC' }
+      )
+      .toBe(0);
 
     // valores grandes/decimais: editar OUT → 1.234.567,89
     await editAsset(page, NAME_OUT, { value: 1234567.89 });
