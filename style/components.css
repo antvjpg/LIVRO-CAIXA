@@ -42,7 +42,7 @@
     margin-bottom:18px;
   }
   button{
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:12px;
     text-transform:uppercase;
     letter-spacing:0.05em;
@@ -111,7 +111,7 @@
   }
   .panel.open{display:block;}
   .panel h3{
-    font-family:'Fraunces',serif;
+    
     margin:0 0 18px;
     font-size:20px;
     display:flex;
@@ -130,7 +130,7 @@
     align-items:end;
   }
   label{
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:11px;
     text-transform:uppercase;
     letter-spacing:0.05em;
@@ -153,7 +153,7 @@
   textarea{
     height:120px;
     resize:vertical;
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:12px;
   }
   .type-toggle{display:flex;border:1.5px solid var(--ink);border-radius:2px;overflow:hidden;}
@@ -176,7 +176,7 @@
     margin-bottom:24px;
   }
   .cat-summary h3{
-    font-family:'Fraunces',serif;
+    
     font-size:18px;
     margin:0 0 12px;
   }
@@ -244,7 +244,7 @@
   .cat-row .cat-name{
     width:130px;
     min-width:0;
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:11.5px;
     color:var(--ink-soft);
     flex-shrink:0;
@@ -265,7 +265,7 @@
     height:100%;
   }
   .cat-row .cat-amt{
-    font-family:'IBM Plex Mono',monospace;
+    
     font-variant-numeric:tabular-nums;
     width:90px;
     min-width:max-content;
@@ -275,7 +275,7 @@
   }
   .cat-row .cat-pct{
     min-width:max-content;
-    font-family:'IBM Plex Mono',monospace;
+    
     font-variant-numeric:tabular-nums;
     text-align:right;
     white-space:nowrap;
@@ -287,7 +287,7 @@
     background:var(--ink);
     color:var(--paper);
     padding:10px 16px;
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:12px;
     text-transform:uppercase;
     letter-spacing:0.08em;
@@ -334,7 +334,7 @@
   table{width:100%;border-collapse:collapse;}
   thead th{
     text-align:left;
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:10.5px;
     text-transform:uppercase;
     letter-spacing:0.05em;
@@ -353,12 +353,12 @@
     vertical-align:middle;
   }
   tbody tr:hover{background:var(--hover-soft);}
-  .amt{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;text-align:right;}
+  .amt{font-variant-numeric:tabular-nums;text-align:right;}
   .amt.in{color:var(--green);}
   .amt.out{color:var(--red);}
   .bank-tag{
     display:inline-block;
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:10.5px;
     padding:2px 7px;
     border:1px solid var(--ink-soft);
@@ -397,7 +397,7 @@
   }
   .invest-box h4 {
     margin: 0 0 6px;
-    font-family: 'Fraunces', serif;
+    
     font-size: 18px;
     display: flex;
     justify-content: space-between;
@@ -414,7 +414,7 @@
     line-height: 1.25;
   }
   .invest-box .tag {
-    font-family: 'IBM Plex Mono', monospace;
+    
     font-size: 10px;
     background: var(--ink);
     color: var(--paper);
@@ -428,7 +428,7 @@
     white-space: nowrap;
   }
   .invest-box .val {
-    font-family: 'IBM Plex Mono', monospace;
+    
     font-size: 18px;
     font-weight: 600;
     margin: 10px 0 6px;
@@ -444,7 +444,7 @@
   }
   .yield-history summary{
     cursor:pointer;
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:11.5px;
     color:var(--ink-soft);
     list-style:none;
@@ -466,8 +466,8 @@
     font-size:12px;
   }
   .yield-row > span:first-child{color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;}
-  .yield-pos{color:var(--green); font-family:'IBM Plex Mono',monospace; flex-shrink:0;}
-  .yield-neg{color:var(--red); font-family:'IBM Plex Mono',monospace; flex-shrink:0;}
+  .yield-pos{color:var(--green);  flex-shrink:0;}
+  .yield-neg{color:var(--red);  flex-shrink:0;}
   .yield-actions{display:flex; gap:2px; flex-shrink:0;}
   .yield-actions .action-btn{padding:2px 5px; font-size:11px;}
   .rentability-box{
@@ -480,7 +480,7 @@
     flex-direction:column;
     gap:2px;
     font-size:11.5px;
-    font-family:'IBM Plex Mono',monospace;
+    
     color:var(--ink-soft);
   }
 
@@ -516,7 +516,7 @@
     padding:50px 20px;
     text-align:center;
     color:var(--ink-soft);
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:13px;
   }
   .import-row{
@@ -536,7 +536,7 @@
   footer{
     text-align:center;
     padding:24px;
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:11px;
     color:var(--ink-soft);
   }
@@ -565,7 +565,7 @@
   #syncOverlay.hidden{display:none;}
   .sync-box{
     text-align:center;
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:13px;
     color:var(--ink-soft);
   }
@@ -669,7 +669,7 @@
   body.dark-mode #authGoogle:hover{background:var(--surface-raised);color:var(--ink);}
   body.dark-mode .auth-toggle a{color:var(--accent);}
   #userBar{
-    font-family:'IBM Plex Mono',monospace;
+    
     font-size:11px;
     color:var(--ink-soft);
     display:flex;
@@ -750,7 +750,7 @@
     min-width: 0;
   }
   .card-date {
-    font-family: 'IBM Plex Mono', monospace;
+    
     font-size: 10.5px;
     color: var(--ink-soft);
   }
@@ -790,7 +790,7 @@
     margin-top: 2px;
   }
   .card-badge, .card-category {
-    font-family: 'IBM Plex Mono', monospace;
+    
     font-size: 10px;
     padding: 1px 6px;
     border: 1px solid var(--line);
@@ -805,7 +805,7 @@
     flex-shrink: 0;
   }
   .card-amount {
-    font-family: 'IBM Plex Mono', monospace;
+    
     font-size: 14px;
     font-weight: 600;
     font-variant-numeric: tabular-nums;

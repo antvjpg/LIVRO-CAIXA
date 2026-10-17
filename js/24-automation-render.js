@@ -22,7 +22,7 @@
           <span class="history-date">${escapeHTML(item.date)}</span>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
             <span class="history-bank" style="font-weight:600;color:var(--ink);font-size:12px;">${escapeHTML(item.bankName)}</span>
-            <span class="history-diff ${item.difference > 0 ? 'positive' : (item.difference < 0 ? 'negative' : 'zero')}" style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;color:${item.difference > 0 ? 'var(--red)' : (item.difference < 0 ? 'var(--green)' : 'var(--green)')};">
+            <span class="history-diff ${item.difference > 0 ? 'positive' : (item.difference < 0 ? 'negative' : 'zero')}" style="font-weight:600;font-size:11px;color:${item.difference > 0 ? 'var(--red)' : (item.difference < 0 ? 'var(--green)' : 'var(--green)')};">
               ${item.difference === 0 ? '✓ Conciliado' : (item.difference > 0 ? '+' : '') + fmt(Math.abs(item.difference))}
             </span>
           </div>

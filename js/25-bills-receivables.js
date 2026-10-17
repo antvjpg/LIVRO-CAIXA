@@ -185,7 +185,7 @@
           <div class="hint">Registro: ${registered} · Previsto: ${expected}${r.notes ? ' · ' + escapeHTML(r.notes) : ''}</div>
         </div>
         <div style="text-align:right;">
-          <div class="js-money" style="font-family:'IBM Plex Mono',monospace;font-weight:700;">${fmt(r.amount)}</div>
+          <div class="js-money" style="font-weight:700;">${fmt(r.amount)}</div>
           <span class="bill-status recv-${st} ${stClass}">${RECV_STATUS_LABEL[st]}</span>
         </div>
         <div class="bill-actions">

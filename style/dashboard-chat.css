@@ -146,7 +146,7 @@
   cursor:pointer;
 }
 #viewDash .dash-filter-range{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:10px;
   color:var(--accent);
   background:var(--green-soft);
@@ -180,7 +180,7 @@
   min-width:0;
 }
 #viewDash .dash-section-index{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:10px;
   font-weight:700;
   letter-spacing:.14em;
@@ -188,7 +188,7 @@
 }
 #viewDash .dash-section-head h3{
   margin:0;
-  font-family:'Fraunces',serif;
+  
   font-size:20px;
   letter-spacing:-.02em;
   color:var(--ink);
@@ -237,7 +237,7 @@
   color:var(--ink);
 }
 #viewDash .dash-panel-head span{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:9px;
   color:var(--ink-soft);
   text-align:right;
@@ -269,7 +269,7 @@
   color:var(--ink-soft);
 }
 #viewDash .dash-kpi strong{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:13px;
   color:var(--ink);
   overflow-wrap:anywhere;
@@ -299,7 +299,7 @@
   color:var(--accent);
 }
 #viewDash .dash-delta{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:9px;
   font-weight:700;
   white-space:nowrap;
@@ -355,7 +355,7 @@
   text-align:right;
 }
 #viewDash .dash-cat-value b{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:10px;
   color:var(--ink);
   white-space:nowrap;
@@ -386,7 +386,7 @@
   border-radius:999px;
   background:var(--green-soft);
   color:var(--accent);
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:9px;
   font-weight:700;
 }
@@ -413,7 +413,7 @@
   color:var(--ink-soft);
 }
 #viewDash .dash-bucket-row b{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:10px;
   color:var(--ink);
   white-space:nowrap;
@@ -457,7 +457,7 @@
   background:var(--green-soft);
   color:var(--accent);
   border-radius:999px;
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:9px;
   font-weight:700;
   display:grid;
@@ -468,7 +468,7 @@
   margin-left:auto;
   min-width:96px;
   text-align:right;
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:11px;
   color:var(--ink);
   white-space:nowrap;
@@ -528,7 +528,7 @@
   color:var(--ink-soft);
 }
 #viewDash .dash-card-line b{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:10px;
   color:var(--ink);
   white-space:nowrap;
@@ -557,7 +557,7 @@
   color:var(--ink-soft);
 }
 #viewDash .dash-part-value{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:10px;
   color:var(--ink);
   text-align:right;
@@ -627,7 +627,7 @@
   line-height:1.25;
 }
 #viewDash .dash-evo-item strong{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:12px;
   color:var(--ink);
   overflow-wrap:anywhere;
@@ -681,7 +681,7 @@
   transition:width 0.3s ease-out;
 }
 #viewDash .dash-goal-pct{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:10px;
   font-weight:600;
   color:var(--ink);
@@ -758,7 +758,7 @@
   line-height:1.25;
 }
 #viewDash .dash-metric-value{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:16px;
   font-weight:700;
   color:var(--ink);
@@ -774,14 +774,14 @@
   color:var(--ink-soft);
 }
 #viewDash .dash-metric-base{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:9px;
   color:var(--ink);
   overflow-wrap:anywhere;
   margin-top:2px;
 }
 #viewDash .dashboard-footnote code{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:9px;
   padding:1px 4px;
   border-radius:4px;
@@ -931,7 +931,7 @@
   font-size:12px;
 }
 #viewDashboard #dashboardNextPayment .next-pay-row b{
-  font-family:'IBM Plex Mono',monospace;
+  
   font-size:12px;
   font-weight:800;
 }
