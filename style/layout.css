@@ -352,6 +352,7 @@
   }
   #viewProfile .feature-profile-toggle:has(input:checked) .feature-profile-switch{background:var(--accent);}
   #viewProfile .feature-profile-toggle:has(input:checked) .feature-profile-switch:after{left:21px;}
+  #viewProfile .feature-profile-toggle input{left:0;top:0;width:0;height:0;}
   #viewProfile .feature-profile-section{
     margin:12px 0 0;padding:16px;
     border-radius:18px;border:1px solid var(--line);
