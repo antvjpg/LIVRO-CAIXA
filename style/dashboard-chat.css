@@ -228,8 +228,8 @@
   align-items:baseline;
   justify-content:space-between;
   gap:10px;
-  margin-bottom:11px;
-  padding-bottom:9px;
+  margin-bottom:9px;
+  padding-bottom:7px;
   border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);
 }
 #viewDash .dash-panel-head strong{
@@ -559,8 +559,8 @@
   display:grid;
   grid-template-columns:minmax(0,1.1fr) minmax(60px,1fr) auto;
   align-items:center;
-  gap:12px;
-  padding:10px 0;
+  gap:10px;
+  padding:7px 0;
 }
 #viewDash .dash-part-copy{
   display:flex;
@@ -602,17 +602,17 @@
 #viewDash .dash-evolution-grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:8px;
-  margin-top:13px;
-  padding-top:11px;
+  gap:6px;
+  margin-top:10px;
+  padding-top:9px;
   border-top:1px dashed var(--line);
 }
 #viewDash .dash-evo-item{
   display:flex;
   flex-direction:column;
-  gap:4px;
+  gap:3px;
   min-width:0;
-  padding:10px 12px;
+  padding:8px 10px;
   border:1px solid var(--line);
   border-radius:9px;
   background:var(--surface);
