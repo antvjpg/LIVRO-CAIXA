@@ -538,6 +538,21 @@
   color:var(--ink);
   white-space:nowrap;
 }
+/* Status visual nas linhas de cartão — hierarquia sem quebrar o layout */
+#viewDash .dash-card-line.tone-critical{
+  border-left:2px solid var(--red);
+  padding-left:8px;
+  margin-left:-10px;
+}
+#viewDash .dash-card-line.tone-critical b{color:var(--red);}
+#viewDash .dash-card-line.tone-critical strong{color:var(--red);}
+#viewDash .dash-card-line.tone-warn{
+  border-left:2px solid var(--gold);
+  padding-left:8px;
+  margin-left:-10px;
+}
+#viewDash .dash-card-line.tone-warn b{color:var(--gold);font-weight:800;}
+#viewDash .dash-card-line.tone-ok b{color:var(--green);}
 
 /* ---- 05 patrimônio e metas ---- */
 #viewDash .dash-part-row{

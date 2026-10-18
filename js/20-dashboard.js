@@ -1435,29 +1435,40 @@
 
   function renderDashCommitments(s) {
     const cards = s.cards;
+    const cardLine = (tone, label, note, value) => `
+      <div class="dash-card-line${tone ? ` tone-${tone}` : ''}">
+        <div><strong>${escapeHTML(label)}</strong><span>${note}</span></div>
+        <b class="js-money">${fmt(value)}</b>
+      </div>`;
+
     const perCard = cards && cards.count > 1
-      ? `<div class="dash-card-list">${cards.cards.map(row => `
-          <div class="dash-card-line">
-            <div><strong>${escapeHTML(row.name)}</strong><span>referência ${escapeHTML(row.referencePeriod || '—')}</span></div>
-            <b class="js-money">${fmt(row.committed)}</b>
-          </div>`).join('')}</div>`
+      ? `<div class="dash-card-list">${cards.cards.map(row => cardLine(row.committed > 0 ? 'warn' : '', row.name, `referência ${escapeHTML(row.referencePeriod || '—')}`, row.committed)).join('')}</div>`
       : '';
 
-    const cardsPanel = cards && cards.ready
-      ? `
+    let cardsPanel;
+    if (cards && cards.ready) {
+      const limitPct = cards.totalLimit > 0 ? (cards.totalUsed / cards.totalLimit) * 100 : 0;
+      const currentTone = cards.currentInvoiceRemaining > 0 ? 'warn' : '';
+      const previousTone = cards.previousInvoiceRemaining > 0 ? 'critical' : '';
+      const limitTone = limitPct >= 100 ? 'critical' : limitPct >= 80 ? 'warn' : '';
+      const committedTone = cards.committed > 0 ? 'warn' : '';
+
+      cardsPanel = `
         <div class="dash-panel">
           <div class="dash-panel-head"><strong>Cartões</strong><span>${cards.count} ativo(s)</span></div>
           ${cards.count ? `
-            <div class="dash-card-line"><div><strong>Fatura atual</strong><span>de ${escapeHTML(fmt(cards.currentInvoiceTotal))}</span></div><b class="js-money">${fmt(cards.currentInvoiceRemaining)}</b></div>
-            ${cards.previousInvoiceRemaining > 0 ? `<div class="dash-card-line"><div><strong>Fatura anterior pendente</strong><span>vencimento já ocorrido ou próximo</span></div><b class="js-money">${fmt(cards.previousInvoiceRemaining)}</b></div>` : ''}
-            <div class="dash-card-line"><div><strong>Próxima fatura</strong><span>de ${escapeHTML(fmt(cards.nextInvoiceTotal))}</span></div><b class="js-money">${fmt(cards.nextInvoiceRemaining)}</b></div>
-            <div class="dash-card-line"><div><strong>Limite utilizado</strong><span>de ${escapeHTML(fmt(cards.totalLimit))}</span></div><b class="js-money">${fmt(cards.totalUsed)}</b></div>
-            <div class="dash-card-line"><div><strong>Parcelas futuras</strong><span>fora da fatura atual</span></div><b class="js-money">${fmt(cards.futureInstallmentsRemaining)}</b></div>
-            <div class="dash-card-line"><div><strong>Comprometido (motor)</strong><span>fonte: card-engine-v3</span></div><b class="js-money">${fmt(cards.committed)}</b></div>
+            ${cardLine(currentTone, 'Fatura atual', `de ${escapeHTML(fmt(cards.currentInvoiceTotal))}`, cards.currentInvoiceRemaining)}
+            ${cards.previousInvoiceRemaining > 0 ? cardLine(previousTone, 'Fatura anterior pendente', 'vencimento já ocorrido ou próximo', cards.previousInvoiceRemaining) : ''}
+            ${cardLine('', 'Próxima fatura', `de ${escapeHTML(fmt(cards.nextInvoiceTotal))}`, cards.nextInvoiceRemaining)}
+            ${cardLine(limitTone, 'Limite utilizado', `de ${escapeHTML(fmt(cards.totalLimit))}${limitPct > 0 ? ` · ${limitPct.toFixed(0)}%` : ''}`, cards.totalUsed)}
+            ${cardLine('', 'Parcelas futuras', 'fora da fatura atual', cards.futureInstallmentsRemaining)}
+            ${cardLine(committedTone, 'Comprometido (motor)', 'fonte: card-engine-v3', cards.committed)}
             ${perCard}
           ` : '<div class="dashboard-empty-state">Nenhum cartão ativo cadastrado.</div>'}
-        </div>`
-      : `<div class="dash-panel"><div class="dash-panel-head"><strong>Cartões</strong><span>indisponível</span></div><div class="dashboard-empty-state">Motor de cartões não carregado neste momento.</div></div>`;
+        </div>`;
+    } else {
+      cardsPanel = `<div class="dash-panel"><div class="dash-panel-head"><strong>Cartões</strong><span>indisponível</span></div><div class="dashboard-empty-state">Motor de cartões não carregado neste momento.</div></div>`;
+    }
 
     const visibleBuckets = s.obligations.buckets
       .filter(bucket => bucket.key !== 'later')
