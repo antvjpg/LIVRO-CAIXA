@@ -53,6 +53,11 @@
     --header-ink:#F9F8F3;
     --header-control-bg:rgba(9,30,21,.42);
     --action-border:#C9D9CC;
+    --radius-sm:11px;
+    --radius-md:14px;
+    --radius-lg:15px;
+    --radius-xl:18px;
+    --radius-pill:999px;
     /* Cores fixas do gráfico de fluxo do Dashboard — não são redefinidas por tema. */
     --dash-flow-income:#3E9B6E;
     --dash-flow-expense:#C2553B;

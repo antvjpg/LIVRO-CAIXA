@@ -33,7 +33,7 @@
   margin:0 0 16px;
   padding:13px 15px;
   border:1px solid var(--line);
-  border-radius:14px;
+  border-radius:var(--radius-md);
   background:var(--surface);
   box-shadow:0 5px 14px rgba(28,58,43,.05);
 }
@@ -160,7 +160,7 @@
   margin:0 0 22px;
   padding:18px 18px 20px;
   border:1px solid var(--line);
-  border-radius:18px;
+  border-radius:var(--radius-xl);
   background:var(--surface);
   box-shadow:0 7px 18px rgba(28,58,43,.06);
 }
@@ -263,7 +263,7 @@
   min-width:0;
   padding:11px 10px;
   border:1px solid var(--line);
-  border-radius:11px;
+  border-radius:var(--radius-sm);
   background:var(--paper);
 }
 #viewDash .dash-kpi small{
@@ -726,7 +726,7 @@
   min-width:0;
   padding:14px 12px;
   border:1px solid color-mix(in srgb,var(--line) 80%,transparent);
-  border-radius:14px;
+  border-radius:var(--radius-md);
   background:var(--surface-raised);
   box-shadow:0 2px 8px rgba(0,0,0,0.04);
   transition:transform 0.15s,box-shadow 0.15s;
@@ -827,7 +827,7 @@
   #viewDash .dash-select{max-width:none;width:100%;}
   #viewDash .dash-filter-compare{align-items:flex-start;}
   #viewDash .dash-filter-range{white-space:normal;}
-  #viewDash .dash-section{padding:14px 12px 16px;border-radius:15px;}
+  #viewDash .dash-section{padding:14px 12px 16px;border-radius:var(--radius-lg);}
   #viewDash .dash-section-head{flex-direction:column;gap:8px;}
   #viewDash .dash-section-meta{max-width:none;text-align:left;}
   #viewDash .dash-section-head h3{font-size:18px;}
@@ -925,7 +925,7 @@
 @media (max-width:680px){
   #viewDashboard #dashboardNextPayment .next-pay-inner{
     padding:15px 13px 17px;
-    border-radius:15px;
+    border-radius:var(--radius-lg);
   }
 }
 

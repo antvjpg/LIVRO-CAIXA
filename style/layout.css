@@ -529,4 +529,21 @@
   .bill-status{font-size:10px;font-weight:800;padding:4px 7px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,var(--surface));}
   @media(max-width:700px){.bill-calendar{gap:3px}.bill-day{min-height:62px;padding:5px}.bill-event{font-size:8px}.bill-list-item{grid-template-columns:1fr auto;}.bill-list-item .bill-actions{grid-column:1/-1;display:flex;gap:6px;}}
 
+  /* D6 — no desktop o header adota a identidade verde do mobile
+     (barra full-bleed, conteúdo alinhado à coluna de 980px; mesmos tokens). */
+  @media (min-width:681px){
+    body:not(.dark-mode) header.app-header{
+      background:linear-gradient(135deg,var(--header-from),var(--header-to));
+      color:var(--header-ink);
+      max-width:none;margin:0;border-bottom:0;
+      padding-inline:max(24px,calc((100vw - 980px)/2));
+    }
+    body:not(.dark-mode) header.app-header h1{color:var(--header-ink);}
+    body:not(.dark-mode) header.app-header .subtitle{color:color-mix(in srgb,var(--header-ink) 85%,transparent);}
+    body:not(.dark-mode) header.app-header .subtitle .fi{color:color-mix(in srgb,var(--header-ink) 74%,transparent);}
+    body:not(.dark-mode) header.app-header .header-icon-button{background:var(--header-control-bg);border-color:color-mix(in srgb,var(--header-ink) 45%,transparent);color:var(--header-ink);}
+    body:not(.dark-mode) header.app-header .header-icon-button:hover{background:color-mix(in srgb,var(--header-ink) 18%,var(--header-control-bg));border-color:color-mix(in srgb,var(--header-ink) 60%,transparent);color:var(--header-ink);}
+    body:not(.dark-mode) header.app-header .header-search-bar{background:var(--paper);border-color:var(--gold);color:var(--ink-soft);}
+  }
+
 
