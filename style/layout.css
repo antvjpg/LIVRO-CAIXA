@@ -546,6 +546,18 @@
     body:not(.dark-mode) header.app-header .header-icon-button{background:var(--header-control-bg);border-color:color-mix(in srgb,var(--header-ink) 45%,transparent);color:var(--header-ink);}
     body:not(.dark-mode) header.app-header .header-icon-button:hover{background:color-mix(in srgb,var(--header-ink) 18%,var(--header-control-bg));border-color:color-mix(in srgb,var(--header-ink) 60%,transparent);color:var(--header-ink);}
     body:not(.dark-mode) header.app-header .header-search-bar{background:var(--paper);border-color:var(--gold);color:var(--ink-soft);}
+    body.dark-mode header.app-header{
+      background:linear-gradient(135deg,var(--header-from),var(--header-to));
+      color:var(--header-ink,var(--ink));
+      max-width:none;margin:0;border-bottom:0;
+      padding-inline:max(24px,calc((100vw - 980px)/2));
+    }
+    body.dark-mode header.app-header h1{color:var(--header-ink,var(--ink));}
+    body.dark-mode header.app-header .subtitle{color:color-mix(in srgb,var(--header-ink,var(--ink)) 85%,transparent);}
+    body.dark-mode header.app-header .subtitle .fi{color:color-mix(in srgb,var(--header-ink,var(--ink)) 74%,transparent);}
+    body.dark-mode header.app-header .header-icon-button{background:var(--header-control-bg,rgba(0,0,0,.35));border-color:color-mix(in srgb,var(--header-ink,var(--ink)) 45%,transparent);color:var(--header-ink,var(--ink));}
+    body.dark-mode header.app-header .header-icon-button:hover{background:color-mix(in srgb,var(--header-ink,var(--ink)) 18%,var(--header-control-bg,rgba(0,0,0,.35)));border-color:color-mix(in srgb,var(--header-ink,var(--ink)) 60%,transparent);color:var(--header-ink,var(--ink));}
+    body.dark-mode header.app-header .header-search-bar{background:var(--paper);border-color:var(--gold);color:var(--ink-soft);}
   }
 
 

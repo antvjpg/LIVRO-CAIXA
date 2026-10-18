@@ -125,6 +125,8 @@
     --accent-muted:#3B3525;
     --header-from:#0F1712;
     --header-to:#1A271D;
+    --header-ink:#F3EFE4;
+    --header-control-bg:rgba(15,23,18,.42);
     --on-accent:#16211A;
     --overlay:rgba(0,0,0,0.78);
     --shadow:rgba(0,0,0,0.34);
