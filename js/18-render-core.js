@@ -678,6 +678,79 @@
     const isKnown = value => value && (categories.some(c => c.id === value) ||
       (value.includes('::') && (() => { const [catId, subId] = value.split('::'); return (categories.find(c => c.id === catId)?.subcategories || []).some(s => s.id === subId); })()));
     if (isKnown(currentVal)) sel.value = currentVal;
+    updateCategoryTriggerLabel();
+  }
+
+  function updateCategoryTriggerLabel() {
+    const sel = document.getElementById('fCategoria');
+    const summary = document.getElementById('fCategoriaSummary');
+    if (!sel || !summary) return;
+    const value = sel.value;
+    if (!value) { summary.textContent = 'Sem categoria'; return; }
+    const [catId, subId] = value.includes('::') ? value.split('::') : [value, ''];
+    const cat = categories.find(c => c.id === catId);
+    if (!cat) { summary.textContent = 'Sem categoria'; return; }
+    const icon = categoryIcon(cat);
+    const sub = subId && Array.isArray(cat.subcategories) ? cat.subcategories.find(s => s.id === subId) : null;
+    summary.textContent = sub ? `${icon} ${cat.name} › ${sub.name}` : `${icon} ${cat.name}`;
+  }
+
+  function renderCatPickerList() {
+    const list = document.getElementById('catPickerList');
+    const sel = document.getElementById('fCategoria');
+    if (!list || !sel) return;
+    const current = sel.value;
+    const query = (catPickerSearchTerm || '').toLocaleLowerCase('pt-BR');
+    const rows = [`<button type="button" class="filter-choice-option cat-pick-option ${!current ? 'is-selected' : ''}" data-value=""><span class="category-dot" style="background:#66746B">—</span><span>Sem categoria</span></button>`];
+    categories.forEach(c => {
+      const name = String(c.name || '');
+      const subs = Array.isArray(c.subcategories) ? c.subcategories.filter(s => s && s.id) : [];
+      const catMatch = !query || name.toLocaleLowerCase('pt-BR').includes(query);
+      const matchingSubs = subs.filter(s => !query || String(s.name || '').toLocaleLowerCase('pt-BR').includes(query));
+      if (!catMatch && !matchingSubs.length) return;
+      const color = categoryColor(c);
+      const icon = categoryIcon(c);
+      if (catMatch || !subs.length) {
+        rows.push(`<button type="button" class="filter-choice-option cat-pick-option ${current === c.id ? 'is-selected' : ''}" data-value="${c.id}"><span class="category-dot" style="background:${color}">${escapeHTML(icon)}</span><span>${escapeHTML(c.name)}${subs.length ? ' (sem subcategoria)' : ''}</span></button>`);
+      }
+      matchingSubs.forEach(s => {
+        const val = `${c.id}::${s.id}`;
+        rows.push(`<button type="button" class="filter-choice-option cat-pick-option cat-pick-sub ${current === val ? 'is-selected' : ''}" data-value="${val}"><span class="category-dot" style="background:${color};opacity:.7">${escapeHTML(icon)}</span><span>${escapeHTML(c.name)} › ${escapeHTML(s.name || '')}</span></button>`);
+      });
+    });
+    list.innerHTML = rows.join('') + (categories.length === 0 && !query ? '<div class="filter-choice-empty">Nenhuma categoria cadastrada. Toque em + para criar.</div>' : '');
+    list.querySelectorAll('.cat-pick-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        sel.value = btn.dataset.value || '';
+        updateCategoryTriggerLabel();
+        closeCategoryPicker();
+      });
+    });
+  }
+
+  function openCategoryPicker() {
+    const sheet = document.getElementById('catPickerSheet');
+    const search = document.getElementById('catPickerSearch');
+    if (!sheet) return;
+    catPickerSearchTerm = '';
+    if (search) { search.value = ''; search.placeholder = 'Buscar categoria'; }
+    sheet.classList.add('open');
+    sheet.setAttribute('aria-hidden', 'false');
+    document.getElementById('panelNovo')?.classList.add('sheet-open');
+    renderCatPickerList();
+  }
+
+  function closeCategoryPicker() {
+    const sheet = document.getElementById('catPickerSheet');
+    if (sheet) {
+      sheet.classList.remove('open');
+      sheet.setAttribute('aria-hidden', 'true');
+      const list = document.getElementById('catPickerList');
+      if (list) list.replaceChildren();
+      const search = document.getElementById('catPickerSearch');
+      if (search) search.value = '';
+    }
+    document.getElementById('panelNovo')?.classList.remove('sheet-open');
   }
 
   function renderCategoryManageList() {
@@ -989,6 +1062,7 @@
   let activeFilterChoice;
 
   let filterChoiceSearchTerm;
+  let catPickerSearchTerm;
 
 
   function filterChoiceConfig(target) {

@@ -425,6 +425,7 @@
       if (bankEl && d.bank) bankEl.value = d.bank;
       const catEl = document.getElementById('fCategoria');
       if (catEl && d.category) catEl.value = d.category;
+      updateCategoryTriggerLabel();
       setMoneyInput('fValor', d.amount || 0);
       if (d.type && currentType !== d.type) {
         const toggle = document.getElementById(d.type === 'in' ? 'tglIn' : 'tglOut');
@@ -818,6 +819,7 @@
     if (descEl) descEl.value = value.desc;
     if (bankEl && value.bank) bankEl.value = value.bank;
     if (catEl && value.category) catEl.value = value.category;
+    updateCategoryTriggerLabel();
     setMoneyInput('fValor', value.amount);
     if (currentType !== value.type) {
       document.getElementById(value.type === 'in' ? 'tglIn' : 'tglOut').click();

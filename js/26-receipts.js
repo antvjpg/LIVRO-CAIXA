@@ -559,6 +559,7 @@ function applyReceiptToLaunchForm() {
     } else {
       categorySelect.value = '';
     }
+    updateCategoryTriggerLabel();
   }
 
   if (data.tipo === 'entrada') {

@@ -6669,6 +6669,69 @@ body:not(.dark-mode) .goals-form-body select {
   line-height: 1.25;
 }
 
+/* Seletor de categoria do formulário de lançamento (bottom sheet) */
+#panelNovo { position: relative; }
+#panelNovo.sheet-open { overflow: visible; overflow-y: visible; }
+#panelNovo .cat-picker-field { flex: 1; min-width: 0; }
+#panelNovo .cat-picker-field .filter-choice-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(20, 48, 36, 0.035);
+}
+#panelNovo .cat-picker-field .filter-choice-trigger:hover { border-color: var(--accent); }
+#panelNovo .cat-picker-field .filter-choice-trigger small {
+  display: block;
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 650;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#panelNovo .cat-picker-field .filter-choice-trigger b {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-size: 18px;
+  line-height: 1;
+}
+#panelNovo .cat-picker-field .filter-choice-trigger b i { font-size: 14px; }
+#panelNovo #catPickerSheet {
+  position: absolute;
+  left: 50%;
+  right: auto;
+  top: 50%;
+  bottom: auto;
+  width: min(92%, 420px);
+  max-height: 78%;
+  border-radius: 20px;
+  transform: translate(-50%, -50%) scale(0.96);
+  opacity: 0;
+}
+#panelNovo #catPickerSheet.open {
+  display: flex;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+#panelNovo #catPickerSheet:not(.open) {
+  display: none;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(105%);
+  opacity: 0;
+}
+#panelNovo .cat-pick-sub { padding-left: 28px; }
 
 /* Profile / settings — sem highlight azul do sistema */
 #viewProfile .profile-item,

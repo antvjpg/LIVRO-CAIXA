@@ -294,6 +294,7 @@
     }
     panel.classList.add('open');
     if (overlay) overlay.classList.add('open');
+    if (panelId === 'panelNovo' && typeof updateCategoryTriggerLabel === 'function') updateCategoryTriggerLabel();
   }
 
   function openCustomPeriodModal() {

@@ -1154,6 +1154,9 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
   document.getElementById('filterChoiceClose').onclick = closeFilterChoice;
   document.getElementById('filterChoiceConfirm').onclick = closeFilterChoice;
   document.getElementById('filterChoiceSearch').addEventListener('input', event => { filterChoiceSearchTerm = event.target.value || ''; renderFilterChoiceList(); });
+  document.getElementById('fCategoriaTrigger').onclick = () => openCategoryPicker();
+  document.getElementById('catPickerClose').onclick = closeCategoryPicker;
+  document.getElementById('catPickerSearch').addEventListener('input', event => { catPickerSearchTerm = event.target.value || ''; renderCatPickerList(); });
   document.getElementById('btnApplyFilters').onclick = () => { closeFilterChoice(); refreshFilteredViews(); closeAllPanels(); };
 
   document.getElementById('btnClearFilters').onclick = () => {
@@ -1424,6 +1427,7 @@ window.deletePocket = function(id) {
 
   window.closeAllPanels = function() {
     closeFilterChoice();
+    closeCategoryPicker();
     /* Limpa o estado do painel de lançamento de conta; sem isso, cancelar o
        showConfirm interno de launchBill deixava pendingBillLaunch stale. */
     pendingBillLaunch = null;
