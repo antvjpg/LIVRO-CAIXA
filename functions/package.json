@@ -1,13 +1,9 @@
 {
-  "name": "livro-caixa-functions",
-  "description": "Cloud Functions do LIVRO-CAIXA (envio de notificações push)",
+  "name": "livro-caixa-notification-plan",
+  "description": "Lógica compartilhada de plano de notificações push (consumida pelo Worker Cloudflare). Cloud Functions descontinuadas — push roda só no Worker.",
   "private": true,
-  "main": "index.js",
+  "main": "src/notification-plan.js",
   "engines": {
     "node": "20"
-  },
-  "dependencies": {
-    "firebase-admin": "^13.0.0",
-    "firebase-functions": "^6.0.0"
   }
 }
