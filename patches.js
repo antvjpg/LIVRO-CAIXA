@@ -1,33 +1,5 @@
-// [PATCH] Contas/Faturas — menus contextuais
-function closeBillMenus(){
-  document.querySelectorAll('.bill-more-menu').forEach(menu => {
-    menu.hidden = true;
-  });
-  document.querySelectorAll('.bill-more-button').forEach(button => {
-    button.setAttribute('aria-expanded','false');
-  });
-}
-
-function toggleBillMenu(id){
-  const menu = document.getElementById(`bill-more-${id}`);
-  if(!menu) return;
-
-  const wasHidden = menu.hidden;
-  closeBillMenus();
-
-  if(wasHidden){
-    menu.hidden = false;
-    const button = menu.parentElement?.querySelector('.bill-more-button');
-    if(button) button.setAttribute('aria-expanded','true');
-  }
-}
-
-document.addEventListener('click', (event) => {
-  if(!event.target.closest('.bill-more-wrap')){
-    closeBillMenus();
-  }
-});
 // [PATCH] Metas — isolamento de aba / switchTab
+// Menus contextuais Contas ("•••") vivem em js/25-bills-receivables.js (fonte única).
 /* Metas como aba própria — resolve switchTabOriginal em tempo de chamada (nunca captura undefined) */
 (function () {
   function runOriginalSwitchTab(tab, ctx, args) {
