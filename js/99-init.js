@@ -3121,7 +3121,17 @@ document.getElementById('tSalvar').onclick = async () => {
         const action = isSignupMode
           ? auth.createUserWithEmailAndPassword(email, pass)
           : auth.signInWithEmailAndPassword(email, pass);
-        action.then(() => logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Sucesso', 'Solicitação de autenticação concluída.', null, operation)).catch(err => { logSyncError('autenticação', err, operation); setAuthError(translateAuthError(err.code)); });
+        action.then(() => logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Sucesso', 'Solicitação de autenticação concluída.', null, operation)).catch(err => {
+          /* Conta QA efêmera removida no cleanup da run anterior: credencial
+             inválida é comportamento esperado, não erro do usuário. Loga como
+             aviso para não poluir o console com console.error de diagnóstico. */
+          if (err && err.code === 'auth/invalid-credential') {
+            logWarn('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Falha', 'Credencial inválida ou conta não encontrada (conta efêmera pode ter sido removida).', { code: err.code }, operation);
+          } else {
+            logSyncError('autenticação', err, operation);
+          }
+          setAuthError(translateAuthError(err.code));
+        });
       };
     }
 
