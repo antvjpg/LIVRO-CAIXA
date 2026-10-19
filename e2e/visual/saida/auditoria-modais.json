@@ -1,0 +1,2965 @@
+{
+  "geradoEm": "2026-10-19T13:43:47.686Z",
+  "url": "http://127.0.0.1:63137",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "modo": "estrutura-sem-autenticacao",
+  "resultados": [
+    {
+      "id": "panelNovo",
+      "status": "bloqueado-pelo-app",
+      "via": "openNewEntryModal",
+      "motivo": "abriu panelBanco",
+      "dialogo": "Cadastre pelo menos um banco antes de fazer lançamentos."
+    },
+    {
+      "id": "panelBanco",
+      "status": "ok",
+      "via": "openBankManagementPanel",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelBanco.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 263,
+        "largura": 640,
+        "altura": 350
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "label",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "input#bNome",
+          "altura": 48,
+          "largura": 602,
+          "topo": 446,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#bSaldo",
+          "altura": 56,
+          "largura": 602,
+          "topo": 358,
+          "esquerda": 419,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "34px",
+          "padding": "0px 2px 8px"
+        },
+        {
+          "el": "button#bSalvar.primary",
+          "altura": 52,
+          "largura": 602,
+          "topo": 508,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 348,
+      "clientH": 348,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 2,
+      "qtdBotoes": 2,
+      "errosConsole": []
+    },
+    {
+      "id": "panelCategoria",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelCategoria.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 265,
+        "largura": 640,
+        "altura": 346
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div.form-grid",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "input#cNome",
+          "altura": 48,
+          "largura": 602,
+          "topo": 378,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnEmojiCatalog.emoji-trigger",
+          "altura": 58,
+          "largura": 602,
+          "topo": 464,
+          "esquerda": 419,
+          "raio": "14px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 12px"
+        },
+        {
+          "el": "button#cSalvar.primary",
+          "altura": 52,
+          "largura": 602,
+          "topo": 540,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 344,
+      "clientH": 344,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 2,
+      "qtdBotoes": 3,
+      "errosConsole": []
+    },
+    {
+      "id": "panelFiltros",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelFiltros.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 123,
+        "largura": 640,
+        "altura": 630
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "input#filterDateEnd",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "select#filterFlow",
+          "altura": 48,
+          "largura": 602,
+          "topo": 236,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#filterDateStart",
+          "altura": 48,
+          "largura": 602,
+          "topo": 314,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#filterDateEnd",
+          "altura": 48,
+          "largura": 602,
+          "topo": 392,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#filterBankTrigger.filter-choice-trigger",
+          "altura": 48,
+          "largura": 602,
+          "topo": 470,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "select#filterBank.filter-state-select",
+          "altura": 48,
+          "largura": 30,
+          "topo": 518,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#filterCategoryTrigger.filter-choice-trigger",
+          "altura": 48,
+          "largura": 602,
+          "topo": 548,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "select#filterCategory.filter-state-select",
+          "altura": 48,
+          "largura": 30,
+          "topo": 596,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#filterText",
+          "altura": 48,
+          "largura": 602,
+          "topo": 626,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnClearFilters",
+          "altura": 48,
+          "largura": 298,
+          "topo": 686,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnApplyFilters.primary",
+          "altura": 48,
+          "largura": 296,
+          "topo": 686,
+          "esquerda": 725,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 628,
+      "clientH": 628,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 7,
+      "qtdBotoes": 7,
+      "errosConsole": []
+    },
+    {
+      "id": "panelFeatureProfile",
+      "status": "ok",
+      "via": "openFeatureProfile",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelFeatureProfile.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 280,
+        "y": 205,
+        "largura": 880,
+        "altura": 467
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div.form-grid",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "input#ciInitial",
+          "altura": 38,
+          "largura": 198,
+          "topo": 405,
+          "esquerda": 307,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#ciMonthly",
+          "altura": 38,
+          "largura": 198,
+          "topo": 405,
+          "esquerda": 517,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#ciRate",
+          "altura": 40,
+          "largura": 85,
+          "topo": 403,
+          "esquerda": 726,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "select#ciRatePeriod",
+          "altura": 40,
+          "largura": 107,
+          "topo": 403,
+          "esquerda": 817,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#ciMonths",
+          "altura": 40,
+          "largura": 105,
+          "topo": 403,
+          "esquerda": 936,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "select#ciTermUnit",
+          "altura": 40,
+          "largura": 87,
+          "topo": 403,
+          "esquerda": 1046,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#ciBenchCdi",
+          "altura": 16,
+          "largura": 16,
+          "topo": 482,
+          "esquerda": 318,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "14px",
+          "padding": "0px"
+        },
+        {
+          "el": "input#ciBenchSelic",
+          "altura": 16,
+          "largura": 16,
+          "topo": 482,
+          "esquerda": 435,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "14px",
+          "padding": "0px"
+        },
+        {
+          "el": "input#ciBenchPoupanca",
+          "altura": 16,
+          "largura": 16,
+          "topo": 482,
+          "esquerda": 559,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "14px",
+          "padding": "0px"
+        },
+        {
+          "el": "input#ciBenchCustom",
+          "altura": 16,
+          "largura": 16,
+          "topo": 482,
+          "esquerda": 662,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "14px",
+          "padding": "0px"
+        },
+        {
+          "el": "input#ciBenchmarkRate",
+          "altura": 38,
+          "largura": 320,
+          "topo": 537,
+          "esquerda": 307,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "button#btnRunCompoundCalc.primary.compound-calc-run",
+          "altura": 42,
+          "largura": 826,
+          "topo": 588,
+          "esquerda": 307,
+          "raio": "4px",
+          "borda": "1px solid rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 465,
+      "clientH": 465,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 11,
+      "qtdBotoes": 2,
+      "errosConsole": []
+    },
+    {
+      "id": "panelDiagnostico",
+      "status": "ok",
+      "via": "openDiagnostics",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelDiagnostico.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 298,
+        "largura": 640,
+        "altura": 280
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "select#logFilterModule",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "select#logFilterType",
+          "altura": 40,
+          "largura": 195,
+          "topo": 419,
+          "esquerda": 419,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "select#logFilterModule",
+          "altura": 40,
+          "largura": 195,
+          "topo": 419,
+          "esquerda": 622,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#logFilterText",
+          "altura": 40,
+          "largura": 195,
+          "topo": 419,
+          "esquerda": 826,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "button#btnCopyDiagnostico",
+          "altura": 41,
+          "largura": 297,
+          "topo": 518,
+          "esquerda": 419,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnClearDiagnostico",
+          "altura": 41,
+          "largura": 297,
+          "topo": 518,
+          "esquerda": 724,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 278,
+      "clientH": 278,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 3,
+      "qtdBotoes": 3,
+      "errosConsole": []
+    },
+    {
+      "id": "panelTransferencia",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelTransferencia.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 178,
+        "largura": 640,
+        "altura": 520
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "select#tPara",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "input#tData",
+          "altura": 42,
+          "largura": 590,
+          "topo": 463,
+          "esquerda": 425,
+          "raio": "13px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "9px 12px"
+        },
+        {
+          "el": "select#tDe",
+          "altura": 42,
+          "largura": 590,
+          "topo": 331,
+          "esquerda": 425,
+          "raio": "13px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "9px 12px"
+        },
+        {
+          "el": "select#tPara",
+          "altura": 42,
+          "largura": 590,
+          "topo": 397,
+          "esquerda": 425,
+          "raio": "13px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "9px 12px"
+        },
+        {
+          "el": "input#tValor",
+          "altura": 52,
+          "largura": 590,
+          "topo": 255,
+          "esquerda": 425,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "32px",
+          "padding": "0px 2px 5px"
+        },
+        {
+          "el": "input#tDesc",
+          "altura": 42,
+          "largura": 590,
+          "topo": 529,
+          "esquerda": 425,
+          "raio": "13px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "9px 12px"
+        },
+        {
+          "el": "button#btnReadTransferReceipt",
+          "altura": 40,
+          "largura": 590,
+          "topo": 580,
+          "esquerda": 425,
+          "raio": "999px",
+          "borda": "1px solid color(srgb 0.666745 0.692392 0.569098)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "10px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#tSalvar.primary",
+          "altura": 44,
+          "largura": 590,
+          "topo": 629,
+          "esquerda": 425,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgb(30, 46, 22)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 518,
+      "clientH": 518,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [
+        {
+          "el": "button#btnReadTransferReceipt",
+          "fonte": 10
+        }
+      ],
+      "temTexto": true,
+      "qtdCampos": 6,
+      "qtdBotoes": 3,
+      "errosConsole": []
+    },
+    {
+      "id": "panelBill",
+      "status": "ok",
+      "via": "openBillModal",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelBill.png",
+      "rolagemFim": {
+        "respiroInferior": 23,
+        "ultimoElemento": "button#billSalvar",
+        "screenshot": "e2e\\visual\\saida\\modais\\panelBill--fim.png"
+      },
+      "painel": {
+        "x": 400,
+        "y": 24,
+        "largura": 640,
+        "altura": 828
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div.bill-config-grid",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [
+        {
+          "el": "div#panelBill.panel.bill-form-sheet",
+          "scrollH": 993,
+          "clientH": 826,
+          "visivel": 826
+        }
+      ],
+      "controles": [
+        {
+          "el": "input#billValor",
+          "altura": 46,
+          "largura": 594,
+          "topo": 126,
+          "esquerda": 423,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "10px 11px"
+        },
+        {
+          "el": "input#billNome",
+          "altura": 46,
+          "largura": 274,
+          "topo": 263,
+          "esquerda": 440,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 11px"
+        },
+        {
+          "el": "input#billTitular",
+          "altura": 46,
+          "largura": 274,
+          "topo": 263,
+          "esquerda": 726,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 11px"
+        },
+        {
+          "el": "select#billTipoOcorrencia",
+          "altura": 46,
+          "largura": 211,
+          "topo": 377,
+          "esquerda": 486,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 11px"
+        },
+        {
+          "el": "select#billParcelado",
+          "altura": 46,
+          "largura": 211,
+          "topo": 377,
+          "esquerda": 789,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 11px"
+        },
+        {
+          "el": "select#billBanco",
+          "altura": 46,
+          "largura": 513,
+          "topo": 508,
+          "esquerda": 487,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 11px"
+        },
+        {
+          "el": "select#billCategoria",
+          "altura": 46,
+          "largura": 560,
+          "topo": 596,
+          "esquerda": 440,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 11px"
+        },
+        {
+          "el": "input#billInicio",
+          "altura": 46,
+          "largura": 274,
+          "topo": 727,
+          "esquerda": 440,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 11px 10px 34px"
+        },
+        {
+          "el": "input#billFim",
+          "altura": 46,
+          "largura": 274,
+          "topo": 727,
+          "esquerda": 726,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 11px 10px 34px"
+        },
+        {
+          "el": "select#billAtiva.bill-status-pill",
+          "altura": 38,
+          "largura": 150,
+          "topo": 819,
+          "esquerda": 423,
+          "raio": "999px",
+          "borda": "1px solid color(srgb 0.68098 0.702745 0.583922)",
+          "fundo": "rgb(223, 235, 216)",
+          "fonte": "12px",
+          "padding": "7px 13px"
+        },
+        {
+          "el": "input#billObs",
+          "altura": 46,
+          "largura": 594,
+          "topo": 886,
+          "esquerda": 423,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "12px",
+          "padding": "10px 11px"
+        },
+        {
+          "el": "button#billSalvar.primary.bill-save-cta",
+          "altura": 50,
+          "largura": 594,
+          "topo": 946,
+          "esquerda": 423,
+          "raio": "13px",
+          "borda": "0px none rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": true,
+      "scrollH": 993,
+      "clientH": 826,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 3,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 13,
+      "qtdBotoes": 2,
+      "errosConsole": []
+    },
+    {
+      "id": "panelBillLaunch",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelBillLaunch.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 307,
+        "largura": 640,
+        "altura": 263
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "label",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "select#billLaunchBank",
+          "altura": 40,
+          "largura": 602,
+          "topo": 447,
+          "esquerda": 419,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "button#billLaunchConfirm.primary",
+          "altura": 52,
+          "largura": 602,
+          "topo": 499,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 261,
+      "clientH": 261,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 1,
+      "qtdBotoes": 2,
+      "errosConsole": []
+    },
+    {
+      "id": "panelReceivable",
+      "status": "ok",
+      "via": "openReceivableModal",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelReceivable.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 74,
+        "largura": 640,
+        "altura": 729
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "input#recvDataRegistro",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "input#recvPessoa",
+          "altura": 48,
+          "largura": 602,
+          "topo": 282,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#recvDesc",
+          "altura": 48,
+          "largura": 602,
+          "topo": 360,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#recvValor",
+          "altura": 56,
+          "largura": 602,
+          "topo": 196,
+          "esquerda": 419,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "34px",
+          "padding": "0px 2px 8px"
+        },
+        {
+          "el": "input#recvDataRegistro",
+          "altura": 48,
+          "largura": 602,
+          "topo": 438,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#recvDataPrevista",
+          "altura": 48,
+          "largura": 602,
+          "topo": 516,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "select#recvStatus",
+          "altura": 48,
+          "largura": 602,
+          "topo": 594,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#recvObs",
+          "altura": 48,
+          "largura": 602,
+          "topo": 672,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#recvSalvar.primary",
+          "altura": 52,
+          "largura": 602,
+          "topo": 732,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 727,
+      "clientH": 727,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 7,
+      "qtdBotoes": 2,
+      "errosConsole": []
+    },
+    {
+      "id": "panelBillShare",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelBillShare.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 370,
+        "y": 183,
+        "largura": 700,
+        "altura": 511
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "textarea#billShareMessage.bill-share-message",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "textarea#billShareMessage.bill-share-message",
+          "altura": 260,
+          "largura": 648,
+          "topo": 306,
+          "esquerda": 396,
+          "raio": "12px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "12px",
+          "padding": "12px"
+        },
+        {
+          "el": "button#btnCopyBillShare",
+          "altura": 41,
+          "largura": 320,
+          "topo": 580,
+          "esquerda": 396,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnNativeBillShare.primary",
+          "altura": 41,
+          "largura": 320,
+          "topo": 580,
+          "esquerda": 724,
+          "raio": "4px",
+          "borda": "1px solid rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnCancelBillShare.bill-share-cancel",
+          "altura": 39,
+          "largura": 648,
+          "topo": 629,
+          "esquerda": 396,
+          "raio": "4px",
+          "borda": "1px solid color(srgb 0.68098 0.702745 0.583922)",
+          "fundo": "rgb(252, 253, 249)",
+          "fonte": "11px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 507,
+      "clientH": 507,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 1,
+      "qtdBotoes": 4,
+      "errosConsole": []
+    },
+    {
+      "id": "panelCard",
+      "status": "ok",
+      "via": "openCardModal",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelCard.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 71,
+        "largura": 640,
+        "altura": 735
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div.card-cycle-grid",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "input#cardNome",
+          "altura": 38,
+          "largura": 281,
+          "topo": 219,
+          "esquerda": 434,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "select#cardBanco",
+          "altura": 40,
+          "largura": 281,
+          "topo": 219,
+          "esquerda": 726,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#cardTitular",
+          "altura": 38,
+          "largura": 572,
+          "topo": 290,
+          "esquerda": 434,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#cardFechamento",
+          "altura": 38,
+          "largura": 235,
+          "topo": 416,
+          "esquerda": 480,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#cardVencimento",
+          "altura": 38,
+          "largura": 235,
+          "topo": 416,
+          "esquerda": 772,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#cardLimite",
+          "altura": 38,
+          "largura": 281,
+          "topo": 565,
+          "esquerda": 434,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "select#cardAtivo",
+          "altura": 40,
+          "largura": 281,
+          "topo": 565,
+          "esquerda": 726,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#cardObs",
+          "altura": 38,
+          "largura": 572,
+          "topo": 671,
+          "esquerda": 434,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "button#cardSalvar.primary.card-save-cta",
+          "altura": 48,
+          "largura": 602,
+          "topo": 738,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "15px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 733,
+      "clientH": 733,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 8,
+      "qtdBotoes": 2,
+      "errosConsole": []
+    },
+    {
+      "id": "panelPurchase",
+      "status": "bloqueado-pelo-app",
+      "via": "openPurchaseModal",
+      "motivo": "abriu panelCard",
+      "dialogo": "Cadastre pelo menos um banco antes de fazer lançamentos."
+    },
+    {
+      "id": "panelInvest",
+      "status": "ok",
+      "via": "openNewInvestModal",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelInvest.png",
+      "rolagemFim": {
+        "respiroInferior": 19,
+        "ultimoElemento": "div",
+        "screenshot": "e2e\\visual\\saida\\modais\\panelInvest--fim.png"
+      },
+      "painel": {
+        "x": 400,
+        "y": 28,
+        "largura": 640,
+        "altura": 820
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "select#iTipo",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [
+        {
+          "el": "div#panelInvest.panel.open",
+          "scrollH": 916,
+          "clientH": 818,
+          "visivel": 818
+        }
+      ],
+      "controles": [
+        {
+          "el": "input#iNome",
+          "altura": 48,
+          "largura": 602,
+          "topo": 141,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#iApelido",
+          "altura": 48,
+          "largura": 602,
+          "topo": 221,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#iCoinGeckoId",
+          "altura": 48,
+          "largura": 602,
+          "topo": 324,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "select#iTipo",
+          "altura": 48,
+          "largura": 602,
+          "topo": 427,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#iUnidades",
+          "altura": 48,
+          "largura": 293,
+          "topo": 507,
+          "esquerda": 728,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#iUnidadesAtual",
+          "altura": 48,
+          "largura": 335,
+          "topo": 604,
+          "esquerda": 686,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#iCotacao",
+          "altura": 38,
+          "largura": 308,
+          "topo": 701,
+          "esquerda": 546,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "button#btnFetchPrice.quote-fetch-button",
+          "altura": 38,
+          "largura": 161,
+          "topo": 701,
+          "esquerda": 860,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11.5px",
+          "padding": "0px 8px"
+        },
+        {
+          "el": "input#iValor",
+          "altura": 56,
+          "largura": 436,
+          "topo": 788,
+          "esquerda": 585,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "34px",
+          "padding": "0px 2px 8px"
+        },
+        {
+          "el": "button#iSalvar.primary",
+          "altura": 52,
+          "largura": 602,
+          "topo": 875,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": true,
+      "scrollH": 916,
+      "clientH": 818,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 3,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 13,
+      "qtdBotoes": 3,
+      "errosConsole": []
+    },
+    {
+      "id": "panelPocket",
+      "status": "ok",
+      "via": "openNewPocketModal",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelPocket.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 107,
+        "largura": 640,
+        "altura": 662
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "label",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "input#pNome",
+          "altura": 48,
+          "largura": 602,
+          "topo": 290,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#pObjetivo",
+          "altura": 48,
+          "largura": 602,
+          "topo": 370,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#pMetaValor",
+          "altura": 38,
+          "largura": 602,
+          "topo": 450,
+          "esquerda": 419,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "select#pBancoOrigem",
+          "altura": 48,
+          "largura": 602,
+          "topo": 520,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#pInicial",
+          "altura": 56,
+          "largura": 602,
+          "topo": 202,
+          "esquerda": 419,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "34px",
+          "padding": "0px 2px 8px"
+        },
+        {
+          "el": "input#pAtual",
+          "altura": 38,
+          "largura": 602,
+          "topo": 623,
+          "esquerda": 419,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "button#pSalvar.primary",
+          "altura": 52,
+          "largura": 602,
+          "topo": 698,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 660,
+      "clientH": 660,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 6,
+      "qtdBotoes": 2,
+      "errosConsole": []
+    },
+    {
+      "id": "panelPocketMovement",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelPocketMovement.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 207,
+        "largura": 640,
+        "altura": 462
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "label#pmDataLabel",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "button#pmAporte.active-in",
+          "altura": 40,
+          "largura": 193,
+          "topo": 308,
+          "esquerda": 425,
+          "raio": "11px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgb(95, 122, 67)",
+          "fonte": "11px",
+          "padding": "10px 4px"
+        },
+        {
+          "el": "button#pmResgate",
+          "altura": 40,
+          "largura": 193,
+          "topo": 308,
+          "esquerda": 624,
+          "raio": "11px",
+          "borda": "0px none rgb(76, 90, 82)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11px",
+          "padding": "10px 4px"
+        },
+        {
+          "el": "button#pmRendimento",
+          "altura": 40,
+          "largura": 193,
+          "topo": 308,
+          "esquerda": 822,
+          "raio": "11px",
+          "borda": "0px none rgb(76, 90, 82)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11px",
+          "padding": "10px 4px"
+        },
+        {
+          "el": "input#pmData",
+          "altura": 48,
+          "largura": 602,
+          "topo": 456,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#pmValor",
+          "altura": 56,
+          "largura": 602,
+          "topo": 368,
+          "esquerda": 419,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "34px",
+          "padding": "0px 2px 8px"
+        },
+        {
+          "el": "input#pmDesc",
+          "altura": 48,
+          "largura": 602,
+          "topo": 536,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#pmSalvar.primary",
+          "altura": 52,
+          "largura": 602,
+          "topo": 598,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 460,
+      "clientH": 460,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 3,
+      "qtdBotoes": 5,
+      "errosConsole": []
+    },
+    {
+      "id": "panelInvestMovement",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelInvestMovement.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 124,
+        "largura": 640,
+        "altura": 629
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "label#imQuantidadeLabel",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "button#imAporte.active-in",
+          "altura": 40,
+          "largura": 193,
+          "topo": 225,
+          "esquerda": 425,
+          "raio": "11px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgb(95, 122, 67)",
+          "fonte": "11px",
+          "padding": "10px 4px"
+        },
+        {
+          "el": "button#imResgate",
+          "altura": 40,
+          "largura": 193,
+          "topo": 225,
+          "esquerda": 624,
+          "raio": "11px",
+          "borda": "0px none rgb(76, 90, 82)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11px",
+          "padding": "10px 4px"
+        },
+        {
+          "el": "button#imRendimento",
+          "altura": 40,
+          "largura": 193,
+          "topo": 225,
+          "esquerda": 822,
+          "raio": "11px",
+          "borda": "0px none rgb(76, 90, 82)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11px",
+          "padding": "10px 4px"
+        },
+        {
+          "el": "input#imData",
+          "altura": 48,
+          "largura": 602,
+          "topo": 373,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#imQuantidade",
+          "altura": 48,
+          "largura": 602,
+          "topo": 453,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#imCotacao",
+          "altura": 38,
+          "largura": 393,
+          "topo": 533,
+          "esquerda": 419,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "button#imFetchPrice.quote-fetch-button",
+          "altura": 38,
+          "largura": 203,
+          "topo": 533,
+          "esquerda": 818,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11.5px",
+          "padding": "0px 8px"
+        },
+        {
+          "el": "input#imValor",
+          "altura": 56,
+          "largura": 602,
+          "topo": 285,
+          "esquerda": 419,
+          "raio": "0px",
+          "borda": "0px none rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "34px",
+          "padding": "0px 2px 8px"
+        },
+        {
+          "el": "input#imDesc",
+          "altura": 48,
+          "largura": 602,
+          "topo": 620,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#imSalvar.primary",
+          "altura": 52,
+          "largura": 602,
+          "topo": 682,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 627,
+      "clientH": 627,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 5,
+      "qtdBotoes": 6,
+      "errosConsole": []
+    },
+    {
+      "id": "panelCryptoReconcile",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelCryptoReconcile.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 370,
+        "y": 312,
+        "largura": 700,
+        "altura": 253
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "input#crSaldoReal",
+          "altura": 38,
+          "largura": 320,
+          "topo": 405,
+          "esquerda": 396,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "button#crConfirmar.primary",
+          "altura": 41,
+          "largura": 648,
+          "topo": 498,
+          "esquerda": 396,
+          "raio": "4px",
+          "borda": "1px solid rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 249,
+      "clientH": 249,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 1,
+      "qtdBotoes": 2,
+      "errosConsole": []
+    },
+    {
+      "id": "panelExportFormat",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelExportFormat.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 281,
+        "largura": 640,
+        "altura": 314
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div#exportPreview.export-preview",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "button#btnExportFormatPdf.primary",
+          "altura": 40,
+          "largura": 296,
+          "topo": 468,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11px",
+          "padding": "9px 14px"
+        },
+        {
+          "el": "button#btnExportFormatXlsx.primary",
+          "altura": 40,
+          "largura": 296,
+          "topo": 468,
+          "esquerda": 725,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11px",
+          "padding": "9px 14px"
+        },
+        {
+          "el": "button#btnExportFormatDocx.primary",
+          "altura": 40,
+          "largura": 602,
+          "topo": 518,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "11px",
+          "padding": "9px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 312,
+      "clientH": 312,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 0,
+      "qtdBotoes": 4,
+      "errosConsole": []
+    },
+    {
+      "id": "panelEntryHistory",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelEntryHistory.png",
+      "rolagemFim": {
+        "respiroInferior": 44,
+        "ultimoElemento": "h3#entryHistoryTitle",
+        "screenshot": "e2e\\visual\\saida\\modais\\panelEntryHistory--fim.png"
+      },
+      "painel": {
+        "x": 370,
+        "y": 390,
+        "largura": 700,
+        "altura": 97
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "h3#entryHistoryTitle",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [
+        {
+          "el": "div#panelEntryHistory.panel.open",
+          "scrollH": 97,
+          "clientH": 93,
+          "visivel": 93
+        }
+      ],
+      "controles": [],
+      "overflowX": false,
+      "overflowY": true,
+      "scrollH": 97,
+      "clientH": 93,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 0,
+      "qtdBotoes": 1,
+      "errosConsole": []
+    },
+    {
+      "id": "panelPaste",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelPaste.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 206,
+        "largura": 640,
+        "altura": 464
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "textarea#pasteArea",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "textarea#pasteArea",
+          "altura": 160,
+          "largura": 602,
+          "topo": 331,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnReadClipboard.emoji-native-toggle",
+          "altura": 42,
+          "largura": 602,
+          "topo": 545,
+          "esquerda": 419,
+          "raio": "4px",
+          "borda": "1px dashed color(srgb 0.68098 0.702745 0.583922)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnProcessPaste.primary",
+          "altura": 52,
+          "largura": 295,
+          "topo": 599,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnCancelPaste",
+          "altura": 52,
+          "largura": 297,
+          "topo": 599,
+          "esquerda": 724,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 462,
+      "clientH": 462,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 1,
+      "qtdBotoes": 4,
+      "errosConsole": []
+    },
+    {
+      "id": "panelImport",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelImport.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 370,
+        "y": 295,
+        "largura": 700,
+        "altura": 286
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div.import-actions",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "button#importRemoveDuplicates.secondary",
+          "altura": 41,
+          "largura": 320,
+          "topo": 421,
+          "esquerda": 396,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#importRemoveInvalid.secondary",
+          "altura": 41,
+          "largura": 320,
+          "topo": 421,
+          "esquerda": 724,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#importConfirm.primary",
+          "altura": 41,
+          "largura": 319,
+          "topo": 514,
+          "esquerda": 396,
+          "raio": "4px",
+          "borda": "1px solid rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#importCancel",
+          "altura": 41,
+          "largura": 319,
+          "topo": 514,
+          "esquerda": 725,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 282,
+      "clientH": 282,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 0,
+      "qtdBotoes": 5,
+      "errosConsole": []
+    },
+    {
+      "id": "panelGoalForm",
+      "status": "ok",
+      "via": "openNewGoalModal",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelGoalForm.png",
+      "rolagemFim": {
+        "respiroInferior": 1,
+        "ultimoElemento": "div",
+        "screenshot": "e2e\\visual\\saida\\modais\\panelGoalForm--fim.png"
+      },
+      "painel": {
+        "x": 500,
+        "y": 33,
+        "largura": 440,
+        "altura": 810
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div.goals-form-body.feature-profile-fields",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [
+        {
+          "el": "div.goals-form-body.feature-profile-fields",
+          "scrollH": 657,
+          "clientH": 617,
+          "visivel": 617
+        }
+      ],
+      "controles": [
+        {
+          "el": "input#goalNome",
+          "altura": 42,
+          "largura": 406,
+          "topo": 134,
+          "esquerda": 517,
+          "raio": "12px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.16)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "11px 12px"
+        },
+        {
+          "el": "input#goalIcone",
+          "altura": 42,
+          "largura": 406,
+          "topo": 206,
+          "esquerda": 517,
+          "raio": "12px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.16)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "11px 12px"
+        },
+        {
+          "el": "input#goalValorObjetivo",
+          "altura": 42,
+          "largura": 406,
+          "topo": 278,
+          "esquerda": 517,
+          "raio": "12px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.16)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "11px 12px"
+        },
+        {
+          "el": "select#goalCaixinha",
+          "altura": 44,
+          "largura": 406,
+          "topo": 350,
+          "esquerda": 517,
+          "raio": "12px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.16)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "11px 12px"
+        },
+        {
+          "el": "input#goalDataInicio",
+          "altura": 44,
+          "largura": 198,
+          "topo": 466,
+          "esquerda": 517,
+          "raio": "12px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.16)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "11px 12px"
+        },
+        {
+          "el": "input#goalPrazo",
+          "altura": 44,
+          "largura": 198,
+          "topo": 466,
+          "esquerda": 725,
+          "raio": "12px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.16)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "11px 12px"
+        },
+        {
+          "el": "select#goalStatus",
+          "altura": 44,
+          "largura": 406,
+          "topo": 540,
+          "esquerda": 517,
+          "raio": "12px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.16)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "11px 12px"
+        },
+        {
+          "el": "input#goalValorAtual",
+          "altura": 42,
+          "largura": 406,
+          "topo": 616,
+          "esquerda": 517,
+          "raio": "12px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.16)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "11px 12px"
+        },
+        {
+          "el": "input#goalObs",
+          "altura": 42,
+          "largura": 406,
+          "topo": 709,
+          "esquerda": 517,
+          "raio": "12px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.16)",
+          "fundo": "rgb(255, 254, 250)",
+          "fonte": "14px",
+          "padding": "11px 12px"
+        },
+        {
+          "el": "button#btnSaveGoal.primary.goals-form-save",
+          "altura": 46,
+          "largura": 406,
+          "topo": 732,
+          "esquerda": 517,
+          "raio": "14px",
+          "borda": "0px none rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "14px",
+          "padding": "14px 16px"
+        },
+        {
+          "el": "button#btnCancelGoalEdit.goals-form-cancel",
+          "altura": 42,
+          "largura": 406,
+          "topo": 786,
+          "esquerda": 517,
+          "raio": "14px",
+          "borda": "1px solid color(srgb 0.101961 0.141176 0.0901961 / 0.14)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "13px",
+          "padding": "12px 16px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 808,
+      "clientH": 808,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 9,
+      "qtdBotoes": 3,
+      "errosConsole": []
+    },
+    {
+      "id": "panelAiChat",
+      "status": "ok",
+      "via": "openAiChat",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelAiChat.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 400,
+        "y": 159,
+        "largura": 640,
+        "altura": 558
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "flex",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "button.ai-quick-suggestion",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "button.ai-quick-suggestion",
+          "altura": 40,
+          "largura": 596,
+          "topo": 374,
+          "esquerda": 422,
+          "raio": "12px",
+          "borda": "1px dashed rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "11px",
+          "padding": "10px 12px"
+        },
+        {
+          "el": "button.ai-quick-suggestion",
+          "altura": 40,
+          "largura": 596,
+          "topo": 420,
+          "esquerda": 422,
+          "raio": "12px",
+          "borda": "1px dashed rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "11px",
+          "padding": "10px 12px"
+        },
+        {
+          "el": "button.ai-quick-suggestion",
+          "altura": 40,
+          "largura": 596,
+          "topo": 466,
+          "esquerda": 422,
+          "raio": "12px",
+          "borda": "1px dashed rgb(216, 210, 193)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "11px",
+          "padding": "10px 12px"
+        },
+        {
+          "el": "button#btnLiaAttach.ai-attach-btn",
+          "altura": 43,
+          "largura": 45,
+          "topo": 658,
+          "esquerda": 420,
+          "raio": "10px",
+          "borda": "2px solid rgb(95, 122, 67)",
+          "fundo": "color(srgb 0.885176 0.893255 0.842824)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "input#aiChatInput",
+          "altura": 44,
+          "largura": 494,
+          "topo": 657,
+          "esquerda": 473,
+          "raio": "12px",
+          "borda": "2px solid rgb(26, 36, 23)",
+          "fundo": "rgb(247, 245, 239)",
+          "fonte": "14px",
+          "padding": "10px 12px"
+        },
+        {
+          "el": "button#btnAiChatSend.primary",
+          "altura": 42,
+          "largura": 46,
+          "topo": 658,
+          "esquerda": 974,
+          "raio": "10px",
+          "borda": "1px solid rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 554,
+      "clientH": 554,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 2,
+      "qtdBotoes": 7,
+      "errosConsole": []
+    },
+    {
+      "id": "panelOcrReview",
+      "status": "ok",
+      "via": "classe-forcada",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelOcrReview.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 370,
+        "y": 328,
+        "largura": 700,
+        "altura": 220
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div#panelOcrReview.panel.open",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "button#btnOcrReviewCancel",
+          "altura": 44,
+          "largura": 267,
+          "topo": 443,
+          "esquerda": 396,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button#btnOcrReviewConfirm.primary",
+          "altura": 44,
+          "largura": 373,
+          "topo": 443,
+          "esquerda": 671,
+          "raio": "4px",
+          "borda": "1px solid rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 216,
+      "clientH": 216,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 0,
+      "qtdBotoes": 3,
+      "errosConsole": []
+    },
+    {
+      "id": "panelCustomPeriod",
+      "status": "ok",
+      "via": "openCustomPeriodModal",
+      "screenshot": "e2e\\visual\\saida\\modais\\panelCustomPeriod.png",
+      "rolagemFim": null,
+      "painel": {
+        "x": 370,
+        "y": 330,
+        "largura": 700,
+        "altura": 216
+      },
+      "exposto": true,
+      "overlayEstado": {
+        "opacity": "1",
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "1400",
+        "classe": "modal-overlay open"
+      },
+      "painelEstado": {
+        "display": "block",
+        "visibility": "visible",
+        "opacity": "1"
+      },
+      "noTopoNoCentro": "div.form-grid",
+      "centro": {
+        "x": 720,
+        "y": 438
+      },
+      "containersRolaveis": [],
+      "controles": [
+        {
+          "el": "input#customPeriodStart",
+          "altura": 40,
+          "largura": 153,
+          "topo": 423,
+          "esquerda": 396,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "input#customPeriodEnd",
+          "altura": 40,
+          "largura": 153,
+          "topo": 423,
+          "esquerda": 561,
+          "raio": "2px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgb(239, 235, 224)",
+          "fonte": "14px",
+          "padding": "9px 10px"
+        },
+        {
+          "el": "button",
+          "altura": 41,
+          "largura": 320,
+          "topo": 479,
+          "esquerda": 396,
+          "raio": "4px",
+          "borda": "1px solid rgb(26, 36, 23)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        },
+        {
+          "el": "button.primary",
+          "altura": 41,
+          "largura": 320,
+          "topo": 479,
+          "esquerda": 724,
+          "raio": "4px",
+          "borda": "1px solid rgb(95, 122, 67)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "12px 14px"
+        }
+      ],
+      "overflowX": false,
+      "overflowY": false,
+      "scrollH": 212,
+      "clientH": 212,
+      "bodyOverflowX": false,
+      "foraHorizontal": [],
+      "qtdForaHorizontal": 0,
+      "qtdForaVertical": 0,
+      "semAltura": [],
+      "textoIlegivel": [],
+      "temTexto": true,
+      "qtdCampos": 2,
+      "qtdBotoes": 3,
+      "errosConsole": []
+    }
+  ]
+}

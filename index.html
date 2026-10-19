@@ -852,7 +852,7 @@
               </select>
             </div>
           </div>
-          <div>
+          <div class="ci-benchmark-cell">
             <span class="compound-calc-group-label" id="ciBenchmarksLabel">Benchmark</span>
             <div class="ci-benchmark-picks" role="group" aria-labelledby="ciBenchmarksLabel">
               <label class="ci-benchmark-pick"><input type="checkbox" id="ciBenchCdi" checked> CDI (vigente)</label>
@@ -861,7 +861,7 @@
               <label class="ci-benchmark-pick"><input type="checkbox" id="ciBenchCustom"> Personalizado</label>
             </div>
           </div>
-          <div>
+          <div class="ci-custom-rate-cell">
             <label for="ciBenchmarkRate">Taxa personalizada (% ao mês)</label>
             <input type="text" id="ciBenchmarkRate" inputmode="decimal" placeholder="0,50">
           </div>
@@ -1370,9 +1370,9 @@
       <h3 id="panelCryptoReconcileTitle">Conciliar com a corretora <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
       <p class="hint" id="panelCryptoReconcileHint" style="margin:0 0 12px;"></p>
       <div class="form-grid">
-        <div>
+        <div style="grid-column:1/-1;">
           <label for="crSaldoReal" id="crSaldoRealLabel">Saldo na corretora (quantidade)</label>
-          <input type="number" id="crSaldoReal" step="0.00000001" min="0" placeholder="Ex: 11.95432727">
+          <input type="number" id="crSaldoReal" step="0.00000001" min="0" placeholder="Ex: 11.95432727" style="max-width:320px">
         </div>
         <div style="grid-column: 1 / -1;">
           <div id="crPreview" class="hint" aria-live="polite">Informe o saldo da corretora para ver a prévia do ajuste.</div>
@@ -1390,7 +1390,7 @@
       <div class="toolbar" style="grid-template-columns: 1fr 1fr; margin-top:14px;">
         <button class="primary" id="btnExportFormatPdf"><i class="fi fi-rr-file-pdf" aria-hidden="true"></i>PDF</button>
         <button class="primary" id="btnExportFormatXlsx"><i class="fi fi-rr-file-excel" aria-hidden="true"></i>Excel (.xlsx)</button>
-        <button class="primary" id="btnExportFormatDocx"><i class="fi fi-rr-file-word" aria-hidden="true"></i>Word (.docx)</button>
+        <button class="primary" id="btnExportFormatDocx" style="grid-column:1/-1;"><i class="fi fi-rr-file-word" aria-hidden="true"></i>Word (.docx)</button>
       </div>
     </div>
 
@@ -1524,7 +1524,7 @@
                    aria-label="Anexar imagem ou documento" title="Anexar imagem ou documento">
             <i class="fi fi-rr-paperclip-vertical" aria-hidden="true"></i>
           </button>
-          <input type="text" id="aiChatInput" name="aiChatInput" placeholder="Pergunte sobre suas finanças…"
+          <input type="text" id="aiChatInput" name="aiChatInput" placeholder="Ex: quanto gastei em mercado este mês?"
                  enterkeyhint="send">
           <button type="submit" id="btnAiChatSend" class="primary" aria-label="Enviar pergunta">
             <i class="fi fi-rr-paper-plane-top" aria-hidden="true"></i>

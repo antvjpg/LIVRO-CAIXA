@@ -532,6 +532,7 @@
   .import-row .import-status{grid-column:1/-1;font-size:11px;line-height:1.35;color:var(--ink-soft);}
   .import-row.is-duplicate{opacity:.68;}.import-row.is-duplicate .import-status{color:var(--out);font-weight:700;}
   .import-summary{margin:9px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink-soft);font-size:12px;line-height:1.4;}.import-summary b{color:var(--ink);}.import-summary .import-ready{color:var(--green);font-weight:700;}.import-summary .import-warning{color:var(--out);font-weight:700;}
+#importSummary:empty::before{content:"Nenhum arquivo analisado ainda.";color:var(--ink-soft);font-size:12px;}
   .hint{font-size:12px;color:var(--ink-soft);margin-top:8px;}
   footer{
     text-align:center;
