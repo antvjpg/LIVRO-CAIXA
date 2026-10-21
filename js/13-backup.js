@@ -9,14 +9,6 @@
     });
   }
 
-  function buildBackupPayload() {
-    return {
-      schemaVersion: BACKUP_SCHEMA_VERSION,
-      app: 'livro-caixa',
-      exportedAt: new Date().toISOString(),
-      data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables, budgets, goals, invoiceLaunches, cards, purchases, featureSettings, diagnosticLog: diagnosticLog.slice(0, LOG_LIMIT) }
-    };
-  }
 
   function isValidBackupPayload(payload) {
     if (!payload || typeof payload !== 'object') return false;

@@ -230,14 +230,9 @@ function parseTransferReceiptAIResult(responseText) {
     'baixa'
   ]);
 
-  const normalizeText = (value) => {
-    if (value == null) return null;
-
-    const text = String(value).trim();
-
-    return text || null;
-  };
-
+  const normalizeText = normalizeReceiptText;
+  const normalizeDate = normalizeReceiptDate;
+  const normalizeValue = normalizeReceiptValue;
   const data =
     parsed.data == null
       ? null
@@ -290,86 +285,9 @@ function normalizeTransferReceiptAIData(aiData) {
     );
   }
 
-  const normalizeText = (value) => {
-    if (value == null) return null;
-
-    const text = String(value).trim();
-
-    return text || null;
-  };
-
-  const normalizeDate = (value) => {
-    if (value == null || value === '') return null;
-
-    let text = String(value).trim();
-    if (!text) return null;
-
-    /* Ignora horário/fuso quando vier junto: "2026-09-24T10:15:00-03:00" */
-    const isoWithTime = text.match(/^(\d{4}-\d{2}-\d{2})[T\s]/);
-    if (isoWithTime) text = isoWithTime[1];
-
-    const isValidIso = (iso) => {
-      const [year, month, day] = iso.split('-').map(Number);
-      const date = new Date(year, month - 1, day);
-      return (
-        date.getFullYear() === year &&
-        date.getMonth() === month - 1 &&
-        date.getDate() === day
-      );
-    };
-
-    if (/^\d{4}-\d{2}-\d{2}$/.test(text) && isValidIso(text)) {
-      return text;
-    }
-
-    if (/^\d{4}\/\d{2}\/\d{2}$/.test(text)) {
-      const iso = text.replace(/\//g, '-');
-      if (isValidIso(iso)) return iso;
-    }
-
-    /* 24/09/2026, 24-09-2026, 24.09.2026 e dígitos simples */
-    const dayFirst = text.match(/^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})$/);
-    if (dayFirst) {
-      const [, day, month, year] = dayFirst;
-      const iso = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-      if (isValidIso(iso)) return iso;
-    }
-
-    return null;
-  };
-
-  const normalizeValue = (value) => {
-    if (value == null || value === '') return null;
-
-    if (typeof value === 'number') {
-      return Number.isFinite(value) && value >= 0
-        ? value
-        : null;
-    }
-
-    let text = String(value).trim();
-
-    if (!text) return null;
-
-    text = text
-      .replace(/\s/g, '')
-      .replace(/R\$/gi, '');
-
-    if (text.includes(',') && text.includes('.')) {
-      text = text
-        .replace(/\./g, '')
-        .replace(',', '.');
-    } else if (text.includes(',')) {
-      text = text.replace(',', '.');
-    }
-
-    const number = Number(text);
-
-    return Number.isFinite(number) && number >= 0
-      ? number
-      : null;
-  };
-
+  const normalizeText = normalizeReceiptText;
+  const normalizeDate = normalizeReceiptDate;
+  const normalizeValue = normalizeReceiptValue;
   const data = normalizeDate(aiData.data);
   const bancoOrigem = normalizeText(aiData.bancoOrigem);
   const bancoDestino = normalizeText(aiData.bancoDestino);

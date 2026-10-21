@@ -36,11 +36,7 @@
     shown[key] = true;
     try { localStorage.setItem(BUDGET_ALERT_STORAGE_KEY, JSON.stringify(shown)); } catch (err) {}
   }
-  function financialCycleLabel(cycleKey) {
-    const { start, end } = financialCycleRangeForKey(cycleKey);
-    const fmtDate = iso => iso.split('-').reverse().slice(0, 2).join('/');
-    return getFinancialCycleStartDay() === 1 ? invoicePeriodLabel(cycleKey) : `${fmtDate(start)} a ${fmtDate(end)}`;
-  }
+
 
   // Segurança: os dados financeiros podem conter texto fornecido pelo usuário.
   // Nunca interpolamos texto bruto em HTML.

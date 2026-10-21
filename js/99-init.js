@@ -251,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tabBtnPockets')?.classList.toggle('active', tabName === 'pockets');
     document.getElementById('tabBtnCards')?.classList.toggle('active', tabName === 'cards');
     document.getElementById('tabBtnReceivables')?.classList.toggle('active', tabName === 'receivables');
-    document.getElementById('tabBtnBills')?.classList.toggle('active', tabName === 'bills');
     document.getElementById('viewDash')?.classList.toggle('active', tabName === 'dash');
     document.getElementById('viewDashboard')?.classList.toggle('active', tabName === 'dashboard');
     document.getElementById('viewCaixa')?.classList.toggle('active', tabName === 'caixa');
@@ -288,7 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.movePocket = (id, direction) => moveDisplayItem('pockets', id, direction);
   diagnosticLog = [];
 
-  const syncErrorLog = diagnosticLog;
   LOG_STORAGE_KEY = 'livrocaixa_diagnostic_log';
   LOG_LIMIT = 200;
   LOG_SCHEMA_VERSION = 2;
@@ -357,9 +355,9 @@ document.addEventListener('DOMContentLoaded', () => {
       updateInvestmentMainValue();
     } else if (type === 'Renda Fixa') {
       rendaFixaBox.style.display = 'contents';
-      simplesBox.style.display = 'block';
+      simplesBox.style.display = 'contents';
     } else {
-      simplesBox.style.display = 'block';
+      simplesBox.style.display = 'contents';
     }
     if (type === 'Renda Fixa') updateFixedIncomeFormCurrent();
   };
@@ -379,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshFinancialIndicators();
   });
 
-  const PIN_UNLOCKED_KEY = 'livrocaixa_pin_unlocked';
   pinUnlocked = false;
   lastPinActivity = 0;
 
@@ -647,7 +644,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnomalyScan);
   document.getElementById('btnGenerateMonthlyReview')?.addEventListener('click', generateMonthlyReview);
-  document.getElementById('btnRunWhatIf')?.addEventListener('click', runWhatIf);
   document.getElementById('btnRunCompoundCalc')?.addEventListener('click', runCompoundInterest);
   document.getElementById('ciBenchCustom')?.addEventListener('change', (event) => {
     const rate = document.getElementById('ciBenchmarkRate');
@@ -665,7 +661,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     if (cdiMode && (rate.value === '' || rate.value === '0,8')) rate.value = '100';
     if (!cdiMode && rate.value === '100') rate.value = '0,8';
   });
-  document.getElementById('btnExportPatrimonyPng')?.addEventListener('click', exportPatrimonyChartPng);
 
   let pendingReconciliation = null;
   document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = document.getElementById('featurePin')?.value || ''; try { await saveLocalPin(pin); document.getElementById('featurePin').value = ''; status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.'; logInfo('Segurança', 'Ativar PIN local', 'Sucesso', 'PIN local armazenado somente como hash neste dispositivo.'); } catch (err) { status.textContent = err.message; logWarn('Segurança', 'Ativar PIN local', 'Falha', err.message); } });
@@ -1267,11 +1262,6 @@ window.deletePocket = function(id) {
   pocketMovementEditingId = null;
 
 
-  window.openYieldModal = function(type, id) {
-    if (type === 'invest') return openInvestmentMovementModal('rendimento', id);
-    return openPocketMovementModal('rendimento', id);
-  };
-
   window.openInvestmentMovementModal = function(kind, id) {
     const item = investments.find(x => x.id === id);
     if (!item) return;
@@ -1280,6 +1270,8 @@ window.deletePocket = function(id) {
     setInvestmentMovementDefaults();
     updateInvestmentMovementUI();
     openModal('panelInvestMovement');
+    const focusFieldId = isCryptoType(item.type) ? 'imQuantidade' : 'imValor';
+    setTimeout(() => document.getElementById(focusFieldId)?.focus(), 80);
   };
 
   document.getElementById('imAporte').onclick = () => { if (investmentMovementTarget) { investmentMovementTarget.kind = 'aporte'; updateInvestmentMovementUI(); } };
@@ -1423,6 +1415,7 @@ window.deletePocket = function(id) {
     document.getElementById('panelInvestTitle').innerHTML = 'Editar Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('iSalvar').textContent = 'Atualizar Ativo';
     openModal('panelInvest');
+    setTimeout(() => document.getElementById('iNome')?.focus(), 80);
   };
 
   window.closeAllPanels = function() {
@@ -1513,9 +1506,6 @@ window.deletePocket = function(id) {
   };
   window.openBillShare = openBillShare;
 
-  window.closeBillDayPanel = closeBillDayPanel;
-
-  window.openBillDayPanel = openBillDayPanel;
   /* billTitularFilter: NÃO adicionar outro listener 'change' aqui —
      populateBillTitularFilter (js/25-bills-receivables.js) já atribui select.onchange
      com persistência em localStorage + renderBills; dois handlers = render duplo. */
@@ -1694,37 +1684,8 @@ receiptAIResponseText = '';
       if(btn){ btn.disabled=false; btn.textContent='Lançar'; }
     }
   };
-  window.launchInvoiceTitular = function(cardId, closingPeriodKey, titular, amount) {
-    const invoiceState = window.LivroCaixaCardEngineV3.invoice(
-      cardId,
-      closingPeriodKey,
-      purchases,
-      cards,
-      invoiceLaunches
-    );
-    const target = Array.isArray(invoiceState?.titulars)
-      ? invoiceState.titulars.find(item => item.titular === titular)
-      : null;
-    const remaining = Number(target?.payableRemaining ?? target?.remaining ?? amount);
-    window.recordInvoicePayment(
-      cardId,
-      closingPeriodKey,
-      titular,
-      amount,
-      remaining
-    );
-  };
-  window.toggleInvoicePartialForm = function(rowId) {
-    const box = document.getElementById('partial-form-' + rowId);
-    if (!box) return;
-    const opening = box.style.display === 'none' || !box.style.display;
-    box.style.display = opening ? 'flex' : 'none';
-    if (opening) { const input = box.querySelector('input[data-money]'); if (input) { setMoneyInput(input.id, 0); setTimeout(() => input.focus(), 30); } }
-  };
-  window.confirmInvoicePartial = function(cardId, closingPeriodKey, titular, totalAmount, inputId) {
-    const amount = readMoneyInput(inputId);
-    window.recordInvoicePayment(cardId, closingPeriodKey, titular, totalAmount, amount);
-  };
+
+
   window.shareInvoiceTitular = function(cardId, closingPeriodKey, titular, amount) {
     const card = cards.find(c => c.id === cardId);
     if (!card) return;
@@ -1796,31 +1757,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     card.active = card.active === false;
     try { await persistAll(); renderCards(); logInfo('Cartões','Alterar status do cartão','Sucesso',`${card.name} agora está ${card.active ? 'ativo' : 'inativo'}.`); } catch (err) { card.active = !card.active; logSyncError('status do cartão', err); renderCards(); }
   };
-  window.deleteCard = async id => {
-    const card = cards.find(c => c.id === id);
-    if (!card) return;
-    const linked = purchases.filter(p => p.cardId === id);
-    const msg = linked.length
-      ? `Excluir o cartão "${card.name}" e ${linked.length} compra(s) vinculada(s)?\n\nLançamentos já feitos no Livro-Caixa não serão apagados.`
-      : `Excluir o cartão "${card.name}"? Esta ação não pode ser desfeita.`;
-    if (!confirm(msg)) return;
-    const prevCards = cards.slice();
-    const prevPurchases = purchases.slice();
-    cards = cards.filter(c => c.id !== id);
-    purchases = purchases.filter(p => p.cardId !== id);
-    try {
-      await persistAll();
-      renderCards();
-      renderBills();
-      logInfo('Cartões', 'Excluir cartão', 'Sucesso', `${card.name} excluído (${linked.length} compra(s) removida(s)).`);
-    } catch (err) {
-      cards = prevCards;
-      purchases = prevPurchases;
-      logSyncError('exclusão de cartão', err);
-      renderCards();
-      alert('Não foi possível excluir o cartão.');
-    }
-  };
+
   window.deletePurchase = async id => {
     const purchase = purchases.find(p => p.id === id); if (!purchase) return;
     if (!confirm(`Excluir a compra “${purchase.description || 'sem descrição'}”?`)) return;

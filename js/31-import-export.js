@@ -2,7 +2,6 @@
 
   function setPasteStatus(message) { document.getElementById('pasteStatus').textContent = message; }
 
-  function parseCsvLine(line) { const cells = []; let current = '', quoted = false; for (let i = 0; i < line.length; i++) { const char = line[i]; if (char === '"' && line[i + 1] === '"' && quoted) { current += '"'; i++; } else if (char === '"') quoted = !quoted; else if ((char === ',' || char === ';' || char === '\t') && !quoted) { cells.push(current.trim()); current = ''; } else current += char; } cells.push(current.trim()); return cells; }
 
   // ===== Exportação: colunas fixas do arquivo; período segue os filtros ativos + período ativo da tela =====
   const EXPORT_COLUMN_DEFS = [
@@ -184,23 +183,6 @@
       doc.setTextColor(0,0,0);
     };
 
-    const drawRow = (cells, widths, running) => {
-      addPageIfNeeded(10);
-      doc.setFont('helvetica','normal'); doc.setFontSize(8);
-      let x = margin;
-      cells.forEach((cell, i) => {
-        const w = widths[i];
-        doc.text(String(cell), x + 2, y + 5, {maxWidth: w - 4});
-        x += w;
-      });
-      y += 7;
-      if (running !== undefined) {
-        doc.setFont('helvetica','normal'); doc.setFontSize(7);
-        doc.setTextColor(100,100,100);
-        doc.text(`Saldo: ${fmt(running)}`, margin + widths[0] + widths[1] + widths[2] + 2, y - 1);
-        doc.setTextColor(0,0,0);
-      }
-    };
 
     function estimateTotalPages(grouped, meta) {
       let total = 1; // capa
@@ -550,18 +532,7 @@
     const date = new Date(year, month - 1, day);
     return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
   }
-  function parseImportMoney(value) {
-    let text = String(value || '').replace(/[^\d,\.\-+]/g, '').replace(/\s/g, '');
-    const lastComma = text.lastIndexOf(',');
-    const lastDot = text.lastIndexOf('.');
-    if (lastComma > -1 && lastDot > -1) {
-      text = lastComma > lastDot ? text.replace(/\./g, '').replace(',', '.') : text.replace(/,/g, '');
-    } else if (lastComma > -1) {
-      text = text.replace(',', '.');
-    }
-    const amount = Math.abs(Number.parseFloat(text));
-    return Number.isFinite(amount) ? amount : NaN;
-  }
+
   function normalizeImportDescription(value) {
     return String(value || '').replace(/\s+/g, ' ').trim().slice(0, 120) || 'Lançamento importado';
   }
@@ -594,9 +565,7 @@
       seen.add(signature);
     });
   }
-  function importHeaderLine(value) {
-    return ['data', 'descrição', 'descricao', 'categoria', 'entrada', 'saída', 'saida', 'saldo'].includes(normalizeImportToken(value));
-  }
+
   function parseClosingImportText(text, source) {
     const lines = String(text || '').replace(/\r/g, '').split('\n').map(line => line.trim()).filter(Boolean);
     const rows = [];

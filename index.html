@@ -637,7 +637,7 @@
 
   <div class="modal-overlay" id="modalOverlay">
     <div class="panel" id="panelNovo">
-      <h3 id="panelNovoTitle">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelNovoTitle">Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="form-grid">
         <div>
           <label>Tipo</label>
@@ -691,6 +691,7 @@
           </button>
           <div
             id="receiptFileStatus"
+            aria-live="polite"
             style="display:none; margin-top:8px; font-size:12px; opacity:.8;"
           ></div>
         </div>
@@ -709,7 +710,7 @@
     </div>
 
     <div class="panel" id="panelBanco">
-      <h3 id="panelBancoTitle">Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelBancoTitle">Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="form-grid">
         <div>
           <label for="bNome">Nome do banco</label>
@@ -730,7 +731,7 @@
     </div>
 
     <div class="panel" id="panelCategoria">
-      <h3>Gerenciar Categorias <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3>Gerenciar Categorias <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="category-modal-body">
         <div class="form-grid">
           <div>
@@ -760,7 +761,7 @@
     </div>
 
     <div class="panel" id="panelFiltros">
-      <h3>Filtrar movimentações <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3>Filtrar movimentações <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="form-grid">
         <div>
           <label for="filterFlow">Movimentação</label>
@@ -878,7 +879,7 @@
 
 
     <div class="panel" id="panelDiagnostico">
-      <h3>Diagnóstico Geral (LOG) <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3>Diagnóstico Geral (LOG) <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <p class="hint" style="margin:0 0 10px;">Registro técnico de carregamento, salvamento, sincronização, autenticação, importação, exportação, cálculos, cotações, calendário e operações concluídas ou falhas. Dados sensíveis não são registrados.</p>
       <div class="log-toolbar">
         <select id="logFilterType" aria-label="Filtrar tipo de LOG"><option value="">Todos os tipos</option><option value="INFO">INFO</option><option value="WARN">WARN</option><option value="ERROR">ERROR</option></select>
@@ -893,7 +894,7 @@
     </div>
 
     <div class="panel" id="panelTransferencia">
-      <h3>Transferência universal <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3>Transferência universal <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="form-grid">
         <div>
           <label for="tData">Data</label>
@@ -931,6 +932,7 @@
           </button>
           <div
             id="transferReceiptFileStatus"
+            aria-live="polite"
             style="display:none; margin-top:8px; font-size:12px; opacity:.8;"
           ></div>
         </div>
@@ -1061,7 +1063,7 @@
   <button class="primary bill-save-cta" id="billSalvar">Salvar Conta / Fatura</button>
 </div>
 <div class="panel" id="panelBillLaunch">
-      <h3>Lançar no Livro-Caixa <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3>Lançar no Livro-Caixa <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <p id="billLaunchDescription" class="hint">Escolha o banco que será utilizado para esta despesa.</p>
       <label for="billLaunchBank">Banco utilizado</label>
       <select id="billLaunchBank"></select>
@@ -1069,7 +1071,7 @@
     </div>
 
     <div class="panel" id="panelReceivable">
-      <h3 id="panelReceivableTitle">Valor a receber <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelReceivableTitle">Valor a receber <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <p class="hint">Registro independente. Receber aqui não gera movimento no Livro-Caixa.</p>
       <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
         <div style="grid-column:1/-1"><label for="recvPessoa">Pessoa</label><input id="recvPessoa" type="text" placeholder="Quem deve pagar" required></div>
@@ -1084,7 +1086,7 @@
     </div>
 
     <div class="panel bill-share-panel" id="panelBillShare">
-      <div class="bill-share-head"><div><span class="eyebrow">COMPARTILHAMENTO INDIVIDUAL</span><h3>Mensagem da conta</h3></div><button type="button" class="modal-close" onclick="closeAllPanels()">×</button></div>
+      <div class="bill-share-head"><div><span class="eyebrow">COMPARTILHAMENTO INDIVIDUAL</span><h3>Mensagem da conta</h3></div><button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></div>
       <p class="hint">Revise a mensagem antes de copiar ou abrir o compartilhamento do dispositivo.</p>
       <textarea id="billShareMessage" class="bill-share-message" rows="12" spellcheck="false"></textarea>
       <div class="bill-share-actions"><button type="button" id="btnCopyBillShare">Copiar mensagem</button><button type="button" id="btnNativeBillShare" class="primary">Compartilhar</button></div>
@@ -1161,7 +1163,7 @@
     </div>
 
     <div class="panel" id="panelPurchase">
-      <h3 id="panelPurchaseTitle">Nova Compra <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelPurchaseTitle">Nova Compra <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="form-grid">
         <div><label for="purchaseCard">Cartão</label><select id="purchaseCard"></select></div>
         <div><label for="purchaseDate">Data da compra</label><input id="purchaseDate" type="date"></div>
@@ -1180,7 +1182,7 @@
     </div>
 
     <div class="panel" id="panelInvest">
-      <h3 id="panelInvestTitle">Novo Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelInvestTitle">Novo Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="form-grid">
         <div>
           <label for="iNome">Nome do Ativo</label>
@@ -1224,7 +1226,7 @@
               <input type="text" id="iCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
               <button type="button" id="btnFetchPrice" class="quote-fetch-button" title="Buscar cotação automática"><i class="fi fi-rr-refresh" aria-hidden="true"></i> Cotação</button>
             </div>
-            <div id="fetchPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Você pode digitar a cotação manualmente ou clicar em "Cotação" para buscar pela internet.</div>
+            <div id="fetchPriceStatus" aria-live="polite" style="font-size:11px; margin-top:4px; opacity:0.7;">Você pode digitar a cotação manualmente ou clicar em "Cotação" para buscar pela internet.</div>
           </div>
           <div>
             <label for="iValor">Valor Total Atual (R$)</label>
@@ -1268,7 +1270,7 @@
     </div>
 
     <div class="panel" id="panelPocket">
-      <h3 id="panelPocketTitle">Nova Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelPocketTitle">Nova Caixinha <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="form-grid">
         <div>
           <label for="pNome">Nome da Caixinha</label>
@@ -1303,7 +1305,7 @@
     </div>
 
     <div class="panel" id="panelPocketMovement">
-      <h3 id="panelPocketMovementTitle">Registrar Movimentação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelPocketMovementTitle">Registrar Movimentação <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="type-toggle movement-tabs" style="margin-bottom:14px;">
         <button type="button" id="pmAporte" class="active-in">Aporte</button>
         <button type="button" id="pmResgate">Resgate</button>
@@ -1329,7 +1331,7 @@
     </div>
 
     <div class="panel" id="panelInvestMovement">
-      <h3 id="panelInvestMovementTitle">Registrar Movimentação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelInvestMovementTitle">Registrar Movimentação <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div class="type-toggle movement-tabs" style="margin-bottom:14px;">
         <button type="button" id="imAporte" class="active-in">Aporte</button>
         <button type="button" id="imResgate">Resgate</button>
@@ -1350,7 +1352,7 @@
             <input type="text" id="imCotacao" data-money="true" placeholder="R$ 0,00" style="flex:2; min-width:0;">
             <button type="button" id="imFetchPrice" class="quote-fetch-button" title="Buscar cotação automática"><i class="fi fi-rr-refresh" aria-hidden="true"></i></button>
           </div>
-          <div id="imPriceStatus" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a cotação manualmente ou clique no botão <i class="fi fi-rr-refresh" aria-hidden="true"></i> para buscar pela internet.</div>
+          <div id="imPriceStatus" aria-live="polite" style="font-size:11px; margin-top:4px; opacity:0.7;">Digite a cotação manualmente ou clique no botão <i class="fi fi-rr-refresh" aria-hidden="true"></i> para buscar pela internet.</div>
         </div>
         <div>
           <label for="imValor">Valor (R$)</label>
@@ -1367,7 +1369,7 @@
     </div>
 
     <div class="panel" id="panelCryptoReconcile">
-      <h3 id="panelCryptoReconcileTitle">Conciliar com a corretora <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="panelCryptoReconcileTitle">Conciliar com a corretora <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <p class="hint" id="panelCryptoReconcileHint" style="margin:0 0 12px;"></p>
       <div class="form-grid">
         <div style="grid-column:1/-1;">
@@ -1384,10 +1386,10 @@
     </div>
 
     <div class="panel" id="panelExportFormat">
-      <h3>Exportar Extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3>Exportar Extrato <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <p id="exportPreviewCaption" style="font-size:13px; opacity:0.8; margin-top:8px;">Confira a prévia respeitando os filtros atuais antes de escolher o formato.</p>
       <div id="exportPreview" class="export-preview" aria-live="polite"></div>
-      <div class="toolbar" style="grid-template-columns: 1fr 1fr; margin-top:14px;">
+      <div class="toolbar" style="margin-top:14px;">
         <button class="primary" id="btnExportFormatPdf"><i class="fi fi-rr-file-pdf" aria-hidden="true"></i>PDF</button>
         <button class="primary" id="btnExportFormatXlsx"><i class="fi fi-rr-file-excel" aria-hidden="true"></i>Excel (.xlsx)</button>
         <button class="primary" id="btnExportFormatDocx" style="grid-column:1/-1;"><i class="fi fi-rr-file-word" aria-hidden="true"></i>Word (.docx)</button>
@@ -1395,13 +1397,13 @@
     </div>
 
     <div class="panel" id="panelEntryHistory">
-      <h3 id="entryHistoryTitle">Histórico do lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3 id="entryHistoryTitle">Histórico do lançamento <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <p class="hint" id="entryHistorySub" style="margin-top:-4px;"></p>
       <div id="entryHistoryList" class="history-list" aria-live="polite"></div>
     </div>
 
     <div class="panel" id="panelPaste">
-      <h3>Colar texto do extrato <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3>Colar texto do extrato <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <label for="pasteArea">Cole as movimentações no formato: DD/MM/AAAA / VALOR / BANCO / CATEGORIA / OBSERVAÇÃO</label>
       <textarea id="pasteArea" placeholder="15/08/2026 / -12,50 / Nubank / Alimentação / Almoço
 16/08/2026 / +50,00 / PagBank / / TikTok
@@ -1415,7 +1417,7 @@
     </div>
 
     <div class="panel" id="panelImport">
-      <h3>Revisar importação <button type="button" class="modal-close" onclick="closeAllPanels()">×</button></h3>
+      <h3>Revisar importação <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <div id="importSummary" class="import-summary" aria-live="polite"></div>
       <div id="importList"></div>
       <div class="import-actions" style="display:flex; gap:8px; margin:8px 0; flex-wrap:wrap;">

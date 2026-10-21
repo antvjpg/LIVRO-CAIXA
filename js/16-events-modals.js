@@ -580,10 +580,4 @@
     return { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables, budgets, goals, invoiceLaunches, cards, purchases };
   }
 
-  function setLastSyncedFromCurrentState() {
-    const s = currentStateSnapshot();
-    lastSynced = {
-      banks: arrToMap(s.banks), categories: arrToMap(s.categories), entries: arrToMap(s.entries),
-      investments: arrToMap(s.investments), pockets: arrToMap(s.pockets), yieldsLog: arrToMap(s.yieldsLog), recurringBills: arrToMap(s.recurringBills), receivables: arrToMap(s.receivables), budgets: arrToMap(s.budgets), goals: arrToMap(s.goals), invoiceLaunches: arrToMap(s.invoiceLaunches), cards: arrToMap(s.cards), purchases: arrToMap(s.purchases)
-    };
-  }
+

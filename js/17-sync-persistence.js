@@ -468,7 +468,7 @@
   function saveCategories(operation = null) { return persistAll(operation); }
   function saveEntries(operation = null) { return persistAll(operation); }
   function saveInvestments(operation = null) { return persistAll(operation); }
-  function savePockets(operation = null) { return persistAll(operation); }
+
 
   function bankBalance(bankId) {
     const bank = banks.find(b => b.id === bankId);
