@@ -387,6 +387,12 @@
   .compound-calc-row span{color:var(--ink-soft);}
   .compound-calc-row b{font-size:11.5px;white-space:nowrap;}
   .compound-calc-rate select#ciTermUnit{min-width:74px;}
+  .compound-calc input:not([type="checkbox"]):not([type="radio"]),
+  .compound-calc select{
+    min-height:44px;
+    padding:10px 12px;
+    border-radius:10px;
+  }
   .compound-calc-row-net{border-top:1px dashed var(--line);padding-top:5px;}
   .compound-calc-row-net b{font-size:12.5px;}
   .compound-calc-card-delta{grid-column:1/-1;}
@@ -3472,10 +3478,13 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPocket,
 #panelPocketMovement,
 #panelInvestMovement,
+#panelCryptoReconcile,
 #panelBillLaunch,
 #panelPaste,
 #panelExportFormat,
 #panelDiagnostico,
+#panelEntryHistory,
+#panelImport,
 #panelFeatureLab{
   width:min(100%,640px);
   max-width:640px;
@@ -3500,9 +3509,13 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPocket::before,
 #panelPocketMovement::before,
 #panelInvestMovement::before,
+#panelCryptoReconcile::before,
 #panelBillLaunch::before,
 #panelPaste::before,
-#panelExportFormat::before{
+#panelExportFormat::before,
+#panelDiagnostico::before,
+#panelEntryHistory::before,
+#panelImport::before{
   content:"";
   display:block;
   width:42px;
@@ -3521,10 +3534,13 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPocket h3,
 #panelPocketMovement h3,
 #panelInvestMovement h3,
+#panelCryptoReconcile h3,
 #panelBillLaunch h3,
 #panelPaste h3,
 #panelExportFormat h3,
-#panelDiagnostico h3{
+#panelDiagnostico h3,
+#panelEntryHistory h3,
+#panelImport h3{
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -3547,10 +3563,13 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPocket .modal-close,
 #panelPocketMovement .modal-close,
 #panelInvestMovement .modal-close,
+#panelCryptoReconcile .modal-close,
 #panelBillLaunch .modal-close,
 #panelPaste .modal-close,
 #panelExportFormat .modal-close,
-#panelDiagnostico .modal-close{
+#panelDiagnostico .modal-close,
+#panelEntryHistory .modal-close,
+#panelImport .modal-close{
   flex:0 0 auto;
   width:36px;
   height:36px;
@@ -3571,7 +3590,8 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelInvest .form-grid,
 #panelPocket .form-grid,
 #panelPocketMovement .form-grid,
-#panelInvestMovement .form-grid{
+#panelInvestMovement .form-grid,
+#panelCryptoReconcile .form-grid{
   display:flex;
   flex-direction:column;
   gap:14px;
@@ -3585,9 +3605,17 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelInvest .form-grid > div,
 #panelPocket .form-grid > div,
 #panelPocketMovement .form-grid > div,
-#panelInvestMovement .form-grid > div{
+#panelInvestMovement .form-grid > div,
+#panelCryptoReconcile .form-grid > div{
   width:100%;
   margin:0!important;
+}
+
+#cryptoFields > div,
+#rendaFixaFields > div,
+#valorSimplesField > div{
+  width:100%;
+  margin:0;
 }
 
 #panelBanco label,
@@ -3599,6 +3627,7 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPocket label,
 #panelPocketMovement label,
 #panelInvestMovement label,
+#panelCryptoReconcile label,
 #panelPaste label,
 #panelBillLaunch label{
   display:block;
@@ -3629,6 +3658,8 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPocketMovement select,
 #panelInvestMovement input:not([data-money]),
 #panelInvestMovement select,
+#panelCryptoReconcile input:not([data-money]),
+#panelBillLaunch select,
 #panelPaste textarea{
   width:100%;
   min-height:48px;
@@ -3643,6 +3674,33 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPaste textarea{
   min-height:160px;
   resize:vertical;
+}
+
+#panelInvest #iCotacao,
+#panelInvestMovement #imCotacao{
+  width:100%;
+  min-height:48px;
+  padding:12px 14px;
+  border:1px solid color-mix(in srgb,var(--line) 78%,transparent);
+  border-radius:15px;
+  background:var(--surface);
+  color:var(--ink);
+  box-shadow:0 2px 8px rgba(20,48,36,.035);
+}
+
+/* Campos monetários secundários (readonly/parcela) fora do grupo base */
+#panelPocket #pMetaValor,
+#panelPocket #pAtual,
+#panelInvest #iValorAtualSimples,
+#panelPurchase #purchaseInstallmentValue{
+  width:100%;
+  min-height:48px;
+  padding:12px 14px;
+  border:1px solid color-mix(in srgb,var(--line) 78%,transparent);
+  border-radius:15px;
+  background:var(--surface);
+  color:var(--ink);
+  box-shadow:0 2px 8px rgba(20,48,36,.035);
 }
 
 /* Valor em destaque (mesma linguagem do lançamento) */
@@ -3673,7 +3731,9 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPurchase .form-grid > div:has(#purchaseValue) label,
 #panelPocket .form-grid > div:has(#pInicial) label,
 #panelPocketMovement .form-grid > div:has(#pmValor) label,
-#panelInvestMovement .form-grid > div:has(#imValor) label{
+#panelInvestMovement .form-grid > div:has(#imValor) label,
+#cryptoFields > div:has(#iValor) label,
+#valorSimplesField > div:has(#iValorSimples) label{
   display:none;
 }
 
@@ -3684,6 +3744,8 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPocket .form-grid > div:has(#pInicial){ order:-20; }
 #panelPocketMovement .form-grid > div:has(#pmValor){ order:-20; }
 #panelInvestMovement .form-grid > div:has(#imValor){ order:-20; }
+#cryptoFields > div:has(#iValor){ order:-20; }
+#valorSimplesField > div:has(#iValorSimples){ order:-20; }
 
 /* Toggles de movimento */
 #panelPocketMovement .type-toggle,
@@ -3729,9 +3791,11 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelPocket button.primary,
 #panelPocketMovement button.primary,
 #panelInvestMovement button.primary,
+#panelCryptoReconcile button.primary,
 #panelBillLaunch button.primary,
 #panelPaste button.primary,
-#panelExportFormat button.primary{
+#panelExportFormat button.primary,
+#panelImport button.primary{
   min-height:52px;
   border:0;
   border-radius:999px;
@@ -3740,7 +3804,28 @@ body.dark-mode #panelBill #billParcelasFields{
   text-transform:uppercase;
 }
 
+#panelExportFormat .toolbar{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
 #panelExportFormat .toolbar button{min-height:40px;padding:9px 14px;font-size:11px;}
+@media (max-width:600px){
+  #panelExportFormat .toolbar{grid-template-columns:1fr;}
+}
+
+#imFetchPrice{
+  flex:0 0 auto;
+  min-width:44px;
+}
+
+@media (max-width:359px){
+  #panelInvestMovement .type-toggle button,
+  #panelPocketMovement .type-toggle button{
+    font-size:10px;
+    letter-spacing:.02em;
+    padding:8px 4px;
+  }
+}
 
 /* Filtros: coluna limpa */
 #panelFiltros .form-grid{
@@ -3834,9 +3919,12 @@ body.dark-mode #panelInvest,
 body.dark-mode #panelPocket,
 body.dark-mode #panelPocketMovement,
 body.dark-mode #panelInvestMovement,
+body.dark-mode #panelCryptoReconcile,
 body.dark-mode #panelBillLaunch,
 body.dark-mode #panelPaste,
 body.dark-mode #panelExportFormat,
+body.dark-mode #panelEntryHistory,
+body.dark-mode #panelImport,
 body.dark-mode #panelCard{
   background:var(--paper);
   color:var(--ink);
@@ -3850,7 +3938,9 @@ body.dark-mode #panelCard{
   #panelPurchase #purchaseValue,
   #panelPocket #pInicial,
   #panelPocketMovement #pmValor,
-  #panelInvestMovement #imValor{
+  #panelInvestMovement #imValor,
+  #panelInvest #iValor,
+  #panelInvest #iValorSimples{
     margin-top:4px;
   }
 }

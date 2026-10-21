@@ -238,6 +238,8 @@
     document.getElementById('imPriceStatus').textContent = y.price ? `Cotação registrada: ${fmt(y.price)} · pode ser alterada manualmente` : 'Cotação não registrada. Você pode digitá-la manualmente.';
     if (isCryptoType(item.type)) updateInvestmentMovementValue();
     openModal('panelInvestMovement');
+    const focusFieldId = isCryptoType(item.type) ? 'imQuantidade' : 'imValor';
+    setTimeout(() => document.getElementById(focusFieldId)?.focus(), 80);
   }
 
   function loadPocketMovementForEdit(y) {
@@ -293,8 +295,26 @@
       return;
     }
     panel.classList.add('open');
+    if (!panel.hasAttribute('role')) panel.setAttribute('role', 'dialog');
+    if (!panel.hasAttribute('aria-modal')) panel.setAttribute('aria-modal', 'true');
+    if (!panel.hasAttribute('tabindex')) panel.setAttribute('tabindex', '-1');
+    if (!panel.hasAttribute('aria-labelledby') && !panel.hasAttribute('aria-label')) {
+      const titleEl = panel.querySelector('h3');
+      if (titleEl) {
+        const clone = titleEl.cloneNode(true);
+        clone.querySelectorAll('button').forEach((b) => b.remove());
+        const label = (clone.textContent || '').replace(/\s+/g, ' ').trim();
+        if (label) panel.setAttribute('aria-label', label);
+      }
+    }
     if (overlay) overlay.classList.add('open');
     if (panelId === 'panelNovo' && typeof updateCategoryTriggerLabel === 'function') updateCategoryTriggerLabel();
+    setTimeout(() => {
+      if (!panel.classList.contains('open') || panel.contains(document.activeElement)) return;
+      const target = panel.querySelector('input:not([type="hidden"]):not([type="file"]):not([type="checkbox"]):not([type="radio"]):not([readonly]), textarea, select:not([aria-hidden="true"])');
+      if (target && typeof target.focus === 'function') target.focus();
+      else panel.focus();
+    }, 80);
   }
 
   function openCustomPeriodModal() {

@@ -357,9 +357,9 @@ document.addEventListener('DOMContentLoaded', () => {
       updateInvestmentMainValue();
     } else if (type === 'Renda Fixa') {
       rendaFixaBox.style.display = 'contents';
-      simplesBox.style.display = 'block';
+      simplesBox.style.display = 'contents';
     } else {
-      simplesBox.style.display = 'block';
+      simplesBox.style.display = 'contents';
     }
     if (type === 'Renda Fixa') updateFixedIncomeFormCurrent();
   };
@@ -1280,6 +1280,8 @@ window.deletePocket = function(id) {
     setInvestmentMovementDefaults();
     updateInvestmentMovementUI();
     openModal('panelInvestMovement');
+    const focusFieldId = isCryptoType(item.type) ? 'imQuantidade' : 'imValor';
+    setTimeout(() => document.getElementById(focusFieldId)?.focus(), 80);
   };
 
   document.getElementById('imAporte').onclick = () => { if (investmentMovementTarget) { investmentMovementTarget.kind = 'aporte'; updateInvestmentMovementUI(); } };
@@ -1423,6 +1425,7 @@ window.deletePocket = function(id) {
     document.getElementById('panelInvestTitle').innerHTML = 'Editar Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('iSalvar').textContent = 'Atualizar Ativo';
     openModal('panelInvest');
+    setTimeout(() => document.getElementById('iNome')?.focus(), 80);
   };
 
   window.closeAllPanels = function() {

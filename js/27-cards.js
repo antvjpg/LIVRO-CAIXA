@@ -924,6 +924,7 @@
     document.getElementById('panelInvestTitle').innerHTML = 'Novo Ativo / Cripto <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
     document.getElementById('iSalvar').textContent = 'Salvar Ativo';
     openModal('panelInvest');
+    setTimeout(() => document.getElementById('iNome')?.focus(), 80);
   }
 
   /* Abre o painel de bancos em modo "novo" (zera o formulário antes).
