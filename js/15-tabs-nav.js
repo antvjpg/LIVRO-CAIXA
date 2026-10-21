@@ -17,9 +17,4 @@
     } catch (e) {}
   }
 
-  function syncPeriodActiveLabels(text) {
-    const a = document.getElementById('periodActiveLabel');
-    const b = document.getElementById('periodActiveLabelTop');
-    if (a) a.textContent = text;
-    if (b) b.textContent = text;
-  }
+

@@ -847,13 +847,6 @@
     return 'Rendimento';
   }
 
-  function compactMoney(value) {
-    const amount = Number(value) || 0;
-    const abs = Math.abs(amount);
-    if (abs >= 1000000) return `R$ ${(amount / 1000000).toFixed(1)} mi`;
-    if (abs >= 1000) return `R$ ${(amount / 1000).toFixed(1)} mil`;
-    return fmt(amount);
-  }
 
   function formatQuoteUpdatedAt(value) {
     if (!value) return 'sem atualização registrada';
@@ -931,9 +924,7 @@
   }
 
   /* P2.6 — UI de histórico de cotações removida; priceHistory/upsertPriceHistory permanecem para cálculos */
-  function priceHistoryHTML(_inv) {
-    return '';
-  }
+
 
   let priceChartInstances;
 

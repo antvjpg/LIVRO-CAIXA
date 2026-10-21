@@ -59,10 +59,6 @@
     ) || null;
   }
 
-  function activeGoalForCaixinha(caixinhaId, exceptId = null) {
-    return activeGoalForSource('pocket', caixinhaId, exceptId);
-  }
-
 
   function goalStatusLabel(status) {
     return ({

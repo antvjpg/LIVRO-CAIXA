@@ -161,10 +161,9 @@
   .type-toggle button.active-in{background:var(--green);color:#fff;}
   .type-toggle button.active-out{background:var(--red);color:#fff;}
 
-
   .movement-tabs button.active-yield{background:var(--gold);color:var(--on-accent);}
   .movement-tabs button{min-height:38px;}
-  .investment-name-secondary{margin-top:-6px;margin-bottom:4px;}
+
   input[readonly]{opacity:0.8;cursor:not-allowed;background:var(--paper);}
   body.dark-mode input[readonly]{opacity:0.95;}
   .hint{color:var(--ink-soft);}
@@ -295,27 +294,7 @@
     justify-content:space-between;
     align-items:center;
   }
-  .ledger-filters{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    background:var(--paper-2);
-    padding:12px 16px;
-    border-bottom:1.5px solid var(--line);
-    align-items:end;
-  }
-  .ledger-filters div{
-    flex:1;
-    min-width:130px;
-  }
-  .ledger-filters label{
-    font-size:10px;
-    margin-bottom:4px;
-  }
-  .ledger-filters select, .ledger-filters input{
-    padding:7px 8px;
-    font-size:13px;
-  }
+
   .ledger-scroll-area{
     max-height:450px;
     overflow-y:auto;
@@ -353,18 +332,10 @@
     vertical-align:middle;
   }
   tbody tr:hover{background:var(--hover-soft);}
-  .amt{font-variant-numeric:tabular-nums;text-align:right;}
+
   .amt.in{color:var(--green);}
   .amt.out{color:var(--red);}
-  .bank-tag{
-    display:inline-block;
-    
-    font-size:10.5px;
-    padding:2px 7px;
-    border:1px solid var(--ink-soft);
-    border-radius:2px;
-    color:var(--ink-soft);
-  }
+
   .action-btn{
     border:none;background:none;color:var(--ink-soft);
     font-size:14px;padding:2px 4px;cursor:pointer;
@@ -688,7 +659,7 @@
   @media (max-width:768px){
     .import-row{grid-template-columns:1fr; gap:4px; padding:10px 0;}
     .cat-summary-content{flex-direction:column;}
-    .ledger-filters{flex-direction:column; align-items:stretch;}
+
   }
   @media (max-width:600px){
     /* P2.4.2 — em telas estreitas os 3 cards da principal empilham; demais faixas seguem auto-fit */
@@ -705,7 +676,7 @@
       margin-bottom: 8px;
       border-radius: 8px;
     }
-    .amt{text-align:left;}
+
   }
   
     /* Estilos para os novos cartões de lançamento */
@@ -782,13 +753,7 @@
     line-clamp: unset;
     overflow: visible;
   }
-  .card-tags {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-top: 2px;
-  }
+
   .card-badge, .card-category {
     
     font-size: 10px;

@@ -1,7 +1,6 @@
 /* LIVRO-CAIXA · js/27-cards.js — cartões e lançamentos (app.js: 10488-11751). Separação por responsabilidade; conteúdo preservado. */
 
 
-
   function renderCardBankSelect(selected = '') {
     const select = document.getElementById('cardBanco');
     if (!select) return;
@@ -136,11 +135,7 @@
     const d = new Date(y, (m - 1) + months, 1);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   }
-  function invoicePeriodKeyForDateByCardId(cardId, dateStr) {
-    const card = cards.find(c => c.id === cardId);
-    if (!card) return null;
-    return invoicePeriodKeyForDate(card, dateStr);
-  }
+
   // Agrega todas as compras/parcelas de um cartão que caem num período de fatura específico (formato 'AAAA-MM').
   function currentInvoicePeriodKey() {
     const now = new Date();
@@ -209,15 +204,8 @@
   function invoiceLaunchId(cardId, closingPeriodKey, titular) {
     return `invl_${cardId}_${closingPeriodKey}_${(titular || 'sem-titular').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   }
-  function invoiceLaunchFor(cardId, closingPeriodKey, titular) {
-    return invoiceLaunches.find(x => x.id === invoiceLaunchId(cardId, closingPeriodKey, titular));
-  }
-
   // V.19-14 — marcar fatura de cartão como paga SEM lançar no Livro-Caixa
-  function invoiceMarkedPaidOnly(cardId, closingPeriodKey, titular) {
-    const launch = invoiceLaunchFor(cardId, closingPeriodKey, titular);
-    return !!(launch && launch.markedPaidOnly);
-  }
+
   async function markInvoicePaidOnly(cardId, closingPeriodKey, titular, totalAmount) {
     const card = cards.find(c => c.id === cardId);
     if (!card) return;

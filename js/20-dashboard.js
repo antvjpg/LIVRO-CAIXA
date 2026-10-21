@@ -1,5 +1,26 @@
 /* LIVRO-CAIXA · js/20-dashboard.js — dashboard e indicadores (app.js: 4732-6319). Separação por responsabilidade; conteúdo preservado. */
 
+  function dashChartTheme() {
+    const styles = getComputedStyle(document.body);
+    const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
+    const masked = () => document.body.classList.contains('balances-hidden');
+    const money = value => (masked() ? '••••••' : fmt(value));
+    return {
+      ink: readVar('--ink', '#1C2B24'),
+      inkSoft: readVar('--ink-soft', '#4C5A52'),
+      lineColor: readVar('--line', '#D8D2C1'),
+      green: readVar('--dash-flow-income', readVar('--green', '#3E9B6E')),
+      red: readVar('--dash-flow-expense', readVar('--red', '#C2553B')),
+      gold: readVar('--dash-flow-patrimony', readVar('--gold', '#B08D3E')),
+      masked,
+      money,
+      tick: value => {
+        if (masked()) return '';
+        return 'R$ ' + Number(value || 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+      }
+    };
+  }
+
   function monthEndDate(month) { const [year, value] = month.split('-').map(Number); return `${month}-${String(new Date(year, value, 0).getDate()).padStart(2, '0')}`; }
   function balanceAtDate(bankId, cutoff) {
     const bank = banks.find(item => item.id === bankId);
@@ -234,20 +255,7 @@
     if (fallback) fallback.hidden = true;
     if (box) box.hidden = false;
 
-    const styles = getComputedStyle(document.body);
-    const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
-    const ink = readVar('--ink', '#1C2B24');
-    const inkSoft = readVar('--ink-soft', '#4C5A52');
-    const lineColor = readVar('--line', '#D8D2C1');
-    const green = readVar('--dash-flow-income', readVar('--green', '#3E9B6E'));
-    const red = readVar('--dash-flow-expense', readVar('--red', '#C2553B'));
-    const gold = readVar('--dash-flow-patrimony', readVar('--gold', '#B08D3E'));
-    const masked = () => document.body.classList.contains('balances-hidden');
-    const money = value => (masked() ? '••••••' : fmt(value));
-    const tick = value => {
-      if (masked()) return '';
-      return 'R$ ' + Number(value || 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
-    };
+    const { ink, inkSoft, lineColor, green, red, gold, masked, money, tick } = dashChartTheme();
 
     dashboardMonthlyFlowChartInstance = new Chart(canvas, {
       type: 'bar',
@@ -1280,20 +1288,7 @@
     if (fallback) fallback.hidden = true;
     if (box) box.hidden = false;
 
-    const styles = getComputedStyle(document.body);
-    const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
-    const ink = readVar('--ink', '#1C2B24');
-    const inkSoft = readVar('--ink-soft', '#4C5A52');
-    const lineColor = readVar('--line', '#D8D2C1');
-    const green = readVar('--dash-flow-income', readVar('--green', '#3E9B6E'));
-    const red = readVar('--dash-flow-expense', readVar('--red', '#C2553B'));
-    const gold = readVar('--dash-flow-patrimony', readVar('--gold', '#B08D3E'));
-    const masked = () => document.body.classList.contains('balances-hidden');
-    const money = value => (masked() ? '••••••' : fmt(value));
-    const tick = value => {
-      if (masked()) return '';
-      return 'R$ ' + Number(value || 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
-    };
+    const { ink, inkSoft, lineColor, green, red, gold, masked, money, tick } = dashChartTheme();
 
     dashFlowChartInstance = new Chart(canvas, {
       type: 'bar',
@@ -1685,8 +1680,6 @@
     const projection = document.getElementById('featureProjectionMonths'); if (projection) projection.value = featureSettings.projectionMonths;
     const autoCat = document.getElementById('featureAutoCategorization'); if (autoCat) autoCat.checked = featureSettings.autoCategorization;
     const advance = document.getElementById('featureReminderAdvanceDays'); if (advance) advance.value = featureSettings.reminderAdvanceDays;
-    const savings = document.getElementById('featureSavingsGoalAmount'); if (savings) setMoneyInput('featureSavingsGoalAmount', featureSettings.monthlySavingsGoal);
-    const whatIf = document.getElementById('featureWhatIfExpense'); if (whatIf) setMoneyInput('featureWhatIfExpense', 0);
     const ciInitial = document.getElementById('ciInitial'); if (ciInitial && !ciInitial.value) setMoneyInput('ciInitial', 1000);
     const ciMonthly = document.getElementById('ciMonthly'); if (ciMonthly && !ciMonthly.value) setMoneyInput('ciMonthly', 100);
     const ciRate = document.getElementById('ciRate'); if (ciRate && !ciRate.value) ciRate.value = '0,8';

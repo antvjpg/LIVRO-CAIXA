@@ -258,18 +258,7 @@
     color:var(--paper);
     border:1.5px solid var(--ink);
   }
-  .balance-detail-link{
-    display:block;
-    margin-top:auto;
-    padding-top:12px;
-    color:var(--ink-soft);
-    font-family:var(--font-ui);
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:0;
-    word-break:normal;
-    overflow-wrap:normal;
-  }
+
   .bank-summary-card,
   .pocket-summary-card,
   .invest-summary-card{

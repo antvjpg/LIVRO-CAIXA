@@ -5,41 +5,6 @@
   function detectSpendingAnomalies() { const currentMonth = currentMonthYM(); const byCategory = new Map(); entries.filter(entry => entry.type === 'out').forEach(entry => { const month = String(entry.date || '').slice(0, 7); const key = `${entry.category || 'sem-categoria'}|${month}`; byCategory.set(key, (byCategory.get(key) || 0) + Number(entry.amount || 0)); }); const current = new Map(); entries.filter(entry => entry.type === 'out' && String(entry.date || '').startsWith(currentMonth)).forEach(entry => current.set(entry.category || 'sem-categoria', (current.get(entry.category || 'sem-categoria') || 0) + Number(entry.amount || 0))); const anomalies = []; current.forEach((value, categoryId) => { const history = [...byCategory.entries()].filter(([key]) => key.startsWith(`${categoryId}|`) && !key.endsWith(`|${currentMonth}`)).map(([, amount]) => amount).slice(-6); if (history.length < 2) return; const average = history.reduce((sum, amount) => sum + amount, 0) / history.length; if (value > average * 1.75 && value > average + 50) anomalies.push({ category: categories.find(cat => cat.id === categoryId)?.name || 'Sem categoria', value, average }); }); return anomalies.sort((a, b) => b.value - b.average - (a.value - a.average)); }
   function runAnomalyScan() { const anomalies = detectSpendingAnomalies(); const status = document.getElementById('profileAnalysisStatus'); status.innerHTML = anomalies.length ? anomalies.slice(0, 5).map(item => `<div><strong>${escapeHTML(item.category)}</strong>: ${fmt(item.value)} no mês atual, contra média de ${fmt(item.average)}.</div>`).join('') : 'Nenhuma anomalia estatística encontrada com pelo menos dois meses de histórico.'; logInfo('Análise', 'Detectar anomalias', 'Sucesso', `${anomalies.length} possível(is) anomalia(s) encontrada(s).`); }
   function generateMonthlyReview() { const month = currentMonthYM(); const income = entries.filter(e => e.type === 'in' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const expense = entries.filter(e => e.type === 'out' && String(e.date || '').startsWith(month)).reduce((s, e) => s + Number(e.amount || 0), 0); const over = categories.filter(cat => { const budget = budgetFor(cat.id); return budget && budget.amount > 0 && budgetSpent(cat.id, currentFinancialCycleKey()) > budget.amount; }).map(cat => cat.name); const status = document.getElementById('profileAnalysisStatus'); status.innerHTML = `<strong>Revisão de ${escapeHTML(formatMonthLabel(month))}</strong><div>Entradas: ${fmt(income)} · Saídas: ${fmt(expense)} · Fluxo: ${fmt(income - expense)}</div><div>${over.length ? `Categorias acima do orçamento: ${escapeHTML(over.join(', '))}.` : 'Nenhuma categoria acima do orçamento.'}</div><small>Resumo informativo; nenhuma alteração automática foi feita.</small>`; logInfo('Análise', 'Revisão mensal guiada', 'Sucesso', 'Resumo mensal apresentado sem alterações automáticas.'); }
-  function runWhatIf() {
-    const extra = Math.max(0, readMoneyInput(document.getElementById('featureWhatIfExpense')));
-    const goal = Math.max(0, readMoneyInput(document.getElementById('featureSavingsGoalAmount')));
-    const monthsInput = Number(document.getElementById('featureProjectionMonths')?.value);
-    const projectionMonths = Math.min(24, Math.max(1, Number.isFinite(monthsInput) && monthsInput > 0 ? monthsInput : Number(featureSettings.projectionMonths || 6)));
-
-    const series = dashboardMonthSeries(6);
-    const avgNet = series.reduce((sum, item) => sum + Number(item.net || 0), 0) / Math.max(1, series.length);
-    const currentPatrimony = totalBankBalance() + totalPocketBalance() + totalInvestBalance();
-
-    const baselineProjected = currentPatrimony + avgNet * projectionMonths;
-    const simulatedNet = avgNet - extra;
-    const simulatedProjected = currentPatrimony + simulatedNet * projectionMonths;
-
-    const goalGap = goal > 0 ? simulatedNet - goal : null;
-    const goalMessage = goal > 0
-      ? (goalGap >= 0
-        ? `A projeção mensal fica <strong>${fmt(goalGap)}</strong> acima da meta de economia.`
-        : `A projeção mensal fica <strong>${fmt(Math.abs(goalGap))}</strong> abaixo da meta de economia.`)
-      : 'Defina uma meta de economia mensal para comparar o cenário.';
-
-    const status = document.getElementById('profileProjectionStatus');
-    if (status) {
-      status.innerHTML = `
-        <strong>Projeção para ${projectionMonths} ${projectionMonths === 1 ? 'mês' : 'meses'}</strong>
-        <div>Fluxo líquido médio atual: <strong>${fmt(avgNet)}</strong>/mês.</div>
-        <div>Patrimônio estimado sem nova saída: <strong>${fmt(baselineProjected)}</strong>.</div>
-        <div>Com nova saída de <strong>${fmt(extra)}</strong>/mês: patrimônio estimado de <strong>${fmt(simulatedProjected)}</strong>.</div>
-        <div>${goalMessage}</div>
-        <small>Estimativa baseada na média dos últimos seis meses. Nenhum lançamento foi alterado.</small>
-      `;
-    }
-
-    logInfo('Análise', 'Simulador E se', 'Sucesso', 'Cenário simulado com média líquida dos últimos seis meses, sem alteração dos dados.');
-  }
   let compoundCalcChartInstance;
 
   function destroyCompoundCalcChart() {
@@ -472,4 +437,3 @@
       date: todayISO()
     };
   }
-  function exportPatrimonyChartPng() { const series = dashboardMonthSeries(6); const canvas = document.createElement('canvas'); canvas.width = 1400; canvas.height = 820; const ctx = canvas.getContext('2d'); ctx.fillStyle = '#F7F5EF'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#1C2B24'; ctx.font = '700 36px Plus Jakarta Sans, sans-serif'; ctx.fillText('Livro-Caixa · Patrimônio estimado', 80, 90); ctx.font = '20px Plus Jakarta Sans, sans-serif'; ctx.fillStyle = '#4C5A52'; ctx.fillText('Últimos seis meses · imagem gerada localmente', 80, 130); const left = 110, top = 210, width = 1160, height = 470; const values = series.map(item => Number(item.patrimony || 0)); const min = Math.min(0, ...values), max = Math.max(1, ...values); ctx.strokeStyle = '#D8D2C1'; ctx.lineWidth = 2; for (let i = 0; i <= 4; i++) { const y = top + height - (height * i / 4); ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(left + width, y); ctx.stroke(); } const xFor = i => left + (series.length <= 1 ? width / 2 : i * width / (series.length - 1)); const yFor = value => top + height - ((value - min) / (max - min || 1)) * height; ctx.strokeStyle = '#2F6F4F'; ctx.lineWidth = 7; ctx.beginPath(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); if (!i) ctx.moveTo(x, y); else ctx.lineTo(x, y); }); ctx.stroke(); series.forEach((item, i) => { const x = xFor(i), y = yFor(item.patrimony); ctx.fillStyle = '#2F6F4F'; ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1C2B24'; ctx.font = 'Plus Jakarta Sans, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(item.label, x, top + height + 42); ctx.font = 'Plus Jakarta Sans, sans-serif'; ctx.fillText(fmt(item.patrimony), x, y - 20); }); const link = document.createElement('a'); link.download = `patrimonio-livro-caixa-${todayISO()}.png`; link.href = canvas.toDataURL('image/png'); link.click(); logInfo('Exportação', 'Exportar patrimônio PNG', 'Sucesso', 'Gráfico de patrimônio exportado como imagem.'); }
