@@ -54,8 +54,8 @@
   <link rel="stylesheet" href="./style/themes.css?v=20-23">
   <link rel="stylesheet" href="./style/base.css?v=20-24">
   <link rel="stylesheet" href="./style/components.css?v=20-24">
-  <link rel="stylesheet" href="./style/layout.css?v=20-24">
-  <link rel="stylesheet" href="./style/features.css?v=20-24">
+  <link rel="stylesheet" href="./style/layout.css?v=20-26">
+  <link rel="stylesheet" href="./style/features.css?v=20-26">
   <link rel="stylesheet" href="./style/dashboard-chat.css?v=20-24">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
@@ -172,6 +172,7 @@
     </nav>
     <div class="drawer-divider"></div>
     <div class="drawer-nav drawer-nav-secondary">
+      <button type="button" data-drawer-action="profile"><span><i class="fi fi-rr-user" aria-hidden="true"></i></span> Perfil</button>
       <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rs-blood-test-tube" aria-hidden="true"></i></span> LABS</button>
       <button type="button" data-drawer-action="diagnostico"><span><i class="fi fi-rr-clipboard" aria-hidden="true"></i></span> Diagnóstico Geral (LOG)</button>
     </div>
@@ -202,17 +203,7 @@
      Cartões / Recebíveis / Investimentos / Metas
      ========================================================= -->
 <main>
-  <!-- Navegação por Abas: Contas & Calendário acessível pelo menu lateral -->
-  <div class="nav-tabs">
-    <button class="nav-tab" id="tabBtnDash" onclick="switchTab('dash')"><i class="fi fi-rr-ballot" aria-hidden="true"></i> Dashboard</button>
-    <button class="nav-tab" id="tabBtnDashboard" onclick="switchTab('dashboard')"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i> Visão geral</button>
-    <button class="nav-tab active" id="tabBtnCaixa" onclick="switchTab('caixa')"><i class="fi fi-rr-book-bookmark" aria-hidden="true"></i> Livro-Caixa</button>
-    <button class="nav-tab" id="tabBtnPockets" onclick="switchTab('pockets')"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i> Caixinhas</button>
-    <button class="nav-tab" id="tabBtnCards" onclick="switchTab('cards')"><i class="fi fi-rr-credit-card" aria-hidden="true"></i> Cartões</button>
-    <button class="nav-tab" id="tabBtnReceivables" onclick="switchTab('receivables')"><i class="fi fi-rr-arrow-down-triangle-square" aria-hidden="true"></i> A Receber</button>
-    <button class="nav-tab" id="tabBtnInvest" onclick="switchTab('invest')"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i> Investimentos</button>
-    <button class="nav-tab" id="tabBtnGoals" onclick="switchTab('goals')"><i class="fi fi-rr-bullseye-arrow" aria-hidden="true"></i> Metas</button>
-  </div>
+  <!-- Menu lateral é a única navegação agora (remover botões de abas do topo) -->
 
   <div class="balance-strip" id="balanceStrip"></div>
 
@@ -582,8 +573,7 @@
               <div><strong id="diagnosticSummaryLabel">Consistência dos dados</strong><span id="diagnosticSummaryDetail">Toque em "Executar diagnóstico" para verificar</span></div>
             </div>
             <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
-            <button type="button" id="btnOpenTechnicalDiagnostic"
-              style="margin-top:8px;font-size:10px;">
+            <button type="button" id="btnOpenTechnicalDiagnostic">
               ⚙ Abrir console técnico
             </button>
           </div>
@@ -1607,8 +1597,8 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
   <script src="./js/19-goals.js?v=20-25"></script>
   <script src="./js/20-dashboard.js?v=20-25"></script>
   <script src="./js/21-ai-features.js?v=20-25"></script>
-  <script src="./js/22-profile.js?v=20-25"></script>
-  <script src="./js/23-ai-chat.js?v=20-25"></script>
+  <script src="./js/22-profile.js?v=20-26"></script>
+  <script src="./js/23-ai-chat.js?v=20-26"></script>
   <script src="./js/24-automation-render.js?v=20-25"></script>
   <script src="./js/25-bills-receivables.js?v=20-25"></script>
   <script src="./js/26-receipts.js?v=20-25"></script>
@@ -1618,7 +1608,7 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
   <script src="./js/30-transfer-receipts.js?v=20-25"></script>
   <script src="./js/31-import-export.js?v=20-25"></script>
   <script src="./js/32-auth-wiring.js?v=20-25"></script>
-  <script src="./js/33-mcp-bridge.js?v=20-25"></script>
+  <script src="./js/33-mcp-bridge.js?v=20-26"></script>
   <script src="./js/99-init.js?v=20-25"></script>
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">

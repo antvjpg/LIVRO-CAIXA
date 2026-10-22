@@ -1140,6 +1140,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     if (action === 'banks') openBankManagementPanel();
     if (action === 'categories') document.getElementById('btnCategoria')?.click();
     if (action === 'theme') document.getElementById('btnThemeToggle')?.click();
+    if (action === 'profile') { window.switchTab('profile'); window.scrollTo({ top:0, behavior:'smooth' }); }
     closeDrawer();
   }));
   document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeDrawer(); closeNotifications(); closeUniversalSearch(); } });

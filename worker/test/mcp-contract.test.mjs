@@ -20,7 +20,7 @@ import {
 } from "../../mcp-financial-contract.js";
 import { CHAT_LIMITS } from "../../ai-chat-contract.js";
 
-/* Fixture: snapshot no formato de buildGeminiFinancialSnapshot (P3.5),
+/* Fixture: snapshot no formato de buildFinancialSnapshot (P3.5),
    incluindo o único ID bruto conhecido (budgets[].categoryId). */
 function snapshotFixture() {
   return {

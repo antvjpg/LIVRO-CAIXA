@@ -12,7 +12,7 @@
    Princípios da V1 (regras de segurança da Ponte de IA):
    - Somente LEITURA: este contrato não define nenhuma ferramenta de
      escrita e não toca no modelo financeiro.
-   - Reutiliza o financialSnapshot existente (buildGeminiFinancialSnapshot)
+   - Reutiliza o financialSnapshot existente (buildFinancialSnapshot)
      como fonte; aqui apenas SANITIZAMOS e ENVOLVEMOS, nunca recalcamos.
    - Nenhum ID interno, token, credencial ou segredo pode atravessar o
      contrato: a sanitização remove e a validação rejeita (defesa em
@@ -49,7 +49,7 @@ const FORBIDDEN_KEYS = Object.freeze(new Set([
 ]));
 
 /* Campos internos removidos da SANITIZAÇÃO (conhecidos de
-   buildGeminiFinancialSnapshot, js/22-profile.js). A varredura de
+   buildFinancialSnapshot, js/22-profile.js). A varredura de
    FORBIDDEN_KEYS continua válida para qualquer campo novo esquecido. */
 const STRIP_FIELDS = Object.freeze({
   budgets: ["categoryId", "id", "month", "updatedAt"]

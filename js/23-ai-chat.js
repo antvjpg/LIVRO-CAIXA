@@ -5,7 +5,7 @@
      CHAT IA (V.20-02) — modal aberto pelo FAB da Visão Geral.
 
      - contrato/limites: window.LivroCaixaChatContract (fonte única);
-     - snapshot: buildGeminiFinancialSnapshot() + orçamento de 64 KB;
+     - snapshot: buildFinancialSnapshot() + orçamento de 64 KB;
      - envio: window.LivroCaixaAI.chat() → POST /ai (sem chave local);
      - contexto: EM MEMÓRIA, atrelado à conta ativa. Nada em Firebase,
        localStorage ou sessionStorage nesta versão.
@@ -312,7 +312,7 @@
     const message = contract.validateChatMessage(text);
     if (!message.ok) return { ok: false, code: message.body.code, error: message.body.error };
 
-    const rawSnapshot = buildGeminiFinancialSnapshot();
+    const rawSnapshot = buildFinancialSnapshot();
     if (!contract.snapshotHasData(rawSnapshot)) return { ok: false, code: 'no_data' };
 
     const fitted = contract.fitChatSnapshotToBudget(rawSnapshot);
@@ -486,7 +486,7 @@
       ? refreshFinancialIndicators({ silent: true })
       : Promise.resolve(null);
 
-    const snapshot = buildGeminiFinancialSnapshot();
+    const snapshot = buildFinancialSnapshot();
     const abertura = aiChat.session.openFor(aiChatAccountId(), snapshot);
 
     const contract = aiChatContract();
@@ -564,7 +564,7 @@
   /* Limpeza de contexto: troca de conta, logout, sessão reiniciada.
      Nunca persistida — só isto apaga a conversa nesta versão. */
   function resetAiChatContext() {
-    const snapshot = buildGeminiFinancialSnapshot();
+    const snapshot = buildFinancialSnapshot();
     aiChat.session.resetContext();
     aiChat.editing = null;
 

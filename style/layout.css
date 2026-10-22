@@ -289,7 +289,7 @@
     min-height:64px;padding:14px 16px;
     border:1px solid var(--line);
     border-radius:18px;
-    background:var(--surface);
+    background:var(--paper);
     box-shadow:0 1px 0 color-mix(in srgb,var(--ink) 4%,transparent);
   }
   #viewProfile .profile-item[role="button"],
@@ -329,13 +329,13 @@
   }
   #viewProfile .feature-profile-toggle{
     gap:14px;padding:14px 16px;
-    border-radius:18px;background:var(--surface);
+    border-radius:18px;background:var(--paper);
     border:1px solid var(--line);
     min-height:64px;
   }
   #viewProfile .feature-profile-toggle:has(input:checked){
     border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
-    background:color-mix(in srgb,var(--accent) 10%,var(--surface));
+    background:color-mix(in srgb,var(--accent) 10%,var(--paper));
   }
   #viewProfile .feature-profile-switch{
     width:44px;height:26px;border-radius:999px;background:var(--line);flex:0 0 auto;
@@ -380,16 +380,20 @@
     border-radius:14px;border:1px solid var(--line);
     background:var(--paper);color:var(--ink);font-size:13px;
   }
-  #viewProfile .feature-profile-actions{
-    display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;
-  }
   #viewProfile .feature-profile-actions button,
   #viewProfile .feature-profile-pin-actions button,
   #viewProfile .diagnostic-summary-card > button{
     width:100%;min-height:46px;border-radius:14px;
     border:1px solid var(--line);background:var(--paper);
     color:var(--ink);font-weight:650;font-size:12px;
-    letter-spacing:.02em;
+    letter-spacing:.02em;text-transform:none;
+  }
+  #viewProfile .feature-profile-actions button:not(.primary):hover,
+  #viewProfile .feature-profile-pin-actions button:not(.primary):hover,
+  #viewProfile .diagnostic-summary-card > button:not(.primary):hover{
+    background:var(--green-soft);
+    border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
+    color:var(--ink);
   }
   #viewProfile .feature-profile-actions button.primary,
   #viewProfile .feature-profile-pin-actions button.primary,
@@ -397,6 +401,21 @@
     background:color-mix(in srgb,var(--accent) 16%,var(--surface));
     border-color:color-mix(in srgb,var(--accent) 40%,var(--line));
     color:var(--accent);
+  }
+  #viewProfile .feature-profile-actions button.primary:hover,
+  #viewProfile .feature-profile-pin-actions button.primary:hover,
+  #viewProfile .diagnostic-summary-card > button.primary:hover{
+    background:color-mix(in srgb,var(--accent) 26%,var(--surface));
+    border-color:color-mix(in srgb,var(--accent) 60%,var(--line));
+    color:var(--accent);
+  }
+  #viewProfile .feature-profile-actions button.secondary,
+  #viewProfile .feature-profile-pin-actions button.secondary{
+    background:transparent;
+    color:var(--ink-soft);
+  }
+  #viewProfile .diagnostic-summary-card > button + button{
+    margin-top:8px;font-size:10px;
   }
   #viewProfile .feature-profile-pin-row{
     display:grid;grid-template-columns:1fr;gap:10px;align-items:stretch;
@@ -431,8 +450,10 @@
   }
   #viewProfile .feature-profile-feedback{margin:8px 0 0;font-size:11px;color:var(--ink-soft);}
   body.dark-mode #viewProfile .profile-item,
+  body.dark-mode #viewProfile .feature-profile-toggle{
+    background:var(--paper);border-color:var(--line);
+  }
   body.dark-mode #viewProfile .feature-profile-section,
-  body.dark-mode #viewProfile .feature-profile-toggle,
   body.dark-mode #viewProfile .diagnostic-summary-card{
     background:var(--surface);border-color:var(--line);
   }

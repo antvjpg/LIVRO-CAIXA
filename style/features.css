@@ -4432,7 +4432,7 @@ body[data-tab="dash"] .fab-add{
   padding:12px 14px;
   border:1px solid var(--line);
   border-radius:18px;
-  background:var(--surface);
+  background:var(--paper);
   margin:0;
 }
 #viewProfile .feature-profile-toggle-copy{
@@ -4667,8 +4667,7 @@ body[data-tab="dash"] .fab-add{
   flex-direction:column;
   gap:8px;
   width:100%;
-}
-#viewProfile .feature-profile-actions button{
+  margin-top:12px;
 }
 
 /* Visão geral: espaçamento Gemini ↔ Insight */
@@ -6389,28 +6388,28 @@ body:not(.dark-mode) .goals-form-body select {
 #viewProfile .profile-item:focus {
   outline: none;
   box-shadow: none;
-  background: var(--surface);
+  background: var(--paper);
 }
 #viewProfile .profile-item:focus-visible,
 .profile-item[role="button"]:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   box-shadow: none;
-  background: var(--surface);
+  background: var(--paper);
 }
 /* Só clicáveis animam */
 #viewProfile .profile-item[role="button"]:active,
 .profile-item[role="button"]:active,
 #viewProfile .profile-item[tabindex]:active {
-  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  background: color-mix(in srgb, var(--accent) 8%, var(--paper));
   transform: scale(0.99);
 }
 #viewProfile .profile-item:not([role="button"]):not([tabindex]):active {
-  background: var(--surface);
+  background: var(--paper);
   transform: none;
 }
 #viewProfile .feature-profile-toggle:active {
-  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  background: color-mix(in srgb, var(--accent) 8%, var(--paper));
 }
 
 /* GROK: isolamento Visao geral sem !important */

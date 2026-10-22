@@ -70,7 +70,7 @@
 
     return issues;
   }
-  function buildGeminiFinancialSnapshot() {
+  function buildFinancialSnapshot() {
     const entriesSafe = Array.isArray(entries) ? entries : [];
     const currentMonth = currentMonthYM();
     const diagnosticIssues = runDiagnostics();

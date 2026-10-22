@@ -126,13 +126,13 @@
         err.code = 'contract_unavailable';
         throw err;
       }
-      if (typeof buildGeminiFinancialSnapshot !== 'function') {
+      if (typeof buildFinancialSnapshot !== 'function') {
         const err = new Error('Gerador de snapshot indisponível.');
         err.code = 'snapshot_builder_unavailable';
         throw err;
       }
 
-      const built = contract.buildExternalSnapshotResult(buildGeminiFinancialSnapshot());
+      const built = contract.buildExternalSnapshotResult(buildFinancialSnapshot());
       if (!built.ok) {
         const err = new Error(built.body?.error || 'Snapshot local inválido.');
         err.code = built.body?.code || 'invalid_snapshot';
