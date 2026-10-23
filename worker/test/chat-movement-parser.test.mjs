@@ -24,9 +24,15 @@ const sliceBetween = (from, to) => {
   return js.slice(start, end);
 };
 
+const aiFeaturesSrc = fs.readFileSync(path.join(ROOT, "js", "21-ai-features.js"), "utf8");
+const movementParserStart = aiFeaturesSrc.indexOf("function parseMovementFromText(rawText)");
+assert.ok(movementParserStart !== -1, "marcador inicial não encontrado: function parseMovementFromText(rawText)");
+
+/* parseMovementFromText é a última função de 21-ai-features.js; fatiar
+   até o fim do arquivo evita depender de um marcador que pode ser removido. */
 const parserSrc =
   sliceBetween("function parsePtNumberValue(raw)", "function buildCompoundInterestReply") +
-  sliceBetween("function parseMovementFromText(rawText)", "function exportPatrimonyChartPng");
+  aiFeaturesSrc.slice(movementParserStart);
 
 const BANKS = [{ id: "b1", name: "Banco Alpha" }, { id: "b2", name: "Banco Beta" }];
 const CATEGORIES = [

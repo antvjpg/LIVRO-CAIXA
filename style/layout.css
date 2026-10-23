@@ -1,6 +1,7 @@
 /* LIVRO-CAIXA · layout.css — chrome mobile editorial: header ≤680px, bottom-nav, perfil e pickers nas media queries principais (styles.css: 1161-1676). Cascata: themes → base → components → layout → features → dashboard-chat. */
   /* Direção visual: Livro-Caixa mobile editorial, verde profundo e superfícies de papel. */
   .mobile-bottom-nav { display:none; }
+  .section-hidden { display:none; }
   header.app-header .subtitle .fi { display:none; }
   @media (max-width:680px) {
     body { background:var(--paper); padding-bottom:116px; }
@@ -93,9 +94,16 @@
     .quick-action-icon{display:grid;place-items:center;width:28px;height:28px;border:1px solid color-mix(in srgb,var(--accent) 15%,transparent);border-radius:10px;background:var(--green-soft);color:var(--accent);line-height:1;}
     .quick-action-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;}
     #btnUpdateAllPrices { display: inline-flex; align-items: center; gap: 8px; border-color:#8CB9A0; background:#E7F1E9; color:#1C6042; }
-    .cat-summary { margin:0 0 13px; padding:14px 13px; border:1px solid var(--line); border-radius:14px; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
+    .cat-summary { margin:0 0 13px; padding:14px 13px; border:1px solid var(--line); border-radius:18px; background:#fffefa; box-shadow:0 2px 7px rgba(20,48,36,.03); }
     .cat-summary h3 { font-size:20px; letter-spacing:-.025em; margin-bottom:12px; }
     .cat-summary-content { display:grid; grid-template-columns:minmax(116px,.82fr) minmax(0,1.18fr); gap:12px; align-items:center; }
+    .cat-summary.is-bar .cat-summary-content { grid-template-columns:1fr; }
+    .cat-summary.is-bar .chart-container { height:210px; }
+    .cat-summary.is-bar .cat-row { grid-template-columns:minmax(0,1fr) auto auto; }
+    .cat-summary.is-bar .cat-row::before { display:none; }
+    .cat-summary.is-bar .cat-legend-head { padding-left:0; }
+    .cat-view-toggle { padding:2px; }
+    .cat-view-toggle button { width:25px; min-width:25px; height:24px; min-height:24px; padding:0; font-size:12px; }
     .chart-container { min-width:0; max-width:none; width:100%; height:166px; margin:0; }
     .cat-bars-list { min-width:0; display:flex; flex-direction:column; gap:8px; }
     .cat-legend-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;padding:0 0 4px 14px;color:var(--ink-soft);font-size:8px;font-weight:750;letter-spacing:.02em;text-transform:uppercase;}
@@ -135,7 +143,6 @@
     .card-actions .btn-action:hover { background:#327957; color:#fffefa; }
     .card-actions .btn-action.delete:hover { background:#B3432B; color:#fffefa; }
     .card-actions .btn-action:active { transform:scale(.94); }
-    .section-hidden { display:none; }
     .section-balance-strip { margin-bottom:12px; }
     .ledger-month { position:relative; padding-right:90px; }
     .ledger-filter-button { position:absolute; right:10px; top:50%; transform:translateY(-50%); min-height:30px; padding:5px 8px; border:1px solid #D5E3D8; border-radius:8px; background:#E7EFE8; color:#1E6C4B; font-size:8px; letter-spacing:.02em; }
@@ -582,5 +589,113 @@ body.dark-mode .emoji-trigger,body.dark-mode .emoji-picker,body.dark-mode .emoji
     body.dark-mode header.app-header .header-icon-button{background:var(--header-control-bg,rgba(0,0,0,.35));border-color:color-mix(in srgb,var(--header-ink,var(--ink)) 45%,transparent);color:var(--header-ink,var(--ink));}
     body.dark-mode header.app-header .header-icon-button:hover{background:color-mix(in srgb,var(--header-ink,var(--ink)) 18%,var(--header-control-bg,rgba(0,0,0,.35)));border-color:color-mix(in srgb,var(--header-ink,var(--ink)) 60%,transparent);color:var(--header-ink,var(--ink));}
     body.dark-mode header.app-header .header-search-bar{background:var(--paper);border-color:var(--gold);color:var(--ink-soft);}
+  }
+
+  /* Desktop: todos os cards de total (patrimônio, caixinhas e investimentos)
+     usam o mesmo tratamento escuro do mobile; o saldo principal ganha destaque
+     para aproveitar a largura da faixa. */
+  @media (min-width:681px){
+    #balanceStrip .balance-card.total .amount{
+      font-size:clamp(34px,4.5vw,48px);
+      line-height:1.05;
+    }
+    body.dark-mode .balance-card.total{
+      background:linear-gradient(125deg,var(--surface-accent),var(--accent-muted));
+      border-color:var(--accent);
+      color:var(--ink);
+      box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),0 13px 28px rgba(0,0,0,.34),0 0 24px color-mix(in srgb,var(--accent) 18%,transparent);
+    }
+    body.dark-mode .balance-card.total .label,
+    body.dark-mode .balance-card.total .amount:not(.neg){
+      color:var(--ink);
+      opacity:1;
+    }
+    body.dark-mode .balance-card.total .balance-symbol{
+      background:color-mix(in srgb,var(--accent) 16%,transparent);
+      color:var(--ink);
+      box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent);
+    }
+
+    /* Movimentações: mesma composição visual do mobile no desktop. */
+    .ledger{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:17px;
+      overflow:hidden;
+      box-shadow:0 2px 7px rgba(20,48,36,.03);
+    }
+    .ledger-month{
+      position:relative;
+      padding:18px 90px 10px 18px;
+      background:transparent;
+      color:var(--ink);
+      font-size:23px;
+      letter-spacing:-.025em;
+      text-transform:none;
+      gap:10px;
+    }
+    .ledger-month #ledgerCount{
+      color:var(--green);
+      font-size:10px;
+      letter-spacing:0;
+      text-transform:none;
+    }
+    .ledger-scroll-area{
+      max-height:470px;
+      padding:4px 12px 10px;
+    }
+    .ledger-filter-button{
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform:translateY(-50%);
+    }
+    .card-border-line{
+      width:38px;
+      height:38px;
+      border-radius:10px;
+      background:var(--green-soft);
+      position:relative;
+    }
+    .card-border-line::after{display:none;}
+    .movement-category-icon{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      line-height:1;
+    }
+    .card-badge,.card-category{
+      display:inline-flex;
+      align-items:center;
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-size:9px;
+      letter-spacing:.01em;
+      border-radius:999px;
+    }
+    .card-badge{
+      padding:3px 7px;
+      border:1px solid #D5E3D8;
+      background:#E7EFE8;
+      color:#1E6C4B;
+    }
+    .card-category{
+      padding:3px 8px;
+      border:1px solid var(--category-color);
+      background:var(--category-color);
+      color:#fffefa;
+    }
+    body.dark-mode .ledger{
+      box-shadow:0 6px 16px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.025);
+    }
+    body.dark-mode .card-badge{
+      background:var(--surface-raised);
+      border-color:var(--line);
+      color:var(--ink);
+    }
   }
 

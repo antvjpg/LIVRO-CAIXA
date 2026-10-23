@@ -173,11 +173,92 @@
     background:var(--paper);
     padding:16px;
     margin-bottom:24px;
+    border-radius:18px;
   }
   .cat-summary h3{
     
     font-size:18px;
     margin:0 0 12px;
+  }
+  .cat-summary-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .cat-summary-head h3{
+    flex:1;
+    min-width:0;
+  }
+  .cat-view-toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:2px;
+    flex-shrink:0;
+    padding:3px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:var(--paper-2);
+  }
+  .cat-view-toggle button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;
+    min-width:28px;
+    height:26px;
+    min-height:26px;
+    padding:0;
+    border:0;
+    border-radius:999px;
+    background:transparent;
+    color:var(--ink-soft);
+    font-size:13px;
+    font-weight:750;
+    line-height:1;
+    letter-spacing:0;
+    text-transform:none;
+    box-shadow:none;
+  }
+  .cat-view-toggle button i{
+    display:block;
+    line-height:1;
+  }
+  .cat-view-toggle button:hover{
+    background:var(--green-soft);
+    color:var(--ink);
+  }
+  .cat-view-toggle button.is-active,
+  .cat-view-toggle button.is-active:hover{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:var(--accent-ink);
+  }
+  .cat-summary.is-bar .chart-container{
+    flex:1.3;
+    max-width:none;
+    height:220px;
+  }
+  .cat-summary.is-bar .cat-bars-list{
+    flex:1;
+  }
+  .cat-summary.is-bar .cat-row .cat-bar-wrap{
+    display:none;
+  }
+  .cat-summary.is-bar .chart-center-total{
+    display:none;
+  }
+  @media (min-width:681px){
+    .cat-summary.is-bar .cat-row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto auto;
+      align-items:center;
+      gap:10px;
+    }
+    .cat-summary.is-bar .cat-row .cat-name,
+    .cat-summary.is-bar .cat-row .cat-amt{
+      width:auto;
+    }
   }
   .cat-summary-content{
     display:flex;
@@ -258,10 +339,13 @@
     border:1px solid var(--line);
     height:10px;
     position:relative;
+    border-radius:999px;
+    overflow:hidden;
   }
   .cat-row .cat-bar{
     background:var(--category-color,#B3432B);
     height:100%;
+    border-radius:999px;
   }
   .cat-row .cat-amt{
     
@@ -357,6 +441,7 @@
   .invest-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    align-items: start;
     gap: 16px;
     margin-top: 16px;
   }

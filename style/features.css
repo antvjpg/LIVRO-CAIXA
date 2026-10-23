@@ -4253,6 +4253,7 @@ body[data-tab="dash"] .fab-add{
   transform:rotate(180deg);
 }
 #universalPeriodBar{
+  display:block;
   padding:0 !important;
   overflow:hidden;
 }
@@ -4840,6 +4841,14 @@ body[data-tab="dash"] .fab-add{
 }
 .asset-card-actions{
   display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:4px;
+}
+@media (min-width:681px){
+  .item-action-row{
+    display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px;margin-top:8px;
+  }
+  .item-action-row .reorder-actions{
+    margin-left:0;margin-right:auto;
+  }
 }
 
 /* Credit card sheet (mockup) */

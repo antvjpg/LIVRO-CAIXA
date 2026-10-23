@@ -1032,7 +1032,7 @@
       const goalAmount = Number(p.goalAmount) || 0;
       const goalPercent = goalAmount > 0 ? Math.min(100, Math.max(0, current / goalAmount * 100)) : null;
       const goalHTML = goalAmount > 0 ? `<div class="pocket-goal"><div class="pocket-goal-head"><span>${escapeHTML(p.goal || 'Meta da caixinha')}</span><strong>${goalPercent.toFixed(0).replace('.', ',')}%</strong></div><div class="pocket-goal-track"><span style="width:${goalPercent.toFixed(2)}%"></span></div><div class="pocket-goal-values">${fmt(current)} de ${fmt(goalAmount)}</div></div>` : (p.goal ? `<div class="units">${escapeHTML(p.goal)}</div>` : '');
-      return `<div class="invest-box" data-item-id="${p.id}">
+      return `<div class="invest-box pocket-box" data-item-id="${p.id}">
         <button type="button" class="drag-handle" aria-label="Segurar para mover caixinha" title="Segure para mover">
           <i class="fi fi-rr-layers" aria-hidden="true"></i>
         </button><h4><span>${escapeHTML(p.name)}</span></h4><div class="val">${fmt(current)}</div>${goalHTML}${sourceBank ? `<div class="units">Banco de origem: ${escapeHTML(sourceBank.name)}</div>` : '<div class="units">Banco de origem: A definir</div>'}${rentabilityHTML('pocket', p.id, current)}${yieldHistoryHTML('pocket', p.id)}<div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="movePocket('${p.id}',-1)" ${index===0?'disabled':''} aria-label="Mover caixinha para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="movePocket('${p.id}',1)" ${index===pockets.length-1?'disabled':''} aria-label="Mover caixinha para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn beta-icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button><button type="button" class="action-btn beta-icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button></div></div>`;
@@ -1232,6 +1232,8 @@
   function renderCategoryChartCard(wrapId, mode) {
     const wrap = document.getElementById(wrapId);
     if (!wrap) return;
+    const viewMode = wrap.dataset.catChartView === 'bar' ? 'bar' : 'pie';
+    const isBarView = viewMode === 'bar';
     const activeEntries = getFilteredEntries();
     const totals = categoryTypeTotals(mode, activeEntries);
 
@@ -1262,12 +1264,18 @@
     const title = isIncome ? 'Entradas por Categoria' : 'Gastos por Categoria';
     const leaderLabel = isIncome ? 'Maior entrada' : 'Maior gasto';
 
-    wrap.innerHTML = `<div class="cat-summary">
-      <h3>${title} ${subtitle}</h3>
+    wrap.innerHTML = `<div class="cat-summary${isBarView ? ' is-bar' : ''}">
+      <div class="cat-summary-head">
+        <h3>${title} ${subtitle}</h3>
+        <div class="cat-view-toggle" role="group" aria-label="Modo de visualização do gráfico">
+          <button type="button" class="${viewMode === 'pie' ? 'is-active' : ''}" data-cat-chart-view="pie" aria-pressed="${viewMode === 'pie'}" aria-label="Gráfico de pizza" title="Gráfico de pizza"><i class="fi fi-rr-chart-pie" aria-hidden="true"></i></button>
+          <button type="button" class="${viewMode === 'bar' ? 'is-active' : ''}" data-cat-chart-view="bar" aria-pressed="${viewMode === 'bar'}" aria-label="Gráfico de barras" title="Gráfico de barras"><i class="fi fi-rr-chart-histogram" aria-hidden="true"></i></button>
+        </div>
+      </div>
       <p class="cat-summary-leader">${leaderLabel}: <strong>${escapeHTML(leader.cat.name)}</strong> · ${(leader.total / totalSpend * 100).toFixed(1).replace('.', ',')}%</p>
       <div class="cat-summary-content">
         <div class="chart-container">
-          <canvas id="${canvasId}"></canvas>
+          <canvas id="${canvasId}" role="img" aria-label="${isBarView ? 'Gráfico de barras' : 'Gráfico de pizza'} de ${isIncome ? 'entradas' : 'gastos'} por categoria"></canvas>
           <div class="chart-center-total" aria-hidden="true">
             <span class="chart-center-total-label">Total</span>
             <strong class="chart-center-total-value">${fmt(totalSpend)}</strong>
@@ -1287,11 +1295,22 @@
       </div>
     </div>`;
 
+    wrap.querySelectorAll('[data-cat-chart-view]').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const next = button.getAttribute('data-cat-chart-view');
+        if (!next || next === viewMode) return;
+        wrap.dataset.catChartView = next;
+        renderCategoryChartCard(wrapId, mode);
+      });
+    });
+
     const ctx = document.getElementById(canvasId);
     if (ctx && typeof Chart !== 'undefined') {
       const isDark = document.body.classList.contains('dark-mode');
       const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
       const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
+      const gridColor = getComputedStyle(document.body).getPropertyValue('--line').trim() || (isDark ? '#2A3A2E' : '#E1E1D9');
       const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
       const tooltipCallbacks = {
         label: function(context) {
@@ -1321,7 +1340,9 @@
         const chart = catChartInstances[mode];
         if (!chart) return;
         chart.data.datasets[0].backgroundColor = baseSliceColors.map((color, sliceIndex) => (activeSliceIndex === null || sliceIndex === activeSliceIndex) ? color : dimSliceColor(color));
-        chart.data.datasets[0].offset = chartSpend.map((_, sliceIndex) => sliceIndex === activeSliceIndex ? 6 : 0);
+        if (!isBarView) {
+          chart.data.datasets[0].offset = chartSpend.map((_, sliceIndex) => sliceIndex === activeSliceIndex ? 6 : 0);
+        }
         chart.update();
       };
       const toggleActiveSlice = (index) => {
@@ -1343,38 +1364,71 @@
         }
       };
 
+      const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: function(event, elements) {
+          if (elements.length) toggleActiveSlice(elements[0].index);
+          else if (activeSliceIndex !== null) {
+            activeSliceIndex = null;
+            applyActiveSlice();
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            enabled: false
+          }
+        }
+      };
+      if (isBarView) {
+        chartOptions.indexAxis = 'y';
+        chartOptions.scales = {
+          x: {
+            display: true,
+            grid: { color: gridColor, drawTicks: false },
+            border: { display: false },
+            ticks: { display: false }
+          },
+          y: {
+            display: true,
+            grid: { display: false },
+            border: { display: false },
+            ticks: {
+              color: textColor,
+              font: { size: isMobileLayout ? 8 : 9 },
+              autoSkip: false,
+              padding: 4,
+              callback: function(value) {
+                const label = this.getLabelForValue(value);
+                return label.length > 18 ? label.slice(0, 17) + '…' : label;
+              }
+            }
+          }
+        };
+      } else {
+        chartOptions.cutout = isMobileLayout ? '67%' : '62%';
+      }
+
       catChartInstances[mode] = new Chart(ctx, {
-        type: 'doughnut',
-        plugins: [centerTotalOverlayPlugin],
+        type: isBarView ? 'bar' : 'doughnut',
+        plugins: isBarView ? [] : [centerTotalOverlayPlugin],
         data: {
           labels: chartSpend.map(x => x.cat.name),
           datasets: [{
             data: chartSpend.map(x => x.total),
             backgroundColor: baseSliceColors,
-            borderColor: borderColor,
-            borderWidth: 2
+            borderColor: isBarView ? 'transparent' : borderColor,
+            borderWidth: isBarView ? 0 : 2,
+            borderRadius: isBarView ? 7 : 0,
+            borderSkipped: false,
+            barPercentage: 0.72,
+            categoryPercentage: 0.82
           }]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: isMobileLayout ? '67%' : '62%',
-          onClick: function(event, elements) {
-            if (elements.length) toggleActiveSlice(elements[0].index);
-            else if (activeSliceIndex !== null) {
-              activeSliceIndex = null;
-              applyActiveSlice();
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
-            },
-            tooltip: {
-              enabled: false
-            }
-          }
-        }
+        options: chartOptions
       });
 
       wrap.querySelectorAll('.cat-bars-list .cat-row').forEach((row, index) => {
