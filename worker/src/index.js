@@ -36,7 +36,7 @@
 import { json, corsHeaders, withHeaders } from "./shared/http.js";
 import { readJsonBody, validateAiPayload } from "./shared/validation.js";
 /* Contrato do chat: fonte única compartilhada com o index.html. */
-import { validateChatPayload, CHAT_LIMITS } from "../../ai-chat-contract.js";
+import { validateChatPayload, CHAT_LIMITS } from "../../js/domain/ai-chat-contract.js";
 import { buildChatSystemPrompt } from "./ai/chat-prompt.js";
 import { authenticate } from "./ai/auth.js";
 import { requireAppCheck } from "./ai/appcheck.js";
@@ -51,7 +51,7 @@ import {
 } from "./ai/openrouter.js";
 import { handleFinancial } from "./financial/gateway.js";
 import { runPushDispatch } from "./push/sender.js";
-import { validateExternalSnapshotResult, MCP_LIMITS } from "../../mcp-financial-contract.js";
+import { validateExternalSnapshotResult, MCP_LIMITS } from "../../js/domain/mcp-financial-contract.js";
 import { handleMcpMessage } from "./mcp/protocol.js";
 import { issueMcpToken, revokeMcpToken, putSnapshot } from "./mcp/store.js";
 import { authenticateMcpAny, oauthChallenge, handleOAuthRequest, isOAuthPath } from "./mcp/oauth.js";

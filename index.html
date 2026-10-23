@@ -26,8 +26,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-  <script src="./card-engine-v3-combined.js"></script>
-  <script src="./financial-client.js"></script>
+  <script src="./js/domain/card-engine-v3-combined.js"></script>
+  <script src="./js/domain/financial-client.js"></script>
   <!-- V.20-02 — camada de abstração de anexos/OCR (contrato estável
        globalThis.LivroCaixaOCR). Módulos puros, sem dependência de
        Android/Capacitor: o PWA continua funcional sem recursos nativos. -->
@@ -41,13 +41,13 @@
 <!-- Contrato do Chat IA (V.20-02) — fonte única de limites/validação,
         compartilhada com o Worker. O módulo expõe
         window.LivroCaixaChatContract antes do DOMContentLoaded. -->
-  <script type="module" src="./ai-chat-contract.js"></script>
+  <script type="module" src="./js/domain/ai-chat-contract.js"></script>
   <!-- Persistência do histórico do chat no IndexedDB (V.20-02). -->
-  <script type="module" src="./chat-persistence.js"></script>
+  <script type="module" src="./js/domain/chat-persistence.js"></script>
   <!-- Contrato da Ponte de IA (Fase 1): exposição global
        window.LivroCaixaMcpContract, usada por js/33-mcp-bridge.js para
        montar/sanitizar o envelope externo depositado no Worker. -->
-  <script type="module" src="./mcp-financial-contract.js"></script>
+  <script type="module" src="./js/domain/mcp-financial-contract.js"></script>
 
 
 
@@ -58,10 +58,7 @@
   <link rel="stylesheet" href="./style/features.css?v=20-27">
   <link rel="stylesheet" href="./style/dashboard-chat.css?v=20-24">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
-<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
-<link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
-    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-brands/css/uicons-brands.css">
 </head>
 <body>
 <div id="authOverlay" class="hidden">
@@ -151,7 +148,7 @@
     <i class="fi fi-rr-search" aria-hidden="true"></i><span>Buscar no Livro-Caixa</span>
   </button>
   <div class="app-header-actions">
-    <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><i class="fi fi-rs-bell-notification-social-media" aria-hidden="true"></i><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
+    <button type="button" id="btnNotifications" class="header-icon-button notification-button" aria-label="Abrir avisos" title="Avisos"><i class="fi fi-rr-bell-notification-social-media" aria-hidden="true"></i><span id="notificationBadge" class="notification-badge" hidden>0</span></button>
     <button type="button" id="btnThemeToggle" class="header-icon-button" title="Alternar Tema Escuro/Claro" aria-label="Alternar tema"><i class="fi fi-sr-contrast" aria-hidden="true"></i></button>
     <div id="userBar"></div>
   </div>
@@ -174,7 +171,7 @@
     <div class="drawer-divider"></div>
     <div class="drawer-nav drawer-nav-secondary">
       <button type="button" data-drawer-action="profile"><span><i class="fi fi-rr-user" aria-hidden="true"></i></span> Perfil</button>
-      <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rs-blood-test-tube" aria-hidden="true"></i></span> LABS</button>
+      <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-blood-test-tube" aria-hidden="true"></i></span> LABS</button>
       <button type="button" data-drawer-action="diagnostico"><span><i class="fi fi-rr-clipboard" aria-hidden="true"></i></span> Diagnóstico Geral (LOG)</button>
     </div>
   </aside>
@@ -1584,7 +1581,7 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
 [PATCH] CORREÇÕES / COMPATIBILIDADE
 =========================================================
 -->
-<script src="./emoji-catalog.js?v=20-02"></script>
+<script src="./js/data/emoji-catalog.js?v=20-02"></script>
   <script src="./js/00-bootstrap.js?v=20-25"></script>
   <script src="./js/10-state-utils.js?v=20-25"></script>
   <script src="./js/11-financial-domain.js?v=20-25"></script>
@@ -1647,7 +1644,7 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
 </div>
 
 <script type="module" src="./src/diagnostic/login-diagnostic.js"></script>
-<script src="./patches.js?v=20-02"></script>
+<script src="./js/legacy/patches.js?v=20-02"></script>
 
 
 

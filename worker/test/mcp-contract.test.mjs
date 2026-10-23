@@ -17,8 +17,8 @@ import {
   sanitizeFinancialSnapshot,
   buildExternalSnapshotResult,
   validateExternalSnapshotResult
-} from "../../mcp-financial-contract.js";
-import { CHAT_LIMITS } from "../../ai-chat-contract.js";
+} from "../../js/domain/mcp-financial-contract.js";
+import { CHAT_LIMITS } from "../../js/domain/ai-chat-contract.js";
 
 /* Fixture: snapshot no formato de buildFinancialSnapshot (P3.5),
    incluindo o único ID bruto conhecido (budgets[].categoryId). */
@@ -231,7 +231,7 @@ test("contrato V1 é somente leitura: nenhuma ferramenta de escrita declarada", 
      Se uma ferramenta de escrita for adicionada por engano, este teste
      falha e força uma revisão explícita das regras da V1. */
   const contractSource = fs.readFileSync(
-    new URL("../../mcp-financial-contract.js", import.meta.url),
+    new URL("../../js/domain/mcp-financial-contract.js", import.meta.url),
     "utf8"
   );
   const toolConsts = contractSource.match(/MCP_TOOL_[A-Z_]+/g) || [];

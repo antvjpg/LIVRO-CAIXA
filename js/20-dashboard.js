@@ -349,7 +349,7 @@
        categories/budgets + ciclo financeiro    → gastos e orçamento
        recurringBills (billAppliesToMonth…)      → compromissos pendentes
        goals (goalPlanning/goalCurrentAmount)    → metas
-       LivroCaixaCardEngineV3 + Adapter (card-engine-v3-combined.js)  → faturas, limites, parcelas
+       LivroCaixaCardEngineV3 + Adapter (js/domain/card-engine-v3-combined.js)  → faturas, limites, parcelas
        getDashboardAlerts()                      → camada determinística
      Nenhuma regra financeira é duplicada neste bloco.
      ===================================================================== */

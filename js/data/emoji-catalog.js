@@ -1,6 +1,6 @@
 /* LIVRO-CAIXA — catálogo de emojis de categorias.
    Dado puro (sem lógica). Exposto em window.LC_EMOJI_CATALOG;
-   consumido por app.js: emojiLabel, picker e sugestão de ícone.
+   consumido por js/18-render-core.js e js/99-init.js (emojiLabel, picker e sugestão de ícone).
    Formato: [emoji, label, grupo]. */
 window.LC_EMOJI_CATALOG = [
   ['🏦','Banco','Finanças'],['💳','Cartão','Finanças'],['💰','Renda','Finanças'],['💵','Salário','Finanças'],['🤑','Renda Extra','Finanças'],['🐷','Poupança','Finanças'],['🔁','Assinatura','Finanças'],['⚖️','Imposto','Finanças'],['🛡️','Seguro','Finanças'],['🪙','Cripto','Finanças'],['📈','Investimento','Finanças'],['🧾','Conta','Finanças'],['🤝','Transferência','Finanças'],

@@ -1,6 +1,6 @@
 /* C.O.D.E. — oráculo do ciclo da fatura de cartão (período + janela de compras).
    Execução local: npm run code:oracles
-   Importa o motor REAL (card-engine-v3-combined.js) e valida que a janela
+   Importa o motor REAL (js/domain/card-engine-v3-combined.js) e valida que a janela
    invoiceCycleRange() é o inverso exato de invoicePeriodKeyForDate(). */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -13,7 +13,7 @@ import { readAppJs } from '../../worker/test/helpers/js.mjs';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const { engine } = require(path.join(ROOT, 'card-engine-v3-combined.js'));
+const { engine } = require(path.join(ROOT, 'js/domain/card-engine-v3-combined.js'));
 
 test('invoiceCycle: fechamento dia 10, período 2026-09', () => {
   const card = { id: 'c1', closingDay: 10, dueDay: 17 };

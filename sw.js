@@ -1,9 +1,9 @@
 /* Livro-CAIXA — Branding Orange — PWA shell (network-first HTML, force update) */
-const CACHE_NAME = "livro-caixa-shell-v20-32-opencode2";
+const CACHE_NAME = "livro-caixa-shell-v20-32-opencode4";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./emoji-catalog.js",
+  "./js/data/emoji-catalog.js",
   "./js/00-bootstrap.js",
   "./js/10-state-utils.js",
   "./js/11-financial-domain.js",
@@ -30,7 +30,7 @@ const APP_SHELL = [
   "./js/32-auth-wiring.js",
   "./js/33-mcp-bridge.js",
   "./js/99-init.js",
-  "./patches.js",
+  "./js/legacy/patches.js",
   "./style/themes.css",
   "./style/base.css",
   "./style/components.css",

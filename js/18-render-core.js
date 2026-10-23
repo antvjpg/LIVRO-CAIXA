@@ -1699,7 +1699,7 @@
   /* =====================================================================
      [JS INDICADORES] BCB SGS + Tesouro Nacional — camada de exibição.
 
-     Consome window.LivroCaixaFinancial (financial-client.js) e serve
+     Consome window.LivroCaixaFinancial (js/domain/financial-client.js) e serve
      apenas três superfícies de leitura: seção do Dashboard, contexto da
      IA e uma linha de referência nos cards de Renda Fixa/Tesouro.
 
@@ -1825,8 +1825,8 @@
         if (!financialIndicatorsWarnedNoClient) {
           financialIndicatorsWarnedNoClient = true;
           financialIndicatorsLastError = 'script_ausente';
-          console.warn('[Livro-Caixa] Adaptador de indicadores não encontrado (financial-client.js).');
-          logWarn('Indicadores', 'Adaptador ausente', 'Falha', 'financial-client.js não carregou nesta sessão.');
+          console.warn('[Livro-Caixa] Adaptador de indicadores não encontrado (js/domain/financial-client.js).');
+          logWarn('Indicadores', 'Adaptador ausente', 'Falha', 'js/domain/financial-client.js não carregou nesta sessão.');
           renderIndicatorsSection();
         }
         return null;

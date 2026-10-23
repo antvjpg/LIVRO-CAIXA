@@ -1,4 +1,4 @@
-/* Testes do adaptador de indicadores do frontend (financial-client.js).
+/* Testes do adaptador de indicadores do frontend (js/domain/financial-client.js).
    Execução: node --test worker/test/
 
    Rede: nenhuma chamada real — fetch é substituído por um handler por
@@ -17,7 +17,7 @@ globalThis.fetch = async (url, init) => {
   return net.handler(String(url), init);
 };
 
-const client = (await import(new URL("../../financial-client.js", import.meta.url))).default;
+const client = (await import(new URL("../../js/domain/financial-client.js", import.meta.url))).default;
 
 /* ---------- helpers ---------- */
 

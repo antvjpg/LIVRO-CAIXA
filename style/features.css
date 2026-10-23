@@ -5376,10 +5376,12 @@ body[data-tab="goals"] #universalPeriodBar {
 
 /* NÃO esconder header nem main — chrome igual às outras abas */
 body[data-tab="goals"] > header.app-header,
-body[data-tab="goals"] header.app-header,
+body[data-tab="goals"] header.app-header {
+  display: flex !important;
+}
 body[data-tab="goals"] > main,
 body[data-tab="goals"] main {
-  display: revert !important;
+  display: block !important;
 }
 
 /* O FAB continua disponível em Metas e abre diretamente Nova Meta. */

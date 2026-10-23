@@ -214,7 +214,7 @@
         <span class="goal-card-v2-pace">${monthPace ? '↗ ' + escapeHTML(monthPace) : ''}</span>
         <div class="goal-card-v2-actions">
           <button type="button" class="goal-card-v2-btn goal-edit-btn" onclick="editGoal(${escapeHTML(JSON.stringify(String(goal.id)))})" aria-label="Editar meta">
-            <i class="fi fi-rr-pen" aria-hidden="true"></i>
+            <i class="fi fi-rr-pencil" aria-hidden="true"></i>
           </button>
           <button type="button" class="goal-card-v2-btn goal-delete-btn" onclick="deleteGoal(${escapeHTML(JSON.stringify(String(goal.id)))})" aria-label="Excluir meta">
             <i class="fi fi-rr-trash" aria-hidden="true"></i>

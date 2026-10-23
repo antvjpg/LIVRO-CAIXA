@@ -20,7 +20,7 @@ import {
   validateConversationContext,
   validateFinancialSnapshot,
   normalizeConversationContext
-} from "../../ai-chat-contract.js";
+} from "../../js/domain/ai-chat-contract.js";
 import { CHAT_SYSTEM_PROMPT_VERSION, buildChatSystemPrompt, splitSnapshot } from "../src/ai/chat-prompt.js";
 import { UPSTREAM_TIMEOUT_MS } from "../src/ai/openrouter.js";
 
@@ -143,8 +143,8 @@ test("index.html carrega o contrato compartilhado (sem limites duplicados)", asy
   const html = await fs.readFile(new URL("../../index.html", import.meta.url), "utf8");
 
   assert.ok(
-    /<script[^>]*type="module"[^>]*src="\.\/ai-chat-contract\.js"|<script[^>]*src="\.\/ai-chat-contract\.js"[^>]*type="module"/.test(html),
-    "index.html deve carregar ./ai-chat-contract.js como módulo"
+    /<script[^>]*type="module"[^>]*src="\.\/js\/domain\/ai-chat-contract\.js"|<script[^>]*src="\.\/js\/domain\/ai-chat-contract\.js"[^>]*type="module"/.test(html),
+    "index.html deve carregar ./js/domain/ai-chat-contract.js como módulo"
   );
   assert.ok(
     !/MESSAGE_MAX_CHARS\s*[:=]\s*2000/.test(html),

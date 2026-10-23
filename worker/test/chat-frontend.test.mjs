@@ -19,7 +19,7 @@ import {
   createChatSession,
   fitChatSnapshotToBudget,
   snapshotHasData
-} from "../../ai-chat-contract.js";
+} from "../../js/domain/ai-chat-contract.js";
 import { readAppCss } from "./helpers/css.mjs";
 import { readAppJs } from "./helpers/js.mjs";
 
@@ -325,8 +325,8 @@ test("máquina: edição no meio do voo preserva o token (truncate antes do comm
 /* ----------------------------- fiação no HTML ------------------------------ */
 
 test("index.html: contrato carregado como módulo antes do DOMContentLoaded", () => {
-  assert.match(html, /<script type="module" src="\.\/ai-chat-contract\.js"><\/script>/);
-  assert.ok(html.indexOf('src="./ai-chat-contract.js"') > -1, "script do contrato presente");
+  assert.match(html, /<script type="module" src="\.\/js\/domain\/ai-chat-contract\.js"><\/script>/);
+  assert.ok(html.indexOf('src="./js/domain/ai-chat-contract.js"') > -1, "script do contrato presente");
   assert.ok(js.indexOf("document.addEventListener('DOMContentLoaded'") > -1,
     "bootstrap em DOMContentLoaded presente (app.js)");
 });

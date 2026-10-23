@@ -2,6 +2,7 @@
 
 > Documento técnico da auditoria e das alterações realizadas.
 > Data: 19/10/2026 · Viewport: **1440×900** · Chromium 153 (Playwright) · Tema claro.
+> Revisão: 22/10/2026 · `main` = `2154a82` · reexecutada em 23/10/2026 — ver §11.
 
 ---
 
@@ -21,7 +22,7 @@ em `js/24-automation-render.js:300` e por isso não aparece numa varredura está
 
 | Arquivo | Ação | Situação | Resumo |
 |---|---|---|---|
-| `AGENTS.md` | alterado | commit `d7b1579` (main) | §4: removida a afirmação de que existe `app.js`; registrado o split real em `js/00-bootstrap.js`…`js/33-mcp-bridge.js`, `js/99-init.js`, `patches.js` e CSS em `style/*.css` |
+| `AGENTS.md` | alterado | commit `d7b1579` (main) | §4: removida a afirmação de que existe `app.js`; registrado o split real em `js/00-bootstrap.js`…`js/33-mcp-bridge.js`, `js/99-init.js`, patches (hoje `js/legacy/patches.js`) e CSS em `style/*.css` |
 | `index.html` | alterado | **commitado** | 4 correções visuais (ver §3) |
 | `style/features.css` | alterado | **commitado** | 5 correções visuais (ver §3) |
 | `style/components.css` | alterado | **commitado** | 1 estado vazio (ver §3) |
@@ -176,31 +177,31 @@ injeta conteúdo (`:empty` deixa de valer).
 | `panelBanco` | `openBankManagementPanel` | 640×350 | 2 | não |
 | `panelCategoria` | classe (forçado) | 640×346 | 2 | não |
 | `panelFiltros` | classe (forçado) | 640×630 | 7 | não |
-| `panelFeatureProfile` | `openFeatureProfile` | 880×467 | 11 | não |
-| `panelDiagnostico` | `openDiagnostics` | 640×280 | 3 | não |
+| `panelFeatureProfile` | `openFeatureProfile` | 880×477 | 11 | não |
+| `panelDiagnostico` | `openDiagnostics` | 640×294 | 3 | não |
 | `panelTransferencia` | classe (forçado) | 640×520 | 6 | não |
 | `panelBill` | `openBillModal` | 640×828 | 13 | 993→826 |
-| `panelBillLaunch` | classe (forçado) | 640×263 | 1 | não |
+| `panelBillLaunch` | classe (forçado) | 640×271 | 1 | não |
 | `panelReceivable` | `openReceivableModal` | 640×729 | 7 | não |
 | `panelBillShare` | classe (forçado) | 700×511 | 1 | não |
 | `panelCard` | `openCardModal` | 640×735 | 8 | não |
 | `panelPurchase` | `openPurchaseModal` | **bloqueado** | — | — |
 | `panelInvest` | `openNewInvestModal` | 640×820 | 13 | 916→818 |
-| `panelPocket` | `openNewPocketModal` | 640×662 | 6 | não |
+| `panelPocket` | `openNewPocketModal` | 640×682 | 6 | não |
 | `panelPocketMovement` | classe (forçado) | 640×462 | 3 | não |
-| `panelInvestMovement` | classe (forçado) | 640×629 | 5 | não |
-| `panelCryptoReconcile` | classe (forçado) | 700×253 | 1 | não |
-| `panelExportFormat` | classe (forçado) | 640×314 | 0 | não |
-| `panelEntryHistory` | classe (forçado) | 700×97 | 0 | não |
+| `panelInvestMovement` | classe (forçado) | 640×639 | 5 | não |
+| `panelCryptoReconcile` | classe (forçado) | 640×283 | 1 | não |
+| `panelExportFormat` | classe (forçado) | 640×312 | 0 | não |
+| `panelEntryHistory` | classe (forçado) | 640×110 | 0 | não |
 | `panelPaste` | classe (forçado) | 640×464 | 1 | não |
-| `panelImport` | classe (forçado) | 700×286 | 0 | não |
+| `panelImport` | classe (forçado) | 640×310 | 0 | não |
 | `panelGoalForm` | `openNewGoalModal` | 440×810 | 9 | interna 657→617 |
 | `panelAiChat` | `openAiChat` | 640×558 | 2 | não |
 | `panelOcrReview` | classe (forçado) | 700×220 | 0 | não |
 | `panelCustomPeriod` | `openCustomPeriodModal` | 700×216 | 2 | não |
 
 **Resultado automático:** 0 overflows horizontais, 0 elementos fora da viewport,
-0 controles sem altura, 0 fontes < 11px.
+0 controles sem altura; 1 controle com fonte `10px` (`#btnReadTransferReceipt`, ver §11.5).
 
 ---
 
@@ -272,6 +273,14 @@ node --check e2e/visual/audit-modais.cjs
 node e2e/visual/audit-modais.cjs
 ```
 
+Em Termux/Android (usa o Chromium do sistema):
+
+```bash
+node --check e2e/visual/audit-modais.cjs
+PW_CHROMIUM_EXECUTABLE=/data/data/com.termux/files/usr/bin/chromium-browser \
+  node e2e/visual/audit-modais.cjs
+```
+
 Saída:
 
 - `e2e/visual/saida/modais/*.png` — screenshots (apagados após a análise)
@@ -298,4 +307,87 @@ O harness sobe o próprio servidor; não é necessário `python` nem `npx`.
    (reset diário à meia-noite do Pacífico ≈ **04:00 BRT**), validando os modais do §6.4.
 2. Reexecutar o workflow `C.O.D.E. E2E`, que falhou por `HTTP 429` e não por código.
 3. Validar as alterações de CSS em tema escuro e em telas estreitas (a auditoria cobriu
-   apenas desktop, tema claro).
+   apenas desktop, tema claro). Ver o que já foi coberto em §11.3.
+
+---
+
+## 11. Revisão pós-sincronização com o GitHub — 22/10/2026
+
+> As seções 1–9 registram a rodada de 19/10. Esta seção revalida o documento contra o
+> estado atual do repositório e registra o que mudou depois dela. Onde houver conflito,
+> **o código atual é a fonte de verdade** (AGENTS.md §2 e §45).
+
+### 11.1 Sincronização
+
+`git pull --ff-only origin main`: `ae4a28b` → **`2154a82`** (4 commits), árvore limpa,
+`main` sincronizada com `origin/main`.
+
+| Commit | Tema |
+|---|---|
+| `7ac8061` | correções de UI desta auditoria + harness (`e2e/visual/`) |
+| `92af9de` | merge de integração (sem mudança visual líquida relevante) |
+| `03ff201` | renomeia snapshot financeiro; **remove abas do topo**; Perfil no drawer; perfil claro/escuro |
+| `2154a82` | **tema escuro dos cards de total**; toggle pizza/barra em categorias; alinhamentos |
+
+### 11.2 Mudanças que afetam esta auditoria
+
+| Commit | Arquivos | Efeito |
+|---|---|---|
+| `03ff201` | `index.html`, `style/layout.css`, `style/features.css`, `js/22-profile.js` | remove o bloco `.nav-tabs` do `<main>` (8 botões); adiciona "Perfil" ao drawer; ajusta superfícies do perfil; sobe `?v=` de CSS/JS |
+| `2154a82` | `style/layout.css`, `style/components.css`, `style/features.css`, `js/18-render-core.js`, `index.html` | `body.dark-mode .balance-card.total` para **todos** os cards de total (inclui Caixinhas e Investimentos); toggle de visualização do gráfico de categorias; cantos/ barras arredondadas; `#universalPeriodBar{display:block}` |
+| `7ac8061` | `index.html`, `style/features.css`, `style/components.css`, `e2e/visual/*` | é o commit que trouxe as correções do §3 e o harness; nada a refazer |
+
+### 11.3 Situação dos achados anteriores
+
+| Achado (19/10) | Estado em `2154a82` |
+|---|---|
+| Navegação triplicada: 8 abas no topo + bottom nav + drawer | **Parcialmente resolvido.** As abas do topo foram removidas; restam o drawer (desktop) e a bottom nav mobile com 5 destinos (`dashboard`, `pockets`, `caixa`, `invest`, `profile`) |
+| "Dashboard" vs "Visão geral" | **Mudou de forma.** O drawer agora tem "Livro-Caixa" (`index.html:165`) e "Dashboard" (`index.html:166`) como entradas distintas; "Visão geral" deixou de existir como rótulo |
+| Tipografia pequena | **Mantido.** Contagem atual: 26 declarações `8px`, 88 `9px`, 119 `10px` em `style/*.css` |
+| `alert()` vs toast | **Mantido.** 86 `alert(` contra 42 usos de toast em `js/*.js` |
+| `features.css` extenso e com muitos `!important` | **Mantido/agravado.** 6.710 linhas e 299 `!important` |
+| Estilos inline em `index.html` | **Mantido.** `7ac8061` acrescentou `style="grid-column:1/-1"` e `style="max-width:320px"` |
+| Tema escuro não validado (§10.3) | **Parcialmente resolvido.** `2154a82` cobre `.balance-card.total`; os 26 modais continuam sem validação em tema escuro |
+| Aria labels, focus trap do drawer, dependência de CDN, label duplicado da barra de período | **Não revalidados nesta revisão** |
+| **Novo (23/10):** fonte de 10px em controle | `panelTransferencia` → `button#btnReadTransferReceipt` com `font-size: 10px`; único item de `textoIlegivel` no JSON |
+
+### 11.4 Regressão encontrada na revisão
+
+O link "Ver visão geral" do resumo de fluxo (`js/20-dashboard.js:75`) ainda executa
+`document.getElementById('tabBtnDashboard')?.click()`, mas esse botão foi removido em
+`03ff201`. O `?.` evita o erro, porém **o clique não faz nada** — link inerte.
+
+Resíduos relacionados, registrados e **não removidos** (AGENTS.md §43/§44):
+
+- `js/99-init.js:247-253` — `classList.toggle('active')` em `tabBtn*` inexistentes;
+- CSS morto de `.nav-tabs` / `.nav-tab` em `style/base.css`, `style/layout.css` e
+  `style/features.css`.
+
+### 11.5 Reexecução (23/10/2026)
+
+O harness **foi reexecutado** neste ambiente (Termux/Android) e concluiu os 26 modais:
+
+- `24/26` medidos; os 2 restantes são os bloqueios esperados do app (`panelNovo`,
+  `panelPurchase`).
+- `0` overflows horizontais, `0` elementos fora da viewport, `0` controles sem altura.
+- `1` controle com fonte `10px` (`#btnReadTransferReceipt`, `panelTransferencia`).
+  O filtro de "achados" do harness não contabiliza `textoIlegivel` — por isso o resumo
+  diz "2 achados" (apenas os bloqueios), embora o JSON registre esse item.
+- Métricas e tamanhos de §5 atualizados; `e2e/visual/saida/RELATORIO.md` e
+  `auditoria-modais.json` regenerados com o carimbo de 23/10.
+- PNGs gerados em `e2e/visual/saida/modais/` e apagados após a análise, como na rodada
+  original.
+
+Ainda **não** coberto: tema escuro e telas estreitas.
+
+### 11.6 Suporte a Termux/Android no harness
+
+`e2e/visual/audit-modais.cjs` passou a:
+
+- declarar `process.platform = 'linux'` **somente quando** roda em Android, antes de
+  carregar o Playwright (que aborta com `Unsupported platform: android`);
+- usar o Chromium do sistema via `PW_CHROMIUM_EXECUTABLE` (ou o caminho padrão do Termux),
+  com `--no-sandbox --disable-dev-shm-usage`.
+
+Sem essas condições o caminho de execução é idêntico ao anterior. É infraestrutura de QA:
+nenhum arquivo de produção foi tocado.

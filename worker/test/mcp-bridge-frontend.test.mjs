@@ -17,12 +17,12 @@ const read = (rel) => fs.readFileSync(path.join(ROOT, rel), "utf8");
 
 const html = read("index.html");
 const bridgeJs = read("js/33-mcp-bridge.js");
-const contractJs = read("mcp-financial-contract.js");
+const contractJs = read("js/domain/mcp-financial-contract.js");
 const swJs = read("sw.js");
 const syntaxCheck = read("e2e/scripts/syntax-check.cjs");
 
 test("index.html carrega o contrato MCP como módulo e o bridge após a auth", () => {
-  assert.ok(html.includes('<script type="module" src="./mcp-financial-contract.js"></script>'));
+  assert.ok(html.includes('<script type="module" src="./js/domain/mcp-financial-contract.js"></script>'));
   const bridgeAt = html.indexOf('<script src="./js/33-mcp-bridge.js');
   const authAt = html.indexOf('<script src="./js/32-auth-wiring.js');
   assert.ok(bridgeAt > -1, "script do bridge ausente");
@@ -55,7 +55,7 @@ test("contrato MCP publica a moldura global usada pelo bridge", () => {
 test("Service Worker e syntax-check cobrem o novo módulo", () => {
   assert.ok(swJs.includes('"./js/33-mcp-bridge.js"'), "APP_SHELL sem o bridge");
   assert.ok(syntaxCheck.includes("'js/33-mcp-bridge.js'"), "syntax-check sem o bridge");
-  assert.ok(syntaxCheck.includes("'mcp-financial-contract.js'"), "syntax-check sem o contrato MCP");
+  assert.ok(syntaxCheck.includes("'js/domain/mcp-financial-contract.js'"), "syntax-check sem o contrato MCP");
 });
 
 test("bridge: token nunca vai para armazenamento local nem cookie", () => {

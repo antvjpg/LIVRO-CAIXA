@@ -20,7 +20,19 @@
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
+
+/* Termux/Android: o Playwright aborta com "Unsupported platform: android" ao
+   resolver o cache de navegadores. Declaramos 'linux' antes de carregá-lo e
+   aceitamos um Chromium do sistema via PW_CHROMIUM_EXECUTABLE. Sem a variável
+   e fora do Android, o comportamento é o mesmo de antes. */
+const ANDROID = process.platform === 'android';
+if (ANDROID) Object.defineProperty(process, 'platform', { value: 'linux' });
 const { chromium } = require('@playwright/test');
+
+const EXECUTAVEL_CHROMIUM = process.env.PW_CHROMIUM_EXECUTABLE
+  || (ANDROID && fs.existsSync('/data/data/com.termux/files/usr/bin/chromium-browser')
+    ? '/data/data/com.termux/files/usr/bin/chromium-browser'
+    : null);
 
 const ROOT = path.resolve(__dirname, '..', '..');
 
@@ -290,7 +302,9 @@ async function medir(page, id) {
   const baseUrl = externo || embutido.url;
   console.log(`[visual] servidor ${externo ? 'externo' : 'embutido'}: ${baseUrl}`);
 
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(EXECUTAVEL_CHROMIUM
+    ? { executablePath: EXECUTAVEL_CHROMIUM, args: ['--no-sandbox', '--disable-dev-shm-usage'] }
+    : {});
   const context = await browser.newContext({
     viewport: VIEWPORT,
     deviceScaleFactor: 1,

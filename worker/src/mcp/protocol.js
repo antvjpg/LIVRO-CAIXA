@@ -20,7 +20,7 @@ import {
   MCP_CONTRACT_VERSION,
   MCP_TOOL_GET_FINANCIAL_SNAPSHOT,
   validateExternalSnapshotResult
-} from "../../../mcp-financial-contract.js";
+} from "../../../js/domain/mcp-financial-contract.js";
 import { getSnapshot } from "./store.js";
 
 export const MCP_PROTOCOL_VERSION = "2025-06-18";

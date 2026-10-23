@@ -11,7 +11,7 @@ import assert from "node:assert/strict";
 import crypto from "node:crypto";
 
 import { makeKvMock } from "./helpers/kv.mjs";
-import { buildExternalSnapshotResult } from "../../mcp-financial-contract.js";
+import { buildExternalSnapshotResult } from "../../js/domain/mcp-financial-contract.js";
 
 const PROJ = "livro-caixa-54357";
 const ORIGIN = "https://antvjpg.github.io";

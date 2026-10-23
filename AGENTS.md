@@ -94,7 +94,7 @@ O projeto historicamente possui:
 
 - uma aplicação SPA;
 - JavaScript vanilla;
-- HTML/CSS/JavaScript em arquivos separados (no momento desta documentação: `index.html` é HTML puro, sem JS inline — o JS vive em `js/00-bootstrap.js` … `js/33-mcp-bridge.js` + `js/99-init.js` (dispatcher de `DOMContentLoaded`) e `patches.js` (remendos); o CSS vive em `style/*.css`);
+- HTML/CSS/JavaScript em arquivos separados (no momento desta documentação: `index.html` é HTML puro, sem JS inline — o JS vive em `js/00-bootstrap.js` … `js/33-mcp-bridge.js` + `js/99-init.js` (dispatcher de `DOMContentLoaded`), com `js/legacy/patches.js` (remendos), `js/domain/*` (domínio) e `js/data/emoji-catalog.js` (dados); o CSS vive em `style/*.css`);
 - o antigo `app.js` **não existe mais**: foi dividido em `js/`. Referências a `app.js` em auditorias, READMEs e documentação antiga são **históricas** — localize o arquivo atual antes de confiar nelas;
 - Firebase;
 - Firestore;

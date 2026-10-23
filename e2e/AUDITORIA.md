@@ -3,7 +3,7 @@
 Data: 2026-09-27 · Repositório: `antvjpg/LIVRO-CAIXA` · Branch: `feature/code-qa` · HEAD `1152fbc`
 Método: inspeção direta de código (nenhuma alteração no aplicativo foi feita nesta fase).
 
-> **Atualizado em 03/10/2026 (HEAD `208c0eb`).** A auditoria original foi feita em `1152fbc`, quando todo o JS era inline em `index.html`. Desde `208c0eb`, `index.html` é HTML puro (1.514 linhas, sem JS inline) e o JS vive em `app.js` (principal) + `patches.js` (remendos). As referências de JS abaixo já apontam para `app.js` (relocalizadas por nome de função em 03/10/2026); as referências `index.html:<linha>` remanescentes são HTML (linhas ≤ ~1450, inalteradas).
+> **Atualizado em 23/10/2026 (main `2154a82` + refatoração de módulos).** A auditoria original foi feita em `1152fbc`, quando todo o JS era inline em `index.html`. Em `208c0eb` o JS passou para `app.js` + `patches.js`; na refatoração atual `app.js` foi dividido em `js/` (`js/00-bootstrap.js`…`js/33-mcp-bridge.js`, `js/99-init.js`), com `js/legacy/patches.js`, `js/domain/*` e `js/data/emoji-catalog.js`. As referências `app.js:<linha>` abaixo são **históricas** (o conteúdo foi preservado nos módulos `js/`); as referências `index.html:<linha>` são HTML.
 
 ---
 
@@ -11,11 +11,11 @@ Método: inspeção direta de código (nenhuma alteração no aplicativo foi fei
 
 | Camada | Achado | Onde |
 |---|---|---|
-| Frontend | SPA única: `index.html` (1.514 linhas, HTML puro) + `app.js` (13.694) + `patches.js` (125), CSS em `styles.css` | raiz |
-| PWA | Service Worker network-first HTML/JS/CSS, shell precacheado (inclui `app.js`/`patches.js`) | `sw.js:2` (`CACHE_NAME=livro-caixa-shell-v20-02-opencode2`) |
+| Frontend | SPA única: `index.html` (HTML puro) + módulos `js/` (`js/00`…`js/33`, `js/99-init.js`, `js/legacy/patches.js`, `js/domain/*`, `js/data/emoji-catalog.js`), CSS em `style/*.css` | raiz + `js/` |
+| PWA | Service Worker network-first HTML/JS/CSS, shell precacheado (módulos `js/`, patches, emoji e CSS) | `sw.js:2` (`CACHE_NAME=livro-caixa-shell-v20-32-opencode4`) |
 | Backend | Cloudflare Worker `livro-caixa-ai` (IA + indicadores `/financial`) | `worker/wrangler.toml`, `worker/src/index.js` |
-| Indicadores | `financial-client.js` (BCB SGS + Tesouro) — única porta de entrada do FE para `/financial` | `financial-client.js:1-35` |
-| Cartões | Motor próprio: `card-engine-v3-combined.js` + `card-adapter.js` | raiz |
+| Indicadores | `js/domain/financial-client.js` (BCB SGS + Tesouro) — única porta de entrada do FE para `/financial` | `js/domain/financial-client.js:1-35` |
+| Cartões | Motor próprio: `js/domain/card-engine-v3-combined.js` (engine + adapter no mesmo arquivo) | `js/domain/` |
 | Build | **Não existe** — app estático servido direto (dev em `http://127.0.0.1:8000`) | `worker/wrangler.toml:10` (`ALLOW_ORIGINS` inclui `localhost:8000`) |
 | Publicação | GitHub Pages `https://antvjpg.github.io` + Worker (deploy automático) | `.github/workflows/worker.yml` |
 
@@ -47,7 +47,7 @@ Método: inspeção direta de código (nenhuma alteração no aplicativo foi fei
 | Saldo de conta | `initial + Σ in − Σ out` | `bankBalance()` `app.js:2033` |
 | Patrimônio | bancos + caixinhas + investimentos (**não** usa lançamentos direto) | `renderBalances()` `app.js:2294` |
 | Investimentos | valor por tipo (renda fixa/crypto/mercado) | `totalInvestBalance()` `app.js:2043` |
-| Cartões/faturas | motor dedicado | `card-engine-v3-combined.js` |
+| Cartões/faturas | motor dedicado | `js/domain/card-engine-v3-combined.js` |
 | Estados | `currentStateSnapshot()` `app.js:1551` | **não exposto em `window`** |
 
 Selectors estáveis encontrados (usados pelo C.O.D.E., todos existentes — nenhum atributo novo foi adicionado ao app):

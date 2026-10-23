@@ -1,6 +1,6 @@
 {
-  "geradoEm": "2026-10-19T13:43:47.686Z",
-  "url": "http://127.0.0.1:63137",
+  "geradoEm": "2026-10-23T00:31:26.465Z",
+  "url": "http://127.0.0.1:33667",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -18,7 +18,7 @@
       "id": "panelBanco",
       "status": "ok",
       "via": "openBankManagementPanel",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelBanco.png",
+      "screenshot": "e2e/visual/saida/modais/panelBanco.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
@@ -102,7 +102,7 @@
       "id": "panelCategoria",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelCategoria.png",
+      "screenshot": "e2e/visual/saida/modais/panelCategoria.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
@@ -186,7 +186,7 @@
       "id": "panelFiltros",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelFiltros.png",
+      "screenshot": "e2e/visual/saida/modais/panelFiltros.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
@@ -354,13 +354,13 @@
       "id": "panelFeatureProfile",
       "status": "ok",
       "via": "openFeatureProfile",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelFeatureProfile.png",
+      "screenshot": "e2e/visual/saida/modais/panelFeatureProfile.png",
       "rolagemFim": null,
       "painel": {
         "x": 280,
-        "y": 205,
+        "y": 200,
         "largura": 880,
-        "altura": 467
+        "altura": 477
       },
       "exposto": true,
       "overlayEstado": {
@@ -384,81 +384,81 @@
       "controles": [
         {
           "el": "input#ciInitial",
-          "altura": 38,
+          "altura": 44,
           "largura": 198,
-          "topo": 405,
+          "topo": 398,
           "esquerda": 307,
-          "raio": "2px",
+          "raio": "10px",
           "borda": "1px solid rgb(216, 210, 193)",
           "fundo": "rgb(239, 235, 224)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "10px 12px"
         },
         {
           "el": "input#ciMonthly",
-          "altura": 38,
+          "altura": 44,
           "largura": 198,
-          "topo": 405,
+          "topo": 398,
           "esquerda": 517,
-          "raio": "2px",
+          "raio": "10px",
           "borda": "1px solid rgb(216, 210, 193)",
           "fundo": "rgb(239, 235, 224)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "10px 12px"
         },
         {
           "el": "input#ciRate",
-          "altura": 40,
-          "largura": 85,
-          "topo": 403,
+          "altura": 44,
+          "largura": 81,
+          "topo": 398,
           "esquerda": 726,
-          "raio": "2px",
+          "raio": "10px",
           "borda": "1px solid rgb(216, 210, 193)",
           "fundo": "rgb(239, 235, 224)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "10px 12px"
         },
         {
           "el": "select#ciRatePeriod",
-          "altura": 40,
-          "largura": 107,
-          "topo": 403,
-          "esquerda": 817,
-          "raio": "2px",
+          "altura": 44,
+          "largura": 111,
+          "topo": 398,
+          "esquerda": 813,
+          "raio": "10px",
           "borda": "1px solid rgb(216, 210, 193)",
           "fundo": "rgb(239, 235, 224)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "10px 12px"
         },
         {
           "el": "input#ciMonths",
-          "altura": 40,
-          "largura": 105,
-          "topo": 403,
+          "altura": 44,
+          "largura": 101,
+          "topo": 398,
           "esquerda": 936,
-          "raio": "2px",
+          "raio": "10px",
           "borda": "1px solid rgb(216, 210, 193)",
           "fundo": "rgb(239, 235, 224)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "10px 12px"
         },
         {
           "el": "select#ciTermUnit",
-          "altura": 40,
-          "largura": 87,
-          "topo": 403,
-          "esquerda": 1046,
-          "raio": "2px",
+          "altura": 44,
+          "largura": 91,
+          "topo": 398,
+          "esquerda": 1042,
+          "raio": "10px",
           "borda": "1px solid rgb(216, 210, 193)",
           "fundo": "rgb(239, 235, 224)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "10px 12px"
         },
         {
           "el": "input#ciBenchCdi",
           "altura": 16,
           "largura": 16,
-          "topo": 482,
+          "topo": 481,
           "esquerda": 318,
           "raio": "0px",
           "borda": "0px none rgb(26, 36, 23)",
@@ -470,7 +470,7 @@
           "el": "input#ciBenchSelic",
           "altura": 16,
           "largura": 16,
-          "topo": 482,
+          "topo": 481,
           "esquerda": 435,
           "raio": "0px",
           "borda": "0px none rgb(26, 36, 23)",
@@ -482,7 +482,7 @@
           "el": "input#ciBenchPoupanca",
           "altura": 16,
           "largura": 16,
-          "topo": 482,
+          "topo": 481,
           "esquerda": 559,
           "raio": "0px",
           "borda": "0px none rgb(26, 36, 23)",
@@ -494,7 +494,7 @@
           "el": "input#ciBenchCustom",
           "altura": 16,
           "largura": 16,
-          "topo": 482,
+          "topo": 481,
           "esquerda": 662,
           "raio": "0px",
           "borda": "0px none rgb(26, 36, 23)",
@@ -504,21 +504,21 @@
         },
         {
           "el": "input#ciBenchmarkRate",
-          "altura": 38,
+          "altura": 44,
           "largura": 320,
-          "topo": 537,
+          "topo": 536,
           "esquerda": 307,
-          "raio": "2px",
+          "raio": "10px",
           "borda": "1px solid rgb(216, 210, 193)",
           "fundo": "rgb(239, 235, 224)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "10px 12px"
         },
         {
           "el": "button#btnRunCompoundCalc.primary.compound-calc-run",
           "altura": 42,
           "largura": 826,
-          "topo": 588,
+          "topo": 593,
           "esquerda": 307,
           "raio": "4px",
           "borda": "1px solid rgb(95, 122, 67)",
@@ -529,8 +529,8 @@
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 465,
-      "clientH": 465,
+      "scrollH": 475,
+      "clientH": 475,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -546,13 +546,13 @@
       "id": "panelDiagnostico",
       "status": "ok",
       "via": "openDiagnostics",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelDiagnostico.png",
+      "screenshot": "e2e/visual/saida/modais/panelDiagnostico.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
-        "y": 298,
+        "y": 291,
         "largura": 640,
-        "altura": 280
+        "altura": 294
       },
       "exposto": true,
       "overlayEstado": {
@@ -578,7 +578,7 @@
           "el": "select#logFilterType",
           "altura": 40,
           "largura": 195,
-          "topo": 419,
+          "topo": 426,
           "esquerda": 419,
           "raio": "2px",
           "borda": "1px solid rgb(216, 210, 193)",
@@ -590,7 +590,7 @@
           "el": "select#logFilterModule",
           "altura": 40,
           "largura": 195,
-          "topo": 419,
+          "topo": 426,
           "esquerda": 622,
           "raio": "2px",
           "borda": "1px solid rgb(216, 210, 193)",
@@ -602,7 +602,7 @@
           "el": "input#logFilterText",
           "altura": 40,
           "largura": 195,
-          "topo": 419,
+          "topo": 426,
           "esquerda": 826,
           "raio": "2px",
           "borda": "1px solid rgb(216, 210, 193)",
@@ -614,7 +614,7 @@
           "el": "button#btnCopyDiagnostico",
           "altura": 41,
           "largura": 297,
-          "topo": 518,
+          "topo": 525,
           "esquerda": 419,
           "raio": "4px",
           "borda": "1px solid rgb(26, 36, 23)",
@@ -626,7 +626,7 @@
           "el": "button#btnClearDiagnostico",
           "altura": 41,
           "largura": 297,
-          "topo": 518,
+          "topo": 525,
           "esquerda": 724,
           "raio": "4px",
           "borda": "1px solid rgb(26, 36, 23)",
@@ -637,8 +637,8 @@
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 278,
-      "clientH": 278,
+      "scrollH": 292,
+      "clientH": 292,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -654,7 +654,7 @@
       "id": "panelTransferencia",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelTransferencia.png",
+      "screenshot": "e2e/visual/saida/modais/panelTransferencia.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
@@ -791,11 +791,11 @@
       "id": "panelBill",
       "status": "ok",
       "via": "openBillModal",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelBill.png",
+      "screenshot": "e2e/visual/saida/modais/panelBill.png",
       "rolagemFim": {
         "respiroInferior": 23,
         "ultimoElemento": "button#billSalvar",
-        "screenshot": "e2e\\visual\\saida\\modais\\panelBill--fim.png"
+        "screenshot": "e2e/visual/saida/modais/panelBill--fim.png"
       },
       "painel": {
         "x": 400,
@@ -994,13 +994,13 @@
       "id": "panelBillLaunch",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelBillLaunch.png",
+      "screenshot": "e2e/visual/saida/modais/panelBillLaunch.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
-        "y": 307,
+        "y": 303,
         "largura": 640,
-        "altura": 263
+        "altura": 271
       },
       "exposto": true,
       "overlayEstado": {
@@ -1015,7 +1015,7 @@
         "visibility": "visible",
         "opacity": "1"
       },
-      "noTopoNoCentro": "label",
+      "noTopoNoCentro": "div#panelBillLaunch.panel.open",
       "centro": {
         "x": 720,
         "y": 438
@@ -1024,21 +1024,21 @@
       "controles": [
         {
           "el": "select#billLaunchBank",
-          "altura": 40,
+          "altura": 48,
           "largura": 602,
-          "topo": 447,
+          "topo": 443,
           "esquerda": 419,
-          "raio": "2px",
-          "borda": "1px solid rgb(216, 210, 193)",
-          "fundo": "rgb(239, 235, 224)",
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "12px 14px"
         },
         {
           "el": "button#billLaunchConfirm.primary",
           "altura": 52,
           "largura": 602,
-          "topo": 499,
+          "topo": 503,
           "esquerda": 419,
           "raio": "999px",
           "borda": "0px none rgb(247, 250, 246)",
@@ -1049,8 +1049,8 @@
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 261,
-      "clientH": 261,
+      "scrollH": 269,
+      "clientH": 269,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -1066,7 +1066,7 @@
       "id": "panelReceivable",
       "status": "ok",
       "via": "openReceivableModal",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelReceivable.png",
+      "screenshot": "e2e/visual/saida/modais/panelReceivable.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
@@ -1210,7 +1210,7 @@
       "id": "panelBillShare",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelBillShare.png",
+      "screenshot": "e2e/visual/saida/modais/panelBillShare.png",
       "rolagemFim": null,
       "painel": {
         "x": 370,
@@ -1306,7 +1306,7 @@
       "id": "panelCard",
       "status": "ok",
       "via": "openCardModal",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelCard.png",
+      "screenshot": "e2e/visual/saida/modais/panelCard.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
@@ -1469,11 +1469,11 @@
       "id": "panelInvest",
       "status": "ok",
       "via": "openNewInvestModal",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelInvest.png",
+      "screenshot": "e2e/visual/saida/modais/panelInvest.png",
       "rolagemFim": {
         "respiroInferior": 19,
         "ultimoElemento": "div",
-        "screenshot": "e2e\\visual\\saida\\modais\\panelInvest--fim.png"
+        "screenshot": "e2e/visual/saida/modais/panelInvest--fim.png"
       },
       "painel": {
         "x": 400,
@@ -1494,7 +1494,7 @@
         "visibility": "visible",
         "opacity": "1"
       },
-      "noTopoNoCentro": "select#iTipo",
+      "noTopoNoCentro": "input#iCoinGeckoId",
       "centro": {
         "x": 720,
         "y": 438
@@ -1502,7 +1502,7 @@
       "containersRolaveis": [
         {
           "el": "div#panelInvest.panel.open",
-          "scrollH": 916,
+          "scrollH": 908,
           "clientH": 818,
           "visivel": 818
         }
@@ -1512,7 +1512,7 @@
           "el": "input#iNome",
           "altura": 48,
           "largura": 602,
-          "topo": 141,
+          "topo": 228,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1524,7 +1524,7 @@
           "el": "input#iApelido",
           "altura": 48,
           "largura": 602,
-          "topo": 221,
+          "topo": 308,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1536,7 +1536,7 @@
           "el": "input#iCoinGeckoId",
           "altura": 48,
           "largura": 602,
-          "topo": 324,
+          "topo": 411,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1548,7 +1548,7 @@
           "el": "select#iTipo",
           "altura": 48,
           "largura": 602,
-          "topo": 427,
+          "topo": 514,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1559,9 +1559,9 @@
         {
           "el": "input#iUnidades",
           "altura": 48,
-          "largura": 293,
-          "topo": 507,
-          "esquerda": 728,
+          "largura": 602,
+          "topo": 594,
+          "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
           "fundo": "rgb(255, 254, 250)",
@@ -1571,9 +1571,9 @@
         {
           "el": "input#iUnidadesAtual",
           "altura": 48,
-          "largura": 335,
-          "topo": 604,
-          "esquerda": 686,
+          "largura": 602,
+          "topo": 691,
+          "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
           "fundo": "rgb(255, 254, 250)",
@@ -1582,22 +1582,22 @@
         },
         {
           "el": "input#iCotacao",
-          "altura": 38,
-          "largura": 308,
-          "topo": 701,
-          "esquerda": 546,
-          "raio": "2px",
-          "borda": "1px solid rgb(216, 210, 193)",
-          "fundo": "rgb(239, 235, 224)",
+          "altura": 48,
+          "largura": 395,
+          "topo": 788,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "12px 14px"
         },
         {
           "el": "button#btnFetchPrice.quote-fetch-button",
-          "altura": 38,
-          "largura": 161,
-          "topo": 701,
-          "esquerda": 860,
+          "altura": 48,
+          "largura": 201,
+          "topo": 788,
+          "esquerda": 820,
           "raio": "4px",
           "borda": "1px solid rgb(26, 36, 23)",
           "fundo": "rgba(0, 0, 0, 0)",
@@ -1607,9 +1607,9 @@
         {
           "el": "input#iValor",
           "altura": 56,
-          "largura": 436,
-          "topo": 788,
-          "esquerda": 585,
+          "largura": 602,
+          "topo": 123,
+          "esquerda": 419,
           "raio": "0px",
           "borda": "0px none rgb(26, 36, 23)",
           "fundo": "rgba(0, 0, 0, 0)",
@@ -1620,7 +1620,7 @@
           "el": "button#iSalvar.primary",
           "altura": 52,
           "largura": 602,
-          "topo": 875,
+          "topo": 867,
           "esquerda": 419,
           "raio": "999px",
           "borda": "0px none rgb(247, 250, 246)",
@@ -1631,7 +1631,7 @@
       ],
       "overflowX": false,
       "overflowY": true,
-      "scrollH": 916,
+      "scrollH": 908,
       "clientH": 818,
       "bodyOverflowX": false,
       "foraHorizontal": [],
@@ -1648,13 +1648,13 @@
       "id": "panelPocket",
       "status": "ok",
       "via": "openNewPocketModal",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelPocket.png",
+      "screenshot": "e2e/visual/saida/modais/panelPocket.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
-        "y": 107,
+        "y": 97,
         "largura": 640,
-        "altura": 662
+        "altura": 682
       },
       "exposto": true,
       "overlayEstado": {
@@ -1669,7 +1669,7 @@
         "visibility": "visible",
         "opacity": "1"
       },
-      "noTopoNoCentro": "label",
+      "noTopoNoCentro": "div",
       "centro": {
         "x": 720,
         "y": 438
@@ -1680,7 +1680,7 @@
           "el": "input#pNome",
           "altura": 48,
           "largura": 602,
-          "topo": 290,
+          "topo": 280,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1692,7 +1692,7 @@
           "el": "input#pObjetivo",
           "altura": 48,
           "largura": 602,
-          "topo": 370,
+          "topo": 360,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1702,15 +1702,15 @@
         },
         {
           "el": "input#pMetaValor",
-          "altura": 38,
+          "altura": 48,
           "largura": 602,
-          "topo": 450,
+          "topo": 440,
           "esquerda": 419,
-          "raio": "2px",
-          "borda": "1px solid rgb(216, 210, 193)",
-          "fundo": "rgb(239, 235, 224)",
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "12px 14px"
         },
         {
           "el": "select#pBancoOrigem",
@@ -1728,7 +1728,7 @@
           "el": "input#pInicial",
           "altura": 56,
           "largura": 602,
-          "topo": 202,
+          "topo": 192,
           "esquerda": 419,
           "raio": "0px",
           "borda": "0px none rgb(26, 36, 23)",
@@ -1738,21 +1738,21 @@
         },
         {
           "el": "input#pAtual",
-          "altura": 38,
+          "altura": 48,
           "largura": 602,
           "topo": 623,
           "esquerda": 419,
-          "raio": "2px",
-          "borda": "1px solid rgb(216, 210, 193)",
-          "fundo": "rgb(247, 245, 239)",
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "12px 14px"
         },
         {
           "el": "button#pSalvar.primary",
           "altura": 52,
           "largura": 602,
-          "topo": 698,
+          "topo": 708,
           "esquerda": 419,
           "raio": "999px",
           "borda": "0px none rgb(247, 250, 246)",
@@ -1763,8 +1763,8 @@
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 660,
-      "clientH": 660,
+      "scrollH": 680,
+      "clientH": 680,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -1780,7 +1780,7 @@
       "id": "panelPocketMovement",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelPocketMovement.png",
+      "screenshot": "e2e/visual/saida/modais/panelPocketMovement.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
@@ -1912,13 +1912,13 @@
       "id": "panelInvestMovement",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelInvestMovement.png",
+      "screenshot": "e2e/visual/saida/modais/panelInvestMovement.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
-        "y": 124,
+        "y": 119,
         "largura": 640,
-        "altura": 629
+        "altura": 639
       },
       "exposto": true,
       "overlayEstado": {
@@ -1944,7 +1944,7 @@
           "el": "button#imAporte.active-in",
           "altura": 40,
           "largura": 193,
-          "topo": 225,
+          "topo": 220,
           "esquerda": 425,
           "raio": "11px",
           "borda": "0px none rgb(247, 250, 246)",
@@ -1956,7 +1956,7 @@
           "el": "button#imResgate",
           "altura": 40,
           "largura": 193,
-          "topo": 225,
+          "topo": 220,
           "esquerda": 624,
           "raio": "11px",
           "borda": "0px none rgb(76, 90, 82)",
@@ -1968,7 +1968,7 @@
           "el": "button#imRendimento",
           "altura": 40,
           "largura": 193,
-          "topo": 225,
+          "topo": 220,
           "esquerda": 822,
           "raio": "11px",
           "borda": "0px none rgb(76, 90, 82)",
@@ -1980,7 +1980,7 @@
           "el": "input#imData",
           "altura": 48,
           "largura": 602,
-          "topo": 373,
+          "topo": 368,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1992,7 +1992,7 @@
           "el": "input#imQuantidade",
           "altura": 48,
           "largura": 602,
-          "topo": 453,
+          "topo": 448,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -2002,22 +2002,22 @@
         },
         {
           "el": "input#imCotacao",
-          "altura": 38,
-          "largura": 393,
-          "topo": 533,
+          "altura": 48,
+          "largura": 552,
+          "topo": 528,
           "esquerda": 419,
-          "raio": "2px",
-          "borda": "1px solid rgb(216, 210, 193)",
-          "fundo": "rgb(239, 235, 224)",
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "12px 14px"
         },
         {
           "el": "button#imFetchPrice.quote-fetch-button",
-          "altura": 38,
-          "largura": 203,
-          "topo": 533,
-          "esquerda": 818,
+          "altura": 48,
+          "largura": 44,
+          "topo": 528,
+          "esquerda": 977,
           "raio": "4px",
           "borda": "1px solid rgb(26, 36, 23)",
           "fundo": "rgba(0, 0, 0, 0)",
@@ -2028,7 +2028,7 @@
           "el": "input#imValor",
           "altura": 56,
           "largura": 602,
-          "topo": 285,
+          "topo": 280,
           "esquerda": 419,
           "raio": "0px",
           "borda": "0px none rgb(26, 36, 23)",
@@ -2040,7 +2040,7 @@
           "el": "input#imDesc",
           "altura": 48,
           "largura": 602,
-          "topo": 620,
+          "topo": 625,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -2052,7 +2052,7 @@
           "el": "button#imSalvar.primary",
           "altura": 52,
           "largura": 602,
-          "topo": 682,
+          "topo": 687,
           "esquerda": 419,
           "raio": "999px",
           "borda": "0px none rgb(247, 250, 246)",
@@ -2063,8 +2063,8 @@
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 627,
-      "clientH": 627,
+      "scrollH": 637,
+      "clientH": 637,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -2080,13 +2080,13 @@
       "id": "panelCryptoReconcile",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelCryptoReconcile.png",
+      "screenshot": "e2e/visual/saida/modais/panelCryptoReconcile.png",
       "rolagemFim": null,
       "painel": {
-        "x": 370,
-        "y": 312,
-        "largura": 700,
-        "altura": 253
+        "x": 400,
+        "y": 297,
+        "largura": 640,
+        "altura": 283
       },
       "exposto": true,
       "overlayEstado": {
@@ -2101,7 +2101,7 @@
         "visibility": "visible",
         "opacity": "1"
       },
-      "noTopoNoCentro": "div",
+      "noTopoNoCentro": "input#crSaldoReal",
       "centro": {
         "x": 720,
         "y": 438
@@ -2110,24 +2110,24 @@
       "controles": [
         {
           "el": "input#crSaldoReal",
-          "altura": 38,
+          "altura": 48,
           "largura": 320,
-          "topo": 405,
-          "esquerda": 396,
-          "raio": "2px",
-          "borda": "1px solid rgb(216, 210, 193)",
-          "fundo": "rgb(239, 235, 224)",
+          "topo": 410,
+          "esquerda": 419,
+          "raio": "15px",
+          "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
+          "fundo": "rgb(255, 254, 250)",
           "fonte": "14px",
-          "padding": "9px 10px"
+          "padding": "12px 14px"
         },
         {
           "el": "button#crConfirmar.primary",
-          "altura": 41,
-          "largura": 648,
-          "topo": 498,
-          "esquerda": 396,
-          "raio": "4px",
-          "borda": "1px solid rgb(95, 122, 67)",
+          "altura": 52,
+          "largura": 602,
+          "topo": 509,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
           "fundo": "rgba(0, 0, 0, 0)",
           "fonte": "12px",
           "padding": "12px 14px"
@@ -2135,8 +2135,8 @@
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 249,
-      "clientH": 249,
+      "scrollH": 281,
+      "clientH": 281,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -2152,13 +2152,13 @@
       "id": "panelExportFormat",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelExportFormat.png",
+      "screenshot": "e2e/visual/saida/modais/panelExportFormat.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
-        "y": 281,
+        "y": 282,
         "largura": 640,
-        "altura": 314
+        "altura": 312
       },
       "exposto": true,
       "overlayEstado": {
@@ -2183,8 +2183,8 @@
         {
           "el": "button#btnExportFormatPdf.primary",
           "altura": 40,
-          "largura": 296,
-          "topo": 468,
+          "largura": 195,
+          "topo": 469,
           "esquerda": 419,
           "raio": "999px",
           "borda": "0px none rgb(247, 250, 246)",
@@ -2195,9 +2195,9 @@
         {
           "el": "button#btnExportFormatXlsx.primary",
           "altura": 40,
-          "largura": 296,
-          "topo": 468,
-          "esquerda": 725,
+          "largura": 195,
+          "topo": 469,
+          "esquerda": 622,
           "raio": "999px",
           "borda": "0px none rgb(247, 250, 246)",
           "fundo": "rgba(0, 0, 0, 0)",
@@ -2208,7 +2208,7 @@
           "el": "button#btnExportFormatDocx.primary",
           "altura": 40,
           "largura": 602,
-          "topo": 518,
+          "topo": 517,
           "esquerda": 419,
           "raio": "999px",
           "borda": "0px none rgb(247, 250, 246)",
@@ -2219,8 +2219,8 @@
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 312,
-      "clientH": 312,
+      "scrollH": 310,
+      "clientH": 310,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -2236,17 +2236,17 @@
       "id": "panelEntryHistory",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelEntryHistory.png",
+      "screenshot": "e2e/visual/saida/modais/panelEntryHistory.png",
       "rolagemFim": {
-        "respiroInferior": 44,
+        "respiroInferior": 37,
         "ultimoElemento": "h3#entryHistoryTitle",
-        "screenshot": "e2e\\visual\\saida\\modais\\panelEntryHistory--fim.png"
+        "screenshot": "e2e/visual/saida/modais/panelEntryHistory--fim.png"
       },
       "painel": {
-        "x": 370,
-        "y": 390,
-        "largura": 700,
-        "altura": 97
+        "x": 400,
+        "y": 383,
+        "largura": 640,
+        "altura": 110
       },
       "exposto": true,
       "overlayEstado": {
@@ -2269,16 +2269,16 @@
       "containersRolaveis": [
         {
           "el": "div#panelEntryHistory.panel.open",
-          "scrollH": 97,
-          "clientH": 93,
-          "visivel": 93
+          "scrollH": 112,
+          "clientH": 108,
+          "visivel": 108
         }
       ],
       "controles": [],
       "overflowX": false,
       "overflowY": true,
-      "scrollH": 97,
-      "clientH": 93,
+      "scrollH": 112,
+      "clientH": 108,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -2294,7 +2294,7 @@
       "id": "panelPaste",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelPaste.png",
+      "screenshot": "e2e/visual/saida/modais/panelPaste.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
@@ -2340,7 +2340,7 @@
           "largura": 602,
           "topo": 545,
           "esquerda": 419,
-          "raio": "4px",
+          "raio": "11px",
           "borda": "1px dashed color(srgb 0.68098 0.702745 0.583922)",
           "fundo": "rgb(255, 254, 250)",
           "fonte": "12px",
@@ -2390,13 +2390,13 @@
       "id": "panelImport",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelImport.png",
+      "screenshot": "e2e/visual/saida/modais/panelImport.png",
       "rolagemFim": null,
       "painel": {
-        "x": 370,
-        "y": 295,
-        "largura": 700,
-        "altura": 286
+        "x": 400,
+        "y": 283,
+        "largura": 640,
+        "altura": 310
       },
       "exposto": true,
       "overlayEstado": {
@@ -2421,9 +2421,9 @@
         {
           "el": "button#importRemoveDuplicates.secondary",
           "altura": 41,
-          "largura": 320,
-          "topo": 421,
-          "esquerda": 396,
+          "largura": 297,
+          "topo": 429,
+          "esquerda": 419,
           "raio": "4px",
           "borda": "1px solid rgb(26, 36, 23)",
           "fundo": "rgba(0, 0, 0, 0)",
@@ -2433,8 +2433,8 @@
         {
           "el": "button#importRemoveInvalid.secondary",
           "altura": 41,
-          "largura": 320,
-          "topo": 421,
+          "largura": 297,
+          "topo": 429,
           "esquerda": 724,
           "raio": "4px",
           "borda": "1px solid rgb(26, 36, 23)",
@@ -2444,22 +2444,22 @@
         },
         {
           "el": "button#importConfirm.primary",
-          "altura": 41,
-          "largura": 319,
-          "topo": 514,
-          "esquerda": 396,
-          "raio": "4px",
-          "borda": "1px solid rgb(95, 122, 67)",
+          "altura": 52,
+          "largura": 295,
+          "topo": 522,
+          "esquerda": 419,
+          "raio": "999px",
+          "borda": "0px none rgb(247, 250, 246)",
           "fundo": "rgba(0, 0, 0, 0)",
           "fonte": "12px",
           "padding": "12px 14px"
         },
         {
           "el": "button#importCancel",
-          "altura": 41,
-          "largura": 319,
-          "topo": 514,
-          "esquerda": 725,
+          "altura": 52,
+          "largura": 297,
+          "topo": 522,
+          "esquerda": 724,
           "raio": "4px",
           "borda": "1px solid rgb(26, 36, 23)",
           "fundo": "rgba(0, 0, 0, 0)",
@@ -2469,8 +2469,8 @@
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 282,
-      "clientH": 282,
+      "scrollH": 308,
+      "clientH": 308,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -2486,11 +2486,11 @@
       "id": "panelGoalForm",
       "status": "ok",
       "via": "openNewGoalModal",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelGoalForm.png",
+      "screenshot": "e2e/visual/saida/modais/panelGoalForm.png",
       "rolagemFim": {
         "respiroInferior": 1,
         "ultimoElemento": "div",
-        "screenshot": "e2e\\visual\\saida\\modais\\panelGoalForm--fim.png"
+        "screenshot": "e2e/visual/saida/modais/panelGoalForm--fim.png"
       },
       "painel": {
         "x": 500,
@@ -2677,7 +2677,7 @@
       "id": "panelAiChat",
       "status": "ok",
       "via": "openAiChat",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelAiChat.png",
+      "screenshot": "e2e/visual/saida/modais/panelAiChat.png",
       "rolagemFim": null,
       "painel": {
         "x": 400,
@@ -2791,13 +2791,17 @@
       "temTexto": true,
       "qtdCampos": 2,
       "qtdBotoes": 7,
-      "errosConsole": []
+      "errosConsole": [
+        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/bcb/series/12?startDate=2026-10-09&endDate=2026-10-23' from origin 'http://127.0.0.1:33667' has been blocked by CORS pol",
+        "Failed to load resource: net::ERR_FAILED",
+        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/bcb/series/11?startDate=2026-10-09&endDate=2026-10-23' from origin 'http://127.0.0.1:33667' has been blocked by CORS pol"
+      ]
     },
     {
       "id": "panelOcrReview",
       "status": "ok",
       "via": "classe-forcada",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelOcrReview.png",
+      "screenshot": "e2e/visual/saida/modais/panelOcrReview.png",
       "rolagemFim": null,
       "painel": {
         "x": 370,
@@ -2869,7 +2873,7 @@
       "id": "panelCustomPeriod",
       "status": "ok",
       "via": "openCustomPeriodModal",
-      "screenshot": "e2e\\visual\\saida\\modais\\panelCustomPeriod.png",
+      "screenshot": "e2e/visual/saida/modais/panelCustomPeriod.png",
       "rolagemFim": null,
       "painel": {
         "x": 370,

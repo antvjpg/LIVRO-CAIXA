@@ -20,7 +20,7 @@
    { ok: false, code: "store_unavailable" } (ou null na leitura) em vez
    de estourar como 500 sem JSON no roteador. */
 
-import { MCP_LIMITS } from "../../../mcp-financial-contract.js";
+import { MCP_LIMITS } from "../../../js/domain/mcp-financial-contract.js";
 
 export const MCP_SNAPSHOT_TTL_SECONDS = 3600;
 export const MCP_TOKEN_TTL_SECONDS = 30 * 24 * 3600;

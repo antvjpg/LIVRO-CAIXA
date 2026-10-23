@@ -45,7 +45,8 @@ e2e/
   seeds/cleanup.cjs        cleanup manual completo (Firestore + Auth efêmera)
   reports/generate-report.cjs  relatório + QA ENVIRONMENT (gitignored)
   scripts/list-tests.cjs   listagem de testes no Termux (shim, sem browser)
-  scripts/syntax-check.cjs sintaxe de app.js, patches.js + módulos ocr/
+  scripts/syntax-check.cjs sintaxe dos módulos js/ (inclui js/domain e js/legacy),
+                           js/data/emoji-catalog.js, sw.js + módulos ocr/
                            (index.html é HTML puro desde 208c0eb)
   .env.example             contrato do fallback manual (opcional)
 worker/test/v20-01-ocr-modules.test.mjs  25 testes da abstração OCR (node:test)
@@ -64,7 +65,7 @@ nenhum segredo no Git nem em artefato; bloqueio aparece como `BLOCKED`, nunca so
 | `npm run code:oracles` | testes unitários dos oracles (sem browser) | sim |
 | `npm run code:list` | descobre/lista os testes (shim de plataforma) | sim |
 | `npm run code:security` | 68 garantias do próprio C.O.D.E. (offline) | sim |
-| `npm run code:syntax` | valida sintaxe de `app.js`, `patches.js` + módulos `ocr/` | sim |
+| `npm run code:syntax` | valida sintaxe dos módulos `js/`, `js/data/emoji-catalog.js`, `sw.js` + módulos `ocr/` | sim |
 | `npm run code:v20` | suíte V.20-01 (anexos/OCR): worker + oracles + segurança | sim |
 | `npm run code:test` | suítes + relatório `--strict` (sai 1 se FAIL/BLOCKED) | **não** |
 | `npm run code:smoke` / `code:movimentacoes` | suíte individual | **não** |
