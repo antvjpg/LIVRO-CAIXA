@@ -99,18 +99,12 @@ async function waitForDataReady(page, timeout = 60_000) {
 }
 
 async function openTab(page, tab /* 'dashboard' | 'caixa' | ... | 'profile' */) {
-  const id = { dashboard: 'tabBtnDashboard', caixa: 'tabBtnCaixa', pockets: 'tabBtnPockets',
-    cards: 'tabBtnCards', invest: 'tabBtnInvest', goals: 'tabBtnGoals', dash: 'tabBtnDash',
-    receivables: 'tabBtnReceivables' }[tab];
-  if (tab === 'profile') {
-    /* Perfil não tem botão #tabBtnProfile (só existe na navegação mobile):
-       a rota pública é switchTab('profile'), que também é o caminho do
-       desktop e já chama renderProfile() → renderFeatureProfile(). */
-    await page.evaluate(() => window.switchTab('profile'));
-  } else {
-    if (!id) throw new Error(`Aba desconhecida: ${tab}`);
-    await page.click(`#${id}`);
-  }
+  const known = ['dashboard', 'caixa', 'pockets', 'cards', 'invest', 'goals', 'dash', 'receivables', 'profile'];
+  if (!known.includes(tab)) throw new Error(`Aba desconhecida: ${tab}`);
+  /* A navegação por abas do topo foi removida (menu lateral + bottom-nav são
+     as únicas rotas). switchTab é a rota pública usada por ambos e também
+     pelos links internos do app. */
+  await page.evaluate((t) => window.switchTab(t), tab);
   await page.waitForFunction(
     (t) =>
       document

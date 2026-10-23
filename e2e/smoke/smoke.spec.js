@@ -48,10 +48,13 @@ test.describe('Smoke — aplicação operacional', () => {
     await app.waitForDataReady(page);
     await expect(page.locator('#syncOverlay')).toBeHidden({ timeout: 30_000 });
 
-    /* elementos essenciais de navegação */
-    await expect(page.locator('#tabBtnDashboard')).toBeVisible();
-    await expect(page.locator('#tabBtnCaixa')).toBeVisible();
+    /* elementos essenciais de navegação (menu lateral + ação principal) */
+    await expect(page.locator('#btnOpenDrawer')).toBeVisible();
     await expect(page.locator('#fabAdd')).toBeVisible();
+    await page.click('#btnOpenDrawer');
+    await expect(page.locator('#appDrawerOverlay')).toHaveClass(/is-open/);
+    await expect(page.locator('[data-drawer-action="overview"]')).toBeVisible();
+    await page.click('[data-close-drawer]');
 
     /* Visão Geral renderiza conteúdo */
     await app.openTab(page, 'dashboard');
