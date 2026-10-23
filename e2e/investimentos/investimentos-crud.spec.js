@@ -238,8 +238,23 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     return { investments, yields, investmentsPlain, yieldsPlain };
   }
 
+  async function snapshotWithInvestments(rest, names, timeout = 20_000) {
+    let snap;
+    await expect
+      .poll(
+        async () => {
+          snap = await snapshot(rest);
+          const present = new Set(snap.investments.map((d) => d.fields.name));
+          return names.filter((name) => !present.has(name));
+        },
+        { timeout, message: `ativos persistidos no Firestore: ${names.join(', ')}` }
+      )
+      .toEqual([]);
+    return snap;
+  }
+
   async function conferirOracle(rest, name) {
-    const snap = await snapshot(rest);
+    const snap = await snapshotWithInvestments(rest, [name]);
     const invDoc = snap.investments.find((d) => d.fields.name === name);
     if (!invDoc) throw new Error(`investments/${name} ausente no Firestore`);
     const assetPlain = toPlainInvest(invDoc.fields);
@@ -288,7 +303,8 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await saveAsset(page, { name: NAME_BTC, type: 'Bitcoin', units: UNITS_BTC, price: PRICE_BTC });
 
     // strip total vs oracle
-    const snap = await snapshot(await sessionFromPage(page));
+    const rest = await sessionFromPage(page);
+    const snap = await snapshotWithInvestments(rest, [NAME_ST, NAME_RF, NAME_OUT, NAME_BTC]);
     const expectedTotal = invOracle.investmentsTotal(snap.investmentsPlain, snap.yieldsPlain);
     expect(await stripTotal(page), 'strip total × oracle').toBeCloseTo(expectedTotal, 2);
 
