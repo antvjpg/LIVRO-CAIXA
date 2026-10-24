@@ -73,17 +73,100 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   fmt = (n) => {
     const v = normalizeMoney(n);
-    return (v < 0 ? '-' : '') + 'R$ ' + Math.abs(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const d = moneyToDisplay(v);
+    return (d < 0 ? '-' : '') + moneyDisplaySymbol() + moneyDisplayFormat(Math.abs(d));
   };
   fmtPrecise = (n) => {
     const v = Number(n);
     if (!Number.isFinite(v)) return fmt(0);
-    const abs = Math.abs(v);
-    if (abs > 0 && abs < 0.01) return (v < 0 ? '-' : '') + 'R$ ' + abs.toLocaleString('pt-BR', { minimumFractionDigits: 4, maximumFractionDigits: 8 });
+    const d = moneyToDisplay(v);
+    const abs = Math.abs(d);
+    if (abs > 0 && abs < 0.01) return (d < 0 ? '-' : '') + moneyDisplaySymbol() + abs.toLocaleString('pt-BR', { minimumFractionDigits: 4, maximumFractionDigits: 8 });
     return fmt(v);
   };
+  /* MONEY_FORMATTER permanece BRL: é a formatação de entrada/digitação
+     (inputs data-money, OCR, orçamentos) — ver moneyToDisplay em 10-state-utils. */
   MONEY_FORMATTER = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  setMoneyCurrency = (code) => { MONEY_FORMATTER = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: code, minimumFractionDigits: 2, maximumFractionDigits: 2 }); document.body.dataset.currency = code; };
+  const FX_STORAGE_KEY = 'livrocaixa_fx_brl';
+  const CURRENCY_STORAGE_KEY = 'livrocaixa_display_currency';
+  const FONT_STORAGE_KEY = 'livrocaixa_display_font';
+  const DISPLAY_FONTS = ['plus-jakarta', 'inter', 'roboto', 'open-sans'];
+
+  function readFxCache() {
+    try {
+      const cache = JSON.parse(localStorage.getItem(FX_STORAGE_KEY) || '{}');
+      return cache && typeof cache === 'object' ? cache : {};
+    } catch (err) { return {}; }
+  }
+
+  /* Cotação BRL por unidade da moeda exibida (CoinGecko: USDT ≈ USD e
+     BTC direto). Cache local é aplicado síncrono (boot offline funciona);
+     o fetch só melhora a taxa e re-renderiza se ela mudar. */
+  async function refreshDisplayRate(code, reRender) {
+    if (code === 'BRL') {
+      MONEY_DISPLAY.code = 'BRL';
+      MONEY_DISPLAY.rateBRL = 1;
+      return true;
+    }
+    const cache = readFxCache();
+    const cached = Number(cache[code]);
+    if (cached > 0) {
+      MONEY_DISPLAY.code = code;
+      MONEY_DISPLAY.rateBRL = cached;
+    }
+    try {
+      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether,bitcoin&vs_currencies=brl');
+      const data = await res.json();
+      const usdBrl = Number(data && data.tether && data.tether.brl);
+      const btcBrl = Number(data && data.bitcoin && data.bitcoin.brl);
+      if (usdBrl > 0) cache.USD = usdBrl;
+      if (btcBrl > 0) cache.BTC = btcBrl;
+      if (usdBrl > 0 || btcBrl > 0) {
+        cache.at = Date.now();
+        localStorage.setItem(FX_STORAGE_KEY, JSON.stringify(cache));
+      }
+      const brl = Number(cache[code]);
+      if (brl > 0) {
+        const changed = MONEY_DISPLAY.code !== code || MONEY_DISPLAY.rateBRL !== brl;
+        MONEY_DISPLAY.code = code;
+        MONEY_DISPLAY.rateBRL = brl;
+        if (reRender && changed && typeof render === 'function') render();
+        return true;
+      }
+    } catch (err) { /* offline: mantém o cache */ }
+    if (cached > 0) {
+      MONEY_DISPLAY.code = code;
+      return true;
+    }
+    return false;
+  }
+
+  /* Retorna o código efetivamente aplicado (diferente do escolhido quando
+     não há cotação nenhuma — aí a moeda volta para BRL). */
+  setMoneyCurrency = async (code) => {
+    const safe = MONEY_DISPLAY_SYMBOLS[code] ? code : 'BRL';
+    document.body.dataset.currency = safe;
+    const ok = await refreshDisplayRate(safe, true);
+    if (!ok) {
+      document.body.dataset.currency = MONEY_DISPLAY.code;
+      return MONEY_DISPLAY.code;
+    }
+    return safe;
+  };
+
+  /* Preferências de exibição salvas (fonte + moeda) aplicadas no boot. */
+  const savedFont = localStorage.getItem(FONT_STORAGE_KEY);
+  if (savedFont && DISPLAY_FONTS.includes(savedFont)) document.body.dataset.font = savedFont;
+  const savedCurrency = localStorage.getItem(CURRENCY_STORAGE_KEY);
+  if (savedCurrency && MONEY_DISPLAY_SYMBOLS[savedCurrency]) {
+    document.body.dataset.currency = savedCurrency;
+    refreshDisplayRate(savedCurrency, true).then(ok => {
+      if (!ok) {
+        document.body.dataset.currency = 'BRL';
+        localStorage.removeItem(CURRENCY_STORAGE_KEY);
+      }
+    });
+  }
   todayISO = () => {
     const d = new Date();
     const offset = d.getTimezoneOffset();
@@ -644,13 +727,23 @@ document.addEventListener('DOMContentLoaded', () => {
   compoundCalcChartInstance = null;
 
 document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
-  runAnomalyScan();
+  /* Checklist 17: anomalias + diagnóstico de consistência aparecem juntos
+     no card de resultado (.analysis-result-card). O status continua com o
+     resumo (região aria-live). */
+  const anomalies = runAnomalyScan();
   const issues = renderDiagnosticResults();
   const card = document.getElementById('profileAnalysisCard');
   const body = document.getElementById('profileAnalysisCardBody');
   if (card && body) {
     card.hidden = false;
-    body.innerHTML = `<strong>Diagnóstico de consistência</strong>${issues.length ? `<div>${issues.map(i => `<div style="margin:4px 0;"><strong>${escapeHTML(i.title)}</strong><span style="font-size:12px;color:var(--ink-soft);">${escapeHTML(i.detail)}</span></div>`).join('')}</div>` : '<div style="margin:4px 0;"><strong>Tudo certo</strong><span style="font-size:12px;color:var(--ink-soft);">Nenhuma inconsistência encontrada.</span></div>'}`;
+    const itemHTML = (title, detail) => `<div style="margin:4px 0;"><strong>${escapeHTML(title)}</strong><span style="font-size:12px;color:var(--ink-soft);">${detail}</span></div>`;
+    const anomaliesHTML = anomalies.length
+      ? anomalies.slice(0, 5).map(item => itemHTML(item.category, `${fmt(item.value)} no mês atual, contra média de ${fmt(item.average)}.`)).join('')
+      : itemHTML('Sem anomalias', 'Nenhuma anomalia estatística encontrada com pelo menos dois meses de histórico.');
+    const issuesHTML = issues.length
+      ? issues.map(i => itemHTML(i.title, escapeHTML(i.detail))).join('')
+      : itemHTML('Tudo certo', 'Nenhuma inconsistência encontrada.');
+    body.innerHTML = `<strong>Anomalias</strong>${anomaliesHTML}<strong>Diagnóstico de consistência</strong>${issuesHTML}`;
   }
 });
   document.getElementById('btnGenerateMonthlyReview')?.addEventListener('click', generateMonthlyReview);
@@ -801,9 +894,28 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     render();
   });
   const profileFont = document.getElementById('profileFont');
-  profileFont?.addEventListener('change', () => { document.body.dataset.font = profileFont.value; });
+  if (profileFont) {
+    if (document.body.dataset.font) profileFont.value = document.body.dataset.font;
+    profileFont.addEventListener('change', () => {
+      document.body.dataset.font = profileFont.value;
+      localStorage.setItem(FONT_STORAGE_KEY, profileFont.value);
+    });
+  }
   const profileCurrency = document.getElementById('profileCurrency');
-  profileCurrency?.addEventListener('change', () => { setMoneyCurrency(profileCurrency.value); render(); });
+  if (profileCurrency) {
+    if (document.body.dataset.currency) profileCurrency.value = document.body.dataset.currency;
+    profileCurrency.addEventListener('change', async () => {
+      const chosen = profileCurrency.value;
+      const applied = await setMoneyCurrency(chosen);
+      if (applied !== chosen) {
+        profileCurrency.value = applied;
+        showToast('Cotação indisponível agora — moeda mantida em ' + applied + '.', 'error');
+      } else {
+        localStorage.setItem(CURRENCY_STORAGE_KEY, applied);
+      }
+      render();
+    });
+  }
 
   /* Foto de perfil — grid de avatares predefinidos (DiceBear, sem download de imagens) */
   const avatarSeeds = ['ana','beto','carla','diego','elena','fabio','giulia','hugo','isabela','joao','karol','lucas'];

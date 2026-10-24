@@ -16,7 +16,34 @@
       money,
       tick: value => {
         if (masked()) return '';
-        return 'R$ ' + Number(value || 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+        return moneyDisplaySymbol() + Math.round(moneyToDisplay(Number(value) || 0)).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+      }
+    };
+  }
+
+  /* Traço tracejado separando a área do gráfico da legenda desenhada dentro
+     do canvas (position:'bottom'). Padrão visual já usado nas listas HTML
+     (.cat-bars-list). Quando a legenda não existe (mobile/oculta), não faz nada. */
+  function dashLegendDividerPlugin(color) {
+    return {
+      id: 'dashLegendDivider',
+      afterDraw(chart) {
+        const boxes = chart.legend && chart.legend.legendHitBoxes;
+        if (!boxes || !boxes.length) return;
+        const first = boxes[0];
+        if (!first || !first.height || !first.width) return;
+        const { ctx, chartArea } = chart;
+        const y = Math.round(first.y - 6) + 0.5;
+        if (y <= chartArea.bottom + 2) return;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, y);
+        ctx.lineTo(chartArea.right, y);
+        ctx.stroke();
+        ctx.restore();
       }
     };
   }
@@ -160,7 +187,7 @@
   function buildIncomeCatSectionHTML(month, incomeCats) {
     if (!incomeCats.length) return '';
     const total = incomeCats.reduce((sum, item) => sum + item.total, 0);
-    const chartRows = groupCategoryRowsForChart(incomeCats);
+    const chartRows = groupCategoryRowsForChart(incomeCats, total, 2);
     const max = chartRows[0].total;
     return `<div class="dashboard-trend dashboard-income-cats"><div class="dashboard-trend-head"><div><strong>Entradas por categoria</strong><span>Como as entradas do mês se distribuem</span></div><span>${escapeHTML(formatMonthLabel(month))}</span></div><div class="cat-summary-content"><div class="chart-container"><canvas id="dashIncomeCatChart" role="img" aria-label="Gráfico de entradas por categoria do mês"></canvas></div><div class="cat-bars-list"><div class="cat-legend-head"><span>Categoria</span><span>Movimentação</span><span>%</span></div>${chartRows.map(x => `
       <div class="cat-row" style="--category-color:${categoryColor(x.cat)}">
@@ -175,7 +202,7 @@
     const canvas = document.getElementById('dashIncomeCatChart');
     destroyDashboardIncomeCatChart();
     if (!canvas || !incomeCats.length || typeof Chart === 'undefined') return;
-    const chartRows = groupCategoryRowsForChart(incomeCats);
+    const chartRows = groupCategoryRowsForChart(incomeCats, incomeCats.reduce((sum, item) => sum + item.total, 0), 2);
     const isDark = document.body.classList.contains('dark-mode');
     const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
     const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
@@ -183,6 +210,7 @@
 
     dashboardIncomeCatChartInstance = new Chart(canvas, {
       type: 'doughnut',
+      plugins: [dashLegendDividerPlugin(getComputedStyle(document.body).getPropertyValue('--line').trim() || '#D8D2C1')],
       data: {
         labels: chartRows.map(x => x.cat.name),
         datasets: [{
@@ -212,7 +240,7 @@
                 const head = ' ' + context.label + ': ';
                 if (document.body.classList.contains('balances-hidden')) return head + '••••••';
                 const val = context.raw || 0;
-                return head + 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                return head + fmt(val);
               }
             }
           }
@@ -1292,6 +1320,7 @@
 
     dashFlowChartInstance = new Chart(canvas, {
       type: 'bar',
+      plugins: [dashLegendDividerPlugin(lineColor)],
       data: {
         labels: rows.map(item => item.label),
         datasets: [

@@ -164,7 +164,7 @@
 
     const currentTxt = hasCurrent ? fmt(current) : '—';
     const targetTxt = fmt(target);
-    const remainTxt = hasCurrent && plan.remaining > 0 ? fmt(plan.remaining) : (hasCurrent ? 'R$ 0,00' : '—');
+    const remainTxt = hasCurrent && plan.remaining > 0 ? fmt(plan.remaining) : (hasCurrent ? fmt(0) : '—');
 
     let deadlineTxt = '';
     if (goal.deadline) {

@@ -216,3 +216,43 @@ Este documento lista **tudo que foi alterado/implementado** na sessão atual, pa
 - O E2E não roda localmente no Termux/Android (`Unsupported platform: android`); a validação real depende do CI do GitHub.
 - Não houve alteração de schema do Firestore, autenticação ou regras financeiras.
 - Backups `*.backup-*` e `*.bak-*` não foram tocados.
+
+## Ciclo pós-f0d4280 — correção dos gaps restantes
+
+Os itens 1–17 acima passaram por um ciclo de correção dos gaps/bugs ainda
+abertos. Correções aplicadas (arquivos tocados neste ciclo):
+
+| # | Gap | Correção | Arquivos |
+|---|---|---|---|
+| 1 | Pizza: fatias <2% invisíveis em % | `groupCategoryRowsForChart(rows, total, 2)` no HTML e no doughnut de entradas (agrupa em "Outras") | `js/20-dashboard.js` |
+| 2 | Sem tracejado entre gráfico e legenda | Plugin `dashLegendDividerPlugin` (traço `[5,4]`, `afterDraw`) ligado a `dashFlowChart` e `dashIncomeCatChart` | `js/20-dashboard.js` |
+| 3 | Busca universal com contorno forte | Bordas gold suavizadas (`color-mix` 45%) em light/dark | `style/base.css`, `style/layout.css` |
+| 4 | Botão mover sem ícone | `.action-btn.icon-button.move::after` com mask SVG (padrão do delete) | `style/features.css` |
+| 5 | `drag-placeholder` sem raio herdado | `border-radius: 15px` (raio real dos cards) | `style/features.css` |
+| 6 | Modal banco/categoria abria teclado | `data-no-autofocus` + `openModal` foca o painel (`tabindex=-1`) nesses painéis | `index.html`, `js/24-automation-render.js` |
+| 7 | Moeda BRL/USD/BTC | Exibição convertida (CoinGecko + cache `livrocaixa_fx_brl`, stale-while-revalidate); **inputs/digitação seguem BRL**; sem cotação → revert + toast | `js/10-state-utils.js`, `js/99-init.js` + símbolo residual em 5 arquivos |
+| 8 | Fonte do app sem efeito | `--font-ui` vencendo `!important` de base.css; persistência `livrocaixa_display_font` | `style/features.css`, `js/99-init.js` |
+| 9 | Barra de período visível no Perfil | `#universalPeriodBar.section-hidden{display:none}` + toggle no `switchTab` | `style/features.css` |
+| 10 | Switches invisíveis no dark | Thumb claro (`#F2F3F1`) no dark-mode (unchecked) | `style/features.css` |
+| 11 | Card de análise sem anomalias | "Detectar anomalias" renderiza anomalias **e** diagnóstico no card (checklist 17); `runAnomalyScan` retorna o array | `js/99-init.js`, `js/21-ai-features.js` |
+
+Decisões de escopo (deliberadas):
+
+- **Moeda**: apenas exibição; armazenamento e inputs (`MONEY_FORMATTER`,
+  `readMoneyInput`/`setMoneyInput`) continuam em BRL — evita drift de
+  arredondamento no round-trip dos inputs (especialmente BTC).
+- **Persistência das prefs de exibição** (moeda/fonte): somente `localStorage`
+  (aplicam pré-login e não dependem do perfil no Firestore).
+- `beta-icon-button` órfão em `layout.css` mantido como fallback (legado).
+
+Validação deste ciclo:
+
+- `npm run code:syntax` → OK (42 arquivos).
+- Auditoria de modais (`e2e/visual/audit-modais.cjs`, chromium do sistema):
+  24/26 painéis medidos, sem overflow/corte; 2 bloqueios são guards reais do
+  app (sem banco / sem cartão).
+- Probe funcional (26/26 checks): foco dos modais; USD/BTC/BRL na exibição
+  (fmt, storage, revert de rede); fonte Inter; barra oculta no Perfil;
+  card com "Anomalias" + "Diagnóstico"; pizza com fatia "Outras"; plugin
+  tracejado nos dois gráficos; switches dark; busca com borda gold; sem
+  erros de página relevantes.

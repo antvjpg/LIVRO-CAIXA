@@ -585,7 +585,7 @@ body.dark-mode .emoji-trigger,body.dark-mode .emoji-picker,body.dark-mode .emoji
     body:not(.dark-mode) header.app-header .subtitle .fi{color:color-mix(in srgb,var(--header-ink) 74%,transparent);}
     body:not(.dark-mode) header.app-header .header-icon-button{background:var(--header-control-bg);border-color:color-mix(in srgb,var(--header-ink) 45%,transparent);color:var(--header-ink);}
     body:not(.dark-mode) header.app-header .header-icon-button:hover{background:color-mix(in srgb,var(--header-ink) 18%,var(--header-control-bg));border-color:color-mix(in srgb,var(--header-ink) 60%,transparent);color:var(--header-ink);}
-    body:not(.dark-mode) header.app-header .header-search-bar{background:var(--paper);border-color:var(--gold);color:var(--ink-soft);}
+    body:not(.dark-mode) header.app-header .header-search-bar{background:var(--paper);border-color:color-mix(in srgb,var(--gold) 45%,transparent);color:var(--ink-soft);}
     body.dark-mode header.app-header{
       background:linear-gradient(135deg,var(--header-from),var(--header-to));
       color:var(--header-ink,var(--ink));
@@ -597,7 +597,7 @@ body.dark-mode .emoji-trigger,body.dark-mode .emoji-picker,body.dark-mode .emoji
     body.dark-mode header.app-header .subtitle .fi{color:color-mix(in srgb,var(--header-ink,var(--ink)) 74%,transparent);}
     body.dark-mode header.app-header .header-icon-button{background:var(--header-control-bg,rgba(0,0,0,.35));border-color:color-mix(in srgb,var(--header-ink,var(--ink)) 45%,transparent);color:var(--header-ink,var(--ink));}
     body.dark-mode header.app-header .header-icon-button:hover{background:color-mix(in srgb,var(--header-ink,var(--ink)) 18%,var(--header-control-bg,rgba(0,0,0,.35)));border-color:color-mix(in srgb,var(--header-ink,var(--ink)) 60%,transparent);color:var(--header-ink,var(--ink));}
-    body.dark-mode header.app-header .header-search-bar{background:var(--paper);border-color:var(--gold);color:var(--ink-soft);}
+    body.dark-mode header.app-header .header-search-bar{background:var(--paper);border-color:color-mix(in srgb,var(--gold) 45%,transparent);color:var(--ink-soft);}
   }
 
   /* Desktop: todos os cards de total (patrimônio, caixinhas e investimentos)

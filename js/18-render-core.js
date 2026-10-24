@@ -1333,7 +1333,7 @@
         label: function(context) {
           const masked = document.body.classList.contains('balances-hidden');
           const val = context.raw || 0;
-          const formatted = masked ? '••••••' : 'R$ ' + val.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+          const formatted = masked ? '••••••' : fmt(val);
           return isMobileLayout ? ' ' + formatted : ' ' + context.label + ': ' + formatted;
         }
       };

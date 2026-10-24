@@ -1,6 +1,6 @@
 # Auditoria visual dos modais — desktop
 
-- Executado: 2026-10-23T00:31:26.465Z
+- Executado: 2026-10-24T19:17:31.157Z
 - Viewport: 1440x900
 - Modo: **estrutura sem autenticação** (estado vazio, sem dados reais)
 - Modais medidos: 24/26
@@ -23,8 +23,8 @@
 | panelPurchase | openPurchaseModal | bloqueado-pelo-app | - | - | - | - | - |
 | panelInvest | openNewInvestModal | 640x820 | sim | não | 0 | 0 | 13 |
 | panelPocket | openNewPocketModal | 640x682 | sim | não | 0 | 0 | 6 |
-| panelPocketMovement | classe-forcada | 640x462 | sim | não | 0 | 0 | 3 |
-| panelInvestMovement | classe-forcada | 640x639 | sim | não | 0 | 0 | 5 |
+| panelPocketMovement | classe-forcada | 640x502 | sim | não | 0 | 0 | 3 |
+| panelInvestMovement | classe-forcada | 640x679 | sim | não | 0 | 0 | 5 |
 | panelCryptoReconcile | classe-forcada | 640x283 | sim | não | 0 | 0 | 1 |
 | panelExportFormat | classe-forcada | 640x312 | sim | não | 0 | 0 | 0 |
 | panelEntryHistory | classe-forcada | 640x110 | sim | não | 0 | 0 | 0 |

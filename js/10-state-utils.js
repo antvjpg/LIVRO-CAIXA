@@ -76,6 +76,29 @@
 
   let MONEY_FORMATTER;
 
+  /* Moeda de exibição: armazenamento e digitação continuam em BRL (evita
+     drift de arredondamento); só a exibição converte, com a taxa em reais
+     por unidade da moeda escolhida (taxa preenchida por refreshDisplayRate). */
+  let MONEY_DISPLAY = { code: 'BRL', rateBRL: 1 };
+
+  const MONEY_DISPLAY_SYMBOLS = { BRL: 'R$ ', USD: 'US$ ', BTC: '₿ ' };
+
+  function moneyToDisplay(valueBRL) {
+    if (MONEY_DISPLAY.code === 'BRL' || !(MONEY_DISPLAY.rateBRL > 0)) return valueBRL;
+    return valueBRL / MONEY_DISPLAY.rateBRL;
+  }
+
+  function moneyDisplaySymbol() {
+    return MONEY_DISPLAY_SYMBOLS[MONEY_DISPLAY.code] || MONEY_DISPLAY_SYMBOLS.BRL;
+  }
+
+  function moneyDisplayFormat(absDisplay) {
+    return absDisplay.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: MONEY_DISPLAY.code === 'BTC' ? 8 : 2
+    });
+  }
+
 
   function moneyDigits(value) {
     return String(value ?? '').replace(/\D/g, '').replace(/^0+(?=\d)/, '') || '0';

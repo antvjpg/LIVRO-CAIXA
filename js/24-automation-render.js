@@ -311,6 +311,13 @@
     if (panelId === 'panelNovo' && typeof updateCategoryTriggerLabel === 'function') updateCategoryTriggerLabel();
     setTimeout(() => {
       if (!panel.classList.contains('open') || panel.contains(document.activeElement)) return;
+      /* data-no-autofocus: focar o <div tabindex=-1> do painel (não abre o
+         teclado no mobile). Usado nos painéis de gerenciamento (banco,
+         categoria) em que focar o input derruba o teclado automático. */
+      if (panel.hasAttribute('data-no-autofocus')) {
+        panel.focus();
+        return;
+      }
       const target = panel.querySelector('input:not([type="hidden"]):not([type="file"]):not([type="checkbox"]):not([type="radio"]):not([readonly]), textarea, select:not([aria-hidden="true"])');
       if (target && typeof target.focus === 'function') target.focus();
       else panel.focus();

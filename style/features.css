@@ -619,10 +619,10 @@
   .profile-avatar svg,.profile-avatar i{display:block;width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
   .icon-button{display:inline-grid;place-items:center;min-width:34px;min-height:34px;line-height:1;vertical-align:middle;}
   /* Fonte do app aplicada via data-font no <body> */
-  body[data-font="inter"]{font-family:'Inter',sans-serif;}
-  body[data-font="roboto"]{font-family:'Roboto',sans-serif;}
-  body[data-font="open-sans"]{font-family:'Open Sans',sans-serif;}
-  body[data-font="plus-jakarta"],body{font-family:'Plus Jakarta Sans',sans-serif;}
+  body[data-font="inter"]{--font-ui:'Inter',sans-serif;}
+  body[data-font="roboto"]{--font-ui:'Roboto',sans-serif;}
+  body[data-font="open-sans"]{--font-ui:'Open Sans',sans-serif;}
+  body[data-font="plus-jakarta"]{--font-ui:'Plus Jakarta Sans',sans-serif;}
   /* Card de resultado da análise assistida */
   .analysis-result-card{
     border:2px dashed var(--line);
@@ -647,10 +647,10 @@
   .avatar-option:hover{border-color:var(--accent);transform:translateY(-2px);}
   .avatar-option.is-active{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--accent);}
   .avatar-option img{width:44px;height:44px;border-radius:50%;object-fit:cover;}
-  body[data-font="inter"]{font-family:'Inter',sans-serif;}
-  body[data-font="roboto"]{font-family:'Roboto',sans-serif;}
-  body[data-font="open-sans"]{font-family:'Open Sans',sans-serif;}
-  body[data-font="plus-jakarta"],body{font-family:'Plus Jakarta Sans',sans-serif;}
+  body[data-font="inter"]{--font-ui:'Inter',sans-serif;}
+  body[data-font="roboto"]{--font-ui:'Roboto',sans-serif;}
+  body[data-font="open-sans"]{--font-ui:'Open Sans',sans-serif;}
+  body[data-font="plus-jakarta"]{--font-ui:'Plus Jakarta Sans',sans-serif;}
   .mobile-bottom-nav{--nav-indicator-x:0%;}
   .mobile-bottom-nav::before{content:"";position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/5);border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),0 5px 13px color-mix(in srgb,var(--accent) 10%,transparent);transform:translateX(var(--nav-indicator-x));transition:transform 220ms var(--v1616-ease),background-color 220ms ease,box-shadow 220ms ease;pointer-events:none;}
   .mobile-bottom-nav button{position:relative;z-index:1;background:transparent!important;transition:color 220ms ease,transform 160ms var(--v1616-ease);}
@@ -919,6 +919,9 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   .feature-profile-header{background:linear-gradient(135deg,var(--surface-raised),var(--surface));}.feature-profile-section{background:var(--paper-2);}.feature-profile-toggle{background:var(--paper);}.feature-profile-toggle:has(input:checked){background:color-mix(in srgb,var(--accent) 10%,var(--paper));}
   .feature-profile-toggle-copy strong,.feature-profile-panel .feature-profile-section h4,.bill-share-head h3{color:var(--ink);}.feature-profile-toggle-copy small,.feature-profile-section-desc,.feature-profile-section-tag{color:var(--ink-soft);}
   .feature-profile-switch{background:var(--line)}.feature-profile-switch:after{background:var(--surface-raised);}
+  /* No tema escuro o thumb precisa ser claro: --surface-raised sobre --line
+     (~#262628 vs ~#2C2C2E) dá contraste ~1:1 e o knob "some" no trilho. */
+  body.dark-mode .feature-profile-switch:after{background:#F2F3F1;}
   .bill-day,.bill-list-item,.bill-share-message{color:var(--ink);}.bill-day{background:var(--surface);border-color:var(--line);}.bill-event{background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--ink);}.bill-event.paid{color:var(--ink-soft);}.bill-actions button{background:var(--surface-raised);border-color:var(--action-border);color:var(--ink);}.bill-actions button:hover,.bill-actions button:focus-visible{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
   body.dark-mode .nav-tab.active{background:var(--accent-muted);border-color:color-mix(in srgb,var(--accent) 35%,var(--line));color:var(--ink);}
   body.dark-mode .nav-tab:hover,body.dark-mode .nav-tab:focus-visible{background:var(--surface-accent);border-color:var(--accent);color:var(--ink);}
@@ -4290,6 +4293,11 @@ body[data-tab="dash"] .fab-add{
   padding:0 !important;
   overflow:hidden;
 }
+/* O JS marca section-hidden nas abas que não têm período (ex.: Perfil);
+   sem esta regra o display:block do #id acima vencia a classe. */
+#universalPeriodBar.section-hidden{
+  display:none;
+}
 #universalPeriodBar .period-bar-body{
   display:grid;
   grid-template-rows:1fr;
@@ -5205,6 +5213,38 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   background:currentColor;
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3C/svg%3E") center / contain no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* botão de movimentação (antes só existia para .beta-icon-button.move) */
+.action-btn.icon-button.move{
+  width:34px;
+  height:34px;
+  min-width:34px;
+  min-height:34px;
+  padding:0;
+  display:inline-grid;
+  place-items:center;
+  border-radius:12px;
+  border:1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+  background:color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color:var(--accent);
+  box-shadow:none;
+  font-size:0;
+}
+
+.action-btn.icon-button.move::before{
+  content:none;
+  display:none;
+}
+
+.action-btn.icon-button.move::after{
+  content:"";
+  display:block;
+  width:16px;
+  height:16px;
+  background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v18'/%3E%3Cpath d='M8 7l4-4 4 4'/%3E%3Cpath d='M8 17l4 4 4-4'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v18'/%3E%3Cpath d='M8 7l4-4 4 4'/%3E%3Cpath d='M8 17l4 4 4-4'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 /* listagem de lançamentos: mesmo alinhamento dos ativos */
@@ -6197,7 +6237,7 @@ body:not(.dark-mode) .goals-form-body select {
 .drag-placeholder {
   min-width: 0;
   border: 2px dashed var(--accent);
-  border-radius: inherit;
+  border-radius: 15px;
   background: color-mix(
     in srgb,
     var(--accent) 8%,

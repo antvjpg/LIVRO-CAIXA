@@ -1,6 +1,6 @@
 {
-  "geradoEm": "2026-10-23T00:31:26.465Z",
-  "url": "http://127.0.0.1:33667",
+  "geradoEm": "2026-10-24T19:17:31.157Z",
+  "url": "http://127.0.0.1:39453",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -1784,9 +1784,9 @@
       "rolagemFim": null,
       "painel": {
         "x": 400,
-        "y": 207,
+        "y": 187,
         "largura": 640,
-        "altura": 462
+        "altura": 502
       },
       "exposto": true,
       "overlayEstado": {
@@ -1801,7 +1801,7 @@
         "visibility": "visible",
         "opacity": "1"
       },
-      "noTopoNoCentro": "label#pmDataLabel",
+      "noTopoNoCentro": "input#pmData",
       "centro": {
         "x": 720,
         "y": 438
@@ -1812,7 +1812,7 @@
           "el": "button#pmAporte.active-in",
           "altura": 40,
           "largura": 193,
-          "topo": 308,
+          "topo": 288,
           "esquerda": 425,
           "raio": "11px",
           "borda": "0px none rgb(247, 250, 246)",
@@ -1824,7 +1824,7 @@
           "el": "button#pmResgate",
           "altura": 40,
           "largura": 193,
-          "topo": 308,
+          "topo": 288,
           "esquerda": 624,
           "raio": "11px",
           "borda": "0px none rgb(76, 90, 82)",
@@ -1836,7 +1836,7 @@
           "el": "button#pmRendimento",
           "altura": 40,
           "largura": 193,
-          "topo": 308,
+          "topo": 288,
           "esquerda": 822,
           "raio": "11px",
           "borda": "0px none rgb(76, 90, 82)",
@@ -1848,7 +1848,7 @@
           "el": "input#pmData",
           "altura": 48,
           "largura": 602,
-          "topo": 456,
+          "topo": 436,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1860,7 +1860,7 @@
           "el": "input#pmValor",
           "altura": 56,
           "largura": 602,
-          "topo": 368,
+          "topo": 348,
           "esquerda": 419,
           "raio": "0px",
           "borda": "0px none rgb(26, 36, 23)",
@@ -1872,7 +1872,7 @@
           "el": "input#pmDesc",
           "altura": 48,
           "largura": 602,
-          "topo": 536,
+          "topo": 516,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1884,19 +1884,31 @@
           "el": "button#pmSalvar.primary",
           "altura": 52,
           "largura": 602,
-          "topo": 598,
+          "topo": 578,
           "esquerda": 419,
           "raio": "999px",
           "borda": "0px none rgb(247, 250, 246)",
           "fundo": "rgba(0, 0, 0, 0)",
           "fonte": "12px",
           "padding": "12px 14px"
+        },
+        {
+          "el": "button.btn-expand-movement",
+          "altura": 40,
+          "largura": 109,
+          "topo": 630,
+          "esquerda": 419,
+          "raio": "10px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "0px 12px"
         }
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 460,
-      "clientH": 460,
+      "scrollH": 500,
+      "clientH": 500,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -1905,7 +1917,7 @@
       "textoIlegivel": [],
       "temTexto": true,
       "qtdCampos": 3,
-      "qtdBotoes": 5,
+      "qtdBotoes": 6,
       "errosConsole": []
     },
     {
@@ -1916,9 +1928,9 @@
       "rolagemFim": null,
       "painel": {
         "x": 400,
-        "y": 119,
+        "y": 99,
         "largura": 640,
-        "altura": 639
+        "altura": 679
       },
       "exposto": true,
       "overlayEstado": {
@@ -1933,7 +1945,7 @@
         "visibility": "visible",
         "opacity": "1"
       },
-      "noTopoNoCentro": "label#imQuantidadeLabel",
+      "noTopoNoCentro": "input#imQuantidade",
       "centro": {
         "x": 720,
         "y": 438
@@ -1944,7 +1956,7 @@
           "el": "button#imAporte.active-in",
           "altura": 40,
           "largura": 193,
-          "topo": 220,
+          "topo": 200,
           "esquerda": 425,
           "raio": "11px",
           "borda": "0px none rgb(247, 250, 246)",
@@ -1956,7 +1968,7 @@
           "el": "button#imResgate",
           "altura": 40,
           "largura": 193,
-          "topo": 220,
+          "topo": 200,
           "esquerda": 624,
           "raio": "11px",
           "borda": "0px none rgb(76, 90, 82)",
@@ -1968,7 +1980,7 @@
           "el": "button#imRendimento",
           "altura": 40,
           "largura": 193,
-          "topo": 220,
+          "topo": 200,
           "esquerda": 822,
           "raio": "11px",
           "borda": "0px none rgb(76, 90, 82)",
@@ -1980,7 +1992,7 @@
           "el": "input#imData",
           "altura": 48,
           "largura": 602,
-          "topo": 368,
+          "topo": 348,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -1992,7 +2004,7 @@
           "el": "input#imQuantidade",
           "altura": 48,
           "largura": 602,
-          "topo": 448,
+          "topo": 428,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -2004,7 +2016,7 @@
           "el": "input#imCotacao",
           "altura": 48,
           "largura": 552,
-          "topo": 528,
+          "topo": 508,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -2016,7 +2028,7 @@
           "el": "button#imFetchPrice.quote-fetch-button",
           "altura": 48,
           "largura": 44,
-          "topo": 528,
+          "topo": 508,
           "esquerda": 977,
           "raio": "4px",
           "borda": "1px solid rgb(26, 36, 23)",
@@ -2028,7 +2040,7 @@
           "el": "input#imValor",
           "altura": 56,
           "largura": 602,
-          "topo": 280,
+          "topo": 260,
           "esquerda": 419,
           "raio": "0px",
           "borda": "0px none rgb(26, 36, 23)",
@@ -2040,7 +2052,7 @@
           "el": "input#imDesc",
           "altura": 48,
           "largura": 602,
-          "topo": 625,
+          "topo": 605,
           "esquerda": 419,
           "raio": "15px",
           "borda": "1px solid color(srgb 0.847059 0.823529 0.756863 / 0.78)",
@@ -2052,19 +2064,31 @@
           "el": "button#imSalvar.primary",
           "altura": 52,
           "largura": 602,
-          "topo": 687,
+          "topo": 667,
           "esquerda": 419,
           "raio": "999px",
           "borda": "0px none rgb(247, 250, 246)",
           "fundo": "rgba(0, 0, 0, 0)",
           "fonte": "12px",
           "padding": "12px 14px"
+        },
+        {
+          "el": "button.btn-expand-movement",
+          "altura": 40,
+          "largura": 109,
+          "topo": 719,
+          "esquerda": 419,
+          "raio": "10px",
+          "borda": "1px solid rgb(216, 210, 193)",
+          "fundo": "rgba(0, 0, 0, 0)",
+          "fonte": "12px",
+          "padding": "0px 12px"
         }
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 637,
-      "clientH": 637,
+      "scrollH": 677,
+      "clientH": 677,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -2073,7 +2097,7 @@
       "textoIlegivel": [],
       "temTexto": true,
       "qtdCampos": 5,
-      "qtdBotoes": 6,
+      "qtdBotoes": 7,
       "errosConsole": []
     },
     {
@@ -2791,11 +2815,7 @@
       "temTexto": true,
       "qtdCampos": 2,
       "qtdBotoes": 7,
-      "errosConsole": [
-        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/bcb/series/12?startDate=2026-10-09&endDate=2026-10-23' from origin 'http://127.0.0.1:33667' has been blocked by CORS pol",
-        "Failed to load resource: net::ERR_FAILED",
-        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/bcb/series/11?startDate=2026-10-09&endDate=2026-10-23' from origin 'http://127.0.0.1:33667' has been blocked by CORS pol"
-      ]
+      "errosConsole": []
     },
     {
       "id": "panelOcrReview",
@@ -2867,7 +2887,11 @@
       "temTexto": true,
       "qtdCampos": 0,
       "qtdBotoes": 3,
-      "errosConsole": []
+      "errosConsole": [
+        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/tesouro/daily' from origin 'http://127.0.0.1:39453' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' he",
+        "Failed to load resource: net::ERR_FAILED",
+        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/bcb/series/11?startDate=2026-10-10&endDate=2026-10-24' from origin 'http://127.0.0.1:39453' has been blocked by CORS pol"
+      ]
     },
     {
       "id": "panelCustomPeriod",

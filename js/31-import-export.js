@@ -224,15 +224,15 @@
             doc.text(cat ? cat.name.slice(0,18) : '—', x + 2, y, {maxWidth: col.width * colsScale - 4});
           } else if (col.key === 'in' && e.type === 'in') {
             doc.setTextColor(0x2F,0x6F,0x4F);
-            doc.text('+' + fmt(Math.abs(e.amount)).replace('R$ ',''), x + col.width * colsScale - 2, y, {align:'right'});
+            doc.text('+' + fmt(Math.abs(e.amount)).replace(moneyDisplaySymbol(), ''), x + col.width * colsScale - 2, y, {align:'right'});
             doc.setTextColor(0,0,0);
           } else if (col.key === 'out' && e.type === 'out') {
             doc.setTextColor(0xB4,0x4D,0x3A);
-            doc.text('−' + fmt(Math.abs(e.amount)).replace('R$ ',''), x + col.width * colsScale - 2, y, {align:'right'});
+            doc.text('−' + fmt(Math.abs(e.amount)).replace(moneyDisplaySymbol(), ''), x + col.width * colsScale - 2, y, {align:'right'});
             doc.setTextColor(0,0,0);
           } else if (col.key === 'balance') {
             doc.setFontSize(7); doc.setTextColor(100,100,100);
-            doc.text(fmt(running).replace('R$ ',''), x + col.width * colsScale - 2, y, {align:'right'});
+            doc.text(fmt(running).replace(moneyDisplaySymbol(), ''), x + col.width * colsScale - 2, y, {align:'right'});
             doc.setTextColor(0,0,0); doc.setFontSize(8);
           }
           x += col.width * colsScale;
