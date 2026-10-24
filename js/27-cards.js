@@ -520,8 +520,8 @@
     const parcel = parcelado ? `${p.totalInstallments}× de ${fmt(p.installmentValue)}` : 'À vista';
     const concluded = purchaseIsConcluded(p, concludedMap);
     const statusBadge = concluded ? '<span class="purchase-status finalizada">✓ Finalizada</span>' : (p.status === 'parcial' ? '<span class="purchase-status parcial">⏳ Parcial</span>' : '<span class="purchase-status pendente">⏳ Pendente</span>');
-    const finalizeBtn = !concluded ? `<button type="button" class="action-btn beta-icon-button finalize" onclick="finalizePurchase('${p.id}')" aria-label="Marcar como finalizada" title="Marcar como finalizada"><i class="fi fi-rr-check" aria-hidden="true"></i></button>` : '';
-    const reopenBtn = concluded ? `<button type="button" class="action-btn beta-icon-button unarchive" onclick="unarchivePurchase('${p.id}')" aria-label="Reabrir compra" title="Reabrir compra"><i class="fi fi-rr-refresh" aria-hidden="true"></i></button>` : '';
+    const finalizeBtn = !concluded ? `<button type="button" class="action-btn icon-button finalize" onclick="finalizePurchase('${p.id}')" aria-label="Marcar como finalizada" title="Marcar como finalizada"><i class="fi fi-rr-check" aria-hidden="true"></i></button>` : '';
+    const reopenBtn = concluded ? `<button type="button" class="action-btn icon-button unarchive" onclick="unarchivePurchase('${p.id}')" aria-label="Reabrir compra" title="Reabrir compra"><i class="fi fi-rr-refresh" aria-hidden="true"></i></button>` : '';
     return `<div class="credit-card-purchase-row ${concluded ? 'is-finalized' : ''}">
       <span class="credit-card-purchase-dot" aria-hidden="true"></span>
       <div class="credit-card-purchase-main">
@@ -534,8 +534,8 @@
       <div class="credit-card-purchase-menu">
         ${finalizeBtn}
         ${reopenBtn}
-        <button type="button" class="action-btn beta-icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar"></button>
-        <button type="button" class="action-btn beta-icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir"></button>
+        <button type="button" class="action-btn icon-button edit" onclick="editPurchase('${p.id}')" aria-label="Editar"></button>
+        <button type="button" class="action-btn icon-button delete" onclick="deletePurchase('${p.id}')" aria-label="Excluir"></button>
       </div>
     </div>`;
   }

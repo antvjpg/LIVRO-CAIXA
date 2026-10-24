@@ -494,8 +494,8 @@
         <div class="manage-item-copy"><strong>${escapeHTML(b.name)}</strong><span>Saldo atual</span><span class="bank-share-line">${share == null ? '—' : share.toFixed(1).replace('.', ',') + '% do total'}</span></div>
         <strong class="manage-item-value">${fmt(balance)}</strong>
         <div class="manage-item-actions">
-          <button type="button" class="action-btn beta-icon-button edit" onclick="editBank('${b.id}')" aria-label="Editar banco" title="Editar banco"></button>
-          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteBank('${b.id}')" aria-label="Excluir banco" title="Excluir banco"></button>
+          <button type="button" class="action-btn icon-button edit" onclick="editBank('${b.id}')" aria-label="Editar banco" title="Editar banco"></button>
+          <button type="button" class="action-btn icon-button delete" onclick="deleteBank('${b.id}')" aria-label="Excluir banco" title="Excluir banco"></button>
         </div>
       </div>`;
     }).join('');
@@ -763,8 +763,8 @@
         <span class="category-dot" style="background:${categoryColor(c)}">${categoryIcon(c)}</span>
         <strong class="manage-item-copy">${escapeHTML(c.name)}<span>${escapeHTML(categoryIcon(c))} · ${escapeHTML(c.color ? 'cor personalizada' : 'cor automática')}</span></strong>
         <span class="manage-item-actions">
-          <button type="button" class="action-btn beta-icon-button edit" onclick="editCategory('${c.id}')" aria-label="Editar categoria" title="Editar categoria"></button>
-          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria" title="Excluir categoria"></button>
+          <button type="button" class="action-btn icon-button edit" onclick="editCategory('${c.id}')" aria-label="Editar categoria" title="Editar categoria"></button>
+          <button type="button" class="action-btn icon-button delete" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria" title="Excluir categoria"></button>
         </span>
         <div class="cat-subs" data-cat="${c.id}">
           ${chips}
@@ -902,7 +902,7 @@
           <div class="history-value ${positive ? 'positive' : 'negative'}">${valueLabel}${y.price ? `<span class="history-quote">Cotação ${fmt(y.price)}</span>` : ''}</div>
           <div class="history-audit"><span><small>Saldo anterior</small><strong>${beforeLabel}</strong></span><span><small>Alteração</small><strong>${deltaLabel}</strong></span><span><small>Saldo posterior</small><strong>${afterLabel}</strong></span></div>
         </div>
-        <div class="yield-actions"><button type="button" class="action-btn beta-icon-button edit" onclick="editYield('${y.id}')" aria-label="Editar movimentação" title="Editar movimentação"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deleteYield('${y.id}')" aria-label="Excluir movimentação" title="Excluir movimentação"></button></div>
+        <div class="yield-actions"><button type="button" class="action-btn icon-button edit" onclick="editYield('${y.id}')" aria-label="Editar movimentação" title="Editar movimentação"></button><button type="button" class="action-btn icon-button delete" onclick="deleteYield('${y.id}')" aria-label="Excluir movimentação" title="Excluir movimentação"></button></div>
       </article>`;
     }).join('');
     return `<details class="yield-history"><summary><i class="fi fi-rr-clipboard-list" aria-hidden="true"></i> Histórico auditável (${rowsData.length})</summary><div class="yield-history-list">${rows}</div></details>`;
@@ -912,15 +912,7 @@
     const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId && periodMatchesMovement(y) && (y.kind || 'rendimento') === 'rendimento');
     if (items.length === 0) return '';
     const totalYield = items.reduce((s, y) => s + y.amount, 0);
-    const baseValue = currentValue - totalYield;
-    const firstDate = items.map(y => y.date).sort()[0];
-    const days = Math.max(1, Math.round((new Date(todayISO()) - new Date(firstDate)) / 86400000));
-    const monthly = totalYield / (days / 30);
-    const pct = baseValue > 0 ? (totalYield / baseValue * 100) : null;
-    return `<div class="rentability-box">
-      <span><i class="fi fi-rr-financial-health" aria-hidden="true"></i> Rendimento total: <strong class="${totalYield >= 0 ? 'yield-pos' : 'yield-neg'}">${fmt(totalYield)}</strong>${pct !== null ? ` (${pct.toFixed(2)}%)` : ''}</span>
-      <span>Média: ${fmt(monthly)}/mês · desde ${firstDate.split('-').reverse().join('/')}</span>
-    </div>`;
+    return `<span class="yield-inline ${totalYield >= 0 ? 'yield-pos' : 'yield-neg'}">• ${totalYield >= 0 ? '+' : ''}${fmt(totalYield)} (rendimento)</span>`;
   }
 
   /* P2.6 — UI de histórico de cotações removida; priceHistory/upsertPriceHistory permanecem para cálculos */
@@ -1000,10 +992,10 @@
             <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',-1)" ${index===0?'disabled':''} aria-label="Mover para cima">↑</button>
             <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',1)" ${index===investments.length-1?'disabled':''} aria-label="Mover para baixo">↓</button>
           </div>
-          <button type="button" class="action-btn beta-icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações"></button>
-          <button type="button" class="action-btn reconcile-btn" onclick="openCryptoReconcileModal('${inv.id}')" aria-label="Conciliar saldo">Conciliar</button>
-          <button type="button" class="action-btn beta-icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar"></button>
-          <button type="button" class="action-btn beta-icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir"></button>
+          <button type="button" class="action-btn icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações"></button>
+          <button type="button" class="action-btn reconcile-btn" onclick="openCryptoReconcileModal('${inv.id}')" aria-label="Conciliar saldo"><i class="fi fi-rr-money-bill-wave" aria-hidden="true"></i></button>
+          <button type="button" class="action-btn icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar"></button>
+          <button type="button" class="action-btn icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir"></button>
         </div>
       </article>`;
     }).join('');
@@ -1035,7 +1027,7 @@
       return `<div class="invest-box pocket-box" data-item-id="${p.id}">
         <button type="button" class="drag-handle" aria-label="Segurar para mover caixinha" title="Segure para mover">
           <i class="fi fi-rr-layers" aria-hidden="true"></i>
-        </button><h4><span>${escapeHTML(p.name)}</span></h4><div class="val">${fmt(current)}</div>${goalHTML}${sourceBank ? `<div class="units">Banco de origem: ${escapeHTML(sourceBank.name)}</div>` : '<div class="units">Banco de origem: A definir</div>'}${rentabilityHTML('pocket', p.id, current)}${yieldHistoryHTML('pocket', p.id)}<div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="movePocket('${p.id}',-1)" ${index===0?'disabled':''} aria-label="Mover caixinha para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="movePocket('${p.id}',1)" ${index===pockets.length-1?'disabled':''} aria-label="Mover caixinha para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn beta-icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button><button type="button" class="action-btn beta-icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button><button type="button" class="action-btn beta-icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button></div></div>`;
+        </button><h4><span>${escapeHTML(p.name)}</span></h4><div class="val">${fmt(current)}${rentabilityHTML('pocket', p.id, current)}</div>${goalHTML}${sourceBank ? `<div class="units">Banco de origem: ${escapeHTML(sourceBank.name)}</div>` : '<div class="units">Banco de origem: A definir</div>'}${yieldHistoryHTML('pocket', p.id)}<div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="movePocket('${p.id}',-1)" ${index===0?'disabled':''} aria-label="Mover caixinha para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="movePocket('${p.id}',1)" ${index===pockets.length-1?'disabled':''} aria-label="Mover caixinha para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button><button type="button" class="action-btn icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button><button type="button" class="action-btn icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button></div></div>`;
     }).join('');
       setupDisplayCardDrag(container, 'pockets');
   }
@@ -1205,10 +1197,35 @@
         total: list.filter(e => e.type === mode && e.category === c.id && !isTransferEntry(e, transferCatIds)).reduce((s, e) => s + e.amount, 0)
       })).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
   }
-  function groupCategoryRowsForChart(totals) {
+  function groupCategoryRowsForChart(totals, totalSpend, minPct = 0) {
+    if (minPct > 0 && totalSpend > 0) {
+      const kept = [];
+      let othersTotal = 0;
+      for (const x of totals) {
+        const pct = (x.total / totalSpend) * 100;
+        if (pct >= minPct) kept.push(x);
+        else othersTotal += x.total;
+      }
+      if (othersTotal > 0) kept.push({ cat: { id: '__others__', name: 'Outras', color: '#8B9A92' }, total: othersTotal });
+      kept.sort((a, b) => b.total - a.total);
+      return kept.length > 7 ? [...kept.slice(0, 6), { cat: { id: '__others__', name: 'Outras', color: '#8B9A92' }, total: kept.slice(6).reduce((sum, item) => sum + item.total, 0) }] : kept;
+    }
     return totals.length > 7
       ? [...totals.slice(0, 6), { cat: { id: '__others__', name: 'Outras', color: '#8B9A92' }, total: totals.slice(6).reduce((sum, item) => sum + item.total, 0) }]
       : totals;
+  }
+
+  function updateCatViewPill(wrap) {
+    if (!wrap) return;
+    const buttons = wrap.querySelectorAll('[data-cat-chart-view]');
+    if (!buttons.length) return;
+    const active = wrap.querySelector('[data-cat-chart-view].is-active') || buttons[0];
+    const rect = active.getBoundingClientRect();
+    const wrapRect = wrap.getBoundingClientRect();
+    const padding = 3;
+    wrap.style.setProperty('--pill-left', `${rect.left - wrapRect.left - padding}px`);
+    wrap.style.setProperty('--pill-width', `${rect.width + padding * 2}px`);
+    wrap.style.setProperty('--pill-height', `${rect.height + padding * 2}px`);
   }
 
   function renderCategorySummary() {
@@ -1244,7 +1261,7 @@
     }
     const totalSpend = totals.reduce((sum, item) => sum + item.total, 0);
     const leader = totals[0];
-    const chartSpend = groupCategoryRowsForChart(totals);
+    const chartSpend = groupCategoryRowsForChart(totals, totalSpend, 2);
     const max = chartSpend[0].total;
     const isIncome = mode === 'in';
     const canvasId = isIncome ? 'catIncomePieChart' : 'catPieChart';
@@ -1444,6 +1461,8 @@
         applyActiveSlice();
       };
       document.addEventListener('click', catChartOutsideClickHandler);
+
+      updateCatViewPill(wrap);
     }
   }
 
@@ -1491,9 +1510,9 @@
           <div class="card-right">
             <span class="card-amount ${tipoClasse}">${sinal} ${fmt(Math.abs(e.amount))}</span>
             <div class="card-actions">
-              <button type="button" class="action-btn beta-icon-button history" onclick="openEntryHistory('${e.id}')" aria-label="Histórico do lançamento" title="Histórico do lançamento"></button>
-              <button type="button" class="action-btn beta-icon-button edit" onclick="editEntry('${e.id}')" aria-label="Editar lançamento" title="Editar lançamento"></button>
-              <button type="button" class="action-btn beta-icon-button delete" onclick="deleteEntry('${e.id}')" aria-label="Excluir lançamento" title="Excluir lançamento"></button>
+              <button type="button" class="action-btn icon-button history" onclick="openEntryHistory('${e.id}')" aria-label="Histórico do lançamento" title="Histórico do lançamento"></button>
+              <button type="button" class="action-btn icon-button edit" onclick="editEntry('${e.id}')" aria-label="Editar lançamento" title="Editar lançamento"></button>
+              <button type="button" class="action-btn icon-button delete" onclick="deleteEntry('${e.id}')" aria-label="Excluir lançamento" title="Excluir lançamento"></button>
             </div>
           </div>
         </div>

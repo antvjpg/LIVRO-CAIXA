@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="./icon-192.png?v=13">
 <title>Livro-Caixa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -386,7 +386,7 @@
   <div id="viewInvest" class="tab-content">
     <div class="balance-strip section-balance-strip" id="investBalanceStrip"></div>
     <div class="toolbar">
-      <button type="button" id="btnUpdateAllPrices"><i class="fi fi-rr-refresh" aria-hidden="true"></i> Atualizar Cotações</button>
+      <button type="button" id="btnUpdateAllPrices" class="quote-refresh-btn" aria-label="Atualizar cotações"><span class="quote-refresh-icon"><i class="fi fi-rr-refresh" aria-hidden="true"></i></span><span class="quote-refresh-label">Atualizar Cotações</span></button>
     </div>
     <div id="updateAllStatus" style="font-size:12px; margin-bottom:16px; opacity:0.75;"></div>
     <div id="investPeriodSummary" class="period-summary" aria-label="Resumo de investimentos no período"></div>
@@ -428,37 +428,68 @@
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-settings" aria-hidden="true"></i></span> Configurações gerais</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-image" aria-hidden="true"></i></span> Foto de perfil</div>
         <div class="profile-list">
-          <div class="profile-item" id="btnAparencia" role="button" tabindex="0" aria-expanded="false" aria-controls="aparenciaPaletas"><span class="profile-item-icon"><i class="fi fi-rr-palette" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta do aplicativo — clique para escolher.</span></span><span class="profile-item-arrow" aria-hidden="true">›</span></div>
-          <div id="aparenciaPaletas" hidden>
-            <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
-              <span class="light-theme-picker-label">Paleta clara</span>
-              <button type="button" class="light-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"></button>
-              <button type="button" class="light-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"></button>
-              <button type="button" class="light-theme-option" data-theme="3" aria-label="Lima" aria-pressed="false" title="Lima"></button>
-              <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"></button>
-              <button type="button" class="light-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"></button>
-            </div>
-            <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
-              <span class="dark-theme-picker-label">Paleta escura</span>
-              <button type="button" class="dark-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"></button>
-              <button type="button" class="dark-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"></button>
-              <button type="button" class="dark-theme-option" data-theme="3" aria-label="Bege" aria-pressed="false" title="Bege"></button>
-              <button type="button" class="dark-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"></button>
-              <button type="button" class="dark-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"></button>
-            </div>
-          </div>
-          <div class="profile-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><i class="fi fi-rr-tags"></i></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamentos — criar, editar e excluir.</span></span><span class="profile-item-arrow">›</span></div>
           <div class="profile-item">
-            <span class="profile-item-icon"><i class="fi fi-rr-calendar" aria-hidden="true"></i></span>
-            <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define quando começa seu mês financeiro (apenas para orçamentos).</span></span>
-            <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
+            <div class="profile-avatar-pick" id="profileAvatarPick" aria-label="Foto de perfil" title="Foto de perfil"><i class="fi fi-rr-user" aria-hidden="true"></i></div>
+            <span class="profile-item-copy"><strong>Escolha sua foto</strong><span>Selecione um dos avatares predefinidos abaixo.</span></span>
+            <div class="avatar-grid" id="avatarGrid" hidden></div>
+            <button type="button" id="btnOpenAvatarGrid" style="margin-top:8px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--ink);font-size:12px;cursor:pointer;">Escolher foto</button>
           </div>
-          <div class="profile-item"><span class="profile-item-icon"><i class="fi fi-rr-bell" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
-          <label class="feature-profile-toggle"><input type="checkbox" id="featureReminders" checked><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
-          <label class="feature-profile-toggle"><input type="checkbox" id="featurePushNotifications"><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Notificações push</strong><small>Alertas de contas, faturas, metas e recebíveis direto no dispositivo, mesmo com o app fechado. Requer chave VAPID e envio configurados no Firebase.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
         </div>
+      </div>
+
+      <div class="profile-group">
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-settings" aria-hidden="true"></i></span> Configurações gerais</div>
+          <div class="profile-list profile-grouped-list">
+            <div class="profile-item grouped-item" id="btnAparencia" role="button" tabindex="0" aria-expanded="false" aria-controls="aparenciaPaletas"><span class="profile-item-icon"><i class="fi fi-rr-palette" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta do aplicativo — clique para escolher.</span></span><span class="profile-item-arrow" aria-hidden="true">›</span></div>
+            <div id="aparenciaPaletas" hidden>
+              <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
+                <span class="light-theme-picker-label">Paleta clara</span>
+                <button type="button" class="light-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"></button>
+                <button type="button" class="light-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"></button>
+                <button type="button" class="light-theme-option" data-theme="3" aria-label="Lima" aria-pressed="false" title="Lima"></button>
+                <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"></button>
+                <button type="button" class="light-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"></button>
+              </div>
+              <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
+                <span class="dark-theme-picker-label">Paleta escura</span>
+                <button type="button" class="dark-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"></button>
+                <button type="button" class="dark-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"></button>
+                <button type="button" class="dark-theme-option" data-theme="3" aria-label="Bege" aria-pressed="false" title="Bege"></button>
+                <button type="button" class="dark-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"></button>
+                <button type="button" class="dark-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"></button>
+              </div>
+            </div>
+            <div class="profile-item grouped-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><i class="fi fi-rr-tags"></i></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamentos — criar, editar e excluir.</span></span><span class="profile-item-arrow">›</span></div>
+            <div class="profile-item grouped-item">
+              <span class="profile-item-icon"><i class="fi fi-rr-calendar" aria-hidden="true"></i></span>
+              <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define quando começa seu mês financeiro (apenas para orçamentos).</span></span>
+              <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
+            </div>
+            <div class="profile-item grouped-item"><span class="profile-item-icon"><i class="fi fi-rr-bell" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
+            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featureReminders" checked><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
+            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featurePushNotifications"><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Notificações push</strong><small>Alertas de contas, faturas, metas e recebíveis direto no dispositivo, mesmo com o app fechado. Requer chave VAPID e envio configurados no Firebase.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
+            <div class="profile-item grouped-item">
+              <span class="profile-item-icon"><i class="fi fi-rr-credit-card" aria-hidden="true"></i></span>
+              <span class="profile-item-copy"><strong>Moeda do app</strong><span>BRL · USD · BTC — afeta apenas a exibição de valores.</span></span>
+              <select id="profileCurrency" style="width:80px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:12px;">
+                <option value="BRL">BRL</option>
+                <option value="USD">USD</option>
+                <option value="BTC">BTC</option>
+              </select>
+            </div>
+            <div class="profile-item grouped-item">
+              <span class="profile-item-icon"><i class="fi fi-rr-text-format" aria-hidden="true"></i></span>
+              <span class="profile-item-copy"><strong>Fonte do app</strong><span>Escolha a tipografia usada nas telas.</span></span>
+              <select id="profileFont" style="width:140px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:12px;">
+                <option value="plus-jakarta">Plus Jakarta Sans</option>
+                <option value="inter">Inter</option>
+                <option value="roboto">Roboto</option>
+                <option value="open-sans">Open Sans</option>
+              </select>
+            </div>
+          </div>
       </div>
 
       <div class="profile-group">
@@ -493,7 +524,7 @@
         <div class="feature-profile-section">
           <div class="reconciliation-card">
             <div class="reconciliation-header">
-              <h4>Conciliação de saldo</h4>
+              <h4>Conciliação Bancária</h4>
               <span class="reconciliation-badge" id="reconciliationStatusBadge" hidden></span>
             </div>
             
@@ -508,7 +539,12 @@
               </div>
             </div>
             
-            <div class="reconciliation-balances" id="reconciliationBalances" hidden>
+            <div class="feature-profile-actions">
+              <button type="button" id="btnRunReconciliation" class="primary">Comparar saldos</button>
+              <button type="button" id="btnApplyReconciliation" class="secondary" hidden>Aplicar ajuste sugerido</button>
+            </div>
+            
+            <div id="reconciliationBalances" class="reconciliation-balances" hidden>
               <div class="balance-comparison">
                 <div class="balance-item calculated">
                   <span class="balance-label">Saldo calculado</span>
@@ -526,11 +562,6 @@
               </div>
             </div>
             
-            <div class="feature-profile-actions">
-              <button type="button" id="btnRunReconciliation" class="primary">Comparar saldos</button>
-              <button type="button" id="btnApplyReconciliation" class="secondary" hidden>Aplicar ajuste sugerido</button>
-            </div>
-            
             <div id="reconciliationResult" class="feature-profile-feedback" aria-live="polite"></div>
             
             <div id="reconciliationHistory" class="reconciliation-history" hidden>
@@ -545,9 +576,12 @@
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-sr-sparkles"></i></span> Análise assistida</div>
         <div class="feature-profile-section profile-plus-section">
-          <label class="feature-profile-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-profile-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias usando descrições já categorizadas no seu histórico; nenhuma alteração é feita sem confirmação.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
+          <label class="feature-profile-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-profile-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias pelo seu histórico. Nada muda sem sua confirmação.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
           <div class="feature-profile-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
           <div id="profileAnalysisStatus" class="feature-profile-feedback" aria-live="polite"></div>
+          <div id="profileAnalysisCard" class="analysis-result-card" hidden role="region" aria-label="Resultado da análise assistida">
+            <div class="analysis-card-body" id="profileAnalysisCardBody"></div>
+          </div>
         </div>
         <div class="feature-profile-heading"><strong>Conexão externa (MCP)</strong></div>
         <div class="feature-profile-section profile-plus-section">
@@ -702,7 +736,7 @@
       <div class="form-grid">
         <div>
           <label for="bNome">Nome do banco</label>
-          <input type="text" id="bNome" placeholder="Ex: Nubank">
+          <input type="text" id="bNome" placeholder="Ex: Nubank" autocomplete="off">
         </div>
         <div>
           <label for="bSaldo">Saldo inicial (R$)</label>
@@ -1314,6 +1348,7 @@
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="pmSalvar" style="width:100%">Registrar Aporte</button>
+          <button type="button" class="btn-expand-movement" aria-label="Expandir painel de movimentação" title="Expandir"><i class="fi fi-rr-expand" aria-hidden="true"></i> Expandir</button>
         </div>
       </div>
     </div>
@@ -1352,6 +1387,7 @@
         </div>
         <div style="grid-column: 1 / -1; margin-top: 8px;">
           <button class="primary" id="imSalvar" style="width:100%">Registrar Lançamento</button>
+          <button type="button" class="btn-expand-movement" aria-label="Expandir painel de movimentação" title="Expandir"><i class="fi fi-rr-expand" aria-hidden="true"></i> Expandir</button>
         </div>
       </div>
     </div>
@@ -1610,11 +1646,11 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
   <script src="./js/99-init.js?v=20-25"></script>
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
-  <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i></span><span>Visão geral</span></button>
-  <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span><span>Caixinhas</span></button>
-  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><i class="fi fi-rr-book-bookmark" aria-hidden="true"></i></span><span>Livro-Caixa</span></button>
-<button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span><span>Investimentos</span></button>
-  <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><i class="fi fi-rr-user" aria-hidden="true"></i></span><span>Perfil</span></button>
+  <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i></span></button>
+  <button type="button" data-destination="pockets" aria-label="Caixinhas"><span class="nav-icon"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span></button>
+  <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><i class="fi fi-rr-book-bookmark" aria-hidden="true"></i></span></button>
+<button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span></button>
+  <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><i class="fi fi-rr-user" aria-hidden="true"></i></span></button>
 </nav>
 <div class="emoji-float-overlay" id="emojiFloatOverlay" role="dialog" aria-modal="true" aria-label="Escolher ícone">
   <div class="emoji-float-window">

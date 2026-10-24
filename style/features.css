@@ -403,8 +403,8 @@
     .compound-calc-chart{height:175px;}
     .feature-profile-fields,.feature-profile-pin-row,.feature-profile-actions{grid-template-columns:1fr;}
     .feature-profile-pin-actions{display:grid;grid-template-columns:1fr 1fr;}
-    .feature-budget-row{grid-template-columns:minmax(0,1fr) 105px;}
-    .feature-budget-row span{grid-column:1/-1;}
+    .feature-budget-row{flex-direction:column;align-items:flex-start;}
+    .feature-budget-row span{width:100%;}
   }
 
   /* V18-19 — Cartões / Compras (Fases A+B) */
@@ -529,7 +529,7 @@
 
 /* Concluir/Restaurar: chip temático (28px para não alargar a coluna do menu),
    com cores por tema (--green / --gold) em vez dos valores fixos do tema claro.
-   !important para vencer os hardcodes de .beta-icon-button. */
+   !important para vencer os hardcodes de .icon-button. */
 .credit-card-purchase-menu .finalize,
 .credit-card-purchase-menu .unarchive{
   width:28px;height:28px;min-width:28px;min-height:28px;padding:0;
@@ -617,7 +617,40 @@
   .quick-action-icon,.profile-item-icon,.nav-icon{display:grid;place-items:center;line-height:0;flex:0 0 auto;}
   .quick-action-icon svg,.profile-item-icon svg,.nav-icon svg{display:block;width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;}
   .profile-avatar svg,.profile-avatar i{display:block;width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
-  .beta-icon-button{display:inline-grid;place-items:center;min-width:34px;min-height:34px;line-height:1;vertical-align:middle;}
+  .icon-button{display:inline-grid;place-items:center;min-width:34px;min-height:34px;line-height:1;vertical-align:middle;}
+  /* Fonte do app aplicada via data-font no <body> */
+  body[data-font="inter"]{font-family:'Inter',sans-serif;}
+  body[data-font="roboto"]{font-family:'Roboto',sans-serif;}
+  body[data-font="open-sans"]{font-family:'Open Sans',sans-serif;}
+  body[data-font="plus-jakarta"],body{font-family:'Plus Jakarta Sans',sans-serif;}
+  /* Card de resultado da análise assistida */
+  .analysis-result-card{
+    border:2px dashed var(--line);
+    border-radius:16px;
+    padding:14px 16px;
+    margin-top:12px;
+    background:var(--paper);
+  }
+  body.dark-mode .analysis-result-card{
+    background:color-mix(in srgb,var(--surface) 90%,var(--paper));
+    border-color:color-mix(in srgb,var(--line) 60%,var(--paper));
+  }
+  .analysis-card-body{font-size:13px;line-height:1.5;color:var(--ink);}
+  .analysis-card-body strong{color:var(--ink);}
+  .analysis-card-body small{color:var(--ink-soft);font-size:11px;}
+  /* Foto de perfil — grid de avatares predefinidos */
+  .profile-avatar-pick{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 12%,var(--paper));border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));color:var(--accent);font-size:22px;overflow:hidden;}
+  .profile-avatar-pick img{width:100%;height:100%;object-fit:cover;display:block;}
+  .profile-avatar-pick i{font-size:22px;line-height:1;}
+  .avatar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;padding:10px;}
+  .avatar-option{width:72px;height:72px;border-radius:50%;border:2px solid transparent;cursor:pointer;background:var(--paper);display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;font-size:11px;color:var(--ink-soft);transition:border-color .2s,transform .1s;}
+  .avatar-option:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .avatar-option.is-active{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--accent);}
+  .avatar-option img{width:44px;height:44px;border-radius:50%;object-fit:cover;}
+  body[data-font="inter"]{font-family:'Inter',sans-serif;}
+  body[data-font="roboto"]{font-family:'Roboto',sans-serif;}
+  body[data-font="open-sans"]{font-family:'Open Sans',sans-serif;}
+  body[data-font="plus-jakarta"],body{font-family:'Plus Jakarta Sans',sans-serif;}
   .mobile-bottom-nav{--nav-indicator-x:0%;}
   .mobile-bottom-nav::before{content:"";position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/5);border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),0 5px 13px color-mix(in srgb,var(--accent) 10%,transparent);transform:translateX(var(--nav-indicator-x));transition:transform 220ms var(--v1616-ease),background-color 220ms ease,box-shadow 220ms ease;pointer-events:none;}
   .mobile-bottom-nav button{position:relative;z-index:1;background:transparent!important;transition:color 220ms ease,transform 160ms var(--v1616-ease);}
@@ -687,7 +720,7 @@
   .history-audit small{font-size:9px;color:var(--ink-soft);font-weight:700;line-height:1.2;}
   .history-audit strong{color:var(--ink);font-size:10px;line-height:1.3;overflow-wrap:anywhere;word-break:break-word;}
   .yield-row .yield-actions{display:flex;justify-content:flex-end;gap:6px;padding-top:7px;border-top:1px dashed var(--line);}
-  .yield-row .yield-actions .beta-icon-button{width:32px;height:32px;min-width:32px;min-height:32px;}
+  .yield-row .yield-actions .icon-button{width:32px;height:32px;min-width:32px;min-height:32px;}
   @media(max-width:600px){.yield-history-list{max-height:min(54vh,460px);}.history-audit{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}.history-audit span{padding:6px 5px;}.history-audit strong{font-size:9px;}.yield-row{padding:10px;}}
   .log-toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0 12px;}
   .log-entry{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 11px;background:var(--surface);font-size:11px;line-height:1.45;}
@@ -4053,7 +4086,7 @@ body.dark-mode .fab-add{
 /* Edit icon moderno (mask) */
 .btn-action.edit::before,
 .action-btn.edit::before,
-.beta-icon-button.edit::after,
+.icon-button.edit::after,
 button.edit.btn-action::before{
   content:"";
   display:block;
@@ -4062,7 +4095,7 @@ button.edit.btn-action::before{
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.45 3.55a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.45 3.55a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;
 }
-.beta-icon-button.edit::after{font-size:0;}
+.icon-button.edit::after{font-size:0;}
 
 /* Aba cartões */
 #viewCards .toolbar button{
@@ -4116,7 +4149,7 @@ body.balances-hidden .balance-card.total .amount::after{left:0;top:50%;transform
 
 #balanceStrip .balance-share{font-size:9px;padding:2px 7px!important;margin-top:4px!important;opacity:.9;}
 
-.beta-icon-button.edit::after,.btn-action.edit::before{content:"";display:block;width:15px;height:15px;background:currentColor;
+.icon-button.edit::after,.btn-action.edit::before{content:"";display:block;width:15px;height:15px;background:currentColor;
 -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.45 3.55a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;
 mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.45 3.55a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;}
 
@@ -4309,7 +4342,7 @@ body[data-tab="dash"] .fab-add{
 /* B02 — ícone editar legível (lápis) */
 .btn-action.edit,
 .action-btn.edit,
-.beta-icon-button.edit{
+.icon-button.edit{
   width:34px;height:34px;min-width:34px;
   display:inline-grid;place-items:center;
   border-radius:10px;
@@ -4321,7 +4354,7 @@ body[data-tab="dash"] .fab-add{
 }
 .btn-action.edit::before,
 .action-btn.edit::before,
-.beta-icon-button.edit::after{
+.icon-button.edit::after{
   content:"";
   display:block;
   width:16px;height:16px;
@@ -4334,7 +4367,7 @@ body[data-tab="dash"] .fab-add{
 }
 .btn-action.delete,
 .action-btn.delete,
-.beta-icon-button.delete{
+.icon-button.delete{
   width:34px;height:34px;min-width:34px;
   display:inline-grid;place-items:center;
   border-radius:10px;
@@ -4346,7 +4379,7 @@ body[data-tab="dash"] .fab-add{
 }
 .btn-action.delete::before,
 .action-btn.delete::before,
-.beta-icon-button.delete::after{
+.icon-button.delete::after{
   content:"";
   display:block;
   width:16px;height:16px;
@@ -5103,12 +5136,12 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 /* ui10 — lançamentos = mesmo ícone dos investimentos */
 /*
   Fonte da verdade: botões dos cards de ativo
-  .action-btn.beta-icon-button.edit / .delete com SVG no ::after
+  .action-btn.icon-button.edit / .delete com SVG no ::after
   Lançamentos já usam as mesmas classes; aqui só garantimos o mesmo desenho.
 */
 
 /* zera o "lápis geométrico" antigo (barra rotacionada) */
-.beta-icon-button.edit::after{
+.icon-button.edit::after{
   transform:none;
   margin:0;
   border:0;
@@ -5118,8 +5151,8 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   box-sizing:border-box;
 }
 
-.action-btn.beta-icon-button.edit,
-.action-btn.beta-icon-button.delete{
+.action-btn.icon-button.edit,
+.action-btn.icon-button.delete{
   width:34px;
   height:34px;
   min-width:34px;
@@ -5135,26 +5168,26 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   color:var(--ink-soft);
 }
 
-.action-btn.beta-icon-button.edit{
+.action-btn.icon-button.edit{
   color:var(--accent) !important;
   border-color:color-mix(in srgb, var(--accent) 28%, var(--line)) !important;
   background:color-mix(in srgb, var(--accent) 10%, var(--surface)) !important;
 }
 
-.action-btn.beta-icon-button.delete{
+.action-btn.icon-button.delete{
   color:var(--red, #B3432B) !important;
   border-color:color-mix(in srgb, var(--red, #B3432B) 28%, var(--line)) !important;
   background:color-mix(in srgb, var(--red, #B3432B) 10%, var(--surface)) !important;
 }
 
 /* ícone via ::after (como nos investimentos) — não usar ::before */
-.action-btn.beta-icon-button.edit::before,
-.action-btn.beta-icon-button.delete::before{
+.action-btn.icon-button.edit::before,
+.action-btn.icon-button.delete::before{
   content:none;
   display:none;
 }
 
-.action-btn.beta-icon-button.edit::after{
+.action-btn.icon-button.edit::after{
   content:"";
   display:block;
   width:16px;
@@ -5164,7 +5197,7 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-.action-btn.beta-icon-button.delete::after{
+.action-btn.icon-button.delete::after{
   content:"";
   display:block;
   width:16px;
@@ -5182,7 +5215,7 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 }
 
 /* Feature 14 — botão de histórico no card de lançamento */
-.action-btn.beta-icon-button.history{
+.action-btn.icon-button.history{
   width:34px;
   height:34px;
   min-width:34px;
@@ -5197,11 +5230,11 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   color:var(--ink-soft);
   font-size:0;
 }
-.action-btn.beta-icon-button.history::before{
+.action-btn.icon-button.history::before{
   content:none;
   display:none;
 }
-.action-btn.beta-icon-button.history::after{
+.action-btn.icon-button.history::after{
   content:"";
   display:block;
   width:16px;
@@ -5210,7 +5243,7 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E") center / contain no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-.action-btn.beta-icon-button.history:hover{
+.action-btn.icon-button.history:hover{
   color:var(--accent) !important;
   border-color:color-mix(in srgb, var(--accent) 28%, var(--line)) !important;
   background:color-mix(in srgb, var(--accent) 10%, var(--surface)) !important;
@@ -5309,21 +5342,25 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 .cat-sub-add{
   display:inline-flex;
   align-items:center;
-  gap:4px;
+  gap:6px;
   margin-left:auto;
 }
 .cat-sub-input{
   width:150px;
   max-width:42vw;
-  padding:4px 8px;
+  padding:6px 8px;
   font-size:12px;
   border:1px dashed var(--line);
   border-radius:8px;
   background:var(--surface);
+  height:auto;
+  min-height:28px;
 }
 .cat-sub-add-btn{
-  width:24px;
-  height:24px;
+  width:30px;
+  height:30px;
+  min-width:30px;
+  min-height:30px;
   display:inline-grid;
   place-items:center;
   border:1px solid var(--line);
@@ -5333,6 +5370,7 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   font-weight:700;
   cursor:pointer;
   line-height:1;
+  font-size:16px;
 }
 .cat-sub-add-btn:hover{
   border-color:color-mix(in srgb, var(--accent) 30%, var(--line));
@@ -6084,7 +6122,7 @@ body:not(.dark-mode) .goals-form-body select {
     var(--line) 85%,
     transparent
   );
-  border-radius: 9px;
+  border-radius: 999px;
   background: color-mix(
     in srgb,
     var(--paper) 82%,

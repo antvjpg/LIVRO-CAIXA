@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return fmt(v);
   };
   MONEY_FORMATTER = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  setMoneyCurrency = (code) => { MONEY_FORMATTER = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: code, minimumFractionDigits: 2, maximumFractionDigits: 2 }); document.body.dataset.currency = code; };
   todayISO = () => {
     const d = new Date();
     const offset = d.getTimezoneOffset();
@@ -642,7 +643,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('featureBudgetRows')?.addEventListener('input', scheduleFeatureSettingsAutosave);
   compoundCalcChartInstance = null;
 
-document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnomalyScan);
+document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
+  runAnomalyScan();
+  const issues = renderDiagnosticResults();
+  const card = document.getElementById('profileAnalysisCard');
+  const body = document.getElementById('profileAnalysisCardBody');
+  if (card && body) {
+    card.hidden = false;
+    body.innerHTML = `<strong>Diagnóstico de consistência</strong>${issues.length ? `<div>${issues.map(i => `<div style="margin:4px 0;"><strong>${escapeHTML(i.title)}</strong><span style="font-size:12px;color:var(--ink-soft);">${escapeHTML(i.detail)}</span></div>`).join('')}</div>` : '<div style="margin:4px 0;"><strong>Tudo certo</strong><span style="font-size:12px;color:var(--ink-soft);">Nenhuma inconsistência encontrada.</span></div>'}`;
+  }
+});
   document.getElementById('btnGenerateMonthlyReview')?.addEventListener('click', generateMonthlyReview);
   document.getElementById('btnRunCompoundCalc')?.addEventListener('click', runCompoundInterest);
   document.getElementById('ciBenchCustom')?.addEventListener('change', (event) => {
@@ -790,6 +800,49 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', runAnoma
     persistProfileSettings().catch(err => logSyncError('preferência de antecedência', err));
     render();
   });
+  const profileFont = document.getElementById('profileFont');
+  profileFont?.addEventListener('change', () => { document.body.dataset.font = profileFont.value; });
+  const profileCurrency = document.getElementById('profileCurrency');
+  profileCurrency?.addEventListener('change', () => { setMoneyCurrency(profileCurrency.value); render(); });
+
+  /* Foto de perfil — grid de avatares predefinidos (DiceBear, sem download de imagens) */
+  const avatarSeeds = ['ana','beto','carla','diego','elena','fabio','giulia','hugo','isabela','joao','karol','lucas'];
+  const avatarGrid = document.getElementById('avatarGrid');
+  const avatarPick = document.getElementById('profileAvatarPick');
+  const btnOpenAvatar = document.getElementById('btnOpenAvatarGrid');
+  let avatarVisible = false;
+  if (avatarGrid && avatarPick && btnOpenAvatar) {
+    avatarGrid.innerHTML = avatarSeeds.map((seed, i) => `
+      <button type="button" class="avatar-option${i === 0 ? ' is-active' : ''}" data-seed="${seed}" aria-label="Avatar ${seed}">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&radius=50" alt="Avatar ${seed}">
+        <span>${seed.charAt(0).toUpperCase() + seed.slice(1)}</span>
+      </button>
+    `).join('');
+    avatarGrid.querySelectorAll('.avatar-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        avatarGrid.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('is-active'));
+        opt.classList.add('is-active');
+        const seed = opt.dataset.seed;
+        const img = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&radius=50`;
+        avatarPick.innerHTML = `<img src="${img}" alt="Foto de perfil">`;
+        localStorage.setItem('lc_profile_avatar', seed);
+      });
+    });
+    btnOpenAvatar.addEventListener('click', () => {
+      avatarVisible = !avatarVisible;
+      avatarGrid.hidden = !avatarVisible;
+      btnOpenAvatar.textContent = avatarVisible ? 'Fechar fotos' : 'Escolher foto';
+    });
+    const saved = localStorage.getItem('lc_profile_avatar');
+    if (saved) {
+      const opt = avatarGrid.querySelector(`[data-seed="${saved}"]`);
+      if (opt) {
+        avatarGrid.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('is-active'));
+        opt.classList.add('is-active');
+        avatarPick.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${saved}&radius=50" alt="Foto de perfil">`;
+      }
+    }
+  }
   applyBalancesHiddenState(hideBalancesOnOpen);
   document.getElementById('btnRecEnableQuotes')?.addEventListener('click', () => {
     document.getElementById('featureAutoQuotes')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1853,9 +1906,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     document.getElementById('cNome').value = '';
     document.getElementById('cIcon').value = '📦';
     document.getElementById('cSalvar').textContent = 'Adicionar categoria';
-    openModal('panelCategoria');
-    setTimeout(() => document.getElementById('cNome').focus(), 80);
-  };
+    openModal('panelCategoria');  };
 
   document.getElementById('tglIn').onclick = () => {
     currentType = 'in';

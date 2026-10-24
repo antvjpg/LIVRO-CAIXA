@@ -167,6 +167,8 @@
     const operation = beginLogOperation('Cotação', 'Atualização em lote');
     logInfo('Cotação', 'Atualização em lote', 'Em andamento', `Atualização de ${candidates.length} ativo(s) iniciada.`, { count: candidates.length }, operation);
     btn.disabled = true;
+    const icon = btn.querySelector('.quote-refresh-icon i');
+    if (icon) icon.classList.add('is-spinning');
     let updated = 0, failed = [];
     for (let i = 0; i < candidates.length; i++) {
       const inv = candidates[i];
@@ -202,6 +204,7 @@
     }
     render();
     btn.disabled = false;
+    if (icon) icon.classList.remove('is-spinning');
     statusEl.textContent = `${updated} de ${candidates.length} cotação(ões) atualizada(s).` +
       (failed.length ? ` Não encontrados: ${failed.join(', ')}.` : '');
     (failed.length ? logWarn : logInfo)('Cotação', auto ? 'Atualização automática' : 'Atualização em lote', failed.length ? 'Parcial' : 'Sucesso', `${updated} cotação(ões) atualizada(s).`, { failed }, operation);
