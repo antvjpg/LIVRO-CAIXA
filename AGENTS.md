@@ -1540,6 +1540,8 @@ Sem solicitação explícita, não:
 - criar commit;
 - apagar alterações do usuário.
 
+**Exceto quando o usuário autoriza explicitamente nesta sessão**, em que caso estas restrições são levantadas e o agente pode prosseguir com as ações solicitadas.
+
 ---
 
 ## 57. O que o agente DEVE fazer por iniciativa própria
