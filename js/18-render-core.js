@@ -912,7 +912,15 @@
     const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId && periodMatchesMovement(y) && (y.kind || 'rendimento') === 'rendimento');
     if (items.length === 0) return '';
     const totalYield = items.reduce((s, y) => s + y.amount, 0);
-    return `<span class="yield-inline ${totalYield >= 0 ? 'yield-pos' : 'yield-neg'}">• ${totalYield >= 0 ? '+' : ''}${fmt(totalYield)} (rendimento)</span>`;
+    const baseValue = currentValue - totalYield;
+    const firstDate = items.map(y => y.date).sort()[0];
+    const days = Math.max(1, Math.round((new Date(todayISO()) - new Date(firstDate)) / 86400000));
+    const monthly = totalYield / (days / 30);
+    const pct = baseValue > 0 ? (totalYield / baseValue * 100) : null;
+    return `<div class="rentability-box">
+      <span><i class="fi fi-rr-financial-health" aria-hidden="true"></i> Rendimento total: <strong class="${totalYield >= 0 ? 'yield-pos' : 'yield-neg'}">${fmt(totalYield)}</strong>${pct !== null ? ` (${pct.toFixed(2)}%)` : ''}</span>
+      <span>Média: ${fmt(monthly)}/mês · desde ${firstDate.split('-').reverse().join('/')}</span>
+    </div>`;
   }
 
   /* P2.6 — UI de histórico de cotações removida; priceHistory/upsertPriceHistory permanecem para cálculos */
