@@ -68,6 +68,38 @@ export async function getFreeQuotaKV(env, force = false) {
   }
 }
 
+/* Uso gratuito atual (GET /api/v1/key), leitura autoritativa sem cache:
+   o monitor administrativo (GET /openrouter-usage) e a leitura forçada de
+   cota (GET /quota?force) não devem servir os dados de 60 s de cache. */
+export async function getOpenRouterUsageKV(env) {
+  if (!env.OPENROUTER_API_KEY) return { ok: false, code: "openrouter_key_missing" };
+
+  try {
+    const response = await fetch(QUOTA_ENDPOINT, {
+      headers: { Authorization: `Bearer ${env.OPENROUTER_API_KEY}` },
+      signal: AbortSignal.timeout(8000)
+    });
+    if (response.status >= 300 && response.status < 400) return { ok: false, code: "openrouter_unavailable" };
+    if (!response.ok) return { ok: false, code: "openrouter_unavailable" };
+
+    const parsed = await response.json();
+    const usage = parsed?.data?.free_model_daily_requests;
+    const used = Number(usage?.used);
+    const limit = Number(usage?.limit);
+    const remaining = Number(usage?.remaining);
+    if (!usage || !Number.isFinite(used) || !Number.isFinite(limit) || !Number.isFinite(remaining)) {
+      return { ok: false, code: "openrouter_invalid_response" };
+    }
+
+    const safeLimit = Math.max(0, limit);
+    const safeUsed = Math.max(0, used);
+    const safeRemaining = Math.max(0, Math.min(remaining, safeLimit));
+    return { ok: true, used: safeUsed, limit: safeLimit, remaining: safeRemaining };
+  } catch (usageError) {
+    return { ok: false, code: "openrouter_unavailable" };
+  }
+}
+
 export async function burnQuotaKV(env) {
   if (!env.QUOTA_KV) return;
   const day = utcDayKey();

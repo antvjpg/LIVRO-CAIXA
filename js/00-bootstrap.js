@@ -276,6 +276,9 @@ window.LivroCaixaAI = {
   quota: null,
   quotaState: 'idle',
   lastQuotaFetchAt: 0,
+  openRouterUsage: null,
+  openRouterUsageState: 'idle',
+  openRouterUsageTimestamp: null,
   setQuota(data) {
     if (!data || data.remaining == null || !Number.isFinite(Number(data.remaining))) return;
     this.quota = {
@@ -352,6 +355,60 @@ window.LivroCaixaAI = {
     } finally {
       window.renderAiQuotaStatus?.();
     }
+  },
+  async refreshOpenRouterUsage(options) {
+    const silent = Boolean(options && options.silent);
+    if (!silent) {
+      this.openRouterUsageState = 'loading';
+      window.renderOpenRouterUsagePanel?.();
+    }
+    const user = typeof auth !== 'undefined' ? auth?.currentUser : null;
+    if (!user) {
+      if (!silent) this.openRouterUsageState = 'unavailable';
+      return null;
+    }
+    let idToken = '';
+    try { idToken = await user.getIdToken(); } catch (err) { if (!silent) this.openRouterUsageState = 'unavailable'; return null; }
+    let appCheckToken = '';
+    try {
+      if (typeof firebase !== 'undefined' && firebase.appCheck) {
+        const appCheckResult = await firebase.appCheck().getToken(false);
+        appCheckToken = appCheckResult?.token || '';
+      }
+    } catch (err) { /* segue com o Bearer do ID token */ }
+    const endpoint = `${String(AI_WORKER_ENDPOINT || '').replace(/\/ai$/, '')}/openrouter-usage`;
+    let response;
+    try {
+      response = await fetch(endpoint, {
+        headers: Object.assign(
+          { Authorization: `Bearer ${idToken}` },
+          appCheckToken ? { 'X-Firebase-AppCheck': appCheckToken } : {}
+        )
+      });
+    } catch (err) {
+      if (!silent) this.openRouterUsageState = 'unavailable';
+      return null;
+    }
+    const data = await response.json().catch(() => null);
+    if (!response.ok || !data) {
+      this.openRouterUsageState = data?.code === 'admin_forbidden' ? 'unauthorized' : 'unavailable';
+      if (!silent) window.renderOpenRouterUsagePanel?.();
+      return null;
+    }
+    this.openRouterUsage = data.free_model_daily_requests || null;
+    this.openRouterUsageState = 'ready';
+    this.openRouterUsageTimestamp = data.timestamp || null;
+    window.renderOpenRouterUsagePanel?.(data);
+    return data;
+  },
+  async openOpenRouterUsage() {
+    const refreshButton = document.getElementById('btnOpenRouterUsageRefresh');
+    if (refreshButton && !refreshButton.dataset.wired) {
+      refreshButton.dataset.wired = '1';
+      refreshButton.addEventListener('click', () => window.LivroCaixaAI?.refreshOpenRouterUsage?.());
+    }
+    await this.refreshOpenRouterUsage();
+    if (typeof openModal === 'function') openModal('panelOpenRouterUsage');
   }
 };
 
@@ -386,6 +443,57 @@ window.renderAiQuotaStatus = function renderAiQuotaStatus() {
     el.textContent = text;
     el.style.color = color;
   });
+};
+
+window.renderOpenRouterUsagePanel = function renderOpenRouterUsagePanel() {
+  const statusEl = document.getElementById('openRouterUsageStatus');
+  const usedEl = document.getElementById('openRouterUsageUsed');
+  const limitEl = document.getElementById('openRouterUsageLimit');
+  const remainingEl = document.getElementById('openRouterUsageRemaining');
+  const barFill = document.getElementById('openRouterUsageBarFill');
+  const timestampEl = document.getElementById('openRouterUsageTimestamp');
+  const ai = window.LivroCaixaAI;
+  const state = ai?.openRouterUsageState || 'idle';
+  const usage = ai?.openRouterUsage || null;
+
+  if (state === 'loading') {
+    if (statusEl) statusEl.textContent = 'Consultando uso do OpenRouter…';
+    return;
+  }
+  if (state === 'unauthorized') {
+    if (statusEl) statusEl.textContent = 'Acesso restrito: somente o administrador pode consultar o uso da API.';
+    return;
+  }
+  if (state === 'unavailable') {
+    if (statusEl) statusEl.textContent = 'Não foi possível consultar o uso do OpenRouter agora.';
+    return;
+  }
+  if (state === 'ready' && usage) {
+    const limit = Number(usage.limit) || 0;
+    const used = Number(usage.used) || 0;
+    const remaining = Math.max(0, Number(usage.remaining) || 0);
+    const percent = limit > 0 ? Math.min(100, Math.round((remaining / limit) * 100)) : 0;
+    if (usedEl) usedEl.textContent = String(used);
+    if (limitEl) limitEl.textContent = String(limit);
+    if (remainingEl) remainingEl.textContent = String(remaining);
+    if (barFill) {
+      barFill.style.width = `${percent}%`;
+      barFill.style.background = remaining <= 5 ? 'var(--red)' : 'var(--green)';
+    }
+    if (timestampEl) {
+      timestampEl.textContent = ai.openRouterUsageTimestamp
+        ? `Última consulta: ${new Date(ai.openRouterUsageTimestamp).toLocaleString('pt-BR')}`
+        : '';
+    }
+    if (statusEl) {
+      statusEl.textContent = remaining <= 0
+        ? `Uso gratuito diário atingido (${used}/${limit} usados).`
+        : `Uso gratuito hoje: ${used}/${limit} usados · ${remaining} restantes.`;
+      statusEl.style.color = remaining <= 5 ? 'var(--red)' : '';
+    }
+    return;
+  }
+  if (statusEl) statusEl.textContent = 'Abra o menu e use o Monitor de API para consultar o uso.';
 };
 
 window.addEventListener('load', () => {

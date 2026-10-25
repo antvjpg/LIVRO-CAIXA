@@ -13,6 +13,12 @@
     const email = currentUser?.email || 'Sua conta e preferências';
     const target = document.getElementById('profileEmail');
     if (target) target.textContent = email;
+    const hour = new Date().getHours();
+    const greeting = hour >= 6 && hour < 12 ? 'Bom dia' : hour >= 12 && hour < 18 ? 'Boa tarde' : 'Boa noite';
+    const greetEl = document.getElementById('headerGreeting');
+    if (greetEl) greetEl.textContent = greeting;
+    const greetNameEl = document.getElementById('headerGreetingName');
+    if (greetNameEl) greetNameEl.textContent = (currentUser?.displayName || currentUser?.email || '').trim() || '—';
     const remindersChk = document.getElementById('featureReminders');
     if (remindersChk) remindersChk.checked = featureSettings.reminders;
     const remindersAdvance = document.getElementById('featureReminderAdvanceDays');

@@ -167,7 +167,7 @@
     const operation = beginLogOperation('Cotação', 'Atualização em lote');
     logInfo('Cotação', 'Atualização em lote', 'Em andamento', `Atualização de ${candidates.length} ativo(s) iniciada.`, { count: candidates.length }, operation);
     btn.disabled = true;
-    const icon = btn.querySelector('.quote-refresh-icon i');
+    const icon = btn.querySelector('.quote-refresh-icon');
     if (icon) icon.classList.add('is-spinning');
     let updated = 0, failed = [];
     for (let i = 0; i < candidates.length; i++) {

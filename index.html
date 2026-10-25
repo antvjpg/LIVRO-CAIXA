@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="./icon-192.png?v=13">
 <title>Livro-Caixa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -53,7 +53,7 @@
 
   <link rel="stylesheet" href="./style/themes.css?v=20-23">
   <link rel="stylesheet" href="./style/base.css?v=20-24">
-  <link rel="stylesheet" href="./style/components.css?v=20-26">
+  <link rel="stylesheet" href="./style/components.css?v=20-33">
   <link rel="stylesheet" href="./style/layout.css?v=20-32">
   <link rel="stylesheet" href="./style/features.css?v=20-27">
   <link rel="stylesheet" href="./style/dashboard-chat.css?v=20-24">
@@ -142,6 +142,10 @@
   <button type="button" id="btnOpenDrawer" class="header-icon-button" aria-label="Abrir menu" title="Menu"><i class="fi fi-rr-menu-burger" aria-hidden="true"></i></button>
   <div class="app-brand">
     <h1>Livro-Caixa</h1>
+    <div class="app-greeting" aria-live="polite">
+      <span class="app-greeting-greet" id="headerGreeting">Bom dia</span>
+      <span class="app-greeting-name" id="headerGreetingName">—</span>
+    </div>
     <div class="subtitle"><i class="fi fi-rr-calendar-day" aria-hidden="true"></i><span id="todayLabel">—</span></div>
   </div>
   <button type="button" id="btnUniversalSearch" class="header-search-bar" title="Buscar">
@@ -173,6 +177,7 @@
       <button type="button" data-drawer-action="profile"><span><i class="fi fi-rr-user" aria-hidden="true"></i></span> Perfil</button>
       <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-blood-test-tube" aria-hidden="true"></i></span> LABS</button>
       <button type="button" data-drawer-action="diagnostico"><span><i class="fi fi-rr-clipboard" aria-hidden="true"></i></span> Diagnóstico Geral (LOG)</button>
+      <button type="button" data-drawer-action="monitor"><span><i class="fi fi-rr-refresh" aria-hidden="true"></i></span> Monitor de API</button>
     </div>
   </aside>
 </div>
@@ -424,16 +429,9 @@
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-user" aria-hidden="true"></i></span> Dados da conta</div>
         <div class="profile-list">
           <div class="profile-item"><span class="profile-item-icon"><i class="fi fi-rr-file-code" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Versão do aplicativo</strong><span id="profileAppVersion">Livro-Caixa</span></span></div>
-        </div>
-      </div>
-
-      <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-image" aria-hidden="true"></i></span> Foto de perfil</div>
-        <div class="profile-list">
           <div class="profile-item">
             <div class="profile-avatar-pick" id="profileAvatarPick" aria-label="Foto de perfil" title="Foto de perfil"><i class="fi fi-rr-user" aria-hidden="true"></i></div>
-            <span class="profile-item-copy"><strong>Escolha sua foto</strong><span>Selecione um dos avatares predefinidos abaixo.</span></span>
-            <div class="avatar-grid" id="avatarGrid" hidden></div>
+            <span class="profile-item-copy"><strong>Escolha sua foto</strong><span>Arte abstrata escolhida no painel de avatares.</span></span>
             <button type="button" id="btnOpenAvatarGrid" style="margin-top:8px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--ink);font-size:12px;cursor:pointer;">Escolher foto</button>
           </div>
         </div>
@@ -468,8 +466,6 @@
               <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
             </div>
             <div class="profile-item grouped-item"><span class="profile-item-icon"><i class="fi fi-rr-bell" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
-            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featureReminders" checked><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
-            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featurePushNotifications"><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Notificações push</strong><small>Alertas de contas, faturas, metas e recebíveis direto no dispositivo, mesmo com o app fechado. Requer chave VAPID e envio configurados no Firebase.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
             <div class="profile-item grouped-item">
               <span class="profile-item-icon"><i class="fi fi-rr-credit-card" aria-hidden="true"></i></span>
               <span class="profile-item-copy"><strong>Moeda do app</strong><span>BRL · USD · BTC — afeta apenas a exibição de valores.</span></span>
@@ -480,15 +476,21 @@
               </select>
             </div>
             <div class="profile-item grouped-item">
-              <span class="profile-item-icon"><i class="fi fi-rr-text-format" aria-hidden="true"></i></span>
+              <span class="profile-item-icon"><i class="fi fi-rr-text-size" aria-hidden="true"></i></span>
               <span class="profile-item-copy"><strong>Fonte do app</strong><span>Escolha a tipografia usada nas telas.</span></span>
               <select id="profileFont" style="width:140px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:12px;">
                 <option value="plus-jakarta">Plus Jakarta Sans</option>
                 <option value="inter">Inter</option>
                 <option value="roboto">Roboto</option>
                 <option value="open-sans">Open Sans</option>
+                <option value="space-grotesk">Space Grotesk</option>
+                <option value="manrope">Manrope</option>
+                <option value="outfit">Outfit</option>
+                <option value="sora">Sora</option>
               </select>
             </div>
+            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featureReminders" checked><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
+            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featurePushNotifications"><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Notificações push</strong><small>Alertas de contas, faturas, metas e recebíveis direto no dispositivo, mesmo com o app fechado. Requer chave VAPID e envio configurados no Firebase.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
           </div>
       </div>
 
@@ -577,10 +579,11 @@
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-sr-sparkles"></i></span> Análise assistida</div>
         <div class="feature-profile-section profile-plus-section">
           <label class="feature-profile-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-profile-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias pelo seu histórico. Nada muda sem sua confirmação.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
-          <div class="feature-profile-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button></div>
+          <div class="feature-profile-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button><button type="button" id="btnRunDiagnostic">Executar diagnóstico</button><button type="button" id="btnOpenTechnicalDiagnostic">⚙ Abrir console técnico</button></div>
           <div id="profileAnalysisStatus" class="feature-profile-feedback" aria-live="polite"></div>
           <div id="profileAnalysisCard" class="analysis-result-card" hidden role="region" aria-label="Resultado da análise assistida">
             <div class="analysis-card-body" id="profileAnalysisCardBody"></div>
+            <div id="diagnosticResults" class="diagnostic-results" aria-live="polite"></div>
           </div>
         </div>
         <div class="feature-profile-heading"><strong>Conexão externa (MCP)</strong></div>
@@ -596,20 +599,6 @@
             <div class="feature-profile-pin-actions"><button type="button" id="btnMcpBridgeCopyToken">Copiar</button><button type="button" id="btnMcpBridgeRevokeToken">Revogar</button></div>
           </div>
           <div id="mcpBridgeStatus" class="feature-profile-feedback" aria-live="polite"></div>
-        </div>
-        <div class="feature-profile-heading"><strong>Diagnóstico</strong></div>
-        <div class="profile-list">
-          <div class="diagnostic-summary-card">
-            <div class="diagnostic-summary-head">
-              <span class="diagnostic-summary-icon" id="diagnosticSummaryIcon" aria-hidden="true"></span>
-              <div><strong id="diagnosticSummaryLabel">Consistência dos dados</strong><span id="diagnosticSummaryDetail">Toque em "Executar diagnóstico" para verificar</span></div>
-            </div>
-            <button type="button" id="btnRunDiagnostic" class="primary">Executar diagnóstico</button>
-            <button type="button" id="btnOpenTechnicalDiagnostic">
-              ⚙ Abrir console técnico
-            </button>
-          </div>
-          <div id="diagnosticResults" class="diagnostic-results" aria-live="polite"></div>
         </div>
       </div>
 
@@ -746,7 +735,7 @@
           <button class="primary" id="bSalvar" style="width:100%">Adicionar</button>
         </div>
       </div>
-      <div style="margin-top:16px;">
+      <div class="bank-list-area" style="margin-top:16px;">
         <label>Bancos Cadastrados:</label>
         <div id="bankManageList"></div>
       </div>
@@ -780,6 +769,11 @@
       <div class="category-modal-footer">
         <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
       </div>
+    </div>
+
+    <div class="panel" id="panelAvatar" data-no-autofocus>
+      <h3>Escolher foto <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
+      <div class="avatar-grid" id="avatarGrid"></div>
     </div>
 
     <div class="panel" id="panelFiltros">
@@ -828,7 +822,7 @@
       </div>
     </div>
 
-    <div class="panel feature-profile-panel" id="panelFeatureProfile">
+    <div class="panel feature-profile-panel" id="panelFeatureProfile" data-no-autofocus>
       <div class="feature-profile-header">
         <div class="feature-profile-title-wrap">
           <span class="feature-profile-kicker">LABS · EXPERIMENTAL</span>
@@ -909,9 +903,25 @@
         <input id="logFilterText" type="search" placeholder="Buscar no LOG" aria-label="Buscar no LOG">
       </div>
       <div id="diagnosticoList" style="max-height:50vh; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
-      <div style="display:flex; gap:8px; margin-top:12px;">
+      <div class="log-actions" style="display:flex; gap:8px; margin-top:12px;">
         <button type="button" id="btnCopyDiagnostico" style="flex:1;">Copiar LOG</button>
         <button type="button" id="btnClearDiagnostico" style="flex:1;">Limpar local</button>
+      </div>
+    </div>
+
+    <div class="panel" id="panelOpenRouterUsage">
+      <h3>Monitor de API <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
+      <p class="hint" style="margin:0 0 10px;">Uso gratuito do OpenRouter (modelos free) · leitura restrita ao administrador.</p>
+      <div id="openRouterUsageStatus" class="hint">Consultando uso do OpenRouter…</div>
+      <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; margin:10px 0;">
+        <div class="openrouter-usage-cell"><span id="openRouterUsageUsed">—</span><small>usados</small></div>
+        <div class="openrouter-usage-cell"><span id="openRouterUsageLimit">—</span><small>limite</small></div>
+        <div class="openrouter-usage-cell"><span id="openRouterUsageRemaining">—</span><small>restantes</small></div>
+      </div>
+      <div class="openrouter-usage-bar" role="progressbar" aria-label="Consumo do uso gratuito do OpenRouter"><span id="openRouterUsageBarFill"></span></div>
+      <p class="hint" id="openRouterUsageTimestamp" style="margin:8px 0 0;"></p>
+      <div class="log-actions" style="display:flex; gap:8px; margin-top:12px;">
+        <button type="button" id="btnOpenRouterUsageRefresh" style="flex:1;">Atualizar</button>
       </div>
     </div>
 
@@ -1618,7 +1628,7 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
 =========================================================
 -->
 <script src="./js/data/emoji-catalog.js?v=20-02"></script>
-  <script src="./js/00-bootstrap.js?v=20-25"></script>
+  <script src="./js/00-bootstrap.js?v=20-33"></script>
   <script src="./js/10-state-utils.js?v=20-25"></script>
   <script src="./js/11-financial-domain.js?v=20-25"></script>
   <script src="./js/12-auth-session.js?v=20-25"></script>

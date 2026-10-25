@@ -78,6 +78,10 @@
   color: var(--ink-soft);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  /* Altura fixa de 2 linhas: "Banco" e "Saldo informado pelo banco"
+     não podem desalinhar os controles quando o texto quebra. */
+  line-height: 1.45;
+  min-height: calc(2 * 1.45em);
 }
 
 .reconciliation-field select,
@@ -623,6 +627,10 @@
   body[data-font="roboto"]{--font-ui:'Roboto',sans-serif;}
   body[data-font="open-sans"]{--font-ui:'Open Sans',sans-serif;}
   body[data-font="plus-jakarta"]{--font-ui:'Plus Jakarta Sans',sans-serif;}
+  body[data-font="space-grotesk"]{--font-ui:'Space Grotesk',sans-serif;}
+  body[data-font="manrope"]{--font-ui:'Manrope',sans-serif;}
+  body[data-font="outfit"]{--font-ui:'Outfit',sans-serif;}
+  body[data-font="sora"]{--font-ui:'Sora',sans-serif;}
   /* Card de resultado da análise assistida */
   .analysis-result-card{
     border:2px dashed var(--line);
@@ -638,19 +646,29 @@
   .analysis-card-body{font-size:13px;line-height:1.5;color:var(--ink);}
   .analysis-card-body strong{color:var(--ink);}
   .analysis-card-body small{color:var(--ink-soft);font-size:11px;}
+  .analysis-card-body > strong{display:block;}
+  .analysis-card-body > strong:not(:first-child){margin-top:12px;}
+  .analysis-item{margin:8px 0;}
+  .analysis-item strong{display:block;}
+  .analysis-item span{display:block;margin-top:2px;}
+  .analysis-card-body small{display:block;margin-top:10px;}
   /* Foto de perfil — grid de avatares predefinidos */
-  .profile-avatar-pick{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 12%,var(--paper));border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));color:var(--accent);font-size:22px;overflow:hidden;}
+  .profile-avatar-pick{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 12%,var(--paper));border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));color:var(--accent);font-size:22px;overflow:hidden;}
   .profile-avatar-pick img{width:100%;height:100%;object-fit:cover;display:block;}
   .profile-avatar-pick i{font-size:22px;line-height:1;}
   .avatar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;padding:10px;}
-  .avatar-option{width:72px;height:72px;border-radius:50%;border:2px solid transparent;cursor:pointer;background:var(--paper);display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;font-size:11px;color:var(--ink-soft);transition:border-color .2s,transform .1s;}
+  .avatar-option{width:72px;height:72px;border-radius:15px;border:2px solid transparent;cursor:pointer;background:var(--paper);display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 4px;font-size:11px;color:var(--ink-soft);transition:border-color .2s,transform .1s;}
   .avatar-option:hover{border-color:var(--accent);transform:translateY(-2px);}
   .avatar-option.is-active{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--paper));color:var(--accent);}
-  .avatar-option img{width:44px;height:44px;border-radius:50%;object-fit:cover;}
+  .avatar-option img{width:44px;height:44px;border-radius:12px;object-fit:cover;}
   body[data-font="inter"]{--font-ui:'Inter',sans-serif;}
   body[data-font="roboto"]{--font-ui:'Roboto',sans-serif;}
   body[data-font="open-sans"]{--font-ui:'Open Sans',sans-serif;}
   body[data-font="plus-jakarta"]{--font-ui:'Plus Jakarta Sans',sans-serif;}
+  body[data-font="space-grotesk"]{--font-ui:'Space Grotesk',sans-serif;}
+  body[data-font="manrope"]{--font-ui:'Manrope',sans-serif;}
+  body[data-font="outfit"]{--font-ui:'Outfit',sans-serif;}
+  body[data-font="sora"]{--font-ui:'Sora',sans-serif;}
   .mobile-bottom-nav{--nav-indicator-x:0%;}
   .mobile-bottom-nav::before{content:"";position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/5);border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),0 5px 13px color-mix(in srgb,var(--accent) 10%,transparent);transform:translateX(var(--nav-indicator-x));transition:transform 220ms var(--v1616-ease),background-color 220ms ease,box-shadow 220ms ease;pointer-events:none;}
   .mobile-bottom-nav button{position:relative;z-index:1;background:transparent!important;transition:color 220ms ease,transform 160ms var(--v1616-ease);}
@@ -3286,6 +3304,16 @@ body.dark-mode #panelBill #billParcelasFields{
   letter-spacing:-.035em;
 }
 
+#panelDiagnostico .log-actions{
+  position:sticky;
+  bottom:0;
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+  padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px));
+  background:var(--paper);
+}
+
 #panelBanco .modal-close,
 #panelCategoria .modal-close,
 #panelFiltros .modal-close,
@@ -3328,7 +3356,19 @@ body.dark-mode #panelBill #billParcelasFields{
   flex-direction:column;
   gap:14px;
 }
-
+#panelBanco{
+  display:flex;
+  flex-direction:column;
+}
+#panelBanco .form-grid{
+  flex:0 0 auto;
+}
+#panelBanco .bank-list-area{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
 #panelBanco .form-grid > div,
 #panelCategoria .form-grid > div,
 #panelFiltros .form-grid > div,
@@ -4222,7 +4262,9 @@ body[data-tab="dash"] .fab-add{
   width:48px;height:48px;border-radius:50%;
   display:grid;place-items:center;background:var(--green-soft, color-mix(in srgb,var(--accent) 14%,transparent));
   color:var(--accent);
+  overflow:hidden;
 }
+.profile-avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
 .profile-heading-integrated .profile-avatar svg,
 .profile-heading-integrated .profile-avatar i{font-size:26px;line-height:1;}
 .profile-heading-integrated h2{margin:0;font-size:18px;}
@@ -4445,6 +4487,26 @@ body[data-tab="dash"] .fab-add{
   flex:0 0 auto;
   margin-left:4px;
 }
+/* Lista agrupada (Configurações gerais): itens e toggles planos,
+   separados apenas pelo tracejado de .grouped-item::after */
+#viewProfile .profile-list.profile-grouped-list{
+  gap:0;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+}
+#viewProfile .profile-grouped-list .grouped-item{
+  border:1px solid transparent;
+  background:transparent;
+  border-radius:0;
+  box-shadow:none;
+  padding:14px 16px;
+}
+#viewProfile .profile-grouped-list .feature-profile-toggle.grouped-item:has(input:checked){
+  border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
+  background:color-mix(in srgb,var(--accent) 10%,var(--paper));
+}
 /* inputs numéricos nos cards do perfil — não esmagar o texto */
 #viewProfile .profile-item input[type="number"],
 #viewProfile #inputFinancialCycleDay,
@@ -4547,6 +4609,10 @@ body[data-tab="dash"] .fab-add{
   min-height:44px;
   border-radius:999px;
 }
+/* Análise + Diagnóstico no mesmo card: espaçamento da linha de status
+   e dos resultados, que agora vivem dentro da .feature-profile-section */
+#viewProfile .feature-profile-section .diagnostic-summary-head{margin-top:14px;}
+#viewProfile .feature-profile-section .diagnostic-results{margin-top:8px;}
 /* grupos do perfil: título + ícone alinhados */
 #viewProfile .profile-group-title{
   display:flex;

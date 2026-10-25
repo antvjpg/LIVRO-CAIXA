@@ -437,7 +437,7 @@
   #viewProfile .feature-budget-row span{font-size:10px;color:var(--ink-soft);}
   #viewProfile .feature-budget-row input{
     min-height:40px;border-radius:12px;border:1px solid var(--line);
-    background:var(--surface);color:var(--ink);text-align:right;padding:8px 10px;width:100%;max-width:200px;
+    background:var(--surface);color:var(--ink);text-align:left;padding:8px 10px;width:100%;max-width:200px;
   }
   #viewProfile .budget-row-line1{display:flex;align-items:center;gap:10px;width:100%;}
   #viewProfile .budget-row-line2{display:flex;align-items:center;gap:10px;width:100%;}
@@ -465,8 +465,8 @@
     color:var(--ink-soft);font-size:11px;line-height:1.45;
   }
   #viewProfile .feature-profile-feedback{margin:8px 0 0;font-size:11px;color:var(--ink-soft);}
-  body.dark-mode #viewProfile .profile-item,
-  body.dark-mode #viewProfile .feature-profile-toggle{
+  body.dark-mode #viewProfile .profile-item:not(.grouped-item),
+  body.dark-mode #viewProfile .feature-profile-toggle:not(.grouped-item){
     background:var(--paper);border-color:var(--line);
   }
   body.dark-mode #viewProfile .feature-profile-section,

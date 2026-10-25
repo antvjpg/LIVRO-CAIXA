@@ -41,6 +41,32 @@
     gap:10px;
     margin-bottom:18px;
   }
+
+  .openrouter-usage-cell{
+    background:var(--surface);
+    border:1px solid var(--line, rgba(127,127,127,.25));
+    border-radius:10px;
+    padding:8px;
+    text-align:center;
+  }
+  .openrouter-usage-cell span{
+    display:block;
+    font-size:18px;
+    font-weight:700;
+  }
+  .openrouter-usage-bar{
+    height:8px;
+    border-radius:99px;
+    background:rgba(127,127,127,.18);
+    overflow:hidden;
+  }
+  .openrouter-usage-bar span{
+    display:block;
+    height:100%;
+    background:var(--green);
+    border-radius:99px;
+    transition:width .3s ease;
+  }
   button{
     
     font-size:12px;
@@ -544,7 +570,7 @@
   .yield-row > span:first-child{color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;}
   .yield-pos{color:var(--green);  flex-shrink:0;}
   .yield-neg{color:var(--red);  flex-shrink:0;}
-  .yield-inline{font-size:10px;margin-left:6px;vertical-align:middle;color:var(--ink-soft);}
+  .yield-inline{font-size:10px;margin-left:6px;vertical-align:middle;}
   .yield-actions{display:flex; gap:2px; flex-shrink:0;}
   .yield-actions .action-btn{padding:2px 5px; font-size:11px;}
   .rentability-box{
@@ -913,7 +939,7 @@
   .profile-grouped-list{position:relative;}
   .profile-grouped-list .grouped-item{position:relative;}
   .profile-grouped-list .grouped-item::after{
-    content:"";position:absolute;left:60px;right:20px;bottom:0;border-top:1px dashed var(--line);opacity:.5;
+    content:"";position:absolute;left:68px;right:68px;bottom:0;border-top:1px dashed var(--line);opacity:.5;
   }
   .profile-grouped-list .grouped-item:last-child::after{display:none;}
   .reconcile-btn{

@@ -333,17 +333,18 @@
 
   function renderDiagnosticResults() {
     const issues = runDiagnostics();
-    const icon = document.getElementById('diagnosticSummaryIcon');
-    const label = document.getElementById('diagnosticSummaryLabel');
-    const detail = document.getElementById('diagnosticSummaryDetail');
-    if (icon) icon.textContent = '';
-    if (label) label.textContent = issues.length ? `${issues.length} ponto(s) de atenção` : 'Dados consistentes';
-    if (detail) detail.textContent = issues.length ? 'Veja os detalhes abaixo — nada foi alterado automaticamente.' : 'Nenhuma inconsistência encontrada na última verificação.';
+    const card = document.getElementById('profileAnalysisCard');
+    const body = document.getElementById('profileAnalysisCardBody');
     const results = document.getElementById('diagnosticResults');
-    if (results) {
-      results.innerHTML = issues.length
-        ? issues.map(i => `<div class="diagnostic-item is-warning"><span></span><div><strong>${escapeHTML(i.title)}</strong><span>${escapeHTML(i.detail)}</span></div></div>`).join('')
-        : '<div class="diagnostic-item is-ok"><span></span><div><strong>Tudo certo</strong><span>Nenhuma inconsistência encontrada.</span></div></div>';
+    const status = document.getElementById('profileAnalysisStatus');
+    if (card && body) {
+      card.hidden = false;
+      const itemHTML = (title, detail) => `<div class="analysis-item"><strong>${escapeHTML(title)}:</strong><span>${escapeHTML(detail)}</span></div>`;
+      body.innerHTML = issues.length
+        ? `<strong>Diagnóstico de consistência</strong>${issues.map(i => itemHTML(i.title, i.detail)).join('')}`
+        : itemHTML('Tudo certo', 'Nenhuma inconsistência encontrada.');
+      if (results) results.innerHTML = '';
     }
+    if (status) status.innerHTML = 'Diagnóstico concluído · resultado no cartão abaixo.';
     return issues;
   }

@@ -202,7 +202,9 @@
     const canvas = document.getElementById('dashIncomeCatChart');
     destroyDashboardIncomeCatChart();
     if (!canvas || !incomeCats.length || typeof Chart === 'undefined') return;
-    const chartRows = groupCategoryRowsForChart(incomeCats, incomeCats.reduce((sum, item) => sum + item.total, 0), 2);
+    const incomeTotal = incomeCats.reduce((sum, item) => sum + item.total, 0);
+    const chartRows = groupCategoryRowsForChart(incomeCats, incomeTotal, 2);
+    const realIncomeData = chartRows.map(x => x.total);
     const isDark = document.body.classList.contains('dark-mode');
     const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
     const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
@@ -214,7 +216,7 @@
       data: {
         labels: chartRows.map(x => x.cat.name),
         datasets: [{
-          data: chartRows.map(x => x.total),
+          data: pieSliceDisplayData(chartRows, incomeTotal),
           backgroundColor: chartRows.map(x => categoryColor(x.cat)),
           borderColor: borderColor,
           borderWidth: 2
@@ -239,7 +241,8 @@
               label: function(context) {
                 const head = ' ' + context.label + ': ';
                 if (document.body.classList.contains('balances-hidden')) return head + '••••••';
-                const val = context.raw || 0;
+                const real = realIncomeData[context.dataIndex];
+                const val = typeof real === 'number' ? real : (context.raw || 0);
                 return head + fmt(val);
               }
             }

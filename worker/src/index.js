@@ -7,6 +7,7 @@
       OPTIONS  *            → 204 + CORS, ou 403 fora da allowlist
       GET      /health      → { ok: true }        (sem autenticação)
       GET      /quota       → auth + cota forçada → { limit, used, remaining, resetAt, day }
+      GET      /openrouter-usage → auth admin + uso gratuito → { free_model_daily_requests: { used, limit, remaining }, timestamp }
       POST     /ai          → auth + cota         → { text, model }
       GET      /financial/  → gateway financeiro  → BCB (SGS) e Tesouro
                              (sem autenticação: dado público; Origin na
@@ -40,7 +41,7 @@ import { validateChatPayload, CHAT_LIMITS } from "../../js/domain/ai-chat-contra
 import { buildChatSystemPrompt } from "./ai/chat-prompt.js";
 import { authenticate } from "./ai/auth.js";
 import { requireAppCheck } from "./ai/appcheck.js";
-import { getFreeQuotaKV, burnQuotaKV, quotaHeaderValues } from "./ai/quota-kv.js";
+import { getFreeQuotaKV, getOpenRouterUsageKV, burnQuotaKV, quotaHeaderValues } from "./ai/quota-kv.js";
 import { isRateLimitedKV } from "./ai/ratelimit-kv.js";
 import {
   RETRYABLE_STATUS,
@@ -198,6 +199,48 @@ async function handleFetch(request, env) {
           remaining: quota.remaining,
           resetAt: quota.resetAt,
           day: quota.day
+        },
+        200,
+        cors
+      );
+    }
+
+    /* Monitor de uso gratuito do OpenRouter: somente administrador autenticado.
+       GET /openrouter-usage → { free_model_daily_requests: { used, limit, remaining }, timestamp }.
+       Sem cache (leitura autoritativa a pedido); a chave e a resposta integral
+       do provedor nunca saem do Worker. */
+    if (url.pathname === "/openrouter-usage") {
+      if (!cors) return json({ error: "Origem não autorizada.", code: "origin_blocked" }, 403, null);
+      if (request.method !== "GET") {
+        return json({ error: "Método não permitido.", code: "method_not_allowed" }, 405, cors);
+      }
+
+      const appCheck = await requireAppCheck(request, env, cors);
+      if (!appCheck.ok) return appCheck.response;
+
+      const auth = await authenticate(request, env, cors);
+      if (auth instanceof Response) return auth;
+
+      const adminEmail = String(env.OPENROUTER_USAGE_ADMIN_EMAIL || "").trim().toLowerCase();
+      const claimEmail = String(auth.claims?.email || "").trim().toLowerCase();
+      if (!adminEmail || claimEmail !== adminEmail) {
+        return json({ error: "Acesso restrito ao administrador.", code: "admin_forbidden" }, 403, cors);
+      }
+
+      const usage = await getOpenRouterUsageKV(env);
+      if (!usage.ok) {
+        const status = usage.code === "openrouter_key_missing" ? 503 : 502;
+        const errorText =
+          usage.code === "openrouter_key_missing"
+            ? "Chave OpenRouter não configurada."
+            : "Não foi possível consultar o uso do OpenRouter agora.";
+        return json({ error: errorText, code: usage.code }, status, cors);
+      }
+
+      return json(
+        {
+          free_model_daily_requests: { used: usage.used, limit: usage.limit, remaining: usage.remaining },
+          timestamp: new Date().toISOString()
         },
         200,
         cors

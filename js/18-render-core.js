@@ -1215,6 +1215,15 @@
       : totals;
   }
 
+  /* Piso de 4% para fatias de pizza: fatias menores que 4% do total ocupam
+     4% da área do gráfico (senão ficam invisíveis). Os valores exibidos em
+     tooltip/legenda continuam sendo os reais — nunca este array. */
+  function pieSliceDisplayData(rows, total, minPct = 4) {
+    if (!rows.length || !(total > 0)) return rows.map((row) => row.total);
+    const floor = total * (minPct / 100);
+    return rows.map((row) => Math.max(row.total, floor));
+  }
+
   function updateCatViewPill(wrap) {
     if (!wrap) return;
     const buttons = wrap.querySelectorAll('[data-cat-chart-view]');
@@ -1435,11 +1444,11 @@
         data: {
           labels: chartSpend.map(x => x.cat.name),
           datasets: [{
-            data: chartSpend.map(x => x.total),
+            data: isBarView ? chartSpend.map(x => x.total) : pieSliceDisplayData(chartSpend, totalSpend),
             backgroundColor: baseSliceColors,
             borderColor: isBarView ? 'transparent' : borderColor,
             borderWidth: isBarView ? 0 : 2,
-            borderRadius: isBarView ? 7 : 0,
+            borderRadius: isBarView ? 7 : 6,
             borderSkipped: false,
             barPercentage: 0.72,
             categoryPercentage: 0.82

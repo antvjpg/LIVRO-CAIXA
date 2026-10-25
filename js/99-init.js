@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const FX_STORAGE_KEY = 'livrocaixa_fx_brl';
   const CURRENCY_STORAGE_KEY = 'livrocaixa_display_currency';
   const FONT_STORAGE_KEY = 'livrocaixa_display_font';
-  const DISPLAY_FONTS = ['plus-jakarta', 'inter', 'roboto', 'open-sans'];
+  const DISPLAY_FONTS = ['plus-jakarta', 'inter', 'roboto', 'open-sans', 'space-grotesk', 'manrope', 'outfit', 'sora'];
 
   function readFxCache() {
     try {
@@ -728,23 +728,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   /* Checklist 17: anomalias + diagnóstico de consistência aparecem juntos
-     no card de resultado (.analysis-result-card). O status continua com o
-     resumo (região aria-live). */
+     no card de resultado (.analysis-result-card). O status fica com uma
+     linha curta (região aria-live) — o detalhe vive só no card. */
   const anomalies = runAnomalyScan();
-  const issues = renderDiagnosticResults();
+  const issues = runDiagnostics();
   const card = document.getElementById('profileAnalysisCard');
   const body = document.getElementById('profileAnalysisCardBody');
+  const results = document.getElementById('diagnosticResults');
+  const status = document.getElementById('profileAnalysisStatus');
+  if (results) results.innerHTML = '';
   if (card && body) {
     card.hidden = false;
-    const itemHTML = (title, detail) => `<div style="margin:4px 0;"><strong>${escapeHTML(title)}</strong><span style="font-size:12px;color:var(--ink-soft);">${detail}</span></div>`;
+    const itemHTML = (title, detail) => `<div class="analysis-item"><strong>${escapeHTML(title)}:</strong><span>${escapeHTML(detail)}</span></div>`;
     const anomaliesHTML = anomalies.length
       ? anomalies.slice(0, 5).map(item => itemHTML(item.category, `${fmt(item.value)} no mês atual, contra média de ${fmt(item.average)}.`)).join('')
       : itemHTML('Sem anomalias', 'Nenhuma anomalia estatística encontrada com pelo menos dois meses de histórico.');
     const issuesHTML = issues.length
-      ? issues.map(i => itemHTML(i.title, escapeHTML(i.detail))).join('')
+      ? issues.map(i => itemHTML(i.title, i.detail)).join('')
       : itemHTML('Tudo certo', 'Nenhuma inconsistência encontrada.');
     body.innerHTML = `<strong>Anomalias</strong>${anomaliesHTML}<strong>Diagnóstico de consistência</strong>${issuesHTML}`;
   }
+  if (status) status.innerHTML = 'Análise concluída · resultado no cartão abaixo.';
 });
   document.getElementById('btnGenerateMonthlyReview')?.addEventListener('click', generateMonthlyReview);
   document.getElementById('btnRunCompoundCalc')?.addEventListener('click', runCompoundInterest);
@@ -917,33 +921,34 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     });
   }
 
-  /* Foto de perfil — grid de avatares predefinidos (DiceBear, sem download de imagens) */
-  const avatarSeeds = ['ana','beto','carla','diego','elena','fabio','giulia','hugo','isabela','joao','karol','lucas'];
+  /* Foto de perfil — grid de avatares abstratos (DiceBear "shapes") em modal */
+  const avatarSeeds = ['ana','beto','carla','diego','elena','fabio','giulia','hugo','isabela','joao','karol','lucas','mel','nic','ova','ped','quim','reu'];
   const avatarGrid = document.getElementById('avatarGrid');
   const avatarPick = document.getElementById('profileAvatarPick');
+  const avatarHeading = document.querySelector('#viewProfile .profile-avatar');
   const btnOpenAvatar = document.getElementById('btnOpenAvatarGrid');
-  let avatarVisible = false;
+  const avatarUrl = (seed) => `https://api.dicebear.com/7.x/shapes/svg?seed=${seed}&radius=50`;
+  function applyProfileAvatar(seed) {
+    const img = `<img src="${avatarUrl(seed)}" alt="Foto de perfil">`;
+    if (avatarPick) avatarPick.innerHTML = img;
+    if (avatarHeading) avatarHeading.innerHTML = img;
+    if (localStorage.getItem('lc_profile_avatar') !== seed) localStorage.setItem('lc_profile_avatar', seed);
+  }
   if (avatarGrid && avatarPick && btnOpenAvatar) {
     avatarGrid.innerHTML = avatarSeeds.map((seed, i) => `
-      <button type="button" class="avatar-option${i === 0 ? ' is-active' : ''}" data-seed="${seed}" aria-label="Avatar ${seed}">
-        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&radius=50" alt="Avatar ${seed}">
-        <span>${seed.charAt(0).toUpperCase() + seed.slice(1)}</span>
+      <button type="button" class="avatar-option${i === 0 ? ' is-active' : ''}" data-seed="${seed}" aria-label="Avatar ${i + 1}">
+        <img src="${avatarUrl(seed)}" alt="Avatar ${seed}">
       </button>
     `).join('');
     avatarGrid.querySelectorAll('.avatar-option').forEach(opt => {
       opt.addEventListener('click', () => {
         avatarGrid.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('is-active'));
         opt.classList.add('is-active');
-        const seed = opt.dataset.seed;
-        const img = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&radius=50`;
-        avatarPick.innerHTML = `<img src="${img}" alt="Foto de perfil">`;
-        localStorage.setItem('lc_profile_avatar', seed);
+        applyProfileAvatar(opt.dataset.seed);
       });
     });
     btnOpenAvatar.addEventListener('click', () => {
-      avatarVisible = !avatarVisible;
-      avatarGrid.hidden = !avatarVisible;
-      btnOpenAvatar.textContent = avatarVisible ? 'Fechar fotos' : 'Escolher foto';
+      if (typeof openModal === 'function') openModal('panelAvatar');
     });
     const saved = localStorage.getItem('lc_profile_avatar');
     if (saved) {
@@ -951,8 +956,8 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       if (opt) {
         avatarGrid.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('is-active'));
         opt.classList.add('is-active');
-        avatarPick.innerHTML = `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${saved}&radius=50" alt="Foto de perfil">`;
       }
+      applyProfileAvatar(saved);
     }
   }
   applyBalancesHiddenState(hideBalancesOnOpen);
@@ -1297,6 +1302,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     if (action === 'receivables') window.switchTab('receivables');
     if (action === 'cards') window.switchTab('cards');
     if (action === 'diagnostico') openDiagnostics();
+    if (action === 'monitor') window.LivroCaixaAI?.openOpenRouterUsage?.();
     if (action === 'lab') openFeatureProfile();
     if (action === 'reports') { window.switchTab('caixa'); setTimeout(() => scrollTo('categorySummary'), 20); }
     if (action === 'pockets') window.switchTab('pockets');
