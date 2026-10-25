@@ -12,7 +12,7 @@ Método: inspeção direta de código (nenhuma alteração no aplicativo foi fei
 | Camada | Achado | Onde |
 |---|---|---|
 | Frontend | SPA única: `index.html` (HTML puro) + módulos `js/` (`js/00`…`js/33`, `js/99-init.js`, `js/legacy/patches.js`, `js/domain/*`, `js/data/emoji-catalog.js`), CSS em `style/*.css` | raiz + `js/` |
-| PWA | Service Worker network-first HTML/JS/CSS, shell precacheado (módulos `js/`, patches, emoji e CSS) | `sw.js:2` (`CACHE_NAME=livro-caixa-shell-v20-32-opencode4`) |
+| PWA | Service Worker network-first HTML/JS/CSS, shell precacheado (módulos `js/`, patches, emoji e CSS — `ocr/` fora do APP_SHELL desde `574dfa2`) | `sw.js:2` (`CACHE_NAME=livro-caixa-shell-v20-35`) |
 | Backend | Cloudflare Worker `livro-caixa-ai` (IA + indicadores `/financial`) | `worker/wrangler.toml`, `worker/src/index.js` |
 | Indicadores | `js/domain/financial-client.js` (BCB SGS + Tesouro) — única porta de entrada do FE para `/financial` | `js/domain/financial-client.js:1-35` |
 | Cartões | Motor próprio: `js/domain/card-engine-v3-combined.js` (engine + adapter no mesmo arquivo) | `js/domain/` |
@@ -64,7 +64,7 @@ Selectors estáveis encontrados (usados pelo C.O.D.E., todos existentes — nenh
 
 ## 5. Worker e testes existentes
 
-- Testes do Worker: `worker/test/*.test.mjs` (8 arquivos, `node:test`, **sem rede**, executados por CI).
+- Testes do Worker: `worker/test/*.test.mjs` (21 arquivos, `node:test`, **sem rede**, executados por CI).
 - CI: `.github/workflows/worker.yml` — roda `node --test worker/test/*.test.mjs` + dry-run do deploy; deploy real só em `main` com `environment: production`. Desde então também `code-e2e.yml` (C.O.D.E.), `pages.yml` (GitHub Pages), `eol-check.yml` e `model-failed-alert.yml`.
 - **Não existia** `package.json` nem testes frontend/Playwright na época. Hoje: `package.json` na raiz (scripts `code:*` + `@playwright/test` só como devDependency) e `worker/package.json` — ver `e2e/README.md` §2.
 
@@ -73,14 +73,21 @@ Selectors estáveis encontrados (usados pelo C.O.D.E., todos existentes — nenh
 | Verificação | Resultado |
 |---|---|
 | Node/npm | `v24.18.0` / `11.20.0` ✓ |
-| Browser no Termux | **nenhum** (`pkg` sem chromium/firefox) |
-| `npx playwright install chromium` | **`Unsupported platform: android`** (falhou — teste executado) |
-| `npx playwright test --list` | falha igual (playwright-core rejeita `platform=android` no load) |
-| Workaround local de listagem | `Object.defineProperty(process,'platform',{value:'linux'})` via `--require` faz `--list` funcionar (**só listagem, sem browser**) |
+| Browser no Termux | Chromium do sistema instalado (`chromium-browser`) ✓ — na época da auditoria original não existia |
+| `npx playwright install chromium` | **`Unsupported platform: android`** (falha — mas não é necessário: o Chromium do sistema basta) |
+| Playwright no Termux (25/10) | funciona com spoof de plataforma (`process.platform='linux'` antes do require) + `PW_CHROMIUM_EXECUTABLE` — é o caminho usado por `e2e/visual/audit-modais.cjs` e sondas locais |
+| `npx playwright test --list` | falha sem o shim (playwright-core rejeita `platform=android` no load) |
+| Workaround local de listagem | `Object.defineProperty(process,'platform',{value:'linux'})` via `--require` faz `--list` funcionar |
+| `gh` CLI | instalado e autenticado ✓ (ausente na época original) |
 | Espaço em disco | 75 GB livres ✓ |
-| `gh` CLI | ausente |
 
-**Conclusão §38**: execução E2E real **não acontece no Termux**. Estratégia: CI GitHub Actions (Linux) + execução manual em máquina Linux/Windows do usuário. Local no Termux fica limitado a validação de sintaxe, testes unitários de oracles e listagem de specs.
+**Conclusão (atualizada em 25/10/2026)**: a validação real da suíte E2E
+completa é o **CI do GitHub** — run `40199204709` em 25/10/2026 terminou
+`43 passed` com `QA CREATED=SIM | FIRESTORE=PASS | AUTH=PASS` e cleanup `PASS`.
+No Termux, a inspeção local em navegador real agora é possível (Chromium do
+sistema + spoof de plataforma) e é usada pelo harness de auditoria visual; o
+caminho validado para a suíte completa (`npm run code:test`) continua sendo
+CI/PC.
 
 ## 7. Riscos e pontos de atenção
 

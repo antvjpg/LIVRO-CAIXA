@@ -1,6 +1,6 @@
 # LIVRO-CAIXA — Checklist de Testes (alterações implementadas)
 
-Este documento lista **tudo que foi alterado/implementado** na sessão atual, para servir como roteiro de teste funcional e de regressão. Todas as alterações estão **locais** (sem commit/push).
+Este documento lista **tudo que foi alterado/implementado** na sessão atual, para servir como roteiro de teste funcional e de regressão. Itens 1–24 e do ciclo pós-`f0d4280` estão commitados (`f0d4280`, `264f487`, `d934ca6`, `444164a`, `574dfa2`) — ver o ciclo pós-`d934ca6` ao final para as correções mais recentes.
 
 ## 1. Gráfico de pizza — fatia mínima para porcentagens pequenas
 
@@ -55,14 +55,14 @@ Este documento lista **tudo que foi alterado/implementado** na sessão atual, pa
   - [ ] Verificar ícone girando durante o processo.
   - [ ] Verificar retorno da mensagem de sucesso/erro.
 
-## 7. Mini card de rendimento — texto ao lado do valor
+## 7. Mini card de rendimento — `rentability-box`
 
 - **Arquivo**: `js/18-render-core.js` + `style/components.css`
-- **Mudança**: `rentabilityHTML` agora retorna `<span class="yield-inline">• +R$0,01 (rendimento)</span>` ao lado do valor, fonte menor (10px), cor suave. Aplicado a investimentos e caixinhas.
+- **Mudança**: `rentabilityHTML` retorna `<div class="rentability-box">` com "Rendimento total" (valor + %) e "Média: R$X,XX/mês · desde DD/MM/AAAA". Aplicado a investimentos e caixinhas. *(Histórico: a primeira versão desta sessão usava `yield-inline` ao lado do valor; foi revertida em `574dfa2` para o `.rentability-box` original — ver Ciclo pós-`d934ca6`.)*
 - **Testar**:
-  - [ ] Abrir aba Investimentos e Caixinhas.
-  - [ ] Verificar que cada item mostra `Valor • +R$X,XX (rendimento)` na mesma linha.
-  - [ ] Verificar que a fonte do rendimento é menor que a do valor principal.
+  - [ ] Abrir aba Investimentos e Caixinhas com rendimento lançado.
+  - [ ] Verificar o card de rendimento com total, %, média mensal e data inicial.
+  - [ ] Sem rendimento no período → o card não aparece.
 
 ## 8. Botão de conciliar — Flaticon
 
@@ -212,8 +212,8 @@ Este documento lista **tudo que foi alterado/implementado** na sessão atual, pa
 
 ## Observações
 
-- Todas as alterações estão **locais** (sem `git commit` / `git push`).
-- O E2E não roda localmente no Termux/Android (`Unsupported platform: android`); a validação real depende do CI do GitHub.
+- Todas as alterações estão commitadas (`f0d4280`, `264f487`, `d934ca6`, `444164a`, `574dfa2`) e sincronizadas com `origin/main`.
+- O E2E completo (`npm run code:test`) é validado no **CI do GitHub** (run `40199204709`, 25/10/2026: **43 passed**). No Termux o fluxo padrão do Playwright aborta (`Unsupported platform: android`), mas o Chromium do sistema (`chromium-browser`) habilita inspeção local via spoof de plataforma — usado pelo harness `e2e/visual/audit-modais.cjs`.
 - Não houve alteração de schema do Firestore, autenticação ou regras financeiras.
 - Backups `*.backup-*` e `*.bak-*` não foram tocados.
 
@@ -256,3 +256,27 @@ Validação deste ciclo:
   card com "Anomalias" + "Diagnóstico"; pizza com fatia "Outras"; plugin
   tracejado nos dois gráficos; switches dark; busca com borda gold; sem
   erros de página relevantes.
+
+## Ciclo pós-`d934ca6` — modais, correção do panelBanco e CI verde
+
+Commits deste ciclo: `d934ca6` (revisão visual dos modais + 28 prints),
+`444164a` (domain/ocr no APP_SHELL), `574dfa2` (fix do CI) e `96f0d81`
+(fix do panelBanco).
+
+| # | Item | Correção | Arquivos |
+|---|---|---|---|
+| 1 | **panelBanco colado ao lado de qualquer modal** — `#panelBanco{display:flex}` com especificidade de ID vencia `.panel{display:none}`; o painel ficava escondido só pelo `opacity:0` do overlay e aparecia junto ao abrir qualquer outro modal | `#panelBanco{` → `#panelBanco.open{` (`96f0d81`) | `style/features.css` |
+| 2 | **CI em vermelho** — `ocr/*.js` referenciados no precache do SW não estavam mais no APP_SHELL e `rentabilityHTML` divergia do esperado pelos testes | ocr removido do `APP_SHELL` + `CACHE_NAME="livro-caixa-shell-v20-35"`; `rentabilityHTML` restaurada para `.rentability-box` byte-idêntica ao pré-`f0d4280` (`574dfa2`) | `sw.js`, `js/18-render-core.js` |
+
+Validação deste ciclo:
+
+- Sonda de 4 estados (1440px): sem modal → nenhum painel visível; abrir
+  `panelBill` → só ele centrado; abrir `panelBanco` → flex centrado sozinho;
+  fechar tudo → tudo `display:none`.
+- Sonda dinâmica dos **25 modais em viewport 390px: todos exatamente 1 visível
+  por vez** (espera de 450ms para o fim da animação `mobile-panel-enter`).
+- Varredura estática de todas as regras `display` de painéis: nenhum outro
+  afetado (`#panelAiChat` já usava o padrão correto `#panelAiChat.open`).
+- `npm run code:syntax` → OK (42 arquivos).
+- **CI `40199204709` (25/10/2026): `43 passed` (8.7m)** —
+  `QA CREATED=SIM | FIRESTORE=PASS | AUTH=PASS`, cleanup `PASS`.

@@ -1,6 +1,6 @@
 {
-  "geradoEm": "2026-10-24T19:17:31.157Z",
-  "url": "http://127.0.0.1:39453",
+  "geradoEm": "2026-10-25T14:48:07.292Z",
+  "url": "http://127.0.0.1:34527",
   "viewport": {
     "width": 1440,
     "height": 900
@@ -35,7 +35,7 @@
         "classe": "modal-overlay open"
       },
       "painelEstado": {
-        "display": "block",
+        "display": "flex",
         "visibility": "visible",
         "opacity": "1"
       },
@@ -550,9 +550,9 @@
       "rolagemFim": null,
       "painel": {
         "x": 400,
-        "y": 291,
+        "y": 281,
         "largura": 640,
-        "altura": 294
+        "altura": 314
       },
       "exposto": true,
       "overlayEstado": {
@@ -578,7 +578,7 @@
           "el": "select#logFilterType",
           "altura": 40,
           "largura": 195,
-          "topo": 426,
+          "topo": 416,
           "esquerda": 419,
           "raio": "2px",
           "borda": "1px solid rgb(216, 210, 193)",
@@ -590,7 +590,7 @@
           "el": "select#logFilterModule",
           "altura": 40,
           "largura": 195,
-          "topo": 426,
+          "topo": 416,
           "esquerda": 622,
           "raio": "2px",
           "borda": "1px solid rgb(216, 210, 193)",
@@ -602,7 +602,7 @@
           "el": "input#logFilterText",
           "altura": 40,
           "largura": 195,
-          "topo": 426,
+          "topo": 416,
           "esquerda": 826,
           "raio": "2px",
           "borda": "1px solid rgb(216, 210, 193)",
@@ -637,8 +637,8 @@
       ],
       "overflowX": false,
       "overflowY": false,
-      "scrollH": 292,
-      "clientH": 292,
+      "scrollH": 312,
+      "clientH": 312,
       "bodyOverflowX": false,
       "foraHorizontal": [],
       "qtdForaHorizontal": 0,
@@ -2888,9 +2888,9 @@
       "qtdCampos": 0,
       "qtdBotoes": 3,
       "errosConsole": [
-        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/tesouro/daily' from origin 'http://127.0.0.1:39453' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' he",
+        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/tesouro/daily' from origin 'http://127.0.0.1:34527' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' he",
         "Failed to load resource: net::ERR_FAILED",
-        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/bcb/series/11?startDate=2026-10-10&endDate=2026-10-24' from origin 'http://127.0.0.1:39453' has been blocked by CORS pol"
+        "Access to fetch at 'https://livro-caixa-ai.livro-caixa-ai.workers.dev/financial/bcb/series/12?startDate=2026-10-11&endDate=2026-10-25' from origin 'http://127.0.0.1:34527' has been blocked by CORS pol"
       ]
     },
     {

@@ -1,6 +1,6 @@
 # LIVRO-CAIXA — Referência de Variáveis CSS e Links
 
-Este documento lista todas as variáveis CSS (`--*`) usadas no LIVRO-CAIXA, com seus valores padrão no `:root` e os arquivos onde aparecem. Útil para criar novos temas ou ajustar cores como `--line`, `--paper`, etc.
+Este documento lista as variáveis CSS (`--*`) com seus valores padrão no `:root` e demais variáveis definidas fora dele. Útil para criar novos temas ou ajustar cores como `--line`, `--paper`, etc.
 
 ## Variáveis globais (`:root`)
 
@@ -44,6 +44,15 @@ Este documento lista todas as variáveis CSS (`--*`) usadas no LIVRO-CAIXA, com 
 | `--dash-flow-income` | `#3E9B6E` | Cor fixa: fluxo de entrada (dashboard) |
 | `--dash-flow-expense` | `#C2553B` | Cor fixa: fluxo de saída (dashboard) |
 | `--dash-flow-patrimony` | `#B08D3E` | Cor fixa: patrimônio (dashboard) |
+
+## Variáveis definidas fora do `:root`
+
+| Variável | Valor | Arquivo | Descrição |
+|----------|-------|---------|-----------|
+| `--v1616-ease` | `cubic-bezier(.23,1,.32,1)` | `style/features.css:601` | Curva de easing das transições (botões, cards, navegação) |
+| `--v1616-fast` | `180ms` | `style/features.css:601` | Duração base das microtransições |
+| `--nav-indicator-x` | `0%` (base) | `style/features.css:672` | Posição X do indicador da bottom nav (`translateX`) |
+| `--swatch` | por tema | `style/themes.css` | Cor do swatch de cada opção de tema no seletor |
 
 ## Como alterar `var(--line)` globalmente
 

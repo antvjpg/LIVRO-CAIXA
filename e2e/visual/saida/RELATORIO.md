@@ -1,6 +1,6 @@
 # Auditoria visual dos modais — desktop
 
-- Executado: 2026-10-24T19:17:31.157Z
+- Executado: 2026-10-25T14:48:07.292Z
 - Viewport: 1440x900
 - Modo: **estrutura sem autenticação** (estado vazio, sem dados reais)
 - Modais medidos: 24/26
@@ -13,7 +13,7 @@
 | panelCategoria | classe-forcada | 640x346 | sim | não | 0 | 0 | 2 |
 | panelFiltros | classe-forcada | 640x630 | sim | não | 0 | 0 | 7 |
 | panelFeatureProfile | openFeatureProfile | 880x477 | sim | não | 0 | 0 | 11 |
-| panelDiagnostico | openDiagnostics | 640x294 | sim | não | 0 | 0 | 3 |
+| panelDiagnostico | openDiagnostics | 640x314 | sim | não | 0 | 0 | 3 |
 | panelTransferencia | classe-forcada | 640x520 | sim | não | 0 | 0 | 6 |
 | panelBill | openBillModal | 640x828 | sim | não | 0 | 0 | 13 |
 | panelBillLaunch | classe-forcada | 640x271 | sim | não | 0 | 0 | 1 |

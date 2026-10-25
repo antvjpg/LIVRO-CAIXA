@@ -17,17 +17,17 @@ Use quando:
 
 ## Estrutura de arquivos grandes (pontos de atenção)
 
-Arquivos JS com maior quantidade de linhas — focar revisão de performance aqui:
+Arquivos JS com maior quantidade de linhas — focar revisão de performance aqui (contagens em 25/10/2026):
 
 | Arquivo | Linhas | Responsabilidade |
 |---|---|---|
-| `js/99-init.js` | 3248 | Dispatcher de inicialização (`DOMContentLoaded`) |
-| `js/18-render-core.js` | 2156 | Renderização núcleo |
-| `js/20-dashboard.js` | 1765 | Dashboard principal |
+| `js/99-init.js` | 3417 | Dispatcher de inicialização (`DOMContentLoaded`) |
+| `js/18-render-core.js` | 2192 | Renderização núcleo |
+| `js/20-dashboard.js` | 1797 | Dashboard principal |
+| `js/domain/card-engine-v3-combined.js` | 1639 | Motor de cartões (domínio) |
 | `js/27-cards.js` | 1030 | Cartões / faturas |
 | `js/25-bills-receivables.js` | 784 | Contas a receber |
 | `js/31-import-export.js` | 644 | Import/export |
-| `js/domain/card-engine-v3-combined.js` | ~1300 | Motor de cartões (domínio) |
 
 ## Padrões a evitar (performance)
 
@@ -36,7 +36,7 @@ Arquivos JS com maior quantidade de linhas — focar revisão de performance aqu
 3. **QuerySelector em loop** — cachear referências DOM fora de loops frequentes.
 4. **Event listeners duplicados** — remover listeners anteriores antes de adicionar novos (especialmente em modais e tabs).
 5. **Leitura repetida de `localStorage`/`IndexedDB`** em loops — cachear em variável local.
-6. **CSS global pesado** — `style/features.css` (210KB) e `style/layout.css` (57KB) são grandes; evitar regras `!important` e seletores complexos.
+6. **CSS global pesado** — `style/features.css` (212KB / 6.856 linhas) e `style/layout.css` (57KB) são grandes; evitar regras `!important` e seletores complexos.
 
 ## Checklist de otimização
 

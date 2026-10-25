@@ -305,7 +305,8 @@ O harness sobe o próprio servidor; não é necessário `python` nem `npx`.
 
 1. Reexecutar a auditoria **com dados reais** quando a cota do Firestore normalizar
    (reset diário à meia-noite do Pacífico ≈ **04:00 BRT**), validando os modais do §6.4.
-2. Reexecutar o workflow `C.O.D.E. E2E`, que falhou por `HTTP 429` e não por código.
+2. ~~Reexecutar o workflow `C.O.D.E. E2E`, que falhou por `HTTP 429`~~ —
+   **concluído**: run `40199204709` (25/10/2026) terminou `43 passed`.
 3. Validar as alterações de CSS em tema escuro e em telas estreitas (a auditoria cobriu
    apenas desktop, tema claro). Ver o que já foi coberto em §11.3.
 
@@ -391,3 +392,64 @@ Ainda **não** coberto: tema escuro e telas estreitas.
 
 Sem essas condições o caminho de execução é idêntico ao anterior. É infraestrutura de QA:
 nenhum arquivo de produção foi tocado.
+
+---
+
+## 12. Revisão pós-`d934ca6` e correção do panelBanco — 25/10/2026
+
+> Revisão de 25/10/2026. Atualiza o documento contra `main` após o ciclo de
+> UI dos modais e registra a regressão encontrada e corrigida. Onde houver
+> conflito, **o código atual é a fonte de verdade** (AGENTS.md §2 e §45).
+
+### 12.1 Commits sincronizados desde `2154a82`
+
+| Commit | Tema |
+|---|---|
+| `f0d4280` | feat UI: cards de total, cards do dashboard, chrome dos modais |
+| `264f487` | 11 gaps de UI do ciclo pós-`f0d4280` (ver `CHECKLIST_TESTES.md`) |
+| `d934ca6` | revisão visual dos modais + 28 prints — **introduziu o bug do §12.2** |
+| `444164a` | adiciona `js/domain` e `ocr/` ao APP_SHELL do SW |
+| `574dfa2` | fix do CI: ocr fora do precache, `CACHE_NAME=v20-35`, `rentability-box` restaurada |
+| `96f0d81` | **fix do panelBanco** (§12.2) |
+
+### 12.2 Regressão: `#panelBanco` sempre visível (corrigida)
+
+**Sintoma** (sonda em 1440px): ao abrir *qualquer* modal (ex.: `panelBill`),
+o painel `#panelBanco` aparecia colado ao lado, dentro do mesmo overlay —
+`panelBanco x=80 w=640` + `panelBill x=776 w=640`.
+
+**Causa-raiz**: `style/features.css:3359` tinha `#panelBanco{display:flex;flex-direction:column}`
+(adicionado em `d934ca6`). A especificidade de ID (1,0,0) vence
+`.panel{display:none}` (0,1,0) de `components.css`, então o painel nunca era
+escondido — ficava atrás apenas do `opacity:0` do `.modal-overlay`; ao abrir
+qualquer modal o overlay ganhava `opacity:1` e o `panelBanco` aparecia junto.
+Os prints/JSON de 24/10 (`disp=block`) não mostravam o problema por serem de
+execução anterior ao bug.
+
+**Correção** (`96f0d81`): `#panelBanco{` → `#panelBanco.open{` — mesmíssimo
+padrão já usado por `#panelAiChat.open` (`dashboard-chat.css`).
+
+### 12.3 Validações
+
+- Sonda de 4 estados (1440px): nenhum painel visível sem modal; `panelBill`
+  centrado sozinho; `panelBanco` em flex centrado sozinho; fechar tudo →
+  tudo `display:none`.
+- Sonda dinâmica dos **25 modais em 390px: todos exatamente 1 visível por vez**
+  (espera de 450ms pelo fim da animação `mobile-panel-enter` — medir antes
+  disso gera falso positivo de `opacity:0`).
+- Varredura estática de todas as regras `display` de painéis: nenhum outro
+  caso análogo (`#panelAiChat` já usava o padrão correto).
+- Harness reexecutado em 25/10/2026 (`14:48Z`): 24/26 medidos, 2 achados
+  (bloqueios esperados `panelNovo`/`panelPurchase`), 0 overflows —
+  `saida/RELATORIO.md` e `auditoria-modais.json` regenerados pós-fix.
+
+### 12.4 Situação das pendências e §11.4
+
+- §10.2 (workflow com HTTP 429) — **resolvida**: CI `40199204709` com
+  `43 passed`.
+- §11.4 (link "Ver visão geral" inerte) — **ainda presente**:
+  `js/20-dashboard.js:102` segue clicando em `tabBtnDashboard` inexistente;
+  resíduos em `js/99-init.js:332` e CSS morto `.nav-tabs` (linhas mudaram,
+  comportamento idêntico).
+- Ainda não coberto: tema escuro e telas estreitas (§10.3) e modais com
+  dados reais (§10.1).

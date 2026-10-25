@@ -3,13 +3,16 @@
 Infraestrutura de QA/E2E/auditoria do LIVRO-CAIXA. Fase própria (`feature/code-qa`):
 nenhuma alteração em código de produção (`index.html`, dados persistidos ou worker).
 
-> **Estado desta entrega:** ambiente QA autônomo (identidade efêmera por run,
-> criação pela UI real, exclusão no teardown, relatório com seção
-> `QA ENVIRONMENT`, zero GitHub Secret). Os testes **ainda não executaram em
-> navegador real**: não existe Chromium no Termux e o CI só roda após `push`.
-> Pré-condição para a validação real: fluxo E-mail/senha funcional (estado
-> informado no Console em 27/09/2026: **ATIVADO** — ver §3); a confirmação
-> definitiva continua sendo a execução E2E.
+> **Estado desta entrega (25/10/2026):** ambiente QA autônomo (identidade
+> efêmera por run, criação pela UI real, exclusão no teardown, relatório com
+> seção `QA ENVIRONMENT`, zero GitHub Secret) **e execução real validada**:
+> run `40199204709` do CI em 25/10/2026 terminou **`43 passed`** com
+> `QA CREATED=SIM | FIRESTORE=PASS | AUTH=PASS` e cleanup `PASS`
+> (artefato `code-e2e-evidencias`). No Termux não há `playwright install`
+> (`Unsupported platform: android`), mas o Chromium do sistema +
+> spoof de plataforma habilita inspeção local — usado pelo harness
+> `e2e/visual/audit-modais.cjs`; o caminho validado da suíte completa
+> continua sendo CI/PC.
 
 ## 1. Organização
 
@@ -18,6 +21,10 @@ package.json               scripts code:* + devDependency @playwright/test (só 
 playwright.config.js       setup → smoke → movimentacoes; globalSetup/globalTeardown
 e2e/
   AUDITORIA.md             FASE 0 — auditoria arquivo:linha (auth, persistência, seletores)
+  visual/                  auditoria visual dos modais (harness local, sem CI)
+    audit-modais.cjs       abre cada modal em Chromium, mede tamanho/overflow
+    AUDITORIA-VISUAL-MODAIS.md  achados, correções e revisões
+    saida/                 RELATORIO.md + auditoria-modais.json (gerados)
   auth/qa.setup.js         provisiona sessão QA (signup + logout/login reais) e
                            grava storageState (só cookies/localStorage)
   smoke/smoke.spec.js      aplicação operacional + Visão Geral
@@ -67,8 +74,10 @@ nenhum segredo no Git nem em artefato; bloqueio aparece como `BLOCKED`, nunca so
 | `npm run code:security` | 68 garantias do próprio C.O.D.E. (offline) | sim |
 | `npm run code:syntax` | valida sintaxe dos módulos `js/`, `js/data/emoji-catalog.js`, `sw.js` + módulos `ocr/` | sim |
 | `npm run code:v20` | suíte V.20-01 (anexos/OCR): worker + oracles + segurança | sim |
+| `npm run code:v20-02` | oracles + segurança V.20-02 (prompt injection) | sim |
+| `npm run code:mcp` | testes `worker/test/mcp-*.test.mjs` | sim |
 | `npm run code:test` | suítes + relatório `--strict` (sai 1 se FAIL/BLOCKED) | **não** |
-| `npm run code:smoke` / `code:movimentacoes` | suíte individual | **não** |
+| `npm run code:smoke` / `code:movimentacoes` / `code:orcamento` / `code:lia` / `code:metas` / `code:investimentos` | suíte individual | **não** |
 | `npm run code:test:headed` | idem com navegador visível | não |
 | `npm run code:report` | gera `e2e/reports/CODE-relatorio-<data>.md` | sim |
 | `npm run code:report:strict` | idem + exit 1 se houver `FAIL`/`BLOCKED` | sim |
@@ -167,23 +176,31 @@ sobrou arquivo de identidade (run abortada).
 
 ## 5. Cobertura atual (matriz honesta)
 
+Execução de referência: **CI run `40199204709` (25/10/2026) — `43 passed`**.
+
 | Área | Teste | Oracle unitário | Executado em navegador |
 |---|---|---|---|
-| Abertura/carregamento/Visão Geral | `smoke` | — | não (CI/PC pendente) |
-| Sessão QA (login/criação) | `auth/qa.setup` | — | não |
-| Criar banco + entrada + saída + saldo | `movimentacoes` | `balance`, `movement`, `money` | não |
-| Persistência (reload + Firestore REST) | `movimentacoes` | idem | não |
-| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (44) | — | não precisa |
+| Abertura/carregamento/Visão Geral | `smoke` (2) | — | **sim (CI)** |
+| Sessão QA (login/criação) | `auth/qa.setup` (1) | — | **sim (CI)** |
+| Criar banco + entrada + saída + saldo | `movimentacoes` (1) | `balance`, `movement`, `money` | **sim (CI)** |
+| Persistência (reload + Firestore REST) | `movimentacoes` | idem | **sim (CI)** |
+| Regras do Firestore em produção | `seguranca/regras-firestore` (1) | — | **sim (CI)** |
+| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (68, offline) | — | não precisa |
 | Edição/exclusão de lançamentos | pendente | pendente | — |
-| Caixinhas | `caixinhas` | `pocket`, `money` | não (CI/PC pendente) |
-| Metas (criação, fontes, progresso, edição, exclusão) | `metas` | `goal`, `money` | não (CI/PC pendente) |
-| Investimentos (CRUD, movimentações, rentabilidade, histórico) | `investimentos`, `investimentos-crud` | `investment`, `money` | não (CI/PC pendente) |
-| Cartões/faturas, orçamentos, contas | pendente | pendente | — |
+| Caixinhas | `caixinhas` (5) | `pocket`, `money` | **sim (CI)** |
+| Metas (criação, fontes, progresso, edição, exclusão) | `metas` (7) | `goal`, `money` | **sim (CI)** |
+| Investimentos (CRUD, movimentações, rentabilidade, histórico) | `investimentos`, `investimentos-crud` (7) | `investment`, `money` | **sim (CI)** |
+| Orçamentos | `orcamento` (8) | — | **sim (CI)** |
+| LIA (sugestões contextuais, offline, erros do Worker) | `lia` (11) | — | **sim (CI)** |
+| Cartões/faturas, contas a receber | pendente | pendente | — |
 
 ## 6. Limitações conhecidas
 
-1. Termux: Playwright aborta com `Unsupported platform: android` (sem Chromium) —
-   por isso `code:list` usa shim só para validação local; execução real é CI/PC.
+1. Termux: o fluxo padrão do Playwright aborta com `Unsupported platform:
+   android` (sem `npx playwright install`) — por isso `code:list` usa shim.
+   O Chromium do sistema (`chromium-browser`) + spoof de plataforma já
+   habilita execução local em navegador (harness `e2e/visual/audit-modais.cjs`
+   e sondas), mas o caminho **validado** da suíte completa é CI/PC.
 2. Reset: máximo de 20 páginas × 300 docs (6.000) por coleção; estourou ⇒ recusa
    ruidosa (nunca reset incompleto silencioso). A recusa carrega a **trilha por
    página** (contagem de docs/sinal de token, sem token nem conteúdo) e detecta
@@ -207,9 +224,13 @@ sobrou arquivo de identidade (run abortada).
 
 ## 7. Próximos passos
 
-1. Confirmar no Console que E-mail/senha segue ATIVADO e que *Authorized
-   domains* cobre o runner (estado informado: ATIVADO) — verificação manual.
-2. Autorizar commit/push de `feature/code-qa`.
-3. Ler o resultado em *Actions → C.O.D.E. E2E* (relatório + `QA ENVIRONMENT`
-   + evidências anexados).
-4. Novas fases: edição/exclusão, caixinhas/metas, cartões/faturas.
+1. ~~Confirmar no Console que E-mail/senha segue ATIVADO~~ — **concluído**:
+   signup + login reais passaram no CI (`40199204709`: `AUTH=PASS`).
+2. ~~Autorizar commit/push de `feature/code-qa`~~ — **concluído**: pipeline
+   `C.O.D.E. E2E` verde em `main`.
+3. ~~Ler o resultado em *Actions → C.O.D.E. E2E*~~ — **concluído**:
+   `43 passed`, relatório + `QA ENVIRONMENT` + evidências no artefato
+   `code-e2e-evidencias`.
+4. Novas fases: edição/exclusão, cartões/faturas e contas a receber.
+5. Validações visuais pendentes dos modais: tema escuro e telas estreitas
+   (ver `e2e/visual/AUDITORIA-VISUAL-MODAIS.md` §10).
