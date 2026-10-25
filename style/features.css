@@ -3356,7 +3356,7 @@ body.dark-mode #panelBill #billParcelasFields{
   flex-direction:column;
   gap:14px;
 }
-#panelBanco{
+#panelBanco.open{
   display:flex;
   flex-direction:column;
 }
