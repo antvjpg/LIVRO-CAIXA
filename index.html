@@ -421,16 +421,16 @@
   <div id="viewProfile" class="tab-content">
     <section class="profile-shell" aria-label="Área de perfil">
       <div class="profile-heading profile-heading-integrated">
-        <div class="profile-avatar" aria-hidden="true"><i class="fi fi-rr-user" aria-hidden="true"></i></div>
+        <div class="profile-avatar" aria-hidden="true"></div>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
-        <button type="button" id="btnProfileLogout" class="profile-heading-logout" title="Sair da conta" aria-label="Sair da conta"><i class="fi fi-rr-exit" aria-hidden="true"></i></button>
+        <button type="button" id="btnProfileLogout" class="profile-heading-logout" title="Sair da conta" aria-label="Sair da conta"></button>
       </div>
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-user" aria-hidden="true"></i></span> Dados da conta</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"></span> Dados da conta</div>
         <div class="profile-list profile-grouped-list">
-          <div class="profile-item grouped-item"><span class="profile-item-icon"><i class="fi fi-rr-file-code" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Versão do aplicativo</strong><span id="profileAppVersion">Livro-Caixa</span></span></div>
+          <div class="profile-item grouped-item"><span class="profile-item-icon"></span><span class="profile-item-copy"><strong>Versão do aplicativo</strong><span id="profileAppVersion">Livro-Caixa</span></span></div>
           <div class="profile-item grouped-item">
-            <div class="profile-avatar-pick" id="profileAvatarPick" aria-label="Foto de perfil" title="Foto de perfil"><i class="fi fi-rr-user" aria-hidden="true"></i></div>
+            <div class="profile-avatar-pick" id="profileAvatarPick" aria-label="Foto de perfil" title="Foto de perfil"></div>
             <span class="profile-item-copy"><strong>Escolha sua foto</strong><span>Arte abstrata escolhida no painel de avatares.</span></span>
             <button type="button" id="btnOpenAvatarGrid" class="profile-card-btn">Escolher foto</button>
           </div>
@@ -438,9 +438,9 @@
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-settings" aria-hidden="true"></i></span> Configurações gerais</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"></span> Configurações gerais</div>
           <div class="profile-list profile-grouped-list">
-            <div class="profile-item grouped-item" id="btnAparencia" role="button" tabindex="0" aria-expanded="false" aria-controls="aparenciaPaletas"><span class="profile-item-icon"><i class="fi fi-rr-palette" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta do aplicativo — clique para escolher.</span></span><span class="profile-item-arrow" aria-hidden="true">›</span></div>
+            <div class="profile-item grouped-item" id="btnAparencia" role="button" tabindex="0" aria-expanded="false" aria-controls="aparenciaPaletas"><span class="profile-item-icon"></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta do aplicativo — clique para escolher.</span></span><span class="profile-item-arrow" aria-hidden="true">›</span></div>
             <div id="aparenciaPaletas" hidden>
               <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
                 <span class="light-theme-picker-label">Paleta clara</span>
@@ -459,15 +459,15 @@
                 <button type="button" class="dark-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"></button>
               </div>
             </div>
-            <div class="profile-item grouped-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><i class="fi fi-rr-tags"></i></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamentos — criar, editar e excluir.</span></span><span class="profile-item-arrow">›</span></div>
+            <div class="profile-item grouped-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamentos — criar, editar e excluir.</span></span><span class="profile-item-arrow">›</span></div>
             <div class="profile-item grouped-item">
-              <span class="profile-item-icon"><i class="fi fi-rr-calendar" aria-hidden="true"></i></span>
+              <span class="profile-item-icon"></span>
               <span class="profile-item-copy"><strong>Dia de virada do mês</strong><span>Define quando começa seu mês financeiro (apenas para orçamentos).</span></span>
               <input type="number" id="inputFinancialCycleDay" min="1" max="28" inputmode="numeric">
             </div>
-            <div class="profile-item grouped-item"><span class="profile-item-icon"><i class="fi fi-rr-bell" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
+            <div class="profile-item grouped-item"><span class="profile-item-icon"></span><span class="profile-item-copy"><strong>Avisar faturas com antecedência</strong><span>Dias antes do vencimento</span></span><input type="number" id="featureReminderAdvanceDays" min="0" max="30" step="1" value="3" style="width:56px;text-align:center;padding:8px 4px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);"></div>
             <div class="profile-item grouped-item">
-              <span class="profile-item-icon"><i class="fi fi-rr-credit-card" aria-hidden="true"></i></span>
+              <span class="profile-item-icon"></span>
               <span class="profile-item-copy"><strong>Moeda do app</strong><span>BRL · USD · BTC — afeta apenas a exibição de valores.</span></span>
               <select id="profileCurrency" style="width:80px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:12px;">
                 <option value="BRL">BRL</option>
@@ -476,7 +476,7 @@
               </select>
             </div>
             <div class="profile-item grouped-item">
-              <span class="profile-item-icon"><i class="fi fi-rr-text-size" aria-hidden="true"></i></span>
+              <span class="profile-item-icon"></span>
               <span class="profile-item-copy"><strong>Fonte do app</strong><span>Escolha a tipografia usada nas telas.</span></span>
               <select id="profileFont" style="width:140px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:12px;">
                 <option value="plus-jakarta">Plus Jakarta Sans</option>
@@ -489,13 +489,13 @@
                 <option value="sora">Sora</option>
               </select>
             </div>
-            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featureReminders" checked><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
-            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featurePushNotifications"><span class="feature-profile-toggle-copy"><strong><i class="fi fi-rr-bell" aria-hidden="true"></i> Notificações push</strong><small>Alertas de contas, faturas, metas e recebíveis direto no dispositivo, mesmo com o app fechado. Requer chave VAPID e envio configurados no Firebase.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
+            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featureReminders" checked><span class="feature-profile-toggle-copy"><strong>Avisos de contas</strong><small>Exibir avisos de contas pendentes e atrasadas na Visão Geral.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
+            <label class="feature-profile-toggle grouped-item"><input type="checkbox" id="featurePushNotifications"><span class="feature-profile-toggle-copy"><strong>Notificações push</strong><small>Alertas de contas, faturas, metas e recebíveis direto no dispositivo, mesmo com o app fechado. Requer chave VAPID e envio configurados no Firebase.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
           </div>
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-home-robot"></i></span> Automações</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"></span> Automações</div>
         <div class="feature-profile-section">
           <div class="feature-profile-section-head" hidden><div><h4>Automações</h4></div></div>
           <div class="feature-profile-options feature-profile-option-list">
@@ -515,14 +515,14 @@
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-calculator-money"></i></span> Orçamento</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"></span> Orçamento</div>
         <div class="feature-profile-section">
           <div id="featureBudgetRows" class="feature-budget-rows"></div>
         </div>
       </div>
 
       <div class="profile-group">
-        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-bank"></i></span> Conciliação bancária</div>
+        <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"></span> Conciliação bancária</div>
         <div class="feature-profile-section">
           <div class="reconciliation-card">
             <div class="reconciliation-header">
