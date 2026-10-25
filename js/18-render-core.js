@@ -1700,14 +1700,19 @@
       persistProfileSettings().catch(err => logSyncError('preferência de notificações', err));
       return;
     }
+    const revertPushToggle = () => { setTimeout(() => { if (toggle) toggle.checked = false; }, 300); };
     try {
       if (!('Notification' in window)) throw new Error('Este navegador não suporta notificações.');
       if (typeof firebase === 'undefined' || !firebase.messaging || !firebase.messaging.isSupported()) throw new Error('Notificações push não são suportadas neste navegador.');
       const permission = await Notification.requestPermission();
-      if (permission !== 'granted') { if (toggle) toggle.checked = false; return; }
+      if (permission !== 'granted') {
+        if (toggle) toggle.checked = false;
+        alert('Permissão de notificações não concedida. Ative-a nas configurações do navegador para usar notificações push.');
+        return;
+      }
       const vapidKey = window.__FCM_VAPID_KEY;
       if (!vapidKey) {
-        if (toggle) toggle.checked = false;
+        revertPushToggle();
         alert('Configure a chave VAPID (Web Push) em app.js no campo window.__FCM_VAPID_KEY antes de ativar as notificações push.');
         return;
       }
@@ -1724,7 +1729,7 @@
       setupPushForegroundHandler();
       await persistProfileSettings();
     } catch (err) {
-      if (toggle) toggle.checked = false;
+      revertPushToggle();
       featureSettings = normalizeFeatureSettings({ ...featureSettings, pushNotifications: false });
       persistFeatureSettings();
       logSyncError('notificações push', err);

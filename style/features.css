@@ -332,7 +332,6 @@
   .feature-profile-toggle-copy small{font-size:10.5px;color:var(--ink-soft);line-height:1.35;}
   .feature-profile-switch{width:36px;height:20px;border-radius:20px;background:var(--line);position:relative;flex:0 0 auto;transition:.18s;}
   .feature-profile-switch:after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--paper);box-shadow:0 1px 3px var(--shadow);transition:.18s;}
-  .feature-profile-toggle:has(input:checked){border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--paper));}
   .feature-profile-toggle:has(input:checked) .feature-profile-switch{background:var(--accent);}
   .feature-profile-toggle:has(input:checked) .feature-profile-switch:after{left:19px;}
   .feature-profile-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
@@ -934,7 +933,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   
   
   .feature-profile-panel,.feature-profile-section,.feature-profile-toggle,.bill-share-panel,.bill-share-message,.calendar-filter-control{background:var(--surface);border-color:var(--line);color:var(--ink);}
-  .feature-profile-header{background:linear-gradient(135deg,var(--surface-raised),var(--surface));}.feature-profile-section{background:var(--paper-2);}.feature-profile-toggle{background:var(--paper);}.feature-profile-toggle:has(input:checked){background:color-mix(in srgb,var(--accent) 10%,var(--paper));}
+  .feature-profile-header{background:linear-gradient(135deg,var(--surface-raised),var(--surface));}.feature-profile-section{background:var(--paper-2);}.feature-profile-toggle{background:var(--paper);}
   .feature-profile-toggle-copy strong,.feature-profile-panel .feature-profile-section h4,.bill-share-head h3{color:var(--ink);}.feature-profile-toggle-copy small,.feature-profile-section-desc,.feature-profile-section-tag{color:var(--ink-soft);}
   .feature-profile-switch{background:var(--line)}.feature-profile-switch:after{background:var(--surface-raised);}
   /* No tema escuro o thumb precisa ser claro: --surface-raised sobre --line
@@ -4503,10 +4502,6 @@ body[data-tab="dash"] .fab-add{
   box-shadow:none;
   padding:14px 16px;
 }
-#viewProfile .profile-grouped-list .feature-profile-toggle.grouped-item:has(input:checked){
-  border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
-  background:color-mix(in srgb,var(--accent) 10%,var(--paper));
-}
 /* inputs numéricos nos cards do perfil — não esmagar o texto */
 #viewProfile .profile-item input[type="number"],
 #viewProfile #inputFinancialCycleDay,
@@ -6543,24 +6538,24 @@ body:not(.dark-mode) .goals-form-body select {
 #viewProfile .profile-item:focus {
   outline: none;
   box-shadow: none;
-  background: var(--paper);
+  background: var(--surface);
 }
 #viewProfile .profile-item:focus-visible,
 .profile-item[role="button"]:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   box-shadow: none;
-  background: var(--paper);
+  background: var(--surface);
 }
 /* Só clicáveis animam */
 #viewProfile .profile-item[role="button"]:active,
 .profile-item[role="button"]:active,
 #viewProfile .profile-item[tabindex]:active {
-  background: color-mix(in srgb, var(--accent) 8%, var(--paper));
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
   transform: scale(0.99);
 }
 #viewProfile .profile-item:not([role="button"]):not([tabindex]):active {
-  background: var(--paper);
+  background: var(--surface);
   transform: none;
 }
 #viewProfile .feature-profile-toggle:active {

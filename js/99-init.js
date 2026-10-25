@@ -930,7 +930,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   const avatarUrl = (seed) => `https://api.dicebear.com/7.x/shapes/svg?seed=${seed}&radius=50`;
   function applyProfileAvatar(seed) {
     const img = `<img src="${avatarUrl(seed)}" alt="Foto de perfil">`;
-    if (avatarPick) avatarPick.innerHTML = img;
     if (avatarHeading) avatarHeading.innerHTML = img;
     if (localStorage.getItem('lc_profile_avatar') !== seed) localStorage.setItem('lc_profile_avatar', seed);
   }

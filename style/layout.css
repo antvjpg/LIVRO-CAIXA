@@ -296,7 +296,7 @@
     min-height:64px;padding:14px 16px;
     border:1px solid var(--line);
     border-radius:18px;
-    background:var(--paper);
+    background:var(--surface);
     box-shadow:0 1px 0 color-mix(in srgb,var(--ink) 4%,transparent);
   }
   #viewProfile .profile-item[role="button"],
@@ -339,10 +339,6 @@
     border-radius:18px;background:var(--paper);
     border:1px solid var(--line);
     min-height:64px;
-  }
-  #viewProfile .feature-profile-toggle:has(input:checked){
-    border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
-    background:color-mix(in srgb,var(--accent) 10%,var(--paper));
   }
   #viewProfile .feature-profile-switch{
     width:44px;height:26px;border-radius:999px;background:var(--line);flex:0 0 auto;
@@ -465,7 +461,9 @@
     color:var(--ink-soft);font-size:11px;line-height:1.45;
   }
   #viewProfile .feature-profile-feedback{margin:8px 0 0;font-size:11px;color:var(--ink-soft);}
-  body.dark-mode #viewProfile .profile-item:not(.grouped-item),
+  body.dark-mode #viewProfile .profile-item:not(.grouped-item){
+    background:var(--surface);border-color:var(--line);
+  }
   body.dark-mode #viewProfile .feature-profile-toggle:not(.grouped-item){
     background:var(--paper);border-color:var(--line);
   }
