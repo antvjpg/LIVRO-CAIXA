@@ -278,7 +278,7 @@
     gap:14px;
   }
   #viewProfile .profile-avatar{
-    width:52px;height:52px;border-radius:16px;
+    width:52px;height:52px;border-radius:12px;
     background:color-mix(in srgb,var(--accent) 14%,var(--surface));
     border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));
     color:var(--accent);
