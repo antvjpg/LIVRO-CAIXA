@@ -924,16 +924,14 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   /* Foto de perfil — grid de avatares abstratos (DiceBear "shapes") em modal */
   const avatarSeeds = ['ana','beto','carla','diego','elena','fabio','giulia','hugo','isabela','joao','karol','lucas','mel','nic','ova','ped','quim','reu'];
   const avatarGrid = document.getElementById('avatarGrid');
-  const avatarPick = document.getElementById('profileAvatarPick');
   const avatarHeading = document.querySelector('#viewProfile .profile-avatar');
-  const btnOpenAvatar = document.getElementById('btnOpenAvatarGrid');
-  const avatarUrl = (seed) => `https://api.dicebear.com/7.x/shapes/svg?seed=${seed}&radius=50`;
+  const avatarUrl = (seed) => `https://api.dicebear.com/7.x/shapes/svg?seed=${seed}`;
   function applyProfileAvatar(seed) {
     const img = `<img src="${avatarUrl(seed)}" alt="Foto de perfil">`;
     if (avatarHeading) avatarHeading.innerHTML = img;
     if (localStorage.getItem('lc_profile_avatar') !== seed) localStorage.setItem('lc_profile_avatar', seed);
   }
-  if (avatarGrid && avatarPick && btnOpenAvatar) {
+  if (avatarGrid && avatarHeading) {
     avatarGrid.innerHTML = avatarSeeds.map((seed, i) => `
       <button type="button" class="avatar-option${i === 0 ? ' is-active' : ''}" data-seed="${seed}" aria-label="Avatar ${i + 1}">
         <img src="${avatarUrl(seed)}" alt="Avatar ${seed}">
@@ -946,7 +944,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
         applyProfileAvatar(opt.dataset.seed);
       });
     });
-    btnOpenAvatar.addEventListener('click', () => {
+    avatarHeading.addEventListener('click', () => {
       if (typeof openModal === 'function') openModal('panelAvatar');
     });
     const saved = localStorage.getItem('lc_profile_avatar');
@@ -1992,6 +1990,10 @@ VALOR: ${fmt(pseudoBill.amount)}
     try { await persistAll(); renderCards(); closeAllPanels(); logInfo('Cartões',old ? 'Editar compra' : 'Criar compra','Sucesso',`${record.description} vinculada ao cartão ${cards.find(c=>c.id===record.cardId)?.name || ''}.`); }
     catch (err) { if (old) purchases = purchases.map(p => p.id === editingPurchaseId ? old : p); else purchases = purchases.filter(p => p.id !== record.id); logSyncError('salvamento de compra', err); renderCards(); alert('Não foi possível salvar a compra.'); }
   };;
+
+  document.getElementById('btnOpenBudgetModal').onclick = () => {
+    openBudgetModal();
+  };
 
   document.getElementById('btnCategoria').onclick = () => {
     returnToEntryAfterCategory = false;

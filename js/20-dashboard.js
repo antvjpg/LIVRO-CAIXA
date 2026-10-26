@@ -1701,6 +1701,13 @@
     dashRenderFlowChart(summary);
   }
 
+  function renderBudgetManagement() {
+    const rows = document.getElementById('featureBudgetRows');
+    if (!rows) return;
+    const budgetCycle = currentFinancialCycleKey();
+    rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id); const spent = budgetSpent(cat.id, budgetCycle); const pct = budget && budget.amount > 0 ? (spent / budget.amount * 100) : 0; let statusLabel = ''; let statusClass = ''; if (budget && budget.amount > 0) { if (pct >= 100) { statusLabel = 'Excedido'; statusClass = 'excedido'; } else if (pct >= 80) { statusLabel = 'Atenção'; statusClass = 'atencao'; } else { statusLabel = 'Normal'; statusClass = 'normal'; } } return `<div class="feature-budget-row"><div class="budget-row-line1"><label for="budget-${escapeHTML(cat.id)}">${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"></div><div class="budget-row-line2"><span>${fmt(spent)} gastos${budget && budget.amount>0 ? ` (${pct.toFixed(0)}%)` : ''}</span>${statusLabel ? `<span class="budget-status ${statusClass}">${statusLabel}</span>` : ''}</div><div class="budget-row-line3"><div class="budget-row-track"><span class="${pct >= 100 ? 'over' : ''}" style="width:${Math.min(100,pct).toFixed(2)}%" data-real-percent="${pct.toFixed(2)}"></span></div></div></div>`; }).join('');
+  }
+
   function renderFeatureProfile() {
     const autoBills = document.getElementById('featureAutoBills'); if (autoBills) autoBills.checked = featureSettings.autoLaunchRecurring;
     const reminders = document.getElementById('featureReminders'); if (reminders) reminders.checked = featureSettings.reminders;
@@ -1721,12 +1728,13 @@
     window.renderAiQuotaStatus?.();
     window.LivroCaixaAI?.refreshQuota?.();
     const bank = document.getElementById('reconcileBank'); if (bank) { const current = bank.value; bank.innerHTML = banks.map(item => `<option value="${item.id}">${escapeHTML(item.name)}</option>`).join(''); if (banks.some(item => item.id === current)) bank.value = current; }
-    const month = currentMonthYM(); const budgetCycle = currentFinancialCycleKey(); const rows = document.getElementById('featureBudgetRows');
-    if (rows) rows.innerHTML = categories.map(cat => { const budget = budgetFor(cat.id); const spent = budgetSpent(cat.id, budgetCycle); const pct = budget && budget.amount > 0 ? (spent / budget.amount * 100) : 0; let statusLabel = ''; let statusClass = ''; if (budget && budget.amount > 0) { if (pct >= 100) { statusLabel = 'Excedido'; statusClass = 'excedido'; } else if (pct >= 80) { statusLabel = 'Atenção'; statusClass = 'atencao'; } else { statusLabel = 'Normal'; statusClass = 'normal'; } } return `<div class="feature-budget-row"><div class="budget-row-line1"><label for="budget-${escapeHTML(cat.id)}">${escapeHTML(cat.name)}</label><input type="text" data-budget-category="${escapeHTML(cat.id)}" id="budget-${escapeHTML(cat.id)}" data-money="true" placeholder="Sem limite" value="${budget ? MONEY_FORMATTER.format(Number(budget.amount) || 0) : ''}"></div><div class="budget-row-line2"><span>${fmt(spent)} gastos${budget && budget.amount>0 ? ` (${pct.toFixed(0)}%)` : ''}</span>${statusLabel ? `<span class="budget-status ${statusClass}">${statusLabel}</span>` : ''}</div><div class="budget-row-line3"><div class="budget-row-track"><span class="${pct >= 100 ? 'over' : ''}" style="width:${Math.min(100,pct).toFixed(2)}%" data-real-percent="${pct.toFixed(2)}"></span></div></div></div>`; }).join('');
+    renderBudgetManagement();
     initMoneyMasks();
     renderReconciliationHistory();
   }
   function openFeatureProfile() { renderFeatureProfile(); openModal('panelFeatureProfile'); }
+
+  function openBudgetModal() { renderBudgetManagement(); openModal('panelOrcamento'); }
 
   function openGoalsPanel() {
   if (typeof renderGoalsList === 'function') {

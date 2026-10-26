@@ -421,7 +421,7 @@
   <div id="viewProfile" class="tab-content">
     <section class="profile-shell" aria-label="Área de perfil">
       <div class="profile-heading profile-heading-integrated">
-        <div class="profile-avatar" aria-hidden="true"></div>
+        <button type="button" class="profile-avatar" id="btnOpenAvatarGrid" aria-label="Foto de perfil" title="Foto de perfil"></button>
         <div><h2>Perfil</h2><p id="profileEmail">Sua conta e preferências</p></div>
         <button type="button" id="btnProfileLogout" class="profile-heading-logout" title="Sair da conta" aria-label="Sair da conta"></button>
       </div>
@@ -429,11 +429,6 @@
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"></span> Dados da conta</div>
         <div class="profile-list profile-grouped-list">
           <div class="profile-item grouped-item"><span class="profile-item-icon"></span><span class="profile-item-copy"><strong>Versão do aplicativo</strong><span id="profileAppVersion">Livro-Caixa</span></span></div>
-          <div class="profile-item grouped-item">
-              <div class="profile-avatar-pick" id="profileAvatarPick" aria-label="Foto de perfil" title="Foto de perfil"></div>
-              <span class="profile-item-copy"><strong>Escolha sua foto</strong><span>Painel de avatares.</span></span>
-              <span class="profile-item-arrow" aria-hidden="true">›</span>
-            </div>
         </div>
       </div>
 
@@ -517,7 +512,14 @@
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"></span> Orçamento</div>
         <div class="feature-profile-section">
-          <div id="featureBudgetRows" class="feature-budget-rows"></div>
+          <div class="profile-item grouped-item">
+            <span class="profile-item-icon"></span>
+            <span class="profile-item-copy">
+              <strong>Orçamento</strong>
+              <span>Defina limites de gastos por categoria.</span>
+            </span>
+            <button type="button" id="btnOpenBudgetModal">Gerenciar</button>
+          </div>
         </div>
       </div>
 
@@ -768,6 +770,14 @@
       </div>
       <div class="category-modal-footer">
         <button class="primary" id="cSalvar" style="width:100%">Adicionar</button>
+      </div>
+    </div>
+
+    <div class="panel" id="panelOrcamento" data-no-autofocus>
+      <h3>Orçamento <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
+      <div class="category-modal-body">
+        <p class="hint">Defina limites de gastos por categoria para acompanhar o ciclo financeiro.</p>
+        <div id="featureBudgetRows" class="feature-budget-rows"></div>
       </div>
     </div>
 

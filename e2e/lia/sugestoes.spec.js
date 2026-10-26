@@ -99,6 +99,8 @@ test.describe('V.20-02 LIA — Sugestões contextuais', () => {
 
     await app.openTab(page, 'profile');
     await expect(page.locator('#viewProfile')).toHaveClass(/active/);
+    await page.locator('#btnOpenBudgetModal').click();
+    await expect(page.locator('#panelOrcamento')).toBeVisible({ timeout: 10000 });
     const linhaAlimentacao = page.locator('#featureBudgetRows .feature-budget-row', { hasText: 'Alimentação' });
     await expect(linhaAlimentacao).toBeVisible({ timeout: 10000 });
     let gasto = app.parseCurrency(await linhaAlimentacao.locator('span').first().textContent());

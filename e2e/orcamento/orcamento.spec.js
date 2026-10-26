@@ -20,6 +20,8 @@ test.describe('Orçamento — UX finalizada', () => {
   async function openProfileBudget(page) {
     await app.openTab(page, 'profile');
     await expect(page.locator('#viewProfile')).toHaveClass(/active/);
+    await page.locator('#btnOpenBudgetModal').click();
+    await expect(page.locator('#panelOrcamento')).toBeVisible({ timeout: 10000 });
     await expect(page.locator('#featureBudgetRows')).toBeVisible({ timeout: 10000 });
   }
 
