@@ -4097,6 +4097,17 @@ body.balances-hidden .cashflow-mini-metrics strong::after{
 body.balances-hidden .balance-card.total .amount::after{
 }
 
+/* P2.4 — vence layout.css (dark/light) que reaplica cor em .amount/.manage-item-value */
+body.balances-hidden .balance-card .amount,
+body.balances-hidden .balance-card.total .amount,
+body.balances-hidden .balance-card.total .amount:not(.neg),
+body.balances-hidden .balance-card:not(.total) .amount,
+body.balances-hidden .manage-item-value{
+  color: transparent;
+  text-shadow: none;
+  user-select: none;
+}
+
 /* % dos cards de saldo — secundário */
 #balanceStrip .balance-share,
 .balance-strip .balance-share{
@@ -5249,7 +5260,7 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 .institution-card-header{
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content:flex-start;
   gap:10px;
   margin:0;
   padding:0;
@@ -5261,6 +5272,7 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   align-items:center;
   gap:10px;
   min-width:0;
+  flex:1;
 }
 .institution-icon{
   flex:0 0 auto;
@@ -5311,6 +5323,10 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   align-items:center;
   justify-content:center;
   cursor:pointer;
+  transition:transform .18s ease;
+}
+.institution-menu[aria-expanded="true"]{
+  transform:rotate(180deg);
 }
 .institution-menu:hover{
   border-color:color-mix(in srgb, var(--accent) 45%, var(--line));

@@ -1094,7 +1094,7 @@ function editInstitution(btn, key) {
       '              <span>' + list.length + ' investimentos</span>',
       '            </div>',
       '          </div>',
-          '          <button type="button" class="institution-menu" aria-label="Ver investimentos" title="Ver/mais investimentos" data-institution-key="' + escapeHTML(group.key) + '" onclick="instToggle(this)">\u25bc</button>',
+          (list.length > 2 ? '          <button type="button" class="institution-menu" aria-label="Ver investimentos" title="Ver mais/menos investimentos" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + assetsId + '" data-institution-key="' + escapeHTML(group.key) + '" onclick="instToggle(this)">\u25bc</button>' : ''),
           '          <button type="button" class="action-btn icon-button edit institution-rename" aria-label="Editar instituição" title="Editar instituição" data-institution-key="' + escapeHTML(group.key) + '" onclick="instEdit(this)"></button>',
       '        </header>',
       '        <div class="institution-summary">',

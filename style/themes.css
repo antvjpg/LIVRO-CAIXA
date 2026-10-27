@@ -95,7 +95,14 @@
     --dash-flow-income:#3E9B6E;
     --dash-flow-expense:#C2553B;
     --dash-flow-patrimony:#B08D3E;
-    /* Variáveis semânticas de ação — permitem remover !important das regras de cor */
+    /* Z-index organizado */
+    --z-modal:1400;
+    --z-fab:1300;
+  }
+  /* Variáveis semânticas de ação/controle — declaradas em body (não em :root)
+     para que var(--accent)/var(--green)/var(--red) resolvam com o valor
+     cascaded de CADA tema (body.*), e não com o accent default do :root. */
+  body{
     --action-finalize:var(--green);
     --action-finalize-border:color-mix(in srgb, var(--green) 28%, var(--line));
     --action-finalize-bg:color-mix(in srgb, var(--green) 10%, var(--surface));
@@ -114,16 +121,12 @@
     --action-accent-bg:color-mix(in srgb, var(--accent) 10%, var(--surface));
     --action-accent-border:color-mix(in srgb, var(--accent) 28%, var(--line));
     --action-accent-bg-soft:color-mix(in srgb, var(--accent) 12%, transparent);
-    /* Variáveis para controles em dark mode — eliminam !important em dark-mode */
     --control-hover-bg:var(--surface);
     --control-hover-border:var(--line);
     --control-hover-ink:var(--ink);
     --toggle-active-bg:var(--accent);
     --toggle-active-ink:var(--accent-ink);
     --toggle-active-border:var(--accent);
-    /* Z-index organizado */
-    --z-modal:1400;
-    --z-fab:1300;
   }
   body:not(.dark-mode)[data-light-theme="4"] {
     --paper:#FBF6EF; --paper-2:#F2E8DC; --ink:#342C25; --ink-soft:#81766B; --green:#5F8A70; --green-soft:#E0ECE2; --line:#E2D3C0; --gold:#C66F50; --gold-rgb:198,111,80; --gold-soft:#F7E7E0;
