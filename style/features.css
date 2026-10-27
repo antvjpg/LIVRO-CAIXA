@@ -616,26 +616,26 @@
 .credit-card-purchase-menu .finalize i,
 .credit-card-purchase-menu .unarchive i{font-size:15px;line-height:1;font-style:normal;}
 .credit-card-purchase-menu .finalize{
-  color:var(--green) !important;
-  border-color:color-mix(in srgb, var(--green) 28%, var(--line)) !important;
-  background:color-mix(in srgb, var(--green) 10%, var(--surface)) !important;
+  color:var(--action-finalize);
+  border-color:var(--action-finalize-border);
+  background:var(--action-finalize-bg);
 }
 .credit-card-purchase-menu .unarchive{
-  color:var(--gold) !important;
-  border-color:color-mix(in srgb, var(--gold) 28%, var(--line)) !important;
-  background:color-mix(in srgb, var(--gold) 10%, var(--surface)) !important;
+  color:var(--action-unarchive);
+  border-color:var(--action-unarchive-border);
+  background:var(--action-unarchive-bg);
 }
 .credit-card-purchase-menu .finalize:hover,
 .credit-card-purchase-menu .finalize:focus-visible{
-  color:var(--green) !important;
-  background:color-mix(in srgb, var(--green) 24%, var(--surface)) !important;
-  border-color:color-mix(in srgb, var(--green) 55%, var(--line)) !important;
+  color:var(--action-finalize);
+  background:var(--action-finalize-bg-hover);
+  border-color:var(--action-finalize-border-hover);
 }
 .credit-card-purchase-menu .unarchive:hover,
 .credit-card-purchase-menu .unarchive:focus-visible{
-  color:var(--gold) !important;
-  background:color-mix(in srgb, var(--gold) 24%, var(--surface)) !important;
-  border-color:color-mix(in srgb, var(--gold) 55%, var(--line)) !important;
+  color:var(--action-unarchive);
+  background:var(--action-unarchive-bg-hover);
+  border-color:var(--action-unarchive-border-hover);
 }
 
 .emoji-float-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(13,42,30,.56);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));}
@@ -737,8 +737,8 @@
   body[data-font="sora"]{--font-ui:'Sora',sans-serif;}
   .mobile-bottom-nav{--nav-indicator-x:0%;}
   .mobile-bottom-nav::before{content:"";position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/5);border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 24%,transparent),0 5px 13px color-mix(in srgb,var(--accent) 10%,transparent);transform:translateX(var(--nav-indicator-x));transition:transform 220ms var(--v1616-ease),background-color 220ms ease,box-shadow 220ms ease;pointer-events:none;}
-  .mobile-bottom-nav button{position:relative;z-index:1;background:transparent!important;transition:color 220ms ease,transform 160ms var(--v1616-ease);}
-  .mobile-bottom-nav button.is-active{background:transparent!important;box-shadow:none!important;}
+  .mobile-bottom-nav button{position:relative;z-index:1;background:transparent;transition:color 220ms ease,transform 160ms var(--v1616-ease);}
+  .mobile-bottom-nav button.is-active{background:transparent;box-shadow:none;}
   .mobile-bottom-nav button:active{transform:scale(.94);}
   .tab-content{animation:tab-content-enter 220ms var(--v1616-ease) both;}
 @keyframes v1616-pulse{0%,100%{opacity:.58}50%{opacity:1}}
@@ -979,9 +979,9 @@
 .app-drawer [data-drawer-action="lab"] .drawer-item-icon{display:inline-flex;width:20px;min-width:20px;align-items:center;justify-content:center;font-size:18px;line-height:1;font-family:"Segoe UI Symbol","Noto Sans Symbols",sans-serif;}
 
 .calendar-filter-control{display:flex;align-items:center;gap:7px;padding:0 10px;min-height:42px;border:1px solid var(--action-border);border-radius:11px;background:var(--surface-raised);color:var(--ink-soft);font-size:10px;font-weight:700;}
-.calendar-filter-control span{white-space:nowrap}.calendar-filter-control select{min-width:100px;border:0!important;background:transparent!important;color:var(--ink)!important;font-size:11px;font-weight:700;padding:0;box-shadow:none!important;}
+.calendar-filter-control span{white-space:nowrap}.calendar-filter-control select{min-width:100px;border:0;background:transparent;color:var(--ink);font-size:11px;font-weight:700;padding:0;box-shadow:none;}
 .bill-share-panel{max-width:520px}.bill-share-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.bill-share-head h3{margin:4px 0 0}.bill-share-message{width:100%;min-height:260px;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font-size:12px;line-height:1.55;resize:vertical}.bill-share-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.bill-share-cancel{width:100%;margin-top:8px;background:var(--surface-raised);border:1px solid var(--action-border);border-radius:4px;color:var(--ink);font-size:11px}.bill-actions{display:flex;flex-wrap:wrap;gap:6px}.bill-actions button{font-size:10px;padding:7px 9px}.bill-event{cursor:pointer}.bill-event:hover{background:var(--accent);color:var(--accent-ink)}
-body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-color:var(--line);color:var(--ink-soft)}body.dark-mode .calendar-filter-control select{color:var(--ink)!important}body.dark-mode .bill-share-panel{background:var(--surface);color:var(--ink)}body.dark-mode .bill-share-message{background:var(--paper);border-color:var(--line);color:var(--ink)}body.dark-mode .bill-share-cancel{color:var(--ink)}
+body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-color:var(--line);color:var(--ink-soft)}body.dark-mode .calendar-filter-control select{color:var(--control-hover-ink)}body.dark-mode .bill-share-panel{background:var(--surface);color:var(--ink)}body.dark-mode .bill-share-message{background:var(--paper);border-color:var(--line);color:var(--ink)}body.dark-mode .bill-share-cancel{color:var(--ink)}
 @media(max-width:680px){.calendar-filter-control{grid-column:1/-1;justify-content:space-between}.calendar-filter-control select{flex:1;text-align:right}.bill-share-actions{grid-template-columns:1fr}.bill-actions button{flex:1;min-width:118px}}
 
 /* V.18-18 — acabamento visual editorial e compatibilidade de tema */
@@ -1013,10 +1013,10 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   body.dark-mode .bill-event{color:var(--ink);}.dark-mode .bill-event:hover{background:var(--accent);color:var(--accent-ink);}
   @media(max-width:680px){.nav-tab{min-height:44px}.toolbar button{min-height:44px}.feature-profile-section{box-shadow:inset 0 1px 0 color-mix(in srgb,var(--ink) 4%,transparent);}}
   body.dark-mode .toolbar button:not(.primary),body.dark-mode .period-bar button,body.dark-mode .ledger-filter-button{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
-  body.dark-mode .toolbar button:not(.primary):hover,body.dark-mode .toolbar button:not(.primary):focus-visible,body.dark-mode .period-bar button:hover,body.dark-mode .period-bar button:focus-visible,body.dark-mode .ledger-filter-button:hover,body.dark-mode .ledger-filter-button:focus-visible{background:var(--surface-accent)!important;border-color:var(--accent)!important;color:var(--ink)!important;}
+  body.dark-mode .toolbar button:not(.primary):hover,body.dark-mode .toolbar button:not(.primary):focus-visible,body.dark-mode .period-bar button:hover,body.dark-mode .period-bar button:focus-visible,body.dark-mode .ledger-filter-button:hover,body.dark-mode .ledger-filter-button:focus-visible{background:var(--control-hover-bg);border-color:var(--control-hover-border);color:var(--control-hover-ink);}
   body.dark-mode #btnThemeToggle,body.dark-mode #btnNotifications,body.dark-mode #btnOpenDrawer{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
   body.dark-mode .filter-choice-sheet{color:var(--ink);}
-  body.dark-mode .filter-choice-search{background:var(--surface)!important;border-color:var(--line)!important;color:var(--ink)!important;}
+  body.dark-mode .filter-choice-search{background:var(--surface);border-color:var(--line);color:var(--ink);}
   body.dark-mode .filter-choice-option{background:var(--surface-raised);border-color:var(--line);color:var(--ink);}
   body.dark-mode .filter-choice-option.is-selected{background:var(--green-soft);border-color:var(--accent);}
 
@@ -1603,9 +1603,9 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   padding:5px 8px;
   border-radius:999px;
   background:var(--line);
-  font-size:9px !important;
+  font-size:9px;
   font-weight:800;
-  color:var(--ink) !important;
+  color:var(--ink);
 }
 
 #bill-day-panel-v19-16 .bill-day-panel-empty{
@@ -1711,15 +1711,6 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
   color:var(--ink-soft);
 }
 
-#bill-day-panel-v19-16 .bill-day-panel-type{
-  flex:0 0 auto;
-  padding:5px 8px;
-  border-radius:999px;
-  background:var(--line);
-  font-size:9px !important;
-  font-weight:800;
-  color:var(--ink) !important;
-}
 
 #bill-day-panel-v19-16 .bill-day-panel-empty{
   padding:20px 10px;
@@ -1919,7 +1910,7 @@ body.dark-mode .calendar-filter-control{background:var(--surface-raised);border-
 
 .calendar-filter-control,
 .calendar-filter-control select{
-  border-color:var(--line)!important;
+  border-color:var(--line);
   background:var(--surface);
   color:var(--ink);
   box-shadow:none;
@@ -1946,7 +1937,7 @@ body.dark-mode .bill-more-button{
 }
 
 .bill-list-item-amount{font-size:18px;margin-top:1px;}
-#billList{gap:12px!important;}
+#billList{gap:12px;}
 
 /* Unificação visual: conta e fatura = mesmo card */
 .commitment-card,
@@ -1989,7 +1980,7 @@ body.dark-mode .bill-more-button{
   line-height:1.15;
   letter-spacing:-0.02em;
   text-align:right;
-  color:var(--ink) !important;
+  color:var(--ink);
 }
 .commitment-card .hint{
   margin-top:4px;
@@ -2047,7 +2038,7 @@ body.dark-mode .bill-more-button{
 #billList{
   display:flex;
   flex-direction:column;
-  gap:14px !important;
+  gap:14px;
 }
 
 /* Preenchimento uniforme: conta e fatura (mesma “caixa”) */
@@ -2082,18 +2073,18 @@ body.dark-mode .bill-more-button{
 #billList .commitment-actions > button,
 #billList .commitment-actions > .bill-more-wrap{
   max-width:none;
-  margin:0 !important;
+  margin:0;
   justify-self:stretch;
 }
 #billList .commitment-subblocks{
-  margin:0 !important;
-  padding:8px 0 0 !important;
+  margin:0;
+  padding:8px 0 0;
   border-top:1px solid var(--line);
   width:100%;
 }
 #billList .commitment-subblock{
-  margin:0 !important;
-  padding:0 !important;
+  margin:0;
+  padding:0;
   width:100%;
 }
 /* anula restos do layout antigo de fatura */
@@ -2129,13 +2120,13 @@ header.app-header{
 
 /* cards de saldo — altura vertical reduzida */
 .bank-summary-card,.pocket-summary-card,.invest-summary-card{
-  min-height:0!important;
-  padding:11px 11px 9px!important;
+  min-height:0;
+  padding:11px 11px 9px;
   gap:2px;
 }
-#balanceStrip .balance-card-head{margin-bottom:4px!important;gap:6px;min-width:0;}
+#balanceStrip .balance-card-head{margin-bottom:4px;gap:6px;min-width:0;}
 #balanceStrip .balance-card .label{
-  font-size:10px!important;
+  font-size:10px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
@@ -2146,7 +2137,7 @@ header.app-header{
 #balanceStrip .pocket-summary-card .amount,
 #balanceStrip .invest-summary-card .amount{
   font-size:clamp(16px,2.2vw,20px);
-  margin-top:2px!important;
+  margin-top:2px;
 }
 #balanceStrip .balance-detail-link{padding-top:6px;font-size:11px;}
 #balanceStrip .balance-share{font-size:10px;margin-top:2px;}
@@ -2219,7 +2210,7 @@ header.app-header{
 
 #panelNovo .form-grid > div{
   width:100%;
-  margin:0!important;
+  margin:0;
 }
 
 #panelNovo .form-grid > div:nth-child(6){
@@ -2337,9 +2328,9 @@ header.app-header{
 }
 
 #panelNovo .form-grid > div:nth-child(5) > div{
-  display:grid!important;
+  display:grid;
   grid-template-columns:minmax(0,1fr) 46px;
-  gap:7px!important;
+  gap:7px;
 }
 
 #panelNovo #btnQuickCat{
@@ -2347,16 +2338,16 @@ header.app-header{
   min-width:46px;
   min-height:48px;
   padding:0;
-  border:1px solid var(--line)!important;
+  border:1px solid var(--line);
   border-radius:15px;
-  background:var(--surface)!important;
-  color:var(--accent)!important;
+  background:var(--surface);
+  color:var(--action-accent);
   font-size:21px;
 }
 
 #panelNovo #btnQuickCat:hover{
-  background:var(--green-soft)!important;
-  border-color:var(--accent)!important;
+  background:var(--green-soft);
+  border-color:var(--action-accent);
 }
 
 #panelNovo #btnReadReceipt{
@@ -2474,7 +2465,7 @@ body.dark-mode #panelNovo #btnQuickCat{
   min-height:42px;
   width:42px;
   min-width:42px;
-  border-radius:13px!important;
+  border-radius:13px;
 }
 
 #panelNovo #btnReadReceipt{
@@ -2535,20 +2526,20 @@ body.dark-mode #panelNovo #btnQuickCat{
 
 #panelNovo #fValor:focus,
 #panelNovo #fValor:focus-visible{
-  box-shadow:none!important;
+  box-shadow:none;
 }
 
 #panelNovo .type-toggle button.active-out,
 #panelNovo .type-toggle button[class*="active-out"]{
-  background:var(--red)!important;
-  color:#fff!important;
-  border-color:var(--red)!important;
-  box-shadow:0 4px 12px color-mix(in srgb,var(--red) 22%,transparent)!important;
+  background:var(--action-delete);
+  color:#fff;
+  border-color:var(--action-delete);
+  box-shadow:0 4px 12px color-mix(in srgb,var(--action-delete) 22%,transparent);
 }
 
 #panelNovo .type-toggle button.active-in{
-  background:var(--surface-accent)!important;
-  color:var(--accent-ink)!important;
+  background:var(--toggle-active-bg);
+  color:var(--toggle-active-ink);
 }
 
 /* V19-17 — ajuste de espaçamento dos dígitos do valor */
@@ -2639,7 +2630,7 @@ body.dark-mode #panelNovo #btnQuickCat{
 
 #panelTransferencia .form-grid > div{
   width:100%;
-  margin:0!important;
+  margin:0;
 }
 
 /* Ordem visual: Valor → Origem → Destino → Data → Observação → IA → Transferir */
@@ -2707,7 +2698,7 @@ body.dark-mode #panelNovo #btnQuickCat{
 
 #panelTransferencia #tValor:focus,
 #panelTransferencia #tValor:focus-visible{
-  box-shadow:none!important;
+  box-shadow:none;
 }
 
 #panelTransferencia #btnReadTransferReceipt{
@@ -2775,18 +2766,18 @@ body.dark-mode #panelTransferencia select{
 body.dark-mode #panelNovo .type-toggle button.active-in,
 body.dark-mode #panelNovo #fSalvar,
 body.dark-mode #panelTransferencia #tSalvar{
-  background:var(--accent)!important;
-  color:var(--accent-ink)!important;
-  border-color:var(--accent)!important;
+  background:var(--toggle-active-bg);
+  color:var(--toggle-active-ink);
+  border-color:var(--toggle-active-border);
 }
 
 body.dark-mode #panelNovo .type-toggle button.active-in{
-  box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 24%,transparent)!important;
+  box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 24%,transparent);
 }
 
 body.dark-mode #panelNovo #fSalvar,
 body.dark-mode #panelTransferencia #tSalvar{
-  box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 22%,transparent)!important;
+  box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 22%,transparent);
 }
 
 /* V19-17 — Nova Conta / Fatura
@@ -2940,7 +2931,7 @@ body.dark-mode #panelBill #billParcelasFields{
   padding:0;
   border:0!important;
   border-radius:0!important;
-  background:transparent!important;
+  background:transparent;
   box-shadow:none!important;
   color:var(--ink);
   font-size:42px;
@@ -3103,7 +3094,7 @@ body.dark-mode #panelBill #billParcelasFields{
   border-radius:999px!important;
   background:var(--green-soft)!important;
   border-color:var(--action-border)!important;
-  color:var(--accent)!important;
+  color:var(--action-accent)!important;
   font-weight:800;
 }
 
@@ -3430,7 +3421,7 @@ body.dark-mode #panelBill #billParcelasFields{
 #panelInvestMovement .form-grid > div,
 #panelCryptoReconcile .form-grid > div{
   width:100%;
-  margin:0!important;
+  margin:0;
 }
 
 #cryptoFields > div,
@@ -3541,11 +3532,11 @@ body.dark-mode #panelBill #billParcelasFields{
   width:100%;
   height:56px;
   padding:0 2px 8px;
-  border:0!important;
-  border-bottom:2px solid var(--accent)!important;
+  border:0;
+  border-bottom:2px solid var(--accent);
   border-radius:0;
-  background:transparent!important;
-  color:var(--ink)!important;
+  background:transparent;
+  color:var(--ink);
   font-size:34px;
   line-height:1;
   font-weight:800;
@@ -3603,8 +3594,8 @@ body.dark-mode #panelBill #billParcelasFields{
 }
 #panelPocketMovement .type-toggle button.active-yield,
 #panelInvestMovement .type-toggle button.active-yield{
-  background:var(--gold)!important;
-  color:#1a1408!important;
+  background:var(--action-yield);
+  color:#1a1408;
 }
 
 /* Botões primários dos sheets */
@@ -3779,27 +3770,27 @@ body.dark-mode{
 #imResgate.active-out,
 #tglOut.active-out,
 #tglOut.active-out{
-  background:var(--red, #B3432B)!important;
-  color:#fff!important;
-  border-color:transparent!important;
-  box-shadow:0 4px 12px color-mix(in srgb, var(--red, #B3432B) 30%, transparent);
+  background:var(--action-delete);
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 4px 12px color-mix(in srgb, var(--action-delete) 30%, transparent);
 }
 .type-toggle button.active-yield,
 #pmRendimento.active-yield,
 #imRendimento.active-yield{
-  background:var(--gold)!important;
-  color:#1a1408!important;
-  border-color:transparent!important;
+  background:var(--action-yield);
+  color:#1a1408;
+  border-color:transparent;
 }
 
 /* Cantos dos modais (sheet) */
 .modal-overlay .panel,
 .panel.panel-beta{
-  border-radius:24px 24px 16px 16px !important;
+  border-radius:24px 24px 16px 16px;
 }
 @media (max-width:700px){
   .modal-overlay .panel{
-    border-radius:22px !important;
+    border-radius:22px;
   }
 }
 
@@ -3994,15 +3985,8 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{
   padding-bottom:6px !important;
 }
 .period-bar{
-  gap:6px !important;
-  min-height:0 !important;
-}
-.period-bar button,
-.period-nav,
-.period-all,
-.period-picker-button{
-  min-height:34px !important;
-  padding:6px 10px !important;
+  gap:6px;
+  min-height:0;
 }
 .period-summary-card,
 .card.period-summary{
@@ -4048,7 +4032,7 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{
   margin:0 0 8px;
   border:1px solid var(--line);
   border-radius:14px;
-  background:var(--surface) !important;
+  background:var(--surface);
   box-shadow:none;
 }
 .card-lancamento .card-left{
@@ -4102,7 +4086,7 @@ body.balances-hidden .dashboard-metrics strong::after,
 body.balances-hidden .cashflow-mini-metrics strong::after{
   left: 0; top: 50%;
   transform: translateY(-50%);
-  color: var(--ink) !important;
+  color: var(--ink);
   opacity: .85;
   letter-spacing: .12em;
   font-size: .95em;
@@ -4115,15 +4099,15 @@ body.balances-hidden .balance-card.total .amount::after{
 /* % dos cards de saldo — secundário */
 #balanceStrip .balance-share,
 .balance-strip .balance-share{
-  display:inline-flex !important;
-  margin-top:4px !important;
-  padding:2px 7px !important;
+  display:inline-flex;
+  margin-top:4px;
+  padding:2px 7px;
   border-radius:999px;
   font-size:9px;
   max-width:100%;
   opacity:.9;
-  background:color-mix(in srgb, var(--accent) 12%, transparent) !important;
-  color:var(--ink-soft) !important;
+  background:var(--action-accent-bg-soft);
+  color:var(--ink-soft);
 }
 
 /* Perfil: ocultar proteção local; sair no fim */
@@ -4140,11 +4124,11 @@ body.balances-hidden .balance-card.total .amount::after{
 
 /* FAB contorno fino */
 .fab-add{
-  border:1.5px solid color-mix(in srgb, var(--ink) 22%, transparent) !important;
-  box-shadow:0 10px 24px rgba(0,0,0,.18), 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent) !important;
+  border:1.5px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  box-shadow:0 10px 24px rgba(0,0,0,.18), 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 body.dark-mode .fab-add{
-  border-color: color-mix(in srgb, #fff 28%, transparent) !important;
+  border-color: color-mix(in srgb, #fff 28%, transparent);
 }
 
 /* Mini cards caixinhas ≈ investimentos */
@@ -4153,9 +4137,9 @@ body.dark-mode .fab-add{
 .section-balance-strip .balance-card,
 #investBalanceStrip .balance-card,
 #pocketsStrip .balance-card{
-  min-height:0 !important;
-  padding:10px 12px !important;
-  border-radius:14px !important;
+  min-height:0;
+  padding:10px 12px;
+  border-radius:14px;
 }
 .pocket-item,
 .invest-item,
@@ -4172,8 +4156,8 @@ body.dark-mode .fab-add{
 .pocket-item .val,
 .invest-item .val,
 .manage-item-value{
-  font-size:16px !important;
-  font-weight:800 !important;
+  font-size:16px;
+  font-weight:800;
 }
 
 /* Edit icon moderno (mask) */
@@ -4202,15 +4186,15 @@ button.edit.btn-action::before{
   gap:8px;
 }
 .advanced-dashboard .dashboard-metrics > div{
-  padding:10px 10px !important;
-  border-radius:12px !important;
+  padding:10px 10px;
+  border-radius:12px;
 }
 .advanced-dashboard .dashboard-page-heading h2{
-  margin:4px 0 !important;
+  margin:4px 0;
 }
 .advanced-dashboard .dashboard-health-card{
-  padding:10px 12px !important;
-  margin-bottom:10px !important;
+  padding:10px 12px;
+  margin-bottom:10px;
 }
 
 /* UI2 critical (idempotent overrides) */
@@ -4222,25 +4206,18 @@ button.edit.btn-action::before{
 #viewDashboard:not(.active) #dailyInsightCard,
 #viewDashboard:not(.active) #dashboardNextPayment{display:none;}
 
-.profile-group-hidden,[hidden].profile-group{display:none!important;}
 .profile-group:has(#btnProfileLogout){margin-top:18px;padding-top:10px;border-top:1px solid var(--line);margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));}
 
 .dashboard-next-payment-card .next-pay-inner{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);}
 .dashboard-next-payment-card .next-pay-kicker{display:block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
 .dashboard-next-payment-card .next-pay-row{display:flex;justify-content:space-between;gap:10px;}
 
-.period-bar{gap:6px!important;}
-.period-bar button,.period-nav,.period-all,.period-picker-button{min-height:32px!important;padding:5px 10px!important;}
+.period-bar button,.period-nav,.period-all,.period-picker-button{padding:5px 10px;}
 #cashflowMiniSummary,.cashflow-mini-summary{padding:10px 12px;}
 
 .card-lancamento{padding:12px;border-radius:14px;border:1px solid var(--line);margin-bottom:8px;box-shadow:none;}
 
-body.balances-hidden .balance-card .amount,
-body.balances-hidden .balance-card.total .amount{color:transparent!important;position:relative!important;}
-body.balances-hidden .balance-card .amount::after,
-body.balances-hidden .balance-card.total .amount::after{left:0;top:50%;transform:translateY(-50%);color:var(--ink)!important;letter-spacing:.12em;font-weight:800;pointer-events:none;}
 
-#balanceStrip .balance-share{font-size:9px;padding:2px 7px!important;margin-top:4px!important;opacity:.9;}
 
 .icon-button.edit::after,.btn-action.edit::before{content:"";display:block;width:15px;height:15px;background:currentColor;
 -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.45 3.55a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;
@@ -4283,13 +4260,9 @@ body[data-tab="dash"] .fab-add{
 }
 
 /* F04 — cards 2x2 caixinhas mais compactos */
-#viewPockets .balance-strip,
-#pocketBalanceStrip{
-  gap:8px !important;
-}
 #viewPockets .balance-strip .balance-card,
 #pocketBalanceStrip .balance-card{
-  padding:10px 10px !important;
+  padding:10px 10px;
   border-radius:14px;
 }
 #viewPockets .balance-strip .balance-card .amount,
@@ -4298,8 +4271,8 @@ body[data-tab="dash"] .fab-add{
 }
 #viewPockets .balance-strip .balance-card .label,
 #pocketBalanceStrip .balance-card .label{
-  font-size:9px !important;
-  margin-bottom:4px !important;
+  font-size:9px;
+  margin-bottom:4px;
 }
 
 /* F06 — perfil integrado */
@@ -4372,7 +4345,6 @@ body[data-tab="dash"] .fab-add{
   visibility:hidden;
   transition:grid-template-rows .3s ease,opacity .3s ease,visibility 0s linear .3s;
 }
-#universalPeriodBar.is-collapsed{gap:0!important;}
 #universalPeriodBar .period-bar-toggle{
   width:100%;
   display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -4386,7 +4358,7 @@ body[data-tab="dash"] .fab-add{
 }
 #universalPeriodBar{
   display:block;
-  padding:0 !important;
+  padding:0;
   overflow:hidden;
 }
 /* O JS marca section-hidden nas abas que não têm período (ex.: Perfil);
@@ -4429,18 +4401,18 @@ body[data-tab="dash"] .fab-add{
 #viewDashboard .dashboard-metrics{
 }
 #viewDashboard .dashboard-metrics > div{
-  padding:10px !important;
-  border-radius:12px !important;
+  padding:10px;
+  border-radius:12px;
 }
 #viewDashboard .dashboard-health-card{
-  margin:0 !important;padding:10px 12px !important;
+  margin:0;padding:10px 12px;
 }
 #viewDashboard .dashboard-page-heading{
-  margin-bottom:4px !important;
+  margin-bottom:4px;
 }
 #viewDashboard #dashboardNextPayment,
 #viewDashboard #dailyInsightCard{
-  margin-top:4px !important;
+  margin-top:4px;
 }
 
 /* B02 — ícone editar legível (lápis) */
@@ -4694,24 +4666,24 @@ body[data-tab="dash"] .fab-add{
 
 /* Período ativo: cor de superfície do tema (não cinza “morto”) */
 #universalPeriodBar.period-bar{
-  background:var(--surface) !important;
-  border:1px solid var(--line) !important;
+  background:var(--surface);
+  border:1px solid var(--line);
   border-radius:16px;
-  box-shadow:none !important;
-  padding:0 !important;
+  box-shadow:none;
+  padding:0;
   overflow:hidden;
 }
 #universalPeriodBar .period-bar-toggle{
-  background:transparent !important;
-  border:0 !important;
-  color:var(--ink) !important;
-  padding:10px 14px !important;
+  background:transparent;
+  border:0;
+  color:var(--ink);
+  padding:10px 14px;
 }
 #universalPeriodBar .period-eyebrow{
-  color:var(--accent) !important;
+  color:var(--action-accent);
 }
 #universalPeriodBar .period-active-label{
-  color:var(--ink) !important;
+  color:var(--ink);
   font-size:15px;
 }
 /* expandido: sem título duplicado no body */
@@ -4736,13 +4708,13 @@ body[data-tab="dash"] .fab-add{
 .panel,
 #modalOverlay .panel,
 .filter-choice-sheet{
-  border-radius:22px !important;
+  border-radius:22px;
 }
 @media (max-width:900px){
   .modal-overlay .panel,
   .modal-overlay .panel.open,
   #modalOverlay .panel{
-    border-radius:22px !important; /* all corners */
+    border-radius:22px; /* all corners */
   }
 }
 
@@ -4811,14 +4783,14 @@ body[data-tab="dash"] .fab-add{
 /* Perfil: largura total, cards alinhados */
 #viewProfile .profile-shell{
   width:100%;
-  margin:0 !important;
-  padding:8px 0 24px !important;
+  margin:0;
+  padding:8px 0 24px;
   box-sizing:border-box;
 }
 #viewProfile .profile-group{
   width:100%;
   box-sizing:border-box;
-  margin:0 0 14px !important;
+  margin:0 0 14px;
 }
 #viewProfile .profile-list,
 #viewProfile .feature-profile-section,
@@ -4829,7 +4801,7 @@ body[data-tab="dash"] .fab-add{
   box-sizing:border-box;
 }
 #viewProfile .feature-profile-section{
-  padding:14px !important;
+  padding:14px;
   border-radius:16px;
   border:1px solid var(--line);
   background:var(--surface);
@@ -4852,7 +4824,7 @@ body[data-tab="dash"] .fab-add{
   display:flex;
 }
 #viewDashboard #dashboardNextPayment{
-  margin:0 !important;
+  margin:0;
 }
 #viewDashboard #dailyInsightCard{
   margin:0;
@@ -4861,121 +4833,108 @@ body[data-tab="dash"] .fab-add{
 /* Caixinhas: total no padrão dos demais cards de saldo */
 #viewPockets .balance-strip,
 #pocketBalanceStrip{
-  display:grid !important;
-  grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-  gap:8px !important;
-  margin-bottom:12px !important;
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:8px;
+  margin-bottom:12px;
 }
 #viewPockets .balance-strip .balance-card.total,
 #pocketBalanceStrip .balance-card.total{
-  padding:14px 16px !important;
-  border-radius:16px !important;
+  padding:14px 16px;
+  border-radius:16px;
   min-height:0;
 }
 #viewPockets .balance-strip .balance-card.total .balance-card-head,
 #pocketBalanceStrip .balance-card.total .balance-card-head{
-  display:flex !important;
+  display:flex;
   margin:0;
 }
 #viewPockets .balance-strip .balance-card.total .balance-symbol,
 #pocketBalanceStrip .balance-card.total .balance-symbol{
-  width:36px !important;
-  height:36px !important;
+  width:36px;
+  height:36px;
   border-radius:12px;
 }
 #viewPockets .balance-strip .balance-card.total .label,
 #pocketBalanceStrip .balance-card.total .label,
 #viewPockets .balance-strip .balance-card.total .balance-card-head .label,
 #pocketBalanceStrip .balance-card.total .balance-card-head .label{
-  font-size:10px !important;
-  letter-spacing:.06em !important;
+  font-size:10px;
+  letter-spacing:.06em;
   opacity:.85;
 }
 #viewPockets .balance-strip .balance-card.total .amount,
 #pocketBalanceStrip .balance-card.total .amount{
-  font-size:28px !important;
-  margin-top:6px !important;
-  display:block !important;
+  font-size:28px;
+  margin-top:6px;
+  display:block;
 }
 #viewPockets .balance-strip .balance-card:not(.total),
 #pocketBalanceStrip .balance-card:not(.total){
-  padding:12px !important;
-  border-radius:14px !important;
+  padding:12px;
+  border-radius:14px;
 }
 #viewPockets .balance-strip .balance-card:not(.total) .label,
 #pocketBalanceStrip .balance-card:not(.total) .label{
-  font-size:10px !important;
+  font-size:10px;
   letter-spacing:.04em;
 }
 #viewPockets .balance-strip .balance-card:not(.total) .amount,
 #pocketBalanceStrip .balance-card:not(.total) .amount{
-  font-size:18px !important;
-  margin-top:6px !important;
-  display:block !important;
+  font-size:18px;
+  margin-top:6px;
+  display:block;
 }
 
 /* Total investido no padrão dos totais (Caixinhas/Patrimônio compacto) */
 #viewInvest .balance-strip,
 #investBalanceStrip{
-  display:grid !important;
-  grid-template-columns:1fr !important;
-  gap:8px !important;
-  margin-bottom:12px !important;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+  margin-bottom:12px;
 }
 #viewInvest .balance-strip .balance-card.total,
 #investBalanceStrip .balance-card.total{
-  padding:14px 16px !important;
-  border-radius:16px !important;
+  padding:14px 16px;
+  border-radius:16px;
 }
 #viewInvest .balance-strip .balance-card.total .balance-card-head,
 #investBalanceStrip .balance-card.total .balance-card-head{
-  display:flex !important;
+  display:flex;
   margin:0;
 }
 #viewInvest .balance-strip .balance-card.total .label,
 #investBalanceStrip .balance-card.total .label,
 #viewInvest .balance-strip .balance-card.total .balance-card-head .label,
 #investBalanceStrip .balance-card.total .balance-card-head .label{
-  font-size:10px !important;
-  letter-spacing:.06em !important;
+  font-size:10px;
+  letter-spacing:.06em;
 }
 #viewInvest .balance-strip .balance-card.total .amount,
 #investBalanceStrip .balance-card.total .amount{
-  font-size:28px !important;
-  margin-top:6px !important;
-  display:block !important;
+  font-size:28px;
+  margin-top:6px;
+  display:block;
 }
 #viewInvest .balance-strip .balance-card.total .balance-symbol,
 #investBalanceStrip .balance-card.total .balance-symbol{
-  width:36px !important;
-  height:36px !important;
+  width:36px;
+  height:36px;
   border-radius:12px;
 }
 
 /* ui7 — invest total + asset cards + cartões sheet + quotes */
 
 /* Total investido no mesmo padrão de Caixinhas / Bancos */
-#viewInvest .balance-strip,
-#investBalanceStrip{
-  display:grid !important;
-  grid-template-columns:1fr !important;
-  gap:8px !important;
-  margin-bottom:12px !important;
-}
 #investBalanceStrip .balance-card.total,
 #viewInvest .balance-card.total{
-  padding:14px 16px !important;
-  border-radius:16px !important;
+  padding:14px 16px;
+  border-radius:16px;
 }
 #investBalanceStrip .balance-card.total .label,
 #investBalanceStrip .balance-card.total .balance-card-head .label{
-  font-size:10px !important;
   opacity:.85;
-}
-#investBalanceStrip .balance-card.total .amount{
-  font-size:28px !important;
-  margin-top:6px !important;
-  display:block !important;
 }
 
 /* Asset / pocket cards */
@@ -5025,9 +4984,9 @@ body[data-tab="dash"] .fab-add{
 /* Credit card sheet (mockup) */
 .credit-card-box.credit-card-sheet{
   border-radius:22px;
-  border:1px solid var(--line) !important;
-  background:var(--surface) !important;
-  padding:18px 16px 14px !important;
+  border:1px solid var(--line);
+  background:var(--surface);
+  padding:18px 16px 14px;
   box-shadow:0 8px 28px color-mix(in srgb, var(--ink) 6%, transparent);
 }
 .credit-card-invoice-block{
@@ -5166,28 +5125,28 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 /* ui8 — invest cards compactos */
 #investGrid .invest-box,
 #investGrid .invest-box.asset-card{
-  padding:12px 14px !important;
+  padding:12px 14px;
   border-radius:16px;
-  border:1px solid var(--line) !important;
-  background:var(--surface) !important;
+  border:1px solid var(--line);
+  background:var(--surface);
 }
 /* mata estilos antigos de h4 flex que quebravam o layout */
 #investGrid .invest-box h4,
 #investGrid .invest-box .asset-card-name{
-  display:block !important;
-  margin:0 !important;
+  display:block;
+  margin:0;
   font-size:15px;
-  font-family:inherit !important;
+  font-family:inherit;
   overflow:visible;
-  border:0 !important;
-  padding:0 !important;
-  color:var(--ink) !important;
+  border:0;
+  padding:0;
+  color:var(--ink);
 }
 #investGrid .asset-card-head{
-  display:flex !important;
-  margin:0 !important;
-  padding:0 !important;
-  border:0 !important;
+  display:flex;
+  margin:0;
+  padding:0;
+  border:0;
 }
 #investGrid .asset-card-title{
   min-width:0;
@@ -5198,30 +5157,30 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   margin-top:2px;
   font-size:11px;
   color:var(--ink-soft);
-  border:0 !important;
+  border:0;
 }
 #investGrid .asset-card-tag,
 #investGrid .invest-box .tag{
-  flex:0 0 auto !important;
-  width:auto !important;
-  overflow:visible !important;
+  flex:0 0 auto;
+  width:auto;
+  overflow:visible;
   white-space:nowrap;
-  font-size:9px !important;
-  font-weight:800 !important;
+  font-size:9px;
+  font-weight:800;
   letter-spacing:.04em;
-  padding:3px 8px !important;
-  border-radius:999px !important;
-  border:1px solid color-mix(in srgb, var(--accent) 28%, var(--line)) !important;
-  background:color-mix(in srgb, var(--accent) 12%, var(--surface)) !important;
-  color:var(--accent) !important;
+  padding:3px 8px;
+  border-radius:999px;
+  border:1px solid var(--action-accent-border);
+  background:var(--action-accent-bg);
+  color:var(--action-accent);
 }
 #investGrid .asset-card-value,
 #investGrid .invest-box .val{
   font-size:22px;
-  margin:2px 0 0 !important;
-  padding:0 !important;
-  border:0 !important;
-  color:var(--ink) !important;
+  margin:2px 0 0;
+  padding:0;
+  border:0;
+  color:var(--ink);
 }
 #investGrid .asset-card-meta{
   display:flex;
@@ -5243,15 +5202,15 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 }
 #investGrid .rentability-block,
 #investGrid .yield-history{
-  margin-top:4px !important;
-  padding:8px 10px !important;
-  border-radius:12px !important;
+  margin-top:4px;
+  padding:8px 10px;
+  border-radius:12px;
 }
 #investGrid .asset-card-actions,
 #investGrid .item-action-row{
-  margin-top:6px !important;
-  padding-top:0 !important;
-  border-top:0 !important;
+  margin-top:6px;
+  padding-top:0;
+  border-top:0;
 }
 #investGrid .asset-card-actions .reconcile-btn{
   font-size:11px;
@@ -5259,16 +5218,17 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   display:inline-flex;
   align-items:center;
   min-height:34px;
+  min-width:34px;
   padding:0 12px;
   border-radius:12px;
-  color:color-mix(in srgb, var(--gold) 70%, var(--ink));
-  background:color-mix(in srgb, var(--gold) 14%, var(--surface));
-  border:1px solid color-mix(in srgb, var(--gold) 40%, var(--line));
+  color:var(--accent);
+  background:color-mix(in srgb, var(--accent) 14%, var(--surface));
+  border:1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
 }
 #investGrid .asset-card-actions .reconcile-btn:hover{
-  color:var(--ink);
-  background:color-mix(in srgb, var(--gold) 24%, var(--surface));
-  border-color:color-mix(in srgb, var(--gold) 55%, var(--line));
+  color:var(--accent);
+  background:color-mix(in srgb, var(--accent) 24%, var(--surface));
+  border-color:color-mix(in srgb, var(--accent) 55%, var(--line));
 }
 /* ui-invest — cards agrupados por instituição (camada visual derivada) */
 #investGrid .institution-card{
@@ -5281,15 +5241,17 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   gap:10px;
 }
 #investGrid .institution-card > .invest-box.asset-card{
-  border:0 !important;
-  background:transparent !important;
-  padding:0 !important;
+  border:0;
+  background:transparent;
+  padding:0;
 }
 .institution-card-header{
   display:flex;
-  align-items:flex-start;
+  align-items:center;
   justify-content:space-between;
   gap:10px;
+  margin:0;
+  padding:0;
 }
 .institution-card-identity{
   display:flex;
@@ -5299,17 +5261,23 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 }
 .institution-icon{
   flex:0 0 auto;
-  width:36px;
-  height:36px;
-  border-radius:12px;
+  width:34px;
+  height:34px;
+  min-width:34px;
+  min-height:34px;
   display:grid;
   place-items:center;
-  background:color-mix(in srgb,var(--accent) 12%,var(--surface));
+  border-radius:12px;
   border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));
+  background:color-mix(in srgb,var(--accent) 10%,var(--surface));
   color:var(--accent);
+  font-size:18px;
+  line-height:1;
 }
 .institution-card-heading{
   min-width:0;
+  flex:1;
+  overflow:hidden;
 }
 .institution-card-heading h3{
   margin:0;
@@ -5319,7 +5287,7 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
-  text-align:center;
+  text-align:left;
 }
 .institution-card-heading span{
   display:block;
@@ -5329,20 +5297,20 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 }
 .institution-menu{
   flex:0 0 auto;
-  min-height:38px;
-  min-width:38px;
+  min-height:34px;
+  min-width:34px;
   padding:0;
-  border:1px solid var(--line);
+  border:1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
   border-radius:12px;
-  background:var(--paper);
-  color:var(--ink);
+  background:color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color:var(--accent);
   display:inline-flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
 }
 .institution-menu:hover{
-  border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
+  border-color:color-mix(in srgb, var(--accent) 45%, var(--line));
   color:var(--accent);
 }
 .institution-summary{
@@ -5446,15 +5414,15 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 }
 
 .action-btn.icon-button.edit{
-  color:var(--accent) !important;
-  border-color:color-mix(in srgb, var(--accent) 28%, var(--line)) !important;
-  background:color-mix(in srgb, var(--accent) 10%, var(--surface)) !important;
+  color:var(--action-accent);
+  border-color:var(--action-accent-border);
+  background:var(--action-accent-bg);
 }
 
 .action-btn.icon-button.delete{
-  color:var(--red, #B3432B) !important;
-  border-color:color-mix(in srgb, var(--red, #B3432B) 28%, var(--line)) !important;
-  background:color-mix(in srgb, var(--red, #B3432B) 10%, var(--surface)) !important;
+  color:var(--action-delete);
+  border-color:var(--action-delete-border);
+  background:var(--action-delete-bg);
 }
 
 /* ícone via ::after (como nos investimentos) — não usar ::before */
@@ -5520,7 +5488,7 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 .card-actions{
   display:flex;
   align-items:center;
-  gap:6px !important;
+  gap:6px;
 }
 
 /* Feature 14 — botão de histórico no card de lançamento */
@@ -5553,9 +5521,9 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 .action-btn.icon-button.history:hover{
-  color:var(--accent) !important;
-  border-color:color-mix(in srgb, var(--accent) 28%, var(--line)) !important;
-  background:color-mix(in srgb, var(--accent) 10%, var(--surface)) !important;
+  color:var(--action-accent);
+  border-color:var(--action-accent-border);
+  background:var(--action-accent-bg);
 }
 
 /* Feature 14 — painel de histórico */
@@ -5704,11 +5672,11 @@ body[data-tab="goals"] #viewGoals.active,
   position: relative !important;
   inset: auto !important;
   z-index: auto !important;
-  width: 100% !important;
+  width: 100%;
   height: auto !important;
   max-height: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
   overflow: visible !important;
   background: transparent !important;
   pointer-events: auto !important;
@@ -5987,12 +5955,6 @@ body[data-tab="goals"] #modalOverlay,
   }
 }
 
-/* Modal acima da BNI quando em Metas */
-body[data-tab="goals"] .modal-overlay,
-body[data-tab="goals"] #modalOverlay {
-  z-index: 1400 !important;
-}
-
 /* Metas V2 layout */
 .goals-panel-v2 {
   background: var(--surface);
@@ -6203,13 +6165,13 @@ body:not(.dark-mode) .goal-card-v2 {
 
 .goal-card-v2-btn.goal-edit-btn,
 .goal-card-v2-btn.goal-edit-btn svg {
-  color: var(--accent) !important;
-  stroke: var(--accent);
+  color: var(--action-accent);
+  stroke: var(--action-accent);
 }
 
 .goal-card-v2-btn.goal-edit-btn {
-  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
-  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  border-color: var(--action-accent-border);
+  background: var(--action-accent-bg);
 }
 
 .goal-card-v2-btn.goal-edit-btn:hover {
@@ -6219,8 +6181,8 @@ body:not(.dark-mode) .goal-card-v2 {
 
 .goal-card-v2-btn.goal-delete-btn,
 .goal-card-v2-btn.goal-delete-btn svg {
-  color: var(--red) !important;
-  stroke: var(--red) !important;
+  color: var(--action-delete);
+  stroke: var(--action-delete);
 }
 
 .goal-card-v2-btn.goal-delete-btn {
@@ -6611,9 +6573,9 @@ body:not(.dark-mode) .goals-form-body select {
 .panel#panelFiltros .filter-choice-sheet{
   left:50%!important;
   bottom:50%!important;
-  width:min(92%,420px)!important;
-  max-height:78%!important;
-  border-radius:20px!important;
+  width:min(92%,420px);
+  max-height:78%;
+  border-radius:20px;
 }
 .panel#panelFiltros .filter-choice-sheet.open{
   transform:translate(-50%,50%) scale(1);
@@ -6967,7 +6929,7 @@ body[data-tab="dashboard"] #viewDashboard.active {
 }
 #authDiagnosticOverlay .panel.open,
 #authDiagnosticOverlay .panel:not([hidden]){
-  display:flex !important;
+  display:flex;
   flex-direction:column;
 }
 #authDiagnosticOverlay .panel h3{
