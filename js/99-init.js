@@ -3415,4 +3415,19 @@ document.getElementById('tSalvar').onclick = async () => {
       renderUserBar();
     }
   });
+  // Mascaramento de saldo com pontos correspondentes ao número de caracteres
+  if (document.body.classList.contains('balances-hidden')) {
+    const selectors = [
+      'body.balances-hidden .invest-box .val',
+      'body.balances-hidden #investGrid .invest-box .val',
+      'body.balances-hidden .asset-card-value',
+      'body.balances-hidden #investGrid .asset-card-value',
+    ];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        const text = el.textContent.length;
+        el.style.setProperty('--dots', '•'.repeat(text > 0 ? text : 1));
+      });
+    });
+  }
 });
