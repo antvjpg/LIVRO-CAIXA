@@ -1,13 +1,27 @@
 
 
-function openInstitutionMenu(key) {
-  // Ver investimentos: expande/contrai o grupo da instituição
+/* LIVRO-CAIXA · js/18-render-core.js — renderização principal e views (app.js: 2416-4290). Separação por responsabilidade; conteúdo preservado. */
+
+/* Handlers seguros dos grupos de instituição.
+   Nunca interpolam o nome da instituição (dado do usuário) em inline-JS ou
+   seletores CSS. Recebem o elemento do botão e leem o identificador seguro
+   armazenado em data-institution-key (valor escapado no atributo HTML, lido
+   de volta via getAttribute). */
+
+function instToggle(btn) {
+  const key = btn.getAttribute('data-institution-key') || '';
   toggleInvestmentsInstitutionView(key);
 }
-function editInstitution(key) {
-  const groupEl = document.querySelector('[data-institution-key="' + key + '"]');
-  if (!groupEl) { console.error('[instituição] grupo não encontrado', key); return; }
-  const h3 = groupEl.querySelector('.institution-card-heading h3');
+
+function instEdit(btn) {
+  const key = btn.getAttribute('data-institution-key') || '';
+  editInstitution(btn, key);
+}
+
+function editInstitution(btn, key) {
+  const article = btn.closest('.institution-card');
+  if (!article) { console.error('[instituição] grupo não encontrado', key); return; }
+  const h3 = article.querySelector('.institution-card-heading h3');
   const current = h3 ? (h3.textContent || '').trim() : key;
   const raw = prompt('Nova instituição:', current);
   if (raw === null) return;
@@ -15,6 +29,9 @@ function editInstitution(key) {
   if (!newName) { alert('Nome não pode ser vazio.'); return; }
   if (newName === current) return;
   if (!Array.isArray(window.investments)) { console.error('[instituição] coleção não disponível'); return; }
+  const matches = window.investments.filter(inv => inv && normalizeInstitutionKey(inv.institution) === key);
+  if (!matches.length) { alert('Nenhum investimento pertencia a essa instituição.'); return; }
+  if (!window.confirm('Renomear "' + current + '" para "' + newName + '"?\nIsso alterará ' + matches.length + ' investimento(s) desta instituição.')) return;
   const changed = [];
   for (const inv of window.investments) {
     if (!inv) continue;
@@ -23,14 +40,12 @@ function editInstitution(key) {
       changed.push(inv.id);
     }
   }
-  if (!changed.length) { alert('Nenhum investimento pertencia a essa instituição.'); return; }
   window.investments = sortDisplayOrder(window.investments);
   saveInvestments().then(() => {
     logInfo('Instituições', 'Renomear instituição', 'Sucesso', changed.length + ' investimento(s) atualizado(s) para "' + newName + '".');
     render();
   }).catch(err => { console.error('[instituição] rename persist failed', err); alert('Não foi possível salvar a renomeação. Tente novamente.'); });
 }
-/* LIVRO-CAIXA · js/18-render-core.js — renderização principal e views (app.js: 2416-4290). Separação por responsabilidade; conteúdo preservado. */
 
 
   /* [JS 08] RENDERIZAÇÃO / VIEWS */
@@ -997,7 +1012,7 @@ function editInstitution(key) {
     return totalYield;
   }
 
-  function buildInvestmentsGroupCardHTML(group) {
+  function buildInvestmentsGroupCardHTML(group, gi) {
     const list = group.investments;
     const isOpen = expandedInstitutionKeys.has(group.key);
     const entries = list.map((inv, idx) => ({ inv, idx }));
@@ -1064,23 +1079,23 @@ function editInstitution(key) {
       ].join('\n');
       return assetHtml;
     }).join('');
-    const assetsId = 'institution-assets-' + String(group.key).replace(/[^a-z0-9_-]/gi, '_');
+    const assetsId = 'institution-assets-' + gi;
     const viewAllButton = list.length > 2
-      ? '<button type="button" class="institution-view-all" data-institution-key="' + group.key + '" onclick="toggleInvestmentsInstitutionView(\'' + group.key + '\')" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + assetsId + '">' + (isOpen ? 'Ver menos' : 'Ver investimentos') + '</button>'
+      ? '<button type="button" class="institution-view-all" data-institution-key="' + escapeHTML(group.key) + '" onclick="instToggle(this)" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + assetsId + '">' + (isOpen ? 'Ver menos' : 'Ver investimentos') + '</button>'
       : '';
     const moreBlock = (list.length > 2 && !isOpen) ? '<div class="institution-more"><span>+ ' + hiddenCount + ' outros investimentos</span>' + viewAllButton + '</div>' : (list.length > 2 ? viewAllButton : '');
     return [
-      '      <article class="institution-card" data-institution-key="' + group.key + '">',
+      '      <article class="institution-card" data-institution-key="' + escapeHTML(group.key) + '">',
       '        <header class="institution-card-header">',
       '          <div class="institution-card-identity">',
-      '            <span class="institution-icon" aria-hidden="true">🏦</span>',
+      '            <i class="institution-icon fi fi-rr-bank" aria-hidden="true"></i>',
       '            <div class="institution-card-heading">',
       '              <h3>' + escapeHTML(group.label) + '</h3>',
       '              <span>' + list.length + ' investimentos</span>',
       '            </div>',
       '          </div>',
-          '          <button type="button" class="institution-menu" aria-label="Ver investimentos" title="Ver/mais investimentos" onclick="toggleInvestmentsInstitutionView(\'' + group.key + '\')">\u25bc</button>',
-          '          <button type="button" class="action-btn icon-button edit institution-rename" aria-label="Editar instituição" title="Editar instituição"></button>',
+          '          <button type="button" class="institution-menu" aria-label="Ver investimentos" title="Ver/mais investimentos" data-institution-key="' + escapeHTML(group.key) + '" onclick="instToggle(this)">\u25bc</button>',
+          '          <button type="button" class="action-btn icon-button edit institution-rename" aria-label="Editar instituição" title="Editar instituição" data-institution-key="' + escapeHTML(group.key) + '" onclick="instEdit(this)"></button>',
       '        </header>',
       '        <div class="institution-summary">',
       '          <strong>' + fmt(groupTotal) + '</strong>',
@@ -1110,7 +1125,7 @@ function editInstitution(key) {
       return;
     }
     const groups = groupInvestmentsByInstitution(investments);
-    container.innerHTML = groups.map(group => buildInvestmentsGroupCardHTML(group)).join('');
+    container.innerHTML = groups.map((group, gi) => buildInvestmentsGroupCardHTML(group, gi)).join('');
     renderPriceCharts();
   }
 
@@ -1138,7 +1153,7 @@ function editInstitution(key) {
       return `<div class="invest-box pocket-box" data-item-id="${p.id}">
         <button type="button" class="drag-handle" aria-label="Segurar para mover caixinha" title="Segure para mover">
           <i class="fi fi-rr-layers" aria-hidden="true"></i>
-        </button><h4><span>${escapeHTML(p.name)}</span></h4><div class="val">${fmt(current)}${rentabilityHTML('pocket', p.id, current)}</div>${goalHTML}${sourceBank ? `<div class="units">Banco de origem: ${escapeHTML(sourceBank.name)}</div>` : '<div class="units">Banco de origem: A definir</div>'}${yieldHistoryHTML('pocket', p.id)}<div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="movePocket('${p.id}',-1)" ${index===0?'disabled':''} aria-label="Mover caixinha para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="movePocket('${p.id}',1)" ${index===pockets.length-1?'disabled':''} aria-label="Mover caixinha para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button><button type="button" class="action-btn icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button><button type="button" class="action-btn icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button></div></div>`;
+        </button><h4><span>${escapeHTML(p.name)}</span></h4><div class="val">${fmt(current)}</div>${rentabilityHTML('pocket', p.id, current)}${goalHTML}${sourceBank ? `<div class="units">Banco de origem: ${escapeHTML(sourceBank.name)}</div>` : '<div class="units">Banco de origem: A definir</div>'}${yieldHistoryHTML('pocket', p.id)}<div class="item-action-row"><div class="reorder-actions"><button type="button" class="action-btn" onclick="movePocket('${p.id}',-1)" ${index===0?'disabled':''} aria-label="Mover caixinha para cima" title="Mover para cima">↑</button><button type="button" class="action-btn" onclick="movePocket('${p.id}',1)" ${index===pockets.length-1?'disabled':''} aria-label="Mover caixinha para baixo" title="Mover para baixo">↓</button></div><button type="button" class="action-btn icon-button move" onclick="openPocketMovementModal('aporte','${p.id}')" aria-label="Movimentações da caixinha"></button><button type="button" class="action-btn icon-button edit" onclick="editPocket('${p.id}')" aria-label="Editar caixinha"></button><button type="button" class="action-btn icon-button delete" onclick="deletePocket('${p.id}')" aria-label="Excluir caixinha"></button></div></div>`;
     }).join('');
       setupDisplayCardDrag(container, 'pockets');
   }

@@ -227,3 +227,117 @@ test('groupInvestmentsByInstitution: lista vazia / entrada não array', () => {
   assert.deepEqual(groupInvestmentsByInstitution([]), []);
   assert.deepEqual(groupInvestmentsByInstitution(null), []);
 });
+
+/* ===== NOVOS TESTES DE AGRUPAMENTO DETERMINÍSTICO (não dependem de fixtures) ===== */
+
+test('agrupamento controlado: Nubank (2) + XP (1) = 2 institution-cards', () => {
+  const invs = [
+    { id: 'i1', institution: 'Nubank', type: 'Stablecoin', value: 100 },
+    { id: 'i2', institution: 'Nubank', type: 'Stablecoin', value: 200 },
+    { id: 'i3', institution: 'XP', type: 'Renda Fixa', initialValue: 500, value: 500 },
+  ];
+  const groups = groupInvestmentsByInstitution(invs);
+  assert.equal(groups.length, 2);
+  const nubank = groups.find(g => g.key === 'nubank');
+  const xp = groups.find(g => g.key === 'xp');
+  assert.ok(nubank, 'grupo Nubank deve existir');
+  assert.ok(xp, 'grupo XP deve existir');
+  assert.equal(nubank.investments.length, 2);
+  assert.equal(xp.investments.length, 1);
+  assert.deepEqual(nubank.investments.map(i => i.id).sort(), ['i1', 'i2']);
+  assert.equal(xp.investments[0].id, 'i3');
+  // nenhum investimento duplicado nem fora de grupo
+  const allIds = groups.flatMap(g => g.investments.map(i => i.id));
+  assert.deepEqual(allIds.sort(), ['i1', 'i2', 'i3']);
+});
+
+test('agrupamento: normalização trim+lowercase — " Nubank " e "nubank" são o mesmo grupo', () => {
+  const invs = [
+    { id: 'i1', institution: ' Nubank ' },
+    { id: 'i2', institution: 'nubank' },
+  ];
+  const groups = groupInvestmentsByInstitution(invs);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].key, 'nubank');
+  assert.equal(groups[0].investments.length, 2);
+});
+
+test('agrupamento: instituição vazia/espaços → "Sem instituição"', () => {
+  const invs = [
+    { id: 'i1', institution: '' },
+    { id: 'i2', institution: '   ' },
+  ];
+  const groups = groupInvestmentsByInstitution(invs);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].key, 'sem-instituicao');
+  assert.equal(groups[0].label, 'Sem instituição');
+  assert.equal(groups[0].investments.length, 2);
+});
+
+test('agrupamento: instituição com acento, apóstrofo e aspas', () => {
+  const invs = [
+    { id: 'i1', institution: 'Itaú Unibanco', type: 'Stablecoin', value: 100 },
+    { id: 'i2', institution: "Banco do João's", type: 'Stablecoin', value: 100 },
+    { id: 'i3', institution: 'Banco "X"', type: 'Stablecoin', value: 100 },
+  ];
+  const groups = groupInvestmentsByInstitution(invs);
+  assert.equal(groups.length, 3);
+  // chaves seguras (trim+lowercase)
+  const keys = groups.map(g => g.key).sort();
+  assert.ok(keys.includes(normalizeInstitutionKey('Itaú Unibanco')));
+  assert.ok(keys.includes(normalizeInstitutionKey("Banco do João's")));
+  assert.ok(keys.includes(normalizeInstitutionKey('Banco "X"')));
+  // labels preservam caracteres originais
+  const labels = groups.map(g => g.label).sort();
+  assert.deepEqual(labels, ["Banco \"X\"", "Banco do João's", 'Itaú Unibanco']);
+});
+
+test('agrupamento: soma dos totais dos grupos === total global (invariant arredondamento do domínio)', () => {
+  // total global usa investmentDisplayValue; grupos somam cada investmentDisplayValue individual
+  const invs = [
+    { id: 'i1', institution: 'Nubank', type: 'Stablecoin', initialUnits: 10, value: 51, price: 5.1 },
+    { id: 'i2', institution: 'Nubank', type: 'Renda Fixa', initialValue: 1000, value: 1000 },
+    { id: 'i3', institution: 'XP', type: 'Stablecoin', initialUnits: 5, value: 25.5, price: 5.1 },
+  ];
+  // yields vazios → display value = value (stablecoin) ou initialValue+movements (RF)
+  const yields = [
+    { id: 'y1', targetType: 'invest', targetId: 'i1', kind: 'rendimento', amount: 5 },
+    { id: 'y2', targetType: 'invest', targetId: 'i2', kind: 'rendimento', amount: 20 },
+  ];
+  // global
+  const global = investmentsTotal(invs, yields);
+  // por grupo
+  const groups = groupInvestmentsByInstitution(invs);
+  const groupSum = groups.reduce((sum, g) => {
+    return sum + g.investments.reduce((s, inv) => s + investmentDisplayValue(inv, yields), 0);
+  }, 0);
+  // regra: arredondamento por item (como o domínio faz) → comparação exata
+  assert.equal(global, groupSum);
+});
+
+test('agrupamento: rename — filtro por chave normalizada afeta só o grupo correto', () => {
+  const invs = [
+    { id: 'i1', institution: 'Nubank', type: 'Stablecoin', value: 100 },
+    { id: 'i2', institution: 'Nubank', type: 'Stablecoin', value: 200 },
+    { id: 'i3', institution: 'XP', type: 'Renda Fixa', initialValue: 500, value: 500 },
+  ];
+  const key = normalizeInstitutionKey('Nubank');
+  // simula edição: altera institution dos itens cujo key normalizado === 'nubank'
+  const changed = [];
+  for (const inv of invs) {
+    if (normalizeInstitutionKey(inv.institution) === key) {
+      inv.institution = 'NuBank Renomeado';
+      changed.push(inv.id);
+    }
+  }
+  assert.deepEqual(changed.sort(), ['i1', 'i2']);
+  // XP intocado
+  assert.equal(invs.find(i => i.id === 'i3').institution, 'XP');
+  // re-agrupa
+  const groups = groupInvestmentsByInstitution(invs);
+  assert.equal(groups.length, 2);
+  const nu = groups.find(g => g.key === normalizeInstitutionKey('NuBank Renomeado'));
+  const xp = groups.find(g => g.key === 'xp');
+  assert.equal(nu.investments.length, 2);
+  assert.equal(xp.investments.length, 1);
+});

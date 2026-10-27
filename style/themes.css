@@ -22,8 +22,41 @@
        (estágios 2 e 3; legados claro 2,3 e escuro 2,6,7 viram '1'; 6/7 escuro =
        Mint/Ardósia removidos — não reutilizar sem migração).
    ========================================================= */
+/* Geist Sans — CDN jsDelivr (npm geist não publica style.css; WOFF2 variável) */
+@font-face{
+    font-family:'Geist Sans';
+    src:url('https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-sans/Geist-Variable.woff2') format('woff2');
+    font-weight:100 900;
+    font-style:normal;
+    font-display:swap;
+}
+@font-face{
+    font-family:'Geist Sans';
+    src:url('https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-sans/Geist-Regular.woff2') format('woff2');
+    font-weight:400;
+    font-style:normal;
+    font-display:swap;
+}
+@font-face{
+    font-family:'Geist Sans';
+    src:url('https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-sans/Geist-Medium.woff2') format('woff2');
+    font-weight:500;
+    font-style:normal;
+    font-display:swap;
+}
+@font-face{
+    font-family:'Geist Sans';
+    src:url('https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-sans/Geist-Bold.woff2') format('woff2');
+    font-weight:700;
+    font-style:normal;
+    font-display:swap;
+}
 :root{
     --font-ui:'Plus Jakarta Sans',sans-serif;
+    --font-geist:'Geist Sans',sans-serif;
+    --font-satoshi:'Satoshi',sans-serif;
+    --font-dm-sans:'DM Sans',sans-serif;
+    --font-general-sans:'General Sans',sans-serif;
     --paper:#F8F7F2;
     --paper-2:#F0F0EA;
     --ink:#19352A;
@@ -62,6 +95,35 @@
     --dash-flow-income:#3E9B6E;
     --dash-flow-expense:#C2553B;
     --dash-flow-patrimony:#B08D3E;
+    /* Variáveis semânticas de ação — permitem remover !important das regras de cor */
+    --action-finalize:var(--green);
+    --action-finalize-border:color-mix(in srgb, var(--green) 28%, var(--line));
+    --action-finalize-bg:color-mix(in srgb, var(--green) 10%, var(--surface));
+    --action-finalize-bg-hover:color-mix(in srgb, var(--green) 24%, var(--surface));
+    --action-finalize-border-hover:color-mix(in srgb, var(--green) 55%, var(--line));
+    --action-unarchive:var(--gold);
+    --action-unarchive-border:color-mix(in srgb, var(--gold) 28%, var(--line));
+    --action-unarchive-bg:color-mix(in srgb, var(--gold) 10%, var(--surface));
+    --action-unarchive-bg-hover:color-mix(in srgb, var(--gold) 24%, var(--surface));
+    --action-unarchive-border-hover:color-mix(in srgb, var(--gold) 55%, var(--line));
+    --action-delete:var(--red);
+    --action-delete-bg:color-mix(in srgb, var(--red) 10%, var(--surface));
+    --action-delete-border:color-mix(in srgb, var(--red) 28%, var(--line));
+    --action-yield:var(--gold);
+    --action-accent:var(--accent);
+    --action-accent-bg:color-mix(in srgb, var(--accent) 10%, var(--surface));
+    --action-accent-border:color-mix(in srgb, var(--accent) 28%, var(--line));
+    --action-accent-bg-soft:color-mix(in srgb, var(--accent) 12%, transparent);
+    /* Variáveis para controles em dark mode — eliminam !important em dark-mode */
+    --control-hover-bg:var(--surface);
+    --control-hover-border:var(--line);
+    --control-hover-ink:var(--ink);
+    --toggle-active-bg:var(--accent);
+    --toggle-active-ink:var(--accent-ink);
+    --toggle-active-border:var(--accent);
+    /* Z-index organizado */
+    --z-modal:1400;
+    --z-fab:1300;
   }
   body:not(.dark-mode)[data-light-theme="4"] {
     --paper:#FBF6EF; --paper-2:#F2E8DC; --ink:#342C25; --ink-soft:#81766B; --green:#5F8A70; --green-soft:#E0ECE2; --line:#E2D3C0; --gold:#C66F50; --gold-rgb:198,111,80; --gold-soft:#F7E7E0;
@@ -132,6 +194,13 @@
     --shadow:rgba(0,0,0,0.34);
     --hover-soft:rgba(255,255,255,0.06);
       --action-border:color-mix(in srgb,var(--accent) 35%,var(--line));
+    /* Overrides para dark mode — eliminam !important nas regras de controle */
+    --control-hover-bg:var(--surface-accent);
+    --control-hover-border:var(--accent);
+    --control-hover-ink:var(--ink);
+    --toggle-active-bg:var(--accent);
+    --toggle-active-ink:var(--accent-ink);
+    --toggle-active-border:var(--accent);
   }
   body.dark-mode[data-dark-theme="4"] {
     --paper:#141410; --paper-2:#1E1F17; --surface:#1E1F17; --surface-raised:#292A20; --surface-accent:#403126;
@@ -226,7 +295,7 @@
   }
   body.dark-mode[data-dark-theme="1"] .bank-share-line{color:var(--gold);}
   body.dark-mode[data-dark-theme="1"] .toolbar button:hover{
-    border-color:color-mix(in srgb,var(--gold) 28%,transparent)!important;
+    border-color:color-mix(in srgb,var(--gold) 28%,transparent);
   }
   .light-theme-picker{display:none;align-items:center;justify-content:flex-end;gap:7px;margin:0 0 6px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);box-shadow:0 4px 12px var(--shadow);}
   body:not(.dark-mode) .light-theme-picker{display:flex;}

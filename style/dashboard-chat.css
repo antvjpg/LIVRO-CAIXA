@@ -1261,7 +1261,7 @@
   body.dark-mode .ai-quick-suggestion{background:var(--surface);}
 }
 @media (prefers-reduced-motion:reduce){
-  .ai-quick-suggestion{transition:none!important;}
+  .ai-quick-suggestion{transition:none;}
 }
 
 /* ==========================================================================

@@ -3,7 +3,7 @@
 .feature-lock-grace-row{margin-top:12px;}
 /* Temas (paletas claro/escuro, dark mode base e pickers) → themes.css — este arquivo carrega depois dela. */
   *{box-sizing:border-box;}
-  body,body *{font-family:var(--font-ui)!important;}
+  body,body *{font-family:var(--font-ui);}
   html{overflow-x:hidden;width:100%;}
   /* P2.4 / P2.4.4 — saldos ocultos com pontos fixos (sem blur), overview + contas + caixinhas + invest */
   body.balances-hidden .balance-card .amount,
@@ -18,8 +18,11 @@
   body.balances-hidden .yield-row .yield-amount,
   body.balances-hidden .rentability-box strong,
   body.balances-hidden .export-preview-row b,
+  body.balances-hidden .asset-card-value,
+  body.balances-hidden .institution-summary strong,
+  body.balances-hidden .institution-summary-metrics span,
   body.balances-hidden .js-money{
-    color: transparent !important;
+    color: transparent;
     text-shadow: none;
     position: relative;
     user-select: none;
@@ -37,6 +40,9 @@
   body.balances-hidden .yield-row .yield-amount::after,
   body.balances-hidden .rentability-box strong::after,
   body.balances-hidden .export-preview-row b::after,
+  body.balances-hidden .asset-card-value::after,
+  body.balances-hidden .institution-summary strong::after,
+  body.balances-hidden .institution-summary-metrics span::after,
   body.balances-hidden .js-money::after{
     content: '••••••';
     color: var(--ink);
