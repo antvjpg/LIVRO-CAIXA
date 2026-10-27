@@ -2234,7 +2234,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       ? (quote != null && finalUnits != null ? cryptoValueFromUnits(type, finalUnits, quote) : readMoneyInput('iValor'))
       : readMoneyInput('iValorSimples');
     const initialValue = type === 'Renda Fixa' ? value : null;
-    const institution = type === 'Renda Fixa' ? document.getElementById('iInstituicao').value.trim() : '';
+    const institution = (document.getElementById('iInstituicao')?.value || '').trim();
     const rate = type === 'Renda Fixa' ? document.getElementById('iTaxa').value.trim() : '';
     const dueDate = type === 'Renda Fixa' ? document.getElementById('iVencimento').value : '';
 

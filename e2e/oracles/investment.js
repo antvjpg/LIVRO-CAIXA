@@ -118,6 +118,38 @@ function rentability(asset, yields, currentValue) {
   return { totalYield, pct };
 }
 
+/* Normalização de chave de instituição (espelha o app; camada derivada). */
+function normalizeInstitutionKey(value) {
+  const normalized = String(value ?? '').trim().toLowerCase();
+  return normalized || 'sem-instituicao';
+}
+
+/* Agrupamento visual por instituição (espelha o app; camada derivada). Mantém a
+   ordem original dos investimentos dentro do grupo e a ordem de primeira ocorrência
+   entre grupos. Não muta os objetos. */
+function groupInvestmentsByInstitution(investments) {
+  const list = Array.isArray(investments) ? investments : [];
+  const groups = [];
+  const byKey = new Map();
+  list.forEach((inv) => {
+    const raw = inv?.institution;
+    const key = normalizeInstitutionKey(raw);
+    const label = String(raw ?? '').trim() || 'Sem instituição';
+    let group = byKey.get(key);
+    if (!group) {
+      group = { key, label, investments: [] };
+      byKey.set(key, group);
+      groups.push(group);
+    }
+    group.investments.push(inv);
+  });
+  return groups.map((group) => ({
+    key: group.key,
+    label: group.label,
+    investments: group.investments,
+  }));
+}
+
 module.exports = {
   SATS_PER_BTC,
   isCryptoType,
@@ -133,4 +165,6 @@ module.exports = {
   investmentDisplayValue,
   investmentsTotal,
   rentability,
+  normalizeInstitutionKey,
+  groupInvestmentsByInstitution,
 };

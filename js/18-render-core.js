@@ -1,3 +1,35 @@
+
+
+function openInstitutionMenu(key) {
+  // Ver investimentos: expande/contrai o grupo da instituição
+  toggleInvestmentsInstitutionView(key);
+}
+function editInstitution(key) {
+  const groupEl = document.querySelector('[data-institution-key="' + key + '"]');
+  if (!groupEl) { console.error('[instituição] grupo não encontrado', key); return; }
+  const h3 = groupEl.querySelector('.institution-card-heading h3');
+  const current = h3 ? (h3.textContent || '').trim() : key;
+  const raw = prompt('Nova instituição:', current);
+  if (raw === null) return;
+  const newName = String(raw).trim();
+  if (!newName) { alert('Nome não pode ser vazio.'); return; }
+  if (newName === current) return;
+  if (!Array.isArray(window.investments)) { console.error('[instituição] coleção não disponível'); return; }
+  const changed = [];
+  for (const inv of window.investments) {
+    if (!inv) continue;
+    if (normalizeInstitutionKey(inv.institution) === key) {
+      inv.institution = newName;
+      changed.push(inv.id);
+    }
+  }
+  if (!changed.length) { alert('Nenhum investimento pertencia a essa instituição.'); return; }
+  window.investments = sortDisplayOrder(window.investments);
+  saveInvestments().then(() => {
+    logInfo('Instituições', 'Renomear instituição', 'Sucesso', changed.length + ' investimento(s) atualizado(s) para "' + newName + '".');
+    render();
+  }).catch(err => { console.error('[instituição] rename persist failed', err); alert('Não foi possível salvar a renomeação. Tente novamente.'); });
+}
 /* LIVRO-CAIXA · js/18-render-core.js — renderização principal e views (app.js: 2416-4290). Separação por responsabilidade; conteúdo preservado. */
 
 
@@ -941,20 +973,45 @@
      reemitir o mesmo aviso. Limpa sozinho quando a contagem volta a zero. */
   let unitsWarningLogged;
 
-  function renderInvestments() {
-    applyCachedQuotesToInvestments();
-    const container = document.getElementById('investGrid');
-    const summary = document.getElementById('investBalanceStrip');
-    const total = totalInvestBalance();
-    summary.innerHTML = `<div class="balance-card total"><div class="balance-card-head"><span class="label">Total investido</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div><span class="amount">${fmt(total)}</span></div>`;
-    if (investments.length === 0) {
-      container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhum ativo ou investimento cadastrado. Clique em "+ Novo Ativo / Cripto" para registrar.</div>`;
-      return;
-    }
-    container.innerHTML = investments.map((inv, index) => {
-      const displayVal = inv.type === 'Renda Fixa'
-        ? fixedIncomeCurrentValue(inv)
-        : (Number(inv.value) > 0 ? inv.value : cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0));
+  const expandedInstitutionKeys = new Set();
+
+  function toggleInvestmentsInstitutionView(key) {
+    const set = expandedInstitutionKeys;
+    if (set.has(key)) set.delete(key); else set.add(key);
+    renderInvestments();
+  }
+
+  function investmentDisplayValueFor(inv) {
+    if (inv.type === 'Renda Fixa') return fixedIncomeCurrentValue(inv);
+    const v = Number(inv.value);
+    if (Number.isFinite(v) && v > 0) return v;
+    return cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
+  }
+
+  function investmentsGroupYieldTotal(list) {
+    let totalYield = 0;
+    (list || []).forEach(inv => {
+      yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === inv.id && periodMatchesMovement(y) && (y.kind || 'rendimento') === 'rendimento')
+        .forEach(y => { totalYield += Number(y.amount) || 0; });
+    });
+    return totalYield;
+  }
+
+  function buildInvestmentsGroupCardHTML(group) {
+    const list = group.investments;
+    const isOpen = expandedInstitutionKeys.has(group.key);
+    const entries = list.map((inv, idx) => ({ inv, idx }));
+    const visibleEntries = isOpen ? entries : entries.slice(0, 2);
+    const hiddenCount = Math.max(0, entries.length - visibleEntries.length);
+    const firstIdx = entries.length ? entries[0].idx : -1;
+    const lastIdx = entries.length ? entries[entries.length - 1].idx : -1;
+    const groupTotal = entries.reduce((sum, e) => sum + investmentDisplayValueFor(e.inv), 0);
+    const groupYield = investmentsGroupYieldTotal(list);
+    const groupBase = groupTotal - groupYield;
+    const groupPct = groupBase > 0 ? (groupYield / groupBase) * 100 : null;
+    const assetsHtml = visibleEntries.map(entry => {
+      const inv = entry.inv;
+      const displayVal = investmentDisplayValueFor(inv);
       const missingUnits = isCryptoType(inv.type) ? cryptoMissingUnitsCount(inv) : 0;
       if (missingUnits > 0) {
         if (!unitsWarningLogged.has(inv.id)) {
@@ -967,47 +1024,93 @@
         unitsWarningLogged.delete(inv.id);
       }
       const typeShort = ({
-        'Stablecoin':'STABLE', 'Bitcoin':'BTC', 'Cripto':'CRIPTO', 'Criptomoeda':'CRIPTO', 'Ações':'AÇÕES',
+        'Stablecoin':'STABLE', 'Bitcoin':'BTC', 'Criptomoeda':'CRIPTO', 'Ações':'AÇÕES',
         'Renda Fixa':'RF', 'FII':'FII', 'ETF':'ETF', 'Tesouro':'TESOURO'
       })[inv.type] || String(inv.type || '').slice(0, 10);
-      return `
-      <article class="invest-box asset-card" data-item-id="${inv.id}">
-        <button type="button" class="drag-handle" aria-label="Segurar para mover investimento" title="Segure para mover">
-          <i class="fi fi-rr-layers" aria-hidden="true"></i>
-        </button>
-        <div class="asset-card-head">
-          <div class="asset-card-title">
-            <div class="asset-card-name-row">
-              <strong class="asset-card-name">${escapeHTML(inv.alias || inv.name)}</strong>
-              <span class="asset-card-tag">${escapeHTML(typeShort)}</span>
-            </div>
-            ${inv.alias ? `<span class="asset-card-sub">${escapeHTML(inv.name)}</span>` : ''}
-          </div>
-        </div>
-        <div class="asset-card-value">${fmt(displayVal)}</div>
-        <div class="asset-card-meta">
-          ${isCryptoType(inv.type) ? `<span>Qtd: ${formatCryptoUnits(inv.type, cryptoCurrentUnits(inv), inv.name)}</span>` : ''}
-          ${isCryptoType(inv.type) ? `<span>${fmt(inv.price || 0)} · ${inv.quoteSource === 'api' ? 'Auto' : 'Manual'} · ${formatQuoteUpdatedAt(inv.lastQuoteAt)}</span>` : ''}
-          ${missingUnits > 0 ? `<span class="asset-card-units-warning">${missingUnits} ${missingUnits === 1 ? 'movimentação' : 'movimentações'} sem quantidade não ${missingUnits === 1 ? 'entra' : 'entram'} no saldo</span>` : ''}
-          ${inv.institution ? `<span>${escapeHTML(inv.institution)}${inv.rate ? ' · ' + escapeHTML(inv.rate) : ''}</span>` : ''}
-          ${investmentReferenceHTML(inv)}
-          ${inv.dueDate ? `<span>Venc.: ${inv.dueDate.split('-').reverse().join('/')}</span>` : ''}
-        </div>
-        ${rentabilityHTML('invest', inv.id, displayVal)}
-        ${yieldHistoryHTML('invest', inv.id)}
-        <div class="asset-card-actions item-action-row">
-          <div class="reorder-actions">
-            <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',-1)" ${index===0?'disabled':''} aria-label="Mover para cima">↑</button>
-            <button type="button" class="action-btn" onclick="moveInvestment('${inv.id}',1)" ${index===investments.length-1?'disabled':''} aria-label="Mover para baixo">↓</button>
-          </div>
-          <button type="button" class="action-btn icon-button move" onclick="openInvestmentMovementModal('aporte','${inv.id}')" aria-label="Movimentações"></button>
-          <button type="button" class="action-btn reconcile-btn" onclick="openCryptoReconcileModal('${inv.id}')" aria-label="Conciliar saldo"><i class="fi fi-rr-money-bill-wave" aria-hidden="true"></i></button>
-          <button type="button" class="action-btn icon-button edit" onclick="editInvest('${inv.id}')" aria-label="Editar"></button>
-          <button type="button" class="action-btn icon-button delete" onclick="deleteInvest('${inv.id}')" aria-label="Excluir"></button>
-        </div>
-      </article>`;
+      const assetHtml = [
+        '      <article class="invest-box asset-card" data-item-id="' + inv.id + '">',
+        '        <div class="asset-card-head">',
+        '          <div class="asset-card-title">',
+        '            <div class="asset-card-name-row">',
+        '              <strong class="asset-card-name">' + escapeHTML(inv.alias || inv.name) + '</strong>',
+        '              <span class="asset-card-tag">' + escapeHTML(typeShort) + '</span>',
+        '            </div>',
+        '            ' + (inv.alias ? '<span class="asset-card-sub">' + escapeHTML(inv.name) + '</span>' : ''),
+        '          </div>',
+        '        </div>',
+        '        <div class="asset-card-value">' + fmt(displayVal) + '</div>',
+        '        <div class="asset-card-meta">',
+        '          ' + (isCryptoType(inv.type) ? '<span>Qtd: ' + formatCryptoUnits(inv.type, cryptoCurrentUnits(inv), inv.name) + '</span>' : ''),
+        '          ' + (isCryptoType(inv.type) ? '<span>' + fmt(inv.price || 0) + ' · ' + (inv.quoteSource === 'api' ? 'Auto' : 'Manual') + ' · ' + formatQuoteUpdatedAt(inv.lastQuoteAt) + '</span>' : ''),
+        '          ' + (missingUnits > 0 ? '<span class="asset-card-units-warning">' + missingUnits + ' ' + (missingUnits === 1 ? 'movimentação' : 'movimentações') + ' sem quantidade não ' + (missingUnits === 1 ? 'entra' : 'entram') + ' no saldo</span>' : ''),
+        '          ' + (inv.institution ? '<span>' + escapeHTML(inv.institution) + (inv.rate ? ' · ' + escapeHTML(inv.rate) : '') + '</span>' : ''),
+        '          ' + investmentReferenceHTML(inv),
+        '          ' + (inv.dueDate ? '<span>Venc.: ' + inv.dueDate.split('-').reverse().join('/') + '</span>' : ''),
+        '        </div>',
+        '        ' + rentabilityHTML('invest', inv.id, displayVal),
+        '        ' + yieldHistoryHTML('invest', inv.id),
+        '        <div class="asset-card-actions item-action-row">',
+        '          <div class="reorder-actions">',
+        '            <button type="button" class="action-btn" onclick="moveInvestment(' + "'" + inv.id + "'" + ',-1)" ' + (entry.idx === firstIdx ? 'disabled' : '') + ' aria-label="Mover para cima">↑</button>',
+        '            <button type="button" class="action-btn" onclick="moveInvestment(' + "'" + inv.id + "'" + ',1)" ' + (entry.idx === lastIdx ? 'disabled' : '') + ' aria-label="Mover para baixo">↓</button>',
+        '          </div>',
+        '          <button type="button" class="action-btn icon-button move" onclick="openInvestmentMovementModal(' + "'" + 'aporte' + "'" + ',' + "'" + inv.id + "'" + ')" aria-label="Movimentações"></button>',
+        '          <button type="button" class="action-btn reconcile-btn" onclick="openCryptoReconcileModal(' + "'" + inv.id + "'" + ')" aria-label="Conciliar saldo"><i class="fi fi-rr-money-bill-wave" aria-hidden="true"></i></button>',
+        '          <button type="button" class="action-btn icon-button edit" onclick="editInvest(' + "'" + inv.id + "'" + ')" aria-label="Editar"></button>',
+        '          <button type="button" class="action-btn icon-button delete" onclick="deleteInvest(' + "'" + inv.id + "'" + ')" aria-label="Excluir"></button>',
+        '        </div>',
+        '      </article>',
+        ''
+      ].join('\n');
+      return assetHtml;
     }).join('');
-      setupDisplayCardDrag(container, 'investments');
+    const assetsId = 'institution-assets-' + String(group.key).replace(/[^a-z0-9_-]/gi, '_');
+    const viewAllButton = list.length > 2
+      ? '<button type="button" class="institution-view-all" data-institution-key="' + group.key + '" onclick="toggleInvestmentsInstitutionView(\'' + group.key + '\')" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + assetsId + '">' + (isOpen ? 'Ver menos' : 'Ver investimentos') + '</button>'
+      : '';
+    const moreBlock = (list.length > 2 && !isOpen) ? '<div class="institution-more"><span>+ ' + hiddenCount + ' outros investimentos</span>' + viewAllButton + '</div>' : (list.length > 2 ? viewAllButton : '');
+    return [
+      '      <article class="institution-card" data-institution-key="' + group.key + '">',
+      '        <header class="institution-card-header">',
+      '          <div class="institution-card-identity">',
+      '            <span class="institution-icon" aria-hidden="true">🏦</span>',
+      '            <div class="institution-card-heading">',
+      '              <h3>' + escapeHTML(group.label) + '</h3>',
+      '              <span>' + list.length + ' investimentos</span>',
+      '            </div>',
+      '          </div>',
+          '          <button type="button" class="institution-menu" aria-label="Ver investimentos" title="Ver/mais investimentos" onclick="toggleInvestmentsInstitutionView(\'' + group.key + '\')">\u25bc</button>',
+          '          <button type="button" class="action-btn icon-button edit institution-rename" aria-label="Editar instituição" title="Editar instituição"></button>',
+      '        </header>',
+      '        <div class="institution-summary">',
+      '          <strong>' + fmt(groupTotal) + '</strong>',
+      '          <div class="institution-summary-metrics">',
+      '            <span>' + fmt(groupYield) + '</span>',
+      '            <span>' + (groupPct !== null ? groupPct.toFixed(2) + '%' : '—') + '</span>',
+      '          </div>',
+      '        </div>',
+      '        <div class="institution-assets" id="' + assetsId + '">',
+      '          ' + assetsHtml,
+      '        </div>',
+      '        ' + moreBlock,
+      '      </article>'
+    ].join('\n');
+  }
+
+
+
+  function renderInvestments() {
+    applyCachedQuotesToInvestments();
+    const container = document.getElementById('investGrid');
+    const summary = document.getElementById('investBalanceStrip');
+    const total = totalInvestBalance();
+    summary.innerHTML = `<div class="balance-card total"><div class="balance-card-head"><span class="label">Total investido</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div><span class="amount">${fmt(total)}</span></div>`;
+    if (investments.length === 0) {
+      container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhum ativo ou investimento cadastrado. Clique em "+ Novo Ativo / Cripto" para registrar.</div>`;
+      return;
+    }
+    const groups = groupInvestmentsByInstitution(investments);
+    container.innerHTML = groups.map(group => buildInvestmentsGroupCardHTML(group)).join('');
     renderPriceCharts();
   }
 

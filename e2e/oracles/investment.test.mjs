@@ -18,6 +18,8 @@ const {
   investmentDisplayValue,
   investmentsTotal,
   rentability,
+  normalizeInstitutionKey,
+  groupInvestmentsByInstitution,
   SATS_PER_BTC,
 } = require('./investment.js');
 
@@ -172,4 +174,56 @@ test('cenario de integração: stablecoin com aporte+resgate+rendimento', () => 
   assert.ok(Math.abs(display - 24.5 * 5.1) < 1e-9);
   const r = rentability(asset, yields, display);
   assert.equal(r.totalYield, 26);
+});
+
+test('normalizeInstitutionKey: trim + lowercase + vazio reservado', () => {
+  assert.equal(normalizeInstitutionKey(' Nubank '), 'nubank');
+  assert.equal(normalizeInstitutionKey('NUBANK'), 'nubank');
+  assert.equal(normalizeInstitutionKey('nubank'), 'nubank');
+  assert.equal(normalizeInstitutionKey('  XP Investimentos  '), 'xp investimentos');
+  assert.equal(normalizeInstitutionKey(''), 'sem-instituicao');
+  assert.equal(normalizeInstitutionKey('   '), 'sem-instituicao');
+  assert.equal(normalizeInstitutionKey(null), 'sem-instituicao');
+  assert.equal(normalizeInstitutionKey(undefined), 'sem-instituicao');
+});
+
+test('groupInvestmentsByInstitution: agrupa por chave normalizada, preserva ordem e cria grupo sem instituição', () => {
+  const invs = [
+    { id: 'i1', institution: ' Nubank ' },
+    { id: 'i2', institution: 'NUBANK' },
+    { id: 'i3', institution: 'nubank' },
+    { id: 'i4', institution: '' },
+    { id: 'i5', institution: 'XP Investimentos' },
+  ];
+  const groups = groupInvestmentsByInstitution(invs);
+  assert.equal(groups.length, 3);
+  assert.deepEqual(groups[0], { key: 'nubank', label: 'Nubank', investments: [invs[0], invs[1], invs[2]] });
+  assert.equal(groups[0].investments.length, 3);
+  assert.equal(groups[1].key, 'sem-instituicao');
+  assert.equal(groups[1].label, 'Sem instituição');
+  assert.equal(groups[1].investments.length, 1);
+  assert.equal(groups[2].key, 'xp investimentos');
+  assert.equal(groups[2].label, 'XP Investimentos');
+});
+
+test('groupInvestmentsByInstitution: preserva ordem original dentro do grupo', () => {
+  const invs = [
+    { id: 'a', institution: 'Binance' },
+    { id: 'b', institution: 'Nubank' },
+    { id: 'c', institution: 'Binance' },
+  ];
+  const groups = groupInvestmentsByInstitution(invs);
+  assert.equal(groups.length, 2);
+  assert.equal(groups[0].key, 'binance');
+  assert.deepEqual(
+    groups[0].investments.map((i) => i.id),
+    ['a', 'c']
+  );
+  assert.equal(groups[1].key, 'nubank');
+  assert.equal(groups[1].investments.length, 1);
+});
+
+test('groupInvestmentsByInstitution: lista vazia / entrada não array', () => {
+  assert.deepEqual(groupInvestmentsByInstitution([]), []);
+  assert.deepEqual(groupInvestmentsByInstitution(null), []);
 });

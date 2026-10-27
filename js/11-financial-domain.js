@@ -49,6 +49,37 @@
       .replace(/'/g, '&#39;');
   }
 
+  /* Agrupamento visual por instituição — camada derivada apenas, sem
+     persistência. A instituição é metadado de custódia/origem/plataforma no
+     investimento; o agrupamento serve só à apresentação. */
+  function normalizeInstitutionKey(value) {
+    const normalized = String(value ?? '').trim().toLowerCase();
+    return normalized || 'sem-instituicao';
+  }
+
+  function groupInvestmentsByInstitution(investments) {
+    const list = Array.isArray(investments) ? investments : [];
+    const groups = [];
+    const byKey = new Map();
+    list.forEach(inv => {
+      const raw = inv?.institution;
+      const key = normalizeInstitutionKey(raw);
+      const label = String(raw ?? '').trim() || 'Sem instituição';
+      let group = byKey.get(key);
+      if (!group) {
+        group = { key, label, investments: [] };
+        byKey.set(key, group);
+        groups.push(group);
+      }
+      group.investments.push(inv);
+    });
+    return groups.map(group => ({
+      key: group.key,
+      label: group.label,
+      investments: group.investments
+    }));
+  }
+
   let BACKUP_SCHEMA_VERSION;
 
   let SESSION_IDLE_MS;

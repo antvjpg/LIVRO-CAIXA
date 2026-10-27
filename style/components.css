@@ -943,17 +943,17 @@
   }
   .profile-grouped-list .grouped-item:last-child::after{display:none;}
   .reconcile-btn{
-    display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font-size:15px;cursor:pointer;
+    display:grid;place-items:center;width:34px;height:34px;border:1px solid color-mix(in srgb, var(--accent) 28%, var(--line));border-radius:8px;background:color-mix(in srgb, var(--accent) 10%, var(--surface));color:var(--accent);font-size:15px;cursor:pointer;
   }
-  .reconcile-btn:hover{background:var(--green-soft);border-color:var(--accent);color:var(--ink);}
+  .reconcile-btn:hover{background:color-mix(in srgb, var(--accent) 18%, var(--surface));border-color:var(--accent);color:var(--accent);}
   .quote-refresh-btn{
     display:inline-flex; align-items:center; gap:8px; min-height:40px; padding:0 12px; border:1px solid color-mix(in srgb,var(--accent) 35%,transparent); border-radius:10px; background:var(--paper); color:var(--ink); font-size:13px; font-weight:700; cursor:pointer;
   }
   .quote-refresh-btn:hover{background:var(--green-soft);border-color:var(--accent);}
   .quote-refresh-icon{display:grid;place-items:center;width:24px;height:24px;flex:0 0 auto;}
   .quote-refresh-icon i{font-size:16px;line-height:1;display:block;}
-  .quote-refresh-icon.is-spinning{animation:quoteRefreshSpin 1.2s linear infinite;}
-  @keyframes quoteRefreshSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .quote-refresh-icon.is-spinning{animation:quoteRefreshPulse 0.6s ease-in-out infinite;}
+  @keyframes quoteRefreshPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
   .btn-expand-movement{
     display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--ink-soft);font-size:12px;font-weight:700;cursor:pointer;
   }

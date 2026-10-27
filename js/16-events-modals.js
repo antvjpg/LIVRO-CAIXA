@@ -82,6 +82,13 @@
     const index = list.findIndex(item => item.id === id);
     const target = index + direction;
     if (index < 0 || target < 0 || target >= list.length) return;
+    if (collectionName === 'investments') {
+      const current = list[index];
+      const neighbor = list[target];
+      const currentKey = normalizeInstitutionKey(current?.institution);
+      const neighborKey = normalizeInstitutionKey(neighbor?.institution);
+      if (currentKey !== neighborKey) return;
+    }
     [list[index], list[target]] = [list[target], list[index]];
     list.forEach((item, position) => { item.order = position; });
     render();

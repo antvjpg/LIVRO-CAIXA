@@ -5270,6 +5270,145 @@ body.dark-mode .credit-card-box.credit-card-sheet{
   background:color-mix(in srgb, var(--gold) 24%, var(--surface));
   border-color:color-mix(in srgb, var(--gold) 55%, var(--line));
 }
+/* ui-invest — cards agrupados por instituição (camada visual derivada) */
+#investGrid .institution-card{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--surface);
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+#investGrid .institution-card > .invest-box.asset-card{
+  border:0 !important;
+  background:transparent !important;
+  padding:0 !important;
+}
+.institution-card-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+.institution-card-identity{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.institution-icon{
+  flex:0 0 auto;
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:color-mix(in srgb,var(--accent) 12%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));
+  color:var(--accent);
+}
+.institution-card-heading{
+  min-width:0;
+}
+.institution-card-heading h3{
+  margin:0;
+  font-size:15px;
+  font-weight:800;
+  color:var(--ink);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  text-align:center;
+}
+.institution-card-heading span{
+  display:block;
+  margin-top:2px;
+  font-size:11px;
+  color:var(--ink-soft);
+}
+.institution-menu{
+  flex:0 0 auto;
+  min-height:38px;
+  min-width:38px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--paper);
+  color:var(--ink);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.institution-menu:hover{
+  border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
+  color:var(--accent);
+}
+.institution-summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.institution-summary strong{
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:-.03em;
+  color:var(--ink);
+}
+.institution-summary-metrics{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.institution-summary-metrics span{
+  font-size:11px;
+  font-weight:700;
+  color:var(--ink-soft);
+}
+.institution-summary-metrics span.positive{
+  color:var(--green);
+}
+.institution-summary-metrics span.negative{
+  color:var(--red);
+}
+.institution-assets{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.institution-more{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:8px;
+}
+.institution-more span{
+  font-size:11px;
+  font-weight:700;
+  color:var(--ink-soft);
+}
+.institution-view-all{
+  min-height:38px;
+  padding:0 12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--paper);
+  color:var(--ink);
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
+.institution-view-all:hover{
+  border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
+  color:var(--accent);
+}
+
+/* ui10 — lançamentos = mesmo ícone dos investimentos */
 
 /* ui10 — lançamentos = mesmo ícone dos investimentos */
 /*
