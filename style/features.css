@@ -2929,10 +2929,10 @@ body.dark-mode #panelBill #billParcelasFields{
   width:100%;
   margin-top:4px;
   padding:0;
-  border:0!important;
-  border-radius:0!important;
+  border:0;
+  border-radius:0;
   background:transparent;
-  box-shadow:none!important;
+  box-shadow:none;
   color:var(--ink);
   font-size:42px;
   font-weight:800;
@@ -3089,12 +3089,12 @@ body.dark-mode #panelBill #billParcelasFields{
 }
 
 .bill-status-pill{
-  min-height:38px!important;
-  padding:7px 13px!important;
-  border-radius:999px!important;
-  background:var(--green-soft)!important;
-  border-color:var(--action-border)!important;
-  color:var(--action-accent)!important;
+  min-height:38px;
+  padding:7px 13px;
+  border-radius:999px;
+  background:var(--green-soft);
+  border-color:var(--action-border);
+  color:var(--action-accent);
   font-weight:800;
 }
 
@@ -3981,8 +3981,8 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{
 .period-bar,
 #periodBar,
 .period-picker-wrap{
-  padding-top:6px !important;
-  padding-bottom:6px !important;
+  padding-top:6px;
+  padding-bottom:6px;
 }
 .period-bar{
   gap:6px;
@@ -4001,7 +4001,7 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{
   border-radius:14px;
 }
 .cashflow-mini-head{
-  margin-bottom:6px !important;
+  margin-bottom:6px;
 }
 .cashflow-mini-metrics{
   display:grid;
@@ -5724,7 +5724,7 @@ body[data-tab="goals"] #modalOverlay,
   z-index: 1400 !important;
 }
 .period-active-label{
-  text-transform:none !important;
+  text-transform:none;
 }
 
 /* [PATCH CSS] Cartões — modal */
