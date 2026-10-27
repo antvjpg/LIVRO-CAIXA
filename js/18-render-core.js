@@ -512,7 +512,10 @@ function editInstitution(btn, key) {
 
     const bankOptGroup = banks.map(b => `<option value="${b.id}">🏦 ${escapeHTML(b.name)}</option>`).join('');
     const pocketOptGroup = pockets.map(p => `<option value="${p.id}">🐷 ${escapeHTML(p.name)} (Caixinha)</option>`).join('');
-    const investmentOptGroup = investments.map(i => `<option value="${i.id}">🪙 ${escapeHTML(i.name)} (Investimento)</option>`).join('');
+    const investmentOptGroup = investments.map(i => {
+      const inst = i.institution ? ` · ${escapeHTML(i.institution)}` : '';
+      return `<option value="${i.id}">🪙 ${escapeHTML(i.name)}${inst} (Investimento)</option>`;
+    }).join('');
     const transferOptions =
       (bankOptGroup ? `<optgroup label="Bancos">${bankOptGroup}</optgroup>` : '') +
       (pocketOptGroup ? `<optgroup label="Caixinhas">${pocketOptGroup}</optgroup>` : '') +

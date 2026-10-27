@@ -38,7 +38,6 @@
     #btnNotifications .notification-badge{box-shadow:0 0 0 2px #18362A;}
 
     main { max-width:none; margin:-18px 0 0; padding:14px 14px 20px; position:relative; z-index:3; background:var(--paper); border-radius:24px 24px 0 0; }
-    body[data-tab="caixa"] main{padding-bottom:150px;}
     .nav-tabs { margin:0 0 13px; padding:4px; gap:2px; border:1px solid var(--line); border-radius:13px; background:#fffefa; overflow:visible; box-shadow:0 4px 14px rgba(20,48,36,.04); }
     .nav-tab { flex:1; min-width:0; padding:10px 4px; border:0; border-radius:9px; color:#566258; font-size:9px; letter-spacing:.01em; text-transform:none; }
     .nav-tab.active { background:#18362A; color:#fffef9; box-shadow:0 5px 10px rgba(17,52,39,.16); }
