@@ -103,7 +103,6 @@ function editInstitution(btn, key) {
       || anchorCandidates[0]
       || [176, 141, 62];
     const lineColor = toHex(chosen);
-    const masked = () => document.body.classList.contains('balances-hidden');
     const values = series.map(item => Number(item.patrimony || 0));
     const min = Math.min(...values);
     const max = Math.max(...values);
@@ -144,7 +143,7 @@ function editInstitution(btn, key) {
             displayColors: false,
             callbacks: {
               title: items => (items && items.length && series[items[0].dataIndex] ? series[items[0].dataIndex].label : ''),
-              label: context => masked() ? ' ••••••' : ' ' + fmt(context.parsed.y)
+              label: context => ' ' + fmt(context.parsed.y)
             }
           }
         },
@@ -1466,9 +1465,8 @@ function editInstitution(btn, key) {
       const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
       const tooltipCallbacks = {
         label: function(context) {
-          const masked = document.body.classList.contains('balances-hidden');
           const val = context.raw || 0;
-          const formatted = masked ? '••••••' : fmt(val);
+          const formatted = fmt(val);
           return isMobileLayout ? ' ' + formatted : ' ' + context.label + ': ' + formatted;
         }
       };
@@ -1697,20 +1695,13 @@ function editInstitution(btn, key) {
       featureSettings: normalizeFeatureSettings({ ...localFeatures, ...remoteFeatures }),
       financialCycleStartDay: Number.isFinite(Number(local.financialCycleStartDay))
         ? Math.min(28, Math.max(1, Number(local.financialCycleStartDay)))
-        : 1,
-      hideBalancesOnOpen: local.hideBalancesOnOpen === true
+        : 1
     };
 
     if (Object.prototype.hasOwnProperty.call(source, 'financialCycleStartDay')) {
       const remoteDay = Number(source.financialCycleStartDay);
       if (Number.isFinite(remoteDay) && remoteDay >= 1 && remoteDay <= 28) {
         merged.financialCycleStartDay = Math.min(28, Math.max(1, remoteDay));
-      }
-    }
-
-    if (Object.prototype.hasOwnProperty.call(source, 'hideBalancesOnOpen')) {
-      if (typeof source.hideBalancesOnOpen === 'boolean') {
-        merged.hideBalancesOnOpen = source.hideBalancesOnOpen;
       }
     }
 
@@ -1732,8 +1723,7 @@ function editInstitution(btn, key) {
 
       const local = {
         featureSettings: normalizeFeatureSettings(featureSettings || {}),
-        financialCycleStartDay: getFinancialCycleStartDay(),
-        hideBalancesOnOpen: localStorage.getItem(HIDE_BALANCES_STORAGE_KEY) === '1'
+        financialCycleStartDay: getFinancialCycleStartDay()
       };
 
       const remote = normalizeProfileSettings(data.profileSettings, local);
@@ -1745,21 +1735,8 @@ function editInstitution(btn, key) {
         String(remote.financialCycleStartDay)
       );
 
-      localStorage.setItem(
-        HIDE_BALANCES_STORAGE_KEY,
-        remote.hideBalancesOnOpen ? '1' : '0'
-      );
-
       const cycleInput = document.getElementById('inputFinancialCycleDay');
       if (cycleInput) cycleInput.value = remote.financialCycleStartDay;
-
-      const hideInput = document.getElementById('chkHideBalancesOnOpen');
-      if (hideInput) hideInput.checked = remote.hideBalancesOnOpen;
-      hideBalancesOnOpen = remote.hideBalancesOnOpen;
-
-      if (typeof applyBalancesHiddenState === 'function') {
-        applyBalancesHiddenState(remote.hideBalancesOnOpen);
-      }
     } catch (err) {
       console.warn('[Perfil] Preferências remotas indisponíveis:', err);
       logWarn(
@@ -1778,7 +1755,6 @@ function editInstitution(btn, key) {
     const profileSettings = {
       featureSettings: normalizeFeatureSettings(featureSettings),
       financialCycleStartDay: getFinancialCycleStartDay(),
-      hideBalancesOnOpen: document.getElementById('chkHideBalancesOnOpen')?.checked === true,
       updatedAt: new Date().toISOString()
     };
 

@@ -3,8 +3,7 @@
   function dashChartTheme() {
     const styles = getComputedStyle(document.body);
     const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
-    const masked = () => document.body.classList.contains('balances-hidden');
-    const money = value => (masked() ? '••••••' : fmt(value));
+    const money = value => fmt(value);
     return {
       ink: readVar('--ink', '#1C2B24'),
       inkSoft: readVar('--ink-soft', '#4C5A52'),
@@ -12,10 +11,8 @@
       green: readVar('--dash-flow-income', readVar('--green', '#3E9B6E')),
       red: readVar('--dash-flow-expense', readVar('--red', '#C2553B')),
       gold: readVar('--dash-flow-patrimony', readVar('--gold', '#B08D3E')),
-      masked,
       money,
       tick: value => {
-        if (masked()) return '';
         return moneyDisplaySymbol() + Math.round(moneyToDisplay(Number(value) || 0)).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
       }
     };
@@ -240,7 +237,6 @@
             callbacks: {
               label: function(context) {
                 const head = ' ' + context.label + ': ';
-                if (document.body.classList.contains('balances-hidden')) return head + '••••••';
                 const real = realIncomeData[context.dataIndex];
                 const val = typeof real === 'number' ? real : (context.raw || 0);
                 return head + fmt(val);
@@ -286,7 +282,7 @@
     if (fallback) fallback.hidden = true;
     if (box) box.hidden = false;
 
-    const { ink, inkSoft, lineColor, green, red, gold, masked, money, tick } = dashChartTheme();
+    const { ink, inkSoft, lineColor, green, red, gold, money, tick } = dashChartTheme();
 
     dashboardMonthlyFlowChartInstance = new Chart(canvas, {
       type: 'bar',
@@ -1319,7 +1315,7 @@
     if (fallback) fallback.hidden = true;
     if (box) box.hidden = false;
 
-    const { ink, inkSoft, lineColor, green, red, gold, masked, money, tick } = dashChartTheme();
+    const { ink, inkSoft, lineColor, green, red, gold, money, tick } = dashChartTheme();
 
     dashFlowChartInstance = new Chart(canvas, {
       type: 'bar',

@@ -1,7 +1,5 @@
 /* LIVRO-CAIXA · js/22-profile.js — perfil e diagnóstico (app.js: 6884-7289). Separação por responsabilidade; conteúdo preservado. */
 
-  let HIDE_BALANCES_STORAGE_KEY;
-
   function syncProfileEmail() {
     const user = (typeof auth !== 'undefined' && auth.currentUser) ? auth.currentUser : null;
     const elProfileEmail = document.getElementById('profileEmail');
@@ -9,18 +7,6 @@
       elProfileEmail.textContent = user.email;
     }
   }
-
-  function syncBalancesToggleButton(hidden) {
-    /* Botão do olho removido: alternância só pelo toque no valor/saldo. */
-  }
-  function applyBalancesHiddenState(hidden) {
-    document.body.classList.toggle('balances-hidden', !!hidden);
-    syncBalancesToggleButton(!!hidden);
-  }
-  function toggleBalancesVisibility() {
-    applyBalancesHiddenState(!document.body.classList.contains('balances-hidden'));
-  }
-  let hideBalancesOnOpen;
 
   let autoQuotes;
 

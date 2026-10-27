@@ -700,10 +700,6 @@
   body[data-font="manrope"]{--font-ui:'Manrope',sans-serif;}
   body[data-font="outfit"]{--font-ui:'Outfit',sans-serif;}
   body[data-font="sora"]{--font-ui:'Sora',sans-serif;}
-  body[data-font="geist"]{--font-ui:'Geist Sans',sans-serif;}
-  body[data-font="satoshi"]{--font-ui:'Satoshi',sans-serif;}
-  body[data-font="dm-sans"]{--font-ui:'DM Sans',sans-serif;}
-  body[data-font="general-sans"]{--font-ui:'General Sans',sans-serif;}
   /* Card de resultado da análise assistida */
   .analysis-result-card{
     border:2px dashed var(--line);
@@ -4075,42 +4071,6 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{
 }
 .card-lancamento .card-actions{
   display:flex;gap:4px;
-}
-
-/* Patrimônio oculto = •••••• (não sumir) */
-body.balances-hidden .balance-card .amount,
-body.balances-hidden .balance-card.total .amount{
-  color: transparent;
-  position: relative;
-  user-select: none;
-}
-body.balances-hidden .balance-card .amount::after,
-body.balances-hidden .balance-card.total .amount::after,
-body.balances-hidden .card-amount::after,
-body.balances-hidden .dashboard-metrics strong::after,
-body.balances-hidden .cashflow-mini-metrics strong::after{
-  left: 0; top: 50%;
-  transform: translateY(-50%);
-  color: var(--ink);
-  opacity: .85;
-  letter-spacing: .12em;
-  font-size: .95em;
-  font-weight: 800;
-  pointer-events: none;
-  content: var(--dots, ••••••);
-}
-body.balances-hidden .balance-card.total .amount::after{
-}
-
-/* P2.4 — vence layout.css (dark/light) que reaplica cor em .amount/.manage-item-value */
-body.balances-hidden .balance-card .amount,
-body.balances-hidden .balance-card.total .amount,
-body.balances-hidden .balance-card.total .amount:not(.neg),
-body.balances-hidden .balance-card:not(.total) .amount,
-body.balances-hidden .manage-item-value{
-  color: transparent;
-  text-shadow: none;
-  user-select: none;
 }
 
 /* % dos cards de saldo — secundário */

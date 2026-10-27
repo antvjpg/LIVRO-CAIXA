@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const FX_STORAGE_KEY = 'livrocaixa_fx_brl';
   const CURRENCY_STORAGE_KEY = 'livrocaixa_display_currency';
   const FONT_STORAGE_KEY = 'livrocaixa_display_font';
-  const DISPLAY_FONTS = ['plus-jakarta', 'inter', 'roboto', 'open-sans', 'space-grotesk', 'manrope', 'outfit', 'sora', 'geist', 'satoshi', 'dm-sans', 'general-sans'];
+  const DISPLAY_FONTS = ['plus-jakarta', 'inter', 'roboto', 'open-sans', 'space-grotesk', 'manrope', 'outfit', 'sora'];
 
   function readFxCache() {
     try {
@@ -821,9 +821,8 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     }, 1000);
   });
 
-  // ===== V.19 — Perfil: versão, logout com confirmação, ocultar saldos =====
+  // ===== V.19 — Perfil: versão, logout com confirmação =====
   const APP_VERSION_LABEL = 'Livro-Caixa V.20-02 (opencode)';
-  HIDE_BALANCES_STORAGE_KEY = 'livrocaixa_hide_balances_on_open';
 
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
   syncProfileEmail();
@@ -844,27 +843,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       auth.signOut();
     }
   });
-  hideBalancesOnOpen = localStorage.getItem(HIDE_BALANCES_STORAGE_KEY) === '1';
-
-  const chkHideBalances = document.getElementById('chkHideBalancesOnOpen');
-  if (chkHideBalances) {
-    chkHideBalances.checked = hideBalancesOnOpen;
-    chkHideBalances.addEventListener('change', () => {
-      hideBalancesOnOpen = chkHideBalances.checked;
-      localStorage.setItem(HIDE_BALANCES_STORAGE_KEY, chkHideBalances.checked ? '1' : '0');
-      applyBalancesHiddenState(chkHideBalances.checked);
-      persistProfileSettings().catch(err => logSyncError('preferência de privacidade', err));
-    });
-  }
-  document.addEventListener('click', (e) => {
-    // AD-03: ocultar/mostrar saldos somente ao tocar no valor do card Patrimônio Total
-    const moneyEl = e.target.closest('.balance-card.total .amount');
-    if (!moneyEl) return;
-    if (e.target.closest('button, a, input, select, textarea, .btn-action, .action-btn')) return;
-    e.preventDefault();
-    e.stopPropagation();
-    toggleBalancesVisibility();
-  }, true);
   document.addEventListener('click', (e) => {
     const title = e.target.closest('.card-title');
     if (!title || e.target.closest('button, a')) return;
@@ -957,7 +935,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       applyProfileAvatar(saved);
     }
   }
-  applyBalancesHiddenState(hideBalancesOnOpen);
   document.getElementById('btnRecEnableQuotes')?.addEventListener('click', () => {
     document.getElementById('featureAutoQuotes')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     document.getElementById('featureAutoQuotes')?.focus?.();
@@ -3415,19 +3392,4 @@ document.getElementById('tSalvar').onclick = async () => {
       renderUserBar();
     }
   });
-  // Mascaramento de saldo com pontos correspondentes ao número de caracteres
-  if (document.body.classList.contains('balances-hidden')) {
-    const selectors = [
-      'body.balances-hidden .invest-box .val',
-      'body.balances-hidden #investGrid .invest-box .val',
-      'body.balances-hidden .asset-card-value',
-      'body.balances-hidden #investGrid .asset-card-value',
-    ];
-    selectors.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => {
-        const text = el.textContent.length;
-        el.style.setProperty('--dots', '•'.repeat(text > 0 ? text : 1));
-      });
-    });
-  }
 });

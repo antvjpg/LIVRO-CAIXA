@@ -22,41 +22,8 @@
        (estágios 2 e 3; legados claro 2,3 e escuro 2,6,7 viram '1'; 6/7 escuro =
        Mint/Ardósia removidos — não reutilizar sem migração).
    ========================================================= */
-/* Geist Sans — CDN jsDelivr (npm geist não publica style.css; WOFF2 variável) */
-@font-face{
-    font-family:'Geist Sans';
-    src:url('https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-sans/Geist-Variable.woff2') format('woff2');
-    font-weight:100 900;
-    font-style:normal;
-    font-display:swap;
-}
-@font-face{
-    font-family:'Geist Sans';
-    src:url('https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-sans/Geist-Regular.woff2') format('woff2');
-    font-weight:400;
-    font-style:normal;
-    font-display:swap;
-}
-@font-face{
-    font-family:'Geist Sans';
-    src:url('https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-sans/Geist-Medium.woff2') format('woff2');
-    font-weight:500;
-    font-style:normal;
-    font-display:swap;
-}
-@font-face{
-    font-family:'Geist Sans';
-    src:url('https://cdn.jsdelivr.net/npm/geist@1.4.1/dist/fonts/geist-sans/Geist-Bold.woff2') format('woff2');
-    font-weight:700;
-    font-style:normal;
-    font-display:swap;
-}
 :root{
     --font-ui:'Plus Jakarta Sans',sans-serif;
-    --font-geist:'Geist Sans',sans-serif;
-    --font-satoshi:'Satoshi',sans-serif;
-    --font-dm-sans:'DM Sans',sans-serif;
-    --font-general-sans:'General Sans',sans-serif;
     --paper:#F8F7F2;
     --paper-2:#F0F0EA;
     --ink:#19352A;

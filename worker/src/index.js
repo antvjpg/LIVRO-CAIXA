@@ -205,27 +205,30 @@ async function handleFetch(request, env) {
       );
     }
 
-    /* Monitor de uso gratuito do OpenRouter: somente administrador autenticado.
-       GET /openrouter-usage → { free_model_daily_requests: { used, limit, remaining }, timestamp }.
-       Sem cache (leitura autoritativa a pedido); a chave e a resposta integral
-       do provedor nunca saem do Worker. */
-    if (url.pathname === "/openrouter-usage") {
-      if (!cors) return json({ error: "Origem não autorizada.", code: "origin_blocked" }, 403, null);
-      if (request.method !== "GET") {
-        return json({ error: "Método não permitido.", code: "method_not_allowed" }, 405, cors);
-      }
+/* Monitor de uso gratuito do OpenRouter: somente administrador autenticado.
+        GET /openrouter-usage → { free_model_daily_requests: { used, limit, remaining }, timestamp }.
+        Sem cache (leitura autoritativa a pedido); a chave e a resposta integral
+        do provedor nunca saem do Worker. */
+      if (url.pathname === "/openrouter-usage") {
+        if (!cors) return json({ error: "Origem não autorizada.", code: "origin_blocked" }, 403, null);
+        if (request.method !== "GET") {
+          return json({ error: "Método não permitido.", code: "method_not_allowed" }, 405, cors);
+        }
 
-      const appCheck = await requireAppCheck(request, env, cors);
-      if (!appCheck.ok) return appCheck.response;
+        const appCheck = await requireAppCheck(request, env, cors);
+        if (!appCheck.ok) return appCheck.response;
 
-      const auth = await authenticate(request, env, cors);
-      if (auth instanceof Response) return auth;
+        const auth = await authenticate(request, env, cors);
+        if (auth instanceof Response) return auth;
 
-      const adminEmail = String(env.OPENROUTER_USAGE_ADMIN_EMAIL || "").trim().toLowerCase();
-      const claimEmail = String(auth.claims?.email || "").trim().toLowerCase();
-      if (!adminEmail || claimEmail !== adminEmail) {
-        return json({ error: "Acesso restrito ao administrador.", code: "admin_forbidden" }, 403, cors);
-      }
+        const adminEmails = String(env.OPENROUTER_USAGE_ADMIN_EMAIL || "")
+          .split(",")
+          .map(e => e.trim().toLowerCase())
+          .filter(Boolean);
+        const claimEmail = String(auth.claims?.email || "").trim().toLowerCase();
+        if (!adminEmails.length || !adminEmails.includes(claimEmail)) {
+          return json({ error: "Acesso restrito ao administrador.", code: "admin_forbidden" }, 403, cors);
+        }
 
       const usage = await getOpenRouterUsageKV(env);
       if (!usage.ok) {

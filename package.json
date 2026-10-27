@@ -27,6 +27,7 @@
     "code:v20-02": "node --test \"e2e/oracles/v20-02-*.test.mjs\" \"e2e/security/v20-02-*.test.mjs\""
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0"
+    "@playwright/test": "^1.63.0",
+    "firebase-tools": "^15.34.1"
   }
 }
