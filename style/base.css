@@ -50,7 +50,7 @@
   body.balances-hidden .institution-summary strong::after,
   body.balances-hidden .institution-summary-metrics span::after,
   body.balances-hidden .js-money::after{
-    content: var(--dots);
+    content: var(--dots, ••••••);
     color: var(--ink);
     position: absolute;
     inset: 0;
