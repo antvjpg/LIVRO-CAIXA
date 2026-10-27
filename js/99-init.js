@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const FX_STORAGE_KEY = 'livrocaixa_fx_brl';
   const CURRENCY_STORAGE_KEY = 'livrocaixa_display_currency';
   const FONT_STORAGE_KEY = 'livrocaixa_display_font';
-  const DISPLAY_FONTS = ['plus-jakarta', 'inter', 'roboto', 'open-sans', 'space-grotesk', 'manrope', 'outfit', 'sora'];
+  const DISPLAY_FONTS = ['plus-jakarta', 'inter', 'roboto', 'open-sans', 'space-grotesk', 'manrope', 'outfit', 'sora', 'geist', 'satoshi', 'dm-sans', 'general-sans'];
 
   function readFxCache() {
     try {

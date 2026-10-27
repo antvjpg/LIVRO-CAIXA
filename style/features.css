@@ -700,6 +700,10 @@
   body[data-font="manrope"]{--font-ui:'Manrope',sans-serif;}
   body[data-font="outfit"]{--font-ui:'Outfit',sans-serif;}
   body[data-font="sora"]{--font-ui:'Sora',sans-serif;}
+  body[data-font="geist"]{--font-ui:'Geist Sans',sans-serif;}
+  body[data-font="satoshi"]{--font-ui:'Satoshi',sans-serif;}
+  body[data-font="dm-sans"]{--font-ui:'DM Sans',sans-serif;}
+  body[data-font="general-sans"]{--font-ui:'General Sans',sans-serif;}
   /* Card de resultado da análise assistida */
   .analysis-result-card{
     border:2px dashed var(--line);
@@ -4093,6 +4097,7 @@ body.balances-hidden .cashflow-mini-metrics strong::after{
   font-size: .95em;
   font-weight: 800;
   pointer-events: none;
+  content: var(--dots, ••••••);
 }
 body.balances-hidden .balance-card.total .amount::after{
 }
