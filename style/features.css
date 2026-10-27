@@ -606,7 +606,7 @@
 .credit-card-purchase-menu .finalize,
 .credit-card-purchase-menu .unarchive{
   width:28px;height:28px;min-width:28px;min-height:28px;padding:0;
-  display:inline-grid !important;place-items:center;align-self:center;
+  display:inline-grid;place-items:center;align-self:center;
   border-radius:9px;
   border:1px solid var(--line);
   background:var(--surface);
@@ -964,7 +964,7 @@
   background:var(--surface);color:var(--ink);text-align:right;
 }
 .filter-choice-option.is-selected{border-color:var(--accent);background:var(--green-soft);}
-.filter-choice-option span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;}.filter-choice-empty{padding:18px 10px;color:var(--ink-soft);text-align:center;font-size:11px;}.filter-choice-confirm{flex:0 0 auto;width:100%;}.filter-state-select{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important;}.filter-choice-trigger>span{display:flex;flex-direction:column;gap:4px;min-width:0;}.filter-choice-trigger strong{font-size:13px;line-height:1.2;}.filter-choice-sheet.open{transform:translateY(0);visibility:visible;pointer-events:auto;transition:none;}.filter-choice-sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}.filter-choice-sheet-head>div{display:flex;flex-direction:column;gap:4px;min-width:0;}.filter-choice-search{min-height:43px!important;}.filter-choice-list{display:flex;flex-direction:column;gap:7px;min-height:0;overflow:auto;padding:2px 1px 4px;}.filter-choice-option span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;}.filter-choice-confirm{flex:0 0 auto;width:100%;}.panel#panelFiltros{position:relative;overflow:hidden;}.panel#panelFiltros.sheet-open{overflow:visible;}.budget-summary-row>b{font-size:10px;text-align:right;}.pocket-goal{margin:7px 0 3px;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);}.pocket-goal-head{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--ink-soft);}.pocket-goal-head span{overflow-wrap:anywhere;}.pocket-goal-head strong{color:var(--accent);white-space:nowrap;}.pocket-goal-track{margin-top:6px;height:8px;}.pocket-goal-values{margin-top:4px;color:var(--ink-soft);font-size:9px;}@media(max-width:600px){.dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr));}.feature-profile-actions{grid-template-columns:1fr;}
+.filter-choice-option span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;}.filter-choice-empty{padding:18px 10px;color:var(--ink-soft);text-align:center;font-size:11px;}.filter-choice-confirm{flex:0 0 auto;width:100%;}.filter-state-select{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important;}.filter-choice-trigger>span{display:flex;flex-direction:column;gap:4px;min-width:0;}.filter-choice-trigger strong{font-size:13px;line-height:1.2;}.filter-choice-sheet.open{transform:translateY(0);visibility:visible;pointer-events:auto;transition:none;}.filter-choice-sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}.filter-choice-sheet-head>div{display:flex;flex-direction:column;gap:4px;min-width:0;}.filter-choice-search{min-height:43px;}.filter-choice-list{display:flex;flex-direction:column;gap:7px;min-height:0;overflow:auto;padding:2px 1px 4px;}.filter-choice-option span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;}.filter-choice-confirm{flex:0 0 auto;width:100%;}.panel#panelFiltros{position:relative;overflow:hidden;}.panel#panelFiltros.sheet-open{overflow:visible;}.budget-summary-row>b{font-size:10px;text-align:right;}.pocket-goal{margin:7px 0 3px;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);}.pocket-goal-head{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--ink-soft);}.pocket-goal-head span{overflow-wrap:anywhere;}.pocket-goal-head strong{color:var(--accent);white-space:nowrap;}.pocket-goal-track{margin-top:6px;height:8px;}.pocket-goal-values{margin-top:4px;color:var(--ink-soft);font-size:9px;}@media(max-width:600px){.dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr));}.feature-profile-actions{grid-template-columns:1fr;}
 .advanced-dashboard{padding:10px;}}
 
   .dashboard-health-card{display:flex;align-items:center;gap:10px;margin:12px 0;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:var(--paper);}.dashboard-health-card>div{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px;}.dashboard-health-card strong{font-size:12px;color:var(--ink);}.dashboard-health-card small{font-size:10px;color:var(--ink-soft);line-height:1.35;}.dashboard-health-card>b{padding:5px 8px;border-radius:999px;font-size:9px;white-space:nowrap;}.dashboard-health-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font-weight:900;font-size:16px;background:var(--green-soft);color:var(--accent);}.dashboard-health-card.warning{background:color-mix(in srgb,var(--red) 6%,var(--paper));border-color:color-mix(in srgb,var(--red) 20%,var(--line));}.dashboard-health-card.warning .dashboard-health-icon{background:var(--red-soft);color:var(--red);}.dashboard-health-card.warning>b{background:var(--red-soft);color:var(--red);}.dashboard-health-card.neutral .dashboard-health-icon{background:var(--line);color:var(--ink-soft);}.dashboard-health-card.neutral>b{background:var(--line);color:var(--ink-soft);}.dashboard-health-card.positive>b{background:var(--green-soft);color:var(--accent);}.dashboard-commitments,.dashboard-alerts{margin-top:13px;padding-top:11px;border-top:1px dashed var(--line);}.dashboard-commitment-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);}.dashboard-commitment-row:last-child{border-bottom:0;}.dashboard-commitment-row>div{display:flex;min-width:0;flex-direction:column;gap:3px;}.dashboard-commitment-row strong{font-size:11px;color:var(--ink);overflow-wrap:anywhere;}.dashboard-commitment-row span{font-size:9px;color:var(--ink-soft);}.dashboard-commitment-row b{font-size:10px;color:var(--ink);white-space:nowrap;}.dashboard-commitment-row.overdue b,.dashboard-commitment-row.overdue span{color:var(--red);}.dashboard-alert-row{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);}.dashboard-alert-row:last-child{border-bottom:0;}.dashboard-alert-row>span{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:900;background:var(--green-soft);color:var(--accent);}.dashboard-alert-row.warning>span{background:var(--red-soft);color:var(--red);}.dashboard-alert-row>div{display:flex;min-width:0;flex-direction:column;gap:2px;}.dashboard-alert-row strong{font-size:10px;color:var(--ink);}.dashboard-alert-row small{font-size:9px;color:var(--ink-soft);line-height:1.35;}@media(max-width:680px){.dashboard-health-card{align-items:flex-start;}.dashboard-health-card>b{margin-left:auto;}.dashboard-commitment-row{padding:8px 0;}.dashboard-alert-row{padding:8px 0;}}
@@ -2109,7 +2109,7 @@ body{
   min-height:100dvh;
 }
 header.app-header{
-  padding-top:calc(33px + env(safe-area-inset-top, 0px)) !important;
+  padding-top:calc(33px + env(safe-area-inset-top, 0px));
 }
 #authOverlay,
 #pinOverlay,
@@ -2938,7 +2938,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-weight:800;
   line-height:1.1;
   letter-spacing:-.055em;
-  outline:none!important;
+  outline:none;
 }
 
 .bill-value-block input::placeholder{
@@ -4075,8 +4075,8 @@ body:not([data-tab="dashboard"]) #dashboardNextPayment{
 /* Patrimônio oculto = •••••• (não sumir) */
 body.balances-hidden .balance-card .amount,
 body.balances-hidden .balance-card.total .amount{
-  color: transparent !important;
-  position: relative !important;
+  color: transparent;
+  position: relative;
   user-select: none;
 }
 body.balances-hidden .balance-card .amount::after,
@@ -4113,7 +4113,7 @@ body.balances-hidden .balance-card.total .amount::after{
 /* Perfil: ocultar proteção local; sair no fim */
 .profile-group-hidden,
 .profile-group[hidden]{
-  display:none !important;
+  display:none;
 }
 .profile-group:has(#btnProfileLogout){
   margin-top:18px;
@@ -4231,18 +4231,18 @@ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='
 
 /* F01 — seções de perfil só na aba Perfil */
 #viewProfile:not(.active){
-  display:none !important;
+  display:none;
 }
 body:not([data-tab="profile"]) #viewProfile{
-  display:none !important;
+  display:none;
 }
 body[data-tab="profile"] #viewProfile.active,
 #viewProfile.active{
-  display:block !important;
+  display:block;
 }
 /* evita vazamento visual de grupos de perfil */
 body:not([data-tab="profile"]) .profile-shell{
-  display:none !important;
+  display:none;
 }
 /* o perfil tem ações próprias no cabeçalho; o FAB não se aplica aqui */
 body[data-tab="profile"] .fab-add{
@@ -4689,7 +4689,7 @@ body[data-tab="dash"] .fab-add{
 /* expandido: sem título duplicado no body */
 #universalPeriodBar:not(.is-collapsed) .period-bar-copy .period-eyebrow,
 #universalPeriodBar:not(.is-collapsed) .period-bar-copy > .period-active-label{
-  display:none !important;
+  display:none;
 }
 #universalPeriodBar .period-hint{
   font-size:10px;
@@ -5662,41 +5662,41 @@ body.dark-mode .credit-card-box.credit-card-sheet{
 
 /* Metas como aba normal — mesmo chrome das outras abas */
 #viewGoals:not(.active) {
-  display: none !important;
+  display: none;
 }
 
 body[data-tab="goals"] #viewGoals,
 body[data-tab="goals"] #viewGoals.active,
 #viewGoals.active {
-  display: block !important;
-  position: relative !important;
-  inset: auto !important;
-  z-index: auto !important;
+  display: block;
+  position: relative;
+  inset: auto;
+  z-index: auto;
   width: 100%;
-  height: auto !important;
-  max-height: none !important;
+  height: auto;
+  max-height: none;
   margin: 0;
   padding: 0;
-  overflow: visible !important;
-  background: transparent !important;
-  pointer-events: auto !important;
-  visibility: visible !important;
+  overflow: visible;
+  background: transparent;
+  pointer-events: auto;
+  visibility: visible;
 }
 
 /* Metas: ocultar apenas os resumos globais que não pertencem à aba. */
 body[data-tab="goals"] #balanceStrip,
 body[data-tab="goals"] #universalPeriodBar {
-  display: none !important;
+  display: none;
 }
 
 /* NÃO esconder header nem main — chrome igual às outras abas */
 body[data-tab="goals"] > header.app-header,
 body[data-tab="goals"] header.app-header {
-  display: flex !important;
+  display: flex;
 }
 body[data-tab="goals"] > main,
 body[data-tab="goals"] main {
-  display: block !important;
+  display: block;
 }
 
 /* O FAB continua disponível em Metas e abre diretamente Nova Meta. */
@@ -5721,7 +5721,7 @@ body[data-tab="goals"] #viewGoals .goals-panel-v2 {
 body[data-tab="goals"] .modal-overlay,
 body[data-tab="goals"] #modalOverlay,
 .modal-overlay.open {
-  z-index: 1400 !important;
+  z-index: 1400;
 }
 .period-active-label{
   text-transform:none;
@@ -6208,7 +6208,7 @@ body:not(.dark-mode) .goal-card-v2 {
   border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
 }
 .goals-form-sheet.open {
-  display: flex !important;
+  display: flex;
 }
 .goals-form-head {
   display: flex;
@@ -6571,8 +6571,8 @@ body:not(.dark-mode) .goals-form-body select {
 }
 
 .panel#panelFiltros .filter-choice-sheet{
-  left:50%!important;
-  bottom:50%!important;
+  left:50%;
+  bottom:50%;
   width:min(92%,420px);
   max-height:78%;
   border-radius:20px;
