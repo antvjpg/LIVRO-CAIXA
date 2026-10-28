@@ -54,6 +54,7 @@ function editInstitution(btn, key) {
   let PATRIMONY_SPARK_STORAGE_KEY;
 
   let patrimonySparkVisible;
+  let investBreakdownVisible = false;
 
   function renderPatrimonySparkline(enabled) {
     if (patrimonySparklineInstance) {
@@ -177,6 +178,47 @@ function editInstitution(btn, key) {
     }
   }
 
+  function toggleInvestBreakdown() {
+    investBreakdownVisible = !investBreakdownVisible;
+    const symbol = document.querySelector('.invest-summary-card .balance-symbol');
+    const box = document.getElementById('investBreakdownBox');
+    if (symbol) {
+      symbol.setAttribute('aria-expanded', String(investBreakdownVisible));
+      symbol.setAttribute('aria-label', investBreakdownVisible ? 'Recolher gráfico de investimentos' : 'Mostrar gráfico de investimentos');
+    }
+    if (box) {
+      box.classList.toggle('is-collapsed', !investBreakdownVisible);
+      box.setAttribute('aria-hidden', String(!investBreakdownVisible));
+      if (investBreakdownVisible) {
+        renderInvestBreakdown();
+      }
+    }
+  }
+
+  function renderInvestBreakdown() {
+    const box = document.getElementById('investBreakdownBox');
+    if (!box || !Array.isArray(window.investments)) return;
+    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(window.investments) : [];
+    const totalValue = window.investments.reduce((sum, inv) => sum + (Number(inv?.value || 0) * Number(inv?.units || 1)), 0);
+    if (!groups.length) {
+      box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
+      return;
+    }
+    const rows = groups.map(g => {
+      const groupTotal = g.investments.reduce((sum, inv) => sum + (Number(inv?.value || 0) * Number(inv?.units || 1)), 0);
+      const pct = totalValue > 0 ? (groupTotal / totalValue) * 100 : 0;
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px dashed var(--line);font-size:11px;">
+        <span style="flex:1;min-width:0;color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHTML(g.label)}</span>
+        <span style="flex:0 0 80px;text-align:right;color:var(--ink);font-weight:700;">${fmt(groupTotal)}</span>
+        <span style="flex:0 0 48px;text-align:right;color:var(--ink-soft);font-size:10px;">${pct.toFixed(0)}%</span>
+        <div style="flex:0 0 60px;height:6px;background:var(--line);border-radius:999px;overflow:hidden;">
+          <span style="display:block;height:100%;width:${pct.toFixed(1)}%;background:var(--accent);border-radius:inherit;"></span>
+        </div>
+      </div>`;
+    }).join('');
+    box.innerHTML = `<div style="font-size:10px;font-weight:800;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:6px;padding:0 4px;">SEPARAÇÃO POR INSTITUIÇÃO</div>` + rows;
+  }
+
   function renderBalances() {
     const strip = document.getElementById('balanceStrip');
     if (!strip) return;
@@ -216,10 +258,11 @@ function editInstitution(btn, key) {
       ${pocketShare === null ? '' : `<span class="balance-share">${formatIndicatorPercent(pocketShare, 1)} do patrimônio</span>`}
     </div>
     <div class="balance-card invest-summary-card" role="button" tabindex="0" aria-label="Ver investimentos" title="Ver investimentos">
-      <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span></div>
+      <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" role="button" tabindex="0" aria-expanded="${investBreakdownVisible}" aria-controls="investBreakdownBox" aria-label="${investBreakdownVisible ? 'Recolher gráfico de investimentos' : 'Mostrar gráfico de investimentos'}"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span></div>
       <span class="amount">${investLabel}</span>
       ${investShare === null ? '' : `<span class="balance-share">${formatIndicatorPercent(investShare, 1)} do patrimônio</span>`}
-    </div>`;
+    </div>
+    <div class="invest-breakdown-box${investBreakdownVisible ? '' : ' is-collapsed'}" id="investBreakdownBox" aria-hidden="${!investBreakdownVisible}"></div>`;
     strip.innerHTML = html;
     markValueRefresh(strip);
     renderPatrimonySparkline(balancesReady);
@@ -251,12 +294,27 @@ function editInstitution(btn, key) {
     });
     // P2.4.2 — mesmo padrão de navegação dos cards Contas e Caixinhas
     const investSummaryCard = strip.querySelector('.invest-summary-card');
-    const openInvestTab = () => window.switchTab('invest');
-    investSummaryCard?.addEventListener('click', openInvestTab);
+    // Clicar no card (incluindo símbolo) expande o gráfico de separação
+    investSummaryCard?.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleInvestBreakdown();
+    });
     investSummaryCard?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        openInvestTab();
+        toggleInvestBreakdown();
+      }
+    });
+    const investBreakdownSymbol = strip.querySelector('.invest-summary-card .balance-symbol');
+    investBreakdownSymbol?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleInvestBreakdown();
+    });
+    investBreakdownSymbol?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleInvestBreakdown();
       }
     });
   }

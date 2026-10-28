@@ -272,8 +272,9 @@ body.dark-mode .mobile-bottom-nav button:active .nav-icon{transform:scale(.9);}
     padding:8px 0 44px;
     max-width:480px;
     margin:0 auto;
-    box-shadow:0 2px 12px color-mix(in srgb,var(--accent) 8%,transparent);
   }
+  .invest-breakdown-box{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);margin-top:10px;}
+  .invest-breakdown-box.is-collapsed{display:none;}
   #viewProfile .profile-heading{
     padding:10px 4px 20px;
     border-bottom:0;
