@@ -1064,7 +1064,7 @@ function editInstitution(btn, key) {
         '          ' + investmentReferenceHTML(inv),
         '          ' + (inv.dueDate ? '<span>Venc.: ' + inv.dueDate.split('-').reverse().join('/') + '</span>' : ''),
         '        </div>',
-        '        ' + rentabilityHTML('invest', inv.id, displayVal),
+        '        ' + (() => { const items = yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === inv.id && periodMatchesMovement(y) && (y.kind || 'rendimento') === 'rendimento'); if (!items.length) return ''; const totalYield = items.reduce((s, y) => s + y.amount, 0); return `<span class="rentability-text">${fmt(totalYield)} (rendimento)</span>`; })(),
         '        ' + yieldHistoryHTML('invest', inv.id),
         '        <div class="asset-card-actions item-action-row">',
         '          <div class="reorder-actions">',

@@ -273,15 +273,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDashboardTab();
   };
 
-  // Perfil → Aparência: mostrar/ocultar as paletas (única entrada das paletas no app)
+  // Perfil → Aparência: abre modal de tema e paleta
   document.getElementById('btnAparencia')?.addEventListener('click', () => {
-    const wrap = document.getElementById('aparenciaPaletas');
-    const btn = document.getElementById('btnAparencia');
-    if (!wrap || !btn) return;
-    const willOpen = wrap.hasAttribute('hidden');
-    if (willOpen) wrap.removeAttribute('hidden');
-    else wrap.setAttribute('hidden', '');
-    btn.setAttribute('aria-expanded', String(willOpen));
+    if (typeof openModal === 'function') openModal('panelThemePicker');
   });
 
   // Suporte a tecla ESC para fechar modais
@@ -899,20 +893,58 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     });
   }
 
-  /* Foto de perfil — grid de avatares abstratos (DiceBear "shapes") em modal */
+  /* Foto de perfil — grid de avatares abstratos (DiceBear "shapes") em modal + 20 avatares geométricos locais */
   const avatarSeeds = ['ana','beto','carla','diego','elena','fabio','giulia','hugo','isabela','joao','karol','lucas','mel','nic','ova','ped','quim','reu'];
+  const avatarGeometricos = [
+    { id: 'avatar-geometry-01', nome: 'Avatar geométrico 01', arquivo: 'assets/avatars/avatar-geometry-01.svg' },
+    { id: 'avatar-geometry-02', nome: 'Avatar geométrico 02', arquivo: 'assets/avatars/avatar-geometry-02.svg' },
+    { id: 'avatar-geometry-03', nome: 'Avatar geométrico 03', arquivo: 'assets/avatars/avatar-geometry-03.svg' },
+    { id: 'avatar-geometry-04', nome: 'Avatar geométrico 04', arquivo: 'assets/avatars/avatar-geometry-04.svg' },
+    { id: 'avatar-geometry-05', nome: 'Avatar geométrico 05', arquivo: 'assets/avatars/avatar-geometry-05.svg' },
+    { id: 'avatar-geometry-06', nome: 'Avatar geométrico 06', arquivo: 'assets/avatars/avatar-geometry-06.svg' },
+    { id: 'avatar-geometry-07', nome: 'Avatar geométrico 07', arquivo: 'assets/avatars/avatar-geometry-07.svg' },
+    { id: 'avatar-geometry-08', nome: 'Avatar geométrico 08', arquivo: 'assets/avatars/avatar-geometry-08.svg' },
+    { id: 'avatar-geometry-09', nome: 'Avatar geométrico 09', arquivo: 'assets/avatars/avatar-geometry-09.svg' },
+    { id: 'avatar-geometry-10', nome: 'Avatar geométrico 10', arquivo: 'assets/avatars/avatar-geometry-10.svg' },
+    { id: 'avatar-geometry-11', nome: 'Avatar geométrico 11', arquivo: 'assets/avatars/avatar-geometry-11.svg' },
+    { id: 'avatar-geometry-12', nome: 'Avatar geométrico 12', arquivo: 'assets/avatars/avatar-geometry-12.svg' },
+    { id: 'avatar-geometry-13', nome: 'Avatar geométrico 13', arquivo: 'assets/avatars/avatar-geometry-13.svg' },
+    { id: 'avatar-geometry-14', nome: 'Avatar geométrico 14', arquivo: 'assets/avatars/avatar-geometry-14.svg' },
+    { id: 'avatar-geometry-15', nome: 'Avatar geométrico 15', arquivo: 'assets/avatars/avatar-geometry-15.svg' },
+    { id: 'avatar-geometry-16', nome: 'Avatar geométrico 16', arquivo: 'assets/avatars/avatar-geometry-16.svg' },
+    { id: 'avatar-geometry-17', nome: 'Avatar geométrico 17', arquivo: 'assets/avatars/avatar-geometry-17.svg' },
+    { id: 'avatar-geometry-18', nome: 'Avatar geométrico 18', arquivo: 'assets/avatars/avatar-geometry-18.svg' },
+    { id: 'avatar-geometry-19', nome: 'Avatar geométrico 19', arquivo: 'assets/avatars/avatar-geometry-19.svg' },
+    { id: 'avatar-geometry-20', nome: 'Avatar geométrico 20', arquivo: 'assets/avatars/avatar-geometry-20.svg' }
+  ];
   const avatarGrid = document.getElementById('avatarGrid');
   const avatarHeading = document.querySelector('#viewProfile .profile-avatar');
   const avatarUrl = (seed) => `https://api.dicebear.com/7.x/shapes/svg?seed=${seed}`;
-  function applyProfileAvatar(seed) {
-    const img = `<img src="${avatarUrl(seed)}" alt="Foto de perfil">`;
+  const avatarLocalUrl = (arquivo) => `./${arquivo}`;
+  function isLocalAvatar(id) {
+    return id.startsWith('avatar-geometry-');
+  }
+  function getAvatarSrc(id) {
+    if (isLocalAvatar(id)) {
+      const geo = avatarGeometricos.find(g => g.id === id);
+      return geo ? avatarLocalUrl(geo.arquivo) : '';
+    }
+    return avatarUrl(id);
+  }
+  function applyProfileAvatar(id) {
+    const src = getAvatarSrc(id);
+    const img = `<img src="${src}" alt="Foto de perfil">`;
     if (avatarHeading) avatarHeading.innerHTML = img;
-    if (localStorage.getItem('lc_profile_avatar') !== seed) localStorage.setItem('lc_profile_avatar', seed);
+    if (localStorage.getItem('lc_profile_avatar') !== id) localStorage.setItem('lc_profile_avatar', id);
   }
   if (avatarGrid && avatarHeading) {
-    avatarGrid.innerHTML = avatarSeeds.map((seed, i) => `
-      <button type="button" class="avatar-option${i === 0 ? ' is-active' : ''}" data-seed="${seed}" aria-label="Avatar ${i + 1}">
-        <img src="${avatarUrl(seed)}" alt="Avatar ${seed}">
+    const todosAvatares = [
+      ...avatarGeometricos.map(g => ({ id: g.id, nome: g.nome, tipo: 'local' })),
+      ...avatarSeeds.map(s => ({ id: s, nome: s, tipo: 'dicebear' }))
+    ];
+    avatarGrid.innerHTML = todosAvatares.map((a, i) => `
+      <button type="button" class="avatar-option${i === 0 ? ' is-active' : ''}" data-seed="${a.id}" aria-label="${a.nome}">
+        <img src="${getAvatarSrc(a.id)}" alt="${a.nome}">
       </button>
     `).join('');
     avatarGrid.querySelectorAll('.avatar-option').forEach(opt => {
@@ -933,6 +965,12 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
         opt.classList.add('is-active');
       }
       applyProfileAvatar(saved);
+    } else if (todosAvatares.length > 0) {
+      // Seleciona o primeiro avatar por padrão se não houver salvo
+      const primeiro = todosAvatares[0];
+      const opt = avatarGrid.querySelector(`[data-seed="${primeiro.id}"]`);
+      if (opt) opt.classList.add('is-active');
+      applyProfileAvatar(primeiro.id);
     }
   }
   document.getElementById('btnRecEnableQuotes')?.addEventListener('click', () => {

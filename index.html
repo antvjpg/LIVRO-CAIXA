@@ -435,25 +435,7 @@
       <div class="profile-group">
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-rr-settings" aria-hidden="true"></i></span> Configurações gerais</div>
           <div class="profile-list profile-grouped-list">
-            <div class="profile-item grouped-item" id="btnAparencia" role="button" tabindex="0" aria-expanded="false" aria-controls="aparenciaPaletas"><span class="profile-item-icon"><i class="fi fi-rr-palette" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta do aplicativo — clique para escolher.</span></span><span class="profile-item-arrow" aria-hidden="true">›</span></div>
-            <div id="aparenciaPaletas" hidden>
-              <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
-                <span class="light-theme-picker-label">Paleta clara</span>
-                <button type="button" class="light-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"></button>
-                <button type="button" class="light-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"></button>
-                <button type="button" class="light-theme-option" data-theme="3" aria-label="Lima" aria-pressed="false" title="Lima"></button>
-                <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"></button>
-                <button type="button" class="light-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"></button>
-              </div>
-              <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
-                <span class="dark-theme-picker-label">Paleta escura</span>
-                <button type="button" class="dark-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"></button>
-                <button type="button" class="dark-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"></button>
-                <button type="button" class="dark-theme-option" data-theme="3" aria-label="Bege" aria-pressed="false" title="Bege"></button>
-                <button type="button" class="dark-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"></button>
-                <button type="button" class="dark-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"></button>
-              </div>
-            </div>
+            <div class="profile-item grouped-item" id="btnAparencia" role="button" tabindex="0" aria-haspopup="dialog"><span class="profile-item-icon"><i class="fi fi-rr-palette" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Aparência</strong><span>Tema e paleta do aplicativo — clique para escolher.</span></span><span class="profile-item-arrow" aria-hidden="true">›</span></div>
             <div class="profile-item grouped-item" id="btnCategoria" role="button" tabindex="0"><span class="profile-item-icon"><i class="fi fi-rr-tags" aria-hidden="true"></i></span><span class="profile-item-copy"><strong>Categorias</strong><span>Gerenciar categorias de lançamentos — criar, editar e excluir.</span></span><span class="profile-item-arrow">›</span></div>
             <div class="profile-item grouped-item">
               <span class="profile-item-icon"><i class="fi fi-rr-calendar" aria-hidden="true"></i></span>
@@ -473,7 +455,7 @@
             <div class="profile-item grouped-item">
               <span class="profile-item-icon"><i class="fi fi-rr-text-size" aria-hidden="true"></i></span>
               <span class="profile-item-copy"><strong>Fonte do app</strong><span>Escolha a tipografia usada nas telas.</span></span>
-              <select id="profileFont" style="width:140px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:12px;">
+              <select id="profileFont" style="width:120px;padding:5px 7px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:11px;">
                 <option value="plus-jakarta">Plus Jakarta Sans</option>
                 <option value="inter">Inter</option>
                 <option value="roboto">Roboto</option>
@@ -1600,6 +1582,34 @@
       <p class="hint ocr-review-hint" id="ocrReviewHint">
         A confirmação usa o fluxo de lançamento manual, com as mesmas validações e persistência.
       </p>
+    </div>
+
+    <div class="panel" id="panelThemePicker" data-no-autofocus>
+      <h3>Tema e Paleta <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
+      <div class="theme-picker-modal">
+        <div class="theme-picker-section">
+          <span class="theme-picker-label">Modo claro</span>
+          <div class="light-theme-picker" id="lightThemePicker" role="group" aria-label="Paleta do modo claro">
+            <span class="light-theme-picker-label">Paleta clara</span>
+            <button type="button" class="light-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#5F7A43"/></svg></button>
+            <button type="button" class="light-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#327957"/></svg></button>
+            <button type="button" class="light-theme-option" data-theme="3" aria-label="Lima" aria-pressed="false" title="Lima"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#40916C"/></svg></button>
+            <button type="button" class="light-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#C66F50"/></svg></button>
+            <button type="button" class="light-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#E85002"/></svg></button>
+          </div>
+        </div>
+        <div class="theme-picker-section">
+          <span class="theme-picker-label">Modo escuro</span>
+          <div class="dark-theme-picker" id="darkThemePicker" role="group" aria-label="Paleta do modo escuro">
+            <span class="dark-theme-picker-label">Paleta escura</span>
+            <button type="button" class="dark-theme-option" data-theme="1" aria-label="Oliva" aria-pressed="true" title="Oliva"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#9DD08B"/></svg></button>
+            <button type="button" class="dark-theme-option" data-theme="2" aria-label="Verde" aria-pressed="false" title="Verde"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#22C55E"/></svg></button>
+            <button type="button" class="dark-theme-option" data-theme="3" aria-label="Bege" aria-pressed="false" title="Bege"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#C9A86A"/></svg></button>
+            <button type="button" class="dark-theme-option" data-theme="4" aria-label="Terracota" aria-pressed="false" title="Terracota"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#D08860"/></svg></button>
+            <button type="button" class="dark-theme-option" data-theme="5" aria-label="Laranja" aria-pressed="false" title="Laranja"><svg class="theme-icon" viewBox="0 0 36 36"><polygon points="18,4 32,32 4,32" fill="#E85002"/></svg></button>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
