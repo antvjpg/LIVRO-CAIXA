@@ -50,6 +50,7 @@ function editInstitution(btn, key) {
 
   /* [JS 08] RENDERIZAÇÃO / VIEWS */
   let patrimonySparklineInstance;
+  let investBreakdownChartInstance;
 
   let PATRIMONY_SPARK_STORAGE_KEY;
 
@@ -196,27 +197,70 @@ function editInstitution(btn, key) {
   }
 
   function renderInvestBreakdown() {
+    if (investBreakdownChartInstance) {
+      investBreakdownChartInstance.destroy();
+      investBreakdownChartInstance = null;
+    }
     const box = document.getElementById('investBreakdownBox');
     if (!box || !Array.isArray(window.investments)) return;
     const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(window.investments) : [];
-    const totalValue = window.investments.reduce((sum, inv) => sum + (Number(inv?.value || 0) * Number(inv?.units || 1)), 0);
     if (!groups.length) {
       box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
       return;
     }
-    const rows = groups.map(g => {
+    box.innerHTML = '<canvas id="investBreakdownChart" role="img" aria-label="Separação de investimentos por instituição" style="max-height:260px;"></canvas>';
+    const canvas = document.getElementById('investBreakdownChart');
+    if (!canvas) return;
+    const totalValue = window.investments.reduce((sum, inv) => sum + (Number(inv?.value || 0) * Number(inv?.units || 1)), 0);
+    const labels = groups.map(g => g.label);
+    const values = groups.map(g => {
       const groupTotal = g.investments.reduce((sum, inv) => sum + (Number(inv?.value || 0) * Number(inv?.units || 1)), 0);
-      const pct = totalValue > 0 ? (groupTotal / totalValue) * 100 : 0;
-      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px dashed var(--line);font-size:11px;">
-        <span style="flex:1;min-width:0;color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHTML(g.label)}</span>
-        <span style="flex:0 0 80px;text-align:right;color:var(--ink);font-weight:700;">${fmt(groupTotal)}</span>
-        <span style="flex:0 0 48px;text-align:right;color:var(--ink-soft);font-size:10px;">${pct.toFixed(0)}%</span>
-        <div style="flex:0 0 60px;height:6px;background:var(--line);border-radius:999px;overflow:hidden;">
-          <span style="display:block;height:100%;width:${pct.toFixed(1)}%;background:var(--accent);border-radius:inherit;"></span>
-        </div>
-      </div>`;
-    }).join('');
-    box.innerHTML = `<div style="font-size:10px;font-weight:800;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:6px;padding:0 4px;">SEPARAÇÃO POR INSTITUIÇÃO</div>` + rows;
+      return totalValue > 0 ? (groupTotal / totalValue) * 100 : 0;
+    });
+    const styles = getComputedStyle(document.body);
+    const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
+    const toRgb = (value) => {
+      const v = String(value || '').trim();
+      let match = v.match(/^#([0-9a-fA-F]{6})$/);
+      if (match) return [(parseInt(match[1], 16) >> 16) & 255, (parseInt(match[1], 16) >> 8) & 255, parseInt(match[1], 16) & 255];
+      match = v.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+      return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : null;
+    };
+    const hueCandidates = [readVar('--accent', ''), readVar('--gold', ''), readVar('--green', '')].map(toRgb).filter(Boolean);
+    const colors = hueCandidates.length ? hueCandidates : [[28, 43, 36]];
+    investBreakdownChartInstance = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '% do total',
+          data: values,
+          backgroundColor: colors.map((c, i) => {
+            const alpha = 0.85 - (i * 0.1);
+            return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + Math.max(alpha, 0.35) + ')';
+          }),
+          borderRadius: 8,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            displayColors: true,
+            callbacks: {
+              label: context => ' ' + context.raw.toFixed(0) + '% do total'
+            }
+          }
+        },
+        scales: {
+          y: { beginAtZero: true, max: Math.max(100, ...values.map(Math.ceil)) + 10, ticks: { callback: v => v + '%' } },
+          x: { ticks: { font: { size: 11 } } }
+        }
+      }
+    });
   }
 
   function renderBalances() {

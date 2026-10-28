@@ -58,7 +58,8 @@
     .balance-card .balance-symbol svg{width:16px;height:16px;}
     .balance-card.total .balance-symbol{width:43px;height:43px;min-width:43px;border-radius:14px;background:rgba(255,255,255,.14);color:#F3FBF5;box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);}
     .balance-card.total .balance-symbol svg{width:22px;height:22px;}
-    .invest-summary-card .balance-symbol{background:var(--green-soft);color:var(--accent);}
+    .invest-summary-card .balance-symbol{background:var(--green-soft);color:var(--accent);cursor:pointer;}
+    .invest-summary-card .balance-symbol:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
     .bank-summary-card, .pocket-summary-card, .invest-summary-card {
       display:flex; flex-direction:column; align-items:flex-start;
       min-height:158px; padding:14px 12px 12px;
