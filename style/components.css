@@ -586,6 +586,32 @@
     
     color:var(--ink-soft);
   }
+  .rentability-inline{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-left:8px;
+    vertical-align:middle;
+  }
+  .rentability-inline::before{
+    content:"•";
+    color:var(--ink-soft);
+    opacity:.7;
+  }
+  .rentability-inline.positive{
+    color:var(--green);
+  }
+  .rentability-inline.negative{
+    color:var(--red);
+  }
+  .rentability-inline.positive::before{
+    color:var(--green);
+  }
+  .rentability-inline.negative::before{
+    color:var(--red);
+  }
 
   .fab-add{
     position:fixed;

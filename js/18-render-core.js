@@ -961,6 +961,10 @@ function editInstitution(btn, key) {
     const items = yieldsLog.filter(y => y.targetType === targetType && y.targetId === targetId && periodMatchesMovement(y) && (y.kind || 'rendimento') === 'rendimento');
     if (items.length === 0) return '';
     const totalYield = items.reduce((s, y) => s + y.amount, 0);
+    const sign = totalYield >= 0 ? '+' : '';
+    if (targetType === 'pocket') {
+      return `<span class="rentability-inline">${sign}${fmt(totalYield)} (Rendimento)</span>`;
+    }
     const baseValue = currentValue - totalYield;
     const firstDate = items.map(y => y.date).sort()[0];
     const days = Math.max(1, Math.round((new Date(todayISO()) - new Date(firstDate)) / 86400000));
@@ -1064,7 +1068,7 @@ function editInstitution(btn, key) {
         '          ' + investmentReferenceHTML(inv),
         '          ' + (inv.dueDate ? '<span>Venc.: ' + inv.dueDate.split('-').reverse().join('/') + '</span>' : ''),
         '        </div>',
-        '        ' + (() => { const items = yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === inv.id && periodMatchesMovement(y) && (y.kind || 'rendimento') === 'rendimento'); if (!items.length) return ''; const totalYield = items.reduce((s, y) => s + y.amount, 0); return `<span class="rentability-text">${fmt(totalYield)} (rendimento)</span>`; })(),
+        '        ' + (() => { const items = yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === inv.id && periodMatchesMovement(y) && (y.kind || 'rendimento') === 'rendimento'); if (!items.length) return ''; const totalYield = items.reduce((s, y) => s + y.amount, 0); return `<span class="rentability-inline${totalYield >= 0 ? ' positive' : ' negative'}">${totalYield >= 0 ? '+' : ''}${fmt(totalYield)} (Rendimento)</span>`; })(),
         '        ' + yieldHistoryHTML('invest', inv.id),
         '        <div class="asset-card-actions item-action-row">',
         '          <div class="reorder-actions">',
