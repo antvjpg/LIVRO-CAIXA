@@ -384,6 +384,8 @@ document.addEventListener('DOMContentLoaded', () => {
   patrimonySparklineInstance = null;
   PATRIMONY_SPARK_STORAGE_KEY = 'livro-caixa-patrimony-spark';
   patrimonySparkVisible = localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY) !== '0';
+  INVEST_TOTAL_EXPANDED_KEY = 'livro-caixa-invest-total-expanded';
+  investTotalExpanded = localStorage.getItem(INVEST_TOTAL_EXPANDED_KEY) === '1';
   CATEGORY_PALETTE = ['#93584B', '#386D54', '#B89034', '#426980', '#593553', '#AA825A', '#678974', '#AC5E88'];
   CATEGORY_ICON_RULES = [
     [/aliment|restaur|mercado|comida/i, '🍔'], [/transporte|uber|ônibus|combust/i, '🚗'],

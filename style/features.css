@@ -4909,6 +4909,9 @@ body[data-tab="dash"] .fab-add{
 #viewInvest .balance-card.total{
   padding:14px 16px;
   border-radius:16px;
+  overflow:hidden;
+  height:110px;
+  transition:height .3s ease,max-height .3s ease;
 }
 #investBalanceStrip .balance-card.total .label,
 #investBalanceStrip .balance-card.total .balance-card-head .label{
@@ -4920,12 +4923,6 @@ body[data-tab="dash"] .fab-add{
   font-size:11px;font-weight:700;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:8px;padding:4px 8px;cursor:pointer;
 }
 #viewInvest .invest-total-expand-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-#investBalanceStrip .balance-card.total,
-#viewInvest .balance-card.total{
-  overflow:hidden;
-  height:110px;
-  transition:height .3s ease,max-height .3s ease;
-}
 #investBalanceStrip .balance-card.total.is-expanded,
 #viewInvest .balance-card.total.is-expanded{
   height:auto;

@@ -57,6 +57,13 @@ function editInstitution(btn, key) {
   let patrimonySparkVisible;
   let investBreakdownVisible = false;
   let investTotalExpanded = false;
+  const INVEST_TOTAL_EXPANDED_KEY = 'livro-caixa-invest-total-expanded';
+
+  function saveInvestTotalExpanded() {
+    try {
+      localStorage.setItem(INVEST_TOTAL_EXPANDED_KEY, investTotalExpanded ? '1' : '0');
+    } catch (_) { /* armazenamento indisponível */ }
+  }
 
   function renderPatrimonySparkline(enabled) {
     if (patrimonySparklineInstance) {
@@ -201,9 +208,11 @@ function editInstitution(btn, key) {
     // Alterna entre dois tamanhos de card definidos no CSS (normal 110px / expandido 340px)
     // e mostra/oculta o breakdown de investimentos por instituição abaixo do total.
     investTotalExpanded = !investTotalExpanded;
+    saveInvestTotalExpanded();
     const card = document.querySelector('#investBalanceStrip .balance-card.total');
     const symbol = card?.querySelector('.balance-symbol');
     const box = document.getElementById('investTotalBox');
+    const btn = document.getElementById('btnExpandInvestTotal');
     if (symbol) {
       symbol.setAttribute('aria-expanded', String(investTotalExpanded));
       symbol.setAttribute('aria-label', investTotalExpanded ? 'Recolher total investido' : 'Expandir total investido');
@@ -218,6 +227,10 @@ function editInstitution(btn, key) {
         renderInvestTotalBox();
       }
     }
+    if (btn) {
+      btn.setAttribute('aria-expanded', String(investTotalExpanded));
+      btn.textContent = investTotalExpanded ? 'Recolher' : 'Expandir';
+    }
   }
 
   function renderInvestTotalBox() {
@@ -228,6 +241,7 @@ function editInstitution(btn, key) {
     }
     if (!Array.isArray(investments)) {
       logWarn('Investimentos', 'Box total investido', 'Atenção', 'Coleção investments não é um array', { typeof: typeof investments });
+      box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
       return;
     }
     const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
@@ -235,14 +249,7 @@ function editInstitution(btn, key) {
       box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
       return;
     }
-    const total = investments.reduce((sum, inv) => {
-      if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
-      let v = Number(inv.value);
-      if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
-        v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
-      }
-      return sum + (Number(v) || 0);
-    }, 0);
+    const total = totalInvestBalance();
     const rows = groups.map(g => {
       const groupTotal = g.investments.reduce((sum, inv) => {
         if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
@@ -258,7 +265,8 @@ function editInstitution(btn, key) {
         <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
       </div>`;
     }).join('');
-    box.innerHTML = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    const html = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    if (box.innerHTML !== html) box.innerHTML = html;
   }
 
   function renderInvestBreakdown() {
