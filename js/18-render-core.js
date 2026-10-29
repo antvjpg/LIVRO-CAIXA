@@ -307,7 +307,7 @@ function editInstitution(btn, key) {
     const hueCandidates = [readVar('--accent', ''), readVar('--gold', ''), readVar('--green', '')].map(toRgb).filter(Boolean);
     const colors = hueCandidates.length ? hueCandidates : [[28, 43, 36]];
     investTotalChartInstance = new Chart(canvas, {
-      type: 'bar',
+      type: 'pie',
       data: {
         labels: labels,
         datasets: [{
@@ -317,24 +317,27 @@ function editInstitution(btn, key) {
             const alpha = 0.85 - (i * 0.1);
             return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + Math.max(alpha, 0.35) + ')';
           }),
-          borderRadius: 6,
-          borderSkipped: false
+          borderColor: 'var(--paper)',
+          borderWidth: 2
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { display: false },
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              font: { size: 11 },
+              padding: 12
+            }
+          },
           tooltip: {
             callbacks: {
-              label: context => ' ' + context.raw.toFixed(1) + '% do total'
+              label: context => context.label + ': ' + context.raw.toFixed(1) + '%'
             }
           }
-        },
-        scales: {
-          y: { beginAtZero: true, max: Math.max(100, ...values.map(Math.ceil)) + 10, ticks: { callback: v => v + '%' } },
-          x: { ticks: { font: { size: 11 } } }
         }
       }
     });
