@@ -296,7 +296,7 @@ function editInstitution(btn, key) {
         <span class="cat-pct">${pct}%</span>
       </div>`;
     }).join('');
-    const html = `<div class="cat-summary" style="padding-top:10px;padding-bottom:12px;">
+    const html = `<div style="padding-top:10px;padding-bottom:12px;">
       <div class="chart-container">
         <canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;display:block;"></canvas>
         <div id="investTotalCenterOverlay" class="chart-center-total" aria-hidden="true"><span class="chart-center-total-label">Total</span><strong id="investTotalCenterValue" class="chart-center-total-value">${fmt(total)}</strong></div>
