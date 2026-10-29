@@ -271,7 +271,7 @@ function editInstitution(btn, key) {
         <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
       </div>`;
     }).join('');
-    const html = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="max-height:160px;width:100%;display:block;"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    const html = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="max-height:160px;max-width:260px;width:100%;display:block;"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
     if (box.innerHTML !== html) box.innerHTML = html;
     renderInvestTotalChart(groups, total);
   }
@@ -307,7 +307,7 @@ function editInstitution(btn, key) {
     const hueCandidates = [readVar('--accent', ''), readVar('--gold', ''), readVar('--green', '')].map(toRgb).filter(Boolean);
     const colors = hueCandidates.length ? hueCandidates : [[28, 43, 36]];
     investTotalChartInstance = new Chart(canvas, {
-      type: 'pie',
+      type: 'doughnut',
       data: {
         labels: labels,
         datasets: [{
@@ -324,13 +324,15 @@ function editInstitution(btn, key) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        cutout: '70%',
         plugins: {
           legend: {
             display: true,
-            position: 'bottom',
+            position: 'left',
             labels: {
               font: { size: 11 },
-              padding: 12
+              padding: 12,
+              boxWidth: 14
             }
           },
           tooltip: {
