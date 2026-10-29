@@ -58,6 +58,7 @@ function editInstitution(btn, key) {
   let investBreakdownVisible = false;
   let investTotalExpanded = false;
   let investTotalDonutInstance;
+  let investTotalDonutTimer = null;
 
   function renderPatrimonySparkline(enabled) {
     if (patrimonySparklineInstance) {
@@ -201,6 +202,7 @@ function editInstitution(btn, key) {
   function toggleInvestTotal() {
     // Alterna entre dois tamanhos de card definidos no CSS (normal 110px / expandido 340px)
     // e mostra/oculta o breakdown de investimentos por instituição abaixo do total.
+    destroyInvestTotalDonut();
     investTotalExpanded = !investTotalExpanded;
     const card = document.querySelector('#investBalanceStrip .balance-card.total');
     const symbol = card?.querySelector('.balance-symbol');
@@ -219,7 +221,10 @@ function editInstitution(btn, key) {
       if (investTotalExpanded) {
         renderInvestTotalBox();
         // Pequeno atraso para garantir que o canvas esteja no DOM e com dimensões antes de criar o gráfico
-        setTimeout(() => renderInvestTotalDonut(), 100);
+        investTotalDonutTimer = setTimeout(() => {
+          investTotalDonutTimer = null;
+          renderInvestTotalDonut();
+        }, 100);
       } else {
         destroyInvestTotalDonut();
       }
@@ -227,6 +232,10 @@ function editInstitution(btn, key) {
   }
 
   function destroyInvestTotalDonut() {
+    if (investTotalDonutTimer !== null) {
+      clearTimeout(investTotalDonutTimer);
+      investTotalDonutTimer = null;
+    }
     if (investTotalDonutInstance) {
       try {
         investTotalDonutInstance.destroy();
@@ -261,7 +270,14 @@ function editInstitution(btn, key) {
     const rect = canvas.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) {
       logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Canvas sem dimensões válidas', { width: rect.width, height: rect.height });
-      setTimeout(() => renderInvestTotalDonut(), 100);
+      if (investTotalDonutTimer !== null) {
+        clearTimeout(investTotalDonutTimer);
+        investTotalDonutTimer = null;
+      }
+      investTotalDonutTimer = setTimeout(() => {
+        investTotalDonutTimer = null;
+        renderInvestTotalDonut();
+      }, 100);
       return;
     }
     const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
@@ -1475,6 +1491,7 @@ function renderCategoryManageList() {
 
 
   function renderInvestments() {
+    destroyInvestTotalDonut();
     applyCachedQuotesToInvestments();
     const container = document.getElementById('investGrid');
     const summary = document.getElementById('investBalanceStrip');
@@ -1513,7 +1530,10 @@ function renderCategoryManageList() {
       const card = summary.querySelector('.balance-card.total');
       card?.classList.add('is-expanded');
       renderInvestTotalBox();
-      setTimeout(() => renderInvestTotalDonut(), 0);
+      investTotalDonutTimer = setTimeout(() => {
+        investTotalDonutTimer = null;
+        renderInvestTotalDonut();
+      }, 100);
     }
   }
 
