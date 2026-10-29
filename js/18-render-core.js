@@ -265,7 +265,7 @@ function editInstitution(btn, key) {
       return;
     }
     const total = totalInvestBalance();
-    const maxGroupTotal = groups.reduce((max, g) => {
+    const groupsWithTotals = groups.map(g => {
       const groupTotal = g.investments.reduce((sum, inv) => {
         if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
         let v = Number(inv.value);
@@ -274,25 +274,18 @@ function editInstitution(btn, key) {
         }
         return sum + (Number(v) || 0);
       }, 0);
-      return Math.max(max, groupTotal);
-    }, 0);
-    const rows = groups.map((g, gi) => {
-      const groupTotal = g.investments.reduce((sum, inv) => {
-        if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
-        let v = Number(inv.value);
-        if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
-          v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
-        }
-        return sum + (Number(v) || 0);
-      }, 0);
-      const pctNum = total > 0 ? (groupTotal / total) * 100 : 0;
-      const barPct = maxGroupTotal > 0 ? (groupTotal / maxGroupTotal) * 100 : 0;
+      return { ...g, groupTotal };
+    }).sort((a, b) => b.groupTotal - a.groupTotal);
+    const maxGroupTotal = groupsWithTotals.reduce((max, g) => Math.max(max, g.groupTotal), 0);
+    const rows = groupsWithTotals.map((g, gi) => {
+      const pctNum = total > 0 ? (g.groupTotal / total) * 100 : 0;
+      const barPct = maxGroupTotal > 0 ? (g.groupTotal / maxGroupTotal) * 100 : 0;
       const pct = pctNum.toFixed(1).replace('.', ',');
       const color = categoryColor({ name: g.label });
       return `<div class="cat-row" style="--category-color:${color};cursor:pointer;" data-index="${gi}">
         <span class="cat-name">${escapeHTML(g.label)}</span>
         <span class="cat-bar-wrap"><div class="cat-bar" style="width:${barPct}%"></div></span>
-        <span class="cat-amt">${fmt(groupTotal)}</span>
+        <span class="cat-amt">${fmt(g.groupTotal)}</span>
         <span class="cat-pct">${pct}%</span>
       </div>`;
     }).join('');
@@ -325,7 +318,7 @@ function editInstitution(btn, key) {
     const valueEl = document.getElementById('investTotalCenterValue');
     if (valueEl) {
       const slice = investTotalActiveSliceIndex !== null ? groupsByIndex[investTotalActiveSliceIndex] : null;
-      valueEl.textContent = slice ? fmt(slice.total) : fmt(totalInvestBalance());
+      valueEl.textContent = slice ? fmt(slice.groupTotal) : fmt(totalInvestBalance());
     }
     if (!investTotalChartInstance) return;
     investTotalChartInstance.data.datasets[0].backgroundColor = investTotalBaseColors.map((color, sliceIndex) =>
