@@ -58,6 +58,7 @@ function editInstitution(btn, key) {
   let investBreakdownVisible = false;
   let investTotalExpanded = false;
   let investTotalChartInstance;
+  let investTotalActiveSliceIndex = null;
   const INVEST_TOTAL_EXPANDED_KEY = 'livro-caixa-invest-total-expanded';
 
   function saveInvestTotalExpanded() {
@@ -231,6 +232,7 @@ function editInstitution(btn, key) {
           try { investTotalChartInstance.destroy(); } catch (_) {}
           investTotalChartInstance = null;
         }
+        investTotalActiveSliceIndex = null;
       }
     }
     if (btn) {
@@ -273,23 +275,62 @@ function editInstitution(btn, key) {
         return sum + (Number(v) || 0);
       }, 0);
       const pct = total > 0 ? (groupTotal / total * 100).toFixed(1).replace('.', ',') : '0,0';
-      return `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:6px 0;">
+      return `<div class="invest-total-row" style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:6px 0;cursor:pointer;">
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;">${truncateText(g.label)}</span>
         <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
       </div>`;
     }).join('');
-    const html = `<div style="padding:12px 14px;display:flex;gap:10px;align-items:flex-start;"><div style="flex:1;min-width:0;overflow:hidden;">${rows}</div><div style="position:relative;flex-shrink:0;"><canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="max-height:140px;max-width:220px;width:100%;display:block;"></canvas><div id="investTotalCenterOverlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;"><div style="font-size:11px;color:var(--ink-soft);">Total</div><strong id="investTotalCenterValue" style="font-size:13px;color:var(--ink);font-weight:700;">${fmt(total)}</strong></div></div></div><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    const html = `<div style="padding:12px 14px;display:flex;gap:10px;align-items:flex-start;"><div style="flex:1;min-width:0;overflow:hidden;">${rows}</div><div style="position:relative;flex-shrink:0;"><canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;display:block;"></canvas><div id="investTotalCenterOverlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;"><div style="font-size:11px;color:var(--ink-soft);">Total</div><strong id="investTotalCenterValue" style="font-size:13px;color:var(--ink);font-weight:700;">${fmt(total)}</strong></div></div></div><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
     if (box.innerHTML !== html) box.innerHTML = html;
+    box.querySelectorAll('.invest-total-row').forEach((row, index) => {
+      row.addEventListener('click', () => { investTotalToggleSlice(index); });
+    });
     renderInvestTotalChart(groups, total);
   }
+
+  function investTotalToggleSlice(index) {
+    investTotalActiveSliceIndex = investTotalActiveSliceIndex === index ? null : index;
+    investTotalApplyActiveSlice();
+  }
+
+  function investTotalApplyActiveSlice() {
+    const valueEl = document.getElementById('investTotalCenterValue');
+    if (valueEl) {
+      const slice = investTotalActiveSliceIndex !== null ? groupsByIndex[investTotalActiveSliceIndex] : null;
+      valueEl.textContent = slice ? fmt(slice.total) : fmt(totalInvestBalance());
+    }
+    if (!investTotalChartInstance) return;
+    investTotalChartInstance.data.datasets[0].backgroundColor = investTotalBaseColors.map((color, sliceIndex) =>
+      (investTotalActiveSliceIndex === null || sliceIndex === investTotalActiveSliceIndex) ? color : investTotalDimSliceColor(color)
+    );
+    if (investTotalActiveSliceIndex !== null) {
+      investTotalChartInstance.data.datasets[0].offset = groups.map((_, sliceIndex) => sliceIndex === investTotalActiveSliceIndex ? 6 : 0);
+    } else {
+      investTotalChartInstance.data.datasets[0].offset = groups.map(() => 0);
+    }
+    investTotalChartInstance.update();
+  }
+
+  function investTotalDimSliceColor(color) {
+    if (typeof color !== 'string') return color;
+    if (/^#[0-9a-fA-F]{6}$/.test(color)) return color + '40';
+    const hslMatch = color.match(/^hsl\((.+)\)$/);
+    if (hslMatch) return 'hsla(' + hslMatch[1] + ', 0.3)';
+    return color;
+  }
+
+  let investTotalBaseColors = [];
+  let groupsByIndex = [];
 
   function renderInvestTotalChart(groups, total) {
     if (investTotalChartInstance) {
       try { investTotalChartInstance.destroy(); } catch (_) {}
       investTotalChartInstance = null;
     }
+    investTotalActiveSliceIndex = null;
     const canvas = document.getElementById('investTotalChart');
     if (!canvas || !groups.length) return;
+    groupsByIndex = groups;
     const labels = groups.map(g => truncateText(g.label));
     const rawValues = groups.map(g => {
       const groupTotal = g.investments.reduce((sum, inv) => {
@@ -310,15 +351,8 @@ function editInstitution(btn, key) {
     const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
     const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
     const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
-    const toRgb = (value) => {
-      const v = String(value || '').trim();
-      let match = v.match(/^#([0-9a-fA-F]{6})$/);
-      if (match) return [(parseInt(match[1], 16) >> 16) & 255, (parseInt(match[1], 16) >> 8) & 255, parseInt(match[1], 16) & 255];
-      match = v.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
-      return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : null;
-    };
-    const hueCandidates = [readVar('--accent', ''), readVar('--gold', ''), readVar('--green', '')].map(toRgb).filter(Boolean);
-    const colors = hueCandidates.length ? hueCandidates : [[28, 43, 36]];
+    // Usa categoryColor para cores consistentes com o restante do app
+    investTotalBaseColors = groups.map(g => categoryColor({ name: g.label }));
     // Overlay de total no centro (mesmo plugin do gráfico de categoria)
     const centerTotalOverlayPlugin = {
       id: 'investTotalCenterOverlay',
@@ -340,10 +374,7 @@ function editInstitution(btn, key) {
         datasets: [{
           label: '% do total',
           data: displayValues,
-          backgroundColor: colors.map((c, i) => {
-            const alpha = 0.85 - (i * 0.1);
-            return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + Math.max(alpha, 0.35) + ')';
-          }),
+          backgroundColor: investTotalBaseColors,
           borderColor: borderColor,
           borderWidth: 2
         }]
@@ -353,12 +384,20 @@ function editInstitution(btn, key) {
         responsive: true,
         maintainAspectRatio: false,
         cutout: isMobileLayout ? '67%' : '62%',
+        onClick: function(event, elements) {
+          if (elements.length) investTotalToggleSlice(elements[0].index);
+          else if (investTotalActiveSliceIndex !== null) {
+            investTotalActiveSliceIndex = null;
+            investTotalApplyActiveSlice();
+          }
+        },
         plugins: {
           legend: { display: false },
           tooltip: { enabled: false }
         }
       }
     });
+    investTotalApplyActiveSlice();
   }
 
   function renderInvestBreakdown() {
