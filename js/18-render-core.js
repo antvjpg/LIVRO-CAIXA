@@ -57,8 +57,6 @@ function editInstitution(btn, key) {
   let patrimonySparkVisible;
   let investBreakdownVisible = false;
   let investTotalExpanded = false;
-  let investTotalDonutInstance;
-  let investTotalDonutTimer = null;
 
   function renderPatrimonySparkline(enabled) {
     if (patrimonySparklineInstance) {
@@ -202,7 +200,6 @@ function editInstitution(btn, key) {
   function toggleInvestTotal() {
     // Alterna entre dois tamanhos de card definidos no CSS (normal 110px / expandido 340px)
     // e mostra/oculta o breakdown de investimentos por instituição abaixo do total.
-    destroyInvestTotalDonut();
     investTotalExpanded = !investTotalExpanded;
     const card = document.querySelector('#investBalanceStrip .balance-card.total');
     const symbol = card?.querySelector('.balance-symbol');
@@ -212,7 +209,6 @@ function editInstitution(btn, key) {
       symbol.setAttribute('aria-label', investTotalExpanded ? 'Recolher total investido' : 'Expandir total investido');
     }
     if (card) {
-      // Aplica/remove classe que controla o tamanho reduzido do card em estado expandido.
       card.classList.toggle('is-expanded', investTotalExpanded);
     }
     if (box) {
@@ -220,139 +216,7 @@ function editInstitution(btn, key) {
       box.setAttribute('aria-hidden', String(!investTotalExpanded));
       if (investTotalExpanded) {
         renderInvestTotalBox();
-        // Pequeno atraso para garantir que o canvas esteja no DOM e com dimensões antes de criar o gráfico
-        investTotalDonutTimer = setTimeout(() => {
-          investTotalDonutTimer = null;
-          renderInvestTotalDonut();
-        }, 100);
-      } else {
-        destroyInvestTotalDonut();
       }
-    }
-  }
-
-  function destroyInvestTotalDonut() {
-    if (investTotalDonutTimer !== null) {
-      clearTimeout(investTotalDonutTimer);
-      investTotalDonutTimer = null;
-    }
-    if (investTotalDonutInstance) {
-      try {
-        investTotalDonutInstance.destroy();
-      } catch (_) {
-        /* destroy pode falhar se o canvas já foi removido do DOM */
-      }
-      investTotalDonutInstance = null;
-    }
-  }
-
-  function renderInvestTotalDonut() {
-    const canvas = document.getElementById('investTotalDonutChart');
-    if (!canvas) {
-      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Canvas #investTotalDonutChart não encontrado no DOM');
-      return;
-    }
-    if (!Array.isArray(investments)) {
-      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Coleção investments não é um array', { typeof: typeof investments });
-      return;
-    }
-    if (typeof Chart === 'undefined') {
-      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Biblioteca Chart.js não disponível (typeof Chart === undefined)');
-      return;
-    }
-    const box = document.getElementById('investTotalBox');
-    if (box && (box.classList.contains('is-collapsed') || box.getAttribute('aria-hidden') === 'true')) {
-      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Box #investTotalBox está colapsada ou oculta; gráfico não renderizado');
-      return;
-    }
-    destroyInvestTotalDonut();
-    // Verifica se o canvas tem dimensões válidas antes de criar o gráfico
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) {
-      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Canvas sem dimensões válidas', { width: rect.width, height: rect.height });
-      if (investTotalDonutTimer !== null) {
-        clearTimeout(investTotalDonutTimer);
-        investTotalDonutTimer = null;
-      }
-      investTotalDonutTimer = setTimeout(() => {
-        investTotalDonutTimer = null;
-        renderInvestTotalDonut();
-      }, 100);
-      return;
-    }
-    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
-    if (!groups.length) {
-      // Sem dados para o gráfico: exibe aviso simples no lugar do canvas
-      canvas.parentNode?.insertAdjacentHTML('afterend', '<div style="font-size:11px;color:var(--ink-soft);padding:8px 0 0 0;">Sem dados para o gráfico.</div>');
-      return;
-    }
-    try {
-      const total = investments.reduce((sum, inv) => {
-        if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
-        let v = Number(inv.value);
-        if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
-          v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
-        }
-        return sum + (Number(v) || 0);
-      }, 0);
-      const labels = groups.map(g => g.label);
-      const values = groups.map(g => {
-        const groupTotal = g.investments.reduce((sum, inv) => {
-          if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
-          let v = Number(inv.value);
-          if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
-            v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
-          }
-          return sum + (Number(v) || 0);
-        }, 0);
-        return total > 0 ? groupTotal : 0;
-      });
-      const isDark = document.body.classList.contains('dark-mode');
-      const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
-      const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
-      const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
-
-      investTotalDonutInstance = new Chart(canvas, {
-        type: 'doughnut',
-        data: {
-          labels: labels,
-          datasets: [{
-            data: values,
-            backgroundColor: labels.map((_, i) => categoryColor({ name: labels[i] })),
-            borderColor: borderColor,
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: isMobileLayout ? '67%' : '62%',
-          plugins: {
-            legend: {
-              display: !isMobileLayout,
-              position: 'bottom',
-              labels: {
-                font: { family: 'var(--font-ui)', size: 10, weight: '500' },
-                color: textColor,
-                boxWidth: 10,
-                padding: 10
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const val = values[context.dataIndex] || 0;
-                  const pct = total > 0 ? (val / total * 100).toFixed(1).replace('.', ',') : '0,0';
-                  return context.label + ': ' + fmt(val) + ' (' + pct + '%)';
-                }
-              }
-            }
-          }
-        }
-      });
-    } catch (err) {
-      logSyncError('gráfico donut total investido', err);
-      canvas.parentNode?.insertAdjacentHTML('afterend', '<div style="font-size:11px;color:var(--ink-soft);padding:8px 0 0 0;">Não foi possível renderizar o gráfico.</div>');
     }
   }
 
@@ -394,7 +258,7 @@ function editInstitution(btn, key) {
         <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
       </div>`;
     }).join('');
-    box.innerHTML = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalDonutChart" class="invest-total-donut-canvas" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;display:block;"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    box.innerHTML = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
   }
 
   function renderInvestBreakdown() {
@@ -1491,7 +1355,6 @@ function renderCategoryManageList() {
 
 
   function renderInvestments() {
-    destroyInvestTotalDonut();
     applyCachedQuotesToInvestments();
     const container = document.getElementById('investGrid');
     const summary = document.getElementById('investBalanceStrip');
@@ -1526,17 +1389,10 @@ function renderCategoryManageList() {
       investTotalBtn.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(); } });
       investTotalBtn.dataset.listenerAttached = '1';
     }
-    // Se o card já estiver expandido, re-renderiza o conteúdo da box (o innerHTML
-    // acima a apagou) e recria o gráfico de donut. Também reaplica a classe
-    // is-expanded, pois o innerHTML recria o elemento e remove classes dinâmicas.
     if (investTotalExpanded) {
       const card = summary.querySelector('.balance-card.total');
       card?.classList.add('is-expanded');
       renderInvestTotalBox();
-      investTotalDonutTimer = setTimeout(() => {
-        investTotalDonutTimer = null;
-        renderInvestTotalDonut();
-      }, 100);
     }
   }
 
