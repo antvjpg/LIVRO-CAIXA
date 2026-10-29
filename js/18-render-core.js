@@ -218,8 +218,8 @@ function editInstitution(btn, key) {
       box.setAttribute('aria-hidden', String(!investTotalExpanded));
       if (investTotalExpanded) {
         renderInvestTotalBox();
-        // Pequeno atraso para garantir que o canvas esteja no DOM antes de criar o gráfico
-        setTimeout(() => renderInvestTotalDonut(), 0);
+        // Pequeno atraso para garantir que o canvas esteja no DOM e com dimensões antes de criar o gráfico
+        setTimeout(() => renderInvestTotalDonut(), 100);
       } else {
         destroyInvestTotalDonut();
       }
@@ -228,15 +228,42 @@ function editInstitution(btn, key) {
 
   function destroyInvestTotalDonut() {
     if (investTotalDonutInstance) {
-      investTotalDonutInstance.destroy();
+      try {
+        investTotalDonutInstance.destroy();
+      } catch (_) {
+        /* destroy pode falhar se o canvas já foi removido do DOM */
+      }
       investTotalDonutInstance = null;
     }
   }
 
   function renderInvestTotalDonut() {
     const canvas = document.getElementById('investTotalDonutChart');
+    if (!canvas) {
+      console.warn('[invest total donut] canvas #investTotalDonutChart não encontrado no DOM');
+      return;
+    }
+    if (!Array.isArray(investments)) {
+      console.warn('[invest total donut] coleção investments não é um array:', typeof investments);
+      return;
+    }
+    if (typeof Chart === 'undefined') {
+      console.warn('[invest total donut] biblioteca Chart.js não disponível (typeof Chart === undefined)');
+      return;
+    }
+    const box = document.getElementById('investTotalBox');
+    if (box && (box.classList.contains('is-collapsed') || box.getAttribute('aria-hidden') === 'true')) {
+      console.warn('[invest total donut] box #investTotalBox está colapsada ou oculta; gráfico não renderizado');
+      return;
+    }
     destroyInvestTotalDonut();
-    if (!canvas || !Array.isArray(investments) || typeof Chart === 'undefined') return;
+    // Verifica se o canvas tem dimensões válidas antes de criar o gráfico
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) {
+      console.warn('[invest total donut] canvas sem dimensões válidas:', rect.width, 'x', rect.height, '; tentando novamente em 100ms');
+      setTimeout(() => renderInvestTotalDonut(), 100);
+      return;
+    }
     const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
     if (!groups.length) {
       // Sem dados para o gráfico: exibe aviso simples no lugar do canvas
@@ -315,7 +342,14 @@ function editInstitution(btn, key) {
 
   function renderInvestTotalBox() {
     const box = document.getElementById('investTotalBox');
-    if (!box || !Array.isArray(investments)) return;
+    if (!box) {
+      console.warn('[invest total box] elemento #investTotalBox não encontrado no DOM');
+      return;
+    }
+    if (!Array.isArray(investments)) {
+      console.warn('[invest total box] coleção investments não é um array:', typeof investments);
+      return;
+    }
     const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
     if (!groups.length) {
       box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
