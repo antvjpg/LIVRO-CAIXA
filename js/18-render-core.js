@@ -59,19 +59,11 @@ function editInstitution(btn, key) {
   let investTotalExpanded = false;
   let investTotalChartInstance;
   let investTotalActiveSliceIndex = null;
-  let investTotalViewMode = 'institution';
   const INVEST_TOTAL_EXPANDED_KEY = 'livro-caixa-invest-total-expanded';
-  const INVEST_TOTAL_VIEW_MODE_KEY = 'livro-caixa-invest-total-view-mode';
 
   function saveInvestTotalExpanded() {
     try {
       localStorage.setItem(INVEST_TOTAL_EXPANDED_KEY, investTotalExpanded ? '1' : '0');
-    } catch (_) { /* armazenamento indisponível */ }
-  }
-
-  function saveInvestTotalViewMode() {
-    try {
-      localStorage.setItem(INVEST_TOTAL_VIEW_MODE_KEY, investTotalViewMode);
     } catch (_) { /* armazenamento indisponível */ }
   }
 
@@ -272,76 +264,23 @@ function editInstitution(btn, key) {
       return;
     }
     const total = totalInvestBalance();
-    // Função para calcular valor de um investimento individual
-    const investmentValue = (inv) => {
-      if (inv.type === 'Renda Fixa') return fixedIncomeCurrentValue(inv);
-      let v = Number(inv.value);
-      if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
-        v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
-      }
-      return Number(v) || 0;
-    };
-    const isAssetView = investTotalViewMode === 'asset';
-    // Agrupa por instituição (modo padrão)
     const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
+    if (!groups.length) {
+      box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
+      return;
+    }
     const groupsWithTotals = groups.map(g => {
-      const groupTotal = g.investments.reduce((sum, inv) => sum + investmentValue(inv), 0);
+      const groupTotal = g.investments.reduce((sum, inv) => {
+        if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
+        let v = Number(inv.value);
+        if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
+          v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
+        }
+        return sum + (Number(v) || 0);
+      }, 0);
       return { ...g, groupTotal };
     }).sort((a, b) => b.groupTotal - a.groupTotal);
     const maxGroupTotal = groupsWithTotals.reduce((max, g) => Math.max(max, g.groupTotal), 0);
-    // Lista de ativos individuais (modo por ativo)
-    const assetsWithTotals = investments.map(inv => ({
-      ...inv,
-      invValue: investmentValue(inv)
-    })).filter(inv => inv.invValue > 0).sort((a, b) => b.invValue - a.invValue);
-    const maxAssetTotal = assetsWithTotals.reduce((max, a) => Math.max(max, a.invValue), 0);
-
-    if (isAssetView) {
-      const assetRows = assetsWithTotals.slice(0, 1).map((a, ai) => {
-        const pctNum = total > 0 ? (a.invValue / total) * 100 : 0;
-        const barPct = maxAssetTotal > 0 ? (a.invValue / maxAssetTotal) * 100 : 0;
-        const pct = pctNum.toFixed(1).replace('.', ',');
-        const color = categoryColor({ name: a.institution || a.name || 'Sem instituição' });
-        return `<div class="cat-row" style="--category-color:${color};cursor:pointer;" data-index="${ai}">
-          <span class="cat-name">${escapeHTML(a.alias || a.name || 'Sem nome')}</span>
-          <span class="cat-bar-wrap"><div class="cat-bar" style="width:${barPct}%"></div></span>
-          <span class="cat-amt">${fmt(a.invValue)}</span>
-          <span class="cat-pct">${pct}%</span>
-        </div>`;
-      }).join('');
-      const html = `<div style="padding-top:24px;">
-        <div class="invest-total-chart-card">
-          <div class="invest-total-view-toggle" role="group" aria-label="Modo de visualização">
-            <button type="button" class="${investTotalViewMode === 'institution' ? 'is-active' : ''}" data-invest-total-view="institution" aria-pressed="${investTotalViewMode === 'institution'}" aria-label="Por instituição" title="Por instituição"><i class="fi fi-rr-building" aria-hidden="true"></i></button>
-            <button type="button" class="${investTotalViewMode === 'asset' ? 'is-active' : ''}" data-invest-total-view="asset" aria-pressed="${investTotalViewMode === 'asset'}" aria-label="Por ativo" title="Por ativo"><i class="fi fi-rr-coins" aria-hidden="true"></i></button>
-          </div>
-          <div class="invest-total-rule"></div>
-          <div class="chart-container">
-            <canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por ativo" style="width:100%;display:block;"></canvas>
-            <div id="investTotalCenterOverlay" class="chart-center-total" aria-hidden="true"><span class="chart-center-total-label">Total</span><strong id="investTotalCenterValue" class="chart-center-total-value">${fmt(total)}</strong></div>
-          </div>
-          <div class="cat-bars-list">
-            <div class="cat-legend-head"><span>Ativo</span><span>Valor</span><span>%</span></div>
-            ${assetRows}
-          </div>
-        </div>
-      </div></div>`;
-      if (box.innerHTML !== html) box.innerHTML = html;
-      box.querySelectorAll('.cat-row').forEach((row, index) => {
-        row.addEventListener('click', () => { investTotalToggleSlice(index); });
-      });
-      box.querySelectorAll('[data-invest-total-view]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          investTotalViewMode = btn.getAttribute('data-invest-total-view');
-          saveInvestTotalViewMode();
-          renderInvestTotalBox();
-        });
-      });
-      renderInvestTotalChart(assetsWithTotals.slice(0, 1).map(a => ({ label: a.alias || a.name || 'Sem nome', investments: [a], groupTotal: a.invValue })), total);
-      return;
-    }
-
-    // Modo por instituição (padrão)
     const rows = groupsWithTotals.map((g, gi) => {
       const pctNum = total > 0 ? (g.groupTotal / total) * 100 : 0;
       const barPct = maxGroupTotal > 0 ? (g.groupTotal / maxGroupTotal) * 100 : 0;
@@ -356,16 +295,12 @@ function editInstitution(btn, key) {
     }).join('');
     const html = `<div style="padding-top:24px;">
       <div class="invest-total-chart-card">
-        <div class="invest-total-view-toggle" role="group" aria-label="Modo de visualização">
-          <button type="button" class="${investTotalViewMode === 'institution' ? 'is-active' : ''}" data-invest-total-view="institution" aria-pressed="${investTotalViewMode === 'institution'}" aria-label="Por instituição" title="Por instituição"><i class="fi fi-rr-building" aria-hidden="true"></i></button>
-          <button type="button" class="${investTotalViewMode === 'asset' ? 'is-active' : ''}" data-invest-total-view="asset" aria-pressed="${investTotalViewMode === 'asset'}" aria-label="Por ativo" title="Por ativo"><i class="fi fi-rr-coins" aria-hidden="true"></i></button>
-        </div>
         <div class="invest-total-rule"></div>
         <div class="chart-container">
           <canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;display:block;"></canvas>
           <div id="investTotalCenterOverlay" class="chart-center-total" aria-hidden="true"><span class="chart-center-total-label">Total</span><strong id="investTotalCenterValue" class="chart-center-total-value">${fmt(total)}</strong></div>
         </div>
-          <div class="cat-bars-list">
+        <div class="cat-bars-list">
           <div class="cat-legend-head"><span>Instituição</span><span>Valor</span><span>%</span></div>
           ${rows}
         </div>
@@ -374,13 +309,6 @@ function editInstitution(btn, key) {
     if (box.innerHTML !== html) box.innerHTML = html;
     box.querySelectorAll('.cat-row').forEach((row, index) => {
       row.addEventListener('click', () => { investTotalToggleSlice(index); });
-    });
-    box.querySelectorAll('[data-invest-total-view]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        investTotalViewMode = btn.getAttribute('data-invest-total-view');
-        saveInvestTotalViewMode();
-        renderInvestTotalBox();
-      });
     });
     renderInvestTotalChart(groupsWithTotals, total);
   }
