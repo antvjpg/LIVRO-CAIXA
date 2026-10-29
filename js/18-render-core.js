@@ -297,7 +297,7 @@ function editInstitution(btn, key) {
     const maxAssetTotal = assetsWithTotals.reduce((max, a) => Math.max(max, a.invValue), 0);
 
     if (isAssetView) {
-      const assetRows = assetsWithTotals.slice(0, 1).map((a, ai) => {
+      const assetRows = assetsWithTotals.map((a, ai) => {
         const pctNum = total > 0 ? (a.invValue / total) * 100 : 0;
         const barPct = maxAssetTotal > 0 ? (a.invValue / maxAssetTotal) * 100 : 0;
         const pct = pctNum.toFixed(1).replace('.', ',');
@@ -337,7 +337,7 @@ function editInstitution(btn, key) {
           renderInvestTotalBox();
         });
       });
-      renderInvestTotalChart(assetsWithTotals.slice(0, 1).map(a => ({ label: a.alias || a.name || 'Sem nome', investments: [a], groupTotal: a.invValue })), total);
+      renderInvestTotalChart(assetsWithTotals.map(a => ({ label: a.alias || a.name || 'Sem nome', investments: [a], groupTotal: a.invValue })), total);
       return;
     }
 
