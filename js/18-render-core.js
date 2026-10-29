@@ -28,19 +28,19 @@ function editInstitution(btn, key) {
   const newName = String(raw).trim();
   if (!newName) { alert('Nome não pode ser vazio.'); return; }
   if (newName === current) return;
-  if (!Array.isArray(window.investments)) { console.error('[instituição] coleção não disponível'); return; }
-  const matches = window.investments.filter(inv => inv && normalizeInstitutionKey(inv.institution) === key);
+  if (!Array.isArray(investments)) { console.error('[instituição] coleção não disponível'); return; }
+  const matches = investments.filter(inv => inv && normalizeInstitutionKey(inv.institution) === key);
   if (!matches.length) { alert('Nenhum investimento pertencia a essa instituição.'); return; }
   if (!window.confirm('Renomear "' + current + '" para "' + newName + '"?\nIsso alterará ' + matches.length + ' investimento(s) desta instituição.')) return;
   const changed = [];
-  for (const inv of window.investments) {
+  for (const inv of investments) {
     if (!inv) continue;
     if (normalizeInstitutionKey(inv.institution) === key) {
       inv.institution = newName;
       changed.push(inv.id);
     }
   }
-  window.investments = sortDisplayOrder(window.investments);
+  window.investments = sortDisplayOrder(investments);
   saveInvestments().then(() => {
     logInfo('Instituições', 'Renomear instituição', 'Sucesso', changed.length + ' investimento(s) atualizado(s) para "' + newName + '".');
     render();
@@ -236,10 +236,10 @@ function editInstitution(btn, key) {
   function renderInvestTotalDonut() {
     const canvas = document.getElementById('investTotalDonutChart');
     destroyInvestTotalDonut();
-    if (!canvas || !Array.isArray(window.investments) || typeof Chart === 'undefined') return;
-    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(window.investments) : [];
+    if (!canvas || !Array.isArray(investments) || typeof Chart === 'undefined') return;
+    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
     if (!groups.length) return;
-    const total = window.investments.reduce((sum, inv) => {
+    const total = investments.reduce((sum, inv) => {
       if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
       let v = Number(inv.value);
       if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
@@ -306,13 +306,13 @@ function editInstitution(btn, key) {
 
   function renderInvestTotalBox() {
     const box = document.getElementById('investTotalBox');
-    if (!box || !Array.isArray(window.investments)) return;
-    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(window.investments) : [];
+    if (!box || !Array.isArray(investments)) return;
+    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
     if (!groups.length) {
       box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
       return;
     }
-    const total = window.investments.reduce((sum, inv) => {
+    const total = investments.reduce((sum, inv) => {
       if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
       let v = Number(inv.value);
       if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
@@ -344,8 +344,8 @@ function editInstitution(btn, key) {
       investBreakdownChartInstance = null;
     }
     const box = document.getElementById('investBreakdownBox');
-    if (!box || !Array.isArray(window.investments)) return;
-    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(window.investments) : [];
+    if (!box || !Array.isArray(investments)) return;
+    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
     if (!groups.length) {
       box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
       return;
@@ -353,7 +353,7 @@ function editInstitution(btn, key) {
     box.innerHTML = '<canvas id="investBreakdownChart" role="img" aria-label="Separação de investimentos por instituição" style="max-height:260px;"></canvas>';
     const canvas = document.getElementById('investBreakdownChart');
     if (!canvas) return;
-    const totalValue = window.investments.reduce((sum, inv) => sum + (Number(inv?.value || 0) * Number(inv?.units || 1)), 0);
+    const totalValue = investments.reduce((sum, inv) => sum + (Number(inv?.value || 0) * Number(inv?.units || 1)), 0);
     const labels = groups.map(g => g.label);
     const values = groups.map(g => {
       const groupTotal = g.investments.reduce((sum, inv) => sum + (Number(inv?.value || 0) * Number(inv?.units || 1)), 0);
