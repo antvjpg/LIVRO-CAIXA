@@ -57,6 +57,7 @@ function editInstitution(btn, key) {
   let patrimonySparkVisible;
   let investBreakdownVisible = false;
   let investTotalExpanded = false;
+  let investTotalChartInstance;
   const INVEST_TOTAL_EXPANDED_KEY = 'livro-caixa-invest-total-expanded';
 
   function saveInvestTotalExpanded() {
@@ -225,6 +226,11 @@ function editInstitution(btn, key) {
       box.setAttribute('aria-hidden', String(!investTotalExpanded));
       if (investTotalExpanded) {
         renderInvestTotalBox();
+      } else {
+        if (investTotalChartInstance) {
+          try { investTotalChartInstance.destroy(); } catch (_) {}
+          investTotalChartInstance = null;
+        }
       }
     }
     if (btn) {
@@ -265,8 +271,73 @@ function editInstitution(btn, key) {
         <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
       </div>`;
     }).join('');
-    const html = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    const html = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="max-height:160px;width:100%;display:block;"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
     if (box.innerHTML !== html) box.innerHTML = html;
+    renderInvestTotalChart(groups, total);
+  }
+
+  function renderInvestTotalChart(groups, total) {
+    if (investTotalChartInstance) {
+      try { investTotalChartInstance.destroy(); } catch (_) {}
+      investTotalChartInstance = null;
+    }
+    const canvas = document.getElementById('investTotalChart');
+    if (!canvas || !groups.length) return;
+    const labels = groups.map(g => escapeHTML(g.label));
+    const values = groups.map(g => {
+      const groupTotal = g.investments.reduce((sum, inv) => {
+        if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
+        let v = Number(inv.value);
+        if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
+          v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
+        }
+        return sum + (Number(v) || 0);
+      }, 0);
+      return total > 0 ? (groupTotal / total) * 100 : 0;
+    });
+    const styles = getComputedStyle(document.body);
+    const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
+    const toRgb = (value) => {
+      const v = String(value || '').trim();
+      let match = v.match(/^#([0-9a-fA-F]{6})$/);
+      if (match) return [(parseInt(match[1], 16) >> 16) & 255, (parseInt(match[1], 16) >> 8) & 255, parseInt(match[1], 16) & 255];
+      match = v.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+      return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : null;
+    };
+    const hueCandidates = [readVar('--accent', ''), readVar('--gold', ''), readVar('--green', '')].map(toRgb).filter(Boolean);
+    const colors = hueCandidates.length ? hueCandidates : [[28, 43, 36]];
+    investTotalChartInstance = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '% do total',
+          data: values,
+          backgroundColor: colors.map((c, i) => {
+            const alpha = 0.85 - (i * 0.1);
+            return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + Math.max(alpha, 0.35) + ')';
+          }),
+          borderRadius: 6,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: context => ' ' + context.raw.toFixed(1) + '% do total'
+            }
+          }
+        },
+        scales: {
+          y: { beginAtZero: true, max: Math.max(100, ...values.map(Math.ceil)) + 10, ticks: { callback: v => v + '%' } },
+          x: { ticks: { font: { size: 11 } } }
+        }
+      }
+    });
   }
 
   function renderInvestBreakdown() {
@@ -1363,6 +1434,10 @@ function renderCategoryManageList() {
 
 
   function renderInvestments() {
+    if (investTotalChartInstance) {
+      try { investTotalChartInstance.destroy(); } catch (_) {}
+      investTotalChartInstance = null;
+    }
     applyCachedQuotesToInvestments();
     const container = document.getElementById('investGrid');
     const summary = document.getElementById('investBalanceStrip');
