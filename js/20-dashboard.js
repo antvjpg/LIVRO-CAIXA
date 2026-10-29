@@ -228,7 +228,7 @@
             display: !isMobileLayout,
             position: 'bottom',
             labels: {
-              font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' },
+              font: { family: 'var(--font-ui)', size: 11, weight: '500' },
               color: textColor,
               boxWidth: 12
             }
@@ -330,7 +330,7 @@
           legend: {
             position: 'bottom',
             labels: {
-              font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' },
+              font: { family: 'var(--font-ui)', size: 11, weight: '500' },
               color: inkSoft,
               boxWidth: 12,
               padding: 12
@@ -1364,7 +1364,7 @@
           legend: {
             position: 'bottom',
             labels: {
-              font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' },
+              font: { family: 'var(--font-ui)', size: 11, weight: '500' },
               color: inkSoft,
               boxWidth: 12,
               padding: 12

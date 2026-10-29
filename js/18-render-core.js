@@ -56,6 +56,8 @@ function editInstitution(btn, key) {
 
   let patrimonySparkVisible;
   let investBreakdownVisible = false;
+  let investTotalExpanded = false;
+  let investTotalDonutInstance;
 
   function renderPatrimonySparkline(enabled) {
     if (patrimonySparklineInstance) {
@@ -194,6 +196,146 @@ function editInstitution(btn, key) {
         renderInvestBreakdown();
       }
     }
+  }
+
+  function toggleInvestTotal() {
+    // Alterna entre dois tamanhos de card definidos no CSS (normal 110px / expandido 340px)
+    // e mostra/oculta o breakdown de investimentos por instituição abaixo do total.
+    investTotalExpanded = !investTotalExpanded;
+    const card = document.querySelector('#investBalanceStrip .balance-card.total');
+    const symbol = card?.querySelector('.balance-symbol');
+    const box = document.getElementById('investTotalBox');
+    if (symbol) {
+      symbol.setAttribute('aria-expanded', String(investTotalExpanded));
+      symbol.setAttribute('aria-label', investTotalExpanded ? 'Recolher total investido' : 'Expandir total investido');
+    }
+    if (card) {
+      // Aplica/remove classe que controla o tamanho reduzido do card em estado expandido.
+      card.classList.toggle('is-expanded', investTotalExpanded);
+    }
+    if (box) {
+      box.classList.toggle('is-collapsed', !investTotalExpanded);
+      box.setAttribute('aria-hidden', String(!investTotalExpanded));
+      if (investTotalExpanded) {
+        renderInvestTotalBox();
+        // Pequeno atraso para garantir que o canvas esteja no DOM antes de criar o gráfico
+        setTimeout(() => renderInvestTotalDonut(), 0);
+      } else {
+        destroyInvestTotalDonut();
+      }
+    }
+  }
+
+  function destroyInvestTotalDonut() {
+    if (investTotalDonutInstance) {
+      investTotalDonutInstance.destroy();
+      investTotalDonutInstance = null;
+    }
+  }
+
+  function renderInvestTotalDonut() {
+    const canvas = document.getElementById('investTotalDonutChart');
+    destroyInvestTotalDonut();
+    if (!canvas || !Array.isArray(window.investments) || typeof Chart === 'undefined') return;
+    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(window.investments) : [];
+    if (!groups.length) return;
+    const total = window.investments.reduce((sum, inv) => {
+      if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
+      let v = Number(inv.value);
+      if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
+        v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
+      }
+      return sum + (Number(v) || 0);
+    }, 0);
+    const labels = groups.map(g => g.label);
+    const values = groups.map(g => {
+      const groupTotal = g.investments.reduce((sum, inv) => {
+        if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
+        let v = Number(inv.value);
+        if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
+          v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
+        }
+        return sum + (Number(v) || 0);
+      }, 0);
+      return total > 0 ? groupTotal : 0;
+    });
+    const isDark = document.body.classList.contains('dark-mode');
+    const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
+    const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
+    const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
+
+    investTotalDonutInstance = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: labels.map((_, i) => categoryColor({ name: labels[i] })),
+          borderColor: borderColor,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: isMobileLayout ? '67%' : '62%',
+        plugins: {
+          legend: {
+            display: !isMobileLayout,
+            position: 'bottom',
+            labels: {
+              font: { family: 'var(--font-ui)', size: 10, weight: '500' },
+              color: textColor,
+              boxWidth: 10,
+              padding: 10
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const val = values[context.dataIndex] || 0;
+                const pct = total > 0 ? (val / total * 100).toFixed(1).replace('.', ',') : '0,0';
+                return context.label + ': ' + fmt(val) + ' (' + pct + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function renderInvestTotalBox() {
+    const box = document.getElementById('investTotalBox');
+    if (!box || !Array.isArray(window.investments)) return;
+    const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(window.investments) : [];
+    if (!groups.length) {
+      box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
+      return;
+    }
+    const total = window.investments.reduce((sum, inv) => {
+      if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
+      let v = Number(inv.value);
+      if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
+        v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
+      }
+      return sum + (Number(v) || 0);
+    }, 0);
+    const rows = groups.map(g => {
+      const groupTotal = g.investments.reduce((sum, inv) => {
+        if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
+        let v = Number(inv.value);
+        if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
+          v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
+        }
+        return sum + (Number(v) || 0);
+      }, 0);
+      const pct = total > 0 ? (groupTotal / total * 100).toFixed(1).replace('.', ',') : '0,0';
+      return `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:6px 0;">
+        <span>${escapeHTML(g.label)}</span>
+        <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
+      </div>`;
+    }).join('');
+    box.innerHTML = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalDonutChart" class="invest-total-donut-canvas" role="img" aria-label="Separação de investimentos por instituição"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
   }
 
   function renderInvestBreakdown() {
@@ -1294,7 +1436,7 @@ function renderCategoryManageList() {
     const container = document.getElementById('investGrid');
     const summary = document.getElementById('investBalanceStrip');
     const total = totalInvestBalance();
-    summary.innerHTML = `<div class="balance-card total"><div class="balance-card-head"><span class="label">Total investido</span><span class="balance-symbol" aria-hidden="true">${financialIcon('growth')}</span></div><span class="amount">${fmt(total)}</span></div>`;
+    summary.innerHTML = `<div class="balance-card total"><div class="balance-card-head"><span class="label">Total investido</span><span class="balance-symbol" role="button" tabindex="0" aria-expanded="${investTotalExpanded}" aria-controls="investTotalBox" aria-label="${investTotalExpanded ? 'Recolher total investido' : 'Expandir total investido'}">${financialIcon('growth')}</span></div><span class="amount">${fmt(total)}</span><div class="invest-total-box${investTotalExpanded ? '' : ' is-collapsed'}" id="investTotalBox" aria-hidden="${!investTotalExpanded}"></div></div>`;
     if (investments.length === 0) {
       container.innerHTML = `<div class="empty" style="grid-column: 1 / -1;">Nenhum ativo ou investimento cadastrado. Clique em "+ Novo Ativo / Cripto" para registrar.</div>`;
       return;
@@ -1302,6 +1444,31 @@ function renderCategoryManageList() {
     const groups = groupInvestmentsByInstitution(investments);
     container.innerHTML = groups.map((group, gi) => buildInvestmentsGroupCardHTML(group, gi)).join('');
     renderPriceCharts();
+    const investTotalSymbol = summary.querySelector('.balance-card.total .balance-symbol');
+    const investTotalBtn = document.getElementById('btnExpandInvestTotal');
+    const toggle = () => {
+      toggleInvestTotal();
+      if (investTotalBtn) {
+        investTotalBtn.setAttribute('aria-expanded', String(investTotalExpanded));
+        investTotalBtn.textContent = investTotalExpanded ? 'Recolher' : 'Expandir';
+      }
+    };
+    investTotalSymbol?.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+    investTotalSymbol?.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(); } });
+    // O botão do toolbar é estático (não é recriado pelo innerHTML), então seus
+    // listeners devem ser anexados apenas uma vez para evitar acumularem e
+    // dispararem toggleInvestTotal múltiplas vezes em um único clique.
+    if (investTotalBtn && !investTotalBtn.dataset.listenerAttached) {
+      investTotalBtn.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+      investTotalBtn.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(); } });
+      investTotalBtn.dataset.listenerAttached = '1';
+    }
+    // Se o card já estiver expandido, re-renderiza o conteúdo da box (o innerHTML
+    // acima a apagou) e recria o gráfico de donut.
+    if (investTotalExpanded) {
+      renderInvestTotalBox();
+      setTimeout(() => renderInvestTotalDonut(), 0);
+    }
   }
 
   function renderPocketBalances() {

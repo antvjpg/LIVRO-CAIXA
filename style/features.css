@@ -4914,6 +4914,26 @@ body[data-tab="dash"] .fab-add{
 #investBalanceStrip .balance-card.total .balance-card-head .label{
   opacity:.85;
 }
+#investBalanceStrip .invest-total-box.is-collapsed,
+#viewInvest .invest-total-box.is-collapsed{display:none;}
+#viewInvest .invest-total-expand-btn{
+  font-size:11px;font-weight:700;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:8px;padding:4px 8px;cursor:pointer;
+}
+#viewInvest .invest-total-expand-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+#viewInvest .invest-total-donut-canvas{
+  width:100%;height:140px;display:block;
+}
+#investBalanceStrip .balance-card.total,
+#viewInvest .balance-card.total{
+  overflow:visible;
+  height:110px;
+  transition:height .3s ease;
+}
+#investBalanceStrip .balance-card.total.is-expanded,
+#viewInvest .balance-card.total.is-expanded{
+  height:380px;
+  overflow:auto;
+}
 
 /* Asset / pocket cards */
 .asset-card.invest-box,
