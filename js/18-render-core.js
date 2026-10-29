@@ -288,7 +288,6 @@ function editInstitution(btn, key) {
       const groupTotal = g.investments.reduce((sum, inv) => sum + investmentValue(inv), 0);
       return { ...g, groupTotal };
     }).sort((a, b) => b.groupTotal - a.groupTotal);
-    const maxGroupTotal = groupsWithTotals.reduce((max, g) => Math.max(max, g.groupTotal), 0);
     // Lista de ativos individuais (modo por ativo)
     const assetsWithTotals = investments.map(inv => ({
       ...inv,
@@ -297,10 +296,15 @@ function editInstitution(btn, key) {
     const maxAssetTotal = assetsWithTotals.reduce((max, a) => Math.max(max, a.invValue), 0);
 
     if (isAssetView) {
-      const assetRows = assetsWithTotals.map((a, ai) => {
+      const visibleAssets = assetsWithTotals.filter(a => {
+        const pctNum = total > 0 ? (a.invValue / total) * 100 : 0;
+        return pctNum > 0;
+      });
+      const maxAssetTotal = visibleAssets.reduce((max, a) => Math.max(max, a.invValue), 0);
+      const assetRows = visibleAssets.map((a, ai) => {
         const pctNum = total > 0 ? (a.invValue / total) * 100 : 0;
         const barPct = maxAssetTotal > 0 ? (a.invValue / maxAssetTotal) * 100 : 0;
-        const pct = pctNum.toFixed(1).replace('.', ',');
+        const pct = pctNum.toFixed(2).replace('.', ',');
         const color = categoryColor({ name: a.institution || a.name || 'Sem instituição' });
         return `<div class="cat-row" style="--category-color:${color};cursor:pointer;" data-index="${ai}">
           <span class="cat-name">${escapeHTML(a.alias || a.name || 'Sem nome')}</span>
@@ -337,15 +341,20 @@ function editInstitution(btn, key) {
           renderInvestTotalBox();
         });
       });
-      renderInvestTotalChart(assetsWithTotals.map(a => ({ label: a.alias || a.name || 'Sem nome', investments: [a], groupTotal: a.invValue })), total);
+      renderInvestTotalChart(visibleAssets.map(a => ({ label: a.alias || a.name || 'Sem nome', investments: [a], groupTotal: a.invValue })), total);
       return;
     }
 
     // Modo por instituição (padrão)
-    const rows = groupsWithTotals.map((g, gi) => {
+    const visibleGroups = groupsWithTotals.filter(g => {
+      const pctNum = total > 0 ? (g.groupTotal / total) * 100 : 0;
+      return pctNum > 0;
+    });
+    const maxGroupTotal = visibleGroups.reduce((max, g) => Math.max(max, g.groupTotal), 0);
+    const rows = visibleGroups.map((g, gi) => {
       const pctNum = total > 0 ? (g.groupTotal / total) * 100 : 0;
       const barPct = maxGroupTotal > 0 ? (g.groupTotal / maxGroupTotal) * 100 : 0;
-      const pct = pctNum.toFixed(1).replace('.', ',');
+      const pct = pctNum.toFixed(2).replace('.', ',');
       const color = categoryColor({ name: g.label });
       return `<div class="cat-row" style="--category-color:${color};cursor:pointer;" data-index="${gi}">
         <span class="cat-name">${escapeHTML(g.label)}</span>
@@ -382,7 +391,7 @@ function editInstitution(btn, key) {
         renderInvestTotalBox();
       });
     });
-    renderInvestTotalChart(groupsWithTotals, total);
+    renderInvestTotalChart(visibleGroups, total);
   }
 
   function investTotalToggleSlice(index) {
@@ -440,8 +449,8 @@ function editInstitution(btn, key) {
       }, 0);
       return total > 0 ? (groupTotal / total) * 100 : 0;
     });
-    // Piso de 4% para fatias pequenas (mesma regra do gráfico de categoria)
-    const displayValues = pieSliceDisplayData(groups.map((g, i) => ({ total: rawValues[i] })), total);
+    // Piso de 2% para fatias pequenas (mesma regra do gráfico de categoria)
+    const displayValues = pieSliceDisplayData(groups.map((g, i) => ({ total: rawValues[i] })), total, 2);
     const styles = getComputedStyle(document.body);
     const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
     const isDark = document.body.classList.contains('dark-mode');
