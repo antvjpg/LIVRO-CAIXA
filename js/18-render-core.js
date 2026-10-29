@@ -1464,8 +1464,11 @@ function renderCategoryManageList() {
       investTotalBtn.dataset.listenerAttached = '1';
     }
     // Se o card já estiver expandido, re-renderiza o conteúdo da box (o innerHTML
-    // acima a apagou) e recria o gráfico de donut.
+    // acima a apagou) e recria o gráfico de donut. Também reaplica a classe
+    // is-expanded, pois o innerHTML recria o elemento e remove classes dinâmicas.
     if (investTotalExpanded) {
+      const card = summary.querySelector('.balance-card.total');
+      card?.classList.add('is-expanded');
       renderInvestTotalBox();
       setTimeout(() => renderInvestTotalDonut(), 0);
     }
