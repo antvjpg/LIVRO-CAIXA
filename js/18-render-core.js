@@ -238,18 +238,13 @@ function editInstitution(btn, key) {
     destroyInvestTotalDonut();
     if (!canvas || !Array.isArray(investments) || typeof Chart === 'undefined') return;
     const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
-    if (!groups.length) return;
-    const total = investments.reduce((sum, inv) => {
-      if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
-      let v = Number(inv.value);
-      if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
-        v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
-      }
-      return sum + (Number(v) || 0);
-    }, 0);
-    const labels = groups.map(g => g.label);
-    const values = groups.map(g => {
-      const groupTotal = g.investments.reduce((sum, inv) => {
+    if (!groups.length) {
+      // Sem dados para o gráfico: exibe aviso simples no lugar do canvas
+      canvas.parentNode?.insertAdjacentHTML('afterend', '<div style="font-size:11px;color:var(--ink-soft);padding:8px 0 0 0;">Sem dados para o gráfico.</div>');
+      return;
+    }
+    try {
+      const total = investments.reduce((sum, inv) => {
         if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
         let v = Number(inv.value);
         if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
@@ -257,51 +252,65 @@ function editInstitution(btn, key) {
         }
         return sum + (Number(v) || 0);
       }, 0);
-      return total > 0 ? groupTotal : 0;
-    });
-    const isDark = document.body.classList.contains('dark-mode');
-    const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
-    const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
-    const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
+      const labels = groups.map(g => g.label);
+      const values = groups.map(g => {
+        const groupTotal = g.investments.reduce((sum, inv) => {
+          if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
+          let v = Number(inv.value);
+          if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
+            v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
+          }
+          return sum + (Number(v) || 0);
+        }, 0);
+        return total > 0 ? groupTotal : 0;
+      });
+      const isDark = document.body.classList.contains('dark-mode');
+      const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
+      const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
+      const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
 
-    investTotalDonutInstance = new Chart(canvas, {
-      type: 'doughnut',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: values,
-          backgroundColor: labels.map((_, i) => categoryColor({ name: labels[i] })),
-          borderColor: borderColor,
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: isMobileLayout ? '67%' : '62%',
-        plugins: {
-          legend: {
-            display: !isMobileLayout,
-            position: 'bottom',
-            labels: {
-              font: { family: 'var(--font-ui)', size: 10, weight: '500' },
-              color: textColor,
-              boxWidth: 10,
-              padding: 10
-            }
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                const val = values[context.dataIndex] || 0;
-                const pct = total > 0 ? (val / total * 100).toFixed(1).replace('.', ',') : '0,0';
-                return context.label + ': ' + fmt(val) + ' (' + pct + '%)';
+      investTotalDonutInstance = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: labels.map((_, i) => categoryColor({ name: labels[i] })),
+            borderColor: borderColor,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: isMobileLayout ? '67%' : '62%',
+          plugins: {
+            legend: {
+              display: !isMobileLayout,
+              position: 'bottom',
+              labels: {
+                font: { family: 'var(--font-ui)', size: 10, weight: '500' },
+                color: textColor,
+                boxWidth: 10,
+                padding: 10
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const val = values[context.dataIndex] || 0;
+                  const pct = total > 0 ? (val / total * 100).toFixed(1).replace('.', ',') : '0,0';
+                  return context.label + ': ' + fmt(val) + ' (' + pct + '%)';
+                }
               }
             }
           }
         }
-      }
-    });
+      });
+    } catch (err) {
+      console.error('[invest total donut] falha ao criar gráfico:', err);
+      canvas.parentNode?.insertAdjacentHTML('afterend', '<div style="font-size:11px;color:var(--ink-soft);padding:8px 0 0 0;">Não foi possível renderizar o gráfico.</div>');
+    }
   }
 
   function renderInvestTotalBox() {
@@ -335,7 +344,7 @@ function editInstitution(btn, key) {
         <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
       </div>`;
     }).join('');
-    box.innerHTML = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalDonutChart" class="invest-total-donut-canvas" role="img" aria-label="Separação de investimentos por instituição"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    box.innerHTML = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalDonutChart" class="invest-total-donut-canvas" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;height:140px;display:block;"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
   }
 
   function renderInvestBreakdown() {
