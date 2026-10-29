@@ -330,6 +330,13 @@ function editInstitution(btn, key) {
       box.querySelectorAll('.cat-row').forEach((row, index) => {
         row.addEventListener('click', () => { investTotalToggleSlice(index); });
       });
+      box.querySelectorAll('[data-invest-total-view]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          investTotalViewMode = btn.getAttribute('data-invest-total-view');
+          saveInvestTotalViewMode();
+          renderInvestTotalBox();
+        });
+      });
       renderInvestTotalChart(assetsWithTotals.map(a => ({ label: a.alias || a.name || 'Sem nome', investments: [a], groupTotal: a.invValue })), total);
       return;
     }
