@@ -394,7 +394,7 @@ function editInstitution(btn, key) {
         <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
       </div>`;
     }).join('');
-    box.innerHTML = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalDonutChart" class="invest-total-donut-canvas" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;height:140px;display:block;"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    box.innerHTML = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalDonutChart" class="invest-total-donut-canvas" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;display:block;"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
   }
 
   function renderInvestBreakdown() {
@@ -1513,8 +1513,11 @@ function renderCategoryManageList() {
         investTotalBtn.textContent = investTotalExpanded ? 'Recolher' : 'Expandir';
       }
     };
-    investTotalSymbol?.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
-    investTotalSymbol?.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(); } });
+    if (investTotalSymbol && !investTotalSymbol.dataset.listenerAttached) {
+      investTotalSymbol.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+      investTotalSymbol.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(); } });
+      investTotalSymbol.dataset.listenerAttached = '1';
+    }
     // O botão do toolbar é estático (não é recriado pelo innerHTML), então seus
     // listeners devem ser anexados apenas uma vez para evitar acumularem e
     // dispararem toggleInvestTotal múltiplas vezes em um único clique.
