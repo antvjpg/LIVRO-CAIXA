@@ -240,27 +240,27 @@ function editInstitution(btn, key) {
   function renderInvestTotalDonut() {
     const canvas = document.getElementById('investTotalDonutChart');
     if (!canvas) {
-      console.warn('[invest total donut] canvas #investTotalDonutChart não encontrado no DOM');
+      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Canvas #investTotalDonutChart não encontrado no DOM');
       return;
     }
     if (!Array.isArray(investments)) {
-      console.warn('[invest total donut] coleção investments não é um array:', typeof investments);
+      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Coleção investments não é um array', { typeof: typeof investments });
       return;
     }
     if (typeof Chart === 'undefined') {
-      console.warn('[invest total donut] biblioteca Chart.js não disponível (typeof Chart === undefined)');
+      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Biblioteca Chart.js não disponível (typeof Chart === undefined)');
       return;
     }
     const box = document.getElementById('investTotalBox');
     if (box && (box.classList.contains('is-collapsed') || box.getAttribute('aria-hidden') === 'true')) {
-      console.warn('[invest total donut] box #investTotalBox está colapsada ou oculta; gráfico não renderizado');
+      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Box #investTotalBox está colapsada ou oculta; gráfico não renderizado');
       return;
     }
     destroyInvestTotalDonut();
     // Verifica se o canvas tem dimensões válidas antes de criar o gráfico
     const rect = canvas.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) {
-      console.warn('[invest total donut] canvas sem dimensões válidas:', rect.width, 'x', rect.height, '; tentando novamente em 100ms');
+      logWarn('Investimentos', 'Gráfico donut total', 'Atenção', 'Canvas sem dimensões válidas', { width: rect.width, height: rect.height });
       setTimeout(() => renderInvestTotalDonut(), 100);
       return;
     }
@@ -335,7 +335,7 @@ function editInstitution(btn, key) {
         }
       });
     } catch (err) {
-      console.error('[invest total donut] falha ao criar gráfico:', err);
+      logSyncError('gráfico donut total investido', err);
       canvas.parentNode?.insertAdjacentHTML('afterend', '<div style="font-size:11px;color:var(--ink-soft);padding:8px 0 0 0;">Não foi possível renderizar o gráfico.</div>');
     }
   }
@@ -343,11 +343,11 @@ function editInstitution(btn, key) {
   function renderInvestTotalBox() {
     const box = document.getElementById('investTotalBox');
     if (!box) {
-      console.warn('[invest total box] elemento #investTotalBox não encontrado no DOM');
+      logWarn('Investimentos', 'Box total investido', 'Atenção', 'Elemento #investTotalBox não encontrado no DOM');
       return;
     }
     if (!Array.isArray(investments)) {
-      console.warn('[invest total box] coleção investments não é um array:', typeof investments);
+      logWarn('Investimentos', 'Box total investido', 'Atenção', 'Coleção investments não é um array', { typeof: typeof investments });
       return;
     }
     const groups = typeof groupInvestmentsByInstitution === 'function' ? groupInvestmentsByInstitution(investments) : [];
