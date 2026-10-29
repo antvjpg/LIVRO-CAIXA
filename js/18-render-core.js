@@ -239,6 +239,13 @@ function editInstitution(btn, key) {
     }
   }
 
+  function truncateText(text, maxLength = 28) {
+    if (!text) return '';
+    const escaped = escapeHTML(text);
+    if (escaped.length <= maxLength) return escaped;
+    return escaped.slice(0, maxLength - 1) + '…';
+  }
+
   function renderInvestTotalBox() {
     const box = document.getElementById('investTotalBox');
     if (!box) {
@@ -267,7 +274,7 @@ function editInstitution(btn, key) {
       }, 0);
       const pct = total > 0 ? (groupTotal / total * 100).toFixed(1).replace('.', ',') : '0,0';
       return `<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:6px 0;">
-        <span>${escapeHTML(g.label)}</span>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;">${truncateText(g.label)}</span>
         <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
       </div>`;
     }).join('');
@@ -283,7 +290,7 @@ function editInstitution(btn, key) {
     }
     const canvas = document.getElementById('investTotalChart');
     if (!canvas || !groups.length) return;
-    const labels = groups.map(g => escapeHTML(g.label));
+    const labels = groups.map(g => truncateText(g.label));
     const rawValues = groups.map(g => {
       const groupTotal = g.investments.reduce((sum, inv) => {
         if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
