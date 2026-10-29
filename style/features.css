@@ -4929,9 +4929,14 @@ body[data-tab="dash"] .fab-add{
   max-height:650px;
   overflow:auto;
 }
-.invest-total-rule{
-  border:none;
-  border-top:1px dashed var(--line);
+.invest-total-chart-card{
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--surface);
+  padding:14px 16px;
+  margin-top:12px;
+}
+.invest-total-chart-card .invest-total-rule{
   width:55%;
   margin:10px auto 14px auto;
   opacity:.6;
