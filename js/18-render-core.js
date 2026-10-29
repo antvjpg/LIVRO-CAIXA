@@ -305,7 +305,7 @@ function editInstitution(btn, key) {
         <div class="cat-legend-head"><span>Instituição</span><span>Valor</span><span>%</span></div>
         ${rows}
       </div>
-    </div><div style="margin-top:14px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:8px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    </div></div>`;
     if (box.innerHTML !== html) box.innerHTML = html;
     box.querySelectorAll('.cat-row').forEach((row, index) => {
       row.addEventListener('click', () => { investTotalToggleSlice(index); });
