@@ -296,7 +296,7 @@ function editInstitution(btn, key) {
         <span class="cat-pct">${pct}%</span>
       </div>`;
     }).join('');
-    const html = `<div class="cat-summary">
+    const html = `<div class="cat-summary" style="padding-bottom:12px;">
       <div class="chart-container">
         <canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;display:block;"></canvas>
         <div id="investTotalCenterOverlay" class="chart-center-total" aria-hidden="true"><span class="chart-center-total-label">Total</span><strong id="investTotalCenterValue" class="chart-center-total-value">${fmt(total)}</strong></div>
@@ -305,7 +305,7 @@ function editInstitution(btn, key) {
         <div class="cat-legend-head"><span>Instituição</span><span>Valor</span><span>%</span></div>
         ${rows}
       </div>
-    </div><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    </div><div style="margin-top:14px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:8px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
     if (box.innerHTML !== html) box.innerHTML = html;
     box.querySelectorAll('.cat-row').forEach((row, index) => {
       row.addEventListener('click', () => { investTotalToggleSlice(index); });
