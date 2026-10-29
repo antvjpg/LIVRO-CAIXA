@@ -4929,6 +4929,13 @@ body[data-tab="dash"] .fab-add{
   max-height:650px;
   overflow:auto;
 }
+.invest-total-rule{
+  border:none;
+  border-top:1px dashed var(--line);
+  width:55%;
+  margin:10px auto 14px auto;
+  opacity:.6;
+}
 
 /* Asset / pocket cards */
 .asset-card.invest-box,
