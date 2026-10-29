@@ -4927,12 +4927,13 @@ body[data-tab="dash"] .fab-add{
 #viewInvest .balance-card.total{
   overflow:visible;
   height:110px;
-  transition:height .3s ease;
+  transition:height .3s ease,max-height .3s ease;
 }
 #investBalanceStrip .balance-card.total.is-expanded,
 #viewInvest .balance-card.total.is-expanded{
-  height:380px;
-  overflow:auto;
+  height:auto;
+  max-height:600px;
+  overflow:visible;
 }
 
 /* Asset / pocket cards */
