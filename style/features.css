@@ -4921,7 +4921,7 @@ body[data-tab="dash"] .fab-add{
 }
 #viewInvest .invest-total-expand-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 #viewInvest .invest-total-donut-canvas{
-  width:100%;height:100px;display:block;
+  width:100%;height:50px;display:block;
 }
 #investBalanceStrip .balance-card.total,
 #viewInvest .balance-card.total{
