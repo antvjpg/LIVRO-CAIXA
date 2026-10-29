@@ -271,7 +271,7 @@ function editInstitution(btn, key) {
         <span>${fmt(groupTotal)} <span style="opacity:.7;">(${pct}%)</span></span>
       </div>`;
     }).join('');
-    const html = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div>${rows}<canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="max-height:160px;max-width:260px;width:100%;display:block;"></canvas><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    const html = `<div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;"><div style="font-size:11px;color:var(--ink-soft);">Separação do total investido por instituição</div><div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">Por instituição</div><div style="display:flex;gap:10px;align-items:flex-start;"><div style="flex:1;min-width:0;overflow:hidden;">${rows}</div><div style="position:relative;flex-shrink:0;"><canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="max-height:160px;max-width:260px;width:100%;display:block;"></canvas><div id="investTotalCenterOverlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;"><div style="font-size:11px;color:var(--ink-soft);">Total</div><strong id="investTotalCenterValue" style="font-size:13px;color:var(--ink);font-weight:700;">${fmt(total)}</strong></div></div></div></div><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
     if (box.innerHTML !== html) box.innerHTML = html;
     renderInvestTotalChart(groups, total);
   }
@@ -284,7 +284,7 @@ function editInstitution(btn, key) {
     const canvas = document.getElementById('investTotalChart');
     if (!canvas || !groups.length) return;
     const labels = groups.map(g => escapeHTML(g.label));
-    const values = groups.map(g => {
+    const rawValues = groups.map(g => {
       const groupTotal = g.investments.reduce((sum, inv) => {
         if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
         let v = Number(inv.value);
@@ -295,8 +295,14 @@ function editInstitution(btn, key) {
       }, 0);
       return total > 0 ? (groupTotal / total) * 100 : 0;
     });
+    // Piso de 4% para fatias pequenas (mesma regra do gráfico de categoria)
+    const displayValues = pieSliceDisplayData(groups.map((g, i) => ({ total: rawValues[i] })), total);
     const styles = getComputedStyle(document.body);
     const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
+    const isDark = document.body.classList.contains('dark-mode');
+    const textColor = getComputedStyle(document.body).getPropertyValue('--ink').trim() || (isDark ? '#E3E8E4' : '#1C2B24');
+    const borderColor = getComputedStyle(document.body).getPropertyValue('--paper').trim() || (isDark ? '#121915' : '#F7F5EF');
+    const isMobileLayout = window.matchMedia('(max-width: 680px)').matches;
     const toRgb = (value) => {
       const v = String(value || '').trim();
       let match = v.match(/^#([0-9a-fA-F]{6})$/);
@@ -306,40 +312,43 @@ function editInstitution(btn, key) {
     };
     const hueCandidates = [readVar('--accent', ''), readVar('--gold', ''), readVar('--green', '')].map(toRgb).filter(Boolean);
     const colors = hueCandidates.length ? hueCandidates : [[28, 43, 36]];
+    // Overlay de total no centro (mesmo plugin do gráfico de categoria)
+    const centerTotalOverlayPlugin = {
+      id: 'investTotalCenterOverlay',
+      afterDraw: function(chart) {
+        const overlay = document.getElementById('investTotalCenterOverlay');
+        const area = chart.chartArea;
+        if (!overlay || !area) return;
+        const width = chart.width || 0;
+        const height = chart.height || 0;
+        if (!width || !height) return;
+        overlay.style.left = (((area.left + area.right) / 2) / width * 100) + '%';
+        overlay.style.top = (((area.top + area.bottom) / 2) / height * 100) + '%';
+      }
+    };
     investTotalChartInstance = new Chart(canvas, {
       type: 'doughnut',
       data: {
         labels: labels,
         datasets: [{
           label: '% do total',
-          data: values,
+          data: displayValues,
           backgroundColor: colors.map((c, i) => {
             const alpha = 0.85 - (i * 0.1);
             return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + Math.max(alpha, 0.35) + ')';
           }),
-          borderColor: 'var(--paper)',
+          borderColor: borderColor,
           borderWidth: 2
         }]
       },
+      plugins: [centerTotalOverlayPlugin],
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '70%',
+        cutout: isMobileLayout ? '67%' : '62%',
         plugins: {
-          legend: {
-            display: true,
-            position: 'left',
-            labels: {
-              font: { size: 11 },
-              padding: 12,
-              boxWidth: 14
-            }
-          },
-          tooltip: {
-            callbacks: {
-              label: context => context.label + ': ' + context.raw.toFixed(1) + '%'
-            }
-          }
+          legend: { display: false },
+          tooltip: { enabled: false }
         }
       }
     });
