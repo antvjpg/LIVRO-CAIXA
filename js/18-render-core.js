@@ -306,7 +306,7 @@ function editInstitution(btn, key) {
     box.querySelectorAll('.cat-row').forEach((row, index) => {
       row.addEventListener('click', () => { investTotalToggleSlice(index); });
     });
-    renderInvestTotalChart(groups, total);
+    renderInvestTotalChart(groupsWithTotals, total);
   }
 
   function investTotalToggleSlice(index) {
@@ -420,7 +420,6 @@ function editInstitution(btn, key) {
         }
       }
     });
-    investTotalApplyActiveSlice();
   }
 
   function renderInvestBreakdown() {
