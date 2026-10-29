@@ -288,13 +288,15 @@
       window.LivroCaixaChat.close();
     }
     // Fecha TODOS os painéis antes de abrir um (evita modais lado a lado)
-    document.querySelectorAll('.panel.open, .panel').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.panel.open').forEach(p => p.classList.remove('open'));
     const panel = document.getElementById(panelId);
     if (!panel) {
       console.warn('[openModal] painel não encontrado:', panelId);
       return;
     }
-    panel.classList.add('open');
+    if (!panel.classList.contains('open')) {
+      panel.classList.add('open');
+    }
     if (!panel.hasAttribute('role')) panel.setAttribute('role', 'dialog');
     if (!panel.hasAttribute('aria-modal')) panel.setAttribute('aria-modal', 'true');
     if (!panel.hasAttribute('tabindex')) panel.setAttribute('tabindex', '-1');

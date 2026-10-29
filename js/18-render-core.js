@@ -904,31 +904,98 @@ function editInstitution(btn, key) {
     document.getElementById('panelNovo')?.classList.remove('sheet-open');
   }
 
-  function renderCategoryManageList() {
+function renderCategoryManageList() {
     const container = document.getElementById('catManageList');
     container.innerHTML = categories.map(c => {
       const subs = Array.isArray(c.subcategories) ? c.subcategories.filter(s => s && s.id) : [];
-      const chips = subs.map(s => `<span class="cat-sub-chip">${escapeHTML(s.name || '')}<button type="button" class="cat-sub-remove" onclick="removeSubcategory('${c.id}','${s.id}')" aria-label="Remover subcategoria ${escapeHTML(s.name || '')}" title="Remover subcategoria">×</button></span>`).join('');
+      const subList = subs.map(s => {
+        const subId = s.id || Date.now() + '';
+        return `<span class="sub-cat-label" onclick="editSubcategory('${c.id}', '${subId}')" style="cursor:pointer;user-select:none;">${escapeHTML(s.name || '')}<span class="sub-del" title="Excluir" onclick="event.stopPropagation(); removeSubcategory('${c.id}', '${subId}')">×</span></span>`;
+      }).join(' ');
       return `
       <div class="cat-list-item">
         <span class="category-dot" style="background:${categoryColor(c)}">${categoryIcon(c)}</span>
-        <strong class="manage-item-copy">${escapeHTML(c.name)}<span>${escapeHTML(categoryIcon(c))} · ${escapeHTML(c.color ? 'cor personalizada' : 'cor automática')}</span></strong>
-        <span class="manage-item-actions">
-          <button type="button" class="action-btn icon-button edit" onclick="editCategory('${c.id}')" aria-label="Editar categoria" title="Editar categoria"></button>
-          <button type="button" class="action-btn icon-button delete" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria" title="Excluir categoria"></button>
-        </span>
-        <div class="cat-subs" data-cat="${c.id}">
-          ${chips}
-          <span class="cat-sub-add">
-            <input type="text" class="cat-sub-input" maxlength="40" placeholder="Nova subcategoria" aria-label="Nova subcategoria de ${escapeHTML(c.name)}">
-            <button type="button" class="cat-sub-add-btn" onclick="addSubcategory('${c.id}')" aria-label="Adicionar subcategoria em ${escapeHTML(c.name)}" title="Adicionar subcategoria">+</button>
-          </span>
+        <strong class="cat-name">${escapeHTML(c.name)}</strong>
+        <div class="cat-actions">
+          <button type="button" class="action-btn icon-button tiny add" onclick="openSubcategoryPopover('${c.id}')" aria-label="Adicionar subcategoria" title="Adicionar subcategoria"></button>
+          <button type="button" class="action-btn icon-button tiny" onclick="editCategory('${c.id}')" aria-label="Editar categoria" title="Editar categoria"></button>
+          <button type="button" class="action-btn icon-button tiny danger" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria" title="Excluir categoria"></button>
         </div>
       </div>
-    `;
-    }).join('');
+      <div class="sub-cats-line">${subList}</div>
+      `;
+}).join('');
   }
-
+  function openSubcategoryPopover(catId) {
+    const popover = document.getElementById('subcat-popover');
+    if (!popover) {
+      const overlay = document.createElement('div');
+      overlay.id = 'subcat-popover';
+      overlay.style.position = 'fixed';
+      overlay.style.top = '0';
+      overlay.style.left = '0';
+      overlay.style.width = '100%';
+      overlay.style.height = '100%';
+      overlay.style.background = 'rgba(0,0,0,0.5)';
+      overlay.style.display = 'flex';
+      overlay.style.justifyContent = 'center';
+      overlay.style.alignItems = 'center';
+      overlay.style.zIndex = '1000';
+      const content = document.createElement('div');
+      content.style.background = 'var(--surface)';
+      content.style.padding = '20px';
+      content.style.borderRadius = '8px';
+      content.style.minWidth = '250px';
+      content.style.width = 'min(250px, 80vw)';
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = 'Nome da subcategoria';
+      input.ariaLabel = 'Nome da subcategoria';
+      input.style.width = '100%';
+      input.style.padding = '8px';
+      input.style.marginBottom = '12px';
+      input.style.boxSizing = 'border-box';
+      const confirmBtn = document.createElement('button');
+      confirmBtn.type = 'button';
+      confirmBtn.style.background = 'var(--accent)';
+      confirmBtn.style.color = 'var(--accent-ink)';
+      confirmBtn.style.padding = '8px 16px';
+      confirmBtn.style.border = 'none';
+      confirmBtn.style.borderRadius = '4px';
+      confirmBtn.style.cursor = 'pointer';
+      confirmBtn.textContent = 'Confirmar';
+      confirmBtn.onclick = () => {
+        const name = input.value.trim();
+        if (name) {
+          addSubcategory(catId, name);
+          closeSubcategoryPopover();
+        }
+      };
+      const cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button';
+      cancelBtn.style.background = 'var(--surface)';
+      cancelBtn.style.color = 'var(--ink)';
+      cancelBtn.style.padding = '8px 16px';
+      cancelBtn.style.border = '1px solid var(--line)';
+      cancelBtn.style.borderRadius = '4px';
+      cancelBtn.style.marginLeft = '12px';
+      cancelBtn.textContent = 'Cancelar';
+      cancelBtn.onclick = closeSubcategoryPopover;
+      content.appendChild(input);
+      content.appendChild(confirmBtn);
+      content.appendChild(cancelBtn);
+      overlay.appendChild(content);
+      document.body.appendChild(overlay);
+      popover = overlay;
+    }
+    popover.style.display = 'flex';
+  }
+  function closeSubcategoryPopover() {
+    const popover = document.getElementById('subcat-popover');
+    if (popover) {
+      popover.style.display = 'none';
+    }
+  }
   function updateFixedIncomeFormCurrent() {
     const currentInput = document.getElementById('iValorAtualSimples');
     if (!currentInput) return;

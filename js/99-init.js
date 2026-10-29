@@ -2739,11 +2739,13 @@ VALOR: ${fmt(pseudoBill.amount)}
   };
 
   // ===== Feature 3 — Subcategorias dentro de uma categoria principal =====
-  window.addSubcategory = async function(catId) {
-    const row = document.querySelector(`.cat-subs[data-cat="${catId}"]`);
-    const input = row ? row.querySelector('.cat-sub-input') : null;
-    if (!input) return;
-    const name = input.value.trim();
+  window.addSubcategory = async function(catId, name) {
+    if (!name) {
+      const row = document.querySelector(`.cat-subs[data-cat="${catId}"]`);
+      const input = row ? row.querySelector('.cat-sub-input') : null;
+      name = input ? input.value.trim() : '';
+    }
+    name = String(name || '').trim();
     if (!name) { showToast('Digite o nome da subcategoria.', 'error'); return; }
     const cat = categories.find(c => c.id === catId);
     if (!cat) return;
@@ -2780,6 +2782,30 @@ VALOR: ${fmt(pseudoBill.amount)}
     } catch (err) {
       logSyncError('subcategoria', err);
       showToast('Não foi possível remover a subcategoria.', 'error');
+    }
+  };
+
+  window.editSubcategory = async function(catId, subId) {
+    const cat = categories.find(c => c.id === catId);
+    if (!cat || !Array.isArray(cat.subcategories)) return;
+    const sub = cat.subcategories.find(s => s.id === subId);
+    if (!sub) return;
+    const newName = prompt('Nome da subcategoria:', sub.name);
+    if (!newName || newName.trim().length === 0) return;
+    const normalizedNew = newName.trim().toLocaleLowerCase('pt-BR');
+    const alreadyExists = cat.subcategories.some(s => s.id !== subId && String(s.name || '').toLocaleLowerCase('pt-BR') === normalizedNew);
+    if (alreadyExists) {
+      showToast('Já existe uma subcategoria com este nome.', 'error');
+      return;
+    }
+    sub.name = newName;
+    try {
+      await saveCategories();
+      render();
+      showToast('Subcategoria atualizada.', 'success');
+    } catch (err) {
+      logSyncError('subcategoria', err);
+      showToast('Não foi possível atualizar a subcategoria.', 'error');
     }
   };
 

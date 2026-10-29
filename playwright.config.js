@@ -1,7 +1,12 @@
 /* C.O.D.E. — configuração do Playwright.
    Camada externa de testes: não modifica o aplicativo.
-   Execução real: Linux (CI ou máquina do desenvolvedor). No Termux/Android o
-   Playwright não roda ("Unsupported platform: android") — ver e2e/README.md. */
+   Execução real: Linux (CI ou máquina do desenvolvedor).
+   No Termux/Android o Playwright NÃO roda ("Unsupported platform: android").
+   Porém o Chromium headless SIM funciona no Termux:
+     chromium-browser --headless=new --no-sandbox --screenshot=out.png URL
+     chromium-browser --headless=new --no-sandbox --remote-debugging-port=9222
+   Para auditoria visual no Termux, usar CDP direto (ver e2e/visual/audit-categorias.mjs)
+   em vez de Playwright. */
 const { defineConfig } = require('@playwright/test');
 
 const PORT = Number(process.env.CODE_PORT || 8000);

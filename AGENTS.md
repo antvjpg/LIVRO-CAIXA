@@ -105,6 +105,21 @@ O projeto historicamente possui:
 - módulos de domínio isolados em determinados pontos;
 - funcionalidades financeiras como contas, lançamentos, investimentos, caixinhas, metas, cartões, faturas, boletos/contas, valores a receber e orçamentos.
 
+### Ambiente de desenvolvimento (Termux/Android)
+
+O desenvolvimento local roda em Termux/Android. Limitações e capacidades conhecidas:
+
+| Ferramenta | Funciona? | Observação |
+|---|---|---|
+| `node --check` | ✅ | Validação de sintaxe JS |
+| `node --test` | ✅ | Worker tests (`worker/test/*.test.mjs`) |
+| Chromium headless | ✅ | `chromium-browser --headless=new --no-sandbox` — screenshots e CDP funcionam |
+| CDP (Chrome DevTools Protocol) | ✅ | `--remote-debugging-port=9222` — auditoria visual via `e2e/visual/audit-categorias.mjs` |
+| Playwright | ❌ | `Unsupported platform: android` — rodar apenas em CI/máquina Linux |
+| X11/GUI | ❌ | Sem display gráfico; usar sempre modo headless |
+
+**Regra:** para auditoria visual ou captura de tela no Termux, usar Chromium headless + CDP, não Playwright. O Playwright só roda em CI ou máquina Linux com display.
+
 ### Regra
 
 Antes de assumir que qualquer uma dessas características permanece igual:
