@@ -265,6 +265,17 @@ function editInstitution(btn, key) {
       return;
     }
     const total = totalInvestBalance();
+    const maxGroupTotal = groups.reduce((max, g) => {
+      const groupTotal = g.investments.reduce((sum, inv) => {
+        if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
+        let v = Number(inv.value);
+        if (!(v >= 0) || (v === 0 && isCryptoType(inv.type) && cryptoCurrentUnits(inv) > 0 && Number(inv.price) > 0)) {
+          v = cryptoValueFromUnits(inv.type, cryptoCurrentUnits(inv), inv.price || 0);
+        }
+        return sum + (Number(v) || 0);
+      }, 0);
+      return Math.max(max, groupTotal);
+    }, 0);
     const rows = groups.map((g, gi) => {
       const groupTotal = g.investments.reduce((sum, inv) => {
         if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
@@ -275,16 +286,26 @@ function editInstitution(btn, key) {
         return sum + (Number(v) || 0);
       }, 0);
       const pctNum = total > 0 ? (groupTotal / total) * 100 : 0;
+      const barPct = maxGroupTotal > 0 ? (groupTotal / maxGroupTotal) * 100 : 0;
       const pct = pctNum.toFixed(1).replace('.', ',');
       const color = categoryColor({ name: g.label });
-      return `<div class="cat-row" style="--category-color:${color};cursor:pointer;padding:4px 0;" data-index="${gi}">
-        <span class="cat-name">${truncateText(g.label)}</span>
-        <span class="cat-bar-wrap"><div class="cat-bar" style="width:${pctNum}%"></div></span>
+      return `<div class="cat-row" style="--category-color:${color};cursor:pointer;" data-index="${gi}">
+        <span class="cat-name">${escapeHTML(g.label)}</span>
+        <span class="cat-bar-wrap"><div class="cat-bar" style="width:${barPct}%"></div></span>
         <span class="cat-amt">${fmt(groupTotal)}</span>
         <span class="cat-pct">${pct}%</span>
       </div>`;
     }).join('');
-    const html = `<div style="padding:12px 14px;display:flex;gap:10px;align-items:flex-start;"><div class="invest-total-legend" style="flex:1;min-width:0;overflow:hidden;"><div class="cat-legend-head"><span>Instituição</span><span>Valor</span><span>%</span></div>${rows}</div><div style="position:relative;flex-shrink:0;"><canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;display:block;"></canvas><div id="investTotalCenterOverlay" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;"><div style="font-size:11px;color:var(--ink-soft);">Total</div><strong id="investTotalCenterValue" style="font-size:13px;color:var(--ink);font-weight:700;">${fmt(total)}</strong></div></div></div><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
+    const html = `<div class="cat-summary">
+      <div class="chart-container">
+        <canvas id="investTotalChart" role="img" aria-label="Separação de investimentos por instituição" style="width:100%;display:block;"></canvas>
+        <div id="investTotalCenterOverlay" class="chart-center-total" aria-hidden="true"><span class="chart-center-total-label">Total</span><strong id="investTotalCenterValue" class="chart-center-total-value">${fmt(total)}</strong></div>
+      </div>
+      <div class="cat-bars-list">
+        <div class="cat-legend-head"><span>Instituição</span><span>Valor</span><span>%</span></div>
+        ${rows}
+      </div>
+    </div><div style="margin-top:6px;font-weight:700;display:flex;justify-content:space-between;border-top:2px solid var(--accent);padding-top:6px;font-size:13px;"><span>Total</span><span>${fmt(total)}</span></div></div>`;
     if (box.innerHTML !== html) box.innerHTML = html;
     box.querySelectorAll('.cat-row').forEach((row, index) => {
       row.addEventListener('click', () => { investTotalToggleSlice(index); });
@@ -335,7 +356,7 @@ function editInstitution(btn, key) {
     const canvas = document.getElementById('investTotalChart');
     if (!canvas || !groups.length) return;
     groupsByIndex = groups;
-    const labels = groups.map(g => truncateText(g.label));
+    const labels = groups.map(g => escapeHTML(g.label));
     const rawValues = groups.map(g => {
       const groupTotal = g.investments.reduce((sum, inv) => {
         if (inv.type === 'Renda Fixa') return sum + fixedIncomeCurrentValue(inv);
@@ -375,13 +396,15 @@ function editInstitution(btn, key) {
       type: 'doughnut',
       data: {
         labels: labels,
-        datasets: [{
-          label: '% do total',
-          data: displayValues,
-          backgroundColor: investTotalBaseColors,
-          borderColor: borderColor,
-          borderWidth: 2
-        }]
+      datasets: [{
+        label: '% do total',
+        data: displayValues,
+        backgroundColor: investTotalBaseColors,
+        borderColor: borderColor,
+        borderWidth: 2,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
       },
       plugins: [centerTotalOverlayPlugin],
       options: {
