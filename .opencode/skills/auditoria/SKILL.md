@@ -695,6 +695,56 @@ Uma auditoria cruzada somente pode ser considerada concluída quando:
 11. As limitações foram explicitadas.
 12. O repositório permaneceu intacto.
 
+## 17. Performance como dimensão do diagnóstico
+
+A auditoria deve considerar o desempenho como uma dimensão própria da qualidade técnica do LIVRO-CAIXA. Quando encontrar suspeitas de problemas de desempenho, aplicar o seguinte procedimento:
+
+### 17.1 Identificação
+
+Identificar o componente, fluxo ou funcionalidade envolvida:
+
+- Arquivos JS grandes ou com loops sobre lançamentos (`js/99-init.js`, `js/18-render-core.js`, `js/20-dashboard.js`, `js/domain/card-engine-v3-combined.js`, `js/27-cards.js`);
+- Renderizações e atualizações do DOM;
+- Event listeners (duplicados, sem limpeza, em modais e tabs);
+- Consultas DOM repetidas em loops;
+- Manipulação de grandes listas e tabelas;
+- Estado em memória e processamento de dados;
+- Leituras e escritas no Firestore;
+- Chamadas ao Cloudflare Worker e APIs externas;
+- Carregamento inicial e recursos da PWA (`sw.js`, `manifest.webmanifest`, `index.html`);
+- CSS, layout e responsividade (`style/features.css`, `style/layout.css`);
+- Concorrência, debounce, throttle e operações assíncronas.
+
+### 17.2 Mecanismo e evidência
+
+Para cada suspeita, explicar o possível mecanismo do problema e buscar evidências:
+
+- No código (padrões repetitivos, consultas em loop, renderizações completas);
+- Quando possível, medições (`console.time`, `performance.now`, profiling);
+- Não classificar código como lento apenas por aparência ou complexidade visual.
+
+### 17.3 Impacto e classificação
+
+Avaliar:
+
+- Impacto funcional (telas travadas, navegação lenta, atualização atrasada);
+- Impacto financeiro (cálculos atrasados, saldos desatualizados, renderização de faturas/cartões);
+- Gravidade (Crítico, Alto, Médio, Baixo, Informativo — mesmo critério da seção 12);
+- Grau de confiança (Alta, Média, Baixa — mesmo critério da seção 12).
+
+### 17.4 Encaminhamento
+
+A auditoria diagnostica e recomenda, não implementa otimizações automaticamente.
+
+Quando houver suspeita confirmada de problema de desempenho:
+
+1. Registrar a evidência e o contexto no relatório de auditoria;
+2. Classificar impacto e prioridade;
+3. Encaminhar a investigação aprofundada à skill de performance (`performance`);
+4. Não executar medições destrutivas nem alterar o código sem autorização explícita.
+
+---
+
 ---
 
 ## Módulo 1 — Auditoria da Infraestrutura C.O.D.E.
