@@ -101,7 +101,12 @@ export async function callOpenRouter(model, env, messages, maxTokens, referer, o
     return { ok: false, status: 0, raw: "", parsed: null };
   }
 
-  const raw = await response.text();
+  let raw = "";
+  try {
+    raw = await response.text();
+  } catch (readError) {
+    return { ok: false, status: 0, raw: "", parsed: null };
+  }
   let parsed = null;
   try {
     parsed = JSON.parse(raw);

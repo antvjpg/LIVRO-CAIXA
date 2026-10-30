@@ -410,9 +410,9 @@ function editInstitution(btn, key) {
       (investTotalActiveSliceIndex === null || sliceIndex === investTotalActiveSliceIndex) ? color : investTotalDimSliceColor(color)
     );
     if (investTotalActiveSliceIndex !== null) {
-      investTotalChartInstance.data.datasets[0].offset = groups.map((_, sliceIndex) => sliceIndex === investTotalActiveSliceIndex ? 6 : 0);
+      investTotalChartInstance.data.datasets[0].offset = groupsByIndex.map((_, sliceIndex) => sliceIndex === investTotalActiveSliceIndex ? 6 : 0);
     } else {
-      investTotalChartInstance.data.datasets[0].offset = groups.map(() => 0);
+      investTotalChartInstance.data.datasets[0].offset = groupsByIndex.map(() => 0);
     }
     investTotalChartInstance.update();
   }
