@@ -1,0 +1,375 @@
+rules_version = '2';
+
+service cloud.firestore {
+
+  match /databases/{database}/documents {
+
+    // ============================================================
+    // AUTORIZAÇÃO
+    // ============================================================
+
+    function isOwner(userId) {
+      return request.auth != null
+        && request.auth.uid == userId;
+    }
+
+
+    // ============================================================
+    // LANÇAMENTOS
+    // ============================================================
+
+    function validEntry(docId) {
+      return request.resource.data.keys().hasAll([
+        'id',
+        'date',
+        'desc',
+        'amount',
+        'type'
+      ])
+      && request.resource.data.id is string
+      && request.resource.data.id == docId
+      && request.resource.data.date is string
+      && request.resource.data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+      && request.resource.data.desc is string
+      && request.resource.data.amount is number
+      && request.resource.data.amount > 0
+      && (
+        request.resource.data.type == 'in'
+        || request.resource.data.type == 'out'
+      );
+    }
+
+
+    // ============================================================
+    // ORÇAMENTOS
+    // ============================================================
+
+    function validBudget(docId) {
+      return request.resource.data.keys().hasAll([
+        'id',
+        'categoryId',
+        'month',
+        'amount'
+      ])
+      && request.resource.data.id is string
+      && request.resource.data.id == docId
+      && request.resource.data.categoryId is string
+      && request.resource.data.month is string
+      && request.resource.data.month.matches('^[0-9]{4}-[0-9]{2}$')
+      && request.resource.data.amount is number
+      && request.resource.data.amount > 0;
+    }
+
+
+    // ============================================================
+    // METAS - V.19-19
+    // ============================================================
+
+    function validGoal(docId) {
+      return request.resource.data.keys().hasAll([
+        'id',
+        'name',
+        'icon',
+        'targetAmount',
+        'startDate',
+        'deadline',
+        'desc',
+        'caixinhaId',
+        'status',
+        'createdAt',
+        'updatedAt'
+      ])
+      && request.resource.data.id is string
+      && request.resource.data.id == docId
+
+      && request.resource.data.name is string
+
+      && request.resource.data.icon is string
+
+      && request.resource.data.targetAmount is number
+      && request.resource.data.targetAmount > 0
+
+      && request.resource.data.startDate is string
+
+      && request.resource.data.deadline is string
+
+      && request.resource.data.desc is string
+
+      && (
+        request.resource.data.caixinhaId == null
+        || request.resource.data.caixinhaId is string
+      )
+
+      && (
+        request.resource.data.status == 'active'
+        || request.resource.data.status == 'completed'
+        || request.resource.data.status == 'paused'
+        || request.resource.data.status == 'cancelled'
+      )
+
+      && request.resource.data.createdAt is string
+      && request.resource.data.updatedAt is string
+
+      // Compatibilidade com metas legadas.
+      // currentAmount NÃO é mais obrigatório na V.19-19.
+      && (
+        !request.resource.data.keys().hasAny(['currentAmount'])
+        || (
+          request.resource.data.currentAmount is number
+          && request.resource.data.currentAmount >= 0
+        )
+      );
+    }
+
+
+    // ============================================================
+    // CARTÕES
+    // ============================================================
+
+    function validCard(docId) {
+      return request.resource.data.keys().hasAll([
+        'id',
+        'name',
+        'closingDay',
+        'dueDay'
+      ])
+      && request.resource.data.id is string
+      && request.resource.data.id == docId
+      && request.resource.data.name is string
+      && request.resource.data.closingDay is number
+      && request.resource.data.closingDay >= 1
+      && request.resource.data.closingDay <= 31
+      && request.resource.data.dueDay is number
+      && request.resource.data.dueDay >= 1
+      && request.resource.data.dueDay <= 31;
+    }
+
+
+    // ============================================================
+    // COMPRAS
+    // ============================================================
+
+    function validPurchase(docId) {
+      return request.resource.data.keys().hasAll([
+        'id',
+        'cardId',
+        'description',
+        'totalValue',
+        'date'
+      ])
+      && request.resource.data.id is string
+      && request.resource.data.id == docId
+      && request.resource.data.cardId is string
+      && request.resource.data.description is string
+      && request.resource.data.totalValue is number
+      && request.resource.data.totalValue > 0
+      && request.resource.data.date is string
+      && request.resource.data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+
+
+    // ============================================================
+    // LANÇAMENTOS DE FATURA
+    // ============================================================
+
+    function validInvoiceLaunch(docId) {
+      return request.resource.data.keys().hasAll([
+        'id',
+        'cardId',
+        'closingPeriodKey',
+        'titular',
+        'amount'
+      ])
+      && request.resource.data.id is string
+      && request.resource.data.id == docId
+      && request.resource.data.cardId is string
+      && request.resource.data.closingPeriodKey is string
+      && request.resource.data.titular is string
+      && request.resource.data.amount is number
+      && request.resource.data.amount >= 0;
+    }
+
+
+    // ============================================================
+    // VALORES A RECEBER
+    // ============================================================
+
+    function validReceivable(docId) {
+      return request.resource.data.keys().hasAll([
+        'id',
+        'person',
+        'desc',
+        'amount',
+        'registeredAt',
+        'status'
+      ])
+      && request.resource.data.id is string
+      && request.resource.data.id == docId
+      && request.resource.data.person is string
+      && request.resource.data.desc is string
+      && request.resource.data.amount is number
+      && request.resource.data.amount > 0
+      && request.resource.data.registeredAt is string
+      && (
+        request.resource.data.status == 'pendente'
+        || request.resource.data.status == 'recebido'
+        || request.resource.data.status == 'cancelado'
+      );
+    }
+
+
+    // ============================================================
+    // DOCUMENTO-PAI
+    // ============================================================
+
+    match /livrocaixa/{userId} {
+
+      // Compatibilidade com versões antigas da aplicação.
+      allow read, write: if isOwner(userId);
+
+
+      // ==========================================================
+      // LANÇAMENTOS
+      // ==========================================================
+
+      match /entries/{docId} {
+        allow read: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          && validEntry(docId);
+
+        allow delete: if isOwner(userId);
+      }
+
+
+      // ==========================================================
+      // ORÇAMENTOS
+      // ==========================================================
+
+      match /budgets/{docId} {
+        allow read: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          && validBudget(docId);
+
+        allow delete: if isOwner(userId);
+      }
+
+
+      // ==========================================================
+      // METAS - V.19-19
+      // ==========================================================
+
+      match /goals/{docId} {
+        allow read: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          && validGoal(docId);
+
+        allow delete: if isOwner(userId);
+      }
+
+
+      // ==========================================================
+      // CARTÕES
+      // ==========================================================
+
+      match /cards/{docId} {
+        allow read: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          && validCard(docId);
+
+        allow delete: if isOwner(userId);
+      }
+
+
+      // ==========================================================
+      // COMPRAS
+      // ==========================================================
+
+      match /purchases/{docId} {
+        allow read: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          && validPurchase(docId);
+
+        allow delete: if isOwner(userId);
+      }
+
+
+      // ==========================================================
+      // LANÇAMENTOS DE FATURA
+      // ==========================================================
+
+      match /invoiceLaunches/{docId} {
+        allow read: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          && validInvoiceLaunch(docId);
+
+        allow delete: if isOwner(userId);
+      }
+
+
+      // ==========================================================
+      // VALORES A RECEBER
+      // ==========================================================
+
+      match /receivables/{docId} {
+        allow read: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          && validReceivable(docId);
+
+        allow delete: if isOwner(userId);
+      }
+
+
+      // ==========================================================
+      // TOKENS DE NOTIFICAÇÃO PUSH (FCM)
+      // ==========================================================
+
+      match /pushTokens/{docId} {
+        allow read: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          && request.resource.data.token is string
+          && request.resource.data.token.size() > 0
+          && request.resource.data.token.size() <= 4096;
+
+        allow delete: if isOwner(userId);
+      }
+
+
+      // ==========================================================
+      // COLEÇÕES RESTANTES DA APLICAÇÃO
+      // ==========================================================
+      //
+      // banks
+      // categories
+      // investments
+      // pockets
+      // yieldsLog
+      // recurringBills
+      // diagnostics
+      //
+      // diagnostics = LOG do sistema.
+      //
+
+      match /{collection}/{docId} {
+
+        allow read, write: if isOwner(userId)
+          && collection in [
+            'banks',
+            'categories',
+            'investments',
+            'pockets',
+            'yieldsLog',
+            'recurringBills',
+            'diagnostics'
+          ];
+      }
+    }
+  }
+}
