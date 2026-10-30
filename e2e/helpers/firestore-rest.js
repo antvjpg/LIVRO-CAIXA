@@ -144,13 +144,22 @@ async function probeAuthProvider() {
   let res;
   let body;
   try {
+    /* Timeout de 30s: sem ele, um fetch sem resposta deixa o CI travado
+       indefinidamente (sem timeout nativo no fetch do Node). */
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30_000);
     res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'invalid@invalid.invalid', password: 'x', returnSecureToken: true }),
+      signal: controller.signal,
     });
+    clearTimeout(timeout);
     body = await res.json().catch(() => ({}));
   } catch (err) {
+    if (err.name === 'AbortError') {
+      return { ok: false, code: 'auth_timeout', message: 'Timeout (30s) ao contatar o Identity Toolkit — rede bloqueada ou resposta lenta.' };
+    }
     return { ok: false, code: 'network_error', message: `Falha de rede ao contatar o Identity Toolkit: ${err.message}` };
   }
   const codigo = body?.error?.message || String(res.status);
