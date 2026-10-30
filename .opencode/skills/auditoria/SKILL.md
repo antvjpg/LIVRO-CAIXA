@@ -1,6 +1,6 @@
 ---
 name: auditoria
-description: Executa auditoria técnica cruzada do LIVRO-CAIXA. Investiga regras financeiras, fluxos de dados, dependências entre funcionalidades, persistência, sincronização, segurança, interface e infraestrutura. Utilizar em auditorias completas, auditorias de funcionalidades, investigação de bugs, análise de regressões e revisão técnica antes de implementar correções. Somente leitura: não implementa alterações.
+description: "Executa auditoria técnica cruzada do LIVRO-CAIXA. Investiga regras financeiras, fluxos de dados, dependências entre funcionalidades, persistência, sincronização, segurança, interface e infraestrutura. Utilizar em auditorias completas, auditorias de funcionalidades, investigação de bugs, análise de regressões e revisão técnica antes de implementar correções. Somente leitura: não implementa alterações."
 ---
 
 # SKILL — AUDITORIA TÉCNICA CRUZADA DO LIVRO-CAIXA
