@@ -17,7 +17,8 @@ globalThis.fetch = async (url, init) => {
   return net.handler(String(url), init);
 };
 
-const client = (await import(new URL("../../js/domain/financial-client.js", import.meta.url))).default;
+const mod = await import(new URL("../../js/domain/financial-client.js", import.meta.url));
+const client = mod.default ?? globalThis.LivroCaixaFinancial;
 
 /* ---------- helpers ---------- */
 

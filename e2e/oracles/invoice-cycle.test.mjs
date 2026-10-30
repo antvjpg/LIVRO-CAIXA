@@ -13,7 +13,8 @@ import { readAppJs } from '../../worker/test/helpers/js.mjs';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const { engine } = require(path.join(ROOT, 'js/domain/card-engine-v3-combined.js'));
+const cardModule = require(path.join(ROOT, 'js/domain/card-engine-v3-combined.js'));
+const engine = cardModule.engine ?? globalThis.LivroCaixaCardEngineV3;
 
 test('invoiceCycle: fechamento dia 10, período 2026-09', () => {
   const card = { id: 'c1', closingDay: 10, dueDay: 17 };
