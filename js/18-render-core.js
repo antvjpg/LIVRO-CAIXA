@@ -1238,7 +1238,7 @@ function renderCategoryManageList() {
 }).join('');
   }
   function openSubcategoryPopover(catId) {
-    const popover = document.getElementById('subcat-popover');
+    let popover = document.getElementById('subcat-popover');
     if (!popover) {
       const overlay = document.createElement('div');
       overlay.id = 'subcat-popover';

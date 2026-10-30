@@ -398,9 +398,11 @@ document.addEventListener('DOMContentLoaded', () => {
   patrimonySparklineInstance = null;
   PATRIMONY_SPARK_STORAGE_KEY = 'livro-caixa-patrimony-spark';
   patrimonySparkVisible = localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY) !== '0';
-  INVEST_TOTAL_EXPANDED_KEY = 'livro-caixa-invest-total-expanded';
+  /* INVEST_TOTAL_*_KEY são `const` globais em js/18-render-core.js (mesmo valor).
+     Atribuí-los aqui lançava "TypeError: Assignment to constant variable" no
+     DOMContentLoaded, abortando todo o restante da inicialização (inclusive o
+     bindAuthHandlers do botão Google). Ler a chave já declarada basta. */
   investTotalExpanded = localStorage.getItem(INVEST_TOTAL_EXPANDED_KEY) === '1';
-  INVEST_TOTAL_VIEW_MODE_KEY = 'livro-caixa-invest-total-view-mode';
   investTotalViewMode = localStorage.getItem(INVEST_TOTAL_VIEW_MODE_KEY) || 'institution';
   CATEGORY_PALETTE = ['#93584B', '#386D54', '#B89034', '#426980', '#593553', '#AA825A', '#678974', '#AC5E88'];
   CATEGORY_ICON_RULES = [
