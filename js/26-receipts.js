@@ -117,8 +117,8 @@ function getAccountHolderNames() {
 
   const user = typeof currentUser !== 'undefined' ? currentUser : null;
 
-  add(user && user.displayName);
-  add(user && user.email && user.email.split('@')[0]);
+  add(user && user.displayName ? sanitizeInput(user.displayName) : '');
+  add(user && user.email && user.email.split('@')[0] ? sanitizeInput(user.email.split('@')[0]) : '');
 
   return names;
 }
@@ -197,12 +197,12 @@ function parseReceiptAIResult(responseText) {
   const pagador =
     parsed.pagador == null
       ? null
-      : String(parsed.pagador).trim() || null;
+      : sanitizeInput(parsed.pagador);
 
   const recebedor =
     parsed.recebedor == null
       ? null
-      : String(parsed.recebedor).trim() || null;
+      : sanitizeInput(parsed.recebedor);
 
   const valor =
     parsed.valor == null || parsed.valor === ''
@@ -552,7 +552,7 @@ async function runReceiptAIAnalysis() {
     return;
   }
 
-  if (!window.LivroCaixaAI?.isReady()) {
+  if (!(await window.LivroCaixaAI?.isReady())) {
     setReceiptFileStatus(
       'Entre na sua conta ou cadastre uma chave local em Perfil → Análise assistida para ler comprovantes.',
       true

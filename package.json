@@ -2,6 +2,7 @@
   "name": "livro-caixa-code-qa",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "C.O.D.E. — Controle Operacional de Diagnóstico e Execução. Infraestrutura de QA/E2E do LIVRO-CAIXA. Somente desenvolvimento/testes: não é código de produção do aplicativo.",
   "license": "UNLICENSED",
   "scripts": {

@@ -206,7 +206,13 @@
     if (!person || !desc) { showToast('Informe pessoa e descrição.', 'error'); return; }
     if (!(amount > 0)) { showToast('Informe um valor válido.', 'error'); return; }
     const base = {
-      person, desc, amount, registeredAt, expectedAt, status, notes,
+      person: sanitizeInput(person),
+      desc: sanitizeInput(desc),
+      amount,
+      registeredAt,
+      expectedAt,
+      status,
+      notes: sanitizeInput(notes),
       updatedAt: new Date().toISOString()
     };
     if (editingReceivableId) {

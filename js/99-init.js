@@ -1,6 +1,20 @@
 /* LIVRO-CAIXA · js/99-init.js — dispatcher DOMContentLoaded: fiiação (listeners, handlers e chamadas) extraída de app.js (app.js: 457-15501). Separação por responsabilidade; conteúdo preservado. */
 /* [JS 10] INICIALIZAÇÃO / BOOTSTRAP */
 document.addEventListener('DOMContentLoaded', () => {
+  /* Rede de segurança: registrada NO INÍCIO do handler para que qualquer erro
+     posterior em inicialização não impeça o registro. Se a sessão não resolver
+     em 8s (callback Firebase pendurado ou erro antes do auth), revela o login
+     em vez de deixar o loader preso. Se a sessão chegar depois do timeout,
+     o fluxo normal esconde o login e segue. */
+  let authResolved = false;
+  setTimeout(() => {
+    if (authResolved) return;
+    const loginOv = document.getElementById('authOverlay');
+    const loaderOv = document.getElementById('syncOverlay');
+    if (loaderOv) loaderOv.classList.add('hidden');
+    if (loginOv) loginOv.classList.remove('hidden');
+  }, 8000);
+
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     navigator.serviceWorker.register('./sw.js?v=20-02').then(reg => {
@@ -3400,64 +3414,64 @@ document.getElementById('tSalvar').onclick = async () => {
   initMoneyMasks();
   markSingleActionButtons();
 
-  /* Rede de segurança: se a sessão não resolver em 8s (callback do Firebase
-     pendurado), revela o login em vez de deixar o loader preso. Se a sessão
-     chegar depois do timeout, o fluxo normal esconde o login e segue. */
-  let authResolved = false;
-  setTimeout(() => {
-    if (authResolved) return;
-    const loginOv = document.getElementById('authOverlay');
-    const loaderOv = document.getElementById('syncOverlay');
-    if (loaderOv) loaderOv.classList.add('hidden');
-    if (loginOv) loginOv.classList.remove('hidden');
-  }, 8000);
-
   auth.onAuthStateChanged(user => {
     authResolved = true;
     loadGeneration++;
     currentUser = user;
 
-    window.loginDebugLog?.(
-      'AUTH',
-      user
-        ? 'Firebase informou usuário autenticado'
-        : 'Firebase informou que não há usuário autenticado',
-      user
-        ? { provider: user.providerData?.map(p => p.providerId) }
-        : undefined
-    );
-    if (user) logInfo('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
-    else if (typeof diagnosticLog !== 'undefined' && diagnosticLog.length) logInfo('Autenticação','Sessão encerrada','Sucesso','Sessão atual encerrada.');
-    const overlay = document.getElementById('authOverlay');
-    const syncOverlay = document.getElementById('syncOverlay');
-    if (user) {
-      clearSessionMemory();
-      firstLoadDone = false;
-      renderBalances();
-      if (overlay) overlay.classList.add('hidden');
-      if (syncOverlay) syncOverlay.classList.add('hidden');
-      renderUserBar();
-      startSessionSecurity();
-      startFeatureAutomation();
-      window.LivroCaixaAI?.refreshQuota?.({ throttleMs: 15000 });
-      loadState();
-      setTimeout(checkLocalPinLock, 700);
-    } else {
-      stopSessionSecurity();
-      pinUnlocked = false;
-      hidePinOverlay();
-      clearPinActivity();
-      if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
-      realtimeUnsubscribers.forEach(unsub => unsub());
-      realtimeUnsubscribers = [];
-      lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
-      banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
-      clearSessionMemory();
-      firstLoadDone = false;
-      renderBalances();
-      if (syncOverlay) syncOverlay.classList.add('hidden');
-      if (overlay) overlay.classList.remove('hidden');
-      renderUserBar();
+    try {
+      window.loginDebugLog?.(
+        'AUTH',
+        user
+          ? 'Firebase informou usuário autenticado'
+          : 'Firebase informou que não há usuário autenticado',
+        user
+          ? { provider: user.providerData?.map(p => p.providerId) }
+          : undefined
+      );
+      if (user) logInfo('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
+      else if (typeof diagnosticLog !== 'undefined' && diagnosticLog.length) logInfo('Autenticação','Sessão encerrada','Sucesso','Sessão atual encerrada.');
+      const overlay = document.getElementById('authOverlay');
+      const syncOverlay = document.getElementById('syncOverlay');
+      if (user) {
+        clearSessionMemory();
+        firstLoadDone = false;
+        renderBalances();
+        if (overlay) overlay.classList.add('hidden');
+        if (syncOverlay) syncOverlay.classList.add('hidden');
+        renderUserBar();
+        startSessionSecurity();
+        startFeatureAutomation();
+        window.LivroCaixaAI?.refreshQuota?.({ throttleMs: 15000 });
+        loadState().catch(err => {
+          console.warn('[INIT] Falha ao carregar dados após autenticação:', err);
+          if (typeof logWarn === 'function') logWarn('Sistema','Carregamento de dados','Falha','A aplicação iniciou, mas a sincronização de dados encontrou um erro.',{message: err?.message});
+        });
+        setTimeout(checkLocalPinLock, 700);
+      } else {
+        stopSessionSecurity();
+        pinUnlocked = false;
+        hidePinOverlay();
+        clearPinActivity();
+        if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
+        realtimeUnsubscribers.forEach(unsub => unsub());
+        realtimeUnsubscribers = [];
+        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
+        banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
+        clearSessionMemory();
+        firstLoadDone = false;
+        renderBalances();
+        if (syncOverlay) syncOverlay.classList.add('hidden');
+        if (overlay) overlay.classList.remove('hidden');
+        renderUserBar();
+      }
+    } catch (err) {
+      console.error('[INIT] Erro no callback de autenticação:', err);
+      if (typeof logWarn === 'function') logWarn('Autenticação','Callback de sessão','Falha','Ocorreu um erro ao processar a sessão; o login foi exibido como fallback.',{message: err?.message});
+    } finally {
+      /* Garante que o loader nunca fique preso, mesmo se algo acima lançar erro. */
+      const syncOv = document.getElementById('syncOverlay');
+      if (syncOv) syncOv.classList.add('hidden');
     }
   });
 });

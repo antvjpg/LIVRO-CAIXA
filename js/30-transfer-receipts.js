@@ -48,7 +48,7 @@ async function runTransferReceiptAIAnalysis() {
     return;
   }
 
-  if (!window.LivroCaixaAI?.isReady()) {
+  if (!(await window.LivroCaixaAI?.isReady())) {
     setTransferReceiptFileStatus(
       'Entre na sua conta ou cadastre uma chave local em Perfil → Análise assistida para ler comprovantes.',
       true

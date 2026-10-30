@@ -33,30 +33,30 @@ window.LivroCaixaFinancial?.configure?.({
 });
 
 window.LivroCaixaAI = {
-  getApiKey() {
-    try { return localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY) || ''; } catch (err) { return ''; }
+  async getApiKey() {
+    try { return await window.LivroCaixaSecureStorage?.get(OPENROUTER_API_KEY_STORAGE_KEY) || ''; } catch (err) { return ''; }
   },
-  setApiKey(rawKey) {
+  async setApiKey(rawKey) {
     const key = String(rawKey || '').replace(/\s+/g, '');
     try {
       if (!key) {
-        localStorage.removeItem(OPENROUTER_API_KEY_STORAGE_KEY);
+        await window.LivroCaixaSecureStorage?.remove(OPENROUTER_API_KEY_STORAGE_KEY);
         return false;
       }
-      localStorage.setItem(OPENROUTER_API_KEY_STORAGE_KEY, key);
+      await window.LivroCaixaSecureStorage?.set(OPENROUTER_API_KEY_STORAGE_KEY, key);
       return true;
     } catch (err) {
       return false;
     }
   },
-  clearApiKey() {
-    try { localStorage.removeItem(OPENROUTER_API_KEY_STORAGE_KEY); } catch (err) {}
+  async clearApiKey() {
+    try { await window.LivroCaixaSecureStorage?.remove(OPENROUTER_API_KEY_STORAGE_KEY); } catch (err) {}
   },
-  hasLocalKey() {
-    return Boolean(this.getApiKey());
+  async hasLocalKey() {
+    return Boolean(await this.getApiKey());
   },
-  isReady() {
-    if (this.getApiKey()) return true;
+  async isReady() {
+    if (await this.getApiKey()) return true;
     try {
       return typeof auth !== 'undefined' && Boolean(auth?.currentUser);
     } catch (err) {
@@ -186,7 +186,7 @@ window.LivroCaixaAI = {
      autenticação, cota diária nem validação de payload do proxy. Usado
      só quando o Worker falha e há chave local cadastrada. */
   async generateViaLocalKey({ content, maxTokens }) {
-    const apiKey = this.getApiKey();
+    const apiKey = await this.getApiKey();
     if (!apiKey) {
       const err = new Error('Chave da API não configurada. Cadastre-a em Perfil → Análise assistida.');
       err.code = 'missing_api_key';
@@ -261,7 +261,7 @@ window.LivroCaixaAI = {
         return await this.generateViaWorker({ prompt: text, imagePart, maxTokens: tokenCap, signal });
       } catch (workerError) {
         /* Sem chave local, o erro do Worker é o que o usuário precisa ver. */
-        if (!this.getApiKey()) throw workerError;
+        if (!(await this.getApiKey())) throw workerError;
       }
     }
 

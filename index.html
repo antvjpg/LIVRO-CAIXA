@@ -48,8 +48,10 @@
        window.LivroCaixaMcpContract, usada por js/33-mcp-bridge.js para
        montar/sanitizar o envelope externo depositado no Worker. -->
   <script type="module" src="./js/domain/mcp-financial-contract.js"></script>
-
-
+  <!-- Armazenamento criptografado para chaves sensíveis (ex: chave OpenRouter). -->
+  <script type="module" src="./js/domain/secure-storage.js"></script>
+  <!-- Sanitização de entrada para prevenir XSS. -->
+  <script type="module" src="./js/domain/security-utils.js"></script>
 
   <link rel="stylesheet" href="./style/themes.css?v=20-23">
   <link rel="stylesheet" href="./style/base.css?v=20-24">

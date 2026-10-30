@@ -748,7 +748,7 @@
 
     try {
       const prompt = globalThis.LivroCaixaOCRLia.buildReadPrompt({ holderLabel: ocrHolderLabel() });
-      const aiReady = !!(window.LivroCaixaAI && typeof window.LivroCaixaAI.isReady === 'function' && window.LivroCaixaAI.isReady());
+      const aiReady = !!(window.LivroCaixaAI && typeof window.LivroCaixaAI.isReady === 'function' && await window.LivroCaixaAI.isReady());
 
       const read = await globalThis.LivroCaixaOCR.extract(attachment.file, {
         prompt,
