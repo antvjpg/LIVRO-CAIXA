@@ -131,6 +131,44 @@ async function probeQuota() {
   return res ? res.status : 0;
 }
 
+/* Sonda o provedor de Autenticação E-mail/Senha do Firebase.
+   Tenta um cadastro com e-mail intencionalmente inválido:
+   - INVALID_EMAIL  → provedor ATIVO (Firebase processou e validou o formato)
+   - OPERATION_NOT_ALLOWED → provedor DESABILITADO (E-mail/senha off no Console)
+   - QUOTA_EXCEEDED / 429 → cota de verificação de senha esgotada
+   - 5xx ou erro de rede → problema de conectividade com as APIs do Google
+   Retorna um objeto { ok, code, message } sem expor credenciais. */
+async function probeAuthProvider() {
+  const { apiKey } = readFirebaseWebConfig();
+  const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`;
+  let res;
+  let body;
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'invalid@invalid.invalid', password: 'x', returnSecureToken: true }),
+    });
+    body = await res.json().catch(() => ({}));
+  } catch (err) {
+    return { ok: false, code: 'network_error', message: `Falha de rede ao contatar o Identity Toolkit: ${err.message}` };
+  }
+  const codigo = body?.error?.message || String(res.status);
+  if (res.status === 400 && codigo.includes('INVALID_EMAIL')) {
+    return { ok: true, code: 'provider_active', message: 'Provedor E-mail/senha está ativo (Firebase respondeu INVALID_EMAIL para e-mail inválido).' };
+  }
+  if (res.status === 400 && (codigo.includes('OPERATION_NOT_ALLOWED') || codigo.includes('PASSWORD_LOGIN_DISABLED'))) {
+    return { ok: false, code: 'provider_disabled', message: 'Provedor E-mail/senha está DESABILITADO no Firebase Console (sinal: ' + codigo + ').' };
+  }
+  if (res.status === 429 || codigo.includes('QUOTA_EXCEEDED')) {
+    return { ok: false, code: 'auth_quota_exceeded', message: 'Cota de verificação de senha do Auth esgotada (sinal: ' + codigo + '). Aguardar a janela de cota.' };
+  }
+  if (res.status >= 500) {
+    return { ok: false, code: 'provider_error', message: 'Erro do servidor do Identity Toolkit (HTTP ' + res.status + ': ' + codigo + ').' };
+  }
+  return { ok: false, code: 'unknown', message: 'Resposta inesperada do Identity Toolkit (HTTP ' + res.status + ': ' + codigo + ').' };
+}
+
 async function listCollection(uid, idToken, projectId, collection) {
   assertCollection(collection);
   const base = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/livrocaixa/${uid}/${collection}`;
@@ -327,6 +365,7 @@ async function probeCrossAccount(uidAlvo, idTokenOutraConta, projectId) {
 module.exports = {
   COLLECTIONS,
   probeQuota,
+  probeAuthProvider,
   signIn,
   signUpOrCreate,
   probeCrossAccount,

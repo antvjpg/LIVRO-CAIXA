@@ -19,13 +19,29 @@ const app = require('../helpers/app');
 const { watchPage } = require('../helpers/console-watch');
 const { config, guardReasonText } = require('../helpers/env');
 const identity = require('../helpers/identity');
-
 function writeEmptyState() {
   fs.mkdirSync(path.dirname(config.statePath), { recursive: true });
   fs.writeFileSync(config.statePath, JSON.stringify({ cookies: [], origins: [] }));
 }
 
 test('provisiona sessão QA (login/criação autônoma)', async ({ page, context }, testInfo) => {
+  /* Sonda o provedor de Autenticação E-mail/senha ANTES de qualquer tentativa
+     de signup/login. Se o provedor estiver desabilitado ou a cota do Auth
+     esgotada, aborta aqui com mensagem clara — sem queimar a run inteira em
+     cascata de 40+ testes BLOCKED. */
+  const authProbe = await rest.probeAuthProvider();
+  if (!authProbe.ok) {
+    writeEmptyState();
+    await testInfo.attach('auth-probe.txt', {
+      body: `Probe do Auth falhou: ${authProbe.message}\n\nAção: verificar Firebase Console → Authentication → Sign-in method → E-mail/senha.`,
+      contentType: 'text/plain',
+    });
+    test.skip(
+      true,
+      `BLOCKED: provedor de Autenticação indisponível — ${authProbe.code} | ${authProbe.message}`
+    );
+  }
+
   /* Cota do Firestore esgotada (429 no projeto): abortar aqui, antes de
      criar conta e de 40 testes falharem em cascata. BLOCKED fica visível no
      relatório e é reprovado pelo passo --strict do CI. */
