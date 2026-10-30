@@ -89,6 +89,8 @@ npm run code:test      # suítes E2E completas (requer Chromium)
 | [`DOCUMENTACAO_VARIAVEIS_CSS.md`](DOCUMENTACAO_VARIAVEIS_CSS.md) | Variáveis CSS e como criar temas |
 | [`e2e/AUDITORIA.md`](e2e/AUDITORIA.md) | Auditoria de arquitetura, auth e persistência |
 | [`e2e/visual/AUDITORIA-VISUAL-MODAIS.md`](e2e/visual/AUDITORIA-VISUAL-MODAIS.md) | Auditoria visual dos modais (achados e revisões) |
+| [`.opencode/skills/auditoria/SKILL.md`](.opencode/skills/auditoria/SKILL.md) | Skill de auditoria técnica cruzada — arquitetura, regras financeiras, C.O.D.E., E2E, Worker, Firebase, PWA + auditoria cruzada |
+| [`.opencode/skills/performance/SKILL.md`](.opencode/skills/performance/SKILL.md) | Skill de desempenho — diagnóstico de gargalos, processo de medição e otimização segura, integração com auditoria |
 
 ## Privacidade e segurança
 
