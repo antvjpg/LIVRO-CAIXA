@@ -258,6 +258,12 @@
       syncLogSequenceFromEvents(diagnosticLog);
       persistDiagnosticLogLocally();
     } catch (err) { console.warn('LOG remoto indisponível:', err); }
+    /* Re-renderiza o modal de diagnóstico se estiver aberto, para refletir
+       os dados recém-carregados (localStorage e/ou Firestore). Sem isso, abrir
+       o modal antes do carregamento assíncrono terminar exibia lista vazia. */
+    if (typeof window.renderDiagnosticLog === 'function') {
+      try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia o fluxo */ }
+    }
   }
 
   /* =========================================================================
