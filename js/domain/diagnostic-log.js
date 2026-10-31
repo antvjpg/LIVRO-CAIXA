@@ -160,6 +160,7 @@
     try { stored = JSON.parse(localStorage.getItem(LOG_STORAGE_KEY) || '[]'); } catch (err) {}
     diagnosticLog.splice(0, diagnosticLog.length, ...normalizeDiagnosticLog(stored));
     syncLogSequenceFromEvents(diagnosticLog);
+    if (typeof window !== 'undefined') window.diagnosticLog = diagnosticLog;
   }
 
   async function loadDiagnosticLog() {
@@ -185,6 +186,7 @@
       diagnosticLog.splice(0, diagnosticLog.length, ...[...merged.values()].sort((a, b) => (Number(b.sequence || 0) - Number(a.sequence || 0)) || String(b.timestamp || '').localeCompare(String(a.timestamp || ''))).slice(0, LOG_LIMIT));
       syncLogSequenceFromEvents(diagnosticLog);
       persistDiagnosticLogLocally();
+      window.diagnosticLog = diagnosticLog;
       window.loginDebugLog?.('INFO', 'loadDiagnosticLog: após merge Firestore', { count: diagnosticLog.length });
     } catch (err) { console.warn('LOG remoto indisponível:', err); }
     if (typeof window.renderDiagnosticLog === 'function') {
@@ -230,6 +232,7 @@
     const event = createLogEvent({ ...input, synced: input.synced !== undefined ? input.synced : false });
     diagnosticLog.unshift(event);
     if (diagnosticLog.length > LOG_LIMIT) diagnosticLog.length = LOG_LIMIT;
+    window.diagnosticLog = diagnosticLog;
     flushPersistLocally();
 
     /* Atualiza o painel se estiver aberto. */
