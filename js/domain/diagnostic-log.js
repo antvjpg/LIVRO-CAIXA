@@ -242,8 +242,8 @@
   }
 
   async function loadDiagnosticLog() {
-    if (typeof currentUser !== 'undefined' && currentUser) {
-      setLogStorageKeys(currentUser.uid);
+    if (typeof window !== 'undefined' && window.currentUser) {
+      setLogStorageKeys(window.currentUser.uid);
     } else {
       setLogStorageKeys(null);
     }
@@ -254,9 +254,9 @@
     if (typeof window.renderDiagnosticLog === 'function') {
       try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia o fluxo */ }
     }
-    if (typeof currentUser === 'undefined' || !currentUser) return;
+    if (typeof window === 'undefined' || !window.currentUser) return;
     try {
-      const snap = await db.collection('livrocaixa').doc(currentUser.uid).collection('diagnostics').limit(100).get();
+      const snap = await db.collection('livrocaixa').doc(window.currentUser.uid).collection('diagnostics').limit(100).get();
       const remote = snap.docs.map(doc => ({ ...normalizeLogEvent(doc.data()), synced: true })).filter(item => item && item.id);
       const merged = new Map(diagnosticLog.map(item => [item.id, normalizeLogEvent(item)]));
       remote.forEach(item => merged.set(item.id, item));
@@ -331,8 +331,18 @@
     if (diagnosticLog.length > LOG_LIMIT) diagnosticLog.length = LOG_LIMIT;
     flushPersistLocally();
     if (event.type === 'ERROR') flashSyncError();
-    if (typeof currentUser !== 'undefined' && currentUser) {
-      db.collection('livrocaixa').doc(currentUser.uid).collection('diagnostics').doc(event.id).set(event, { merge: true })
+    /* Atualiza o painel de diagnóstico se estiver aberto, para que o usuário
+       veja o evento recém-registrado sem precisar reabrir o modal ou alterar filtros. */
+    if (typeof window !== 'undefined' && typeof window.renderDiagnosticLog === 'function') {
+      try {
+        const panel = document.getElementById('panelDiagnostico');
+        if (panel && panel.classList.contains('open')) {
+          window.renderDiagnosticLog();
+        }
+      } catch (err) { /* não bloqueia o fluxo */ }
+    }
+    if (typeof window !== 'undefined' && window.currentUser) {
+      db.collection('livrocaixa').doc(window.currentUser.uid).collection('diagnostics').doc(event.id).set(event, { merge: true })
         .then(() => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = true; flushPersistLocally(); })
         .catch(err => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = false; flushPersistLocally(); console.warn('Falha ao sincronizar o LOG:', err); });
     }
