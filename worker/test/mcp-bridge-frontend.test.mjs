@@ -23,8 +23,8 @@ const syntaxCheck = read("e2e/scripts/syntax-check.cjs");
 
 test("index.html carrega o contrato MCP como módulo e o bridge após a auth", () => {
   assert.ok(html.includes('<script type="module" src="./js/domain/mcp-financial-contract.js"></script>'));
-  const bridgeAt = html.indexOf('<script src="./js/33-mcp-bridge.js');
-  const authAt = html.indexOf('<script src="./js/32-auth-wiring.js');
+  const bridgeAt = html.indexOf('./js/33-mcp-bridge.js');
+  const authAt = html.indexOf('./js/32-auth-wiring.js');
   assert.ok(bridgeAt > -1, "script do bridge ausente");
   assert.ok(authAt > -1, "script de auth ausente");
   assert.ok(bridgeAt > authAt, "bridge deve carregar depois da fiação de auth");
