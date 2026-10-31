@@ -3455,7 +3455,10 @@ document.getElementById('tSalvar').onclick = async () => {
         firstLoadDone = false;
         renderBalances();
         if (overlay) overlay.classList.add('hidden');
-        if (syncOverlay) syncOverlay.classList.add('hidden');
+        /* syncOverlay não é escondido aqui: loadState() assume o controle dele
+           (mostra na linha 30 de 17-sync-persistence.js e esconde no finally),
+           evitando um gap onde nenhum overlay cobre a tela e o skeleton de
+           carregamento (is-data-loading) fique visível por cima do conteúdo. */
         renderUserBar();
         startSessionSecurity();
         startFeatureAutomation();
