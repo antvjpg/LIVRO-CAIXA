@@ -823,7 +823,7 @@ body.dark-mode .mobile-bottom-nav button.is-active{background:transparent;box-sh
   .log-panel{display:flex;flex-direction:column;gap:8px;}
   .log-stats{font-size:11px;color:var(--ink-soft);margin:4px 0 10px;padding:6px 9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);display:flex;flex-wrap:wrap;gap:8px;}
   .log-stats b{color:var(--ink);}
-  .log-list{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;overflow-y:auto;}
+  .log-list{display:flex;flex-direction:column;gap:8px;max-height:48vh;overflow-y:auto;}
   .log-entry-details{max-width:100%;}
   .log-entry-details .log-detail-toggle{cursor:pointer;color:var(--accent);font-size:10px;margin-left:6px;text-decoration:underline;text-decoration-style:dotted;}
   .log-entry-details .log-detail-collapsed{display:none;}
