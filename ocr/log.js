@@ -75,7 +75,29 @@
   return {
     ALLOWED_KEYS,
     sanitize,
-    event: (event, meta) => emit('info', event, meta),
-    failure: (event, meta) => emit('error', event, meta)
+    event: (event, meta) => {
+      const safe = emit('info', event, meta);
+      /* Integração com o motor central de LOG (Fase 3):
+         apenas metadados da whitelist, nunca texto/documento/CPF/cartão */
+      try {
+        if (typeof globalThis.recordOCREvent === 'function') {
+          globalThis.recordOCREvent(event, meta);
+        }
+      } catch (err) {
+        /* logging nunca pode derrubar o fluxo */
+      }
+      return safe;
+    },
+    failure: (event, meta) => {
+      const safe = emit('error', event, meta);
+      try {
+        if (typeof globalThis.recordOCRFailure === 'function') {
+          globalThis.recordOCRFailure(event, meta);
+        }
+      } catch (err) {
+        /* logging nunca pode derrubar o fluxo */
+      }
+      return safe;
+    }
   };
 });

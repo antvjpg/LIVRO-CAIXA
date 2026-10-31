@@ -325,3 +325,79 @@
     dot.classList.add('sync-error');
     setTimeout(() => dot.classList.remove('sync-error'), 4000);
   }
+
+  /* =========================================================================
+     ADAPTADORES DE DIAGNÓSTICOS ESPECIALIZADOS (Fase 3)
+     =========================================================================
+     Integram fontes externas de diagnóstico ao motor central, preservando
+     sanitização e finalidade específicas de cada fonte:
+
+     - OCR: apenas metadados da whitelist, nunca texto extraído/imagem/CPF/cartão/payload
+     - Login: eventos de autenticação com sanitização própria
+     - Worker/IA/Integrações: já usam logInfo/logWarn/logSyncError diretamente
+   */
+
+  /* Adapta eventos do pipeline de OCR para o motor central.
+     Usa apenas chaves da allowlist do OCR (stage, status, code, reason,
+     fileType, fileSize, category, environment, platform, provider,
+     durationMs, attempts, field, attachmentId, count).
+     Nunca grava texto do documento, nome do arquivo, CPF, cartão ou payload. */
+  function recordOCREvent(event, meta = {}) {
+    const allowedMeta = {};
+    const ocrAllowed = [
+      'stage', 'status', 'code', 'reason', 'fileType', 'fileSize',
+      'category', 'environment', 'platform', 'provider', 'durationMs',
+      'attempts', 'field', 'attachmentId', 'count'
+    ];
+    for (const key of ocrAllowed) {
+      if (key in meta) allowedMeta[key] = meta[key];
+    }
+    return recordLogEvent({
+      type: 'INFO',
+      module: 'OCR',
+      action: event,
+      status: 'Sucesso',
+      description: `OCR: ${event}`,
+      details: allowedMeta,
+      correlationId: allowedMeta.attachmentId || null,
+      durationMs: allowedMeta.durationMs || null
+    });
+  }
+
+  /* Adapta falhas do pipeline de OCR para o motor central. */
+  function recordOCRFailure(event, meta = {}) {
+    const allowedMeta = {};
+    const ocrAllowed = [
+      'stage', 'status', 'code', 'reason', 'fileType', 'fileSize',
+      'category', 'environment', 'platform', 'provider', 'durationMs',
+      'attempts', 'field', 'attachmentId', 'count'
+    ];
+    for (const key of ocrAllowed) {
+      if (key in meta) allowedMeta[key] = meta[key];
+    }
+    return recordLogEvent({
+      type: 'ERROR',
+      module: 'OCR',
+      action: event,
+      status: 'Falha',
+      description: `OCR falha: ${event}`,
+      details: allowedMeta,
+      correlationId: allowedMeta.attachmentId || null,
+      durationMs: allowedMeta.durationMs || null
+    });
+  }
+
+  /* Adapta eventos de login para o motor central.
+     Sanitiza dados sensíveis usando a allowlist do motor central. */
+  function recordLoginEvent(type, message, details = null) {
+    const safeDetails = details ? sanitizeLogValue(details) : null;
+    return recordLogEvent({
+      type: type === 'ERROR' ? 'ERROR' : type === 'WARN' ? 'WARN' : 'INFO',
+      module: 'Login',
+      action: message,
+      status: type === 'ERROR' ? 'Falha' : type === 'WARN' ? 'Atenção' : 'Sucesso',
+      description: String(message || '').slice(0, LOG_DESCRIPTION_MAX_CHARS),
+      details: safeDetails,
+      source: 'Login'
+    });
+  }

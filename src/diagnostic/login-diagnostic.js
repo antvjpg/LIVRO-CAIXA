@@ -66,6 +66,16 @@
     }
 
     render();
+
+    /* Integração com o motor central de LOG (Fase 3):
+       envia eventos de login com sanitização própria */
+    try {
+      if (typeof globalThis.recordLoginEvent === 'function') {
+        globalThis.recordLoginEvent(type, message, details);
+      }
+    } catch (err) {
+      /* logging nunca pode derrubar o fluxo */
+    }
   };
 
   window.getLoginDiagnosticText = () =>
