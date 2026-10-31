@@ -190,6 +190,12 @@
     const copy = getEl('authDiagnosticCopy');
     const inspectLog = getEl('authDiagnosticInspectLog');
 
+    window.loginDebugLog(
+      'INFO',
+      'bindControls: verificando elementos',
+      { toggle: !!toggle, panel: !!panel, close: !!close, clear: !!clear, copy: !!copy, inspectLog: !!inspectLog }
+    );
+
     if (
       !toggle ||
       !panel ||
@@ -292,6 +298,7 @@
       'click',
       event => {
         event.preventDefault();
+        window.loginDebugLog('INFO', 'Botão Inspecionar LOG clicado');
         window.inspectLogSystem();
       }
     );
@@ -307,10 +314,14 @@
   }
 
   function ensureInitialized() {
+    window.loginDebugLog('INFO', 'ensureInitialized chamado');
     if (bindControls()) {
       render();
+      window.loginDebugLog('INFO', 'Controles do diagnóstico conectados com sucesso');
       return;
     }
+
+    window.loginDebugLog('WARN', 'bindControls falhou, tentando novamente...');
 
     if (document.readyState === 'loading') {
       document.addEventListener(
