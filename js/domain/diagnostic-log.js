@@ -296,7 +296,7 @@
       if (existing) {
         if (input.status !== undefined) existing.status = input.status;
         if (input.synced !== undefined) existing.synced = input.synced;
-        persistDiagnosticLogLocally();
+        schedulePersistLocally();
         return existing;
       }
     }
@@ -308,23 +308,24 @@
       if (existing) {
         if (input.status !== undefined) existing.status = input.status;
         if (input.synced !== undefined) existing.synced = input.synced;
-        persistDiagnosticLogLocally();
+        schedulePersistLocally();
         return existing;
       }
     }
 
-    const event = createLogEvent({ ...input, synced: typeof currentUser !== 'undefined' && currentUser ? false : null });
+    const event = createLogEvent({ ...input, synced: false });
     diagnosticLog.unshift(event);
     if (diagnosticLog.length > LOG_LIMIT) diagnosticLog.length = LOG_LIMIT;
-    persistDiagnosticLogLocally();
+    flushPersistLocally();
     if (event.type === 'ERROR') flashSyncError();
     if (typeof currentUser !== 'undefined' && currentUser) {
       db.collection('livrocaixa').doc(currentUser.uid).collection('diagnostics').doc(event.id).set(event, { merge: true })
-        .then(() => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = true; persistDiagnosticLogLocally(); })
-        .catch(err => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = false; persistDiagnosticLogLocally(); console.warn('Falha ao sincronizar o LOG:', err); });
+        .then(() => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = true; flushPersistLocally(); })
+        .catch(err => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = false; flushPersistLocally(); console.warn('Falha ao sincronizar o LOG:', err); });
     }
     if (event.type === 'ERROR') console.error(`[${event.module}] ${event.action}:`, event.description, event.details || '');
     else if (event.type === 'WARN') console.warn(`[${event.module}] ${event.action}:`, event.description);
+    else if (event.type === 'INFO') console.info(`[${event.module}] ${event.action}:`, event.description);
     return event;
   }
 
@@ -470,8 +471,94 @@
   }
 
   /* =========================================================================
-     EXPORTS PARA TESTES (Fase 2 — não altera comportamento de produção)
+     EXPORTAÇÃO DE DADOS (Cycle 2 — confiabilidade e exportação)
      ========================================================================= */
+
+  function logEventToCsvRow(item) {
+    const esc = v => {
+      const s = String(v == null ? '' : v);
+      if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    };
+    return [
+      esc(item.id),
+      esc(item.sequence),
+      esc(item.timestamp),
+      esc(item.type),
+      esc(item.module),
+      esc(item.action),
+      esc(item.status),
+      esc(item.description),
+      esc(item.correlationId),
+      esc(item.idempotencyKey),
+      esc(item.durationMs),
+      esc(item.retryCount),
+      esc(item.source),
+      esc(item.synced),
+      esc(item.details != null ? JSON.stringify(item.details) : '')
+    ].join(',');
+  }
+
+  function csvHeader() {
+    return 'id,sequence,timestamp,type,module,action,status,description,correlationId,idempotencyKey,durationMs,retryCount,source,synced,details';
+  }
+
+  /* Exporta o LOG atual como arquivo JSON ou CSV para download.
+     Respeita a sanitização já aplicada nos dados (não expõe dados brutos).
+     format: 'json' (padrão) ou 'csv'. */
+  function exportDiagnosticLog(format = 'json') {
+    const data = [...diagnosticLog].sort((a, b) => (Number(b.sequence || 0) - Number(a.sequence || 0)) || String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    let blob, fileName, mimeType;
+
+    if (format === 'csv') {
+      const rows = [csvHeader(), ...data.map(logEventToCsvRow)].join('\n');
+      blob = new Blob([rows], { type: 'text/csv;charset=utf-8' });
+      fileName = `livrocaixa_log_${timestamp}.csv`;
+      mimeType = 'text/csv';
+    } else {
+      const payload = { exportedAt: new Date().toISOString(), uid: LOG_CURRENT_UID, total: data.length, logs: data };
+      blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+      fileName = `livrocaixa_log_${timestamp}.json`;
+      mimeType = 'application/json';
+    }
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    logInfo('Sistema', 'Exportação de LOG', 'Sucesso', `Exportou ${data.length} evento(s) em ${format.toUpperCase()}`, { format, total: data.length });
+    return { format, total: data.length, fileName };
+  }
+
+  /* =========================================================================
+     DEBOUNCE DE PERSISTÊNCIA LOCAL (Cycle 2)
+     ========================================================================= */
+
+  let persistTimer = null;
+  const PERSIST_DEBOUNCE_MS = 300;
+
+  function schedulePersistLocally() {
+    if (persistTimer !== null) clearTimeout(persistTimer);
+    persistTimer = setTimeout(() => {
+      persistTimer = null;
+      persistDiagnosticLogLocally();
+    }, PERSIST_DEBOUNCE_MS);
+  }
+
+  function flushPersistLocally() {
+    if (persistTimer !== null) {
+      clearTimeout(persistTimer);
+      persistTimer = null;
+    }
+    persistDiagnosticLogLocally();
+  }
+
   export {
     logInfo, logWarn, logSyncError, recordLogEvent, createLogEvent,
     resetLogForNewUser, setLogStorageKeys, sanitizeLogText, sanitizeLogValue,
@@ -481,4 +568,5 @@
     LOG_CURRENT_UID, nextLogSequence, LOG_LIMIT, recordOCREvent,
     normalizeLogEvent, normalizeDiagnosticLog, persistDiagnosticLogLocally,
     hydrateDiagnosticLog, loadDiagnosticLog,
+    exportDiagnosticLog, schedulePersistLocally, flushPersistLocally,
   };
