@@ -61,6 +61,14 @@
           }
           if (!resolved) {
             resolved = true;
+            /* CACHE-FIRST: o onSnapshot do Firebase com cache offline ativo
+               dispara no primeiro evento do disco local, quase instantâneo.
+               Renderiza assim que os primeiros dados chegam em vez de esperar
+               todas as coleções pelo Promise.all. firstLoadDone é ligado antes
+               para que renderBalances()/sparklines mostrem dados reais em vez
+               de '—'. */
+            firstLoadDone = true;
+            render();
             resolve();
           } else if (firstLoadDone) {
             render();
