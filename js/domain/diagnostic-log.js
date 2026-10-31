@@ -34,7 +34,7 @@
   ]);
 
   /* Limites documentados (Fase 2) */
-  const LOG_LIMIT = 200;                 /* máximo de eventos na memória/localStorage */
+  let LOG_LIMIT = 200;                   /* máximo de eventos na memória/localStorage */
   const LOG_SYNC_ERRORS_LIMIT = 50;      /* máximo de erros de sync mantidos */
   const LOG_DETAILS_MAX_KEYS = 20;       /* máximo de chaves por objeto em details */
   const LOG_DETAILS_MAX_DEPTH = 2;       /* profundidade máxima de recursão */
@@ -59,6 +59,8 @@
   let LOG_SEQUENCE_STORAGE_KEY;
 
   let LOG_SOURCE;
+
+  let LOG_SCHEMA_VERSION;
 
   let logSequence;
 
