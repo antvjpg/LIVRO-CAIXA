@@ -1346,6 +1346,15 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     const en = document.getElementById('logFilterEnd'); if (en) en.value = '';
     renderDiagnosticLog();
   });
+  const btnToggleLogFiltros = document.getElementById('btnToggleLogFiltros');
+  const logFilters = document.getElementById('logFilters');
+  if (btnToggleLogFiltros && logFilters) {
+    btnToggleLogFiltros.addEventListener('click', () => {
+      const open = !logFilters.classList.contains('is-open');
+      logFilters.classList.toggle('is-open', open);
+      btnToggleLogFiltros.setAttribute('aria-expanded', String(open));
+    });
+  }
   document.getElementById('filterText')?.addEventListener('input', refreshFilteredViews);
   document.getElementById('btnPeriodPrev')?.addEventListener('click', () => shiftViewPeriod(-1));
   document.getElementById('btnPeriodNext')?.addEventListener('click', () => shiftViewPeriod(1));

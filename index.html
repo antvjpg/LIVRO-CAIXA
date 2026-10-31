@@ -880,7 +880,8 @@
     <div class="panel log-panel" id="panelDiagnostico">
       <h3>Diagnóstico Geral (LOG) <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <p class="hint log-panel-desc" style="margin:0 0 10px;">Registro técnico de carregamento, salvamento, sincronização, autenticação e operações concluídas ou falhas. Dados sensíveis não são registrados.</p>
-      <div class="log-toolbar">
+      <button type="button" id="btnToggleLogFiltros" aria-expanded="false" aria-controls="logFilters">Filtros</button>
+      <div class="log-toolbar" id="logFilters">
         <div class="log-filter-row">
           <select id="logFilterType" aria-label="Filtrar tipo de LOG"><option value="">Todos os tipos</option><option value="INFO">INFO</option><option value="WARN">WARN</option><option value="ERROR">ERROR</option></select>
           <select id="logFilterModule" aria-label="Filtrar módulo do LOG"><option value="">Todos os módulos</option></select>
