@@ -62,7 +62,7 @@
 
   let LOG_SOURCE;
 
-  let LOG_SCHEMA_VERSION;
+  let LOG_SCHEMA_VERSION = 1;
 
   let logSequence;
 
@@ -195,8 +195,8 @@
       details: sanitizeLogValue(item.details),
       correlationId: item.correlationId ? String(item.correlationId).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
       idempotencyKey: item.idempotencyKey ? String(item.idempotencyKey).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
-      durationMs: Number.isFinite(durationNumber) && durationNumber >= 0 ? Math.round(durationNumber) : null,
-      retryCount: Number.isFinite(retryNumber) && retryNumber >= 0 ? Math.floor(retryNumber) : null,
+      durationMs: durationNumber != null && Number.isFinite(durationNumber) && durationNumber >= 0 ? Math.round(durationNumber) : null,
+      retryCount: retryNumber != null && Number.isFinite(retryNumber) && retryNumber >= 0 ? Math.floor(retryNumber) : null,
       source: String(item.source || 'Livro-Caixa-web').slice(0, LOG_SOURCE_MAX_CHARS),
       synced: item.synced === true ? true : item.synced === false ? false : null,
       schemaVersion: Number(item.schemaVersion) || 1
@@ -272,7 +272,7 @@
       description: sanitizeLogText(description || ''), details: sanitizeLogValue(details),
       correlationId: correlationId ? String(correlationId).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
       idempotencyKey: idempotencyKey ? String(idempotencyKey).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
-      durationMs: Number.isFinite(Number(durationMs)) && Number(durationMs) >= 0 ? Math.round(Number(durationMs)) : null,
+      durationMs: durationMs != null && Number.isFinite(Number(durationMs)) && Number(durationMs) >= 0 ? Math.round(Number(durationMs)) : null,
       retryCount: Number.isFinite(Number(retryCount)) && Number(retryCount) >= 0 ? Math.floor(Number(retryCount)) : null,
       source: String(source || LOG_SOURCE).slice(0, LOG_SOURCE_MAX_CHARS), synced: synced === true ? true : synced === false ? false : null,
       schemaVersion: LOG_SCHEMA_VERSION
