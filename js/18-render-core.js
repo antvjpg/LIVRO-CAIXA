@@ -649,15 +649,12 @@ function editInstitution(btn, key) {
     });
     // P2.4.2 — mesmo padrão de navegação dos cards Contas e Caixinhas
     const investSummaryCard = strip.querySelector('.invest-summary-card');
-    // Clicar no card (incluindo símbolo) expande o gráfico de separação
-    investSummaryCard?.addEventListener('click', (e) => {
-      e.preventDefault();
-      toggleInvestBreakdown();
-    });
+    const openInvestTab = () => window.switchTab('invest');
+    investSummaryCard?.addEventListener('click', openInvestTab);
     investSummaryCard?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        toggleInvestBreakdown();
+        openInvestTab();
       }
     });
     const investBreakdownSymbol = strip.querySelector('.invest-summary-card .balance-symbol');
