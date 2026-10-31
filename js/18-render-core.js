@@ -657,18 +657,6 @@ function editInstitution(btn, key) {
         openInvestTab();
       }
     });
-    const investBreakdownSymbol = strip.querySelector('.invest-summary-card .balance-symbol');
-    investBreakdownSymbol?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleInvestBreakdown();
-    });
-    investBreakdownSymbol?.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        event.stopPropagation();
-        toggleInvestBreakdown();
-      }
-    });
   }
 
   function getDashboardAlerts() {
