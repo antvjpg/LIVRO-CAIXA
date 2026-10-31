@@ -1324,52 +1324,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     document.getElementById('reconciliationResult').textContent = 'Ajuste aplicado e incorporado ao Livro-Caixa.';
     render();
   });
-  ['logFilterType','logFilterModule','logFilterAction','logFilterStatus','logFilterSource'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
-  ['logFilterStart','logFilterEnd'].forEach(id => document.getElementById(id)?.addEventListener('change', renderDiagnosticLog));
-  let _logTextDebounce = null;
-  ['logFilterText','logFilterCorrelation'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('input', () => {
-      clearTimeout(_logTextDebounce);
-      _logTextDebounce = setTimeout(renderDiagnosticLog, 250);
-    });
-  });
-  document.getElementById('btnClearLogFilters')?.addEventListener('click', () => {
-    const t = document.getElementById('logFilterType'); if (t) t.value = '';
-    const m = document.getElementById('logFilterModule'); if (m) m.value = '';
-    const a = document.getElementById('logFilterAction'); if (a) a.value = '';
-    const s = document.getElementById('logFilterStatus'); if (s) s.value = '';
-    const src = document.getElementById('logFilterSource'); if (src) src.value = '';
-    const txt = document.getElementById('logFilterText'); if (txt) txt.value = '';
-    const corr = document.getElementById('logFilterCorrelation'); if (corr) corr.value = '';
-    const st = document.getElementById('logFilterStart'); if (st) st.value = '';
-    const en = document.getElementById('logFilterEnd'); if (en) en.value = '';
-    renderDiagnosticLog();
-  });
-  const btnToggleLogFiltros = document.getElementById('btnToggleLogFiltros');
-  const logFilters = document.getElementById('logFilters');
-  if (btnToggleLogFiltros && logFilters) {
-    btnToggleLogFiltros.addEventListener('click', () => {
-      const open = !logFilters.classList.contains('is-open');
-      logFilters.classList.toggle('is-open', open);
-      btnToggleLogFiltros.setAttribute('aria-expanded', String(open));
-    });
-  }
-  document.getElementById('filterText')?.addEventListener('input', refreshFilteredViews);
-  document.getElementById('btnPeriodPrev')?.addEventListener('click', () => shiftViewPeriod(-1));
-  document.getElementById('btnPeriodNext')?.addEventListener('click', () => shiftViewPeriod(1));
-  document.getElementById('btnPeriodAll')?.addEventListener('click', () => setViewPeriod('all'));
-  document.getElementById('periodMonthInput')?.addEventListener('change', event => { if (event.target.value) setViewPeriod('month', event.target.value); });
-  document.getElementById('btnPeriodPicker')?.addEventListener('click', () => { const input=document.getElementById('periodMonthInput'); if (!input) return; if (typeof input.showPicker === 'function') { try { input.showPicker(); } catch (err) { input.focus(); } } else input.focus(); });
-  document.getElementById('btnCopyDiagnostico').onclick = () => {
-    const lines = diagnosticLog.map(item => {
-      const safeDetails = typeof window.sanitizeLogValue === 'function' ? window.sanitizeLogValue(item.details) : item.details;
-      const detailsPart = safeDetails != null ? ' | ' + JSON.stringify(safeDetails) : '';
-      return `[${item.type}] ${item.sequence != null ? '#' + item.sequence + ' ' : ''}${formatLogTimestamp(item.timestamp || Date.now())} | ${item.module} | ${item.action} | ${item.status}${item.correlationId ? ' | op=' + item.correlationId : ''}${item.durationMs != null ? ' | duração=' + item.durationMs + 'ms' : ''}${item.synced === false ? ' | sincronização pendente' : ''} | ${item.description}${detailsPart}`;
-    }).join('\n') || 'Nenhum evento registrado.';
-    if (navigator.clipboard) navigator.clipboard.writeText(lines).then(()=>alert('LOG copiado.')).catch(()=>alert(lines)); else alert(lines);
-  };
   document.getElementById('btnExportDiagnostico').onclick = () => {
     if (typeof window.exportDiagnosticLog === 'function') {
       const result = window.exportDiagnosticLog('json');

@@ -120,71 +120,29 @@
       collapsed: true
     };
   }
-  let _logTextDebounce = null;
-  let _logLastModules = null;
-  let _logLastStatuses = null;
-  let _logLastSources = null;
-  let _logLastActions = null;
   function renderDiagnosticLog() {
-    const type = document.getElementById('logFilterType')?.value || '';
-    const module = document.getElementById('logFilterModule')?.value || '';
-    const action = document.getElementById('logFilterAction')?.value || '';
-    const status = document.getElementById('logFilterStatus')?.value || '';
-    const source = document.getElementById('logFilterSource')?.value || '';
-    const query = (document.getElementById('logFilterText')?.value || '').toLowerCase();
-    const correlation = (document.getElementById('logFilterCorrelation')?.value || '').toLowerCase();
-    const start = document.getElementById('logFilterStart')?.value || '';
-    const end = document.getElementById('logFilterEnd')?.value || '';
-
-    const modules = [...new Set(diagnosticLog.map(item => item.module).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-    const statuses = [...new Set(diagnosticLog.map(item => item.status).filter(Boolean))].sort();
-    const sources = [...new Set(diagnosticLog.map(item => item.source).filter(Boolean))].sort();
-    const actions = [...new Set(diagnosticLog.map(item => item.action).filter(Boolean))].sort();
-
-    if (_logLastModules === null || JSON.stringify(_logLastModules) !== JSON.stringify(modules)) { renderLogSelectOptions('logFilterModule', modules, 'Todos os módulos', module); _logLastModules = modules; }
-    if (_logLastStatuses === null || JSON.stringify(_logLastStatuses) !== JSON.stringify(statuses)) { renderLogSelectOptions('logFilterStatus', statuses, 'Todos os status', status); _logLastStatuses = statuses; }
-    if (_logLastSources === null || JSON.stringify(_logLastSources) !== JSON.stringify(sources)) { renderLogSelectOptions('logFilterSource', sources, 'Todas as origens', source); _logLastSources = sources; }
-    if (_logLastActions === null || JSON.stringify(_logLastActions) !== JSON.stringify(actions)) { renderLogSelectOptions('logFilterAction', actions, 'Todas as ações', action); _logLastActions = actions; }
-
-    const filtered = diagnosticLog.filter(item => {
-      if (type && item.type !== type) return false;
-      if (module && item.module !== module) return false;
-      if (action && item.action !== action) return false;
-      if (status && item.status !== status) return false;
-      if (source && item.source !== source) return false;
-      if (correlation && !(item.correlationId && item.correlationId.toLowerCase().includes(correlation))) return false;
-      if (query && !JSON.stringify(item).toLowerCase().includes(query)) return false;
-      if (startDate || endDate) {
-        const t = item.timestamp ? new Date(item.timestamp) : null;
-        if (!t || Number.isNaN(t.getTime())) return false;
-        if (startDate && t < startDate) return false;
-        if (endDate && t > endDate) return false;
-      }
-      return true;
-    });
-
+    const list = document.getElementById('diagnosticoList');
     const stats = document.getElementById('logStats');
+
+    if (!list) return;
+
+    const info = diagnosticLog.filter(i => i.type === 'INFO').length;
+    const warn = diagnosticLog.filter(i => i.type === 'WARN').length;
+    const error = diagnosticLog.filter(i => i.type === 'ERROR').length;
     if (stats) {
-      const info = filtered.filter(i => i.type === 'INFO').length;
-      const warn = filtered.filter(i => i.type === 'WARN').length;
-      const error = filtered.filter(i => i.type === 'ERROR').length;
-      stats.innerHTML = '<b>Total:</b> ' + filtered.length + ' &nbsp; <b>INFO:</b> ' + info + ' &nbsp; <b>WARN:</b> ' + warn + ' &nbsp; <b>ERROR:</b> ' + error;
+      stats.innerHTML = '<b>Total:</b> ' + diagnosticLog.length + ' &nbsp; <b>INFO:</b> ' + info + ' &nbsp; <b>WARN:</b> ' + warn + ' &nbsp; <b>ERROR:</b> ' + error;
     }
 
-    const list = document.getElementById('diagnosticoList');
+    const filtered = [...diagnosticLog].sort((a, b) => (Number(b.sequence || 0) - Number(a.sequence || 0)) || String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
+
     list.innerHTML = filtered.length ? filtered.map(item => {
       const date = item.timestamp ? formatLogTimestamp(item.timestamp) : '';
-      const detailsRaw = item.details ? (typeof item.details === 'string' ? item.details : JSON.stringify(item.details, null, 2)) : '';
-      const details = truncateDetails(detailsRaw);
-      const identity = item.sequence != null ? '#' + item.sequence : 'sem sequência';
-      const operation = item.correlationId ? `op ${item.correlationId}` : '';
-      const duration = item.durationMs != null ? `${item.durationMs} ms` : '';
+      const sequence = item.sequence != null ? '#' + item.sequence : 'sem sequência';
       const sync = item.synced === true ? 'Sincronizado' : item.synced === false ? 'Pendente' : 'Local';
-      const meta = [identity, date, item.module || 'Sistema', item.status || '', duration, sync].filter(Boolean).join(' · ');
-      const detailToggle = details.collapsed ? '' : '';
-      return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span>${syncBadge(item)}<span class="log-entry-meta">${escapeHTML(meta)}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${item.description ? ' — ' + escapeHTML(item.description) : ''}</div>${operation ? `<div class="log-entry-details">Operação: ${escapeHTML(operation)}</div>` : ''}${details.html ? `<div class="log-entry-details">${details.html}${details.collapsed ? '<button type="button" class="log-detail-toggle" aria-label="Ver mais detalhes">…ver mais</button>' : ''}</div>` : ''}</article>`;
-    }).join('') : '<p class="hint">Nenhum evento encontrado para os filtros atuais.</p>';
-    attachDetailToggles();
+      const meta = [sequence, date, item.module || 'Sistema', item.status || '', sync].filter(Boolean).join(' · ');
+      const description = item.description ? ' — ' + escapeHTML(item.description) : '';
+      return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span><span class="log-entry-meta">${escapeHTML(meta)}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${description}</div></article>`;
+    }).join('') : '<p class="hint">Nenhum evento registrado.</p>';
   }
   function attachDetailToggles() {
     document.querySelectorAll('.log-detail-toggle').forEach(btn => {
