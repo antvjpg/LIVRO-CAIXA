@@ -249,7 +249,13 @@ document.addEventListener('DOMContentLoaded', () => {
   } else applyLightTheme(getSavedLightTheme());
   lightThemeOptions.forEach(option => {
     option.addEventListener('click', () => {
-      if (document.body.classList.contains('dark-mode')) return;
+      /* Permite escolher uma paleta clara mesmo quando o app está em modo
+         escuro: primeiro sai do dark-mode, depois aplica o tema claro. */
+      if (document.body.classList.contains('dark-mode')) {
+        document.body.classList.remove('dark-mode');
+        setThemeToggleIcon(false);
+        localStorage.setItem('theme', 'light');
+      }
       applyLightTheme(option.dataset.theme);
       renderCategorySummary();
       renderInvestments();
@@ -260,7 +266,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   darkThemeOptions.forEach(option => {
     option.addEventListener('click', () => {
-      if (!document.body.classList.contains('dark-mode')) return;
+      /* Permite escolher uma paleta escura mesmo quando o app está em modo
+         claro: primeiro entra no dark-mode, depois aplica o tema escuro. */
+      if (!document.body.classList.contains('dark-mode')) {
+        document.body.classList.add('dark-mode');
+        setThemeToggleIcon(true);
+        localStorage.setItem('theme', 'dark');
+      }
       applyDarkTheme(option.dataset.theme);
       renderCategorySummary();
       renderInvestments();
