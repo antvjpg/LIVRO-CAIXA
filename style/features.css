@@ -820,6 +820,16 @@ body.dark-mode .mobile-bottom-nav button.is-active{background:transparent;box-sh
   .log-sync.synced{background:var(--green-soft);color:var(--green);}
   .log-sync.pending{background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--gold);}
   .log-sync.local{background:color-mix(in srgb,var(--ink-soft) 12%,var(--surface));color:var(--ink-soft);}
+  .log-stats{font-size:11px;color:var(--ink-soft);margin:4px 0 10px;padding:6px 9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);display:flex;flex-wrap:wrap;gap:8px;}
+  .log-stats b{color:var(--ink);}
+  .log-list{display:flex;flex-direction:column;gap:8px;max-height:52vh;overflow-y:auto;}
+  .log-entry-details{max-width:100%;}
+  .log-entry-details .log-detail-toggle{cursor:pointer;color:var(--accent);font-size:10px;margin-left:6px;text-decoration:underline;text-decoration-style:dotted;}
+  .log-entry-details .log-detail-collapsed{display:none;}
+  .log-entry{display:flex;flex-direction:column;gap:6px;}
+  .log-entry-head{flex:0 0 auto;}
+  .log-entry-meta{flex-wrap:wrap;}
+  @media(max-width:600px){.log-toolbar{grid-template-columns:1fr 1fr;}.log-filter-row{flex-direction:column;}}
 
   .reorder-actions{display:flex;gap:3px;margin-left:auto;}.reorder-actions .action-btn{font-size:12px;min-width:25px;min-height:25px;}
   .bank-share-line{display:block;color:var(--accent);font-size:10px;margin-top:2px;}.bill-status.overdue{color:var(--red);font-weight:800;}.bill-status.is-paid{color:var(--green);background:color-mix(in srgb,var(--green) 16%,var(--surface));}.bill-status.is-partial{color:var(--gold);background:color-mix(in srgb,var(--gold) 18%,var(--surface));}

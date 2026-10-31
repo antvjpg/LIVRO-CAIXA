@@ -98,6 +98,32 @@
     if (item.synced === false) return '<span class="log-sync pending" title="Sincronização pendente">○</span>';
     return '<span class="log-sync local" title="Apenas local">○</span>';
   }
+  /* Renderiza as opções de um <select> apenas quando a lista muda, evitando
+     reconstrução a cada filtro (que perde foco e desfoca o usuário). */
+  function renderLogSelectOptions(selectId, items, emptyLabel, current) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+    const html = '<option value="">' + escapeHTML(emptyLabel) + '</option>' + items.map(item => '<option value="' + escapeHTML(item) + '">' + escapeHTML(item) + '</option>').join('');
+    if (select.innerHTML !== html) {
+      select.innerHTML = html;
+      if (items.includes(current)) select.value = current;
+    }
+  }
+  function truncateDetails(value, maxChars = 220) {
+    if (!value) return { html: '', collapsed: false };
+    const text = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+    if (text.length <= maxChars) return { html: escapeHTML(text), collapsed: false };
+    const head = escapeHTML(text.slice(0, maxChars));
+    const tail = escapeHTML(text.slice(maxChars));
+    return {
+      html: '<span class="log-detail-visible">' + head + '</span><span class="log-detail-collapsed">' + tail + '</span><button type="button" class="log-detail-toggle" aria-label="Ver mais detalhes">…ver mais</button>',
+      collapsed: true
+    };
+  }
+  let _logTextDebounce = null;
+  let _logLastModules = null;
+  let _logLastStatuses = null;
+  let _logLastSources = null;
   function renderDiagnosticLog() {
     const type = document.getElementById('logFilterType')?.value || '';
     const module = document.getElementById('logFilterModule')?.value || '';
@@ -112,14 +138,9 @@
     const statuses = [...new Set(diagnosticLog.map(item => item.status).filter(Boolean))].sort();
     const sources = [...new Set(diagnosticLog.map(item => item.source).filter(Boolean))].sort();
 
-    const moduleSelect = document.getElementById('logFilterModule');
-    if (moduleSelect) { const current=moduleSelect.value; moduleSelect.innerHTML='<option value="">Todos os módulos</option>'+modules.map(item=>`<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join(''); if(modules.includes(current)) moduleSelect.value=current; }
-
-    const statusSelect = document.getElementById('logFilterStatus');
-    if (statusSelect) { const current=statusSelect.value; statusSelect.innerHTML='<option value="">Todos os status</option>'+statuses.map(item=>`<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join(''); if(statuses.includes(current)) statusSelect.value=current; }
-
-    const sourceSelect = document.getElementById('logFilterSource');
-    if (sourceSelect) { const current=sourceSelect.value; sourceSelect.innerHTML='<option value="">Todas as origens</option>'+sources.map(item=>`<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join(''); if(sources.includes(current)) sourceSelect.value=current; }
+    if (_logLastModules === null || JSON.stringify(_logLastModules) !== JSON.stringify(modules)) { renderLogSelectOptions('logFilterModule', modules, 'Todos os módulos', module); _logLastModules = modules; }
+    if (_logLastStatuses === null || JSON.stringify(_logLastStatuses) !== JSON.stringify(statuses)) { renderLogSelectOptions('logFilterStatus', statuses, 'Todos os status', status); _logLastStatuses = statuses; }
+    if (_logLastSources === null || JSON.stringify(_logLastSources) !== JSON.stringify(sources)) { renderLogSelectOptions('logFilterSource', sources, 'Todas as origens', source); _logLastSources = sources; }
 
     const startDate = start ? new Date(start + 'T00:00:00') : null;
     const endDate = end ? new Date(end + 'T23:59:59') : null;
@@ -140,17 +161,45 @@
       return true;
     });
 
+    const stats = document.getElementById('logStats');
+    if (stats) {
+      const info = filtered.filter(i => i.type === 'INFO').length;
+      const warn = filtered.filter(i => i.type === 'WARN').length;
+      const error = filtered.filter(i => i.type === 'ERROR').length;
+      stats.innerHTML = '<b>Total:</b> ' + filtered.length + ' &nbsp; <b>INFO:</b> ' + info + ' &nbsp; <b>WARN:</b> ' + warn + ' &nbsp; <b>ERROR:</b> ' + error;
+    }
+
     const list = document.getElementById('diagnosticoList');
     list.innerHTML = filtered.length ? filtered.map(item => {
       const date = item.timestamp ? formatLogTimestamp(item.timestamp) : '';
-      const details = item.details ? (typeof item.details === 'string' ? item.details : JSON.stringify(item.details, null, 2)) : '';
-      const identity = item.sequence != null ? `#${item.sequence}` : 'sem sequência';
+      const detailsRaw = item.details ? (typeof item.details === 'string' ? item.details : JSON.stringify(item.details, null, 2)) : '';
+      const details = truncateDetails(detailsRaw);
+      const identity = item.sequence != null ? '#' + item.sequence : 'sem sequência';
       const operation = item.correlationId ? `op ${item.correlationId}` : '';
       const duration = item.durationMs != null ? `${item.durationMs} ms` : '';
       const sync = item.synced === true ? 'Sincronizado' : item.synced === false ? 'Pendente' : 'Local';
       const meta = [identity, date, item.module || 'Sistema', item.status || '', duration, sync].filter(Boolean).join(' · ');
-      return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span>${syncBadge(item)}<span class="log-entry-meta">${escapeHTML(meta)}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${item.description ? ' — ' + escapeHTML(item.description) : ''}</div>${operation ? `<div class="log-entry-details">Operação: ${escapeHTML(operation)}</div>` : ''}${details ? `<div class="log-entry-details">${escapeHTML(details)}</div>` : ''}</article>`;
+      const detailToggle = details.collapsed ? '' : '';
+      return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span>${syncBadge(item)}<span class="log-entry-meta">${escapeHTML(meta)}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${item.description ? ' — ' + escapeHTML(item.description) : ''}</div>${operation ? `<div class="log-entry-details">Operação: ${escapeHTML(operation)}</div>` : ''}${details.html ? `<div class="log-entry-details">${details.html}${details.collapsed ? '<button type="button" class="log-detail-toggle" aria-label="Ver mais detalhes">…ver mais</button>' : ''}</div>` : ''}</article>`;
     }).join('') : '<p class="hint">Nenhum evento encontrado para os filtros atuais.</p>';
+    attachDetailToggles();
+  }
+  function attachDetailToggles() {
+    document.querySelectorAll('.log-detail-toggle').forEach(btn => {
+      if (btn.dataset.logBound) return;
+      btn.dataset.logBound = '1';
+      btn.addEventListener('click', () => {
+        const article = btn.closest('.log-entry');
+        if (!article) return;
+        const visible = article.querySelector('.log-detail-visible');
+        const collapsed = article.querySelector('.log-detail-collapsed');
+        if (visible && collapsed) {
+          const isHidden = collapsed.style.display === 'none';
+          collapsed.style.display = isHidden ? 'inline' : 'none';
+          btn.textContent = isHidden ? '…ver menos' : '…ver mais';
+        }
+      });
+    });
   }
   function openDiagnostics() { renderDiagnosticLog(); openModal('panelDiagnostico'); }
 

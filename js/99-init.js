@@ -1324,8 +1324,28 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     document.getElementById('reconciliationResult').textContent = 'Ajuste aplicado e incorporado ao Livro-Caixa.';
     render();
   });
-  ['logFilterType','logFilterModule','logFilterStatus','logFilterSource','logFilterText','logFilterCorrelation'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
+  ['logFilterType','logFilterModule','logFilterStatus','logFilterSource'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
   ['logFilterStart','logFilterEnd'].forEach(id => document.getElementById(id)?.addEventListener('change', renderDiagnosticLog));
+  let _logTextDebounce = null;
+  ['logFilterText','logFilterCorrelation'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      clearTimeout(_logTextDebounce);
+      _logTextDebounce = setTimeout(renderDiagnosticLog, 250);
+    });
+  });
+  document.getElementById('btnClearLogFilters')?.addEventListener('click', () => {
+    const t = document.getElementById('logFilterType'); if (t) t.value = '';
+    const m = document.getElementById('logFilterModule'); if (m) m.value = '';
+    const s = document.getElementById('logFilterStatus'); if (s) s.value = '';
+    const src = document.getElementById('logFilterSource'); if (src) src.value = '';
+    const txt = document.getElementById('logFilterText'); if (txt) txt.value = '';
+    const corr = document.getElementById('logFilterCorrelation'); if (corr) corr.value = '';
+    const st = document.getElementById('logFilterStart'); if (st) st.value = '';
+    const en = document.getElementById('logFilterEnd'); if (en) en.value = '';
+    renderDiagnosticLog();
+  });
   document.getElementById('filterText')?.addEventListener('input', refreshFilteredViews);
   document.getElementById('btnPeriodPrev')?.addEventListener('click', () => shiftViewPeriod(-1));
   document.getElementById('btnPeriodNext')?.addEventListener('click', () => shiftViewPeriod(1));

@@ -879,7 +879,7 @@
 
     <div class="panel" id="panelDiagnostico">
       <h3>Diagnóstico Geral (LOG) <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
-      <p class="hint" style="margin:0 0 10px;">Registro técnico de carregamento, salvamento, sincronização, autenticação, importação, exportação, cálculos, cotações, calendário e operações concluídas ou falhas. Dados sensíveis não são registrados.</p>
+      <p class="hint log-panel-desc" style="margin:0 0 10px;">Registro técnico de carregamento, salvamento, sincronização, autenticação, importação, exportação, cálculos, cotações, calendário e operações concluídas ou falhas. Dados sensíveis não são registrados.</p>
       <div class="log-toolbar">
         <div class="log-filter-row">
           <select id="logFilterType" aria-label="Filtrar tipo de LOG"><option value="">Todos os tipos</option><option value="INFO">INFO</option><option value="WARN">WARN</option><option value="ERROR">ERROR</option></select>
@@ -892,14 +892,16 @@
           <input type="date" id="logFilterStart" aria-label="Data inicial">
           <input type="date" id="logFilterEnd" aria-label="Data final">
           <input id="logFilterCorrelation" type="search" placeholder="Correlação (opId)" aria-label="Filtrar por correlação">
+          <button type="button" id="btnClearLogFilters" style="padding:0 8px; font-size:11px;">Limpar filtros</button>
         </div>
       </div>
-      <div id="diagnosticoList" style="max-height:50vh; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+      <div class="log-stats" id="logStats" aria-live="polite"></div>
+      <div id="diagnosticoList" class="log-list"></div>
       <div class="log-actions" style="display:flex; gap:8px; margin-top:12px;">
         <button type="button" id="btnCopyDiagnostico" style="flex:1;">Copiar LOG</button>
         <button type="button" id="btnClearDiagnostico" style="flex:1;">Limpar local</button>
       </div>
-      <p class="hint" style="margin:8px 0 0; font-size:12px;">Limpar apaga apenas a cópia local do LOG (esta sessão). A retenção remota segue o Firestore e não é afetada. Exportar copia somente conteúdo sanitizado, dentro dos limites definidos.</p>
+      <p class="hint log-panel-foot" style="margin:8px 0 0; font-size:12px;">Limpar apaga apenas a cópia local do LOG (esta sessão). A retenção remota segue o Firestore e não é afetada. Exportar copia somente conteúdo sanitizado, dentro dos limites definidos.</p>
     </div>
 
     <div class="panel" id="panelOpenRouterUsage">
