@@ -3524,6 +3524,7 @@ document.getElementById('tSalvar').onclick = async () => {
     authResolved = true;
     loadGeneration++;
     currentUser = user;
+    window.currentUser = currentUser;
 
     try {
       window.loginDebugLog?.(
@@ -3578,6 +3579,7 @@ document.getElementById('tSalvar').onclick = async () => {
         renderUserBar();
         /* Isola o LOG: remove eventos do usuário que encerrou a sessão. */
         if (typeof resetLogForNewUser === 'function') resetLogForNewUser(null);
+        window.currentUser = null;
         if (typeof loadDiagnosticLog === 'function') loadDiagnosticLog().catch(() => {});
       }
     } catch (err) {

@@ -526,6 +526,7 @@ firebase.firestore().enablePersistence().catch(err => {
   console.log("A persistência offline não pôde ser ativada:", err);
 });
 const db = firebase.firestore();
+window.db = db;
 
 let currentUser = null;
   let firstLoadDone = false;
