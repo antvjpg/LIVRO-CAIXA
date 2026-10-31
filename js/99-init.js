@@ -1324,7 +1324,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     document.getElementById('reconciliationResult').textContent = 'Ajuste aplicado e incorporado ao Livro-Caixa.';
     render();
   });
-  ['logFilterType','logFilterModule','logFilterStatus','logFilterSource'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
+  ['logFilterType','logFilterModule','logFilterAction','logFilterStatus','logFilterSource'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
   ['logFilterStart','logFilterEnd'].forEach(id => document.getElementById(id)?.addEventListener('change', renderDiagnosticLog));
   let _logTextDebounce = null;
   ['logFilterText','logFilterCorrelation'].forEach(id => {
@@ -1338,6 +1338,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   document.getElementById('btnClearLogFilters')?.addEventListener('click', () => {
     const t = document.getElementById('logFilterType'); if (t) t.value = '';
     const m = document.getElementById('logFilterModule'); if (m) m.value = '';
+    const a = document.getElementById('logFilterAction'); if (a) a.value = '';
     const s = document.getElementById('logFilterStatus'); if (s) s.value = '';
     const src = document.getElementById('logFilterSource'); if (src) src.value = '';
     const txt = document.getElementById('logFilterText'); if (txt) txt.value = '';
@@ -1368,6 +1369,14 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       return `[${item.type}] ${item.sequence != null ? '#' + item.sequence + ' ' : ''}${formatLogTimestamp(item.timestamp || Date.now())} | ${item.module} | ${item.action} | ${item.status}${item.correlationId ? ' | op=' + item.correlationId : ''}${item.durationMs != null ? ' | duração=' + item.durationMs + 'ms' : ''}${item.synced === false ? ' | sincronização pendente' : ''} | ${item.description}${detailsPart}`;
     }).join('\n') || 'Nenhum evento registrado.';
     if (navigator.clipboard) navigator.clipboard.writeText(lines).then(()=>alert('LOG copiado.')).catch(()=>alert(lines)); else alert(lines);
+  };
+  document.getElementById('btnExportDiagnostico').onclick = () => {
+    if (typeof window.exportDiagnosticLog === 'function') {
+      const result = window.exportDiagnosticLog('json');
+      alert('LOG exportado: ' + result.fileName + ' (' + result.total + ' evento(s)).');
+    } else {
+      alert('Função de exportação indisponível nesta sessão.');
+    }
   };
   document.getElementById('btnClearDiagnostico').onclick = () => { if (!confirm('Limpar apenas a cópia local do LOG? O histórico remoto não será apagado.')) return; diagnosticLog.length=0; persistDiagnosticLogLocally(); renderDiagnosticLog(); };
 

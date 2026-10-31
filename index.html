@@ -885,6 +885,7 @@
         <div class="log-filter-row">
           <select id="logFilterType" aria-label="Filtrar tipo de LOG"><option value="">Todos os tipos</option><option value="INFO">INFO</option><option value="WARN">WARN</option><option value="ERROR">ERROR</option></select>
           <select id="logFilterModule" aria-label="Filtrar módulo do LOG"><option value="">Todos os módulos</option></select>
+          <select id="logFilterAction" aria-label="Filtrar ação do LOG"><option value="">Todas as ações</option></select>
           <select id="logFilterStatus" aria-label="Filtrar status do LOG"><option value="">Todos os status</option></select>
           <input id="logFilterText" type="search" placeholder="Buscar no LOG" aria-label="Buscar no LOG">
         </div>
@@ -900,8 +901,10 @@
       <div id="diagnosticoList" class="log-list"></div>
       <div class="log-actions" style="display:flex; gap:8px; margin-top:8px;">
         <button type="button" id="btnCopyDiagnostico" style="flex:1;">Copiar LOG</button>
+        <button type="button" id="btnExportDiagnostico" style="flex:1;">Exportar LOG</button>
         <button type="button" id="btnClearDiagnostico" style="flex:1;">Limpar local</button>
       </div>
+      <p class="hint log-panel-desc" style="margin:8px 0 0; font-size:12px;">Limpar local remove apenas a cópia do seu aparelho. O histórico remoto (Firestore) permanece. Exportar gera um arquivo com dados já sanitizados.</p>
     </div>
 
     <div class="panel" id="panelOpenRouterUsage">

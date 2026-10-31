@@ -315,7 +315,7 @@
       }
     }
 
-    const event = createLogEvent({ ...input, synced: false });
+    const event = createLogEvent({ ...input, synced: input.synced !== undefined ? input.synced : false });
     diagnosticLog.unshift(event);
     if (diagnosticLog.length > LOG_LIMIT) diagnosticLog.length = LOG_LIMIT;
     flushPersistLocally();
@@ -617,3 +617,42 @@
     recordLoginEvent, recordAiEvent, recordWorkerEvent, recordWorkerFailure,
     recordOCRFailure,
   };
+
+  /* Expose para uso global no navegador (carregado via <script src> tradicional).
+     Os testes ES module continuam importando normalmente via export acima. */
+  if (typeof window !== 'undefined') {
+    window.logInfo = logInfo;
+    window.logWarn = logWarn;
+    window.logSyncError = logSyncError;
+    window.recordLogEvent = recordLogEvent;
+    window.createLogEvent = createLogEvent;
+    window.resetLogForNewUser = resetLogForNewUser;
+    window.setLogStorageKeys = setLogStorageKeys;
+    window.sanitizeLogText = sanitizeLogText;
+    window.sanitizeLogValue = sanitizeLogValue;
+    window.beginLogOperation = beginLogOperation;
+    window.operationDuration = operationDuration;
+    window.getLogContextFields = getLogContextFields;
+    window.getDiagnosticLogPage = getDiagnosticLogPage;
+    window.getDiagnosticLogStats = getDiagnosticLogStats;
+    window.diagnosticLog = diagnosticLog;
+    window.LOG_STORAGE_KEY = LOG_STORAGE_KEY;
+    window.LOG_SEQUENCE_STORAGE_KEY = LOG_SEQUENCE_STORAGE_KEY;
+    window.LOG_CURRENT_UID = LOG_CURRENT_UID;
+    window.nextLogSequence = nextLogSequence;
+    window.LOG_LIMIT = LOG_LIMIT;
+    window.recordOCREvent = recordOCREvent;
+    window.normalizeLogEvent = normalizeLogEvent;
+    window.normalizeDiagnosticLog = normalizeDiagnosticLog;
+    window.persistDiagnosticLogLocally = persistDiagnosticLogLocally;
+    window.hydrateDiagnosticLog = hydrateDiagnosticLog;
+    window.loadDiagnosticLog = loadDiagnosticLog;
+    window.exportDiagnosticLog = exportDiagnosticLog;
+    window.schedulePersistLocally = schedulePersistLocally;
+    window.flushPersistLocally = flushPersistLocally;
+    window.recordLoginEvent = recordLoginEvent;
+    window.recordAiEvent = recordAiEvent;
+    window.recordWorkerEvent = recordWorkerEvent;
+    window.recordWorkerFailure = recordWorkerFailure;
+    window.recordOCRFailure = recordOCRFailure;
+  }

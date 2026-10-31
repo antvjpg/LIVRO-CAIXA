@@ -127,6 +127,7 @@
   function renderDiagnosticLog() {
     const type = document.getElementById('logFilterType')?.value || '';
     const module = document.getElementById('logFilterModule')?.value || '';
+    const action = document.getElementById('logFilterAction')?.value || '';
     const status = document.getElementById('logFilterStatus')?.value || '';
     const source = document.getElementById('logFilterSource')?.value || '';
     const query = (document.getElementById('logFilterText')?.value || '').toLowerCase();
@@ -137,17 +138,17 @@
     const modules = [...new Set(diagnosticLog.map(item => item.module).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
     const statuses = [...new Set(diagnosticLog.map(item => item.status).filter(Boolean))].sort();
     const sources = [...new Set(diagnosticLog.map(item => item.source).filter(Boolean))].sort();
+    const actions = [...new Set(diagnosticLog.map(item => item.action).filter(Boolean))].sort();
 
     if (_logLastModules === null || JSON.stringify(_logLastModules) !== JSON.stringify(modules)) { renderLogSelectOptions('logFilterModule', modules, 'Todos os módulos', module); _logLastModules = modules; }
     if (_logLastStatuses === null || JSON.stringify(_logLastStatuses) !== JSON.stringify(statuses)) { renderLogSelectOptions('logFilterStatus', statuses, 'Todos os status', status); _logLastStatuses = statuses; }
     if (_logLastSources === null || JSON.stringify(_logLastSources) !== JSON.stringify(sources)) { renderLogSelectOptions('logFilterSource', sources, 'Todas as origens', source); _logLastSources = sources; }
-
-    const startDate = start ? new Date(start + 'T00:00:00') : null;
-    const endDate = end ? new Date(end + 'T23:59:59') : null;
+    if (_logLastActions === null || JSON.stringify(_logLastActions) !== JSON.stringify(actions)) { renderLogSelectOptions('logFilterAction', actions, 'Todas as ações', action); _logLastActions = actions; }
 
     const filtered = diagnosticLog.filter(item => {
       if (type && item.type !== type) return false;
       if (module && item.module !== module) return false;
+      if (action && item.action !== action) return false;
       if (status && item.status !== status) return false;
       if (source && item.source !== source) return false;
       if (correlation && !(item.correlationId && item.correlationId.toLowerCase().includes(correlation))) return false;
