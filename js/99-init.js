@@ -3510,7 +3510,14 @@ document.getElementById('tSalvar').onclick = async () => {
         /* Isola o LOG por UID: limpa eventos do usuário anterior (se houver)
            e define chaves de storage particionadas para o usuário atual. */
         if (typeof resetLogForNewUser === 'function') resetLogForNewUser(user.uid);
-        loadState().catch(err => {
+        loadState().then(() => {
+          /* Após carregar o estado (que inclui loadDiagnosticLog), registra
+             a sessão iniciada para que o evento apareça no LOG. */
+          logInfo('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
+          if (typeof window.renderDiagnosticLog === 'function') {
+            try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia */ }
+          }
+        }).catch(err => {
           console.warn('[INIT] Falha ao carregar dados após autenticação:', err);
           if (typeof logWarn === 'function') logWarn('Sistema','Carregamento de dados','Falha','A aplicação iniciou, mas a sincronização de dados encontrou um erro.',{message: err?.message});
         });
