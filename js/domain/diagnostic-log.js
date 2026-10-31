@@ -264,6 +264,11 @@
       syncLogSequenceFromEvents(diagnosticLog);
       persistDiagnosticLogLocally();
     } catch (err) { console.warn('LOG remoto indisponível:', err); }
+    /* Re-renderiza após o carregamento remoto (Firestore) para que os selects
+       de filtro (módulo, status, ação, origem) reflitam os eventos recém-carregados. */
+    if (typeof window.renderDiagnosticLog === 'function') {
+      try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia o fluxo */ }
+    }
   }
 
   /* =========================================================================
