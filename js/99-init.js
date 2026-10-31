@@ -301,21 +301,6 @@ document.addEventListener('DOMContentLoaded', () => {
   currentTab = 'caixa';
   lastTabRestored = false;
 
-  /* Restaura a última aba de forma síncrona no bootstrap para evitar o "flash":
-     abrir no Livro-Caixa e só, após o carregamento assíncrono do Firebase, voltar
-     para a aba anterior. Chama switchTab (não apenas dataset.tab) para que as
-     classes .active das views e a pílula da barra inferior sejam atualizadas.
-     O sessionStorage sobrevive a F5/atualização (não a fechar o app). */
-  try {
-    const savedTab = sessionStorage.getItem(LAST_TAB_STORAGE_KEY);
-    if (savedTab && TAB_NAMES.includes(savedTab) && typeof window.switchTab === 'function') {
-      currentTab = savedTab;
-      lastTabRestored = true;
-      document.body.dataset.tab = savedTab;
-      window.switchTab(savedTab);
-    }
-  } catch (e) {}
-
   try { document.body.dataset.tab = currentTab; } catch (e) {}
   /* sessionStorage (e não localStorage): a aba vale só durante a sessão —
      sobrevive a F5/atualização, mas some ao fechar o app (volta no Livro-Caixa). */
@@ -386,6 +371,21 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof window.switchTab !== 'function') {
     window.switchTab = window.switchTabOriginal;
   }
+  /* Restaura a última aba de forma síncrona no bootstrap para evitar o "flash":
+     abrir no Livro-Caixa e só, após o carregamento assíncrono do Firebase, voltar
+     para a aba anterior. Chama switchTab (não apenas dataset.tab) para que as
+     classes .active das views e a pílula da barra inferior sejam atualizadas.
+     Executado aqui (depois de switchTabOriginal e window.switchTab definidos)
+     para que o patch de metas e o switch original estejam disponíveis. */
+  try {
+    const savedTab = sessionStorage.getItem(LAST_TAB_STORAGE_KEY);
+    if (savedTab && TAB_NAMES.includes(savedTab) && typeof window.switchTab === 'function') {
+      currentTab = savedTab;
+      lastTabRestored = true;
+      document.body.dataset.tab = savedTab;
+      window.switchTab(savedTab);
+    }
+  } catch (e) {}
   COLLECTIONS = ['banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog', 'recurringBills', 'receivables', 'budgets', 'goals', 'cards', 'purchases', 'invoiceLaunches'];
   lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
   realtimeUnsubscribers = [];
