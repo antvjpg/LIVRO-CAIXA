@@ -107,6 +107,7 @@
     }
     lines.push('=========================');
     lines.forEach(function(l) { window.loginDebugLog('INFO', l); });
+    alert(lines.join('\n'));
   };
 
   function setDiagnosticOpen(open) {
