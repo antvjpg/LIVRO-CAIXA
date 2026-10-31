@@ -1399,19 +1399,40 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
 
   window.deleteEntry = async function(id) {
     if (confirm('Deseja realmente excluir este lançamento?')) {
+      const entry = entries.find(e => e.id === id);
+      const previousEntries = entries.map(item => ({ ...item }));
       entries = entries.filter(e => e.id !== id);
-      await saveEntries();
-      populateFilterControls();
-      render();
+      try {
+        await saveEntries();
+        appendEntryHistory({ ...entry, _action: 'delete', _by: 'user' }, { action: 'delete', by: 'user' });
+        populateFilterControls();
+        render();
+        logInfo('Livro-Caixa','Excluir lançamento','Sucesso',`Lançamento "${entry?.desc || entry?.id}" excluído.`,{id, date: entry?.date, type: entry?.type, amount: entry?.amount});
+      } catch (err) {
+        entries = previousEntries;
+        logSyncError('exclusão de lançamento', err);
+        showToast('Não foi possível excluir o lançamento.', 'error');
+        render();
+      }
     }
   };
 
   window.deleteBank = function(id) {
     if (confirm('Deseja excluir este banco? Os lançamentos permanecerão gravados.')) {
+      const bank = banks.find(b => b.id === id);
+      const previousBanks = banks.map(item => ({ ...item }));
       banks = banks.filter(b => b.id !== id);
-      saveBanks();
-      populateFilterControls();
-      render();
+      try {
+        saveBanks();
+        populateFilterControls();
+        render();
+        logInfo('Bancos','Excluir banco','Sucesso',`Banco "${bank?.name}" excluído.`,{id});
+      } catch (err) {
+        banks = previousBanks;
+        logSyncError('exclusão de banco', err);
+        showToast('Não foi possível excluir o banco.', 'error');
+        render();
+      }
     }
   };
 
@@ -1420,13 +1441,25 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       alert('Você precisa ter pelo menos uma categoria cadastrada.');
       return;
     }
+    const category = categories.find(c => c.id === id);
     if (confirm('Deseja excluir esta categoria? Os lançamentos vinculados a ela serão movidos para outra categoria.')) {
       const replacementId = categories.find(c => c.id !== id)?.id || '';
+      const previousCategories = categories.map(item => ({ ...item }));
+      const previousEntries = entries.map(item => ({ ...item }));
       categories = categories.filter(c => c.id !== id);
       entries = entries.map(entry => entry.category === id ? { ...entry, category: replacementId, subcategory: '' } : entry);
-      await Promise.all([saveCategories(), saveEntries()]);
-      populateFilterControls();
-      render();
+      try {
+        await Promise.all([saveCategories(), saveEntries()]);
+        populateFilterControls();
+        render();
+        logInfo('Categorias','Excluir categoria','Sucesso',`Categoria "${category?.name}" excluída. Lançamentos movidos para "${replacementId}".`,{id, replacementId});
+      } catch (err) {
+        categories = previousCategories;
+        entries = previousEntries;
+        logSyncError('exclusão de categoria', err);
+        showToast('Não foi possível excluir a categoria.', 'error');
+        render();
+      }
     }
   };
 

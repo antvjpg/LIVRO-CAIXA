@@ -1,5 +1,5 @@
 /* Livro-CAIXA — Branding Orange — PWA shell (network-first HTML, force update) */
-const CACHE_NAME = "livro-caixa-shell-v20-44";
+const CACHE_NAME = "livro-caixa-shell-v20-45";
 const APP_SHELL = [
   "./",
   "./index.html",
