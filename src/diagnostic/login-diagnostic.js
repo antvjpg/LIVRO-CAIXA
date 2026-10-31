@@ -85,10 +85,22 @@
      Permite ver se eventos estão sendo gravados, se window.db/window.currentUser
      existem e se há erros de sincronização — sem precisar do console do navegador. */
   window.inspectLogSystem = function() {
-    const dl = window.diagnosticLog || [];
+    let dl = window.diagnosticLog || [];
+    let source = 'memória';
+    /* Fallback: se window.diagnosticLog estiver vazio, tenta ler direto do localStorage.
+       Isso pode acontecer se o módulo diagnostic-log.js não atualizou a referência global. */
+    if (dl.length === 0 && typeof window.LOG_STORAGE_KEY !== 'undefined' && window.LOG_STORAGE_KEY) {
+      try {
+        const stored = JSON.parse(localStorage.getItem(window.LOG_STORAGE_KEY) || '[]');
+        if (Array.isArray(stored) && stored.length > 0) {
+          dl = stored;
+          source = 'localStorage (' + window.LOG_STORAGE_KEY + ')';
+        }
+      } catch (err) { /* ignora */ }
+    }
     const lines = [];
     lines.push('=== DIAGNÓSTICO DO LOG ===');
-    lines.push('Eventos em memória: ' + dl.length);
+    lines.push('Eventos em memória: ' + dl.length + ' (fonte: ' + source + ')');
     lines.push('window.db existe: ' + (typeof window.db !== 'undefined'));
     lines.push('window.currentUser existe: ' + (typeof window.currentUser !== 'undefined' && window.currentUser !== null));
     if (window.currentUser) {
