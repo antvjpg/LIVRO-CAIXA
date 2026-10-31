@@ -877,7 +877,7 @@
 
 
 
-    <div class="panel" id="panelDiagnostico">
+    <div class="panel log-panel" id="panelDiagnostico">
       <h3>Diagnóstico Geral (LOG) <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
       <p class="hint log-panel-desc" style="margin:0 0 10px;">Registro técnico de carregamento, salvamento, sincronização, autenticação e operações concluídas ou falhas. Dados sensíveis não são registrados.</p>
       <div class="log-toolbar">
@@ -897,7 +897,7 @@
       </div>
       <div class="log-stats" id="logStats" aria-live="polite"></div>
       <div id="diagnosticoList" class="log-list"></div>
-      <div class="log-actions" style="display:flex; gap:8px; margin-top:12px;">
+      <div class="log-actions" style="display:flex; gap:8px; margin-top:auto;">
         <button type="button" id="btnCopyDiagnostico" style="flex:1;">Copiar LOG</button>
         <button type="button" id="btnClearDiagnostico" style="flex:1;">Limpar local</button>
       </div>

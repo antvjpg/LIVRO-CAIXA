@@ -820,13 +820,10 @@ body.dark-mode .mobile-bottom-nav button.is-active{background:transparent;box-sh
   .log-sync.synced{background:var(--green-soft);color:var(--green);}
   .log-sync.pending{background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--gold);}
   .log-sync.local{background:color-mix(in srgb,var(--ink-soft) 12%,var(--surface));color:var(--ink-soft);}
+  .log-panel{display:flex;flex-direction:column;gap:8px;}
   .log-stats{font-size:11px;color:var(--ink-soft);margin:4px 0 10px;padding:6px 9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);display:flex;flex-wrap:wrap;gap:8px;}
   .log-stats b{color:var(--ink);}
-  .log-list{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;overflow-y:auto;max-height:none;}
-  .panel#panelDiagnostico{display:flex;flex-direction:column;gap:8px;}
-  .panel#panelDiagnostico .log-actions{flex:0 0 auto;margin-top:8px;}
-  .panel#panelDiagnostico .log-stats{flex:0 0 auto;}
-  .panel#panelDiagnostico .log-toolbar{flex:0 0 auto;}
+  .log-list{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;overflow-y:auto;}
   .log-entry-details{max-width:100%;}
   .log-entry-details .log-detail-toggle{cursor:pointer;color:var(--accent);font-size:10px;margin-left:6px;text-decoration:underline;text-decoration-style:dotted;}
   .log-entry-details .log-detail-collapsed{display:none;}
