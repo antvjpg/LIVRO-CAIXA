@@ -124,6 +124,7 @@
   let _logLastModules = null;
   let _logLastStatuses = null;
   let _logLastSources = null;
+  let _logLastActions = null;
   function renderDiagnosticLog() {
     const type = document.getElementById('logFilterType')?.value || '';
     const module = document.getElementById('logFilterModule')?.value || '';
