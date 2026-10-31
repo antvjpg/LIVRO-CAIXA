@@ -3578,6 +3578,7 @@ document.getElementById('tSalvar').onclick = async () => {
         renderUserBar();
         /* Isola o LOG: remove eventos do usuário que encerrou a sessão. */
         if (typeof resetLogForNewUser === 'function') resetLogForNewUser(null);
+        if (typeof loadDiagnosticLog === 'function') loadDiagnosticLog().catch(() => {});
       }
     } catch (err) {
       console.error('[INIT] Erro no callback de autenticação:', err);

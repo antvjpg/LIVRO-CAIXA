@@ -77,14 +77,14 @@
     LOG_SEQUENCE_STORAGE_KEY = uid ? `livrocaixa_diagnostic_sequence_${String(uid)}` : 'livrocaixa_diagnostic_sequence';
   }
 
-  /* Limpa o LOG na memória e no localStorage para o UID atual, e redefine as
-     chaves de storage para o novo UID. Chamado ao fazer login/logout para
-     garantir isolamento entre usuários. */
+  /* Limpa o LOG na memória e redefine as chaves de storage para o novo UID.
+     Chamado ao fazer login/logout para garantir isolamento entre usuários.
+     Não remove o localStorage aqui: a leitura dos dados do novo UID acontece
+     depois, em loadDiagnosticLog() → hydrateDiagnosticLog(). Remover o
+     localStorage antes de ler destruiria os dados locais do usuário atual. */
   function resetLogForNewUser(uid) {
     diagnosticLog.splice(0, diagnosticLog.length);
     setLogStorageKeys(uid);
-    try { localStorage.removeItem(LOG_STORAGE_KEY); } catch (err) {}
-    try { localStorage.removeItem(LOG_SEQUENCE_STORAGE_KEY); } catch (err) {}
     logSequence = 0;
     try { localStorage.setItem(LOG_SEQUENCE_STORAGE_KEY, String(logSequence)); } catch (err) {}
   }
