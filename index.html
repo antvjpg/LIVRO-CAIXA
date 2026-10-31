@@ -889,8 +889,8 @@
         </div>
         <div class="log-filter-row">
           <select id="logFilterSource" aria-label="Filtrar origem do LOG"><option value="">Todas as origens</option></select>
-          <input type="date" id="logFilterStart" aria-label="Data inicial">
-          <input type="date" id="logFilterEnd" aria-label="Data final">
+          <label class="log-filter-label">De</label><input type="date" id="logFilterStart" aria-label="Data inicial">
+          <label class="log-filter-label">Até</label><input type="date" id="logFilterEnd" aria-label="Data final">
           <input id="logFilterCorrelation" type="search" placeholder="Correlação (opId)" aria-label="Filtrar por correlação">
           <button type="button" id="btnClearLogFilters" style="padding:0 8px; font-size:11px;">Limpar filtros</button>
         </div>
