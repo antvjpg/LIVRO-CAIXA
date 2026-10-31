@@ -1,53 +1,8 @@
-/* LIVRO-CAIXA · js/domain/diagnostic-log.js — motor central do LOG do sistema.
-   Fase 2 — Segurança e resiliência (C.O.D.E.):
-   - Allowlist de campos permitidos em detalhes (substitui blacklist genérica)
-   - Máscara de dados sensíveis (credenciais, tokens, valores financeiros, OCR)
-   - Deduplicação por correlationId (idempotência, evita duplicidade em retry)
-   - Paginação explícita e limites documentados
-   - Falhas do logger são absorvidas e nunca interrompem operações financeiras
+/* LIVRO-CAIXA · js/domain/diagnostic-log.js — motor central do LOG (versão simplificada).
+   Objetivo: registrar eventos técnicos para inspeção de falhas.
    Contrato público mantido: logInfo, logWarn, logSyncError, recordLogEvent,
    createLogEvent, beginLogOperation.
 */
-
-  /* =========================================================================
-     CONFIGURAÇÃO DE SEGURANÇA (Fase 2)
-     ========================================================================= */
-
-  /* Campos permitidos em details (allowlist). Qualquer campo fora desta lista
-     é removido antes de gravar no LOG. */
-  const LOG_DETAILS_ALLOWLIST = new Set([
-    'operation', 'status', 'code', 'message', 'count', 'total', 'remaining',
-    'month', 'year', 'date', 'startDate', 'endDate', 'closingDay', 'dueDay',
-    'categoryId', 'bankId', 'pocketId', 'cardId', 'investmentId', 'goalId',
-    'receivableId', 'billId', 'purchaseId', 'invoiceId', 'type', 'kind',
-    'provider', 'source', 'targetType', 'targetId', 'correlationId',
-    'durationMs', 'retryCount', 'synced', 'schemaVersion', 'action', 'module',
-    'stage', 'field', 'environment', 'platform', 'fileType', 'fileSize',
-    'category', 'attempts', 'attachmentId',
-  ]);
-
-  /* Campos sensíveis que são MASKADOS (valor substituído por '[REDACTED]')
-     em vez de apenas removidos, para manter a estrutura visível sem expor dados. */
-  const LOG_SENSITIVE_MASK_FIELDS = new Set([
-    'amount', 'value', 'balance', 'initial', 'current', 'targetAmount',
-    'currentAmount', 'purchaseRate', 'saleRate', 'purchasePrice', 'salePrice',
-    'basePrice', 'units', 'price', 'code', 'cardNumber', 'document', 'cpf',
-    'cnpj', 'phone', 'email', 'address'
-  ]);
-
-  /* Limites documentados (Fase 2) */
-  let LOG_LIMIT = 200;                   /* máximo de eventos na memória/localStorage */
-  const LOG_SYNC_ERRORS_LIMIT = 50;      /* máximo de erros de sync mantidos */
-  const LOG_DETAILS_MAX_KEYS = 20;       /* máximo de chaves por objeto em details */
-  const LOG_DETAILS_MAX_DEPTH = 2;       /* profundidade máxima de recursão */
-  const LOG_STRING_MAX_CHARS = 800;      /* máximo de caracteres por string */
-  const LOG_ARRAY_MAX_ITEMS = 20;        /* máximo de itens por array */
-  const LOG_DESCRIPTION_MAX_CHARS = 800; /* máximo de caracteres na descrição */
-  const LOG_MODULE_MAX_CHARS = 120;      /* máximo de caracteres no módulo */
-  const LOG_ACTION_MAX_CHARS = 160;      /* máximo de caracteres na ação */
-  const LOG_STATUS_MAX_CHARS = 80;       /* máximo de caracteres no status */
-  const LOG_CORRELATION_ID_MAX_CHARS = 120; /* máximo no correlationId */
-  const LOG_SOURCE_MAX_CHARS = 80;       /* máximo no source */
 
   /* =========================================================================
      VARIÁVEIS DE ESTADO
@@ -55,33 +10,28 @@
 
   let diagnosticLog = [];
 
-  // compatibilidade com a interface antiga.
-  let LOG_STORAGE_KEY;
+  let LOG_STORAGE_KEY = 'livrocaixa_diagnostic_log';
 
-  let LOG_SEQUENCE_STORAGE_KEY;
+  let LOG_SEQUENCE_STORAGE_KEY = 'livrocaixa_diagnostic_sequence';
 
-  let LOG_SOURCE;
+  let LOG_SOURCE = 'Livro-Caixa-web';
 
   let LOG_SCHEMA_VERSION = 1;
 
-  let logSequence;
+  let logSequence = 0;
 
   let LOG_CURRENT_UID = null;
 
-  /* Define as chaves de localStorage particionadas por UID, de modo que cada
-     usuário tenha seu próprio LOG isolado. Chamado no login e na troca de
-     sessão. Sem UID (usuário não autenticado), usa chave global sem sufixo. */
+  let LOG_LIMIT = 200;
+
+  /* Define as chaves de localStorage particionadas por UID. */
   function setLogStorageKeys(uid = null) {
     LOG_CURRENT_UID = uid || null;
     LOG_STORAGE_KEY = uid ? `livrocaixa_diagnostic_log_${String(uid)}` : 'livrocaixa_diagnostic_log';
     LOG_SEQUENCE_STORAGE_KEY = uid ? `livrocaixa_diagnostic_sequence_${String(uid)}` : 'livrocaixa_diagnostic_sequence';
   }
 
-  /* Limpa o LOG na memória e redefine as chaves de storage para o novo UID.
-     Chamado ao fazer login/logout para garantir isolamento entre usuários.
-     Não remove o localStorage aqui: a leitura dos dados do novo UID acontece
-     depois, em loadDiagnosticLog() → hydrateDiagnosticLog(). Remover o
-     localStorage antes de ler destruiria os dados locais do usuário atual. */
+  /* Limpa o LOG na memória e redefine as chaves de storage para o novo UID. */
   function resetLogForNewUser(uid) {
     diagnosticLog.splice(0, diagnosticLog.length);
     setLogStorageKeys(uid);
@@ -102,7 +52,7 @@
   }
 
   function createCorrelationId(label = 'operacao') {
-    const safeLabel = String(label || 'operacao').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) || 'operacao';
+    const safeLabel = String(label || 'operacao').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) || 'operacao';
     return `op_${Date.now()}_${safeLabel}_${Math.random().toString(36).slice(2, 8)}`;
   }
 
@@ -125,49 +75,30 @@
   }
 
   /* =========================================================================
-     SANITIZAÇÃO (Fase 2 — allowlist + máscara de dados sensíveis)
+     SANITIZAÇÃO SIMPLES
      ========================================================================= */
 
-  /* Máscara de campo sensível: substitui o valor por '[REDACTED]' preservando
-     a chave visível para auditoria de estrutura sem expor dados sensíveis. */
-  function maskSensitiveValue(key, value) {
-    const lowerKey = String(key).toLowerCase();
-    if (LOG_SENSITIVE_MASK_FIELDS.has(lowerKey)) return '[REDACTED]';
-    /* Detecta nomes de campo que contenham palavras sensíveis */
-    if (/token|secret|password|credential|apiKey|authorization|uid|cpf|cnpj|cardNumber|email|phone|address/i.test(lowerKey)) return '[REDACTED]';
-    return value;
-  }
-
-  /* Sanitiza texto livre (description, action, mensagens de erro) mascarando
-     padrões de dados sensíveis sem destruir a legibilidade da mensagem. */
+  /* Remove padrões sensíveis de texto livre sem destruir a legibilidade. */
   function sanitizeLogText(text) {
     if (text == null) return '';
     let s = String(text);
-    /* Emails */
     s = s.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL_REDACTED]');
-    /* CPF/CNPJ (apenas padrões numéricos típicos) */
     s = s.replace(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g, '[CPF_REDACTED]');
     s = s.replace(/\b\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}\b/g, '[CNPJ_REDACTED]');
-    /* Números de cartão (13-19 dígitos, possivelmente com espaços/traços) */
-    s = s.replace(/\b(?:\d[ -]*?){13,19}\b/g, '[CARD_REDACTED]');
-    /* Tokens/senhas longos (32+ alfanuméricos) */
     s = s.replace(/\b[a-zA-Z0-9]{32,}\b/g, '[TOKEN_REDACTED]');
-    return s.slice(0, LOG_STRING_MAX_CHARS);
+    return s.slice(0, 800);
   }
 
-  function sanitizeLogValue(value, depth = 0) {
-    if (depth > LOG_DETAILS_MAX_DEPTH || value == null) return value == null ? null : String(value);
-    if (value instanceof Error) return { name: value.name, message: value.message, code: value.code || null };
-    if (typeof value === 'string') return value.slice(0, LOG_STRING_MAX_CHARS);
+  function sanitizeLogValue(value) {
+    if (value == null) return null;
+    if (value instanceof Error) return { name: value.name, message: value.message };
+    if (typeof value === 'string') return sanitizeLogText(value);
     if (typeof value === 'number' || typeof value === 'boolean') return value;
-    if (Array.isArray(value)) return value.slice(0, LOG_ARRAY_MAX_ITEMS).map(item => sanitizeLogValue(item, depth + 1));
+    if (Array.isArray(value)) return value.map(item => sanitizeLogValue(item));
     if (typeof value === 'object') {
       const result = {};
-      const keys = Object.keys(value).slice(0, LOG_DETAILS_MAX_KEYS);
-      for (const key of keys) {
-        /* Allowlist: apenas campos conhecidos são mantidos */
-        if (!LOG_DETAILS_ALLOWLIST.has(key.toLowerCase())) continue;
-        result[key] = maskSensitiveValue(key, sanitizeLogValue(value[key], depth + 1));
+      for (const key of Object.keys(value).slice(0, 20)) {
+        result[key] = sanitizeLogValue(value[key]);
       }
       return result;
     }
@@ -180,24 +111,21 @@
 
   function normalizeLogEvent(raw) {
     const item = raw && typeof raw === 'object' ? raw : {};
-    const sequenceNumber = Number(item.sequence);
-    const durationNumber = Number(item.durationMs);
-    const retryNumber = Number(item.retryCount);
     return {
       id: String(item.id || `legacy-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`),
-      sequence: Number.isFinite(sequenceNumber) && sequenceNumber > 0 ? sequenceNumber : null,
+      sequence: Number(item.sequence) || null,
       timestamp: item.timestamp || new Date().toISOString(),
       type: ['INFO', 'WARN', 'ERROR'].includes(item.type) ? item.type : 'INFO',
-      module: String(item.module || 'Sistema').slice(0, LOG_MODULE_MAX_CHARS),
+      module: String(item.module || 'Sistema').slice(0, 120),
       action: sanitizeLogText(item.action || 'Operação'),
-      status: String(item.status || 'Sucesso').slice(0, LOG_STATUS_MAX_CHARS),
+      status: String(item.status || 'Sucesso').slice(0, 80),
       description: sanitizeLogText(item.description || ''),
       details: sanitizeLogValue(item.details),
-      correlationId: item.correlationId ? String(item.correlationId).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
-      idempotencyKey: item.idempotencyKey ? String(item.idempotencyKey).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
-      durationMs: durationNumber != null && Number.isFinite(durationNumber) && durationNumber >= 0 ? Math.round(durationNumber) : null,
-      retryCount: retryNumber != null && Number.isFinite(retryNumber) && retryNumber >= 0 ? Math.floor(retryNumber) : null,
-      source: String(item.source || 'Livro-Caixa-web').slice(0, LOG_SOURCE_MAX_CHARS),
+      correlationId: item.correlationId ? String(item.correlationId).slice(0, 120) : null,
+      idempotencyKey: item.idempotencyKey ? String(item.idempotencyKey).slice(0, 120) : null,
+      durationMs: Number(item.durationMs) || null,
+      retryCount: Number(item.retryCount) || null,
+      source: String(item.source || LOG_SOURCE).slice(0, 80),
       synced: item.synced === true ? true : item.synced === false ? false : null,
       schemaVersion: Number(item.schemaVersion) || 1
     };
@@ -224,19 +152,12 @@
       const normalized = normalizeDiagnosticLog(diagnosticLog);
       diagnosticLog.splice(0, diagnosticLog.length, ...normalized);
       localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(normalized));
-      localStorage.setItem('livrocaixa_sync_errors', JSON.stringify(normalized.filter(item => item.type === 'ERROR').slice(0, LOG_SYNC_ERRORS_LIMIT)));
     } catch (err) { console.warn('LOG local indisponível:', err); }
   }
 
   function hydrateDiagnosticLog() {
     let stored = [];
     try { stored = JSON.parse(localStorage.getItem(LOG_STORAGE_KEY) || '[]'); } catch (err) {}
-    if (!Array.isArray(stored) || stored.length === 0) {
-      try {
-        const legacy = JSON.parse(localStorage.getItem('livrocaixa_sync_errors') || '[]');
-        stored = Array.isArray(legacy) ? legacy.map(item => ({ id: 'legacy-' + Math.random().toString(36).slice(2), timestamp: new Date().toISOString(), type: 'ERROR', module: 'Sincronização', action: item.context || 'Operação', status: 'Falha', description: item.message || 'Erro legado', details: null })) : [];
-      } catch (err) {}
-    }
     diagnosticLog.splice(0, diagnosticLog.length, ...normalizeDiagnosticLog(stored));
     syncLogSequenceFromEvents(diagnosticLog);
   }
@@ -248,11 +169,9 @@
       setLogStorageKeys(null);
     }
     hydrateDiagnosticLog();
-    /* Renderiza sempre após hidratar, para usuários autenticados ou não.
-       Sem isso, abrir o modal antes do carregamento assíncrono terminar (ou
-       sem autenticação) exibia lista vazia mesmo com dados no localStorage. */
+    /* Renderiza sempre após hidratar. */
     if (typeof window.renderDiagnosticLog === 'function') {
-      try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia o fluxo */ }
+      try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia */ }
     }
     if (typeof window === 'undefined' || !window.currentUser) return;
     try {
@@ -264,15 +183,13 @@
       syncLogSequenceFromEvents(diagnosticLog);
       persistDiagnosticLogLocally();
     } catch (err) { console.warn('LOG remoto indisponível:', err); }
-    /* Re-renderiza após o carregamento remoto (Firestore) para que os selects
-       de filtro (módulo, status, ação, origem) reflitam os eventos recém-carregados. */
     if (typeof window.renderDiagnosticLog === 'function') {
-      try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia o fluxo */ }
+      try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia */ }
     }
   }
 
   /* =========================================================================
-     CRIAÇÃO E REGISTRO DE EVENTOS (IDEMPOTÊNCIA)
+     CRIAÇÃO E REGISTRO DE EVENTOS
      ========================================================================= */
 
   function createLogEvent({ type = 'INFO', module = 'Sistema', action = 'Operação', status = 'Sucesso', description = '', details = null, correlationId = null, idempotencyKey = null, durationMs = null, retryCount = null, source = LOG_SOURCE, synced = null } = {}) {
@@ -281,43 +198,22 @@
       sequence: nextLogSequence(),
       timestamp: new Date().toISOString(), type, module, action, status,
       description: sanitizeLogText(description || ''), details: sanitizeLogValue(details),
-      correlationId: correlationId ? String(correlationId).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
-      idempotencyKey: idempotencyKey ? String(idempotencyKey).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
+      correlationId: correlationId ? String(correlationId).slice(0, 120) : null,
+      idempotencyKey: idempotencyKey ? String(idempotencyKey).slice(0, 120) : null,
       durationMs: durationMs != null && Number.isFinite(Number(durationMs)) && Number(durationMs) >= 0 ? Math.round(Number(durationMs)) : null,
       retryCount: Number.isFinite(Number(retryCount)) && Number(retryCount) >= 0 ? Math.floor(Number(retryCount)) : null,
-      source: String(source || LOG_SOURCE).slice(0, LOG_SOURCE_MAX_CHARS), synced: synced === true ? true : synced === false ? false : null,
+      source: String(source || LOG_SOURCE).slice(0, 80), synced: synced === true ? true : synced === false ? false : null,
       schemaVersion: LOG_SCHEMA_VERSION
     };
-  }
-
-  /* Verifica se já existe um evento com o mesmo correlationId (idempotência).
-     Evita duplicidade em retry de operações. */
-  function findExistingEventByCorrelationId(correlationId) {
-    if (!correlationId) return null;
-    return diagnosticLog.find(item => item.correlationId === correlationId) || null;
   }
 
   function recordLogEvent(input = {}) {
     const correlationId = input.correlationId || null;
     const idempotencyKey = input.idempotencyKey || null;
 
-    /* Idempotência: se já existe um evento com este idempotencyKey, não duplica.
-       O correlationId apenas rastreia a operação; não deve suprimir eventos
-       distintos da mesma operação (ex: múltiplas etapas de um mesmo anexo OCR). */
+    /* Idempotência simples por idempotencyKey. */
     if (idempotencyKey) {
       const existing = diagnosticLog.find(item => item.idempotencyKey === idempotencyKey) || null;
-      if (existing) {
-        if (input.status !== undefined) existing.status = input.status;
-        if (input.synced !== undefined) existing.synced = input.synced;
-        schedulePersistLocally();
-        return existing;
-      }
-    }
-
-    /* Fallback de compatibilidade: se não houver idempotencyKey, usa correlationId
-       apenas quando esse for o único identificador disponível (código legado). */
-    if (!idempotencyKey && correlationId) {
-      const existing = diagnosticLog.find(item => item.correlationId === correlationId && !item.idempotencyKey) || null;
       if (existing) {
         if (input.status !== undefined) existing.status = input.status;
         if (input.synced !== undefined) existing.synced = input.synced;
@@ -330,22 +226,24 @@
     diagnosticLog.unshift(event);
     if (diagnosticLog.length > LOG_LIMIT) diagnosticLog.length = LOG_LIMIT;
     flushPersistLocally();
-    if (event.type === 'ERROR') flashSyncError();
-    /* Atualiza o painel de diagnóstico se estiver aberto, para que o usuário
-       veja o evento recém-registrado sem precisar reabrir o modal ou alterar filtros. */
+
+    /* Atualiza o painel se estiver aberto. */
     if (typeof window !== 'undefined' && typeof window.renderDiagnosticLog === 'function') {
       try {
         const panel = document.getElementById('panelDiagnostico');
         if (panel && panel.classList.contains('open')) {
           window.renderDiagnosticLog();
         }
-      } catch (err) { /* não bloqueia o fluxo */ }
+      } catch (err) { /* não bloqueia */ }
     }
-    if (typeof window !== 'undefined' && window.currentUser) {
+
+    /* Sincroniza com Firestore se houver usuário autenticado. */
+    if (typeof window !== 'undefined' && window.currentUser && window.db) {
       window.db.collection('livrocaixa').doc(window.currentUser.uid).collection('diagnostics').doc(event.id).set(event, { merge: true })
         .then(() => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = true; flushPersistLocally(); })
         .catch(err => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = false; flushPersistLocally(); console.warn('Falha ao sincronizar o LOG:', err); });
     }
+
     if (event.type === 'ERROR') console.error(`[${event.module}] ${event.action}:`, event.description);
     else if (event.type === 'WARN') console.warn(`[${event.module}] ${event.action}:`, event.description);
     else if (event.type === 'INFO') console.info(`[${event.module}] ${event.action}:`, event.description);
@@ -353,26 +251,15 @@
   }
 
   /* =========================================================================
-     PAGINAÇÃO E CONSULTA (Fase 2)
+     PAGINAÇÃO E CONSULTA SIMPLES
      ========================================================================= */
 
-  /* Retorna uma página paginada do LOG.
-     offset: índice inicial (0-based)
-     limit: máximo de itens retornados
-     filter: função opcional para filtrar (por type, module, status, etc.)
-   */
   function getDiagnosticLogPage({ offset = 0, limit = LOG_LIMIT, filter = null } = {}) {
     const sorted = [...diagnosticLog].sort((a, b) => (Number(b.sequence || 0) - Number(a.sequence || 0)) || String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
     let filtered = sorted;
     if (typeof filter === 'function') filtered = sorted.filter(filter);
     const page = filtered.slice(offset, offset + limit);
-    return {
-      page,
-      total: filtered.length,
-      offset,
-      limit,
-      hasMore: offset + limit < filtered.length
-    };
+    return { page, total: filtered.length, offset, limit, hasMore: offset + limit < filtered.length };
   }
 
   function getDiagnosticLogStats() {
@@ -403,183 +290,21 @@
 
   function logSyncError(context, err, operation = null) {
     const message = err && err.message ? sanitizeLogText(err.message) : sanitizeLogText(String(err));
-    recordLogEvent({ type: 'ERROR', module: context === 'sincronização' ? 'Sincronização' : 'Sistema', action: sanitizeLogText(context), status: 'Falha', description: message, details: err && { code: err.code, failedCollections: err.failedCollections }, ...getLogContextFields(operation, operationDuration(operation)) });
+    recordLogEvent({ type: 'ERROR', module: context === 'sincronização' ? 'Sincronização' : 'Sistema', action: sanitizeLogText(context), status: 'Falha', description: message, details: err && { code: err.code }, ...getLogContextFields(operation, operationDuration(operation)) });
   }
 
-  function flashSyncError() {
-    const dot = document.getElementById('syncDot');
-    if (!dot) return;
-    dot.classList.add('sync-error');
-    setTimeout(() => dot.classList.remove('sync-error'), 4000);
-  }
-
-  /* =========================================================================
-     ADAPTADORES DE DIAGNÓSTICOS ESPECIALIZADOS (Fase 3)
-     =========================================================================
-     Integram fontes externas de diagnóstico ao motor central, preservando
-     sanitização e finalidade específicas de cada fonte:
-
-     - OCR: apenas metadados da whitelist, nunca texto extraído/imagem/CPF/cartão/payload
-     - Login: eventos de autenticação com sanitização própria
-     - Worker/IA/Integrações: já usam logInfo/logWarn/logSyncError diretamente
-   */
-
-  /* Adapta eventos do pipeline de OCR para o motor central.
-     Usa apenas chaves da allowlist do OCR (stage, status, code, reason,
-     fileType, fileSize, category, environment, platform, provider,
-     durationMs, attempts, field, attachmentId, count).
-     Nunca grava texto do documento, nome do arquivo, CPF, cartão ou payload. */
-  function recordOCREvent(event, meta = {}) {
-    const allowedMeta = {};
-    const ocrAllowed = [
-      'stage', 'status', 'code', 'reason', 'fileType', 'fileSize',
-      'category', 'environment', 'platform', 'provider', 'durationMs',
-      'attempts', 'field', 'attachmentId', 'count'
-    ];
-    for (const key of ocrAllowed) {
-      if (key in meta) allowedMeta[key] = meta[key];
-    }
-    const attachmentId = allowedMeta.attachmentId || null;
-    return recordLogEvent({
-      type: 'INFO',
-      module: 'OCR',
-      action: event,
-      status: 'Sucesso',
-      description: `OCR: ${event}`,
-      details: allowedMeta,
-      correlationId: attachmentId,
-      idempotencyKey: `ocr_${attachmentId || 'no-attach'}_${event}_${Date.now()}`,
-      durationMs: allowedMeta.durationMs || null
-    });
-  }
-
-  /* Adapta falhas do pipeline de OCR para o motor central. */
-  function recordOCRFailure(event, meta = {}) {
-    const allowedMeta = {};
-    const ocrAllowed = [
-      'stage', 'status', 'code', 'reason', 'fileType', 'fileSize',
-      'category', 'environment', 'platform', 'provider', 'durationMs',
-      'attempts', 'field', 'attachmentId', 'count'
-    ];
-    for (const key of ocrAllowed) {
-      if (key in meta) allowedMeta[key] = meta[key];
-    }
-    const attachmentId = allowedMeta.attachmentId || null;
-    return recordLogEvent({
-      type: 'ERROR',
-      module: 'OCR',
-      action: event,
-      status: 'Falha',
-      description: `OCR falha: ${event}`,
-      details: allowedMeta,
-      correlationId: attachmentId,
-      idempotencyKey: `ocr_fail_${attachmentId || 'no-attach'}_${event}_${Date.now()}`,
-      durationMs: allowedMeta.durationMs || null
-    });
-  }
-
-  /* Adapta eventos de login para o motor central.
-     Sanitiza dados sensíveis usando a allowlist do motor central. */
-  function recordLoginEvent(type, message, details = null) {
-    const safeDetails = details ? sanitizeLogValue(details) : null;
-    return recordLogEvent({
-      type: type === 'ERROR' ? 'ERROR' : type === 'WARN' ? 'WARN' : 'INFO',
-      module: 'Login',
-      action: message,
-      status: type === 'ERROR' ? 'Falha' : type === 'WARN' ? 'Atenção' : 'Sucesso',
-      description: String(message || '').slice(0, LOG_DESCRIPTION_MAX_CHARS),
-      details: safeDetails,
-      source: 'Login'
-    });
-  }
-
-  /* Padroniza eventos de IA (Worker/IA/integrações de LLM).
-     Usa módulo 'IA', sanitiza metadados e nunca mistura logs de infraestrutura
-     externa ao histórico financeiro. */
-  function recordAiEvent(event, meta = {}) {
-    return recordLogEvent({
-      type: 'INFO',
-      module: 'IA',
-      action: event,
-      status: 'Sucesso',
-      description: `IA: ${event}`,
-      details: sanitizeLogValue(meta),
-      source: 'IA'
-    });
-  }
-
-  /* Padroniza eventos de Worker/integrações externas.
-     Usa módulo 'Worker', sanitiza metadados e isola falhas de infraestrutura
-     do histórico financeiro. */
-  function recordWorkerEvent(event, meta = {}) {
-    return recordLogEvent({
-      type: 'INFO',
-      module: 'Worker',
-      action: event,
-      status: 'Sucesso',
-      description: `Worker: ${event}`,
-      details: sanitizeLogValue(meta),
-      source: 'Worker'
-    });
-  }
-
-  /* Padroniza falhas de Worker/integrações externas. */
-  function recordWorkerFailure(event, meta = {}) {
-    return recordLogEvent({
-      type: 'ERROR',
-      module: 'Worker',
-      action: event,
-      status: 'Falha',
-      description: `Worker falha: ${event}`,
-      details: sanitizeLogValue(meta),
-      source: 'Worker'
-    });
-  }
-
-  /* =========================================================================
-     EXPORTAÇÃO DE DADOS (Cycle 2 — confiabilidade e exportação)
-     ========================================================================= */
-
-  function logEventToCsvRow(item) {
-    const esc = v => {
-      const s = String(v == null ? '' : v);
-      if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
-      return s;
-    };
-    return [
-      esc(item.id),
-      esc(item.sequence),
-      esc(item.timestamp),
-      esc(item.type),
-      esc(item.module),
-      esc(item.action),
-      esc(item.status),
-      esc(item.description),
-      esc(item.correlationId),
-      esc(item.idempotencyKey),
-      esc(item.durationMs),
-      esc(item.retryCount),
-      esc(item.source),
-      esc(item.synced),
-      esc(item.details != null ? JSON.stringify(item.details) : '')
-    ].join(',');
-  }
-
-  function csvHeader() {
-    return 'id,sequence,timestamp,type,module,action,status,description,correlationId,idempotencyKey,durationMs,retryCount,source,synced,details';
-  }
-
-  /* Exporta o LOG atual como arquivo JSON ou CSV para download.
-     Respeita a sanitização já aplicada nos dados (não expõe dados brutos).
-     format: 'json' (padrão) ou 'csv'. */
+  /* Exporta o LOG como JSON para download. */
   function exportDiagnosticLog(format = 'json') {
     const data = [...diagnosticLog].sort((a, b) => (Number(b.sequence || 0) - Number(a.sequence || 0)) || String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     let blob, fileName, mimeType;
 
     if (format === 'csv') {
-      const rows = [csvHeader(), ...data.map(logEventToCsvRow)].join('\n');
-      blob = new Blob([rows], { type: 'text/csv;charset=utf-8' });
+      const rows = data.map(item => [
+        item.id, item.sequence, item.timestamp, item.type, item.module, item.action,
+        item.status, item.description, item.correlationId, item.source, item.synced
+      ].join(','));
+      blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' });
       fileName = `livrocaixa_log_${timestamp}.csv`;
       mimeType = 'text/csv';
     } else {
@@ -603,7 +328,7 @@
   }
 
   /* =========================================================================
-     DEBOUNCE DE PERSISTÊNCIA LOCAL (Cycle 2)
+     DEBOUNCE DE PERSISTÊNCIA LOCAL
      ========================================================================= */
 
   let persistTimer = null;
@@ -631,16 +356,13 @@
     beginLogOperation, operationDuration, getLogContextFields,
     getDiagnosticLogPage, getDiagnosticLogStats,
     diagnosticLog, LOG_STORAGE_KEY, LOG_SEQUENCE_STORAGE_KEY,
-    LOG_CURRENT_UID, nextLogSequence, LOG_LIMIT, recordOCREvent,
-    normalizeLogEvent, normalizeDiagnosticLog, persistDiagnosticLogLocally,
+    LOG_CURRENT_UID, nextLogSequence, LOG_LIMIT, normalizeLogEvent,
+    normalizeDiagnosticLog, persistDiagnosticLogLocally,
     hydrateDiagnosticLog, loadDiagnosticLog,
     exportDiagnosticLog, schedulePersistLocally, flushPersistLocally,
-    recordLoginEvent, recordAiEvent, recordWorkerEvent, recordWorkerFailure,
-    recordOCRFailure,
   };
 
-  /* Expose para uso global no navegador (carregado via <script src> tradicional).
-     Os testes ES module continuam importando normalmente via export acima. */
+  /* Expose para uso global no navegador. */
   if (typeof window !== 'undefined') {
     window.logInfo = logInfo;
     window.logWarn = logWarn;
@@ -662,7 +384,6 @@
     window.LOG_CURRENT_UID = LOG_CURRENT_UID;
     window.nextLogSequence = nextLogSequence;
     window.LOG_LIMIT = LOG_LIMIT;
-    window.recordOCREvent = recordOCREvent;
     window.normalizeLogEvent = normalizeLogEvent;
     window.normalizeDiagnosticLog = normalizeDiagnosticLog;
     window.persistDiagnosticLogLocally = persistDiagnosticLogLocally;
@@ -671,9 +392,4 @@
     window.exportDiagnosticLog = exportDiagnosticLog;
     window.schedulePersistLocally = schedulePersistLocally;
     window.flushPersistLocally = flushPersistLocally;
-    window.recordLoginEvent = recordLoginEvent;
-    window.recordAiEvent = recordAiEvent;
-    window.recordWorkerEvent = recordWorkerEvent;
-    window.recordWorkerFailure = recordWorkerFailure;
-    window.recordOCRFailure = recordOCRFailure;
   }

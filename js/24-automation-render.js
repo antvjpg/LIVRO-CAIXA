@@ -450,3 +450,8 @@
     overlay.insertAdjacentHTML('beforeend', modalHtml);
     openModal('panelCustomPeriod');
   }
+
+  /* Expose para que diagnostic-log.js possa chamar após carregar eventos. */
+  if (typeof window !== 'undefined') {
+    window.renderDiagnosticLog = renderDiagnosticLog;
+  }
