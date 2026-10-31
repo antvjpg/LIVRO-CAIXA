@@ -301,6 +301,19 @@ document.addEventListener('DOMContentLoaded', () => {
   currentTab = 'caixa';
   lastTabRestored = false;
 
+  /* Restaura a última aba de forma síncrona no bootstrap para evitar o "flash":
+     abrir no Livro-Caixa e só, após o carregamento assíncrono do Firebase, voltar
+     para a aba anterior. O sessionStorage sobrevive a F5/atualização (não a
+     fechar o app), então a restauração assíncrona do sync de dados continua sendo
+     a fonte de verdade para sessões já iniciadas. */
+  try {
+    const savedTab = sessionStorage.getItem(LAST_TAB_STORAGE_KEY);
+    if (savedTab && TAB_NAMES.includes(savedTab)) {
+      currentTab = savedTab;
+      lastTabRestored = true;
+    }
+  } catch (e) {}
+
   try { document.body.dataset.tab = currentTab; } catch (e) {}
   /* sessionStorage (e não localStorage): a aba vale só durante a sessão —
      sobrevive a F5/atualização, mas some ao fechar o app (volta no Livro-Caixa). */
