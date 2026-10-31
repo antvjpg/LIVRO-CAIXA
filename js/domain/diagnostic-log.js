@@ -21,7 +21,9 @@
     'categoryId', 'bankId', 'pocketId', 'cardId', 'investmentId', 'goalId',
     'receivableId', 'billId', 'purchaseId', 'invoiceId', 'type', 'kind',
     'provider', 'source', 'targetType', 'targetId', 'correlationId',
-    'durationMs', 'retryCount', 'synced', 'schemaVersion', 'action', 'module'
+    'durationMs', 'retryCount', 'synced', 'schemaVersion', 'action', 'module',
+    'stage', 'field', 'environment', 'platform', 'fileType', 'fileSize',
+    'category', 'attempts', 'attachmentId',
   ]);
 
   /* Campos sensíveis que são MASKADOS (valor substituído por '[REDACTED]')
@@ -470,6 +472,49 @@
     });
   }
 
+  /* Padroniza eventos de IA (Worker/IA/integrações de LLM).
+     Usa módulo 'IA', sanitiza metadados e nunca mistura logs de infraestrutura
+     externa ao histórico financeiro. */
+  function recordAiEvent(event, meta = {}) {
+    return recordLogEvent({
+      type: 'INFO',
+      module: 'IA',
+      action: event,
+      status: 'Sucesso',
+      description: `IA: ${event}`,
+      details: sanitizeLogValue(meta),
+      source: 'IA'
+    });
+  }
+
+  /* Padroniza eventos de Worker/integrações externas.
+     Usa módulo 'Worker', sanitiza metadados e isola falhas de infraestrutura
+     do histórico financeiro. */
+  function recordWorkerEvent(event, meta = {}) {
+    return recordLogEvent({
+      type: 'INFO',
+      module: 'Worker',
+      action: event,
+      status: 'Sucesso',
+      description: `Worker: ${event}`,
+      details: sanitizeLogValue(meta),
+      source: 'Worker'
+    });
+  }
+
+  /* Padroniza falhas de Worker/integrações externas. */
+  function recordWorkerFailure(event, meta = {}) {
+    return recordLogEvent({
+      type: 'ERROR',
+      module: 'Worker',
+      action: event,
+      status: 'Falha',
+      description: `Worker falha: ${event}`,
+      details: sanitizeLogValue(meta),
+      source: 'Worker'
+    });
+  }
+
   /* =========================================================================
      EXPORTAÇÃO DE DADOS (Cycle 2 — confiabilidade e exportação)
      ========================================================================= */
@@ -569,4 +614,6 @@
     normalizeLogEvent, normalizeDiagnosticLog, persistDiagnosticLogLocally,
     hydrateDiagnosticLog, loadDiagnosticLog,
     exportDiagnosticLog, schedulePersistLocally, flushPersistLocally,
+    recordLoginEvent, recordAiEvent, recordWorkerEvent, recordWorkerFailure,
+    recordOCRFailure,
   };
