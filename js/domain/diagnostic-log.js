@@ -331,7 +331,7 @@
         .then(() => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = true; flushPersistLocally(); })
         .catch(err => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = false; flushPersistLocally(); console.warn('Falha ao sincronizar o LOG:', err); });
     }
-    if (event.type === 'ERROR') console.error(`[${event.module}] ${event.action}:`, event.description, event.details || '');
+    if (event.type === 'ERROR') console.error(`[${event.module}] ${event.action}:`, event.description);
     else if (event.type === 'WARN') console.warn(`[${event.module}] ${event.action}:`, event.description);
     else if (event.type === 'INFO') console.info(`[${event.module}] ${event.action}:`, event.description);
     return event;
