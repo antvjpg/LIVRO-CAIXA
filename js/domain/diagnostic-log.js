@@ -51,7 +51,7 @@
      VARIÁVEIS DE ESTADO
      ========================================================================= */
 
-  let diagnosticLog;
+  let diagnosticLog = [];
 
   // compatibilidade com a interface antiga.
   let LOG_STORAGE_KEY;
@@ -63,6 +63,29 @@
   let LOG_SCHEMA_VERSION;
 
   let logSequence;
+
+  let LOG_CURRENT_UID = null;
+
+  /* Define as chaves de localStorage particionadas por UID, de modo que cada
+     usuário tenha seu próprio LOG isolado. Chamado no login e na troca de
+     sessão. Sem UID (usuário não autenticado), usa chave global sem sufixo. */
+  function setLogStorageKeys(uid = null) {
+    LOG_CURRENT_UID = uid || null;
+    LOG_STORAGE_KEY = uid ? `livrocaixa_diagnostic_log_${String(uid)}` : 'livrocaixa_diagnostic_log';
+    LOG_SEQUENCE_STORAGE_KEY = uid ? `livrocaixa_diagnostic_sequence_${String(uid)}` : 'livrocaixa_diagnostic_sequence';
+  }
+
+  /* Limpa o LOG na memória e no localStorage para o UID atual, e redefine as
+     chaves de storage para o novo UID. Chamado ao fazer login/logout para
+     garantir isolamento entre usuários. */
+  function resetLogForNewUser(uid) {
+    diagnosticLog.splice(0, diagnosticLog.length);
+    setLogStorageKeys(uid);
+    try { localStorage.removeItem(LOG_STORAGE_KEY); } catch (err) {}
+    try { localStorage.removeItem(LOG_SEQUENCE_STORAGE_KEY); } catch (err) {}
+    logSequence = 0;
+    try { localStorage.setItem(LOG_SEQUENCE_STORAGE_KEY, String(logSequence)); } catch (err) {}
+  }
 
   /* =========================================================================
      SEQUÊNCIA E CORRELAÇÃO
@@ -113,6 +136,23 @@
     return value;
   }
 
+  /* Sanitiza texto livre (description, action, mensagens de erro) mascarando
+     padrões de dados sensíveis sem destruir a legibilidade da mensagem. */
+  function sanitizeLogText(text) {
+    if (text == null) return '';
+    let s = String(text);
+    /* Emails */
+    s = s.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL_REDACTED]');
+    /* CPF/CNPJ (apenas padrões numéricos típicos) */
+    s = s.replace(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g, '[CPF_REDACTED]');
+    s = s.replace(/\b\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}\b/g, '[CNPJ_REDACTED]');
+    /* Números de cartão (13-19 dígitos, possivelmente com espaços/traços) */
+    s = s.replace(/\b(?:\d[ -]*?){13,19}\b/g, '[CARD_REDACTED]');
+    /* Tokens/senhas longos (32+ alfanuméricos) */
+    s = s.replace(/\b[a-zA-Z0-9]{32,}\b/g, '[TOKEN_REDACTED]');
+    return s.slice(0, LOG_STRING_MAX_CHARS);
+  }
+
   function sanitizeLogValue(value, depth = 0) {
     if (depth > LOG_DETAILS_MAX_DEPTH || value == null) return value == null ? null : String(value);
     if (value instanceof Error) return { name: value.name, message: value.message, code: value.code || null };
@@ -147,11 +187,12 @@
       timestamp: item.timestamp || new Date().toISOString(),
       type: ['INFO', 'WARN', 'ERROR'].includes(item.type) ? item.type : 'INFO',
       module: String(item.module || 'Sistema').slice(0, LOG_MODULE_MAX_CHARS),
-      action: String(item.action || 'Operação').slice(0, LOG_ACTION_MAX_CHARS),
+      action: sanitizeLogText(item.action || 'Operação'),
       status: String(item.status || 'Sucesso').slice(0, LOG_STATUS_MAX_CHARS),
-      description: String(item.description || '').slice(0, LOG_DESCRIPTION_MAX_CHARS),
+      description: sanitizeLogText(item.description || ''),
       details: sanitizeLogValue(item.details),
       correlationId: item.correlationId ? String(item.correlationId).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
+      idempotencyKey: item.idempotencyKey ? String(item.idempotencyKey).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
       durationMs: Number.isFinite(durationNumber) && durationNumber >= 0 ? Math.round(durationNumber) : null,
       retryCount: Number.isFinite(retryNumber) && retryNumber >= 0 ? Math.floor(retryNumber) : null,
       source: String(item.source || 'Livro-Caixa-web').slice(0, LOG_SOURCE_MAX_CHARS),
@@ -199,6 +240,11 @@
   }
 
   async function loadDiagnosticLog() {
+    if (typeof currentUser !== 'undefined' && currentUser) {
+      setLogStorageKeys(currentUser.uid);
+    } else {
+      setLogStorageKeys(null);
+    }
     hydrateDiagnosticLog();
     if (typeof currentUser === 'undefined' || !currentUser) return;
     try {
@@ -216,13 +262,14 @@
      CRIAÇÃO E REGISTRO DE EVENTOS (IDEMPOTÊNCIA)
      ========================================================================= */
 
-  function createLogEvent({ type = 'INFO', module = 'Sistema', action = 'Operação', status = 'Sucesso', description = '', details = null, correlationId = null, durationMs = null, retryCount = null, source = LOG_SOURCE, synced = null } = {}) {
+  function createLogEvent({ type = 'INFO', module = 'Sistema', action = 'Operação', status = 'Sucesso', description = '', details = null, correlationId = null, idempotencyKey = null, durationMs = null, retryCount = null, source = LOG_SOURCE, synced = null } = {}) {
     return {
       id: 'log' + Date.now() + Math.random().toString(36).slice(2, 8),
       sequence: nextLogSequence(),
       timestamp: new Date().toISOString(), type, module, action, status,
-      description: String(description || '').slice(0, LOG_DESCRIPTION_MAX_CHARS), details: sanitizeLogValue(details),
+      description: sanitizeLogText(description || ''), details: sanitizeLogValue(details),
       correlationId: correlationId ? String(correlationId).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
+      idempotencyKey: idempotencyKey ? String(idempotencyKey).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
       durationMs: Number.isFinite(Number(durationMs)) && Number(durationMs) >= 0 ? Math.round(Number(durationMs)) : null,
       retryCount: Number.isFinite(Number(retryCount)) && Number(retryCount) >= 0 ? Math.floor(Number(retryCount)) : null,
       source: String(source || LOG_SOURCE).slice(0, LOG_SOURCE_MAX_CHARS), synced: synced === true ? true : synced === false ? false : null,
@@ -239,12 +286,26 @@
 
   function recordLogEvent(input = {}) {
     const correlationId = input.correlationId || null;
+    const idempotencyKey = input.idempotencyKey || null;
 
-    /* Idempotência: se já existe um evento com este correlationId, não duplica */
-    if (correlationId) {
-      const existing = findExistingEventByCorrelationId(correlationId);
+    /* Idempotência: se já existe um evento com este idempotencyKey, não duplica.
+       O correlationId apenas rastreia a operação; não deve suprimir eventos
+       distintos da mesma operação (ex: múltiplas etapas de um mesmo anexo OCR). */
+    if (idempotencyKey) {
+      const existing = diagnosticLog.find(item => item.idempotencyKey === idempotencyKey) || null;
       if (existing) {
-        /* Atualiza apenas o status/synced do evento existente, se houver mudança */
+        if (input.status !== undefined) existing.status = input.status;
+        if (input.synced !== undefined) existing.synced = input.synced;
+        persistDiagnosticLogLocally();
+        return existing;
+      }
+    }
+
+    /* Fallback de compatibilidade: se não houver idempotencyKey, usa correlationId
+       apenas quando esse for o único identificador disponível (código legado). */
+    if (!idempotencyKey && correlationId) {
+      const existing = diagnosticLog.find(item => item.correlationId === correlationId && !item.idempotencyKey) || null;
+      if (existing) {
         if (input.status !== undefined) existing.status = input.status;
         if (input.synced !== undefined) existing.synced = input.synced;
         persistDiagnosticLogLocally();
@@ -317,8 +378,8 @@
   }
 
   function logSyncError(context, err, operation = null) {
-    const message = err && err.message ? err.message : String(err);
-    recordLogEvent({ type: 'ERROR', module: context === 'sincronização' ? 'Sincronização' : 'Sistema', action: context, status: 'Falha', description: message, details: err && { code: err.code, failedCollections: err.failedCollections }, ...getLogContextFields(operation, operationDuration(operation)) });
+    const message = err && err.message ? sanitizeLogText(err.message) : sanitizeLogText(String(err));
+    recordLogEvent({ type: 'ERROR', module: context === 'sincronização' ? 'Sincronização' : 'Sistema', action: sanitizeLogText(context), status: 'Falha', description: message, details: err && { code: err.code, failedCollections: err.failedCollections }, ...getLogContextFields(operation, operationDuration(operation)) });
   }
 
   function flashSyncError() {
@@ -354,6 +415,7 @@
     for (const key of ocrAllowed) {
       if (key in meta) allowedMeta[key] = meta[key];
     }
+    const attachmentId = allowedMeta.attachmentId || null;
     return recordLogEvent({
       type: 'INFO',
       module: 'OCR',
@@ -361,7 +423,8 @@
       status: 'Sucesso',
       description: `OCR: ${event}`,
       details: allowedMeta,
-      correlationId: allowedMeta.attachmentId || null,
+      correlationId: attachmentId,
+      idempotencyKey: `ocr_${attachmentId || 'no-attach'}_${event}_${Date.now()}`,
       durationMs: allowedMeta.durationMs || null
     });
   }
@@ -377,6 +440,7 @@
     for (const key of ocrAllowed) {
       if (key in meta) allowedMeta[key] = meta[key];
     }
+    const attachmentId = allowedMeta.attachmentId || null;
     return recordLogEvent({
       type: 'ERROR',
       module: 'OCR',
@@ -384,7 +448,8 @@
       status: 'Falha',
       description: `OCR falha: ${event}`,
       details: allowedMeta,
-      correlationId: allowedMeta.attachmentId || null,
+      correlationId: attachmentId,
+      idempotencyKey: `ocr_fail_${attachmentId || 'no-attach'}_${event}_${Date.now()}`,
       durationMs: allowedMeta.durationMs || null
     });
   }
@@ -403,3 +468,17 @@
       source: 'Login'
     });
   }
+
+  /* =========================================================================
+     EXPORTS PARA TESTES (Fase 2 — não altera comportamento de produção)
+     ========================================================================= */
+  export {
+    logInfo, logWarn, logSyncError, recordLogEvent, createLogEvent,
+    resetLogForNewUser, setLogStorageKeys, sanitizeLogText, sanitizeLogValue,
+    beginLogOperation, operationDuration, getLogContextFields,
+    getDiagnosticLogPage, getDiagnosticLogStats,
+    diagnosticLog, LOG_STORAGE_KEY, LOG_SEQUENCE_STORAGE_KEY,
+    LOG_CURRENT_UID, nextLogSequence, LOG_LIMIT, recordOCREvent,
+    normalizeLogEvent, normalizeDiagnosticLog, persistDiagnosticLogLocally,
+    hydrateDiagnosticLog, loadDiagnosticLog,
+  };

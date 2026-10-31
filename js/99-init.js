@@ -3546,6 +3546,9 @@ document.getElementById('tSalvar').onclick = async () => {
         startSessionSecurity();
         startFeatureAutomation();
         window.LivroCaixaAI?.refreshQuota?.({ throttleMs: 15000 });
+        /* Isola o LOG por UID: limpa eventos do usuário anterior (se houver)
+           e define chaves de storage particionadas para o usuário atual. */
+        if (typeof resetLogForNewUser === 'function') resetLogForNewUser(user.uid);
         loadState().catch(err => {
           console.warn('[INIT] Falha ao carregar dados após autenticação:', err);
           if (typeof logWarn === 'function') logWarn('Sistema','Carregamento de dados','Falha','A aplicação iniciou, mas a sincronização de dados encontrou um erro.',{message: err?.message});
@@ -3567,6 +3570,8 @@ document.getElementById('tSalvar').onclick = async () => {
         if (syncOverlay) syncOverlay.classList.add('hidden');
         if (overlay) overlay.classList.remove('hidden');
         renderUserBar();
+        /* Isola o LOG: remove eventos do usuário que encerrou a sessão. */
+        if (typeof resetLogForNewUser === 'function') resetLogForNewUser(null);
       }
     } catch (err) {
       console.error('[INIT] Erro no callback de autenticação:', err);
