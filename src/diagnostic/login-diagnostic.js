@@ -81,6 +81,34 @@
   window.getLoginDiagnosticText = () =>
     state.lines.join('\n');
 
+  /* Inspeciona o estado do motor central de LOG e escreve no console técnico.
+     Permite ver se eventos estão sendo gravados, se window.db/window.currentUser
+     existem e se há erros de sincronização — sem precisar do console do navegador. */
+  window.inspectLogSystem = function() {
+    const dl = window.diagnosticLog || [];
+    const lines = [];
+    lines.push('=== DIAGNÓSTICO DO LOG ===');
+    lines.push('Eventos em memória: ' + dl.length);
+    lines.push('window.db existe: ' + (typeof window.db !== 'undefined'));
+    lines.push('window.currentUser existe: ' + (typeof window.currentUser !== 'undefined' && window.currentUser !== null));
+    if (window.currentUser) {
+      lines.push('UID atual: ' + String(window.currentUser.uid));
+    }
+    lines.push('Últimos 5 eventos:');
+    dl.slice(-5).forEach(function(ev, i) {
+      lines.push('  ' + (i + 1) + '. ' + ev.type + ' | ' + ev.module + ' | ' + ev.action + ' | ' + ev.status + ' | ' + (ev.synced === true ? 'sync' : ev.synced === false ? 'pendente' : 'local'));
+    });
+    if (dl.length > 0) {
+      var errors = dl.filter(function(ev) { return ev.type === 'ERROR'; });
+      lines.push('Erros: ' + errors.length);
+      errors.slice(-3).forEach(function(ev) {
+        lines.push('  ERRO: ' + ev.module + ' - ' + ev.action + ' - ' + ev.description);
+      });
+    }
+    lines.push('=========================');
+    lines.forEach(function(l) { window.loginDebugLog('INFO', l); });
+  };
+
   function setDiagnosticOpen(open) {
     const toggle = getEl('authDiagnosticToggle');
     const panel = getEl('authDiagnosticPanel');
@@ -160,13 +188,15 @@
     const close = getEl('authDiagnosticClose');
     const clear = getEl('authDiagnosticClear');
     const copy = getEl('authDiagnosticCopy');
+    const inspectLog = getEl('authDiagnosticInspectLog');
 
     if (
       !toggle ||
       !panel ||
       !close ||
       !clear ||
-      !copy
+      !copy ||
+      !inspectLog
     ) {
       return false;
     }
@@ -255,6 +285,14 @@
 
           area.remove();
         }
+      }
+    );
+
+    inspectLog.addEventListener(
+      'click',
+      event => {
+        event.preventDefault();
+        window.inspectLogSystem();
       }
     );
 
