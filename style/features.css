@@ -809,7 +809,7 @@ body.dark-mode .mobile-bottom-nav button.is-active{background:transparent;box-sh
   .yield-row .yield-actions .icon-button{width:32px;height:32px;min-width:32px;min-height:32px;}
   @media(max-width:600px){.yield-history-list{max-height:min(54vh,460px);}.history-audit{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}.history-audit span{padding:6px 5px;}.history-audit strong{font-size:9px;}.yield-row{padding:10px;}}
   .log-toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0 12px;}
-  #btnToggleLogFiltros{display:none;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;}
+  #btnToggleLogFiltros{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;}
   .log-filter-row{display:flex;flex-wrap:wrap;gap:8px;}
   .log-filter-label{font-size:10px;color:var(--ink-soft);flex-shrink:0;margin-top:2px;}
   .log-filter-row select,.log-filter-row input{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 8px;font-size:11px;flex:1;min-width:110px;}
