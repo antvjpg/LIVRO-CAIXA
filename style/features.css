@@ -824,7 +824,8 @@ body.dark-mode .mobile-bottom-nav button.is-active{background:transparent;box-sh
   .log-sync.synced{background:var(--green-soft);color:var(--green);}
   .log-sync.pending{background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--gold);}
   .log-sync.local{background:color-mix(in srgb,var(--ink-soft) 12%,var(--surface));color:var(--ink-soft);}
-  .log-panel{display:flex;flex-direction:column;gap:8px;}
+  .log-panel{display:none;flex-direction:column;gap:8px;}
+  .log-panel.open{display:flex;flex-direction:column;gap:8px;}
   .log-stats{font-size:11px;color:var(--ink-soft);margin:4px 0 10px;padding:6px 9px;border:1px solid var(--line);border-radius:9px;background:var(--paper);display:flex;flex-wrap:wrap;gap:8px;}
   .log-stats b{color:var(--ink);}
   .log-list{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;max-height:48vh;overflow-y:auto;}
