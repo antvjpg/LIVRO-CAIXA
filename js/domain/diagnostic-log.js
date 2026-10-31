@@ -248,6 +248,12 @@
       setLogStorageKeys(null);
     }
     hydrateDiagnosticLog();
+    /* Renderiza sempre após hidratar, para usuários autenticados ou não.
+       Sem isso, abrir o modal antes do carregamento assíncrono terminar (ou
+       sem autenticação) exibia lista vazia mesmo com dados no localStorage. */
+    if (typeof window.renderDiagnosticLog === 'function') {
+      try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia o fluxo */ }
+    }
     if (typeof currentUser === 'undefined' || !currentUser) return;
     try {
       const snap = await db.collection('livrocaixa').doc(currentUser.uid).collection('diagnostics').limit(100).get();
@@ -258,12 +264,6 @@
       syncLogSequenceFromEvents(diagnosticLog);
       persistDiagnosticLogLocally();
     } catch (err) { console.warn('LOG remoto indisponível:', err); }
-    /* Re-renderiza o modal de diagnóstico se estiver aberto, para refletir
-       os dados recém-carregados (localStorage e/ou Firestore). Sem isso, abrir
-       o modal antes do carregamento assíncrono terminar exibia lista vazia. */
-    if (typeof window.renderDiagnosticLog === 'function') {
-      try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia o fluxo */ }
-    }
   }
 
   /* =========================================================================
