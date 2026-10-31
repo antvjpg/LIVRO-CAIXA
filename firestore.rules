@@ -367,7 +367,8 @@ service cloud.firestore {
             'pockets',
             'yieldsLog',
             'recurringBills',
-            'diagnostics'
+            'diagnostics',
+            'auditLog'
           ];
       }
     }

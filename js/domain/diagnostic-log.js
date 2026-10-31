@@ -256,7 +256,7 @@
     }
     if (typeof window === 'undefined' || !window.currentUser) return;
     try {
-      const snap = await db.collection('livrocaixa').doc(window.currentUser.uid).collection('diagnostics').limit(100).get();
+      const snap = await window.db.collection('livrocaixa').doc(window.currentUser.uid).collection('diagnostics').limit(100).get();
       const remote = snap.docs.map(doc => ({ ...normalizeLogEvent(doc.data()), synced: true })).filter(item => item && item.id);
       const merged = new Map(diagnosticLog.map(item => [item.id, normalizeLogEvent(item)]));
       remote.forEach(item => merged.set(item.id, item));
@@ -342,7 +342,7 @@
       } catch (err) { /* não bloqueia o fluxo */ }
     }
     if (typeof window !== 'undefined' && window.currentUser) {
-      db.collection('livrocaixa').doc(window.currentUser.uid).collection('diagnostics').doc(event.id).set(event, { merge: true })
+      window.db.collection('livrocaixa').doc(window.currentUser.uid).collection('diagnostics').doc(event.id).set(event, { merge: true })
         .then(() => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = true; flushPersistLocally(); })
         .catch(err => { const local = diagnosticLog.find(item => item.id === event.id); if (local) local.synced = false; flushPersistLocally(); console.warn('Falha ao sincronizar o LOG:', err); });
     }
