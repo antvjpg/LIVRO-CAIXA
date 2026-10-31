@@ -3152,6 +3152,10 @@ document.getElementById('tSalvar').onclick = async () => {
     renderExportPreview(); openModal('panelExportFormat');
     logInfo('Exportação','Abertura da prévia','Sucesso','Prévia do extrato aberta.',{count: activeEntries.length});
   };
+
+  document.getElementById('btnExportBackup')?.addEventListener('click', () => {
+    exportBackup();
+  });
   document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); };
   document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); };
   document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx().catch(err => { logSyncError('exportação DOCX', err); showToast('Não foi possível gerar o arquivo Word.', 'error'); }); };

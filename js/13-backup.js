@@ -101,3 +101,77 @@
     const diagnosticLog = data.diagnosticLog.filter(item => item && typeof item === 'object' && typeof item.type === 'string' && typeof item.module === 'string').slice(0, LOG_LIMIT);
     return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables: Array.isArray(data.receivables) ? data.receivables : [], budgets, goals: data.goals || [], invoiceLaunches: Array.isArray(data.invoiceLaunches) ? data.invoiceLaunches : [], cards, purchases, featureSettings: data.featureSettings || null, diagnosticLog }, dropped };
   }
+
+  /* Cria o payload completo de backup: todas as coleções do Firebase +
+     configurações de UI (localStorage) + metadados (schema, data, versão, usuário).
+     Sem criptografia: arquivo JSON simples, pronto para download. */
+  function createBackupPayload() {
+    const user = typeof auth !== 'undefined' ? auth?.currentUser : null;
+    const settings = {
+      theme: localStorage.getItem('theme'),
+      lightTheme: localStorage.getItem('livro-caixa-light-theme'),
+      darkTheme: localStorage.getItem('livro-caixa-dark-theme'),
+      font: localStorage.getItem('livrocaixa_display_font'),
+      currency: localStorage.getItem('livrocaixa_display_currency'),
+      avatar: localStorage.getItem('lc_profile_avatar'),
+      patrimonySparkVisible: localStorage.getItem('livro-caixa-patrimony-spark'),
+      viewPeriod: localStorage.getItem('livrocaixa_view_period_v18_08'),
+      investTotalExpanded: typeof investTotalExpanded !== 'undefined' ? investTotalExpanded : null,
+      investTotalViewMode: typeof investTotalViewMode !== 'undefined' ? investTotalViewMode : null
+    };
+    return {
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      generatedAt: new Date().toISOString(),
+      appVersion: typeof APP_VERSION_LABEL !== 'undefined' ? APP_VERSION_LABEL : null,
+      userUid: user ? user.uid : null,
+      data: {
+        banks: Array.isArray(banks) ? banks : [],
+        categories: Array.isArray(categories) ? categories : [],
+        entries: Array.isArray(entries) ? entries : [],
+        investments: Array.isArray(investments) ? investments : [],
+        pockets: Array.isArray(pockets) ? pockets : [],
+        yieldsLog: Array.isArray(yieldsLog) ? yieldsLog : [],
+        recurringBills: Array.isArray(recurringBills) ? recurringBills : [],
+        receivables: Array.isArray(receivables) ? receivables : [],
+        budgets: Array.isArray(budgets) ? budgets : [],
+        goals: Array.isArray(goals) ? goals : [],
+        cards: Array.isArray(cards) ? cards : [],
+        purchases: Array.isArray(purchases) ? purchases : [],
+        invoiceLaunches: Array.isArray(invoiceLaunches) ? invoiceLaunches : [],
+        featureSettings: typeof featureSettings !== 'undefined' && featureSettings ? featureSettings : null,
+        diagnosticLog: Array.isArray(diagnosticLog) ? diagnosticLog : []
+      },
+      settings
+    };
+  }
+
+  /* Exporta o backup como arquivo JSON para download.
+     Reutiliza downloadBlob() de js/31-import-export.js (mesmo escopo global). */
+  function exportBackup() {
+    try {
+      const payload = createBackupPayload();
+      const text = JSON.stringify(payload, null, 2);
+      const blob = new Blob([text], { type: 'application/json; charset=utf-8' });
+      const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      const filename = `livro-caixa-backup-${today}.json`;
+      if (typeof downloadBlob === 'function') {
+        downloadBlob(blob, filename);
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+      logInfo('Backup', 'Exportação', 'Sucesso', 'Backup exportado para download.', {
+        schemaVersion: payload.schemaVersion,
+        entries: payload.data.entries ? payload.data.entries.length : 0,
+        filename
+      });
+    } catch (err) {
+      console.error('[Backup] Falha ao exportar:', err);
+      logWarn('Backup', 'Exportação', 'Falha', 'Não foi possível gerar o arquivo de backup.', { message: err?.message });
+      alert('Não foi possível exportar o backup. Veja o console para detalhes.');
+    }
+  }
