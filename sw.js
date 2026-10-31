@@ -1,5 +1,5 @@
 /* Livro-CAIXA — Branding Orange — PWA shell (network-first HTML, force update) */
-const CACHE_NAME = "livro-caixa-shell-v20-40";
+const CACHE_NAME = "livro-caixa-shell-v20-41";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -36,12 +36,21 @@ const APP_SHELL = [
   "./js/domain/ai-chat-contract.js",
   "./js/domain/chat-persistence.js",
   "./js/domain/mcp-financial-contract.js",
+  "./js/domain/secure-storage.js",
+  "./js/domain/security-utils.js",
   "./style/themes.css",
   "./style/base.css",
   "./style/components.css",
   "./style/layout.css",
   "./style/features.css",
   "./style/dashboard-chat.css",
+  "./ocr/attachment-manager.js",
+  "./ocr/extractor.js",
+  "./ocr/lia-interpret.js",
+  "./ocr/limits.js",
+  "./ocr/log.js",
+  "./ocr/ocr-adapter.js",
+  "./ocr/review.js",
   "./manifest.webmanifest",
   "./icon-192.png",
   "./icon-512.png",
