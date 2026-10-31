@@ -161,8 +161,9 @@
     .fab-add { width:54px; height:54px; right:18px; bottom:104px; z-index:72; background:var(--accent); color:var(--accent-ink); box-shadow:0 9px 20px color-mix(in srgb,var(--accent) 35%,transparent); }
     main:has(.modal-overlay.open) { z-index:100; }
     .modal-overlay { z-index:300; align-items:center; padding:16px; background:rgba(13,42,30,.56); backdrop-filter:blur(7px); min-height:100svh; }
-    .panel { width:100%; max-width:560px; max-height:86svh; margin:0 auto; padding:18px 16px; background:#fffefa; color:#19352A; border:1px solid #E1E1D9; border-radius:18px; box-shadow:0 14px 34px rgba(20,48,36,.20); }
-    .panel.open { animation:mobile-panel-enter .22s cubic-bezier(.23,1,.32,1) both; }
+    .panel { display:none; width:100%; max-width:560px; max-height:86svh; margin:0 auto; padding:18px 16px; background:#fffefa; color:#19352A; border:1px solid #E1E1D9; border-radius:18px; box-shadow:0 14px 34px rgba(20,48,36,.20); }
+    .panel.open { display:block; animation:mobile-panel-enter .22s cubic-bezier(.23,1,.32,1) both; }
+    #panelDiagnostico.panel.open { display:flex; flex-direction:column; }
     .panel h3 { margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid #E1E1D9; color:#19352A; font-size:22px; letter-spacing:-.03em; }
     .modal-close { width:34px; height:34px; padding:0; border:1px solid #D5E3D8; border-radius:10px; background:#E7EFE8; color:#1E6C4B; font-size:20px; line-height:1; }
     .modal-close:hover { background:#327957; color:#fffefa; }
