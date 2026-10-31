@@ -163,12 +163,14 @@
   }
 
   async function loadDiagnosticLog() {
+    window.loginDebugLog?.('INFO', 'loadDiagnosticLog iniciado', { currentUser: !!window.currentUser });
     if (typeof window !== 'undefined' && window.currentUser) {
       setLogStorageKeys(window.currentUser.uid);
     } else {
       setLogStorageKeys(null);
     }
     hydrateDiagnosticLog();
+    window.loginDebugLog?.('INFO', 'loadDiagnosticLog: após hidratação localStorage', { count: diagnosticLog.length });
     /* Renderiza sempre após hidratar. */
     if (typeof window.renderDiagnosticLog === 'function') {
       try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia */ }
@@ -176,12 +178,14 @@
     if (typeof window === 'undefined' || !window.currentUser) return;
     try {
       const snap = await window.db.collection('livrocaixa').doc(window.currentUser.uid).collection('diagnostics').limit(100).get();
+      window.loginDebugLog?.('INFO', 'loadDiagnosticLog: documentos do Firestore', { count: snap.docs.length });
       const remote = snap.docs.map(doc => ({ ...normalizeLogEvent(doc.data()), synced: true })).filter(item => item && item.id);
       const merged = new Map(diagnosticLog.map(item => [item.id, normalizeLogEvent(item)]));
       remote.forEach(item => merged.set(item.id, item));
       diagnosticLog.splice(0, diagnosticLog.length, ...[...merged.values()].sort((a, b) => (Number(b.sequence || 0) - Number(a.sequence || 0)) || String(b.timestamp || '').localeCompare(String(a.timestamp || ''))).slice(0, LOG_LIMIT));
       syncLogSequenceFromEvents(diagnosticLog);
       persistDiagnosticLogLocally();
+      window.loginDebugLog?.('INFO', 'loadDiagnosticLog: após merge Firestore', { count: diagnosticLog.length });
     } catch (err) { console.warn('LOG remoto indisponível:', err); }
     if (typeof window.renderDiagnosticLog === 'function') {
       try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia */ }
@@ -208,6 +212,7 @@
   }
 
   function recordLogEvent(input = {}) {
+    window.loginDebugLog?.('INFO', 'recordLogEvent chamado', { module: input.module, action: input.action, type: input.type, idempotencyKey: input.idempotencyKey });
     const correlationId = input.correlationId || null;
     const idempotencyKey = input.idempotencyKey || null;
 
