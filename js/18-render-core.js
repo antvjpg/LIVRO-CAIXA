@@ -1229,8 +1229,8 @@ function renderCategoryManageList() {
         <strong class="cat-name">${escapeHTML(c.name)}</strong>
         <div class="cat-actions">
           <button type="button" class="action-btn icon-button tiny add" onclick="openSubcategoryPopover('${c.id}')" aria-label="Adicionar subcategoria" title="Adicionar subcategoria"><i class="fi fi-rr-plus" aria-hidden="true"></i></button>
-          <button type="button" class="action-btn icon-button tiny" onclick="editCategory('${c.id}')" aria-label="Editar categoria" title="Editar categoria"><i class="fi fi-rr-pencil" aria-hidden="true"></i></button>
-          <button type="button" class="action-btn icon-button tiny danger" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria" title="Excluir categoria"><i class="fi fi-rr-trash" aria-hidden="true"></i></button>
+          <button type="button" class="action-btn icon-button tiny edit" onclick="editCategory('${c.id}')" aria-label="Editar categoria" title="Editar categoria"></button>
+          <button type="button" class="action-btn icon-button tiny delete danger" onclick="deleteCategory('${c.id}')" aria-label="Excluir categoria" title="Excluir categoria"></button>
         </div>
       </div>
       <div class="sub-cats-line">${subList}</div>
