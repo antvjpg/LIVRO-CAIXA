@@ -1324,7 +1324,8 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     document.getElementById('reconciliationResult').textContent = 'Ajuste aplicado e incorporado ao Livro-Caixa.';
     render();
   });
-  ['logFilterType','logFilterModule','logFilterText'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
+  ['logFilterType','logFilterModule','logFilterStatus','logFilterSource','logFilterText','logFilterCorrelation'].forEach(id => document.getElementById(id)?.addEventListener('input', renderDiagnosticLog));
+  ['logFilterStart','logFilterEnd'].forEach(id => document.getElementById(id)?.addEventListener('change', renderDiagnosticLog));
   document.getElementById('filterText')?.addEventListener('input', refreshFilteredViews);
   document.getElementById('btnPeriodPrev')?.addEventListener('click', () => shiftViewPeriod(-1));
   document.getElementById('btnPeriodNext')?.addEventListener('click', () => shiftViewPeriod(1));
@@ -1332,8 +1333,12 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   document.getElementById('periodMonthInput')?.addEventListener('change', event => { if (event.target.value) setViewPeriod('month', event.target.value); });
   document.getElementById('btnPeriodPicker')?.addEventListener('click', () => { const input=document.getElementById('periodMonthInput'); if (!input) return; if (typeof input.showPicker === 'function') { try { input.showPicker(); } catch (err) { input.focus(); } } else input.focus(); });
   document.getElementById('btnCopyDiagnostico').onclick = () => {
-    const text = diagnosticLog.map(item => `[${item.type}] ${item.sequence != null ? '#' + item.sequence + ' ' : ''}${formatLogTimestamp(item.timestamp || Date.now())} | ${item.module} | ${item.action} | ${item.status}${item.correlationId ? ' | op=' + item.correlationId : ''}${item.durationMs != null ? ' | duração=' + item.durationMs + 'ms' : ''}${item.synced === false ? ' | sincronização pendente' : ''} | ${item.description}${item.details ? ' | ' + JSON.stringify(item.details) : ''}`).join('\n') || 'Nenhum evento registrado.';
-    if (navigator.clipboard) navigator.clipboard.writeText(text).then(()=>alert('LOG copiado.')).catch(()=>alert(text)); else alert(text);
+    const lines = diagnosticLog.map(item => {
+      const safeDetails = typeof window.sanitizeLogValue === 'function' ? window.sanitizeLogValue(item.details) : item.details;
+      const detailsPart = safeDetails != null ? ' | ' + JSON.stringify(safeDetails) : '';
+      return `[${item.type}] ${item.sequence != null ? '#' + item.sequence + ' ' : ''}${formatLogTimestamp(item.timestamp || Date.now())} | ${item.module} | ${item.action} | ${item.status}${item.correlationId ? ' | op=' + item.correlationId : ''}${item.durationMs != null ? ' | duração=' + item.durationMs + 'ms' : ''}${item.synced === false ? ' | sincronização pendente' : ''} | ${item.description}${detailsPart}`;
+    }).join('\n') || 'Nenhum evento registrado.';
+    if (navigator.clipboard) navigator.clipboard.writeText(lines).then(()=>alert('LOG copiado.')).catch(()=>alert(lines)); else alert(lines);
   };
   document.getElementById('btnClearDiagnostico').onclick = () => { if (!confirm('Limpar apenas a cópia local do LOG? O histórico remoto não será apagado.')) return; diagnosticLog.length=0; persistDiagnosticLogLocally(); renderDiagnosticLog(); };
 

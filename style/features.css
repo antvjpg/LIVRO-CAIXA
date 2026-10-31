@@ -809,12 +809,17 @@ body.dark-mode .mobile-bottom-nav button.is-active{background:transparent;box-sh
   .yield-row .yield-actions .icon-button{width:32px;height:32px;min-width:32px;min-height:32px;}
   @media(max-width:600px){.yield-history-list{max-height:min(54vh,460px);}.history-audit{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}.history-audit span{padding:6px 5px;}.history-audit strong{font-size:9px;}.yield-row{padding:10px;}}
   .log-toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0 12px;}
+  .log-filter-row{display:flex;flex-wrap:wrap;gap:8px;}
   .log-entry{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 11px;background:var(--surface);font-size:11px;line-height:1.45;}
   .log-entry.error{border-left-color:var(--red);}.log-entry.warn{border-left-color:var(--gold);}
   .log-entry-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
   .log-badge{display:inline-flex;align-items:center;padding:2px 6px;border-radius:999px;background:var(--green-soft);color:var(--accent);font-size:9px;font-weight:800;letter-spacing:.05em;}
   .log-entry.error .log-badge{background:var(--red-soft);color:var(--red);}.log-entry.warn .log-badge{background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold);}
   .log-entry-meta{color:var(--ink-soft);font-size:10px;}.log-entry-description{margin-top:4px;font-weight:700;}.log-entry-details{margin-top:5px;color:var(--ink-soft);white-space:pre-wrap;overflow-wrap:anywhere;}
+  .log-sync{display:inline-flex;align-items:center;font-size:8px;font-weight:800;border-radius:999px;padding:1px 6px;margin-left:6px;}
+  .log-sync.synced{background:var(--green-soft);color:var(--green);}
+  .log-sync.pending{background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--gold);}
+  .log-sync.local{background:color-mix(in srgb,var(--ink-soft) 12%,var(--surface));color:var(--ink-soft);}
 
   .reorder-actions{display:flex;gap:3px;margin-left:auto;}.reorder-actions .action-btn{font-size:12px;min-width:25px;min-height:25px;}
   .bank-share-line{display:block;color:var(--accent);font-size:10px;margin-top:2px;}.bill-status.overdue{color:var(--red);font-weight:800;}.bill-status.is-paid{color:var(--green);background:color-mix(in srgb,var(--green) 16%,var(--surface));}.bill-status.is-partial{color:var(--gold);background:color-mix(in srgb,var(--gold) 18%,var(--surface));}

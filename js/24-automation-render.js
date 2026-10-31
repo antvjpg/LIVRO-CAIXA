@@ -93,14 +93,53 @@
     const base = date.toLocaleString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
     return `${base}.${String(date.getMilliseconds()).padStart(3, '0')}`;
   }
+  function syncBadge(item) {
+    if (item.synced === true) return '<span class="log-sync synced" title="Sincronizado">●</span>';
+    if (item.synced === false) return '<span class="log-sync pending" title="Sincronização pendente">○</span>';
+    return '<span class="log-sync local" title="Apenas local">○</span>';
+  }
   function renderDiagnosticLog() {
     const type = document.getElementById('logFilterType')?.value || '';
     const module = document.getElementById('logFilterModule')?.value || '';
+    const status = document.getElementById('logFilterStatus')?.value || '';
+    const source = document.getElementById('logFilterSource')?.value || '';
     const query = (document.getElementById('logFilterText')?.value || '').toLowerCase();
+    const correlation = (document.getElementById('logFilterCorrelation')?.value || '').toLowerCase();
+    const start = document.getElementById('logFilterStart')?.value || '';
+    const end = document.getElementById('logFilterEnd')?.value || '';
+
     const modules = [...new Set(diagnosticLog.map(item => item.module).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    const statuses = [...new Set(diagnosticLog.map(item => item.status).filter(Boolean))].sort();
+    const sources = [...new Set(diagnosticLog.map(item => item.source).filter(Boolean))].sort();
+
     const moduleSelect = document.getElementById('logFilterModule');
     if (moduleSelect) { const current=moduleSelect.value; moduleSelect.innerHTML='<option value="">Todos os módulos</option>'+modules.map(item=>`<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join(''); if(modules.includes(current)) moduleSelect.value=current; }
-    const filtered = diagnosticLog.filter(item => (!type || item.type === type) && (!module || item.module === module) && (!query || JSON.stringify(item).toLowerCase().includes(query)));
+
+    const statusSelect = document.getElementById('logFilterStatus');
+    if (statusSelect) { const current=statusSelect.value; statusSelect.innerHTML='<option value="">Todos os status</option>'+statuses.map(item=>`<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join(''); if(statuses.includes(current)) statusSelect.value=current; }
+
+    const sourceSelect = document.getElementById('logFilterSource');
+    if (sourceSelect) { const current=sourceSelect.value; sourceSelect.innerHTML='<option value="">Todas as origens</option>'+sources.map(item=>`<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`).join(''); if(sources.includes(current)) sourceSelect.value=current; }
+
+    const startDate = start ? new Date(start + 'T00:00:00') : null;
+    const endDate = end ? new Date(end + 'T23:59:59') : null;
+
+    const filtered = diagnosticLog.filter(item => {
+      if (type && item.type !== type) return false;
+      if (module && item.module !== module) return false;
+      if (status && item.status !== status) return false;
+      if (source && item.source !== source) return false;
+      if (correlation && !(item.correlationId && item.correlationId.toLowerCase().includes(correlation))) return false;
+      if (query && !JSON.stringify(item).toLowerCase().includes(query)) return false;
+      if (startDate || endDate) {
+        const t = item.timestamp ? new Date(item.timestamp) : null;
+        if (!t || Number.isNaN(t.getTime())) return false;
+        if (startDate && t < startDate) return false;
+        if (endDate && t > endDate) return false;
+      }
+      return true;
+    });
+
     const list = document.getElementById('diagnosticoList');
     list.innerHTML = filtered.length ? filtered.map(item => {
       const date = item.timestamp ? formatLogTimestamp(item.timestamp) : '';
@@ -108,9 +147,9 @@
       const identity = item.sequence != null ? `#${item.sequence}` : 'sem sequência';
       const operation = item.correlationId ? `op ${item.correlationId}` : '';
       const duration = item.durationMs != null ? `${item.durationMs} ms` : '';
-      const sync = item.synced === true ? 'Sincronizado' : item.synced === false ? 'Pendente' : '';
+      const sync = item.synced === true ? 'Sincronizado' : item.synced === false ? 'Pendente' : 'Local';
       const meta = [identity, date, item.module || 'Sistema', item.status || '', duration, sync].filter(Boolean).join(' · ');
-      return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span><span class="log-entry-meta">${escapeHTML(meta)}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${item.description ? ' — ' + escapeHTML(item.description) : ''}</div>${operation ? `<div class="log-entry-details">Operação: ${escapeHTML(operation)}</div>` : ''}${details ? `<div class="log-entry-details">${escapeHTML(details)}</div>` : ''}</article>`;
+      return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span>${syncBadge(item)}<span class="log-entry-meta">${escapeHTML(meta)}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${item.description ? ' — ' + escapeHTML(item.description) : ''}</div>${operation ? `<div class="log-entry-details">Operação: ${escapeHTML(operation)}</div>` : ''}${details ? `<div class="log-entry-details">${escapeHTML(details)}</div>` : ''}</article>`;
     }).join('') : '<p class="hint">Nenhum evento encontrado para os filtros atuais.</p>';
   }
   function openDiagnostics() { renderDiagnosticLog(); openModal('panelDiagnostico'); }
