@@ -164,7 +164,7 @@
       statusEl.textContent = 'Nenhum ativo com unidades cadastradas para atualizar automaticamente (ativos sem "unidades/tokens" precisam ser editados manualmente).';
       return;
     }
-    const operation = beginLogOperation('Cotação', 'Atualização em lote');
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Cotação', 'Atualização em lote');
     logInfo('Cotação', 'Atualização em lote', 'Em andamento', `Atualização de ${candidates.length} ativo(s) iniciada.`, { count: candidates.length }, operation);
     btn.disabled = true;
     const icon = btn.querySelector('.quote-refresh-icon');

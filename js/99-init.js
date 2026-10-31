@@ -2379,7 +2379,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     if (!name) { alert('Informe o nome do ativo.'); return; }
     if (isCrypto && (initialUnits == null || initialUnits < 0)) { alert('O saldo inicial não pode ser negativo.'); return; }
 
-    const operation = beginLogOperation('Investimentos', editingInvestId ? 'Editar ativo' : 'Salvar ativo');
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Investimentos', editingInvestId ? 'Editar ativo' : 'Salvar ativo');
     logInfo('Investimentos', editingInvestId ? 'Editar ativo' : 'Salvar ativo', 'Em andamento', 'Operação de ativo iniciada.', null, operation);
     const record = { name, alias, coinGeckoId, type, units, initialUnits: isCrypto ? (initialUnits || 0) : null, value, initialValue, price: quote, institution, rate, dueDate };
 
@@ -2560,7 +2560,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       });
       if (item.type === 'Renda Fixa') syncDerivedInvestmentValue(item);
     }
-    const operation = beginLogOperation('Investimentos', `Movimentação — ${movementKindLabel(kind)}`);
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Investimentos', `Movimentação — ${movementKindLabel(kind)}`);
     logInfo('Investimentos', 'Movimentação', 'Em andamento', `${movementKindLabel(kind)} iniciada para ${item.name}.`, null, operation);
     if (isCrypto) {
       syncDerivedCryptoValue(item, price);
@@ -2627,7 +2627,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     if (informed == null) { alert(isCrypto ? 'Informe um saldo válido na corretora.' : 'Informe um saldo válido.'); return; }
     if (diff === 0) { alert('O saldo informado já confere com o saldo atual.'); return; }
     const kind = diff > 0 ? 'rendimento' : 'resgate';
-    const operation = beginLogOperation('Investimentos', `Conciliação — ${movementKindLabel(kind)}`);
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Investimentos', `Conciliação — ${movementKindLabel(kind)}`);
     let units = null;
     let price = null;
     let amount = Math.abs(diff);
@@ -2713,7 +2713,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     const baseBalance = pocketCurrentBalance(item) - (pocketMovementEditingId ? movementDelta(yieldsLog.find(y => y.id === pocketMovementEditingId) || {}) : 0);
     if (baseBalance + delta < 0) { alert('O resgate não pode ser maior que o saldo disponível.'); return; }
 
-    const operation = beginLogOperation('Caixinhas', `Movimentação — ${movementKindLabel(kind)}`);
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Caixinhas', `Movimentação — ${movementKindLabel(kind)}`);
     logInfo('Caixinhas', 'Movimentação', 'Em andamento', `${movementKindLabel(kind)} iniciada para ${item.name}.`, null, operation);
     if (pocketMovementEditingId) {
       const old = yieldsLog.find(x => x.id === pocketMovementEditingId);
@@ -2755,7 +2755,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     const nameQuery = document.getElementById('iNome').value.trim();
     const statusEl = document.getElementById('fetchPriceStatus');
     if (!nameQuery) { statusEl.textContent = 'Digite o nome do ativo primeiro (ex: Bitcoin, USDC).'; return; }
-    const operation = beginLogOperation('Cotação', 'Atualização de cotação');
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Cotação', 'Atualização de cotação');
     logInfo('Cotação', 'Atualização de cotação', 'Em andamento', `Consulta iniciada para ${nameQuery}.`, null, operation);
     statusEl.textContent = 'Buscando cotação...';
     const fetchIcon = document.querySelector('#btnFetchPrice .fi');
@@ -3050,7 +3050,7 @@ document.getElementById('tSalvar').onclick = async () => {
     if (deInvest && investmentValue(deInvest) + 1e-9 < valor) { logWarn('Transferência', 'Transferência universal', 'Bloqueada', 'O valor excede o saldo disponível do investimento.', { amount: valor, investmentId: deInvest.id }); alert('O valor excede o saldo disponível do investimento.'); return; }
     if (deInvest && isCryptoType(deInvest.type) && !(Number(deInvest.price) > 0)) { logWarn('Transferência', 'Transferência universal', 'Bloqueada', 'O investimento de origem não possui cotação válida.'); alert('Defina uma cotação válida no investimento antes de transferir.'); return; }
     if (paraInvest && isCryptoType(paraInvest.type) && !(Number(paraInvest.price) > 0)) { logWarn('Transferência', 'Transferência universal', 'Bloqueada', 'O investimento de destino não possui cotação válida.'); alert('Defina uma cotação válida no investimento antes de transferir.'); return; }
-    const operation = beginLogOperation('Transferência', 'Transferência universal');
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Transferência', 'Transferência universal');
     logInfo('Transferência', 'Transferência universal', 'Em andamento', `Transferência de ${deName} para ${paraName} iniciada.`, { amount: valor }, operation);
     if (deBank) {
       entries.push({
@@ -3396,7 +3396,7 @@ document.getElementById('tSalvar').onclick = async () => {
         const pass = passEl ? passEl.value : '';
         if (!email || !pass) { setAuthError('Preencha e-mail e senha.'); return; }
         setAuthError('');
-        const operation = beginLogOperation('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar');
+        const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar');
         logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Em andamento', 'Solicitação de autenticação iniciada.', null, operation);
         const action = isSignupMode
           ? auth.createUserWithEmailAndPassword(email, pass)
@@ -3438,10 +3438,7 @@ document.getElementById('tSalvar').onclick = async () => {
           'Clique em “Entrar com Google” detectado'
         );
 
-        const operation = beginLogOperation(
-          'Autenticação',
-          'Entrar com Google'
-        );
+        const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Autenticação', 'Entrar com Google');
         logInfo('Autenticação', 'Entrar com Google', 'Em andamento', 'Solicitação de autenticação Google iniciada.', null, operation);
         const provider = new firebase.auth.GoogleAuthProvider();
 

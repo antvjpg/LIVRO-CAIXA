@@ -20,7 +20,7 @@
   }
 
   async function loadState() {
-    const operation = beginLogOperation('Carregamento de dados', 'Sincronização');
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Carregamento de dados', 'Sincronização');
     const loadUserUid = currentUser?.uid || null;
     const thisLoadGeneration = ++loadGeneration;
     firstLoadDone = false;

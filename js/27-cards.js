@@ -967,7 +967,7 @@
       }
     }
 
-    const operation = beginLogOperation('Livro-Caixa', editingEntryId ? 'Editar lançamento' : 'Salvar lançamento');
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Livro-Caixa', editingEntryId ? 'Editar lançamento' : 'Salvar lançamento');
     logInfo('Livro-Caixa', editingEntryId ? 'Editar lançamento' : 'Salvar lançamento', 'Em andamento', 'Operação de lançamento iniciada.', null, operation);
     btn.disabled = true;
     const originalLabel = btn.textContent;

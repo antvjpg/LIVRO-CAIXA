@@ -37,7 +37,7 @@
     if (!currentUser) { logWarn('Calendário', 'Geração automática', 'Ignorado', 'É necessário estar autenticado para gerar lançamentos financeiros.'); return 0; }
     const now = new Date(); const key = billMonthKey(now); const year = now.getFullYear(); const month = now.getMonth(); const candidates = recurringBills.filter(bill => billAppliesToMonth(bill, year, month) && !billGeneratedForMonth(bill, key) && bill.bank && bill.bank !== 'a-definir');
     if (!candidates.length) return 0;
-    const operation = beginLogOperation('Calendário', 'Geração automática'); let created = 0;
+    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Calendário', 'Geração automática'); let created = 0;
     const generatedEntryIds = [];
     const previousStates = candidates.map(bill => ({ bill, generatedMonths: Array.isArray(bill.generatedMonths) ? bill.generatedMonths.slice() : [] }));
     candidates.forEach(bill => { const date = billDueDateForMonth(bill, year, month); const entryId = 'auto' + Date.now() + Math.random().toString(36).slice(2, 8); generatedEntryIds.push(entryId); const entry = { id: entryId, date, desc: `${bill.name} (automático)`, bank: bill.bank, category: bill.category || categories[0]?.id || '', amount: Number(bill.amount) || 0, type: 'out', recurringBillId: bill.id, automated: true }; appendEntryHistory(entry, { action: 'create', by: 'auto' }); entries.push(entry); bill.generatedMonths = Array.isArray(bill.generatedMonths) ? bill.generatedMonths : []; bill.generatedMonths.push(key); created++; });
