@@ -1,28 +1,70 @@
 /* LIVRO-CAIXA · js/domain/diagnostic-log.js — motor central do LOG do sistema.
-   Extração da Fase 1 do LOG (C.O.D.E.): normalização, sequência, correlação,
-   sanitização, persistência local e sincronização remota.
+   Fase 2 — Segurança e resiliência (C.O.D.E.):
+   - Allowlist de campos permitidos em detalhes (substitui blacklist genérica)
+   - Máscara de dados sensíveis (credenciais, tokens, valores financeiros, OCR)
+   - Deduplicação por correlationId (idempotência, evita duplicidade em retry)
+   - Paginação explícita e limites documentados
+   - Falhas do logger são absorvidas e nunca interrompem operações financeiras
    Contrato público mantido: logInfo, logWarn, logSyncError, recordLogEvent,
    createLogEvent, beginLogOperation.
-   Nenhuma alteração de comportamento: apenas move o código para um módulo
-   dedicado, preservando chave local, compatibilidade de dados antigos,
-   backup e comportamento remoto.
-   Falhas do logger são absorvidas e nunca interrompem operações financeiras.
 */
+
+  /* =========================================================================
+     CONFIGURAÇÃO DE SEGURANÇA (Fase 2)
+     ========================================================================= */
+
+  /* Campos permitidos em details (allowlist). Qualquer campo fora desta lista
+     é removido antes de gravar no LOG. */
+  const LOG_DETAILS_ALLOWLIST = new Set([
+    'operation', 'status', 'code', 'message', 'count', 'total', 'remaining',
+    'month', 'year', 'date', 'startDate', 'endDate', 'closingDay', 'dueDay',
+    'categoryId', 'bankId', 'pocketId', 'cardId', 'investmentId', 'goalId',
+    'receivableId', 'billId', 'purchaseId', 'invoiceId', 'type', 'kind',
+    'provider', 'source', 'targetType', 'targetId', 'correlationId',
+    'durationMs', 'retryCount', 'synced', 'schemaVersion', 'action', 'module'
+  ]);
+
+  /* Campos sensíveis que são MASKADOS (valor substituído por '[REDACTED]')
+     em vez de apenas removidos, para manter a estrutura visível sem expor dados. */
+  const LOG_SENSITIVE_MASK_FIELDS = new Set([
+    'amount', 'value', 'balance', 'initial', 'current', 'targetAmount',
+    'currentAmount', 'purchaseRate', 'saleRate', 'purchasePrice', 'salePrice',
+    'basePrice', 'units', 'price', 'code', 'cardNumber', 'document', 'cpf',
+    'cnpj', 'phone', 'email', 'address'
+  ]);
+
+  /* Limites documentados (Fase 2) */
+  const LOG_LIMIT = 200;                 /* máximo de eventos na memória/localStorage */
+  const LOG_SYNC_ERRORS_LIMIT = 50;      /* máximo de erros de sync mantidos */
+  const LOG_DETAILS_MAX_KEYS = 20;       /* máximo de chaves por objeto em details */
+  const LOG_DETAILS_MAX_DEPTH = 2;       /* profundidade máxima de recursão */
+  const LOG_STRING_MAX_CHARS = 800;      /* máximo de caracteres por string */
+  const LOG_ARRAY_MAX_ITEMS = 20;        /* máximo de itens por array */
+  const LOG_DESCRIPTION_MAX_CHARS = 800; /* máximo de caracteres na descrição */
+  const LOG_MODULE_MAX_CHARS = 120;      /* máximo de caracteres no módulo */
+  const LOG_ACTION_MAX_CHARS = 160;      /* máximo de caracteres na ação */
+  const LOG_STATUS_MAX_CHARS = 80;       /* máximo de caracteres no status */
+  const LOG_CORRELATION_ID_MAX_CHARS = 120; /* máximo no correlationId */
+  const LOG_SOURCE_MAX_CHARS = 80;       /* máximo no source */
+
+  /* =========================================================================
+     VARIÁVEIS DE ESTADO
+     ========================================================================= */
 
   let diagnosticLog;
 
   // compatibilidade com a interface antiga.
   let LOG_STORAGE_KEY;
 
-  let LOG_LIMIT;
-
-  let LOG_SCHEMA_VERSION;
-
   let LOG_SEQUENCE_STORAGE_KEY;
 
   let LOG_SOURCE;
 
   let logSequence;
+
+  /* =========================================================================
+     SEQUÊNCIA E CORRELAÇÃO
+     ========================================================================= */
 
   function nextLogSequence() {
     let stored = 0;
@@ -55,22 +97,42 @@
     };
   }
 
+  /* =========================================================================
+     SANITIZAÇÃO (Fase 2 — allowlist + máscara de dados sensíveis)
+     ========================================================================= */
+
+  /* Máscara de campo sensível: substitui o valor por '[REDACTED]' preservando
+     a chave visível para auditoria de estrutura sem expor dados sensíveis. */
+  function maskSensitiveValue(key, value) {
+    const lowerKey = String(key).toLowerCase();
+    if (LOG_SENSITIVE_MASK_FIELDS.has(lowerKey)) return '[REDACTED]';
+    /* Detecta nomes de campo que contenham palavras sensíveis */
+    if (/token|secret|password|credential|apiKey|authorization|uid|cpf|cnpj|cardNumber|email|phone|address/i.test(lowerKey)) return '[REDACTED]';
+    return value;
+  }
+
   function sanitizeLogValue(value, depth = 0) {
-    if (depth > 2 || value == null) return value == null ? null : String(value);
+    if (depth > LOG_DETAILS_MAX_DEPTH || value == null) return value == null ? null : String(value);
     if (value instanceof Error) return { name: value.name, message: value.message, code: value.code || null };
-    if (typeof value === 'string') return value.slice(0, 800);
+    if (typeof value === 'string') return value.slice(0, LOG_STRING_MAX_CHARS);
     if (typeof value === 'number' || typeof value === 'boolean') return value;
-    if (Array.isArray(value)) return value.slice(0, 20).map(item => sanitizeLogValue(item, depth + 1));
+    if (Array.isArray(value)) return value.slice(0, LOG_ARRAY_MAX_ITEMS).map(item => sanitizeLogValue(item, depth + 1));
     if (typeof value === 'object') {
       const result = {};
-      Object.keys(value).slice(0, 20).forEach(key => {
-        if (/password|token|secret|authorization|apiKey|credential|uid/i.test(key)) return;
-        result[key] = sanitizeLogValue(value[key], depth + 1);
-      });
+      const keys = Object.keys(value).slice(0, LOG_DETAILS_MAX_KEYS);
+      for (const key of keys) {
+        /* Allowlist: apenas campos conhecidos são mantidos */
+        if (!LOG_DETAILS_ALLOWLIST.has(key.toLowerCase())) continue;
+        result[key] = maskSensitiveValue(key, sanitizeLogValue(value[key], depth + 1));
+      }
       return result;
     }
     return String(value);
   }
+
+  /* =========================================================================
+     NORMALIZAÇÃO DE EVENTOS
+     ========================================================================= */
 
   function normalizeLogEvent(raw) {
     const item = raw && typeof raw === 'object' ? raw : {};
@@ -82,15 +144,15 @@
       sequence: Number.isFinite(sequenceNumber) && sequenceNumber > 0 ? sequenceNumber : null,
       timestamp: item.timestamp || new Date().toISOString(),
       type: ['INFO', 'WARN', 'ERROR'].includes(item.type) ? item.type : 'INFO',
-      module: String(item.module || 'Sistema').slice(0, 120),
-      action: String(item.action || 'Operação').slice(0, 160),
-      status: String(item.status || 'Sucesso').slice(0, 80),
-      description: String(item.description || '').slice(0, 800),
+      module: String(item.module || 'Sistema').slice(0, LOG_MODULE_MAX_CHARS),
+      action: String(item.action || 'Operação').slice(0, LOG_ACTION_MAX_CHARS),
+      status: String(item.status || 'Sucesso').slice(0, LOG_STATUS_MAX_CHARS),
+      description: String(item.description || '').slice(0, LOG_DESCRIPTION_MAX_CHARS),
       details: sanitizeLogValue(item.details),
-      correlationId: item.correlationId ? String(item.correlationId).slice(0, 120) : null,
+      correlationId: item.correlationId ? String(item.correlationId).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
       durationMs: Number.isFinite(durationNumber) && durationNumber >= 0 ? Math.round(durationNumber) : null,
       retryCount: Number.isFinite(retryNumber) && retryNumber >= 0 ? Math.floor(retryNumber) : null,
-      source: String(item.source || 'Livro-Caixa-web').slice(0, 80),
+      source: String(item.source || 'Livro-Caixa-web').slice(0, LOG_SOURCE_MAX_CHARS),
       synced: item.synced === true ? true : item.synced === false ? false : null,
       schemaVersion: Number(item.schemaVersion) || 1
     };
@@ -108,12 +170,16 @@
     }
   }
 
+  /* =========================================================================
+     PERSISTÊNCIA LOCAL E REMOTA
+     ========================================================================= */
+
   function persistDiagnosticLogLocally() {
     try {
       const normalized = normalizeDiagnosticLog(diagnosticLog);
       diagnosticLog.splice(0, diagnosticLog.length, ...normalized);
       localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(normalized));
-      localStorage.setItem('livrocaixa_sync_errors', JSON.stringify(normalized.filter(item => item.type === 'ERROR').slice(0, 50)));
+      localStorage.setItem('livrocaixa_sync_errors', JSON.stringify(normalized.filter(item => item.type === 'ERROR').slice(0, LOG_SYNC_ERRORS_LIMIT)));
     } catch (err) { console.warn('LOG local indisponível:', err); }
   }
 
@@ -144,21 +210,46 @@
     } catch (err) { console.warn('LOG remoto indisponível:', err); }
   }
 
+  /* =========================================================================
+     CRIAÇÃO E REGISTRO DE EVENTOS (IDEMPOTÊNCIA)
+     ========================================================================= */
+
   function createLogEvent({ type = 'INFO', module = 'Sistema', action = 'Operação', status = 'Sucesso', description = '', details = null, correlationId = null, durationMs = null, retryCount = null, source = LOG_SOURCE, synced = null } = {}) {
     return {
       id: 'log' + Date.now() + Math.random().toString(36).slice(2, 8),
       sequence: nextLogSequence(),
       timestamp: new Date().toISOString(), type, module, action, status,
-      description: String(description || '').slice(0, 800), details: sanitizeLogValue(details),
-      correlationId: correlationId ? String(correlationId).slice(0, 120) : null,
+      description: String(description || '').slice(0, LOG_DESCRIPTION_MAX_CHARS), details: sanitizeLogValue(details),
+      correlationId: correlationId ? String(correlationId).slice(0, LOG_CORRELATION_ID_MAX_CHARS) : null,
       durationMs: Number.isFinite(Number(durationMs)) && Number(durationMs) >= 0 ? Math.round(Number(durationMs)) : null,
       retryCount: Number.isFinite(Number(retryCount)) && Number(retryCount) >= 0 ? Math.floor(Number(retryCount)) : null,
-      source: String(source || LOG_SOURCE).slice(0, 80), synced: synced === true ? true : synced === false ? false : null,
+      source: String(source || LOG_SOURCE).slice(0, LOG_SOURCE_MAX_CHARS), synced: synced === true ? true : synced === false ? false : null,
       schemaVersion: LOG_SCHEMA_VERSION
     };
   }
 
+  /* Verifica se já existe um evento com o mesmo correlationId (idempotência).
+     Evita duplicidade em retry de operações. */
+  function findExistingEventByCorrelationId(correlationId) {
+    if (!correlationId) return null;
+    return diagnosticLog.find(item => item.correlationId === correlationId) || null;
+  }
+
   function recordLogEvent(input = {}) {
+    const correlationId = input.correlationId || null;
+
+    /* Idempotência: se já existe um evento com este correlationId, não duplica */
+    if (correlationId) {
+      const existing = findExistingEventByCorrelationId(correlationId);
+      if (existing) {
+        /* Atualiza apenas o status/synced do evento existente, se houver mudança */
+        if (input.status !== undefined) existing.status = input.status;
+        if (input.synced !== undefined) existing.synced = input.synced;
+        persistDiagnosticLogLocally();
+        return existing;
+      }
+    }
+
     const event = createLogEvent({ ...input, synced: typeof currentUser !== 'undefined' && currentUser ? false : null });
     diagnosticLog.unshift(event);
     if (diagnosticLog.length > LOG_LIMIT) diagnosticLog.length = LOG_LIMIT;
@@ -173,6 +264,45 @@
     else if (event.type === 'WARN') console.warn(`[${event.module}] ${event.action}:`, event.description);
     return event;
   }
+
+  /* =========================================================================
+     PAGINAÇÃO E CONSULTA (Fase 2)
+     ========================================================================= */
+
+  /* Retorna uma página paginada do LOG.
+     offset: índice inicial (0-based)
+     limit: máximo de itens retornados
+     filter: função opcional para filtrar (por type, module, status, etc.)
+   */
+  function getDiagnosticLogPage({ offset = 0, limit = LOG_LIMIT, filter = null } = {}) {
+    const sorted = [...diagnosticLog].sort((a, b) => (Number(b.sequence || 0) - Number(a.sequence || 0)) || String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
+    let filtered = sorted;
+    if (typeof filter === 'function') filtered = sorted.filter(filter);
+    const page = filtered.slice(offset, offset + limit);
+    return {
+      page,
+      total: filtered.length,
+      offset,
+      limit,
+      hasMore: offset + limit < filtered.length
+    };
+  }
+
+  function getDiagnosticLogStats() {
+    const total = diagnosticLog.length;
+    const byType = { INFO: 0, WARN: 0, ERROR: 0 };
+    const byModule = {};
+    diagnosticLog.forEach(item => {
+      byType[item.type] = (byType[item.type] || 0) + 1;
+      byModule[item.module] = (byModule[item.module] || 0) + 1;
+    });
+    const unsynced = diagnosticLog.filter(item => item.synced === false || item.synced === null).length;
+    return { total, byType, byModule, unsynced };
+  }
+
+  /* =========================================================================
+     API PÚBLICA
+     ========================================================================= */
 
   function logInfo(module, action, status = 'Sucesso', description = '', details = null, operation = null) {
     const duration = ['Sucesso', 'Parcial', 'Falha', 'Cancelado'].includes(status) ? operationDuration(operation) : null;
