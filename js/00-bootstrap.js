@@ -64,13 +64,31 @@ window.LivroCaixaAI = {
     }
   },
   async getAiProvider() {
-    try { return await window.LivroCaixaSecureStorage?.get('ai_provider') || 'openrouter'; } catch (err) { return 'openrouter'; }
+    try {
+      if (window.LivroCaixaSecureStorage) {
+        const val = await window.LivroCaixaSecureStorage.get('ai_provider');
+        if (val) return val;
+      }
+    } catch (err) {
+      console.debug('[ai-provider] secureStorage.get falhou:', err);
+    }
+    try {
+      const ls = localStorage.getItem('livrocaixa_ai_provider');
+      if (ls) return ls;
+    } catch (err) {
+      console.debug('[ai-provider] localStorage.get falhou:', err);
+    }
+    return 'openrouter';
   },
   async setAiProvider(provider) {
     try {
-      await window.LivroCaixaSecureStorage?.set('ai_provider', provider);
+      if (window.LivroCaixaSecureStorage) {
+        await window.LivroCaixaSecureStorage.set('ai_provider', provider);
+      }
+      try { localStorage.setItem('livrocaixa_ai_provider', provider); } catch (e) {}
       return true;
     } catch (err) {
+      console.debug('[ai-provider] set falhou:', err);
       return false;
     }
   },
@@ -81,17 +99,23 @@ window.LivroCaixaAI = {
       /* Espera o secure-storage (módulo ES assíncrono) ficar disponível
          antes de ler o provedor salvo, para não cair no padrão 'openrouter'
          após recarregar a página. */
-      let attempts = 0;
-      while (!window.LivroCaixaSecureStorage && attempts < 20) {
-        await new Promise(r => setTimeout(r, 100));
-        attempts++;
-      }
+      await new Promise((resolve) => {
+        if (window.LivroCaixaSecureStorage) return resolve();
+        const timer = setInterval(() => {
+          if (window.LivroCaixaSecureStorage) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 50);
+        setTimeout(() => { clearInterval(timer); resolve(); }, 3000);
+      });
       const saved = await this.getAiProvider();
+      console.debug('[ai-provider] provedor lido:', saved);
       select.value = saved;
       select.addEventListener('change', async () => {
         await this.setAiProvider(select.value);
       });
-    } catch (err) { /* ignora */ }
+    } catch (err) { console.debug('[ai-provider] init falhou:', err); }
   },
   buildContent(text, imagePart) {
     if (imagePart && imagePart.image_url && imagePart.image_url.url) {
