@@ -180,6 +180,7 @@ async function secureGet(key) {
             const combined = _base64ToArrayBuffer(req.result.value);
             _decrypt(combined).then(resolve).catch(reject);
           } catch (err) {
+            console.warn('[secure-storage] descriptografia falhou para chave:', key);
             resolve(null);
           }
         };

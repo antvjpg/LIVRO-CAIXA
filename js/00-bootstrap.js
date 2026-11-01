@@ -64,20 +64,28 @@ window.LivroCaixaAI = {
     }
   },
   async getAiProvider() {
+    const VALID_PROVIDERS = ['openrouter', 'google', 'groq'];
     try {
       if (window.LivroCaixaSecureStorage) {
         const val = await window.LivroCaixaSecureStorage.get('ai_provider');
-        if (val) return val;
+        if (val && VALID_PROVIDERS.includes(val)) return val;
+        if (val) {
+          console.warn('[ai-provider] valor inválido ignorado do secureStorage:', val);
+        }
       }
     } catch (err) {
-      console.debug('[ai-provider] secureStorage.get falhou:', err);
+      console.warn('[ai-provider] secureStorage.get falhou:', err);
     }
     try {
       const ls = localStorage.getItem('livrocaixa_ai_provider');
-      if (ls) return ls;
+      if (ls && VALID_PROVIDERS.includes(ls)) return ls;
+      if (ls) {
+        console.warn('[ai-provider] valor inválido ignorado do localStorage:', ls);
+      }
     } catch (err) {
-      console.debug('[ai-provider] localStorage.get falhou:', err);
+      console.warn('[ai-provider] localStorage.get falhou:', err);
     }
+    console.warn('[ai-provider] usando fallback padrão: openrouter');
     return 'openrouter';
   },
   async setAiProvider(provider) {
@@ -239,12 +247,16 @@ window.LivroCaixaAI = {
      localStorage. NÃO é o caminho protegido pelo Worker — não passa por
      autenticação, cota diária nem validação de payload do proxy. Usado
      só quando o Worker falha e há chave local cadastrada. */
-  async generateViaLocalKey({ content, maxTokens }) {
+  async generateViaLocalKey({ content, maxTokens, provider }) {
     const apiKey = await this.getApiKey();
     if (!apiKey) {
       const err = new Error('Chave da API não configurada. Cadastre-a em Perfil → Análise assistida.');
       err.code = 'missing_api_key';
       throw err;
+    }
+
+    if (provider && provider !== 'openrouter') {
+      console.warn('[ai-provider] modo local ignora provedor solicitado:', provider, '- usando OpenRouter (fallback local só suporta OpenRouter)');
     }
 
     let response;
@@ -322,7 +334,8 @@ window.LivroCaixaAI = {
     /* O caminho de chave local é o legado e não recebe o signal nesta
        versão; o cancelamento do pipeline é garantido pelo timeout do
        módulo ocr/ocr-adapter.js. */
-    return this.generateViaLocalKey({ content, maxTokens: tokenCap });
+    const provider = await this.getAiProvider();
+    return this.generateViaLocalKey({ content, maxTokens: tokenCap, provider });
   },
 
   /* Cota diária de leituras (modelos free). Vem do Worker em headers na
