@@ -129,6 +129,49 @@ function resolveAiProvider(env) {
   }
 }
 
+/* Resolve o provedor escolhido pelo usuário no frontend (via payload.aiProvider).
+   Padrão: openrouter. Valores: openrouter | google | groq. */
+function resolveAiProviderByName(env, providerName) {
+  const name = String(providerName || "openrouter").toLowerCase();
+  switch (name) {
+    case "openrouter":
+      return {
+        name,
+        modelList: () => openRouterModelList(env),
+        callModel: (model, messages, maxTokens, referer, options) =>
+          callOpenRouter(model, env, messages, maxTokens, referer, options),
+        failureFromResult: (result, model) => openRouterFailureFromResult(result, model, env),
+        emptyReplyFailure: (model) => openRouterEmptyReplyFailure(model),
+        missingKey: () => !env.OPENROUTER_API_KEY,
+        providerName: "openrouter"
+      };
+    case "google":
+      return {
+        name,
+        modelList: () => googleModelList(env),
+        callModel: (model, messages, maxTokens, referer, options) =>
+          callGoogle(model, env, messages, maxTokens, referer, options),
+        failureFromResult: (result, model) => googleFailureFromResult(result, model, env),
+        emptyReplyFailure: (model) => googleEmptyReplyFailure(model),
+        missingKey: () => !env.GOOGLE_API_KEY,
+        providerName: "google"
+      };
+    case "groq":
+      return {
+        name,
+        modelList: () => groqModelList(env),
+        callModel: (model, messages, maxTokens, referer, options) =>
+          callGroq(model, env, messages, maxTokens, referer, options),
+        failureFromResult: (result, model) => groqFailureFromResult(result, model, env),
+        emptyReplyFailure: (model) => groqEmptyReplyFailure(model),
+        missingKey: () => !env.GROQ_API_KEY,
+        providerName: "groq"
+      };
+    default:
+      return null;
+  }
+}
+
 function providerMissingKeyMessage(providerName) {
   const map = {
     openrouter: "OPENROUTER_API_KEY",
@@ -490,7 +533,10 @@ async function handleFetch(request, env) {
     if (authResult instanceof Response) return authResult;
     const claims = authResult.claims;
 
-    const provider = resolveAiProvider(env);
+    /* Provedor escolhido pelo usuário no frontend (padrão: openrouter).
+       O Worker usa a chave correspondente das variáveis de ambiente. */
+    const aiProviderName = String(body.payload?.aiProvider || 'openrouter').toLowerCase();
+    const provider = resolveAiProviderByName(env, aiProviderName);
     if (!provider) {
       return json(
         { error: "Provedor de IA não suportado.", code: "unsupported_provider" },

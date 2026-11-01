@@ -63,6 +63,17 @@ window.LivroCaixaAI = {
       return false;
     }
   },
+  async getAiProvider() {
+    try { return await window.LivroCaixaSecureStorage?.get('ai_provider') || 'openrouter'; } catch (err) { return 'openrouter'; }
+  },
+  async setAiProvider(provider) {
+    try {
+      await window.LivroCaixaSecureStorage?.set('ai_provider', provider);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  },
   buildContent(text, imagePart) {
     if (imagePart && imagePart.image_url && imagePart.image_url.url) {
       return [
@@ -118,7 +129,7 @@ window.LivroCaixaAI = {
         'Authorization': `Bearer ${idToken}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ ...payload, aiProvider: this.getAiProvider() })
     };
     if (appCheckToken) {
       init.headers['X-Firebase-AppCheck'] = appCheckToken;
