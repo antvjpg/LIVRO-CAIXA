@@ -619,7 +619,7 @@ test('teardown: sempre registrado e nunca derruba a run', () => {
 });
 
 /* ============ FASE 2/5 do diagnóstico de autenticação (27/09/2026) ======== */
-const { hintFor } = require('../helpers/qa-account.js');
+const { hintFor } = require('../helpers/qa-account.cjs');
 
 test('hintFor: erro de provider vira verificação do estado atual, nunca afirmação', () => {
   for (const code of ['PASSWORD_LOGIN_DISABLED', 'OPERATION_NOT_ALLOWED']) {
