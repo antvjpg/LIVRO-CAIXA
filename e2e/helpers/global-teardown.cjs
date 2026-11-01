@@ -4,7 +4,7 @@
    vira CLEANUP_WARNING no resumo e no relatório. */
 'use strict';
 
-const { runCleanup } = require('./cleanup');
+const { runCleanup } = require('./cleanup.cjs');
 
 module.exports = async () => {
   try {
@@ -12,7 +12,7 @@ module.exports = async () => {
   } catch (err) {
     console.warn(`[C.O.D.E.] cleanup final não concluído: ${err.message}`);
     try {
-      const identity = require('./identity');
+      const identity = require('./identity.cjs');
       const prev = identity.readSummary() || {};
       identity.writeSummary({
         ...prev,

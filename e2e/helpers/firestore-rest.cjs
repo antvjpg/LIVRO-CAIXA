@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { config } = require('./env');
+const { config } = require('./env.cjs');
 
 const COLLECTIONS = [
   'banks', 'categories', 'entries', 'investments', 'pockets', 'yieldsLog',

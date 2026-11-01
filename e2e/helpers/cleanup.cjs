@@ -6,9 +6,9 @@
    e2e/.state/qa-summary.json (alimenta a seção QA ENVIRONMENT do relatório). */
 'use strict';
 
-const { resolveCredentials, guardReasonText } = require('./env');
-const identity = require('./identity');
-const rest = require('./firestore-rest');
+const { resolveCredentials, guardReasonText } = require('./env.cjs');
+const identity = require('./identity.cjs');
+const rest = require('./firestore-rest.cjs');
 
 /* O teardown não tem timeout de teste: aqui vale esperar a cota de
    verificação de senha recuar (minutos) em vez de largar conta efêmera e

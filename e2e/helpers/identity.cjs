@@ -11,7 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { config } = require('./env');
+const { config } = require('./env.cjs');
 
 const IDENTITY_PATH = path.join(config.root, 'e2e', '.state', 'qa-identity.json');
 const SUMMARY_PATH = path.join(config.root, 'e2e', '.state', 'qa-summary.json');

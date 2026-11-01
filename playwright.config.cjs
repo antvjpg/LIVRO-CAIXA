@@ -25,9 +25,9 @@ module.exports = defineConfig({
   workers: 1,
   retries: isCI ? 1 : 0,
   forbidOnly: isCI,
-  globalSetup: require.resolve('./e2e/helpers/global-setup.js'),
+  globalSetup: require.resolve('./e2e/helpers/global-setup.cjs'),
   /* "finally" da run: Firestore + Auth da conta efêmera, sempre. */
-  globalTeardown: require.resolve('./e2e/helpers/global-teardown.js'),
+  globalTeardown: require.resolve('./e2e/helpers/global-teardown.cjs'),
   reporter: [
     ['list'],
     ['html', { outputFolder: 'e2e/reports/html', open: 'never' }],

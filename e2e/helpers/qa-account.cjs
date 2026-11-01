@@ -4,10 +4,10 @@
    Nunca usa conta Google (popup) nem conta real do usuário. */
 'use strict';
 
-const { resolveCredentials } = require('./env');
-const app = require('./app');
-const firestore = require('./firestore-rest');
-const identity = require('./identity');
+const { resolveCredentials } = require('./env.cjs');
+const app = require('./app.cjs');
+const firestore = require('./firestore-rest.cjs');
+const identity = require('./identity.cjs');
 
 const MSG = {
   notFound: 'Conta não encontrada', /* texto do app p/ auth/user-not-found */

@@ -9,8 +9,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const identity = require('./identity');
-const { config, env } = require('./env');
+const identity = require('./identity.cjs');
+const { config, env } = require('./env.cjs');
 
 function writeEmptyState() {
   fs.mkdirSync(path.dirname(config.statePath), { recursive: true });
