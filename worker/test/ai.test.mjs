@@ -112,6 +112,13 @@ async function expectError(res, status, code) {
   return body;
 }
 
+/* Refresh quota cache by calling /quota - needed before tests that check quota state */
+async function refreshQuota() {
+  const res = await post("/quota", { method: "GET", token: makeToken("u-quota-refresh") });
+  assert.equal(res.status, 200);
+  return res.json();
+}
+
 /* ---------- unidades: validação ---------- */
 
 test("prompt vazio → empty_prompt", () => {
