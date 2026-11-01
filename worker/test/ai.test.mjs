@@ -538,7 +538,8 @@ test("falha de rede em todos os modelos → 502 network sem queimar cota", async
     throw new Error("fetch rejeitado (sem rede)");
   };
   // Popula cache de cota antes do teste
-  await refreshQuota();
+  const before = await refreshQuota();
+  const cacheKey = `quota:${new Date().toISOString().slice(0, 10)}`;
 
   const res = await post("/ai", {
     token: makeToken("u-net"),
@@ -552,8 +553,8 @@ test("falha de rede em todos os modelos → 502 network sem queimar cota", async
 
   assert.equal(state.openRouterCalls.length, 2, "falha de rede deve tentar todos os modelos");
   const after = await env.QUOTA_KV.get(cacheKey, { type: "json" });
-  assert.equal(after.data.used, before.data.used, "tentativa falha não pode gastar a cota");
-  assert.equal(after.data.remaining, before.data.remaining, "remaining não pode mudar em falha");
+  assert.equal(after.data.used, before.used, "tentativa falha não pode gastar a cota");
+  assert.equal(after.data.remaining, before.remaining, "remaining não pode mudar em falha");
   state.onChat = null;
 });
 
@@ -595,7 +596,7 @@ test("429 em toda a cadeia → envelope 429 com tried e cota intacta", async () 
   assert.equal(res.headers.get("X-AI-Quota-Limit"), "100");
   assert.equal(res.headers.get("X-AI-Quota-Remaining"), String(before.remaining));
 
-  const after = await env.QUOTA_KV.get(cacheKey, { type: "json" });
+const after = await env.QUOTA_KV.get(cacheKey, { type: "json" });
   assert.equal(after.data.used, before.used, "429 não gasta a cota diária");
   state.onChat = null;
 });
