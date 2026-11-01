@@ -498,6 +498,8 @@ document.body.classList.remove('is-data-loading');
     const date = new Date(year, month - 1 + delta, 1);
     setViewPeriod('month', `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`);
   }
+  window.shiftViewPeriod = shiftViewPeriod;
+  window.setViewPeriod = setViewPeriod;
   function periodSummaryHTML(items) {
     return items.map(item => `<div class="period-summary-card"><small>${escapeHTML(item.label)}</small><strong class="${item.tone || ''}">${escapeHTML(item.value)}</strong></div>`).join('');
   }

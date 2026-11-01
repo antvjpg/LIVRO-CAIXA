@@ -330,6 +330,23 @@ document.addEventListener('DOMContentLoaded', () => {
     top.textContent = src.textContent;
   })();
 
+  /* Period picker handlers (v18-12) */
+  (function bindPeriodPicker(){
+    const prev = document.getElementById('btnPeriodPrev');
+    const next = document.getElementById('btnPeriodNext');
+    const picker = document.getElementById('btnPeriodPicker');
+    const input = document.getElementById('periodMonthInput');
+    const all = document.getElementById('btnPeriodAll');
+    if (prev) prev.addEventListener('click', () => { if (window.shiftViewPeriod) window.shiftViewPeriod(-1); });
+    if (next) next.addEventListener('click', () => { if (window.shiftViewPeriod) window.shiftViewPeriod(1); });
+    if (picker) picker.addEventListener('click', () => { if (input) input.showPicker(); });
+    if (input) input.addEventListener('change', () => { if (input.value && window.setViewPeriod) window.setViewPeriod('month', input.value); });
+    if (all) all.addEventListener('click', () => {
+      const isAll = all.getAttribute('aria-pressed') === 'true';
+      if (window.setViewPeriod) window.setViewPeriod(isAll ? 'month' : 'all');
+    });
+  })();
+
   /* [JS 09] EVENTOS / INTERAÇÕES / MODAIS */
   window.switchTabOriginal = function(tabName) {
     currentTab = tabName;
