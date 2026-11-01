@@ -74,6 +74,17 @@ window.LivroCaixaAI = {
       return false;
     }
   },
+  async initAiProviderSelect() {
+    try {
+      const select = document.getElementById('aiProviderSelect');
+      if (!select) return;
+      const saved = await this.getAiProvider();
+      select.value = saved;
+      select.addEventListener('change', async () => {
+        await this.setAiProvider(select.value);
+      });
+    } catch (err) { /* ignora */ }
+  },
   buildContent(text, imagePart) {
     if (imagePart && imagePart.image_url && imagePart.image_url.url) {
       return [
@@ -501,6 +512,7 @@ window.renderOpenRouterUsagePanel = function renderOpenRouterUsagePanel() {
 window.addEventListener('load', () => {
   window.renderAiQuotaStatus?.();
   window.LivroCaixaAI?.refreshQuota?.();
+  window.LivroCaixaAI?.initAiProviderSelect?.();
 });
 
 /* A cota fica só em memória e o reset é do OpenRouter (dia UTC), então relê-la
