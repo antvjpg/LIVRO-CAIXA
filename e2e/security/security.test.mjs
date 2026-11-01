@@ -14,10 +14,10 @@ const require = createRequire(import.meta.url);
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..', '..');
 
-const rest = require('../helpers/firestore-rest.js');
-const { isQaEmail, resolveCredentials, guardReasonText } = require('../helpers/env.js');
-const identity = require('../helpers/identity.js');
-const { runCleanup } = require('../helpers/cleanup.js');
+const rest = require('../helpers/firestore-rest.cjs');
+const { isQaEmail, resolveCredentials, guardReasonText } = require('../helpers/env.cjs');
+const identity = require('../helpers/identity.cjs');
+const { runCleanup } = require('../helpers/cleanup.cjs');
 
 const UID = 'uidQaTest123';
 const FULL = `projects/livro-caixa-54357/databases/(default)/documents/livrocaixa/${UID}/banks/abc`;

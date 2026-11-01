@@ -7,9 +7,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const { config } = require('../helpers/env');
-const { sanitizeText } = require('../helpers/sanitize');
-const { maskEmail, maskUid } = require('../helpers/identity');
+const { config } = require('../helpers/env.cjs');
+const { sanitizeText } = require('../helpers/sanitize.cjs');
+const { maskEmail, maskUid } = require('../helpers/identity.cjs');
 
 const resultsPath = path.join(config.reportsDir, 'results.json');
 if (!fs.existsSync(resultsPath)) {
