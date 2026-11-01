@@ -1,13 +1,39 @@
 /* LIVRO-CAIXA · js/domain/simple-log.js — registro simples de eventos de diagnóstico.
    Segue o mesmo padrão do console técnico (src/diagnostic/login-diagnostic.js):
-   IIFE, array em memória, sanitização básica, API global em window.
+   IIFE, array em memória + localStorage, sanitização básica, API global em window.
 */
 
 (function() {
   'use strict';
 
   const MAX_LINHAS = 200;
-  const eventos = [];
+  const STORAGE_KEY = 'livrocaixa_diagnostic_log_v1';
+  let eventos = [];
+
+  /* Carrega eventos do localStorage na inicialização. */
+  function carregarDoStorage() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          eventos = parsed.slice(-MAX_LINHAS);
+        }
+      }
+    } catch (err) {
+      console.warn('Falha ao carregar LOG diagnóstico do localStorage:', err);
+      eventos = [];
+    }
+  }
+
+  /* Salva eventos no localStorage (mantém apenas os mais recentes). */
+  function salvarNoStorage() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(eventos.slice(-MAX_LINHAS)));
+    } catch (err) {
+      console.warn('Falha ao salvar LOG diagnóstico no localStorage:', err);
+    }
+  }
 
   /* Remove padrões sensíveis de texto livre sem destruir a legibilidade. */
   function sanitizar(texto) {
@@ -38,6 +64,7 @@
     };
     eventos.unshift(evento);
     if (eventos.length > MAX_LINHAS) eventos.length = MAX_LINHAS;
+    salvarNoStorage();
     renderizar();
     return evento;
   }
@@ -98,6 +125,7 @@
   /* Limpa todos os eventos. */
   function limpar() {
     eventos.length = 0;
+    salvarNoStorage();
     renderizar();
   }
 
@@ -171,6 +199,7 @@
     btnLimpar.addEventListener('click', limpar);
   }
 
-  /* Inicializa o conteúdo vazio. */
+  /* Inicialização: carrega do localStorage e renderiza. */
+  carregarDoStorage();
   renderizar();
 })();
