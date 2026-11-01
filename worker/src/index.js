@@ -292,7 +292,8 @@ async function handleFetch(request, env) {
       const quotaAuth = await authenticate(request, env, cors);
       if (quotaAuth instanceof Response) return quotaAuth;
 
-      const quota = await getFreeQuotaKV(env, true);
+      const providerName = String(env.AI_PROVIDER || "openrouter").toLowerCase();
+      const quota = await getQuotaForProvider(env, providerName);
       if (!quota) {
         return json(
           { error: "Não foi possível consultar o limite de leituras agora.", code: "quota_unavailable" },
@@ -307,7 +308,8 @@ async function handleFetch(request, env) {
           used: quota.used,
           remaining: quota.remaining,
           resetAt: quota.resetAt,
-          day: quota.day
+          day: quota.day,
+          provider: quota.provider || providerName
         },
         200,
         cors
