@@ -1003,6 +1003,8 @@
       entries.push(newEntry);
     }
 
+    const savedEntryId = editingEntryId || (entries[entries.length - 1]?.id || '');
+
     populateFilterControls();
     render();
     try {
@@ -1011,6 +1013,33 @@
       document.getElementById('fDesc').value = '';
       setMoneyInput('fValor', 0);
       closeAllPanels();
+      // LOG de diagnóstico
+      if (window.logEvent) {
+        window.logEvent('INFO', 'Lançamento', editingEntryId ? 'Editar lançamento' : 'Criar lançamento', 
+          editingEntryId ? 'Lançamento atualizado.' : 'Lançamento criado.', {
+            id: savedEntryId,
+            date: date,
+            desc: desc,
+            bank: bank,
+            category: category,
+            subcategory: subcategory,
+            amount: valor,
+            type: currentType,
+            isEdit: !!editingEntryId
+          });
+      }
+      // Trilha de auditoria
+      if (window.recordAuditEvent) {
+        window.recordAuditEvent({
+          entityType: 'entry',
+          entityId: savedEntryId,
+          action: editingEntryId ? 'Editar lançamento' : 'Criar lançamento',
+          result: 'Sucesso',
+          details: { 
+            date, desc, bank, category, subcategory, amount: valor, type: currentType 
+          }
+        });
+      }
       return true;
     } catch (err) {
       return false;
