@@ -1308,7 +1308,23 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     });
     try {
       await persistAll();
-      window.logEvent('INFO', 'Lançamento', 'Ajuste de conciliação', 'Ajuste de saldo aplicado.', { bankId: bank.id, amount: amount });
+      window.logEvent('INFO', 'Lançamento', 'Ajuste de conciliação', 'Ajuste de saldo aplicado.', { 
+        bankId: bank.id, 
+        amount: amount, 
+        type: pendingReconciliation.difference > 0 ? 'in' : 'out',
+        reported: pendingReconciliation.reported,
+        calculated: pendingReconciliation.calculated,
+        difference: pendingReconciliation.difference
+      });
+      if (window.recordAuditEvent) {
+        window.recordAuditEvent({
+          entityType: 'entry',
+          entityId: 'e' + Date.now(),
+          action: 'Ajuste de conciliação',
+          result: 'Sucesso',
+          details: { bankId: bank.id, amount: amount, type: pendingReconciliation.difference > 0 ? 'in' : 'out', difference: pendingReconciliation.difference }
+        });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -1384,7 +1400,24 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       entries = entries.filter(e => e.id !== id);
       try {
         await saveEntries();
-        window.logEvent('INFO', 'Lançamento', 'Excluir lançamento', 'Lançamento excluído.', { id: id });
+        window.logEvent('INFO', 'Lançamento', 'Excluir lançamento', 'Lançamento excluído.', { 
+          id: id, 
+          desc: entry?.desc, 
+          amount: entry?.amount, 
+          type: entry?.type, 
+          bank: entry?.bank, 
+          category: entry?.category,
+          date: entry?.date
+        });
+        if (window.recordAuditEvent) {
+          window.recordAuditEvent({
+            entityType: 'entry',
+            entityId: id,
+            action: 'Excluir lançamento',
+            result: 'Sucesso',
+            details: { desc: entry?.desc, amount: entry?.amount, type: entry?.type, bank: entry?.bank, category: entry?.category }
+          });
+        }
         appendEntryHistory({ ...entry, _action: 'delete', _by: 'user' }, { action: 'delete', by: 'user' });
         populateFilterControls();
         render();
@@ -1404,7 +1437,22 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       banks = banks.filter(b => b.id !== id);
       try {
         saveBanks();
-        window.logEvent('INFO', 'Bancos', 'Excluir banco', 'Banco excluído.', { id: id, nome: bank?.name });
+        window.logEvent('INFO', 'Bancos', 'Excluir banco', 'Banco excluído.', { 
+          id: id, 
+          nome: bank?.name, 
+          tipo: bank?.type,
+          saldoInicial: bank?.initialBalance,
+          cor: bank?.color
+        });
+        if (window.recordAuditEvent) {
+          window.recordAuditEvent({
+            entityType: 'bank',
+            entityId: id,
+            action: 'Excluir banco',
+            result: 'Sucesso',
+            details: { nome: bank?.name, tipo: bank?.type, saldoInicial: bank?.initialBalance }
+          });
+        }
         populateFilterControls();
         render();
       } catch (err) {
@@ -1430,7 +1478,13 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       entries = entries.map(entry => entry.category === id ? { ...entry, category: replacementId, subcategory: '' } : entry);
       try {
         await Promise.all([saveCategories(), saveEntries()]);
-        window.logEvent('INFO', 'Categorias', 'Excluir categoria', 'Categoria excluída.', { id: id, nome: category?.name });
+        window.logEvent('INFO', 'Categorias', 'Excluir categoria', 'Categoria excluída.', { 
+          id: id, 
+          nome: category?.name,
+          tipo: category?.type,
+          cor: category?.color,
+          lancamentosReatribuidos: entries.filter(e => e.category === id).length
+        });
         populateFilterControls();
         render();
       } catch (err) {
@@ -1445,11 +1499,21 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
 
   window.deleteInvest = function(id) {
     if (confirm('Deseja excluir este registro de investimento?')) {
+      const invest = investments.find(i => i.id === id);
+      const relatedYields = yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === id).length;
       investments = investments.filter(i => i.id !== id);
       yieldsLog = yieldsLog.filter(y => !(y.targetType === 'invest' && y.targetId === id));
       saveInvestments().then(() => {
         console.log('Investimento excluído.');
-        window.logEvent('INFO', 'Investimentos', 'Excluir investimento', 'Investimento excluído.', { id: id });
+        window.logEvent('INFO', 'Investimentos', 'Excluir investimento', 'Investimento excluído.', { 
+          id: id, 
+          nome: invest?.name,
+          tipo: invest?.type,
+          instituicao: invest?.institution,
+          quantidade: invest?.quantity,
+          precoMedio: invest?.avgPrice,
+          rendimentosRemovidos: relatedYields
+        });
       }).catch(err => console.error(err));
       render();
     }
@@ -1484,7 +1548,14 @@ window.deletePocket = function(id) {
       }
       persistAll().then(() => {
         console.log('Caixinha excluída.');
-        window.logEvent('INFO', 'Caixinhas', 'Excluir caixinha', 'Caixinha excluída.', { id: id });
+        window.logEvent('INFO', 'Caixinhas', 'Excluir caixinha', 'Caixinha excluída.', { 
+          id: id, 
+          nome: pockets.find(p => p.id === id)?.name,
+          objetivo: pockets.find(p => p.id === id)?.goal,
+          saldo: pockets.find(p => p.id === id)?.balance,
+          rendimentosRemovidos: yieldIdsToDelete.length,
+          metasAfetadas: affectedGoals.length
+        });
       }).catch(err => console.error(err));
       render();
     }
@@ -1739,7 +1810,7 @@ window.deletePocket = function(id) {
   document.getElementById('btnNewReceivable')?.addEventListener('click', () => openReceivableModal());
   document.getElementById('billParcelado').addEventListener('change', updateBillInstallmentFieldsVisibility);
   window.editBill = id => openBillModal(id);
-  window.deleteBill = async id => { if(!await showConfirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); window.logEvent('INFO', 'Contas', 'Excluir conta/fatura', 'Conta/fatura excluída.', { id: id }); renderBills(); };
+  window.deleteBill = async id => { if(!await showConfirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; const bill = recurringBills.find(b => b.id === id); recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); window.logEvent('INFO', 'Contas', 'Excluir conta/fatura', 'Conta/fatura excluída.', { id: id, nome: bill?.name, valor: bill?.amount, tipo: bill?.type, recorrencia: bill?.recurrence, banco: bill?.bank }); renderBills(); };
   pendingBillLaunch = null;
 
   /* launchBill é função global declarada em 25-bills-receivables.js (assinatura
@@ -1913,7 +1984,19 @@ receiptAIResponseText = '';
       render(); renderBills();
     try {
       await persistAll();
-      window.logEvent('INFO', 'Contas', 'Lançar conta/fatura', 'Lançamento registrado.', { id: entryId, bank: launch.bank, amount: entry.amount });
+      window.logEvent('INFO', 'Contas', 'Lançar conta/fatura', 'Lançamento registrado.', { 
+        id: entryId, 
+        bank: launch.bank, 
+        amount: entry.amount, 
+        desc: entry.desc,
+        cardId: cardId,
+        titular: titular,
+        periodKey: closingPeriodKey,
+        dueDate: dueDate,
+        alreadyPaid: alreadyPaid,
+        remaining: remaining,
+        willBeFullyPaid: willBeFullyPaid
+      });
     } catch (err) {
         entries = entries.filter(item => item.id !== entryId);
         touched.forEach(t => {
@@ -3018,7 +3101,25 @@ document.getElementById('tSalvar').onclick = async () => {
 
     try {
       await persistAll();
-      window.logEvent('INFO', 'Transferência', 'Transferência universal', 'Transferência registrada.', { valor: valor, de: deName, para: paraName });
+      window.logEvent('INFO', 'Transferência', 'Transferência universal', 'Transferência registrada.', { 
+        valor: valor, 
+        de: deName, 
+        para: paraName,
+        deTipo: deId?.startsWith('invest-') ? 'invest' : deId?.startsWith('pocket-') ? 'pocket' : 'banco',
+        paraTipo: paraId?.startsWith('invest-') ? 'invest' : paraId?.startsWith('pocket-') ? 'pocket' : 'banco',
+        deId: deId,
+        paraId: paraId,
+        desc: document.getElementById('tDesc')?.value || ''
+      });
+      if (window.recordAuditEvent) {
+        window.recordAuditEvent({
+          entityType: 'transfer',
+          entityId: 't' + Date.now(),
+          action: 'Transferência universal',
+          result: 'Sucesso',
+          details: { valor, de: deName, para: paraName, deTipo: deId?.startsWith('invest-') ? 'invest' : deId?.startsWith('pocket-') ? 'pocket' : 'banco', paraTipo: paraId?.startsWith('invest-') ? 'invest' : paraId?.startsWith('pocket-') ? 'pocket' : 'banco', desc: document.getElementById('tDesc')?.value || '' }
+        });
+      }
     } catch (err) { console.error(err); }
     populateFilterControls();
     setMoneyInput('tValor', 0);
@@ -3139,11 +3240,25 @@ document.getElementById('tSalvar').onclick = async () => {
 
   document.getElementById('btnExportBackup')?.addEventListener('click', () => {
     exportBackup();
-    window.logEvent('INFO', 'Backup', 'Exportar backup', 'Backup exportado para download.');
+    window.logEvent('INFO', 'Backup', 'Exportar backup', 'Backup exportado para download.', { 
+      lancamentos: getExportEntries().length,
+      caixinhas: getPocketsExportBlock(getExportMeta(getExportEntries()).dateStart, getExportMeta(getExportEntries()).dateEnd).length,
+      investimentos: getInvestmentsExportBlock(getExportMeta(getExportEntries()).dateStart, getExportMeta(getExportEntries()).dateEnd).length,
+      periodo: `${getExportMeta(getExportEntries()).dateStart} a ${getExportMeta(getExportEntries()).dateEnd}`
+    });
   });
-  document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); window.logEvent('INFO', 'Exportação', 'Exportar PDF', 'Extrato PDF exportado.'); };
-  document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); window.logEvent('INFO', 'Exportação', 'Exportar Excel', 'Extrato Excel exportado.'); };
-  document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx(); window.logEvent('INFO', 'Exportação', 'Exportar Word', 'Extrato Word exportado.'); };
+  document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); window.logEvent('INFO', 'Exportação', 'Exportar PDF', 'Extrato PDF exportado.', { 
+    lancamentos: getExportEntries().length,
+    periodo: `${getExportMeta(getExportEntries()).dateStart} a ${getExportMeta(getExportEntries()).dateEnd}`
+  }); };
+  document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); window.logEvent('INFO', 'Exportação', 'Exportar Excel', 'Extrato Excel exportado.', { 
+    lancamentos: getExportEntries().length,
+    periodo: `${getExportMeta(getExportEntries()).dateStart} a ${getExportMeta(getExportEntries()).dateEnd}`
+  }); };
+  document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx(); window.logEvent('INFO', 'Exportação', 'Exportar Word', 'Extrato Word exportado.', { 
+    lancamentos: getExportEntries().length,
+    periodo: `${getExportMeta(getExportEntries()).dateStart} a ${getExportMeta(getExportEntries()).dateEnd}`
+  }); };
 
   const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
   const PDF_IMPORT_MAX_PAGES = 80;
@@ -3256,7 +3371,29 @@ document.getElementById('tSalvar').onclick = async () => {
     if (!rowsToSave.length) { alert('Não há lançamentos válidos e inéditos para confirmar.'); return; }
     rowsToSave.forEach(row => entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), ...row }));
     saveEntries();
-    window.logEvent('INFO', 'Importação', 'Importar lançamentos', `${rowsToSave.length} lançamento(ões) importado(s).`, { count: rowsToSave.length });
+    const inCount = rowsToSave.filter(r => r.type === 'in').length;
+    const outCount = rowsToSave.filter(r => r.type === 'out').length;
+    const totalIn = rowsToSave.filter(r => r.type === 'in').reduce((s, r) => s + Number(r.amount || 0), 0);
+    const totalOut = rowsToSave.filter(r => r.type === 'out').reduce((s, r) => s + Number(r.amount || 0), 0);
+    window.logEvent('INFO', 'Importação', 'Importar lançamentos', `${rowsToSave.length} lançamento(ões) importado(s).`, { 
+      count: rowsToSave.length, 
+      entradas: inCount, 
+      saidas: outCount, 
+      totalEntradas: totalIn, 
+      totalSaidas: totalOut,
+      fonte: pendingImportSource,
+      duplicatasIgnoradas: pendingImport.filter(r => r.duplicate).length,
+      invalidosIgnorados: pendingImport.filter(r => !r.valid).length
+    });
+    if (window.recordAuditEvent) {
+      window.recordAuditEvent({
+        entityType: 'import',
+        entityId: 'imp' + Date.now(),
+        action: 'Importar lançamentos',
+        result: 'Sucesso',
+        details: { count: rowsToSave.length, entradas: inCount, saidas: outCount, totalEntradas: totalIn, totalSaidas: totalOut, fonte: pendingImportSource }
+      });
+    }
     pendingImport = []; pendingImportSource = '';
     populateFilterControls();
     closeAllPanels();

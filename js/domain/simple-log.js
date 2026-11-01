@@ -69,6 +69,22 @@
               linha += ' (' + daCache + ' cache / ' + naRede + ' rede)';
               if (totalMs > 0) linha += ' ' + totalMs + 'ms';
             }
+          } else {
+            // Renderiza outros detalhes como key=value
+            var extras = [];
+            for (var key in det) {
+              if (key === 'colecoes' || key === 'coletaMs') continue;
+              var val = det[key];
+              if (val != null) {
+                if (typeof val === 'object') {
+                  val = JSON.stringify(val);
+                }
+                extras.push(key + '=' + String(val).slice(0, 100));
+              }
+            }
+            if (extras.length) {
+              linha += ' [' + extras.join(', ') + ']';
+            }
           }
         } catch (_) {}
       }
@@ -91,6 +107,20 @@
       var linha = '[' + formatoHora(ev.timestamp) + '] [' + ev.tipo + '] ' + ev.modulo + ' · ' + ev.acao;
       if (ev.descricao) linha += ' — ' + ev.descricao;
       if (ev.duracaoMs != null) linha += ' (' + ev.duracaoMs + 'ms)';
+      if (ev.detalhes) {
+        try {
+          var det = JSON.parse(ev.detalhes);
+          var extras = [];
+          for (var key in det) {
+            var val = det[key];
+            if (val != null) {
+              if (typeof val === 'object') val = JSON.stringify(val);
+              extras.push(key + '=' + String(val).slice(0, 100));
+            }
+          }
+          if (extras.length) linha += ' [' + extras.join(', ') + ']';
+        } catch (_) {}
+      }
       return linha;
     });
     var texto = linhas.length ? linhas.join('\n') : 'Sem eventos registrados.';
