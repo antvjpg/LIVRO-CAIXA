@@ -78,6 +78,14 @@ window.LivroCaixaAI = {
     try {
       const select = document.getElementById('aiProviderSelect');
       if (!select) return;
+      /* Espera o secure-storage (módulo ES assíncrono) ficar disponível
+         antes de ler o provedor salvo, para não cair no padrão 'openrouter'
+         após recarregar a página. */
+      let attempts = 0;
+      while (!window.LivroCaixaSecureStorage && attempts < 20) {
+        await new Promise(r => setTimeout(r, 100));
+        attempts++;
+      }
       const saved = await this.getAiProvider();
       select.value = saved;
       select.addEventListener('change', async () => {
