@@ -200,7 +200,7 @@ test('package.json: é privado, sem hooks de ciclo de vida', () => {
 });
 
 /* ================= FASE 5 — sanitização de artefatos ================= */
-const { sanitizeText } = require('../helpers/sanitize.js');
+const { sanitizeText } = require('../helpers/sanitize.cjs');
 
 test('sanitiza: relatório nunca contém e-mail completo, senha ou token longo', () => {
   const email = 'code-qa-gh1234567890-a1-f2b3c4@livrocaixa.test';
