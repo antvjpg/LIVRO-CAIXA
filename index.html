@@ -179,8 +179,7 @@
     <div class="drawer-nav drawer-nav-secondary">
       <button type="button" data-drawer-action="profile"><span><i class="fi fi-rr-user" aria-hidden="true"></i></span> Perfil</button>
       <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-blood-test-tube" aria-hidden="true"></i></span> LABS</button>
-
-      <button type="button" data-drawer-action="monitor"><span><i class="fi fi-rr-refresh" aria-hidden="true"></i></span> Monitor de API</button>
+      <button type="button" data-drawer-action="novoLog"><span><i class="fi fi-rr-clipboard" aria-hidden="true"></i></span> Novo LOG</button>
     </div>
   </aside>
 </div>
@@ -879,19 +878,16 @@
 
 
 
-    <div class="panel" id="panelOpenRouterUsage">
-      <h3>Monitor de API <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
-      <p class="hint" style="margin:0 0 10px;">Uso gratuito do OpenRouter (modelos free) · leitura restrita ao administrador.</p>
-      <div id="openRouterUsageStatus" class="hint">Consultando uso do OpenRouter…</div>
-      <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; margin:10px 0;">
-        <div class="openrouter-usage-cell"><span id="openRouterUsageUsed">—</span><small>usados</small></div>
-        <div class="openrouter-usage-cell"><span id="openRouterUsageLimit">—</span><small>limite</small></div>
-        <div class="openrouter-usage-cell"><span id="openRouterUsageRemaining">—</span><small>restantes</small></div>
+    <div class="panel" id="panelLOG">
+      <h3>LOG <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
+      <div class="log-card">
+        <div class="log-scroll">
+          <div id="logConteudo" class="log-content">Sem eventos registrados.</div>
+        </div>
       </div>
-      <div class="openrouter-usage-bar" role="progressbar" aria-label="Consumo do uso gratuito do OpenRouter"><span id="openRouterUsageBarFill"></span></div>
-      <p class="hint" id="openRouterUsageTimestamp" style="margin:8px 0 0;"></p>
-      <div class="log-actions" style="display:flex; gap:8px; margin-top:12px;">
-        <button type="button" id="btnOpenRouterUsageRefresh" style="flex:1;">Atualizar</button>
+      <div class="log-actions">
+        <button type="button" id="btnCopiarLog">Copiar</button>
+        <button type="button" id="btnLimparLog">Limpar</button>
       </div>
     </div>
 
@@ -1653,6 +1649,7 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
   <script defer src="./js/32-auth-wiring.js?v=20-25"></script>
   <script defer src="./js/33-mcp-bridge.js?v=20-26"></script>
   <script defer src="./js/99-init.js?v=20-26"></script>
+  <script src="./js/domain/simple-log.js?v=1"></script>
 
 <nav class="mobile-bottom-nav" aria-label="Navegação principal">
   <button type="button" data-destination="dashboard" aria-label="Visão geral"><span class="nav-icon"><i class="fi fi-rr-layout-fluid" aria-hidden="true"></i></span></button>

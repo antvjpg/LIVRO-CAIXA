@@ -401,15 +401,6 @@ window.LivroCaixaAI = {
     window.renderOpenRouterUsagePanel?.(data);
     return data;
   },
-  async openOpenRouterUsage() {
-    const refreshButton = document.getElementById('btnOpenRouterUsageRefresh');
-    if (refreshButton && !refreshButton.dataset.wired) {
-      refreshButton.dataset.wired = '1';
-      refreshButton.addEventListener('click', () => window.LivroCaixaAI?.refreshOpenRouterUsage?.());
-    }
-    await this.refreshOpenRouterUsage();
-    if (typeof openModal === 'function') openModal('panelOpenRouterUsage');
-  }
 };
 
 window.renderAiQuotaStatus = function renderAiQuotaStatus() {

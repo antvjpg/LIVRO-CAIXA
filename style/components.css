@@ -985,3 +985,95 @@
   }
   .btn-expand-movement:hover{background:var(--paper-2);color:var(--ink);border-color:var(--accent);}
 
+  /* =========================================================================
+     LOG PANEL — modal de diagnóstico (js/domain/simple-log.js)
+     ========================================================================= */
+  .log-scroll{
+    max-height:320px;
+    overflow-y:auto;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--paper-2);
+    padding:12px;
+    margin:12px 0 8px;
+    font-family:var(--font-ui), monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    line-height:1.5;
+  }
+  .log-content{
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .log-entry{
+    margin:4px 0;
+    padding:6px 8px;
+    border-radius:6px;
+    background:color-mix(in srgb, var(--ink) 6%, var(--paper));
+    border-left:3px solid transparent;
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .log-entry.info{ border-left-color:var(--green); }
+  .log-entry.warn{ border-left-color:var(--gold); }
+  .log-entry.error{ border-left-color:var(--red); }
+  .log-badge{
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    padding:2px 6px;
+    border-radius:4px;
+    flex-shrink:0;
+    white-space:nowrap;
+  }
+  .log-entry.info .log-badge{ background:var(--green-soft); color:var(--green); }
+  .log-entry.warn .log-badge{ background:color-mix(in srgb, var(--gold) 15%, var(--paper)); color:var(--ink); }
+  .log-entry.error .log-badge{ background:var(--red-soft); color:var(--red); }
+  .log-actions{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+  }
+  .log-actions button{
+    flex:1;
+    min-height:36px;
+    padding:0 14px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:var(--paper);
+    color:var(--ink);
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background 0.15s, border-color 0.15s;
+  }
+  .log-actions button:hover{ background:var(--paper-2); border-color:var(--accent); }
+  .log-actions button:active{ transform:scale(0.98); }
+
+  .log-card{
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:var(--paper);
+    box-shadow:0 4px 14px var(--shadow);
+    margin:12px 0;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .log-scroll{
+    flex:1;
+    max-height:320px;
+    overflow-y:auto;
+    border:none;
+    border-radius:0;
+    background:transparent;
+    padding:10px;
+    margin:0;
+    font-family:var(--font-ui), monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    line-height:1.5;
+  }
+

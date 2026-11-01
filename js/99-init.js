@@ -1289,6 +1289,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     });
     try {
       await persistAll();
+      window.logEvent('INFO', 'Lançamento', 'Ajuste de conciliação', 'Ajuste de saldo aplicado.', { bankId: bank.id, amount: amount });
     } catch (err) {
       console.error(err);
     }
@@ -1321,7 +1322,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     if (action === 'receivables') window.switchTab('receivables');
     if (action === 'cards') window.switchTab('cards');
     if (action === 'diagnostico') openDiagnostics();
-    if (action === 'monitor') window.LivroCaixaAI?.openOpenRouterUsage?.();
+    if (action === 'novoLog') openModal('panelLOG');
     if (action === 'lab') openFeatureProfile();
     if (action === 'reports') { window.switchTab('caixa'); setTimeout(() => scrollTo('categorySummary'), 20); }
     if (action === 'pockets') window.switchTab('pockets');
@@ -1364,6 +1365,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       entries = entries.filter(e => e.id !== id);
       try {
         await saveEntries();
+        window.logEvent('INFO', 'Lançamento', 'Excluir lançamento', 'Lançamento excluído.', { id: id });
         appendEntryHistory({ ...entry, _action: 'delete', _by: 'user' }, { action: 'delete', by: 'user' });
         populateFilterControls();
         render();
@@ -1383,6 +1385,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       banks = banks.filter(b => b.id !== id);
       try {
         saveBanks();
+        window.logEvent('INFO', 'Bancos', 'Excluir banco', 'Banco excluído.', { id: id, nome: bank?.name });
         populateFilterControls();
         render();
       } catch (err) {
@@ -1408,6 +1411,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       entries = entries.map(entry => entry.category === id ? { ...entry, category: replacementId, subcategory: '' } : entry);
       try {
         await Promise.all([saveCategories(), saveEntries()]);
+        window.logEvent('INFO', 'Categorias', 'Excluir categoria', 'Categoria excluída.', { id: id, nome: category?.name });
         populateFilterControls();
         render();
       } catch (err) {
@@ -1424,7 +1428,10 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     if (confirm('Deseja excluir este registro de investimento?')) {
       investments = investments.filter(i => i.id !== id);
       yieldsLog = yieldsLog.filter(y => !(y.targetType === 'invest' && y.targetId === id));
-      saveInvestments().then(() => console.log('Investimento excluído.')).catch(err => console.error(err));
+      saveInvestments().then(() => {
+        console.log('Investimento excluído.');
+        window.logEvent('INFO', 'Investimentos', 'Excluir investimento', 'Investimento excluído.', { id: id });
+      }).catch(err => console.error(err));
       render();
     }
   };
@@ -1456,7 +1463,10 @@ window.deletePocket = function(id) {
       if (affectedGoals.length) {
         alert(`${affectedGoals.length} Meta(s) mantida(s). O vínculo com a Caixinha excluída foi removido; nenhum dinheiro foi transferido.`);
       }
-      persistAll().then(() => console.log('Caixinha excluída.')).catch(err => console.error(err));
+      persistAll().then(() => {
+        console.log('Caixinha excluída.');
+        window.logEvent('INFO', 'Caixinhas', 'Excluir caixinha', 'Caixinha excluída.', { id: id });
+      }).catch(err => console.error(err));
       render();
     }
   };
@@ -1710,7 +1720,7 @@ window.deletePocket = function(id) {
   document.getElementById('btnNewReceivable')?.addEventListener('click', () => openReceivableModal());
   document.getElementById('billParcelado').addEventListener('change', updateBillInstallmentFieldsVisibility);
   window.editBill = id => openBillModal(id);
-  window.deleteBill = async id => { if(!await showConfirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); renderBills(); };
+  window.deleteBill = async id => { if(!await showConfirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); window.logEvent('INFO', 'Contas', 'Excluir conta/fatura', 'Conta/fatura excluída.', { id: id }); renderBills(); };
   pendingBillLaunch = null;
 
   /* launchBill é função global declarada em 25-bills-receivables.js (assinatura
@@ -1882,9 +1892,10 @@ receiptAIResponseText = '';
 
       entries.push(entry);
       render(); renderBills();
-      try {
-        await persistAll();
-      } catch (err) {
+    try {
+      await persistAll();
+      window.logEvent('INFO', 'Contas', 'Lançar conta/fatura', 'Lançamento registrado.', { id: entryId, bank: launch.bank, amount: entry.amount });
+    } catch (err) {
         entries = entries.filter(item => item.id !== entryId);
         touched.forEach(t => {
           if (t.wasNew) {
@@ -2988,6 +2999,7 @@ document.getElementById('tSalvar').onclick = async () => {
 
     try {
       await persistAll();
+      window.logEvent('INFO', 'Transferência', 'Transferência universal', 'Transferência registrada.', { valor: valor, de: deName, para: paraName });
     } catch (err) { console.error(err); }
     populateFilterControls();
     setMoneyInput('tValor', 0);
@@ -3108,10 +3120,11 @@ document.getElementById('tSalvar').onclick = async () => {
 
   document.getElementById('btnExportBackup')?.addEventListener('click', () => {
     exportBackup();
+    window.logEvent('INFO', 'Backup', 'Exportar backup', 'Backup exportado para download.');
   });
-  document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); };
-  document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); };
-  document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx(); };
+  document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); window.logEvent('INFO', 'Exportação', 'Exportar PDF', 'Extrato PDF exportado.'); };
+  document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); window.logEvent('INFO', 'Exportação', 'Exportar Excel', 'Extrato Excel exportado.'); };
+  document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx(); window.logEvent('INFO', 'Exportação', 'Exportar Word', 'Extrato Word exportado.'); };
 
   const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
   const PDF_IMPORT_MAX_PAGES = 80;
@@ -3224,6 +3237,7 @@ document.getElementById('tSalvar').onclick = async () => {
     if (!rowsToSave.length) { alert('Não há lançamentos válidos e inéditos para confirmar.'); return; }
     rowsToSave.forEach(row => entries.push({ id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7), ...row }));
     saveEntries();
+    window.logEvent('INFO', 'Importação', 'Importar lançamentos', `${rowsToSave.length} lançamento(ões) importado(s).`, { count: rowsToSave.length });
     pendingImport = []; pendingImportSource = '';
     populateFilterControls();
     closeAllPanels();
@@ -3275,10 +3289,13 @@ document.getElementById('tSalvar').onclick = async () => {
         const action = isSignupMode
           ? auth.createUserWithEmailAndPassword(email, pass)
           : auth.signInWithEmailAndPassword(email, pass);
+        const operacao = window.beginLogOperation('Autenticação', 'Login com e-mail');
         action.then(() => {
           // autenticação concluída com sucesso
+          window.logEvent('INFO', 'Autenticação', 'Login com e-mail', 'Usuário autenticado com sucesso.', null, window.operationDuration(operacao));
         }).catch(err => {
           setAuthError(translateAuthError(err.code));
+          window.logEvent('ERROR', 'Autenticação', 'Falha no login com e-mail', err.message || String(err), null, window.operationDuration(operacao));
         });
       };
     }
@@ -3302,12 +3319,15 @@ document.getElementById('tSalvar').onclick = async () => {
       authGoogle.onclick = () => {
         setAuthError('');
         const provider = new firebase.auth.GoogleAuthProvider();
+        const operacaoGoogle = window.beginLogOperation('Autenticação', 'Login com Google');
         auth.signInWithPopup(provider)
           .then(() => {
             // autenticação Google concluída com sucesso
+            window.logEvent('INFO', 'Autenticação', 'Login com Google', 'Usuário autenticado via Google.', null, window.operationDuration(operacaoGoogle));
           })
           .catch(err => {
             setAuthError(translateAuthError(err.code));
+            window.logEvent('ERROR', 'Autenticação', 'Falha no login com Google', err.message || String(err), null, window.operationDuration(operacaoGoogle));
           });
       };
     }
@@ -3350,7 +3370,10 @@ document.getElementById('tSalvar').onclick = async () => {
     window.currentUser = currentUser;
 
     try {
-      if (user) console.log('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
+      if (user) {
+        window.logEvent('INFO', 'Autenticação', 'Sessão iniciada', 'Usuário autenticado.');
+        console.log('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
+      }
       const overlay = document.getElementById('authOverlay');
       const syncOverlay = document.getElementById('syncOverlay');
       if (user) {
@@ -3389,6 +3412,7 @@ document.getElementById('tSalvar').onclick = async () => {
         if (overlay) overlay.classList.remove('hidden');
         renderUserBar();
         /* Remove eventos do usuário que encerrou a sessão. */
+        window.logEvent('INFO', 'Autenticação', 'Sessão encerrada', 'Usuário deslogado.');
         window.currentUser = null;
       }
     } catch (err) {

@@ -29,12 +29,16 @@
     document.body.classList.add('is-data-loading');
     if (syncOverlayText) syncOverlayText.textContent = 'Sincronizando seus dados...';
     if (syncOverlay) syncOverlay.classList.remove('hidden');
+    const operacao = window.beginLogOperation('Firebase', 'Carregar dados da nuvem');
+    const colecaoStats = {}; // nome -> { fromCache: boolean, ms: number }
+    window.logEvent('INFO', 'Firebase', 'Carregar dados da nuvem', 'Iniciando leitura das coleções Firestore.', null, null);
 
     realtimeUnsubscribers.forEach(unsub => unsub());
     realtimeUnsubscribers = [];
     try {
       await Promise.all(COLLECTIONS.map(name => new Promise((resolve, reject) => {
         let resolved = false;
+        const coletaStart = performance.now();
         const unsub = colRef(name).onSnapshot(snap => {
           if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) {
             if (!resolved) {
@@ -44,6 +48,8 @@
             return;
           }
           const arr = snap.docs.map(d => d.data());
+          const coletaMs = Math.round(performance.now() - coletaStart);
+          colecaoStats[name] = { fromCache: !!snap.metadata.fromCache, ms: coletaMs };
           if (resolved && pendingSaveCount > 0) {
             snapshotBuffer[name] = { arr, hasPendingWrites: snap.metadata.hasPendingWrites };
             return;
@@ -61,6 +67,7 @@
                para que renderBalances()/sparklines mostrem dados reais em vez
                de '—'. */
             firstLoadDone = true;
+            document.body.classList.remove('is-data-loading');
             render();
             resolve();
           } else if (firstLoadDone) {
@@ -154,11 +161,14 @@
       firstLoadDone = true;
       renderBalances();
       refreshFinancialIndicators();
+      const daCache = Object.values(colecaoStats).filter(c => c.fromCache).length;
+      window.logEvent('INFO', 'Firebase', 'Coleções carregadas', 'Dados da nuvem sincronizados com sucesso.', { colecoes: COLLECTIONS.length, daCache, coletaMs: colecaoStats }, window.operationDuration(operacao));
     } catch (err) {
       console.error(err);
+      window.logEvent('ERROR', 'Firebase', 'Falha ao carregar dados da nuvem', err.message || String(err), null, window.operationDuration(operacao));
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
-      if (thisLoadGeneration === loadGeneration && currentUser?.uid === loadUserUid) {
+      if (currentUser?.uid === loadUserUid) {
         if (!lastTabRestored) {
           lastTabRestored = true;
           try {
