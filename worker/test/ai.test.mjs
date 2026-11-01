@@ -539,7 +539,7 @@ test("falha de rede em todos os modelos → 502 network sem queimar cota", async
   };
   // Popula cache de cota antes do teste
   const before = await refreshQuota();
-  const cacheKey = `quota:${new Date().toISOString().slice(0, 10)}`;
+  const cacheKey = `quota:openrouter:${new Date().toISOString().slice(0, 10)}`;
 
   const res = await post("/ai", {
     token: makeToken("u-net"),
@@ -562,7 +562,7 @@ test("402 em toda a cadeia → envelope 402 com tried, sem queimar cota", async 
   state.onChat = () => jsonResponse({ error: { message: "insufficient credits" } }, 402);
   // Popula cache de cota antes do teste
   const before = await refreshQuota();
-  const cacheKey = `quota:${new Date().toISOString().slice(0, 10)}`;
+  const cacheKey = `quota:openrouter:${new Date().toISOString().slice(0, 10)}`;
 
   const res = await post("/ai", {
     token: makeToken("u-402-all"),
