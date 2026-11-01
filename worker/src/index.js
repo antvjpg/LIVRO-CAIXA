@@ -41,7 +41,7 @@ import { validateChatPayload, CHAT_LIMITS } from "../../js/domain/ai-chat-contra
 import { buildChatSystemPrompt } from "./ai/chat-prompt.js";
 import { authenticate } from "./ai/auth.js";
 import { requireAppCheck } from "./ai/appcheck.js";
-import { getFreeQuotaKV, getOpenRouterUsageKV, burnQuotaKV, quotaHeaderValues } from "./ai/quota-kv.js";
+import { getFreeQuotaKV, getOpenRouterUsageKV, getQuotaForProvider, burnQuotaForProvider, quotaHeaderValues } from "./ai/quota-kv.js";
 import { isRateLimitedKV } from "./ai/ratelimit-kv.js";
 import { resolveProvider, providerMissingKey, ProviderError } from "./ai/provider.js";
 import {
@@ -544,34 +544,7 @@ async function handleFetch(request, env) {
       );
     }
 
-    /* Garante o cache de cota antes de decidir sobre o limite diário.
-       let: após um burn com sucesso a leitura é refeita para que os headers
-       X-AI-Quota-* da MESMA resposta mostrem o valor já decrementado
-       (contrato consumido pelo index.html, ver quota.js). */
-    let quota = await getFreeQuotaKV(env);
-    const quotaHeaders = () => quotaHeaderValues(quota);
-
-    if (quota && quota.remaining <= 0) {
-      return json(
-        {
-          error:
-            "A IA atingiu o limite diário de leituras. O limite volta a ser liberado à meia-noite (UTC).",
-          code: "daily_limit",
-          quota
-        },
-        429,
-        withHeaders(cors, quotaHeaders())
-      );
-    }
-
-    /* Corpo: limite de tamanho → parse → validação. Nada disso chega ao
-       provedor sem passar por aqui.
-
-       Dois caminhos na MESMA rota (sem segunda arquitetura de IA):
-       - payload com "message"      → contrato do chat (ai-chat-contract.js);
-       - payload com "prompt"       → contrato legado (prompt/imagem) usado
-                                      por comprovantes e diagnóstico. */
-    const body = await readJsonBody(request);
+const body = await readJsonBody(request);
     if (!body.ok) return json(body.body, body.status, cors);
 
     /* Provedor: prioridade 1 = escolha explícita do frontend (aiProvider no payload).
@@ -599,6 +572,25 @@ async function handleFetch(request, env) {
         { error: providerMissingKeyMessage(provider.providerName), code: "missing_server_key" },
         503,
         cors
+      );
+    }
+
+    /* Garante o cache de cota ANTES de decidir sobre o limite diário.
+       Usa quota específica do provedor resolvido. */
+    const providerName = provider.providerName;
+    let quota = await getQuotaForProvider(env, providerName);
+    const quotaHeaders = () => quotaHeaderValues(quota);
+
+    if (quota && quota.remaining <= 0) {
+      return json(
+        {
+          error:
+            "A IA atingiu o limite diário de leituras. O limite volta a ser liberado à meia-noite (UTC).",
+          code: "daily_limit",
+          quota
+        },
+        429,
+        withHeaders(cors, quotaHeaders())
       );
     }
 
@@ -655,13 +647,13 @@ async function handleFetch(request, env) {
         timeoutMs: providerTimeoutMs
       });
 
-      /* Conta na cota apenas o que deu certo: tentativas que o OpenRouter
-         recusou (402/404 de modelo pago, falha de rede) não gastam o dia. */
-      if (result.ok) {
-        await burnQuotaKV(env);
-        const refreshed = await getFreeQuotaKV(env);
-        if (refreshed) quota = refreshed;
-      }
+/* Conta na cota apenas o que deu certo: tentativas que o provedor
+          recusou (402/404, falha de rede) não gastam o dia. */
+       if (result.ok) {
+         await burnQuotaForProvider(env, providerName);
+         const refreshed = await getQuotaForProvider(env, providerName);
+         if (refreshed) quota = refreshed;
+       }
 
       if (!result.ok) {
         const status = result.status || 0;

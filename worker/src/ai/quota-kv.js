@@ -1,8 +1,23 @@
-/* Cota diária de modelos free usando KV (distribuído entre isolates).
-   Substitui quota.js em memória para produção. */
+/* Cota diária por provedor usando KV (distribuído entre isolates).
+   OpenRouter: consulta API real (/api/v1/key) como fonte de verdade.
+   Google/Groq: limites configuráveis via env + tracking em KV. */
 
 const QUOTA_CACHE_MS = 60000;
 const QUOTA_ENDPOINT = "https://openrouter.ai/api/v1/key";
+
+/* Limites padrão por provedor (podem ser sobrescritos por env vars) */
+const DEFAULT_LIMITS = {
+  openrouter: 1000,   // free tier OpenRouter
+  google: 1500,       // Gemini free tier (aprox)
+  groq: 14400         // Groq free tier: 6000 req/day (conservative)
+};
+
+/* Chaves de env para limites customizáveis */
+const ENV_LIMIT_KEYS = {
+  openrouter: "OPENROUTER_DAILY_LIMIT",
+  google: "GOOGLE_DAILY_LIMIT",
+  groq: "GROQ_DAILY_LIMIT"
+};
 
 function utcDayKey() {
   return new Date().toISOString().slice(0, 10);
@@ -12,16 +27,27 @@ function resetAtSeconds(dayKey) {
   return Math.floor((Date.parse(`${dayKey}T00:00:00Z`) + 86400000) / 1000);
 }
 
-function quotaCacheKey(day) {
-  return `quota:${day}`;
+function quotaCacheKey(provider, day) {
+  return `quota:${provider}:${day}`;
 }
 
-export async function getFreeQuotaKV(env, force = false) {
+function getProviderLimit(env, provider) {
+  const envKey = ENV_LIMIT_KEYS[provider];
+  if (envKey && env[envKey]) {
+    const val = Number(env[envKey]);
+    if (Number.isFinite(val) && val > 0) return val;
+  }
+  return DEFAULT_LIMITS[provider] || 1000;
+}
+
+/* --- OpenRouter: consulta API real --- */
+
+export async function getOpenRouterQuotaKV(env, force = false) {
   if (!env.OPENROUTER_API_KEY || !env.QUOTA_KV) return null;
 
   const day = utcDayKey();
   const now = Date.now();
-  const cacheKey = quotaCacheKey(day);
+  const cacheKey = quotaCacheKey("openrouter", day);
 
   if (!force) {
     const cached = await env.QUOTA_KV.get(cacheKey, { type: "json" });
@@ -51,6 +77,7 @@ export async function getFreeQuotaKV(env, force = false) {
     const remaining = Math.max(0, Number(quota.remaining) || 0);
 
     const data = {
+      provider: "openrouter",
       day,
       limit,
       used,
@@ -68,9 +95,7 @@ export async function getFreeQuotaKV(env, force = false) {
   }
 }
 
-/* Uso gratuito atual (GET /api/v1/key), leitura autoritativa sem cache:
-   o monitor administrativo (GET /openrouter-usage) e a leitura forçada de
-   cota (GET /quota?force) não devem servir os dados de 60 s de cache. */
+/* Leitura autoritativa sem cache (para GET /quota?force e monitor) */
 export async function getOpenRouterUsageKV(env) {
   if (!env.OPENROUTER_API_KEY) return { ok: false, code: "openrouter_key_missing" };
 
@@ -100,10 +125,54 @@ export async function getOpenRouterUsageKV(env) {
   }
 }
 
-export async function burnQuotaKV(env) {
+/* --- Google / Groq: limites configuráveis + KV tracking --- */
+
+async function getConfiguredQuotaKV(env, provider) {
+  if (!env.QUOTA_KV) return null;
+
+  const day = utcDayKey();
+  const now = Date.now();
+  const cacheKey = quotaCacheKey(provider, day);
+  const limit = getProviderLimit(env, provider);
+
+  const cached = await env.QUOTA_KV.get(cacheKey, { type: "json" });
+  if (cached && cached.at && now - cached.at < QUOTA_CACHE_MS) {
+    return cached.data;
+  }
+
+  /* Inicializa do zero se não existir */
+  const data = {
+    provider,
+    day,
+    limit,
+    used: 0,
+    remaining: limit,
+    resetAt: resetAtSeconds(day)
+  };
+
+  await env.QUOTA_KV.put(cacheKey, JSON.stringify({ at: now, data }), {
+    expirationTtl: 86400 * 2
+  });
+  return data;
+}
+
+export async function getQuotaForProvider(env, provider) {
+  switch (provider) {
+    case "openrouter":
+      return getOpenRouterQuotaKV(env);
+    case "google":
+      return getConfiguredQuotaKV(env, "google");
+    case "groq":
+      return getConfiguredQuotaKV(env, "groq");
+    default:
+      return null;
+  }
+}
+
+export async function burnQuotaForProvider(env, provider) {
   if (!env.QUOTA_KV) return;
   const day = utcDayKey();
-  const cacheKey = quotaCacheKey(day);
+  const cacheKey = quotaCacheKey(provider, day);
   const cached = await env.QUOTA_KV.get(cacheKey, { type: "json" });
   if (!cached?.data) return;
   cached.data.remaining = Math.max(0, cached.data.remaining - 1);
@@ -111,16 +180,23 @@ export async function burnQuotaKV(env) {
   await env.QUOTA_KV.put(cacheKey, JSON.stringify(cached), { expirationTtl: 86400 * 2 });
 }
 
-export function currentQuotaKV(env) {
-  // This is sync but needs async KV - use getFreeQuotaKV instead
-  return null;
-}
+/* --- Helpers --- */
 
 export function quotaHeaderValues(quota) {
   if (!quota) return {};
   return {
     "X-AI-Quota-Limit": String(quota.limit),
     "X-AI-Quota-Remaining": String(quota.remaining),
-    "X-AI-Quota-Reset": String(quota.resetAt)
+    "X-AI-Quota-Reset": String(quota.resetAt),
+    "X-AI-Quota-Provider": quota.provider || "unknown"
   };
+}
+
+/* Backwards compat: o frontend e GET /quota esperam getFreeQuotaKV para OpenRouter */
+export async function getFreeQuotaKV(env, force = false) {
+  return getOpenRouterQuotaKV(env, force);
+}
+
+export function currentQuotaKV(env) {
+  return null;
 }
