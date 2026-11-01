@@ -58,21 +58,7 @@
           if (!snap.metadata.hasPendingWrites) {
             lastSynced[name] = arrToMap(getStateArray(name));
           }
-          if (!resolved) {
-            resolved = true;
-            /* CACHE-FIRST: o onSnapshot do Firebase com cache offline ativo
-               dispara no primeiro evento do disco local, quase instantâneo.
-               Renderiza assim que os primeiros dados chegam em vez de esperar
-               todas as coleções pelo Promise.all. firstLoadDone é ligado antes
-               para que renderBalances()/sparklines mostrem dados reais em vez
-               de '—'. */
-            firstLoadDone = true;
-            document.body.classList.remove('is-data-loading');
-            render();
-            resolve();
-          } else if (firstLoadDone) {
-            render();
-          }
+          resolve();
         }, err => {
           if (!resolved) { resolved = true; reject(err); } else { console.error(err); }
         });
@@ -179,7 +165,8 @@
           } catch (e) {}
         }
         if (syncOverlay) syncOverlay.classList.add('hidden');
-        document.body.classList.remove('is-data-loading');
+document.body.classList.remove('is-data-loading');
+        render();
         markValueRefresh();
       }
     }
