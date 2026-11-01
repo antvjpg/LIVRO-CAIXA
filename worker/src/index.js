@@ -43,13 +43,26 @@ import { authenticate } from "./ai/auth.js";
 import { requireAppCheck } from "./ai/appcheck.js";
 import { getFreeQuotaKV, getOpenRouterUsageKV, burnQuotaKV, quotaHeaderValues } from "./ai/quota-kv.js";
 import { isRateLimitedKV } from "./ai/ratelimit-kv.js";
+import { resolveProvider, providerMissingKey, ProviderError } from "./ai/provider.js";
 import {
   RETRYABLE_STATUS,
-  modelList,
+  modelList as openRouterModelList,
   callOpenRouter,
-  failureFromResult,
-  emptyReplyFailure
+  failureFromResult as openRouterFailureFromResult,
+  emptyReplyFailure as openRouterEmptyReplyFailure
 } from "./ai/openrouter.js";
+import {
+  modelList as googleModelList,
+  callGoogle,
+  failureFromResult as googleFailureFromResult,
+  emptyReplyFailure as googleEmptyReplyFailure
+} from "./ai/google.js";
+import {
+  modelList as groqModelList,
+  callGroq,
+  failureFromResult as groqFailureFromResult,
+  emptyReplyFailure as groqEmptyReplyFailure
+} from "./ai/groq.js";
 import { handleFinancial } from "./financial/gateway.js";
 import { runPushDispatch } from "./push/sender.js";
 import { validateExternalSnapshotResult, MCP_LIMITS } from "../../js/domain/mcp-financial-contract.js";
@@ -72,6 +85,59 @@ const BRIDGE_SNAPSHOT_MAX_BODY_BYTES = MCP_LIMITS.SNAPSHOT_MAX_BYTES * 2;
 const BRIDGE_TOKEN_MAX_BODY_BYTES = 8 * 1024;
 const MAX_RATE_BUCKETS = 500;
 const rateBuckets = new Map();
+
+/* Resolve o provedor de IA ativo pela variável AI_PROVIDER.
+   Padrão: openrouter. Valores: openrouter | google | groq. */
+function resolveAiProvider(env) {
+  const name = String(env.AI_PROVIDER || "openrouter").toLowerCase();
+  switch (name) {
+    case "openrouter":
+      return {
+        name,
+        modelList: () => openRouterModelList(env),
+        callModel: (model, messages, maxTokens, referer, options) =>
+          callOpenRouter(model, env, messages, maxTokens, referer, options),
+        failureFromResult: (result, model) => openRouterFailureFromResult(result, model, env),
+        emptyReplyFailure: (model) => openRouterEmptyReplyFailure(model),
+        missingKey: () => !env.OPENROUTER_API_KEY,
+        providerName: "openrouter"
+      };
+    case "google":
+      return {
+        name,
+        modelList: () => googleModelList(env),
+        callModel: (model, messages, maxTokens, referer, options) =>
+          callGoogle(model, env, messages, maxTokens, referer, options),
+        failureFromResult: (result, model) => googleFailureFromResult(result, model, env),
+        emptyReplyFailure: (model) => googleEmptyReplyFailure(model),
+        missingKey: () => !env.GOOGLE_API_KEY,
+        providerName: "google"
+      };
+    case "groq":
+      return {
+        name,
+        modelList: () => groqModelList(env),
+        callModel: (model, messages, maxTokens, referer, options) =>
+          callGroq(model, env, messages, maxTokens, referer, options),
+        failureFromResult: (result, model) => groqFailureFromResult(result, model, env),
+        emptyReplyFailure: (model) => groqEmptyReplyFailure(model),
+        missingKey: () => !env.GROQ_API_KEY,
+        providerName: "groq"
+      };
+    default:
+      return null;
+  }
+}
+
+function providerMissingKeyMessage(providerName) {
+  const map = {
+    openrouter: "OPENROUTER_API_KEY",
+    google: "GOOGLE_API_KEY",
+    groq: "GROQ_API_KEY"
+  };
+  const key = map[providerName] || "AI_API_KEY";
+  return `Chave ${key} não configurada no servidor.`;
+}
 
 function isRateLimitedMemory(key, env, options = {}) {
   const limitEnvVar = options.limitEnvVar || "AI_RATE_LIMIT_PER_MINUTE";
@@ -424,9 +490,17 @@ async function handleFetch(request, env) {
     if (authResult instanceof Response) return authResult;
     const claims = authResult.claims;
 
-    if (!env.OPENROUTER_API_KEY) {
+    const provider = resolveAiProvider(env);
+    if (!provider) {
       return json(
-        { error: "IA não configurada no servidor.", code: "missing_server_key" },
+        { error: "Provedor de IA não suportado.", code: "unsupported_provider" },
+        503,
+        cors
+      );
+    }
+    if (provider.missingKey()) {
+      return json(
+        { error: providerMissingKeyMessage(provider.providerName), code: "missing_server_key" },
         503,
         cors
       );
@@ -518,11 +592,11 @@ async function handleFetch(request, env) {
     }
 
     const referer = origin || "https://livro-caixa.local";
-    const models = modelList(env);
+    const models = provider.modelList();
     let lastFailure = null;
 
     for (const model of models) {
-      const result = await callOpenRouter(model, env, messages, maxTokens, referer, {
+      const result = await provider.callModel(model, messages, maxTokens, referer, {
         timeoutMs: providerTimeoutMs
       });
 
@@ -536,7 +610,7 @@ async function handleFetch(request, env) {
 
       if (!result.ok) {
         const status = result.status || 0;
-        lastFailure = failureFromResult(result, model, env);
+        lastFailure = provider.failureFromResult(result, model);
 
         /* Log estruturado para monitoramento de falhas de modelo */
         console.log(JSON.stringify({
@@ -573,7 +647,7 @@ async function handleFetch(request, env) {
         timestamp: new Date().toISOString()
       }));
 
-      lastFailure = emptyReplyFailure(model);
+      lastFailure = provider.emptyReplyFailure(model);
     }
 
     if (!lastFailure) {
