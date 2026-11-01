@@ -533,25 +533,6 @@ async function handleFetch(request, env) {
     if (authResult instanceof Response) return authResult;
     const claims = authResult.claims;
 
-    /* Provedor escolhido pelo usuário no frontend (padrão: openrouter).
-       O Worker usa a chave correspondente das variáveis de ambiente. */
-    const aiProviderName = String(body.payload?.aiProvider || 'openrouter').toLowerCase();
-    const provider = resolveAiProviderByName(env, aiProviderName);
-    if (!provider) {
-      return json(
-        { error: "Provedor de IA não suportado.", code: "unsupported_provider" },
-        503,
-        cors
-      );
-    }
-    if (provider.missingKey()) {
-      return json(
-        { error: providerMissingKeyMessage(provider.providerName), code: "missing_server_key" },
-        503,
-        cors
-      );
-    }
-
     if (await isRateLimited(claims.sub, env)) {
       return json(
         {
@@ -592,6 +573,34 @@ async function handleFetch(request, env) {
                                       por comprovantes e diagnóstico. */
     const body = await readJsonBody(request);
     if (!body.ok) return json(body.body, body.status, cors);
+
+    /* Provedor: prioridade 1 = escolha explícita do frontend (aiProvider no payload).
+       Prioridade 2 = configuração do servidor (AI_PROVIDER env var).
+       Prioridade 3 = padrão 'openrouter'. */
+    const frontendProvider = body.payload?.aiProvider;
+    let provider;
+    if (frontendProvider) {
+      provider = resolveAiProviderByName(env, String(frontendProvider).toLowerCase());
+    } else {
+      provider = resolveAiProvider(env);
+    }
+    if (!provider) {
+      provider = resolveAiProviderByName(env, 'openrouter');
+    }
+    if (!provider) {
+      return json(
+        { error: "Provedor de IA não suportado.", code: "unsupported_provider" },
+        503,
+        cors
+      );
+    }
+    if (provider.missingKey()) {
+      return json(
+        { error: providerMissingKeyMessage(provider.providerName), code: "missing_server_key" },
+        503,
+        cors
+      );
+    }
 
     /* Um payload é de chat se trouxer QUALQUER campo do contrato de chat.
        Assim, "message" esquecida ainda cai no caminho do chat e retorna

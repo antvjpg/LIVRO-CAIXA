@@ -2,7 +2,7 @@
    Endpoint: https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
    Autenticação: Bearer {GOOGLE_API_KEY} */
 
-import { providerFailure, emptyReplyFailure } from "./provider.js";
+import { providerFailure } from "./provider.js";
 
 export const GOOGLE_ENDPOINT_BASE = "https://generativelanguage.googleapis.com/v1beta";
 
@@ -127,5 +127,15 @@ export function failureFromResult(result, model, env) {
       status === 0
         ? "Falha de rede ao consultar a IA. Verifique a conexão."
         : upstreamMessage(status, result.raw, result.parsed, env)
+  });
+}
+
+export function emptyReplyFailure(model) {
+  return providerFailure({
+    provider: "google",
+    status: 502,
+    model,
+    code: "empty_reply",
+    message: "A IA não retornou uma resposta utilizável."
   });
 }

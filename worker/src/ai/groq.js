@@ -2,7 +2,7 @@
    Endpoint: https://api.groq.com/openai/v1/chat/completions
    Autenticação: Bearer {GROQ_API_KEY} */
 
-import { providerFailure, emptyReplyFailure } from "./provider.js";
+import { providerFailure } from "./provider.js";
 
 export const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
 
@@ -104,5 +104,15 @@ export function failureFromResult(result, model, env) {
       status === 0
         ? "Falha de rede ao consultar a IA. Verifique a conexão."
         : upstreamMessage(status, result.raw, result.parsed, env)
+  });
+}
+
+export function emptyReplyFailure(model) {
+  return providerFailure({
+    provider: "groq",
+    status: 502,
+    model,
+    code: "empty_reply",
+    message: "A IA não retornou uma resposta utilizável."
   });
 }
