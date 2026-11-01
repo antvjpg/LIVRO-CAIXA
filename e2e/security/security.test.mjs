@@ -172,7 +172,7 @@ test('segredos: nenhum padrão de credencial em arquivos versionados', () => {
 test('playwright: setup não grava trace/screenshot (senha no corpo do login)', () => {
   /* leitura textual: exigir o módulo @playwright/test aborta no Termux
      ("Unsupported platform") e este teste precisa rodar em qualquer lugar. */
-  const cfgText = fs.readFileSync(path.join(ROOT, 'playwright.config.js'), 'utf8');
+  const cfgText = fs.readFileSync(path.join(ROOT, 'playwright.config.cjs'), 'utf8');
   const blocoSetup = cfgText.slice(cfgText.indexOf("name: 'setup'"), cfgText.indexOf("name: 'smoke'"));
   assert.ok(blocoSetup.includes("trace: 'off'"), 'setup deve ter trace: off');
   assert.ok(blocoSetup.includes("screenshot: 'off'"), 'setup deve ter screenshot: off');
@@ -611,9 +611,9 @@ test('relatório: seção QA ENVIRONMENT documenta modo, limpeza e exclusão', (
 });
 
 test('teardown: sempre registrado e nunca derruba a run', () => {
-  const cfg = fs.readFileSync(path.join(ROOT, 'playwright.config.js'), 'utf8');
+  const cfg = fs.readFileSync(path.join(ROOT, 'playwright.config.cjs'), 'utf8');
   assert.ok(cfg.includes('globalTeardown'), 'config deve registrar globalTeardown (o "finally" da run)');
-  const teardown = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'global-teardown.js'), 'utf8');
+  const teardown = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'global-teardown.cjs'), 'utf8');
   assert.ok(teardown.includes('catch'), 'teardown precisa engolir erro e reportar');
   assert.ok(!teardown.includes('process.exit'), 'teardown não pode encerrar o processo');
 });
@@ -637,7 +637,7 @@ test('hintFor: erro de provider vira verificação do estado atual, nunca afirma
 
 test('diagnóstico: nenhuma fonte do C.O.D.E. afirma provider desabilitado sem evidência', () => {
   const fontes = [
-    'e2e/helpers/qa-account.js',
+    'e2e/helpers/qa-account.cjs',
     'e2e/README.md',
     'e2e/AUDITORIA.md',
   ];
@@ -656,14 +656,14 @@ test('diagnóstico: nenhuma fonte do C.O.D.E. afirma provider desabilitado sem e
   assert.ok(readme.includes('erro histórico'), 'erro anterior deve ficar classificado como histórico');
   assert.ok(readme.includes('não substituem'), 'Google/Smartphone não podem substituir o fluxo E-mail/senha');
   /* regra de classificação presente no hintFor */
-  const qa = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.js'), 'utf8');
+  const qa = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.cjs'), 'utf8');
   assert.ok(qa.includes('evidência'), 'hintFor deve exigir evidência para classificar');
   assert.ok(qa.includes('providerSignals'), 'os códigos devem ser tratados como sinais, não como estado');
 });
 
 /* ============ FASE 4 do preparo E2E — relogin sem tocar na propriedade ==== */
 test('FASE 4: logout/login reais existem e o relogin nunca rebaixa a propriedade', () => {
-  const src = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.js'), 'utf8');
+  const src = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.cjs'), 'utf8');
   const iLogout = src.indexOf('async function logout(');
   const iLogin = src.indexOf('async function loginOnly(');
   const iSign = src.indexOf('async function signInOrCreate(');
@@ -689,7 +689,7 @@ test('FASE 4: logout/login reais existem e o relogin nunca rebaixa a propriedade
 
 /* ==== Provisionamento: proteção contra enumeração esconde "conta inexistente" ==== */
 test('provisionamento tenta cadastro quando o login falha (sem depender do texto do erro)', () => {
-  const src = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.js'), 'utf8');
+  const src = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.cjs'), 'utf8');
   const iSign = src.indexOf('async function signInOrCreate(');
   const iHint = src.indexOf('function hintFor(');
   assert.ok(iSign > 0 && iHint > iSign, 'signInOrCreate deve existir antes de hintFor');
@@ -714,7 +714,7 @@ test('provisionamento tenta cadastro quando o login falha (sem depender do texto
 
 /* ==== Sessão por suíte: Firebase 10 usa IndexedDB (storageState não cobre) ==== */
 test('suítes dependentes refazem o login real com trace pausado (senha nunca vira artefato)', () => {
-  const qa = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.js'), 'utf8');
+  const qa = fs.readFileSync(path.join(ROOT, 'e2e', 'helpers', 'qa-account.cjs'), 'utf8');
   const iEnsure = qa.indexOf('async function ensureUiSession(');
   const iFim = qa.indexOf('async function signInOrCreate(', iEnsure);
   assert.ok(iEnsure > 0 && iFim > iEnsure, 'ensureUiSession deve existir');
