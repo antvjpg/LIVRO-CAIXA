@@ -357,7 +357,7 @@ test("GET /quota com token → contrato completo", async () => {
   const res = await post("/quota", { method: "GET", token: makeToken("u-quota") });
   assert.equal(res.status, 200);
   const body = await res.json();
-  assert.deepEqual(Object.keys(body).sort(), ["day", "limit", "remaining", "resetAt", "used"]);
+  assert.deepEqual(Object.keys(body).sort(), ["day", "limit", "provider", "remaining", "resetAt", "used"]);
   assert.equal(body.limit, 100);
   /* O index.html lê /quota pelo corpo (setQuota) e /ai pelos headers:
      a rota /quota não emite X-AI-Quota-* e isso não muda aqui. */
@@ -530,9 +530,8 @@ test("falha de rede em todos os modelos → 502 network sem queimar cota", async
   state.onChat = () => {
     throw new Error("fetch rejeitado (sem rede)");
   };
-  const cacheKey = `quota:${new Date().toISOString().slice(0, 10)}`;
-  const before = await env.QUOTA_KV.get(cacheKey, { type: "json" });
-  assert.ok(before?.data, "cache de cota deveria existir antes do teste");
+  // Popula cache de cota antes do teste
+  await refreshQuota();
 
   const res = await post("/ai", {
     token: makeToken("u-net"),
@@ -553,8 +552,9 @@ test("falha de rede em todos os modelos → 502 network sem queimar cota", async
 
 test("402 em toda a cadeia → envelope 402 com tried, sem queimar cota", async () => {
   state.onChat = () => jsonResponse({ error: { message: "insufficient credits" } }, 402);
+  // Popula cache de cota antes do teste
+  const before = await refreshQuota();
   const cacheKey = `quota:${new Date().toISOString().slice(0, 10)}`;
-  const before = await env.QUOTA_KV.get(cacheKey, { type: "json" });
 
   const res = await post("/ai", {
     token: makeToken("u-402-all"),
@@ -566,15 +566,15 @@ test("402 em toda a cadeia → envelope 402 com tried, sem queimar cota", async 
   assert.match(body.error, /indisponível/);
 
   const after = await env.QUOTA_KV.get(cacheKey, { type: "json" });
-  assert.equal(after.data.used, before.data.used, "402 não gasta a cota diária");
+  assert.equal(after.data.used, before.used, "402 não gasta a cota diária");
   state.onChat = null;
 });
 
 test("429 em toda a cadeia → envelope 429 com tried e cota intacta", async () => {
   state.onChat = () => jsonResponse({ error: { message: "rate limited" } }, 429);
+  // Popula cache de cota antes do teste
+  const before = await refreshQuota();
   const cacheKey = `quota:${new Date().toISOString().slice(0, 10)}`;
-  const before = await env.QUOTA_KV.get(cacheKey, { type: "json" });
-  assert.ok(before?.data);
 
   const res = await post("/ai", {
     token: makeToken("u-429-all"),
@@ -586,9 +586,9 @@ test("429 em toda a cadeia → envelope 429 com tried e cota intacta", async () 
   assert.match(body.error, /limite de uso temporariamente/);
   /* Respostas 429 carregam os headers de cota consumidos pelo index.html. */
   assert.equal(res.headers.get("X-AI-Quota-Limit"), "100");
-  assert.equal(res.headers.get("X-AI-Quota-Remaining"), String(before.data.remaining));
+  assert.equal(res.headers.get("X-AI-Quota-Remaining"), String(before.remaining));
 
   const after = await env.QUOTA_KV.get(cacheKey, { type: "json" });
-  assert.equal(after.data.used, before.data.used, "429 não gasta a cota diária");
+  assert.equal(after.data.used, before.used, "429 não gasta a cota diária");
   state.onChat = null;
 });

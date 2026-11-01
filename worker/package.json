@@ -3,7 +3,11 @@
   "private": true,
   "description": "Dependências de teste do Worker LIVRO-CAIXA. Miniflare/workerd só instala em CI linux (postinstall não suporta Termux/Android).",
   "license": "UNLICENSED",
+  "scripts": {
+    "deploy": "wrangler deploy"
+  },
   "devDependencies": {
-    "miniflare": "^4.20260730.0"
+    "miniflare": "^4.20260730.0",
+    "wrangler": "^4.156.0"
   }
 }

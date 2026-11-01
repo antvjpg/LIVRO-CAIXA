@@ -128,7 +128,9 @@ test("rate limit por uid → 429 rate_limited na 2ª chamada do minuto", async (
   await refreshQuota();
   env.AI_RATE_LIMIT_PER_MINUTE = "1";
 
-  const token = makeToken("u-rate");
+  // UID único para evitar colisão com outros testes rodando em paralelo
+  const uniqueUid = `u-rate-${crypto.randomUUID()}`;
+  const token = makeToken(uniqueUid);
   const payload = JSON.stringify({ prompt: "oi", maxTokens: 900 });
 
   const first = await call("/ai", { token, body: payload });
@@ -140,7 +142,7 @@ test("rate limit por uid → 429 rate_limited na 2ª chamada do minuto", async (
   assert.equal(state.openRouterCalls.length, 1, "requisição bloqueada não pode chegar ao provedor");
 
   /* Outro uid tem bucket próprio: não disputa contador. */
-  const other = await call("/ai", { token: makeToken("u-rate-2"), body: payload });
+  const other = await call("/ai", { token: makeToken(`u-rate-2-${crypto.randomUUID()}`), body: payload });
   assert.equal(other.status, 200, "rate limit deveria ser por uid e não global");
   env.AI_RATE_LIMIT_PER_MINUTE = "30";
 });
