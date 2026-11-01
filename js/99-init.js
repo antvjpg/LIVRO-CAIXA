@@ -916,33 +916,36 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     });
   }
 
-  /* Foto de perfil — grid de avatares abstratos (DiceBear "shapes") em modal + 20 avatares geométricos locais */
-  const avatarSeeds = ['ana','beto','carla','diego','elena','fabio','giulia','hugo','isabela','joao','karol','lucas','mel','nic','ova','ped','quim','reu'];
+  /* Foto de perfil — 25 robôs expressivos (SVG local) */
   const avatarGeometricos = [
-    { id: 'avatar-geometry-01', nome: 'Avatar geométrico 01', arquivo: 'assets/avatars/avatar-geometry-01.svg' },
-    { id: 'avatar-geometry-02', nome: 'Avatar geométrico 02', arquivo: 'assets/avatars/avatar-geometry-02.svg' },
-    { id: 'avatar-geometry-03', nome: 'Avatar geométrico 03', arquivo: 'assets/avatars/avatar-geometry-03.svg' },
-    { id: 'avatar-geometry-04', nome: 'Avatar geométrico 04', arquivo: 'assets/avatars/avatar-geometry-04.svg' },
-    { id: 'avatar-geometry-05', nome: 'Avatar geométrico 05', arquivo: 'assets/avatars/avatar-geometry-05.svg' },
-    { id: 'avatar-geometry-06', nome: 'Avatar geométrico 06', arquivo: 'assets/avatars/avatar-geometry-06.svg' },
-    { id: 'avatar-geometry-07', nome: 'Avatar geométrico 07', arquivo: 'assets/avatars/avatar-geometry-07.svg' },
-    { id: 'avatar-geometry-08', nome: 'Avatar geométrico 08', arquivo: 'assets/avatars/avatar-geometry-08.svg' },
-    { id: 'avatar-geometry-09', nome: 'Avatar geométrico 09', arquivo: 'assets/avatars/avatar-geometry-09.svg' },
-    { id: 'avatar-geometry-10', nome: 'Avatar geométrico 10', arquivo: 'assets/avatars/avatar-geometry-10.svg' },
-    { id: 'avatar-geometry-11', nome: 'Avatar geométrico 11', arquivo: 'assets/avatars/avatar-geometry-11.svg' },
-    { id: 'avatar-geometry-12', nome: 'Avatar geométrico 12', arquivo: 'assets/avatars/avatar-geometry-12.svg' },
-    { id: 'avatar-geometry-13', nome: 'Avatar geométrico 13', arquivo: 'assets/avatars/avatar-geometry-13.svg' },
-    { id: 'avatar-geometry-14', nome: 'Avatar geométrico 14', arquivo: 'assets/avatars/avatar-geometry-14.svg' },
-    { id: 'avatar-geometry-15', nome: 'Avatar geométrico 15', arquivo: 'assets/avatars/avatar-geometry-15.svg' },
-    { id: 'avatar-geometry-16', nome: 'Avatar geométrico 16', arquivo: 'assets/avatars/avatar-geometry-16.svg' },
-    { id: 'avatar-geometry-17', nome: 'Avatar geométrico 17', arquivo: 'assets/avatars/avatar-geometry-17.svg' },
-    { id: 'avatar-geometry-18', nome: 'Avatar geométrico 18', arquivo: 'assets/avatars/avatar-geometry-18.svg' },
-    { id: 'avatar-geometry-19', nome: 'Avatar geométrico 19', arquivo: 'assets/avatars/avatar-geometry-19.svg' },
-    { id: 'avatar-geometry-20', nome: 'Avatar geométrico 20', arquivo: 'assets/avatars/avatar-geometry-20.svg' }
+    { id: 'avatar-geometry-01', nome: 'Robô Dual', arquivo: 'assets/avatars/avatar-geometry-01.svg' },
+    { id: 'avatar-geometry-02', nome: 'Robô Feliz', arquivo: 'assets/avatars/avatar-geometry-02.svg' },
+    { id: 'avatar-geometry-03', nome: 'Robô Calmo', arquivo: 'assets/avatars/avatar-geometry-03.svg' },
+    { id: 'avatar-geometry-04', nome: 'Robô Mal-humorado', arquivo: 'assets/avatars/avatar-geometry-04.svg' },
+    { id: 'avatar-geometry-05', nome: 'Robô Piscando', arquivo: 'assets/avatars/avatar-geometry-05.svg' },
+    { id: 'avatar-geometry-06', nome: 'Robô Animado', arquivo: 'assets/avatars/avatar-geometry-06.svg' },
+    { id: 'avatar-geometry-07', nome: 'Robô Sonolento', arquivo: 'assets/avatars/avatar-geometry-07.svg' },
+    { id: 'avatar-geometry-08', nome: 'Robô Surpreso', arquivo: 'assets/avatars/avatar-geometry-08.svg' },
+    { id: 'avatar-geometry-09', nome: 'Robô Estrela', arquivo: 'assets/avatars/avatar-geometry-09.svg' },
+    { id: 'avatar-geometry-10', nome: 'Robô Coração', arquivo: 'assets/avatars/avatar-geometry-10.svg' },
+    { id: 'avatar-geometry-11', nome: 'Robô Descolado', arquivo: 'assets/avatars/avatar-geometry-11.svg' },
+    { id: 'avatar-geometry-12', nome: 'Robô Amor', arquivo: 'assets/avatars/avatar-geometry-12.svg' },
+    { id: 'avatar-geometry-13', nome: 'Robô Curioso', arquivo: 'assets/avatars/avatar-geometry-13.svg' },
+    { id: 'avatar-geometry-14', nome: 'Robô Sonhador', arquivo: 'assets/avatars/avatar-geometry-14.svg' },
+    { id: 'avatar-geometry-15', nome: 'Robô Sol', arquivo: 'assets/avatars/avatar-geometry-15.svg' },
+    { id: 'avatar-geometry-16', nome: 'Robô Bravo', arquivo: 'assets/avatars/avatar-geometry-16.svg' },
+    { id: 'avatar-geometry-17', nome: 'Robô Nervoso', arquivo: 'assets/avatars/avatar-geometry-17.svg' },
+    { id: 'avatar-geometry-18', nome: 'Robô Fone', arquivo: 'assets/avatars/avatar-geometry-18.svg' },
+    { id: 'avatar-geometry-19', nome: 'Robô Óculos', arquivo: 'assets/avatars/avatar-geometry-19.svg' },
+    { id: 'avatar-geometry-20', nome: 'Robô Monóculo', arquivo: 'assets/avatars/avatar-geometry-20.svg' },
+    { id: 'avatar-geometry-21', nome: 'Robô Pixel', arquivo: 'assets/avatars/avatar-geometry-21.svg' },
+    { id: 'avatar-geometry-22', nome: 'Robô Animador', arquivo: 'assets/avatars/avatar-geometry-22.svg' },
+    { id: 'avatar-geometry-23', nome: 'Robô Neutro', arquivo: 'assets/avatars/avatar-geometry-23.svg' },
+    { id: 'avatar-geometry-24', nome: 'Robô Convencido', arquivo: 'assets/avatars/avatar-geometry-24.svg' },
+    { id: 'avatar-geometry-25', nome: 'Robô Rindo', arquivo: 'assets/avatars/avatar-geometry-25.svg' }
   ];
   const avatarGrid = document.getElementById('avatarGrid');
   const avatarHeading = document.querySelector('#viewProfile .profile-avatar');
-  const avatarUrl = (seed) => `https://api.dicebear.com/7.x/shapes/svg?seed=${seed}`;
   const avatarLocalUrl = (arquivo) => `./${arquivo}`;
   function isLocalAvatar(id) {
     return id.startsWith('avatar-geometry-');
@@ -952,7 +955,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       const geo = avatarGeometricos.find(g => g.id === id);
       return geo ? avatarLocalUrl(geo.arquivo) : '';
     }
-    return avatarUrl(id);
+    return '';
   }
   function applyProfileAvatar(id) {
     const src = getAvatarSrc(id);
@@ -962,8 +965,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   }
   if (avatarGrid && avatarHeading) {
     const todosAvatares = [
-      ...avatarGeometricos.map(g => ({ id: g.id, nome: g.nome, tipo: 'local' })),
-      ...avatarSeeds.map(s => ({ id: s, nome: s, tipo: 'dicebear' }))
+      ...avatarGeometricos.map(g => ({ id: g.id, nome: g.nome, tipo: 'local' }))
     ];
     avatarGrid.innerHTML = todosAvatares.map((a, i) => `
       <button type="button" class="avatar-option${i === 0 ? ' is-active' : ''}" data-seed="${a.id}" aria-label="${a.nome}">

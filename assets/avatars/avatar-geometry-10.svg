@@ -1,12 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-<rect width="100" height="100" fill="#3F3E80"/>
-<g fill="#1CA8E8">
-<polygon points="14,62 21,76 7,76"/><polygon points="28,62 35,76 21,76"/>
-<polygon points="42,62 49,76 35,76"/><polygon points="56,62 63,76 49,76"/>
-<polygon points="70,62 77,76 63,76"/><polygon points="84,62 91,76 77,76"/>
-<polygon points="98,62 105,76 91,76"/>
-<polygon points="21,76 28,88 14,88"/><polygon points="35,76 42,88 28,88"/>
-<polygon points="49,76 56,88 42,88"/><polygon points="63,76 70,88 56,88"/>
-<polygon points="77,76 84,88 70,88"/><polygon points="91,76 98,88 84,88"/>
-</g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect x="9" y="9" width="238" height="238" rx="57" fill="#168CF0"/><path d="M65 25 H191 Q231 25 231 65 V157 H25 V65 Q25 25 65 25Z" fill="#071126"/><path d="M78 145 C22 105 57 58 78 92 C99 58 134 105 78 145Z M178 145 C122 105 157 58 178 92 C199 58 234 105 178 145Z" fill="#299CF5"/><path d="M96 174 Q128 202 160 174Z" fill="#7DD3FC"/></svg>
