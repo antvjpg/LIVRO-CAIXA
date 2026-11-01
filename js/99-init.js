@@ -1155,6 +1155,42 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     if (!window.LivroCaixaChat?.isOpen?.()) return;
     aiChatApplyViewportFix();
   }, { passive: true });
+
+  // Bottom nav hide/show on scroll
+  (function initBottomNavScroll() {
+    const bottomNav = document.querySelector('.mobile-bottom-nav');
+    const fab = document.querySelector('.fab-add');
+    if (!bottomNav) return;
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    function onScroll() {
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
+      const isScrollingDown = delta > 5; // threshold to avoid jitter
+      const isScrollingUp = delta < -5;
+      const isNearTop = currentScrollY < 50;
+
+      if (isScrollingDown && !bottomNav.classList.contains('nav-hidden')) {
+        bottomNav.classList.add('nav-hidden');
+        document.body.classList.add('nav-hidden');
+      } else if ((isScrollingUp || isNearTop) && bottomNav.classList.contains('nav-hidden')) {
+        bottomNav.classList.remove('nav-hidden');
+        document.body.classList.remove('nav-hidden');
+      }
+
+      lastScrollY = currentScrollY;
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
   inputProjectionMonths = document.getElementById('featureProjectionMonths');
 
   let projectionSaveTimer = null;
