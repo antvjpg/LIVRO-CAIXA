@@ -18,18 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // PWA: registra o Service Worker e disponibiliza a instalação quando o navegador permitir.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     navigator.serviceWorker.register('./sw.js?v=20-02').then(reg => {
-      window.loginDebugLog?.(
-        'PWA',
-        'Service Worker registrado',
-        {
-          scope: reg.scope,
-          controller: !!navigator.serviceWorker.controller
-        }
-      );
-
       console.log('[PWA] Service Worker registrado:', reg.scope);
-      if (typeof logInfo === 'function') logInfo('Sistema','Registro do Service Worker','Sucesso','PWA pronta para atualização offline.');
-    }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); if (typeof logWarn === 'function') logWarn('Sistema','Registro do Service Worker','Falha','A aplicação seguirá sem o service worker nesta sessão.',{message: err.message}); });
+    }).catch(err => { console.warn('[PWA] Falha ao registrar Service Worker:', err); });
   }
 
     document.querySelectorAll('.mobile-bottom-nav button').forEach((button) => {
@@ -404,21 +394,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.moveInvestment = (id, direction) => moveDisplayItem('investments', id, direction);
   window.movePocket = (id, direction) => moveDisplayItem('pockets', id, direction);
-  diagnosticLog = [];
-
-  LOG_STORAGE_KEY = 'livrocaixa_diagnostic_log';
-  LOG_LIMIT = 200;
-  LOG_SCHEMA_VERSION = 2;
-  LOG_SEQUENCE_STORAGE_KEY = 'livrocaixa_diagnostic_sequence';
-  LOG_SOURCE = 'Livro-Caixa-web';
-  logSequence = 0;
 
   window.addEventListener('error', event => {
     const error = event.error || new Error(event.message || 'Erro de interface');
-    if (!error.__livroCaixaLogged) { error.__livroCaixaLogged = true; logSyncError('erro de interface', error); }
+    if (!error.__livroCaixaLogged) { error.__livroCaixaLogged = true; console.error('erro de interface', error); }
   });
   window.addEventListener('unhandledrejection', event => {
-    logSyncError('rejeição assíncrona', event.reason || new Error('Promise rejeitada sem motivo informado'));
+    console.error('rejeição assíncrona', event.reason || new Error('Promise rejeitada sem motivo informado'));
   });
   VIEW_PERIOD_KEY = 'livrocaixa_view_period_v18_08';
   viewPeriod = { mode: 'month', month: currentMonthYM() };
@@ -552,7 +534,6 @@ document.addEventListener('DOMContentLoaded', () => {
     persistAll().catch(err => {
       goals = previousGoals;
       renderGoalsList();
-      logSyncError('meta', err);
     });
   };
   const btnCancelGoalEdit = document.getElementById('btnCancelGoalEdit');
@@ -679,7 +660,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       goals = previousGoals;
       renderGoalsList();
-      logSyncError('meta', err);
       try {
         const st = document.getElementById('goalsStatus');
         if (st) st.textContent = 'Não foi possível salvar agora — tente novamente.';
@@ -811,23 +791,20 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   });
 
   let pendingReconciliation = null;
-  document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = document.getElementById('featurePin')?.value || ''; try { await saveLocalPin(pin); document.getElementById('featurePin').value = ''; status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.'; logInfo('Segurança', 'Ativar PIN local', 'Sucesso', 'PIN local armazenado somente como hash neste dispositivo.'); } catch (err) { status.textContent = err.message; logWarn('Segurança', 'Ativar PIN local', 'Falha', err.message); } });
+  document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = document.getElementById('featurePin')?.value || ''; try { await saveLocalPin(pin); document.getElementById('featurePin').value = ''; status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.'; } catch (err) { status.textContent = err.message; } });
   document.getElementById('btnEnableBiometric')?.addEventListener('click', async () => {
     const status = document.getElementById('pinSettingsStatus');
     try {
       await registerBiometric();
       if (status) status.textContent = 'Biometria ativada neste aparelho. No bloqueio, o sistema pedirá digital/rosto.';
-      logInfo('Segurança', 'Ativar biometria', 'Sucesso', 'Credencial WebAuthn de plataforma registrada neste dispositivo.');
     } catch (err) {
       if (status) status.textContent = err.message || 'Não foi possível ativar a biometria.';
-      logWarn('Segurança', 'Ativar biometria', 'Falha', err.message || String(err));
     }
   });
   document.getElementById('btnDisableBiometric')?.addEventListener('click', () => {
     removeBiometric();
     const status = document.getElementById('pinSettingsStatus');
     if (status) status.textContent = 'Biometria desativada neste aparelho. O PIN continua ativo.';
-    logInfo('Segurança', 'Desativar biometria', 'Sucesso', 'Credencial biométrica removida deste dispositivo.');
   });
   document.getElementById('btnBiometricUnlock')?.addEventListener('click', async () => {
     const error = document.getElementById('pinUnlockError');
@@ -835,12 +812,11 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       const ok = await unlockWithBiometric();
       if (!ok) { if (error) error.textContent = 'Biometria não concluída. Ative em Perfil → Proteção local ou use o PIN.'; return; }
       if (error) error.textContent = '';
-      logInfo('Segurança', 'Desbloquear biometria', 'Sucesso', 'Aplicativo desbloqueado por biometria.');
     } catch (err) {
       if (error) error.textContent = 'Biometria cancelada ou falhou. Use o PIN.';
     }
   });
-  document.getElementById('btnClearLocalPin')?.addEventListener('click', () => { removeLocalPin(); const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'PIN removido deste dispositivo.'; logInfo('Segurança', 'Remover PIN local', 'Sucesso', 'Proteção local removida deste dispositivo.'); });
+  document.getElementById('btnClearLocalPin')?.addEventListener('click', () => { removeLocalPin(); const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'PIN removido deste dispositivo.'; });
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; clearPinActivity(); closeAllPanels(); showPinOverlay(); });
 
   // Autosave para PIN (debounce 1s ao sair do campo)
@@ -893,7 +869,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   profileReminders?.addEventListener('change', () => {
     featureSettings = normalizeFeatureSettings({ ...featureSettings, reminders: profileReminders.checked });
     persistFeatureSettings();
-    persistProfileSettings().catch(err => logSyncError('preferência de avisos', err));
+    persistProfileSettings().catch(err => console.error(err));
     render();
   });
   const profilePush = document.getElementById('featurePushNotifications');
@@ -902,7 +878,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   profileLockOnOpen?.addEventListener('change', () => {
     featureSettings = normalizeFeatureSettings({ ...featureSettings, lockOnOpen: profileLockOnOpen.checked });
     persistFeatureSettings();
-    persistProfileSettings().catch(err => logSyncError('preferência de proteção ao abrir', err));
+    persistProfileSettings().catch(err => console.error(err));
   });
   autoQuotes = document.getElementById('featureAutoQuotes');
   quoteIntervalRow = document.querySelector('label[for="featureQuoteInterval"]')?.parentElement;
@@ -913,7 +889,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   profileReminderAdvance?.addEventListener('change', () => {
     featureSettings = normalizeFeatureSettings({ ...featureSettings, reminderAdvanceDays: profileReminderAdvance.value });
     persistFeatureSettings();
-    persistProfileSettings().catch(err => logSyncError('preferência de antecedência', err));
+    persistProfileSettings().catch(err => console.error(err));
     render();
   });
   const profileFont = document.getElementById('profileFont');
@@ -1181,13 +1157,13 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     inputFinancialCycleDay.addEventListener('change', () => {
       setFinancialCycleStartDay(inputFinancialCycleDay.value);
       inputFinancialCycleDay.value = getFinancialCycleStartDay();
-      persistProfileSettings().catch(err => logSyncError('preferência de ciclo financeiro', err));
+      persistProfileSettings().catch(err => console.error(err));
       renderFeatureProfile();
       renderAdvancedDashboard();
       renderDashboardTab();
     });
   }
-  document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; logInfo('Segurança', 'Desbloquear PIN local', 'Sucesso', 'Aplicativo desbloqueado neste dispositivo.'); } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; logSyncError('desbloqueio por PIN', err); } });
+  document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; console.error(err); } });
   (function bindPinUnlockKeys() {
     const input = document.getElementById('pinUnlockInput');
     if (!input) return;
@@ -1293,8 +1269,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
 
     // Add to history
     addReconciliationToHistory(bankId, calculated, reported, difference, isMatch);
-
-    logInfo('Conciliação', 'Comparar saldos', 'Sucesso', 'Comparação entre saldo calculado e informado concluída.', { bankId, difference, isMatch });
   });
 
   document.getElementById('btnApplyReconciliation')?.addEventListener('click', async () => {
@@ -1315,25 +1289,14 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     });
     try {
       await persistAll();
-      logInfo('Conciliação', 'Aplicar ajuste', 'Sucesso', `Ajuste de ${fmt(amount)} aplicado em ${bank.name}.`);
     } catch (err) {
-      logSyncError('ajuste de conciliação', err);
+      console.error(err);
     }
     pendingReconciliation = null;
     document.getElementById('btnApplyReconciliation').hidden = true;
     document.getElementById('reconciliationResult').textContent = 'Ajuste aplicado e incorporado ao Livro-Caixa.';
     render();
   });
-  document.getElementById('btnExportDiagnostico').onclick = () => {
-    if (typeof window.exportDiagnosticLog === 'function') {
-      const result = window.exportDiagnosticLog('json');
-      alert('LOG exportado: ' + result.fileName + ' (' + result.total + ' evento(s)).');
-    } else {
-      alert('Função de exportação indisponível nesta sessão.');
-    }
-  };
-  document.getElementById('btnClearDiagnostico').onclick = () => { if (!confirm('Limpar apenas a cópia local do LOG? O histórico remoto não será apagado.')) return; diagnosticLog.length=0; persistDiagnosticLogLocally(); renderDiagnosticLog(); };
-
   document.getElementById('btnOpenDrawer')?.addEventListener('click', openDrawer);
   document.getElementById('btnNotifications')?.addEventListener('click', openNotifications);
   document.getElementById('btnUniversalSearch')?.addEventListener('click', openUniversalSearch);
@@ -1404,10 +1367,9 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
         appendEntryHistory({ ...entry, _action: 'delete', _by: 'user' }, { action: 'delete', by: 'user' });
         populateFilterControls();
         render();
-        logInfo('Livro-Caixa','Excluir lançamento','Sucesso',`Lançamento "${entry?.desc || entry?.id}" excluído.`,{id, date: entry?.date, type: entry?.type, amount: entry?.amount});
       } catch (err) {
         entries = previousEntries;
-        logSyncError('exclusão de lançamento', err);
+        console.error(err);
         showToast('Não foi possível excluir o lançamento.', 'error');
         render();
       }
@@ -1423,10 +1385,9 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
         saveBanks();
         populateFilterControls();
         render();
-        logInfo('Bancos','Excluir banco','Sucesso',`Banco "${bank?.name}" excluído.`,{id});
       } catch (err) {
         banks = previousBanks;
-        logSyncError('exclusão de banco', err);
+        console.error(err);
         showToast('Não foi possível excluir o banco.', 'error');
         render();
       }
@@ -1449,11 +1410,10 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
         await Promise.all([saveCategories(), saveEntries()]);
         populateFilterControls();
         render();
-        logInfo('Categorias','Excluir categoria','Sucesso',`Categoria "${category?.name}" excluída. Lançamentos movidos para "${replacementId}".`,{id, replacementId});
       } catch (err) {
         categories = previousCategories;
         entries = previousEntries;
-        logSyncError('exclusão de categoria', err);
+        console.error(err);
         showToast('Não foi possível excluir a categoria.', 'error');
         render();
       }
@@ -1464,7 +1424,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     if (confirm('Deseja excluir este registro de investimento?')) {
       investments = investments.filter(i => i.id !== id);
       yieldsLog = yieldsLog.filter(y => !(y.targetType === 'invest' && y.targetId === id));
-      saveInvestments().then(() => logInfo('Investimentos','Excluir investimento','Sucesso','Investimento e seu histórico foram removidos.')).catch(err => logSyncError('exclusão de investimento', err));
+      saveInvestments().then(() => console.log('Investimento excluído.')).catch(err => console.error(err));
       render();
     }
   };
@@ -1490,13 +1450,13 @@ window.deletePocket = function(id) {
         yieldIdsToDelete.forEach(yid => {
           batch.delete(userDocRef.collection('yieldsLog').doc(yid));
         });
-        batch.commit().catch(err => logSyncError('exclusão de movimentações da caixinha', err));
+        batch.commit().catch(err => console.error(err));
       }
 
       if (affectedGoals.length) {
         alert(`${affectedGoals.length} Meta(s) mantida(s). O vínculo com a Caixinha excluída foi removido; nenhum dinheiro foi transferido.`);
       }
-      persistAll().then(() => logInfo('Caixinhas','Excluir caixinha','Sucesso','Caixinha e seu histórico foram removidos.')).catch(err => logSyncError('exclusão de caixinha', err));
+      persistAll().then(() => console.log('Caixinha excluída.')).catch(err => console.error(err));
       render();
     }
   };
@@ -1750,7 +1710,7 @@ window.deletePocket = function(id) {
   document.getElementById('btnNewReceivable')?.addEventListener('click', () => openReceivableModal());
   document.getElementById('billParcelado').addEventListener('change', updateBillInstallmentFieldsVisibility);
   window.editBill = id => openBillModal(id);
-  window.deleteBill = async id => { if(!await showConfirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); logInfo('Calendário','Exclusão de conta','Sucesso','Conta removida; lançamentos já realizados foram preservados.'); renderBills(); };
+  window.deleteBill = async id => { if(!await showConfirm('Excluir esta conta/fatura? Os lançamentos já gerados no Livro-Caixa serão mantidos.')) return; recurringBills=recurringBills.filter(b=>b.id!==id); await persistAll(); renderBills(); };
   pendingBillLaunch = null;
 
   /* launchBill é função global declarada em 25-bills-receivables.js (assinatura
@@ -1773,8 +1733,8 @@ window.deletePocket = function(id) {
   document.getElementById('billsStatusFilter')?.addEventListener('change', renderBills);
   document.getElementById('btnExportBillsPdf').addEventListener('click', exportBillsPdf);
   document.getElementById('btnExportBillsXlsx').addEventListener('click', exportBillsXlsx);
-  document.getElementById('btnCopyBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { await navigator.clipboard.writeText(text); } catch (err) { const field=document.getElementById('billShareMessage'); field.focus(); field.select(); document.execCommand('copy'); } document.getElementById('billShareStatus').textContent='Mensagem copiada. Nenhum envio foi realizado.'; logInfo('Calendário','Copiar compartilhamento','Sucesso','Mensagem individual copiada para revisão do usuário.'); });
-  document.getElementById('btnNativeBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { if (navigator.share) await navigator.share({title:'Lembrete de pagamento',text}); else { await navigator.clipboard.writeText(text); document.getElementById('billShareStatus').textContent='Compartilhamento nativo indisponível; mensagem copiada.'; } logInfo('Calendário','Compartilhar conta','Sucesso','Compartilhamento individual iniciado pelo usuário.'); } catch (err) { if (err?.name !== 'AbortError') document.getElementById('billShareStatus').textContent='Compartilhamento cancelado ou indisponível.'; } });
+  document.getElementById('btnCopyBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { await navigator.clipboard.writeText(text); } catch (err) { const field=document.getElementById('billShareMessage'); field.focus(); field.select(); document.execCommand('copy'); } document.getElementById('billShareStatus').textContent='Mensagem copiada. Nenhum envio foi realizado.'; });
+  document.getElementById('btnNativeBillShare').addEventListener('click', async () => { const text=document.getElementById('billShareMessage').value; try { if (navigator.share) await navigator.share({title:'Lembrete de pagamento',text}); else { await navigator.clipboard.writeText(text); document.getElementById('billShareStatus').textContent='Compartilhamento nativo indisponível; mensagem copiada.'; } } catch (err) { if (err?.name !== 'AbortError') document.getElementById('billShareStatus').textContent='Compartilhamento cancelado ou indisponível.'; } });
 receiptReaderState = null;
 
 
@@ -1924,8 +1884,6 @@ receiptAIResponseText = '';
       render(); renderBills();
       try {
         await persistAll();
-        const spreadCount = plan.filter(part => part.periodKey !== closingPeriodKey).length;
-        logInfo('Cartões', willBeFullyPaid ? 'Lançar fatura por titular' : 'Pagamento parcial de fatura', 'Sucesso', `${card.name} — ${titular}: ${fmt(amount)} lançado${willBeFullyPaid ? ' (quitado)' : ' (parcial, restam ' + fmt(remaining - amount) + ')'}${spreadCount ? ` · abrangindo ${spreadCount} fatura(s) anterior(es)` : ''}.`, { cardId, closingPeriodKey, titular });
       } catch (err) {
         entries = entries.filter(item => item.id !== entryId);
         touched.forEach(t => {
@@ -1936,7 +1894,6 @@ receiptAIResponseText = '';
             if (idx >= 0) invoiceLaunches[idx] = t.snapshot;
           }
         });
-        logSyncError('lançamento de fatura por titular', err);
         showToast('Não foi possível registrar esse pagamento agora. Verifique sua conexão e tente novamente.', 'error');
       } finally {
         render(); renderBills();
@@ -2016,14 +1973,14 @@ VALOR: ${fmt(pseudoBill.amount)}
   window.toggleCardActive = async id => {
     const card = cards.find(c => c.id === id); if (!card) return;
     card.active = card.active === false;
-    try { await persistAll(); renderCards(); logInfo('Cartões','Alterar status do cartão','Sucesso',`${card.name} agora está ${card.active ? 'ativo' : 'inativo'}.`); } catch (err) { card.active = !card.active; logSyncError('status do cartão', err); renderCards(); }
+    try { await persistAll(); renderCards(); } catch (err) { card.active = !card.active; console.error(err); renderCards(); }
   };
 
   window.deletePurchase = async id => {
     const purchase = purchases.find(p => p.id === id); if (!purchase) return;
     if (!confirm(`Excluir a compra “${purchase.description || 'sem descrição'}”?`)) return;
     purchases = purchases.filter(p => p.id !== id);
-    try { await persistAll(); renderCards(); logInfo('Cartões','Excluir compra','Sucesso','Compra excluída.'); } catch (err) { purchases.push(purchase); logSyncError('exclusão de compra', err); renderCards(); }
+    try { await persistAll(); renderCards(); } catch (err) { purchases.push(purchase); console.error(err); renderCards(); }
   };
 
   window.finalizePurchase = async id => {
@@ -2034,7 +1991,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     purchase.statusBeforeArchive = previousStatus;
     purchase.status = 'finalizada';
     purchase.archivedAt = new Date().toISOString();
-    try { await persistAll(); renderCards(); logInfo('Cartões','Arquivar compra','Sucesso',`Compra "${purchase.description}" arquivada.`); } catch (err) { purchase.status = previousStatus; delete purchase.archivedAt; delete purchase.statusBeforeArchive; logSyncError('arquivar compra', err); renderCards(); alert('Não foi possível concluir a compra.\n' + (err && err.message ? err.message : err)); }
+    try { await persistAll(); renderCards(); } catch (err) { purchase.status = previousStatus; delete purchase.archivedAt; delete purchase.statusBeforeArchive; console.error(err); renderCards(); alert('Não foi possível concluir a compra.\n' + (err && err.message ? err.message : err)); }
   };
 
   window.unarchivePurchase = async id => {
@@ -2048,7 +2005,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     purchase.autoBlocked = true;
     delete purchase.archivedAt;
     delete purchase.statusBeforeArchive;
-    try { await persistAll(); renderCards(); logInfo('Cartões','Restaurar compra','Sucesso',`Compra "${purchase.description}" reaberta.`); } catch (err) { purchase.status = previousStatus; if (previousArchivedAt !== undefined) purchase.archivedAt = previousArchivedAt; else delete purchase.archivedAt; if (previousBeforeArchive !== undefined) purchase.statusBeforeArchive = previousBeforeArchive; if (previousAutoBlocked) purchase.autoBlocked = true; else delete purchase.autoBlocked; logSyncError('restaurar compra', err); renderCards(); alert('Não foi possível reabrir a compra.\n' + (err && err.message ? err.message : err)); }
+    try { await persistAll(); renderCards(); } catch (err) { purchase.status = previousStatus; if (previousArchivedAt !== undefined) purchase.archivedAt = previousArchivedAt; else delete purchase.archivedAt; if (previousBeforeArchive !== undefined) purchase.statusBeforeArchive = previousBeforeArchive; if (previousAutoBlocked) purchase.autoBlocked = true; else delete purchase.autoBlocked; console.error(err); renderCards(); alert('Não foi possível reabrir a compra.\n' + (err && err.message ? err.message : err)); }
   };
   document.getElementById('cardSalvar').onclick = async () => {
     const name = document.getElementById('cardNome').value.trim();
@@ -2059,8 +2016,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     const record = normalizeCardRecord({ name, bankId: document.getElementById('cardBanco').value, titular: document.getElementById('cardTitular').value, closingDay, dueDay, limit: readMoneyInput('cardLimite'), active: document.getElementById('cardAtivo').value !== '0', obs: document.getElementById('cardObs').value }, editingCardId ? cards.find(c=>c.id===editingCardId) : { id:'card_' + Date.now() + '_' + Math.random().toString(36).slice(2,8) });
     const old = editingCardId ? cards.find(c=>c.id===editingCardId) : null;
     if (old) cards = cards.map(c => c.id === editingCardId ? record : c); else cards.push(record);
-    try { await persistAll(); renderCards(); closeAllPanels(); logInfo('Cartões', old ? 'Editar cartão' : 'Criar cartão', 'Sucesso', `${record.name} salvo com identificador persistente.`); }
-    catch (err) { if (old) cards = cards.map(c => c.id === editingCardId ? old : c); else cards = cards.filter(c => c.id !== record.id); logSyncError('salvamento de cartão', err); renderCards(); alert('Não foi possível salvar o cartão.'); }
+    try { await persistAll(); renderCards(); closeAllPanels(); } catch (err) { if (old) cards = cards.map(c => c.id === editingCardId ? old : c); else cards = cards.filter(c => c.id !== record.id); console.error(err); renderCards(); alert('Não foi possível salvar o cartão.'); }
   };
   document.getElementById('purchaseType').addEventListener('change', updatePurchaseInstallmentFields);
   document.getElementById('purchaseSalvar').onclick = async () => {
@@ -2079,8 +2035,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     const record = normalizePurchaseRecord({ cardId, description, totalValue, date, titular: document.getElementById('purchaseTitular').value, categoryId: document.getElementById('purchaseCategory').value, paymentType, totalInstallments, installmentValue, initialInstallment: document.getElementById('purchaseInitialInstallment').value, obs: document.getElementById('purchaseObs').value }, editingPurchaseId ? purchases.find(p=>p.id===editingPurchaseId) : { id:'purchase_' + Date.now() + '_' + Math.random().toString(36).slice(2,8) });
     const old = editingPurchaseId ? purchases.find(p => p.id === editingPurchaseId) : null;
     if (old) purchases = purchases.map(p => p.id === editingPurchaseId ? record : p); else purchases.push(record);
-    try { await persistAll(); renderCards(); closeAllPanels(); logInfo('Cartões',old ? 'Editar compra' : 'Criar compra','Sucesso',`${record.description} vinculada ao cartão ${cards.find(c=>c.id===record.cardId)?.name || ''}.`); }
-    catch (err) { if (old) purchases = purchases.map(p => p.id === editingPurchaseId ? old : p); else purchases = purchases.filter(p => p.id !== record.id); logSyncError('salvamento de compra', err); renderCards(); alert('Não foi possível salvar a compra.'); }
+    try { await persistAll(); renderCards(); closeAllPanels(); } catch (err) { if (old) purchases = purchases.map(p => p.id === editingPurchaseId ? old : p); else purchases = purchases.filter(p => p.id !== record.id); console.error(err); renderCards(); alert('Não foi possível salvar a compra.'); }
   };;
 
   document.getElementById('btnOpenBudgetModal').onclick = () => {
@@ -2332,9 +2287,6 @@ VALOR: ${fmt(pseudoBill.amount)}
 
     if (!name) { alert('Informe o nome do ativo.'); return; }
     if (isCrypto && (initialUnits == null || initialUnits < 0)) { alert('O saldo inicial não pode ser negativo.'); return; }
-
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Investimentos', editingInvestId ? 'Editar ativo' : 'Salvar ativo');
-    logInfo('Investimentos', editingInvestId ? 'Editar ativo' : 'Salvar ativo', 'Em andamento', 'Operação de ativo iniciada.', null, operation);
     const record = { name, alias, coinGeckoId, type, units, initialUnits: isCrypto ? (initialUnits || 0) : null, value, initialValue, price: quote, institution, rate, dueDate };
 
     let targetItem;
@@ -2365,11 +2317,10 @@ VALOR: ${fmt(pseudoBill.amount)}
     const originalLabel = btnSalvarInvest ? btnSalvarInvest.textContent : null;
     if (btnSalvarInvest) { btnSalvarInvest.disabled = true; btnSalvarInvest.textContent = 'Salvando...'; }
     try {
-      await saveInvestments(operation);
-      logInfo('Investimentos','Salvar ativo','Sucesso','Ativo salvo com separação entre quantidade e valor em BRL.', null, operation);
+      await saveInvestments();
       closeAllPanels();
     } catch (err) {
-      logSyncError('investimento', err, operation);
+      console.error(err);
     } finally {
       if (btnSalvarInvest) { btnSalvarInvest.disabled = false; btnSalvarInvest.textContent = originalLabel; }
       render();
@@ -2394,7 +2345,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     }
     const titular=document.getElementById('billTitular').value.trim(); const record={name,titular,amount,bank:document.getElementById('billBanco').value,category:document.getElementById('billCategoria').value,startDate,endDate,active:document.getElementById('billAtiva').value==='1',desc:document.getElementById('billObs').value.trim(),frequency:recurrenceType==='nao_recorrente'?'once':'monthly',recurrenceType,installment:isInstallment,installmentTotal,installmentStart};
     if(editingBillId){ const idx=recurringBills.findIndex(b=>b.id===editingBillId); if(idx>=0) recurringBills[idx]={...recurringBills[idx],...record, paidMonths: Array.isArray(recurringBills[idx].paidMonths) ? recurringBills[idx].paidMonths : [], generatedMonths: Array.isArray(recurringBills[idx].generatedMonths) ? recurringBills[idx].generatedMonths : [] }; } else recurringBills.push({id:'bill'+Date.now()+Math.random().toString(36).slice(2,7),createdAt:todayISO(),generatedMonths:[],paidMonths:[],...record});
-    await persistAll(); editingBillId=null; logInfo('Calendário','Salvar conta','Sucesso',`Conta ${name} salva como ${recurrenceType==='nao_recorrente'?'não recorrente':'recorrente'}.`); closeAllPanels(); renderBills();
+    await persistAll(); editingBillId=null; closeAllPanels(); renderBills();
   };;
 
   document.getElementById('pInicial').addEventListener('input', () => {
@@ -2435,7 +2386,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       await persistAll();
       closeAllPanels();
     } catch (err) {
-      logSyncError('caixinha', err);
+      console.error(err);
     } finally {
       render();
     }
@@ -2514,8 +2465,6 @@ VALOR: ${fmt(pseudoBill.amount)}
       });
       if (item.type === 'Renda Fixa') syncDerivedInvestmentValue(item);
     }
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Investimentos', `Movimentação — ${movementKindLabel(kind)}`);
-    logInfo('Investimentos', 'Movimentação', 'Em andamento', `${movementKindLabel(kind)} iniciada para ${item.name}.`, null, operation);
     if (isCrypto) {
       syncDerivedCryptoValue(item, price);
       item.price = price;
@@ -2534,12 +2483,11 @@ VALOR: ${fmt(pseudoBill.amount)}
 
     render();
     try {
-      await persistAll(operation);
-      logInfo('Investimentos','Salvar movimentação','Sucesso',`${movementKindLabel(kind)} registrada para ${item.name}.`, null, operation);
+      await persistAll();
       investmentMovementTarget = null;
       closeAllPanels();
     } catch (err) {
-      logSyncError('movimentação de investimento', err, operation);
+      console.error(err);
     } finally {
       render();
     }
@@ -2581,7 +2529,6 @@ VALOR: ${fmt(pseudoBill.amount)}
     if (informed == null) { alert(isCrypto ? 'Informe um saldo válido na corretora.' : 'Informe um saldo válido.'); return; }
     if (diff === 0) { alert('O saldo informado já confere com o saldo atual.'); return; }
     const kind = diff > 0 ? 'rendimento' : 'resgate';
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Investimentos', `Conciliação — ${movementKindLabel(kind)}`);
     let units = null;
     let price = null;
     let amount = Math.abs(diff);
@@ -2590,7 +2537,6 @@ VALOR: ${fmt(pseudoBill.amount)}
       price = Number(item.price) || 0;
       amount = cryptoValueFromUnits(item.type, units, price);
     }
-    logInfo('Investimentos', 'Conciliação', 'Em andamento', `Ajuste de ${isCrypto ? formatCryptoUnits(item.type, units, item.name) : fmt(amount)} iniciado para ${item.name}.`, null, operation);
     if (isCrypto) {
       yieldsLog.push({
         id: 'imv' + Date.now() + Math.random().toString(36).slice(2, 7),
@@ -2641,12 +2587,11 @@ VALOR: ${fmt(pseudoBill.amount)}
     }
     render();
     try {
-      await persistAll(operation);
-      logInfo('Investimentos', 'Conciliação', 'Sucesso', `Ajuste de conciliação aplicado em ${item.name}.`, { kind, amount }, operation);
+      await persistAll();
       cryptoReconcileTarget = null;
       closeAllPanels();
     } catch (err) {
-      logSyncError('conciliação de investimento', err, operation);
+      console.error(err);
     } finally {
       render();
     }
@@ -2666,9 +2611,6 @@ VALOR: ${fmt(pseudoBill.amount)}
     const delta = kind === 'resgate' ? -amount : amount;
     const baseBalance = pocketCurrentBalance(item) - (pocketMovementEditingId ? movementDelta(yieldsLog.find(y => y.id === pocketMovementEditingId) || {}) : 0);
     if (baseBalance + delta < 0) { alert('O resgate não pode ser maior que o saldo disponível.'); return; }
-
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Caixinhas', `Movimentação — ${movementKindLabel(kind)}`);
-    logInfo('Caixinhas', 'Movimentação', 'Em andamento', `${movementKindLabel(kind)} iniciada para ${item.name}.`, null, operation);
     if (pocketMovementEditingId) {
       const old = yieldsLog.find(x => x.id === pocketMovementEditingId);
       if (old) {
@@ -2693,10 +2635,9 @@ VALOR: ${fmt(pseudoBill.amount)}
     }
 
     try {
-      await persistAll(operation);
-      logInfo('Caixinhas','Salvar movimentação','Sucesso',`${movementKindLabel(kind)} registrada para ${item.name}.`, null, operation);
+      await persistAll();
     } catch (err) {
-      logSyncError('movimentação de caixinha', err, operation);
+      console.error(err);
     }
     pocketMovementTarget = null;
     closeAllPanels();
@@ -2709,29 +2650,25 @@ VALOR: ${fmt(pseudoBill.amount)}
     const nameQuery = document.getElementById('iNome').value.trim();
     const statusEl = document.getElementById('fetchPriceStatus');
     if (!nameQuery) { statusEl.textContent = 'Digite o nome do ativo primeiro (ex: Bitcoin, USDC).'; return; }
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Cotação', 'Atualização de cotação');
-    logInfo('Cotação', 'Atualização de cotação', 'Em andamento', `Consulta iniciada para ${nameQuery}.`, null, operation);
     statusEl.textContent = 'Buscando cotação...';
     const fetchIcon = document.querySelector('#btnFetchPrice .fi');
     fetchIcon?.classList.add('is-loading');
     try {
       const currentInv = editingInvestId ? investments.find(inv => inv.id === editingInvestId) : null;
       const coin = currentInv?.coinGeckoId ? { id: currentInv.coinGeckoId, symbol: currentInv.name } : await fetchCoinMatch(nameQuery);
-      if (!coin) { logWarn('Cotação', 'Atualização de cotação', 'Parcial', 'Ativo não encontrado; cotação manual disponível.', null, operation); statusEl.textContent = 'Ativo não encontrado. Preencha o valor manualmente.'; return; }
+      if (!coin) { statusEl.textContent = 'Ativo não encontrado. Preencha o valor manualmente.'; return; }
       const price = await fetchCoinPriceBRL(coin.id);
-      if (!price) { logWarn('Cotação', 'Atualização de cotação', 'Parcial', 'Cotação indisponível; última cotação válida preservada.', null, operation); statusEl.textContent = 'Cotação indisponível no momento.'; return; }
+      if (!price) { statusEl.textContent = 'Cotação indisponível no momento.'; return; }
       setMoneyInput('iCotacao', price);
       updateInvestmentMainValue();
       pendingPricePoint = { price, units: cryptoCurrentUnits(editingInvestId ? investments.find(i=>i.id===editingInvestId) : null), value: readMoneyInput('iValor') };
       if (editingInvestId) {
         const inv=investments.find(i=>i.id===editingInvestId);
-        if(inv) { inv.coinGeckoId = coin.id; await persistInvestmentQuote(inv, price, 'api', operation); render(); }
+        if(inv) { inv.coinGeckoId = coin.id; await persistInvestmentQuote(inv, price, 'api'); render(); }
       }
       statusEl.textContent = `1 ${coin.symbol.toUpperCase()} = ${fmt(price)} · ${editingInvestId?'salvo agora':'pronto para salvar'}`;
-      logInfo('Cotação', 'Atualização de cotação', 'Sucesso', `Cotação de ${coin.symbol.toUpperCase()} obtida.`, { source: 'CoinGecko' }, operation);
     } catch (err) {
       console.error(err);
-      logSyncError('cotação CoinGecko', err, operation);
       statusEl.textContent = 'Erro ao buscar cotação. A última cotação válida foi preservada; informe uma cotação manual.';
     } finally {
       fetchIcon?.classList.remove('is-loading');
@@ -2762,14 +2699,13 @@ VALOR: ${fmt(pseudoBill.amount)}
     render();
     try {
       await saveBanks();
-      logInfo('Bancos','Salvar banco','Sucesso',`Banco ${name} salvo.`);
       document.getElementById('bNome').value = '';
       setMoneyInput('bSaldo', 0);
       document.getElementById('panelBancoTitle').innerHTML = 'Gerenciar Bancos <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
       document.getElementById('bSalvar').textContent = 'Adicionar';
       closeAllPanels();
     } catch (err) {
-      logSyncError('banco', err);
+      console.error(err);
     } finally {
       render();
     }
@@ -2791,7 +2727,6 @@ VALOR: ${fmt(pseudoBill.amount)}
     }
     categories.sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR'));
     await saveCategories();
-    logInfo('Categorias','Salvar categoria','Sucesso',`Categoria ${name} salva.`);
     populateFilterControls();
     document.getElementById('cNome').value = '';
     setCategoryDraftIcon('📦');
@@ -2838,7 +2773,6 @@ VALOR: ${fmt(pseudoBill.amount)}
       render();
       showToast('Subcategoria adicionada.', 'success');
     } catch (err) {
-      logSyncError('subcategoria', err);
       showToast('Não foi possível salvar a subcategoria.', 'error');
     }
   };
@@ -2857,7 +2791,6 @@ VALOR: ${fmt(pseudoBill.amount)}
       render();
       showToast('Subcategoria removida.', 'success');
     } catch (err) {
-      logSyncError('subcategoria', err);
       showToast('Não foi possível remover a subcategoria.', 'error');
     }
   };
@@ -2881,7 +2814,6 @@ VALOR: ${fmt(pseudoBill.amount)}
       render();
       showToast('Subcategoria atualizada.', 'success');
     } catch (err) {
-      logSyncError('subcategoria', err);
       showToast('Não foi possível atualizar a subcategoria.', 'error');
     }
   };
@@ -3001,11 +2933,9 @@ document.getElementById('tSalvar').onclick = async () => {
     const deName = deBank ? deBank.name : (dePocket ? dePocket.name + ' (Caixinha)' : (deInvest ? deInvest.name + ' (Investimento)' : ''));
     const paraName = paraBank ? paraBank.name : (paraPocket ? paraPocket.name + ' (Caixinha)' : (paraInvest ? paraInvest.name + ' (Investimento)' : ''));
     const investmentValue = inv => inv ? (inv.type === 'Renda Fixa' ? fixedIncomeCurrentValue(inv) : Number(inv.value || 0)) : 0;
-    if (deInvest && investmentValue(deInvest) + 1e-9 < valor) { logWarn('Transferência', 'Transferência universal', 'Bloqueada', 'O valor excede o saldo disponível do investimento.', { amount: valor, investmentId: deInvest.id }); alert('O valor excede o saldo disponível do investimento.'); return; }
-    if (deInvest && isCryptoType(deInvest.type) && !(Number(deInvest.price) > 0)) { logWarn('Transferência', 'Transferência universal', 'Bloqueada', 'O investimento de origem não possui cotação válida.'); alert('Defina uma cotação válida no investimento antes de transferir.'); return; }
-    if (paraInvest && isCryptoType(paraInvest.type) && !(Number(paraInvest.price) > 0)) { logWarn('Transferência', 'Transferência universal', 'Bloqueada', 'O investimento de destino não possui cotação válida.'); alert('Defina uma cotação válida no investimento antes de transferir.'); return; }
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Transferência', 'Transferência universal');
-    logInfo('Transferência', 'Transferência universal', 'Em andamento', `Transferência de ${deName} para ${paraName} iniciada.`, { amount: valor }, operation);
+    if (deInvest && investmentValue(deInvest) + 1e-9 < valor) { alert('O valor excede o saldo disponível do investimento.'); return; }
+    if (deInvest && isCryptoType(deInvest.type) && !(Number(deInvest.price) > 0)) { alert('Defina uma cotação válida no investimento antes de transferir.'); return; }
+    if (paraInvest && isCryptoType(paraInvest.type) && !(Number(paraInvest.price) > 0)) { alert('Defina uma cotação válida no investimento antes de transferir.'); return; }
     if (deBank) {
       entries.push({
         id: 'e' + Date.now() + Math.random().toString(36).slice(2, 7),
@@ -3057,9 +2987,8 @@ document.getElementById('tSalvar').onclick = async () => {
     }
 
     try {
-      await persistAll(operation);
-      logInfo('Transferência','Transferência universal','Sucesso',`Transferência de ${deName} para ${paraName} registrada.`,{amount: valor}, operation);
-    } catch (err) { logSyncError('transferência', err, operation); }
+      await persistAll();
+    } catch (err) { console.error(err); }
     populateFilterControls();
     setMoneyInput('tValor', 0);
     document.getElementById('tDesc').value = '';
@@ -3103,7 +3032,6 @@ document.getElementById('tSalvar').onclick = async () => {
     button.textContent = 'Gerando prévia…';
     try {
       if (parseImportedText(txt, 'Texto colado')) {
-        logInfo('Importação','Processar texto colado','Sucesso','Prévia de importação criada; nenhum lançamento foi salvo ainda.');
         document.getElementById('pasteArea').value = '';
         setPasteStatus('Prévia criada. Confira os lançamentos antes de confirmar.');
       }
@@ -3152,16 +3080,12 @@ document.getElementById('tSalvar').onclick = async () => {
         cards = clean.cards || [];
         purchases = clean.purchases || [];
         if (clean.featureSettings) { featureSettings = normalizeFeatureSettings(clean.featureSettings); persistFeatureSettings(); }
-        diagnosticLog.splice(0, diagnosticLog.length, ...(clean.diagnosticLog || []).slice(0, LOG_LIMIT));
-        persistDiagnosticLogLocally();
         normalizePockets();
         await persistNow();
         populateFilterControls(true);
         render();
-        logInfo('Importação','Restaurar backup','Sucesso','Backup restaurado após validação e sanitização.',{schemaVersion: payload.schemaVersion || 'antiga', dropped});
         alert(`Backup restaurado com sucesso! Versão ${payload.schemaVersion || 'antiga'}.`);
       } catch(err) {
-        logSyncError('restauração de backup', err);
         console.error('Falha ao restaurar backup:', err);
         alert('Não foi possível restaurar o backup. Verifique se o arquivo é um JSON válido do Livro-Caixa.');
       } finally {
@@ -3180,7 +3104,6 @@ document.getElementById('tSalvar').onclick = async () => {
     const hasAnything = activeEntries.length > 0 || pocketsBlock.length > 0 || investBlock.length > 0;
     if (!hasAnything) { showToast('Não há dados para exportar nos filtros/período atuais.', 'warning'); return; }
     renderExportPreview(); openModal('panelExportFormat');
-    logInfo('Exportação','Abertura da prévia','Sucesso','Prévia do extrato aberta.',{count: activeEntries.length});
   };
 
   document.getElementById('btnExportBackup')?.addEventListener('click', () => {
@@ -3188,7 +3111,7 @@ document.getElementById('tSalvar').onclick = async () => {
   });
   document.getElementById('btnExportFormatPdf').onclick = () => { closeAllPanels(); exportExtractPdf(); };
   document.getElementById('btnExportFormatXlsx').onclick = () => { closeAllPanels(); exportExtractXlsx(); };
-  document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx().catch(err => { logSyncError('exportação DOCX', err); showToast('Não foi possível gerar o arquivo Word.', 'error'); }); };
+  document.getElementById('btnExportFormatDocx').onclick = () => { closeAllPanels(); exportExtractDocx(); };
 
   const PDF_IMPORT_MAX_BYTES = 12 * 1024 * 1024;
   const PDF_IMPORT_MAX_PAGES = 80;
@@ -3214,9 +3137,8 @@ document.getElementById('tSalvar').onclick = async () => {
         const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
         if (!result.value.trim()) throw new Error('Não encontrei texto no DOCX.');
         parseImportedText(result.value, `DOCX · ${String(file.name || 'fechamento').slice(0, 80)}`);
-        logInfo('Importação','Ler DOCX','Sucesso','Texto extraído do DOCX para revisão; nenhum lançamento foi salvo automaticamente.',{messages: result.messages?.length || 0});
       } catch (err) {
-        logSyncError('importação de DOCX', err);
+        console.error(err);
         alert(err?.message || 'Não foi possível ler o arquivo DOCX.');
       } finally {
         pdfImportInProgress = false;
@@ -3246,9 +3168,9 @@ document.getElementById('tSalvar').onclick = async () => {
       const fullText = pages.join('\n');
       if (!fullText.trim()) throw new Error('Não encontrei texto selecionável neste PDF.');
       parseImportedText(fullText, `PDF · ${String(file.name || 'extrato').slice(0, 80)}`);
-      logInfo('Importação','Ler PDF','Sucesso','Texto extraído do PDF para revisão; nenhum lançamento foi salvo automaticamente.',{pages: pdf.numPages});
-    } catch(err) {
-      logSyncError('importação de PDF', err);
+      document.getElementById('fileImportInput').value = '';
+      renderImportReview();
+    } catch (err) {
       console.error(err);
       alert(err?.message || 'Não consegui ler esse PDF. Tente usar "Colar Texto".');
     } finally {
@@ -3350,20 +3272,12 @@ document.getElementById('tSalvar').onclick = async () => {
         const pass = passEl ? passEl.value : '';
         if (!email || !pass) { setAuthError('Preencha e-mail e senha.'); return; }
         setAuthError('');
-        const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar');
-        logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Em andamento', 'Solicitação de autenticação iniciada.', null, operation);
         const action = isSignupMode
           ? auth.createUserWithEmailAndPassword(email, pass)
           : auth.signInWithEmailAndPassword(email, pass);
-        action.then(() => logInfo('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Sucesso', 'Solicitação de autenticação concluída.', null, operation)).catch(err => {
-          /* Conta QA efêmera removida no cleanup da run anterior: credencial
-             inválida é comportamento esperado, não erro do usuário. Loga como
-             aviso para não poluir o console com console.error de diagnóstico. */
-          if (err && err.code === 'auth/invalid-credential') {
-            logWarn('Autenticação', isSignupMode ? 'Criar conta' : 'Entrar', 'Falha', 'Credencial inválida ou conta não encontrada (conta efêmera pode ter sido removida).', { code: err.code }, operation);
-          } else {
-            logSyncError('autenticação', err, operation);
-          }
+        action.then(() => {
+          // autenticação concluída com sucesso
+        }).catch(err => {
           setAuthError(translateAuthError(err.code));
         });
       };
@@ -3387,57 +3301,12 @@ document.getElementById('tSalvar').onclick = async () => {
     if (authGoogle) {
       authGoogle.onclick = () => {
         setAuthError('');
-        window.loginDebugLog?.(
-          'GOOGLE',
-          'Clique em “Entrar com Google” detectado'
-        );
-
-        const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Autenticação', 'Entrar com Google');
-        logInfo('Autenticação', 'Entrar com Google', 'Em andamento', 'Solicitação de autenticação Google iniciada.', null, operation);
         const provider = new firebase.auth.GoogleAuthProvider();
-
-        window.loginDebugLog?.(
-          'GOOGLE',
-          'GoogleAuthProvider criado',
-          { authDomain: window.__firebaseConfig?.authDomain }
-        );
-
-        window.loginDebugLog?.(
-          'GOOGLE',
-          'Modo popup selecionado'
-        );
-
         auth.signInWithPopup(provider)
           .then(() => {
-            window.loginDebugLog?.(
-              'GOOGLE',
-              'signInWithPopup concluído com sucesso'
-            );
-
-            logInfo(
-              'Autenticação',
-              'Entrar com Google',
-              'Sucesso',
-              'Autenticação Google concluída.',
-              null,
-              operation
-            );
+            // autenticação Google concluída com sucesso
           })
           .catch(err => {
-            window.loginDebugLog?.(
-              'ERROR',
-              'signInWithPopup falhou',
-              { code: err.code, message: err.message }
-            );
-
-            if (err.code === 'auth/popup-closed-by-user') {
-              window.loginDebugLog?.(
-                'WARN',
-                'Popup fechado pelo usuário'
-              );
-              return;
-            }
-            logSyncError('autenticação Google', err, operation);
             setAuthError(translateAuthError(err.code));
           });
       };
@@ -3481,17 +3350,7 @@ document.getElementById('tSalvar').onclick = async () => {
     window.currentUser = currentUser;
 
     try {
-      window.loginDebugLog?.(
-        'AUTH',
-        user
-          ? 'Firebase informou usuário autenticado'
-          : 'Firebase informou que não há usuário autenticado',
-        user
-          ? { provider: user.providerData?.map(p => p.providerId) }
-          : undefined
-      );
-      if (user) logInfo('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
-      else if (typeof diagnosticLog !== 'undefined' && diagnosticLog.length) logInfo('Autenticação','Sessão encerrada','Sucesso','Sessão atual encerrada.');
+      if (user) console.log('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
       const overlay = document.getElementById('authOverlay');
       const syncOverlay = document.getElementById('syncOverlay');
       if (user) {
@@ -3507,19 +3366,10 @@ document.getElementById('tSalvar').onclick = async () => {
         startSessionSecurity();
         startFeatureAutomation();
         window.LivroCaixaAI?.refreshQuota?.({ throttleMs: 15000 });
-        /* Isola o LOG por UID: limpa eventos do usuário anterior (se houver)
-           e define chaves de storage particionadas para o usuário atual. */
-        if (typeof resetLogForNewUser === 'function') resetLogForNewUser(user.uid);
+        /* Limpa eventos do usuário anterior (se houver). */
         loadState().then(() => {
-          /* Após carregar o estado (que inclui loadDiagnosticLog), registra
-             a sessão iniciada para que o evento apareça no LOG. */
-          logInfo('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
-          if (typeof window.renderDiagnosticLog === 'function') {
-            try { window.renderDiagnosticLog(); } catch (err) { /* não bloqueia */ }
-          }
         }).catch(err => {
           console.warn('[INIT] Falha ao carregar dados após autenticação:', err);
-          if (typeof logWarn === 'function') logWarn('Sistema','Carregamento de dados','Falha','A aplicação iniciou, mas a sincronização de dados encontrou um erro.',{message: err?.message});
         });
         setTimeout(checkLocalPinLock, 700);
       } else {
@@ -3538,14 +3388,11 @@ document.getElementById('tSalvar').onclick = async () => {
         if (syncOverlay) syncOverlay.classList.add('hidden');
         if (overlay) overlay.classList.remove('hidden');
         renderUserBar();
-        /* Isola o LOG: remove eventos do usuário que encerrou a sessão. */
-        if (typeof resetLogForNewUser === 'function') resetLogForNewUser(null);
+        /* Remove eventos do usuário que encerrou a sessão. */
         window.currentUser = null;
-        if (typeof loadDiagnosticLog === 'function') loadDiagnosticLog().catch(() => {});
       }
     } catch (err) {
       console.error('[INIT] Erro no callback de autenticação:', err);
-      if (typeof logWarn === 'function') logWarn('Autenticação','Callback de sessão','Falha','Ocorreu um erro ao processar a sessão; o login foi exibido como fallback.',{message: err?.message});
     } finally {
       /* Garante que o loader nunca fique preso, mesmo se algo acima lançar erro. */
       const syncOv = document.getElementById('syncOverlay');

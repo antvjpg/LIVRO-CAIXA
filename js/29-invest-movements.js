@@ -127,7 +127,7 @@
     if (!currentUser) return;
     const stale = investments.filter(investmentQuoteIsStale);
     if (!stale.length) return;
-    try { await updateAllInvestmentPrices({ auto:true, requestedCandidates:stale }); } catch (err) { logSyncError('atualização de cotações desatualizadas', err); }
+    try { await updateAllInvestmentPrices({ auto:true, requestedCandidates:stale }); } catch (err) { }
   }
 
 
@@ -164,8 +164,6 @@
       statusEl.textContent = 'Nenhum ativo com unidades cadastradas para atualizar automaticamente (ativos sem "unidades/tokens" precisam ser editados manualmente).';
       return;
     }
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Cotação', 'Atualização em lote');
-    logInfo('Cotação', 'Atualização em lote', 'Em andamento', `Atualização de ${candidates.length} ativo(s) iniciada.`, { count: candidates.length }, operation);
     btn.disabled = true;
     const icon = btn.querySelector('.quote-refresh-icon');
     if (icon) icon.classList.add('is-spinning');
@@ -177,7 +175,7 @@
         const coin = inv.coinGeckoId ? { id: inv.coinGeckoId, symbol: inv.name } : await fetchCoinMatch(inv.name);
         if (!coin) { failed.push(inv.name); continue; }
         const price = await fetchCoinPriceBRL(coin.id);
-        if (!(Number(price) > 0)) { failed.push(inv.name); logWarn('Cotação','Atualização de cotação','Parcial',`Retorno inválido para ${inv.name}; última cotação válida preservada.`,null,operation); continue; }
+        if (!(Number(price) > 0)) { failed.push(inv.name); continue; }
         inv.price = Number(price);
         const currentUnits = cryptoCurrentUnits(inv);
         inv.value = cryptoValueFromUnits(inv.type, currentUnits, price);
@@ -189,7 +187,6 @@
       } catch (err) {
         console.error(err);
         failed.push(inv.name);
-        logSyncError(`cotação CoinGecko — ${inv.name}`, err, operation);
       }
       if (i < candidates.length - 1) await sleep(1200); // evita limite de requisições da API
     }
@@ -200,12 +197,11 @@
         }));
         localStorage.setItem('lc_last_quotes', JSON.stringify({ at: Date.now(), items: quoteSnap }));
       } catch (_) {}
-      await persistAll(operation);
+      await persistAll();
     }
     render();
     btn.disabled = false;
     if (icon) icon.classList.remove('is-spinning');
     statusEl.textContent = `${updated} de ${candidates.length} cotação(ões) atualizada(s).` +
       (failed.length ? ` Não encontrados: ${failed.join(', ')}.` : '');
-    (failed.length ? logWarn : logInfo)('Cotação', auto ? 'Atualização automática' : 'Atualização em lote', failed.length ? 'Parcial' : 'Sucesso', `${updated} cotação(ões) atualizada(s).`, { failed }, operation);
   }

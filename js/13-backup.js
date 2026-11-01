@@ -16,7 +16,7 @@
     const required = ['banks','categories','entries'];
     if (!required.every(k => Array.isArray(data[k]))) return false;
     if (payload.schemaVersion != null && (!Number.isInteger(payload.schemaVersion) || payload.schemaVersion < 1 || payload.schemaVersion > BACKUP_SCHEMA_VERSION)) return false;
-    const optional = ['investments','pockets','yieldsLog','recurringBills','receivables','budgets','goals','cards','purchases','invoiceLaunches','diagnosticLog'];
+    const optional = ['investments','pockets','yieldsLog','recurringBills','receivables','budgets','goals','cards','purchases','invoiceLaunches'];
     if (optional.some(k => data[k] != null && !Array.isArray(data[k]))) return false;
     if (data.featureSettings != null && (typeof data.featureSettings !== 'object' || Array.isArray(data.featureSettings))) return false;
     return true;
@@ -38,8 +38,7 @@
       goals: Array.isArray(data.goals) ? data.goals : [],
       invoiceLaunches: Array.isArray(data.invoiceLaunches) ? data.invoiceLaunches : [],
       cards: Array.isArray(data.cards) ? data.cards : [],
-      purchases: Array.isArray(data.purchases) ? data.purchases : [],
-      diagnosticLog: Array.isArray(data.diagnosticLog) ? data.diagnosticLog : []
+      purchases: Array.isArray(data.purchases) ? data.purchases : []
     };
   }
 
@@ -98,8 +97,7 @@
       if (!ok) dropped.purchases++;
       return ok;
     });
-    const diagnosticLog = data.diagnosticLog.filter(item => item && typeof item === 'object' && typeof item.type === 'string' && typeof item.module === 'string').slice(0, LOG_LIMIT);
-    return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables: Array.isArray(data.receivables) ? data.receivables : [], budgets, goals: data.goals || [], invoiceLaunches: Array.isArray(data.invoiceLaunches) ? data.invoiceLaunches : [], cards, purchases, featureSettings: data.featureSettings || null, diagnosticLog }, dropped };
+      return { data: { banks, categories, entries, investments, pockets, yieldsLog, recurringBills, receivables: Array.isArray(data.receivables) ? data.receivables : [], budgets, goals: data.goals || [], invoiceLaunches: Array.isArray(data.invoiceLaunches) ? data.invoiceLaunches : [], cards, purchases, featureSettings: data.featureSettings || null }, dropped };
   }
 
   /* Cria o payload completo de backup: todas as coleções do Firebase +
@@ -138,8 +136,7 @@
         cards: Array.isArray(cards) ? cards : [],
         purchases: Array.isArray(purchases) ? purchases : [],
         invoiceLaunches: Array.isArray(invoiceLaunches) ? invoiceLaunches : [],
-        featureSettings: typeof featureSettings !== 'undefined' && featureSettings ? featureSettings : null,
-        diagnosticLog: Array.isArray(diagnosticLog) ? diagnosticLog : []
+        featureSettings: typeof featureSettings !== 'undefined' && featureSettings ? featureSettings : null
       },
       settings
     };
@@ -164,14 +161,8 @@
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
-      logInfo('Backup', 'Exportação', 'Sucesso', 'Backup exportado para download.', {
-        schemaVersion: payload.schemaVersion,
-        entries: payload.data.entries ? payload.data.entries.length : 0,
-        filename
-      });
     } catch (err) {
       console.error('[Backup] Falha ao exportar:', err);
-      logWarn('Backup', 'Exportação', 'Falha', 'Não foi possível gerar o arquivo de backup.', { message: err?.message });
       alert('Não foi possível exportar o backup. Veja o console para detalhes.');
     }
   }

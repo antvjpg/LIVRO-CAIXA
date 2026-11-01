@@ -20,7 +20,6 @@
   }
 
   async function loadState() {
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Carregamento de dados', 'Sincronização');
     const loadUserUid = currentUser?.uid || null;
     const thisLoadGeneration = ++loadGeneration;
     firstLoadDone = false;
@@ -33,13 +32,7 @@
 
     realtimeUnsubscribers.forEach(unsub => unsub());
     realtimeUnsubscribers = [];
-    await loadDiagnosticLog();
-    logInfo('Carregamento de dados', 'Início da sincronização', 'Em andamento', 'Leitura das coleções do Livro-Caixa iniciada.', null, operation);
-
     try {
-      // Cada coleção resolve assim que a PRIMEIRA leitura chega — que, com o cache offline
-      // ativo, costuma vir do disco do próprio celular quase instantaneamente, mesmo antes
-      // da confirmação do servidor. Isso evita esperar a rede toda vez que a página recarrega.
       await Promise.all(COLLECTIONS.map(name => new Promise((resolve, reject) => {
         let resolved = false;
         const unsub = colRef(name).onSnapshot(snap => {
@@ -74,7 +67,7 @@
             render();
           }
         }, err => {
-          if (!resolved) { resolved = true; reject(err);           } else { console.error(err); logSyncError(`sincronização — ${name}`, err); }
+          if (!resolved) { resolved = true; reject(err); } else { console.error(err); }
         });
         realtimeUnsubscribers.push(unsub);
       })));
@@ -161,10 +154,8 @@
       firstLoadDone = true;
       renderBalances();
       refreshFinancialIndicators();
-      logInfo('Carregamento de dados', 'Sincronização concluída', 'Sucesso', `${COLLECTIONS.length} coleções carregadas.`, null, operation);
     } catch (err) {
       console.error(err);
-      logSyncError('carregamento de dados', err, operation);
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
     } finally {
       if (thisLoadGeneration === loadGeneration && currentUser?.uid === loadUserUid) {
@@ -226,8 +217,8 @@
     setSyncDot(true);
     pendingSaveCount++;
     return commitDiff()
-      .then(() => { setSyncDot(false); logInfo('Salvamento', 'Persistência dos dados', 'Sucesso', 'Alterações gravadas nas coleções do Livro-Caixa.', null, operation); })
-      .catch(err => { logSyncError('salvamento', err, operation); setSyncDot(false); throw err; })
+      .then(() => { setSyncDot(false); })
+      .catch(err => { setSyncDot(false); throw err; })
       .finally(() => {
         pendingSaveCount = Math.max(0, pendingSaveCount - 1);
         if (pendingSaveCount === 0) flushSnapshotBuffer();

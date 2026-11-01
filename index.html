@@ -179,7 +179,7 @@
     <div class="drawer-nav drawer-nav-secondary">
       <button type="button" data-drawer-action="profile"><span><i class="fi fi-rr-user" aria-hidden="true"></i></span> Perfil</button>
       <button type="button" data-drawer-action="lab"><span class="drawer-item-icon" aria-hidden="true"><i class="fi fi-rr-blood-test-tube" aria-hidden="true"></i></span> LABS</button>
-      <button type="button" data-drawer-action="diagnostico"><span><i class="fi fi-rr-clipboard" aria-hidden="true"></i></span> Diagnóstico Geral (LOG)</button>
+
       <button type="button" data-drawer-action="monitor"><span><i class="fi fi-rr-refresh" aria-hidden="true"></i></span> Monitor de API</button>
     </div>
   </aside>
@@ -567,11 +567,11 @@
         <div class="profile-group-title"><span class="profile-group-icon" aria-hidden="true"><i class="fi fi-sr-sparkles"></i></span> Análise assistida</div>
         <div class="feature-profile-section profile-plus-section">
           <label class="feature-profile-toggle"><input type="checkbox" id="featureAutoCategorization"><span class="feature-profile-toggle-copy"><strong>Auto-categorização simples</strong><small>Sugere categorias pelo seu histórico. Nada muda sem sua confirmação.</small></span><span class="feature-profile-switch" aria-hidden="true"></span></label>
-          <div class="feature-profile-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button><button type="button" id="btnRunDiagnostic">Executar diagnóstico</button><button type="button" id="btnOpenTechnicalDiagnostic">⚙ Abrir console técnico</button></div>
+          <div class="feature-profile-actions"><button type="button" id="btnRunAnomalyScan">Detectar anomalias</button><button type="button" id="btnGenerateMonthlyReview">Gerar revisão mensal</button><button type="button" id="btnOpenTechnicalDiagnostic">⚙ Abrir console técnico</button></div>
           <div id="profileAnalysisStatus" class="feature-profile-feedback" aria-live="polite"></div>
           <div id="profileAnalysisCard" class="analysis-result-card" hidden role="region" aria-label="Resultado da análise assistida">
             <div class="analysis-card-body" id="profileAnalysisCardBody"></div>
-            <div id="diagnosticResults" class="diagnostic-results" aria-live="polite"></div>
+
           </div>
         </div>
         <div class="feature-profile-heading"><strong>Conexão externa (MCP)</strong></div>
@@ -878,17 +878,6 @@
 
 
 
-    <div class="panel log-panel" id="panelDiagnostico">
-      <h3>Diagnóstico Geral (LOG) <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
-      <p class="hint log-panel-desc" style="margin:0 0 10px;">Registro técnico de carregamento, salvamento, sincronização e operações. Dados sensíveis não são registrados.</p>
-      <div class="log-stats" id="logStats" aria-live="polite"></div>
-      <div id="diagnosticoList" class="log-list"></div>
-      <div class="log-actions" style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
-        <button type="button" id="btnExportDiagnostico" style="flex:1;">Exportar LOG</button>
-        <button type="button" id="btnClearDiagnostico" style="flex:1;">Limpar local</button>
-      </div>
-      <p class="hint log-panel-desc" style="margin:8px 0 0; font-size:12px;">Limpar local remove apenas a cópia do seu aparelho.</p>
-    </div>
 
     <div class="panel" id="panelOpenRouterUsage">
       <h3>Monitor de API <button type="button" class="modal-close" onclick="closeAllPanels()" aria-label="Fechar">×</button></h3>
@@ -1645,7 +1634,6 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
   <script src="./js/14-theme.js?v=20-25"></script>
   <script src="./js/15-tabs-nav.js?v=20-25"></script>
   <script src="./js/16-events-modals.js?v=20-25"></script>
-  <script type="module" src="./js/domain/diagnostic-log.js?v=20-41"></script>
   <script type="module" src="./js/domain/audit-trail.js?v=20-41"></script>
   <script defer src="./js/17-sync-persistence.js?v=20-25"></script>
   <script defer src="./js/18-render-core.js?v=20-28"></script>

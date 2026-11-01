@@ -29,35 +29,32 @@
         </div>
       `).join('');
     } catch (err) {
-      logWarn('Conciliação', 'Render histórico', 'Falha', err.message);
     }
   }
 
   async function autoGenerateRecurringBills() {
-    if (!currentUser) { logWarn('Calendário', 'Geração automática', 'Ignorado', 'É necessário estar autenticado para gerar lançamentos financeiros.'); return 0; }
+    if (!currentUser) { return 0; }
     const now = new Date(); const key = billMonthKey(now); const year = now.getFullYear(); const month = now.getMonth(); const candidates = recurringBills.filter(bill => billAppliesToMonth(bill, year, month) && !billGeneratedForMonth(bill, key) && bill.bank && bill.bank !== 'a-definir');
     if (!candidates.length) return 0;
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Calendário', 'Geração automática'); let created = 0;
+    let created = 0;
     const generatedEntryIds = [];
     const previousStates = candidates.map(bill => ({ bill, generatedMonths: Array.isArray(bill.generatedMonths) ? bill.generatedMonths.slice() : [] }));
     candidates.forEach(bill => { const date = billDueDateForMonth(bill, year, month); const entryId = 'auto' + Date.now() + Math.random().toString(36).slice(2, 8); generatedEntryIds.push(entryId); const entry = { id: entryId, date, desc: `${bill.name} (automático)`, bank: bill.bank, category: bill.category || categories[0]?.id || '', amount: Number(bill.amount) || 0, type: 'out', recurringBillId: bill.id, automated: true }; appendEntryHistory(entry, { action: 'create', by: 'auto' }); entries.push(entry); bill.generatedMonths = Array.isArray(bill.generatedMonths) ? bill.generatedMonths : []; bill.generatedMonths.push(key); created++; });
     try {
-      await persistAll(operation);
-      logInfo('Calendário', 'Geração automática', 'Sucesso', `${created} conta(s) recorrente(s) gerada(s) sem duplicidade.`, { month: key, created }, operation);
+      await persistAll();
     } catch (err) {
       entries = entries.filter(item => !generatedEntryIds.includes(item.id));
       previousStates.forEach(({ bill, generatedMonths }) => { bill.generatedMonths = generatedMonths; });
       created = 0;
-      logSyncError('geração automática de contas', err, operation);
     }
     render(); renderBills(); return created;
   }
   async function runFeatureAutomation({ manual = false } = {}) {
-    if (!currentUser) { logWarn('Automação', 'Ciclo de recursos', 'Ignorado', 'É necessário estar autenticado para executar alterações financeiras.'); return { generated: 0, skipped: true }; }
+    if (!currentUser) { return { generated: 0, skipped: true }; }
     if (manual && !window.confirm('Executar agora o ciclo de teste? A geração de contas recorrentes pode criar lançamentos financeiros reais e as cotações podem ser atualizadas.')) return { generated: 0, cancelled: true };
     let generated = 0;
     if (featureSettings.autoLaunchRecurring || manual) generated = await autoGenerateRecurringBills();
-    if (featureSettings.autoRefreshQuotes || manual) { try { await updateAllInvestmentPrices({ auto: !manual }); } catch (err) { logSyncError('autoatualização de cotações', err); } }
+    if (featureSettings.autoRefreshQuotes || manual) { try { await updateAllInvestmentPrices({ auto: !manual }); } catch (err) {} }
     renderNotifications(); renderAdvancedDashboard(); renderDashboardTab(); return { generated };
   }
   function startFeatureAutomation() {
@@ -86,82 +83,6 @@
     renderPeriodSummaries();
     renderNotifications();
   }
-
-  function formatLogTimestamp(value) {
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '';
-    const base = date.toLocaleString('pt-BR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    return `${base}.${String(date.getMilliseconds()).padStart(3, '0')}`;
-  }
-  function syncBadge(item) {
-    if (item.synced === true) return '<span class="log-sync synced" title="Sincronizado">●</span>';
-    if (item.synced === false) return '<span class="log-sync pending" title="Sincronização pendente">○</span>';
-    return '<span class="log-sync local" title="Apenas local">○</span>';
-  }
-  /* Renderiza as opções de um <select> apenas quando a lista muda, evitando
-     reconstrução a cada filtro (que perde foco e desfoca o usuário). */
-  function renderLogSelectOptions(selectId, items, emptyLabel, current) {
-    const select = document.getElementById(selectId);
-    if (!select) return;
-    const html = '<option value="">' + escapeHTML(emptyLabel) + '</option>' + items.map(item => '<option value="' + escapeHTML(item) + '">' + escapeHTML(item) + '</option>').join('');
-    if (select.innerHTML !== html) {
-      select.innerHTML = html;
-      if (items.includes(current)) select.value = current;
-    }
-  }
-  function truncateDetails(value, maxChars = 220) {
-    if (!value) return { html: '', collapsed: false };
-    const text = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
-    if (text.length <= maxChars) return { html: escapeHTML(text), collapsed: false };
-    const head = escapeHTML(text.slice(0, maxChars));
-    const tail = escapeHTML(text.slice(maxChars));
-    return {
-      html: '<span class="log-detail-visible">' + head + '</span><span class="log-detail-collapsed">' + tail + '</span><button type="button" class="log-detail-toggle" aria-label="Ver mais detalhes">…ver mais</button>',
-      collapsed: true
-    };
-  }
-  function renderDiagnosticLog() {
-    const list = document.getElementById('diagnosticoList');
-    const stats = document.getElementById('logStats');
-
-    if (!list) return;
-
-    const info = diagnosticLog.filter(i => i.type === 'INFO').length;
-    const warn = diagnosticLog.filter(i => i.type === 'WARN').length;
-    const error = diagnosticLog.filter(i => i.type === 'ERROR').length;
-    if (stats) {
-      stats.innerHTML = '<b>Total:</b> ' + diagnosticLog.length + ' &nbsp; <b>INFO:</b> ' + info + ' &nbsp; <b>WARN:</b> ' + warn + ' &nbsp; <b>ERROR:</b> ' + error;
-    }
-
-    const filtered = [...diagnosticLog].sort((a, b) => (Number(b.sequence || 0) - Number(a.sequence || 0)) || String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
-
-    list.innerHTML = filtered.length ? filtered.map(item => {
-      const date = item.timestamp ? formatLogTimestamp(item.timestamp) : '';
-      const sequence = item.sequence != null ? '#' + item.sequence : 'sem sequência';
-      const sync = item.synced === true ? 'Sincronizado' : item.synced === false ? 'Pendente' : 'Local';
-      const meta = [sequence, date, item.module || 'Sistema', item.status || '', sync].filter(Boolean).join(' · ');
-      const description = item.description ? ' — ' + escapeHTML(item.description) : '';
-      return `<article class="log-entry ${String(item.type||'').toLowerCase()}"><div class="log-entry-head"><span class="log-badge">${escapeHTML(item.type || 'INFO')}</span><span class="log-entry-meta">${escapeHTML(meta)}</span></div><div class="log-entry-description">${escapeHTML(item.action || 'Operação')}${description}</div></article>`;
-    }).join('') : '<p class="hint">Nenhum evento registrado.</p>';
-  }
-  function attachDetailToggles() {
-    document.querySelectorAll('.log-detail-toggle').forEach(btn => {
-      if (btn.dataset.logBound) return;
-      btn.dataset.logBound = '1';
-      btn.addEventListener('click', () => {
-        const article = btn.closest('.log-entry');
-        if (!article) return;
-        const visible = article.querySelector('.log-detail-visible');
-        const collapsed = article.querySelector('.log-detail-collapsed');
-        if (visible && collapsed) {
-          const isHidden = collapsed.style.display === 'none';
-          collapsed.style.display = isHidden ? 'inline' : 'none';
-          btn.textContent = isHidden ? '…ver menos' : '…ver mais';
-        }
-      });
-    });
-  }
-  function openDiagnostics() { renderDiagnosticLog(); openModal('panelDiagnostico'); }
 
   function refreshFilteredViews() { renderCategorySummary(); renderLedger(); }
 
@@ -411,5 +332,4 @@
 
   /* Expose para que diagnostic-log.js possa chamar após carregar eventos. */
   if (typeof window !== 'undefined') {
-    window.renderDiagnosticLog = renderDiagnosticLog;
   }

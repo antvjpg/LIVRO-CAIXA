@@ -94,9 +94,7 @@
     render();
     try {
       await persistAll();
-      logInfo('Organização', collectionName === 'investments' ? 'Reordenação de investimento' : 'Reordenação de caixinha', 'Sucesso', `Item movido para a posição ${target + 1}.`);
     } catch (err) {
-      logSyncError('reordenação', err);
     }
   }
 
@@ -138,15 +136,6 @@
     try {
       await persistAll();
 
-      logInfo(
-        'Organização',
-        collectionName === 'investments'
-          ? 'Reordenação de investimento'
-          : 'Reordenação de caixinha',
-        'Sucesso',
-        `Item movido para a posição ${targetIndex + 1}.`
-      );
-
       return true;
     } catch (err) {
       previousOrder.forEach(({ id: previousId, order }) => {
@@ -159,7 +148,6 @@
       );
 
       render();
-      logSyncError('reordenação', err);
 
       return false;
     }

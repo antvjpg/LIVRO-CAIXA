@@ -290,7 +290,6 @@
 
     try {
       await persistAll();
-      logInfo('Cartões', 'Marcar fatura como paga', 'Sucesso', `Fatura ${card.name} (${closingPeriodKey}) marcada como paga sem lançamento${cascade.length ? ` · ${cascade.length} fatura(s) anterior(es) do saldo também marcada(s)` : ''}.`);
     } catch (err) {
       if (prev) {
         const idx = invoiceLaunches.findIndex(x => x.id === id);
@@ -306,7 +305,6 @@
         const idx = invoiceLaunches.findIndex(x => x.id === item.id);
         if (idx >= 0) invoiceLaunches[idx] = item.snapshot;
       });
-      logSyncError('marcar fatura como paga', err);
       showToast('Não foi possível salvar. Tente novamente.', 'error');
     } finally {
       renderBills();
@@ -328,12 +326,10 @@
     }
     try {
       await persistAll();
-      logInfo('Cartões', 'Desmarcar fatura paga', 'Sucesso', `Status pago removido (${closingPeriodKey}).`);
     } catch (err) {
       const idx = invoiceLaunches.findIndex(x => x.id === id);
       if (idx >= 0) invoiceLaunches[idx] = prev;
       else invoiceLaunches.push(prev);
-      logSyncError('desmarcar fatura paga', err);
       showToast('Não foi possível atualizar. Tente novamente.', 'error');
     } finally {
       renderBills();
@@ -967,8 +963,6 @@
       }
     }
 
-    const operation = (typeof beginLogOperation === 'function' ? beginLogOperation : (typeof window !== 'undefined' && window.beginLogOperation ? window.beginLogOperation : null))?.('Livro-Caixa', editingEntryId ? 'Editar lançamento' : 'Salvar lançamento');
-    logInfo('Livro-Caixa', editingEntryId ? 'Editar lançamento' : 'Salvar lançamento', 'Em andamento', 'Operação de lançamento iniciada.', null, operation);
     btn.disabled = true;
     const originalLabel = btn.textContent;
     btn.textContent = 'Salvando...';
@@ -1012,15 +1006,13 @@
     populateFilterControls();
     render();
     try {
-      await saveEntries(operation);
-      logInfo('Livro-Caixa','Salvar lançamento','Sucesso','Movimentação registrada.',{type: currentType}, operation);
+      await saveEntries();
       clearReceiptReaderState();
       document.getElementById('fDesc').value = '';
       setMoneyInput('fValor', 0);
       closeAllPanels();
       return true;
     } catch (err) {
-      logSyncError('lançamento', err, operation);
       return false;
     } finally {
       btn.disabled = false;

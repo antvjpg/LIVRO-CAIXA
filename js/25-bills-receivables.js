@@ -73,10 +73,8 @@
       if (!bill.paidMonths.includes(monthKey)) bill.paidMonths.push(monthKey);
       try {
         await persistAll();
-        logInfo('Calendário', 'Marcar como pago', 'Sucesso', `${bill.name} marcado como pago sem lançamento (${monthKey}).`);
       } catch (err) {
         bill.paidMonths = bill.paidMonths.filter(k => k !== monthKey);
-        logSyncError('marcar conta como paga', err);
         showToast('Não foi possível salvar o status pago. Tente novamente.', 'error');
       } finally {
         render(); renderBills();
@@ -94,10 +92,8 @@
       bill.paidMonths = previous.filter(k => k !== monthKey);
       try {
         await persistAll();
-        logInfo('Calendário', 'Desmarcar pago', 'Sucesso', `${bill.name}: status pago removido (${monthKey}).`);
       } catch (err) {
         bill.paidMonths = previous;
-        logSyncError('desmarcar conta paga', err);
         showToast('Não foi possível atualizar o status.', 'error');
       } finally {
         render(); renderBills();
@@ -242,16 +238,14 @@
       });
     }
     // Não cria lançamento, evento de calendário, nem altera patrimônio
-    try {
-      await persistAll();
-      logInfo('Valores a Receber', editingReceivableId ? 'Editar' : 'Criar', 'Sucesso', `${person} · ${desc} · ${fmt(amount)} · ${status}`);
-      editingReceivableId = null;
-      closeAllPanels();
-      renderReceivables();
-    } catch (err) {
-      logSyncError('valores a receber', err);
-      showToast('Não foi possível salvar. Tente novamente.', 'error');
-    }
+      try {
+        await persistAll();
+        editingReceivableId = null;
+        closeAllPanels();
+        renderReceivables();
+      } catch (err) {
+        showToast('Não foi possível salvar. Tente novamente.', 'error');
+      }
   }
   async function setReceivableStatus(id, status) {
     const idx = receivables.findIndex(r => r.id === id);
@@ -267,16 +261,13 @@
       cancelledAt: next === 'cancelado' ? todayISO() : null,
       history: [...(Array.isArray(prev.history) ? prev.history : []), { at: new Date().toISOString(), from: prev.status, to: next }]
     };
-    try {
-      await persistAll();
-      logInfo('Valores a Receber', 'Alterar status', 'Sucesso', `${prev.person}: ${prev.status} → ${next}`);
-      renderReceivables();
-    } catch (err) {
-      receivables[idx] = prev;
-      logSyncError('status valores a receber', err);
-      showToast('Não foi possível atualizar o status.', 'error');
-      renderReceivables();
-    }
+      try {
+        await persistAll();
+        renderReceivables();
+      } catch (err) {
+        receivables[idx] = prev;
+        showToast('Não foi possível atualizar o status.', 'error');
+      }
   }
   function populateBillForm(){
     const options = banks.map(b=>`<option value="${b.id}">${escapeHTML(b.name)}</option>`).join('');
@@ -345,14 +336,12 @@
       render(); renderBills();
       try {
         await persistAll();
-        logInfo('Calendário','Lançar no Livro-Caixa','Sucesso',`${bill.name} lançado em ${date}.`,{bankId, recurringBillId: bill.id});
         closeAllPanels();
         showToast(`${bill.name} lançado com sucesso`, 'success');
       } catch (err) {
         entries = entries.filter(item => item.id !== entry.id);
         bill.bank = previousBank;
         bill.generatedMonths = previousGeneratedMonths;
-        logSyncError('lançamento de conta', err);
         showToast('Não foi possível confirmar o lançamento no servidor. A conta continua como pendente.', 'error');
         render(); renderBills();
       }
@@ -763,7 +752,7 @@ function billsExportRows() {
       let prevInvoiceRows = [];
       try { prevInvoiceRows = calendarInvoiceRows(prevY, prevM); } catch { prevInvoiceRows = []; }
       invoiceRows = [...invoiceRows, ...prevInvoiceRows];
-    } catch (err) { logWarn('Calendário','Exportar contas/faturas','Atenção','Card Engine indisponível; faturas de cartão ficaram fora da exportação.'); }
+    } catch (err) { }
     invoiceRows.forEach(row => {
       const breakdown = (Array.isArray(row.breakdown) ? row.breakdown : []).filter(b => !titularFilter || String(b.titular || '').trim() === titularFilter);
       if (titularFilter && !breakdown.length) return;
@@ -783,8 +772,8 @@ function billsExportRows() {
     });
     return rows;
   }
-  function exportBillsXlsx() { const rows=billsExportRows(); if (!window.XLSX) { showToast('A biblioteca de Excel não está disponível.', 'error'); return; } const sheet=XLSX.utils.json_to_sheet(rows); sheet['!cols']=[{wch:24},{wch:18},{wch:13},{wch:14},{wch:22},{wch:14},{wch:12},{wch:15},{wch:36}]; const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,sheet,'Calendário'); XLSX.writeFile(book,`calendario-${billMonthKey(billViewDate)}.xlsx`); logInfo('Calendário','Exportar Excel','Sucesso',`${rows.length} conta(s)/fatura(s) exportada(s) respeitando o filtro de titular.`); }
-  function exportBillsPdf() { const rows=billsExportRows(); const Pdf=window.jspdf?.jsPDF; if (!Pdf) { showToast('A biblioteca de PDF não está disponível.', 'error'); return; } const doc=new Pdf({unit:'pt',format:'a4'}); const margin=36; let y=42; doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text('Calendário financeiro',margin,y); y+=22; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(`Período: ${billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`,margin,y); doc.text(`Total de contas/faturas: ${rows.length} · Total previsto: ${fmt(rows.reduce((sum,row)=>sum+Number(row.Valor||0),0))}`,margin,y+14); y+=38; doc.setFontSize(8); rows.forEach(row=>{ if(y>760){doc.addPage();y=42;} const line=`${row['Vencimento']} · ${row['Conta/Fatura']} · ${row['Titular']||'Sem titular'} · ${fmt(row['Valor'])} · ${row['Status']}`; doc.text(doc.splitTextToSize(line,520),margin,y); y+=14; }); doc.save(`calendario-${billMonthKey(billViewDate)}.pdf`); logInfo('Calendário','Exportar PDF','Sucesso',`${rows.length} conta(s)/fatura(s) exportada(s) respeitando o filtro de titular.`); }
+  function exportBillsXlsx() { const rows=billsExportRows(); if (!window.XLSX) { showToast('A biblioteca de Excel não está disponível.', 'error'); return; } const sheet=XLSX.utils.json_to_sheet(rows); sheet['!cols']=[{wch:24},{wch:18},{wch:13},{wch:14},{wch:22},{wch:14},{wch:12},{wch:15},{wch:36}];     const book=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book,sheet,'Calendário'); XLSX.writeFile(book,`calendario-${billMonthKey(billViewDate)}.xlsx`); }
+  function exportBillsPdf() { const rows=billsExportRows(); const Pdf=window.jspdf?.jsPDF; if (!Pdf) { showToast('A biblioteca de PDF não está disponível.', 'error'); return; }     const doc=new Pdf({unit:'pt',format:'a4'}); const margin=36; let y=42; doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text('Calendário financeiro',margin,y); y+=22; doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(`Período: ${billViewDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`,margin,y); doc.text(`Total de contas/faturas: ${rows.length} · Total previsto: ${fmt(rows.reduce((sum,row)=>sum+Number(row.Valor||0),0))}`,margin,y+14); y+=38; doc.setFontSize(8); rows.forEach(row=>{ if(y>760){doc.addPage();y=42;} const line=`${row['Vencimento']} · ${row['Conta/Fatura']} · ${row['Titular']||'Sem titular'} · ${fmt(row['Valor'])} · ${row['Status']}`; doc.text(doc.splitTextToSize(line,520),margin,y); y+=14; }); doc.save(`calendario-${billMonthKey(billViewDate)}.pdf`); }
 
   window.openBillDayPanel = openBillDayPanel;
   window.closeBillDayPanel = closeBillDayPanel;

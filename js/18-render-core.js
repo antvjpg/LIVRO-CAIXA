@@ -42,7 +42,6 @@ function editInstitution(btn, key) {
   }
   window.investments = sortDisplayOrder(investments);
   saveInvestments().then(() => {
-    logInfo('Instituições', 'Renomear instituição', 'Sucesso', changed.length + ' investimento(s) atualizado(s) para "' + newName + '".');
     render();
   }).catch(err => { console.error('[instituição] rename persist failed', err); alert('Não foi possível salvar a renomeação. Tente novamente.'); });
 }
@@ -259,11 +258,9 @@ function editInstitution(btn, key) {
   function renderInvestTotalBox() {
     const box = document.getElementById('investTotalBox');
     if (!box) {
-      logWarn('Investimentos', 'Box total investido', 'Atenção', 'Elemento #investTotalBox não encontrado no DOM');
       return;
     }
     if (!Array.isArray(investments)) {
-      logWarn('Investimentos', 'Box total investido', 'Atenção', 'Coleção investments não é um array', { typeof: typeof investments });
       box.innerHTML = '<div style="padding:14px;font-size:12px;color:var(--ink-soft);">Nenhum investimento cadastrado.</div>';
       return;
     }
@@ -1502,9 +1499,6 @@ function renderCategoryManageList() {
       if (missingUnits > 0) {
         if (!unitsWarningLogged.has(inv.id)) {
           unitsWarningLogged.add(inv.id);
-          logWarn('Investimentos', 'Movimentações sem quantidade', 'Atenção',
-            `${missingUnits} ${missingUnits === 1 ? 'movimentação' : 'movimentações'} sem quantidade não ${missingUnits === 1 ? 'entra' : 'entram'} no saldo de ${inv.name}.`,
-            { investmentId: inv.id, count: missingUnits });
         }
       } else {
         unitsWarningLogged.delete(inv.id);
@@ -2242,13 +2236,6 @@ function renderCategoryManageList() {
       if (cycleInput) cycleInput.value = remote.financialCycleStartDay;
     } catch (err) {
       console.warn('[Perfil] Preferências remotas indisponíveis:', err);
-      logWarn(
-        'Perfil',
-        'Carregar preferências',
-        'Parcial',
-        'As preferências locais continuam disponíveis neste aparelho.',
-        { code: err?.code || null }
-      );
     }
   }
 
@@ -2293,8 +2280,8 @@ function renderCategoryManageList() {
         const savedToken = localStorage.getItem(FCM_TOKEN_KEY);
         if (savedToken && currentUser) await docRef().collection('pushTokens').doc(sanitizePushToken(savedToken)).delete();
         localStorage.removeItem(FCM_TOKEN_KEY);
-      } catch (err) { logSyncError('notificações push', err); }
-      persistProfileSettings().catch(err => logSyncError('preferência de notificações', err));
+      } catch (err) { console.error(err); }
+      persistProfileSettings().catch(err => console.error(err));
       return;
     }
     const revertPushToggle = () => { setTimeout(() => { if (toggle) toggle.checked = false; }, 300); };
@@ -2329,7 +2316,6 @@ function renderCategoryManageList() {
       revertPushToggle();
       featureSettings = normalizeFeatureSettings({ ...featureSettings, pushNotifications: false });
       persistFeatureSettings();
-      logSyncError('notificações push', err);
       alert('Não foi possível ativar as notificações push: ' + (err && err.message ? err.message : String(err)));
     }
   }
@@ -2464,7 +2450,6 @@ function renderCategoryManageList() {
           financialIndicatorsWarnedNoClient = true;
           financialIndicatorsLastError = 'script_ausente';
           console.warn('[Livro-Caixa] Adaptador de indicadores não encontrado (js/domain/financial-client.js).');
-          logWarn('Indicadores', 'Adaptador ausente', 'Falha', 'js/domain/financial-client.js não carregou nesta sessão.');
           renderIndicatorsSection();
         }
         return null;
@@ -2487,7 +2472,6 @@ function renderCategoryManageList() {
       const code = (err && err.code) || (err && err.name) || 'erro';
       financialIndicatorsLastError = String(code);
       console.warn('[Livro-Caixa] Indicadores indisponíveis:', code, (err && err.message) || '');
-      logWarn('Indicadores', 'Consulta ao Worker', 'Falha', `Sem indicadores externos (${code}). Saldos locais não foram afetados.`);
       renderIndicatorsSection();
       return null;
     } finally {
@@ -2756,10 +2740,9 @@ function renderCategoryManageList() {
     const btn = document.getElementById('btnBiometricUnlock');
     if (btn) btn.hidden = !(hasBiometric() && supportsWebAuthn());
     if (!(hasBiometric() && supportsWebAuthn())) return;
-    try {
-      await unlockWithBiometric();
-      logInfo('Segurança', 'Desbloquear biometria', 'Sucesso', 'Aplicativo desbloqueado por biometria neste dispositivo.');
-    } catch (err) {
+      try {
+        await unlockWithBiometric();
+      } catch (err) {
       /* usuário cancelou ou falhou — permanece no PIN */
     }
   }

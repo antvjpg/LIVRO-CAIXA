@@ -299,7 +299,7 @@
     doc.text(`Patrimônio Total: ${fmt(getPatrimonySummaryBlock().total)}`, margin, y);
 
     addFooter();
-    doc.save(`livro-caixa-extrato-${todayISO()}.pdf`); logInfo('Exportação','Exportação PDF','Sucesso','Extrato PDF completo gerado.',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
+    doc.save(`livro-caixa-extrato-${todayISO()}.pdf`);
   }
   function exportExtractXlsx() {
     if(typeof XLSX==='undefined'){alert('A biblioteca de Excel ainda está carregando.');return;}
@@ -410,7 +410,6 @@
     XLSX.utils.book_append_sheet(wb, wsPatrimony, 'Patrimônio');
 
     XLSX.writeFile(wb,`livro-caixa-extrato-${todayISO()}.xlsx`);
-    logInfo('Exportação','Exportação Excel','Sucesso','Extrato Excel completo gerado (4 blocos).',{dateStart:meta.dateStart,dateEnd:meta.dateEnd});
   }
   async function exportExtractDocx() {
     if (!window.docx) { alert('A biblioteca Word ainda está carregando.'); return; }
@@ -508,7 +507,6 @@
 
     const blob = await d.Packer.toBlob(new d.Document({ sections: [{ children }] }));
     downloadBlob(blob, `livro-caixa-extrato-${todayISO()}.docx`);
-    logInfo('Exportação', 'Exportação DOCX', 'Sucesso', 'Extrato Word completo gerado (4 blocos).', { dateStart: meta.dateStart, dateEnd: meta.dateEnd, layout: 'vertical-mobile' });
   }
   function extractPdfPageLines(content) {
     const groups = [];

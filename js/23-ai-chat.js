@@ -371,8 +371,7 @@
         aiChat.session.commit(token, originalText, localCompoundReply);
         aiChat.session.settle(token);
         aiChatNotice('');
-        if (aiChat.session.isOpen() && aiChat.session.getSessionId() === token.sessionId) aiChatRender();
-        logInfo('Análise', 'LIA · cálculo local de juros compostos', 'Sucesso', 'Resposta calculada localmente sem chamada de IA.');
+        if (aiChat.session.isOpen() && aiChat.session.getSessionId() === token.sessionId)         aiChatRender();
         return;
       }
     }
@@ -395,8 +394,7 @@
           'Ok — identifiquei a movimentação. Confira o comprovante abaixo e toque em Confirmar para lançar.');
         aiChat.session.settle(token);
         aiChatNotice('');
-        if (aiChat.session.isOpen() && aiChat.session.getSessionId() === token.sessionId) aiChatRender();
-        logInfo('Análise', 'LIA · movimentação por texto', 'Sucesso', 'Comprovante criado localmente sem chamada de IA.');
+        if (aiChat.session.isOpen() && aiChat.session.getSessionId() === token.sessionId)         aiChatRender();
         return;
       }
     }
@@ -667,7 +665,6 @@
     } catch (err) {
       const status = document.getElementById('profileSettingsStatus') || document.getElementById('featureProfileStatus');
       if (status) status.textContent = 'Projeção salva localmente; sincronização remota falhou.';
-      logSyncError('meses de projeção', err);
     }
   }
 
@@ -694,6 +691,5 @@
       localStorage.setItem(historyKey, JSON.stringify(history));
       renderReconciliationHistory();
     } catch (err) {
-      logWarn('Conciliação', 'Salvar histórico', 'Falha', err.message);
     }
   }

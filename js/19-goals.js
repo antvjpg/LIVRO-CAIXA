@@ -230,7 +230,7 @@
     const statusChanged = normalizeAllGoalStatuses();
     list.innerHTML = goals.length ? goals.map(goalMarkup).join('') : '<p class="hint">Nenhuma meta cadastrada ainda.</p>';
     if (statusChanged && firstLoadDone && currentUser) {
-      persistAll().catch(err => logSyncError('meta', err));
+      persistAll().catch(err => console.error('meta', err));
     }
     const current = goals.find(g => g.id === editingGoalId);
     refreshGoalCaixinhaOptions(current?.caixinhaId || document.getElementById('goalCaixinha')?.value || '');

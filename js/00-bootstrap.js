@@ -513,15 +513,6 @@ document.addEventListener('visibilitychange', () => {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-window.loginDebugLog?.(
-  'FIREBASE',
-  'Firebase Auth inicializado',
-  {
-    authDomain: firebaseConfig.authDomain,
-    projectId: firebaseConfig.projectId
-  }
-);
-
 firebase.firestore().enablePersistence().catch(err => {
   console.log("A persistência offline não pôde ser ativada:", err);
 });

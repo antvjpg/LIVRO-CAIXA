@@ -720,7 +720,6 @@
         dueDateFor: typeof invoiceDueDateForPeriod === 'function' ? invoiceDueDateForPeriod : null
       });
     } catch (err) {
-      logSyncError('dashboard · resumo de cartões', err);
       return null;
     }
   }
@@ -1774,14 +1773,12 @@
       if (!silent && statusEl) {
         statusEl.textContent = 'Salvo ✓';
         setTimeout(() => { if (statusEl.textContent === 'Salvo ✓') statusEl.textContent = ''; }, 3000);
-        logInfo('Recursos de teste', 'Salvar configurações', 'Sucesso', 'Configurações, preferências e orçamentos atualizados.');
       } else if (silent && statusEl) {
         statusEl.textContent = 'Salvo ✓';
         setTimeout(() => { if (statusEl.textContent === 'Salvo ✓') statusEl.textContent = ''; }, 2000);
       }
     } catch (err) {
       if (statusEl) statusEl.textContent = silent ? 'Erro ao sincronizar (salvo localmente)' : 'Erro ao sincronizar (salvo localmente)';
-      logSyncError('configurações de teste', err);
     }
     startFeatureAutomation(); render();
   }

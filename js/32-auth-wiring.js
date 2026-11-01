@@ -34,14 +34,6 @@
     if (el) {
       el.textContent = msg || '';
     }
-
-    if (msg) {
-      window.loginDebugLog?.(
-        'AUTH',
-        'Mensagem exibida na tela',
-        msg
-      );
-    }
   }
 
   function translateAuthError(code) {
