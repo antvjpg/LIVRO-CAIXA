@@ -1784,10 +1784,6 @@ const RECEIPT_ALLOWED_TYPES = new Set([
   'application/pdf'
 ]);
 
-document.getElementById('btnReadReceipt').onclick = () => {
-  document.getElementById('receiptFile')?.click();
-};
-
 document.getElementById('receiptFile').addEventListener('change', (ev) => {
   const file = ev.target.files?.[0];
   if (!file) return;
@@ -3175,29 +3171,13 @@ document.getElementById('tSalvar').onclick = async () => {
     const authPassToggle = document.getElementById('authPassToggle');
     const authGoogle = document.getElementById('authGoogle');
 
-    if (!authToggleLink && !authSubmit && !authPassToggle && !authGoogle) {
+    // Se NENHUM elemento de auth existir, a tela de login foi removida
+    const authElementsExist = authToggleLink || authSubmit || authPassToggle || authGoogle;
+    if (!authElementsExist) {
       return; // tela de login antiga removida / ainda não montada
     }
 
-    if (authToggleLink) {
-      authToggleLink.onclick = () => {
-        isSignupMode = !isSignupMode;
-        const authTitle = document.getElementById('authTitle');
-        const authSubmitBtn = document.getElementById('authSubmit');
-        const authToggleWrap = document.getElementById('authToggleWrap');
-        if (authTitle) authTitle.textContent = isSignupMode ? 'Criar conta' : 'Entrar';
-        if (authSubmitBtn) authSubmitBtn.textContent = isSignupMode ? 'Criar conta' : 'Entrar';
-        if (authToggleWrap) {
-          authToggleWrap.innerHTML = isSignupMode
-            ? 'Já tem conta? <a id="authToggleLink2">Entrar</a>'
-            : 'Não tem conta? <a id="authToggleLink2">Criar conta</a>';
-          const link2 = document.getElementById('authToggleLink2');
-          if (link2) link2.onclick = authToggleLink.onclick;
-        }
-        setAuthError('');
-      };
-    }
-
+    // Login com e-mail/senha (se o botão de submit existir)
     if (authSubmit) {
       authSubmit.onclick = () => {
         const emailEl = document.getElementById('authEmail');
@@ -3220,6 +3200,27 @@ document.getElementById('tSalvar').onclick = async () => {
       };
     }
 
+    // Alternar modo de signup (se o link de toggle existir)
+    if (authToggleLink) {
+      authToggleLink.onclick = () => {
+        isSignupMode = !isSignupMode;
+        const authTitle = document.getElementById('authTitle');
+        const authSubmitBtn = document.getElementById('authSubmit');
+        const authToggleWrap = document.getElementById('authToggleWrap');
+        if (authTitle) authTitle.textContent = isSignupMode ? 'Criar conta' : 'Entrar';
+        if (authSubmitBtn) authSubmitBtn.textContent = isSignupMode ? 'Criar conta' : 'Entrar';
+        if (authToggleWrap) {
+          authToggleWrap.innerHTML = isSignupMode
+            ? 'Já tem conta? <a id="authToggleLink2">Entrar</a>'
+            : 'Não tem conta? <a id="authToggleLink2">Criar conta</a>';
+          const link2 = document.getElementById('authToggleLink2');
+          if (link2) link2.onclick = authToggleLink.onclick;
+        }
+        setAuthError('');
+      };
+    }
+
+    // Mostrar/esconder senha (se o toggle existir)
     if (authPassToggle) {
       authPassToggle.onclick = () => {
         const input = document.getElementById('authPass');
@@ -3235,6 +3236,7 @@ document.getElementById('tSalvar').onclick = async () => {
       };
     }
 
+    // Login com Google (se o botão de Google existir)
     if (authGoogle) {
       authGoogle.onclick = () => {
         setAuthError('');

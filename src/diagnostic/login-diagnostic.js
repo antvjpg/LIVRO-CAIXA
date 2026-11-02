@@ -38,6 +38,7 @@
     if (!el) return;
 
     el.textContent = state.lines.join('\n');
+    el.style.textAlign = 'left';
     el.scrollTop = el.scrollHeight;
   }
 
@@ -254,6 +255,13 @@
       }
     );
 
+    // Registra eventos de toque/clique no painel de diagnóstico
+    const diagPanel = getEl('authDiagnosticPanel');
+    if (diagPanel) {
+      diagPanel.addEventListener('click', window.registerLoginTouch);
+      diagPanel.addEventListener('touchstart', window.registerLoginTouch);
+    }
+
     copy.addEventListener(
       'click',
       async event => {
@@ -350,12 +358,33 @@
   window.addEventListener(
     'error',
     event => {
+      // Extrai informações de origem do erro (arquivo e linha)
+      let sourceFile = '';
+      let lineNumber = '';
+      
+      // Tenta extrair o caminho do arquivo e número da linha da mensagem de erro
+      // Formatos comuns: "https://example.com/js/file.js:123" ou "file.js:456"
+      const fileMatch = event.message.match(
+        /(?:(?:http|https):\/\/[^'"\s]+\.js|[^'"\s]+\.js)\s*:(\d+)/i
+      );
+      if (fileMatch) {
+        sourceFile = fileMatch[0];
+        lineNumber = fileMatch[1];
+      }
+      
+      // Monta o objeto de detalhes do erro com o máximo de contexto possível
+      const errorDetails = {
+        message: event.message || 'erro desconhecido',
+        filename: event.filename || sourceFile,
+        lineno: lineNumber || event.lineno || '',
+        colno: event.colno || '',
+        error: event.error?.message || event.message || 'sem mensagem'
+      };
+      
       window.loginDebugLog(
         'ERROR',
         'Erro de JavaScript',
-        event.error?.code ||
-        event.message ||
-        'erro desconhecido'
+        errorDetails
       );
     }
   );
@@ -416,4 +445,18 @@
       ensureInitialized();
     });
   }
+
+  // Função que registra eventos quando um toque/clique é reconhecido
+  window.registerLoginTouch = function(event) {
+    const stamp = new Date().toLocaleTimeString('pt-BR', {
+      hour12: false
+    });
+    const type = event.type === 'touchstart' ? 'toque' : event.type === 'click' ? 'clique' : event.type;
+    loginDebugLog('TOQUE', 'Evento de toque reconhecido', {
+      type: type,
+      target: event.target ? event.target.tagName : 'desconhecido',
+      x: event.clientX,
+      y: event.clientY
+    });
+  };
 })();
