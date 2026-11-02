@@ -43,6 +43,7 @@
         setTimeout(() => reject(new Error('loadState timeout: Firestore não respondeu')), LOAD_TIMEOUT_MS);
       });
       await Promise.race([
+        timeoutPromise,
         Promise.all(COLLECTIONS.map(name => new Promise((resolve, reject) => {
         let resolved = false;
         const coletaStart = performance.now();
@@ -157,6 +158,8 @@
       const daCache = Object.values(colecaoStats).filter(c => c.fromCache).length;
       window.logEvent('INFO', 'Firebase', 'Coleções carregadas', 'Dados da nuvem sincronizados com sucesso.', { colecoes: COLLECTIONS.length, daCache, coletaMs: colecaoStats }, window.operationDuration(operacao));
     } catch (err) {
+      realtimeUnsubscribers.forEach(unsub => unsub());
+      realtimeUnsubscribers = [];
       console.error(err);
       window.logEvent('ERROR', 'Firebase', 'Falha ao carregar dados da nuvem', err.message || String(err), null, window.operationDuration(operacao));
       alert('Erro ao carregar dados. O aplicativo pode estar offline.');
