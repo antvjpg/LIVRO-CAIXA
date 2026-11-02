@@ -110,7 +110,9 @@
         firstLoadDone = false;
         renderBalances();
         if (syncOverlay) syncOverlay.classList.add('hidden');
-        if (overlay) overlay.classList.remove('hidden');
+        setTimeout(() => {
+          if (overlay) overlay.classList.remove('hidden');
+        }, 10);
         renderUserBar();
         window.currentUser = null;
       }
