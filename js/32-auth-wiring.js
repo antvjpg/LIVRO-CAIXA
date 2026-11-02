@@ -79,11 +79,12 @@
     window.currentUser = currentUser;
 
     try {
+      const overlay = document.getElementById('authOverlay');
+      const syncOverlay = document.getElementById('syncOverlay');
       if (user) {
         clearSessionMemory();
         firstLoadDone = false;
         renderBalances();
-        const overlay = document.getElementById('authOverlay');
         if (overlay) overlay.classList.add('hidden');
         renderUserBar();
         startSessionSecurity();
@@ -92,8 +93,7 @@
         }).catch(err => {
           console.warn('[INIT] Falha ao carregar dados após autenticação:', err);
         }).finally(() => {
-          const syncOv = document.getElementById('syncOverlay');
-          if (syncOv) syncOv.classList.add('hidden');
+          if (syncOverlay) syncOverlay.classList.add('hidden');
         });
         setTimeout(checkLocalPinLock, 700);
       } else {
