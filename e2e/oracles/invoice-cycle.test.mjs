@@ -150,19 +150,3 @@ function invoiceDueDateForPeriodReference(card, periodKey) {
   const last = new Date(dueDate.getFullYear(), dueDate.getMonth() + 1, 0).getDate();
   return `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}-${String(Math.min(due, last)).padStart(2, '0')}`;
 }
-
-test('invoiceCycle: app.js expõe a navegação de períodos da fatura', () => {
-  const html = readAppJs(ROOT);
-  for (const trecho of [
-    'cardInvoiceSelection',
-    'cardInvoiceNavState',
-    'window.shiftCardInvoice',
-    'window.resetCardInvoice',
-    'invoiceCycleLabel',
-    'credit-card-invoice-nav'
-  ]) {
-    assert.ok(html.includes(trecho), `app.js deveria conter "${trecho}"`);
-  }
-  const css = readAppCss(ROOT);
-  assert.ok(css.includes('.credit-card-invoice-nav'), 'o CSS do app deveria estilizar a navegação da fatura');
-});

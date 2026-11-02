@@ -3304,9 +3304,10 @@ document.getElementById('tSalvar').onclick = async () => {
         renderBalances();
         if (overlay) overlay.classList.add('hidden');
         /* syncOverlay não é escondido aqui: loadState() assume o controle dele
-           (mostra na linha 30 de 17-sync-persistence.js e esconde no finally),
-           evitando um gap onde nenhum overlay cobre a tela e o skeleton de
-           carregamento (is-data-loading) fique visível por cima do conteúdo. */
+           (mostra na linha 30 de 17-sync-persistence.js e esconde no finally
+           anexado abaixo), evitando um gap onde nenhum overlay cobre a tela e o
+           skeleton de carregamento (is-data-loading) fique visível por cima do
+           conteúdo. */
         renderUserBar();
         startSessionSecurity();
         startFeatureAutomation();
@@ -3314,6 +3315,11 @@ document.getElementById('tSalvar').onclick = async () => {
         loadState().then(() => {
         }).catch(err => {
           console.warn('[INIT] Falha ao carregar dados após autenticação:', err);
+        }).finally(() => {
+          /* Garante que o loader nunca fique preso, mesmo se loadState travar
+             ou rejeitar. */
+          const syncOv = document.getElementById('syncOverlay');
+          if (syncOv) syncOv.classList.add('hidden');
         });
         setTimeout(checkLocalPinLock, 700);
       } else {
@@ -3338,10 +3344,6 @@ document.getElementById('tSalvar').onclick = async () => {
       }
     } catch (err) {
       console.error('[INIT] Erro no callback de autenticação:', err);
-    } finally {
-      /* Garante que o loader nunca fique preso, mesmo se algo acima lançar erro. */
-      const syncOv = document.getElementById('syncOverlay');
-      if (syncOv) syncOv.classList.add('hidden');
     }
   });
 });

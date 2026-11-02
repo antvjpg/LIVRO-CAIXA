@@ -36,7 +36,14 @@
     realtimeUnsubscribers.forEach(unsub => unsub());
     realtimeUnsubscribers = [];
     try {
-      await Promise.all(COLLECTIONS.map(name => new Promise((resolve, reject) => {
+      /* Timeout de segurança: se o Firestore não responder em 15s, rejeita
+         para não deixar o usuário preso no carregamento eterno. */
+      const LOAD_TIMEOUT_MS = 15000;
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('loadState timeout: Firestore não respondeu')), LOAD_TIMEOUT_MS);
+      });
+      await Promise.race([
+        Promise.all(COLLECTIONS.map(name => new Promise((resolve, reject) => {
         let resolved = false;
         const coletaStart = performance.now();
         const unsub = colRef(name).onSnapshot(snap => {
@@ -63,7 +70,7 @@
           if (!resolved) { resolved = true; reject(err); } else { console.error(err); }
         });
         realtimeUnsubscribers.push(unsub);
-      })));
+      })))]);
 
       if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
 
