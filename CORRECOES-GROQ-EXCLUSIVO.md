@@ -1,5 +1,7 @@
 # Correções Aplicadas — LIA Groq-Exclusivo
 
+> **NOTA HISTÓRICA (Nov/2026):** Esta implementação da LIA/IA foi **removida completamente** em novembro de 2026. Este documento permanece apenas como registro histórico das correções aplicadas antes da remoção.
+
 ## Data
 2026-11-02
 

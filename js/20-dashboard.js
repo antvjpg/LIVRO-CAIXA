@@ -1721,7 +1721,6 @@
     const ciBenchmarkRate = document.getElementById('ciBenchmarkRate'); if (ciBenchmarkRate && !ciBenchmarkRate.value) ciBenchmarkRate.value = compoundRateInputValue(compoundBenchmarkRatePct('cdi'));
     const pinInput = document.getElementById('featurePin'); if (pinInput) pinInput.value = '';
     window.renderAiQuotaStatus?.();
-    window.LivroCaixaAI?.refreshQuota?.();
     const bank = document.getElementById('reconcileBank'); if (bank) { const current = bank.value; bank.innerHTML = banks.map(item => `<option value="${item.id}">${escapeHTML(item.name)}</option>`).join(''); if (banks.some(item => item.id === current)) bank.value = current; }
     renderBudgetManagement();
     initMoneyMasks();

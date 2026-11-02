@@ -1,5 +1,7 @@
 # Auditoria de Integracao Groq-Exclusivo - LIA
 
+> **NOTA HISTÓRICA (Nov/2026):** Esta implementação da LIA/IA foi **removida completamente** em novembro de 2026. Este documento permanece apenas como registro histórico da auditoria realizada antes da remoção.
+
 ## Status: CONCLUIDO
 
 ### Diagnostico da Divergencia

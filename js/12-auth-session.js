@@ -4,9 +4,6 @@
   /* [JS 05] AUTENTICAÇÃO / SESSÃO */
   function clearSessionMemory() {
     pendingImport = [];
-    /* Conversa da IA é memória de sessão: login, logout ou troca de conta
-       descartam o contexto (nada é persistido fora da memória). */
-    window.LivroCaixaChat?.resetContext?.();
     editingEntryId = null;
     editingBankId = null;
     editingCategoryId = null;

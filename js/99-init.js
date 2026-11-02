@@ -1036,125 +1036,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       window.toggleLoginDiagnostic(event);
     }
   });
-  AI_CHAT_GREETING = 'Olá! Eu sou a LIA.\nEstou aqui para ajudar você a entender melhor suas finanças — suas contas, gastos, metas, caixinhas e investimentos.';
-  aiChat = {
-    session: createAiChatSession(),
-    controller: null,
-    opener: null,
-    pageScroll: null,
-    editing: null
-  };
-  AI_CHAT_ERROR_MESSAGES = {
-    no_data: 'Ainda não existem dados suficientes no LIVRO-CAIXA para responder. Cadastre contas, lançamentos, caixinhas, metas ou investimentos e tente de novo.',
-    snapshot_too_large: 'Não foi possível preparar seus dados com segurança porque são grandes demais. Tente uma pergunta mais específica.',
-    contract_unavailable: 'O contrato da IA não carregou. Verifique a conexão e recarregue a página.',
-    empty_message: 'Escreva uma pergunta antes de enviar.',
-    message_too_long: 'A pergunta é maior que o limite permitido. Encurte-a e tente novamente.',
-    network: 'Falha de rede. Sua pergunta não foi enviada — tente novamente quando a conexão voltar.',
-    offline: 'Você está offline. Conecte-se à internet para perguntar à IA.',
-    rate_limited: 'Muitas perguntas agora. Aguarde alguns segundos e tente novamente.',
-    daily_limit: 'A IA atingiu o limite diário de leituras. O limite volta à meia-noite (UTC).',
-    empty_reply: 'A IA não retornou uma resposta utilizável. Tente novamente.',
-    not_authenticated: 'Entre na sua conta para conversar com a IA.',
-    token_failed: 'Não foi possível validar a sessão. Entre novamente.',
-    worker_not_configured: 'O serviço de IA não está configurado.',
-    bad_body: 'A requisição foi recusada pelo servidor. Tente novamente.',
-    payload_too_large: 'Os dados preparados foram recusados por tamanho. Tente uma pergunta mais específica.',
-    chat_payload_too_large: 'A pergunta com o contexto ficou grande demais. Tente novamente.'
-  };
-
-
-  /* Superfície usada pelos pontos de integração existentes (fechamento
-     global de modais e limpeza de sessão) sem depender de ordem de
-     declaração. */
-  window.LivroCaixaChat = {
-    open: openAiChat,
-    close: closeAiChat,
-    resetContext: resetAiChatContext,
-    isOpen: () => aiChat.session.isOpen(),
-    isBusy: () => aiChat.session.isBusy(),
-    getMessages: () => aiChat.session.getMessages()
-  };
-
-  document.getElementById('btnAiChatClose')?.addEventListener('click', () => {
-    if (typeof closeAllPanels === 'function') closeAllPanels();
-  });
-
-  document.getElementById('aiChatForm')?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const input = document.getElementById('aiChatInput');
-    aiChatSend(input ? input.value : '');
-  });
-
-  /* Editando: Esc cancela a edição em vez de fechar o modal — o handler
-     de Escape global está no document (fase de bubbling). */
-  document.getElementById('aiChatInput')?.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape' || !aiChat.editing) return;
-    event.preventDefault();
-    event.stopPropagation();
-    aiChatCancelEdit();
-  });
-
-  /* O Chrome faz scroll-into-view DEPOIS do rAF do evento de foco.
-     Por isso o reforço com 50ms (logo após o scroll nativo) e 150ms
-     (quando o teclado assentou) reaplicando posição + medida. */
-  const aiChatRetriggerViewportFix = () => {
-    aiChatApplyViewportFix();
-    window.setTimeout(aiChatApplyViewportFix, 50);
-    window.setTimeout(aiChatApplyViewportFix, 150);
-  };
-
-  document.getElementById('aiChatInput')?.addEventListener('focus', () => {
-    requestAnimationFrame(aiChatRetriggerViewportFix);
-  });
-  document.getElementById('aiChatInput')?.addEventListener('blur', () => {
-    requestAnimationFrame(aiChatRetriggerViewportFix);
-  });
-
-  /* Toque/foco na área de conversa produz o mesmo deslocamento: o
-     navegador rola overlay/painel para "revelar" o elemento focado e o
-     cabeçalho sobe junto. Zera após o evento e trava qualquer rolagem
-     residual enquanto o chat estiver aberto (nada ali deve rolar). */
-  const aiChatMessagesBox = document.getElementById('aiChatMessages');
-  aiChatMessagesBox?.addEventListener('pointerdown', () => requestAnimationFrame(() => aiChatResetModalScroll(true)));
-  aiChatMessagesBox?.addEventListener('focus', () => requestAnimationFrame(() => aiChatResetModalScroll(true)));
-  aiChatMessagesBox?.addEventListener('click', onAiChatMessagesClick);
-  aiChatMessagesBox?.addEventListener('keydown', (event) => {
-    if (event.key !== 'Enter' && event.key !== ' ') return;
-    const bubble = event.target.closest?.('.ai-chat-msg.is-user[data-msg-index]');
-    if (!bubble || event.target !== bubble) return;
-    event.preventDefault();
-    toggleAiChatActions(bubble);
-  });
-
-  ['modalOverlay', 'panelAiChat'].forEach((id) => {
-    const el = document.getElementById(id);
-    el?.addEventListener('scroll', () => {
-      if (!window.LivroCaixaChat?.isOpen?.()) return;
-      if (el.scrollTop || el.scrollLeft) {
-        el.scrollTop = 0;
-        el.scrollLeft = 0;
-      }
-    }, { passive: true });
-  });
-
-  /* Teclado abrindo/fechando dispara vários resizes: corrige no rAF e
-     reafirma com debounce curto quando o teclado assentou. O pan do
-     Chrome sobre a viewport visual (visualViewport.scroll) e a rolagem
-     da página em si também reaplicam posição + medida. */
-  let aiChatViewportResetTimer = 0;
-  const aiChatViewportSync = () => {
-    if (!window.LivroCaixaChat?.isOpen?.()) return;
-    requestAnimationFrame(aiChatApplyViewportFix);
-    window.clearTimeout(aiChatViewportResetTimer);
-    aiChatViewportResetTimer = window.setTimeout(aiChatApplyViewportFix, 150);
-  };
-  window.visualViewport?.addEventListener('resize', aiChatViewportSync);
-  window.visualViewport?.addEventListener('scroll', aiChatViewportSync);
-  window.addEventListener('scroll', () => {
-    if (!window.LivroCaixaChat?.isOpen?.()) return;
-    aiChatApplyViewportFix();
-  }, { passive: true });
 
   // Bottom nav hide/show on scroll
   (function initBottomNavScroll() {
@@ -1194,6 +1075,30 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   inputProjectionMonths = document.getElementById('featureProjectionMonths');
 
   let projectionSaveTimer = null;
+
+  async function saveProjectionMonthsAutomatically() {
+    if (!inputProjectionMonths) return;
+
+    const value = Math.min(24, Math.max(1, Number(inputProjectionMonths.value) || 6));
+
+    inputProjectionMonths.value = value;
+    featureSettings = normalizeFeatureSettings({
+      ...featureSettings,
+      projectionMonths: value
+    });
+
+    persistFeatureSettings();
+
+    try {
+      await persistProfileSettings();
+      const status = document.getElementById('profileSettingsStatus') || document.getElementById('featureProfileStatus');
+      if (status) status.textContent = 'Meses de projeção salvos automaticamente.';
+    } catch (err) {
+      const status = document.getElementById('profileSettingsStatus') || document.getElementById('featureProfileStatus');
+      if (status) status.textContent = 'Projeção salva localmente; sincronização remota falhou.';
+      logSyncError('meses de projeção', err);
+    }
+  }
 
   if (inputProjectionMonths) {
     inputProjectionMonths.addEventListener('change', saveProjectionMonthsAutomatically);
@@ -1790,9 +1695,6 @@ window.deletePocket = function(id) {
     overlay.classList.remove('open');
     document.querySelectorAll('.panel.open, .panel').forEach(p => p.classList.remove('open'));
     returnToEntryAfterCategory = false;
-    /* Chat: cancela requisição em andamento, limpa o campo e devolve o
-       foco. O contexto em memória é preservado (só troca de conta apaga). */
-    window.LivroCaixaChat?.close?.();
   }
 
   window.applyCustomPeriod = function() {
@@ -2234,177 +2136,6 @@ VALOR: ${fmt(pseudoBill.amount)}
     document.getElementById('tglIn').classList.remove('active-in');
   };
   document.getElementById('fSalvar').onclick = saveMovementFromForm;
-  ocrState = { attachment: null, model: null, controller: null, busy: false, confirming: false, openedTransfer: false, sameHolder: null };
-  chatProposal = {
-    source: null, status: null, kind: null, rows: [], amount: null,
-    attachmentId: null, data: null, error: null, saving: false
-  };
-
-
-  /* Transferência salva pelo painel → o comprovante confirmado fica no
-     chat. Disparado por tSalvar; o listener só age se há proposta de
-     transferência pendente (fechar o painel sem salvar descarta pelo
-     observador do fluxo OCR). Registrado antes de tSalvar existir — a
-     ordem não importa, o evento só sobe no clique. */
-  window.addEventListener('lc-transfer-saved', () => {
-    if (chatProposal.status === 'awaiting' && chatProposal.kind === 'transfer') {
-      chatProposal.status = 'confirmed';
-      chatProposal.error = null;
-      window.LivroCaixaChat?.open?.();
-    }
-  });
-  OCR_FIELD_ORDER = ['date', 'amount', 'description', 'type', 'category', 'account', 'merchant', 'paymentMethod', 'documentNumber'];
-  OCR_READ_ONLY_FIELDS = ['merchant', 'paymentMethod', 'documentNumber'];
-  ocrAttachmentNotice = (text, kind) => ocrShowNotice('liaAttachmentNotice', text, kind);
-  ocrReviewNotice = (text, kind) => ocrShowNotice('ocrReviewNotice', text, kind);
-
-
-  /* ------------------------------------------------------------- listeners */
-
-  (function ocrWireUp() {
-    const attachBtn = document.getElementById('btnLiaAttach');
-    const fileInput = document.getElementById('liaAttachmentFile');
-    if (!attachBtn || !fileInput) return;
-
-    attachBtn.addEventListener('click', () => {
-      if (!ocrDependenciesReady()) {
-        ocrAttachmentNotice('Módulo de anexos indisponível. Recarregue a página.', 'error');
-        return;
-      }
-      if (ocrState.busy) { ocrAttachmentNotice('Aguarde o processamento atual.', 'error'); return; }
-      fileInput.click();
-    });
-
-    fileInput.addEventListener('change', async (event) => {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      ocrSetFallback(false);
-      ocrAttachmentNotice('');
-      if (!ocrDependenciesReady()) {
-        event.target.value = '';
-        ocrAttachmentNotice('Módulo de anexos indisponível. Recarregue a página.', 'error');
-        return;
-      }
-      if (ocrState.busy) {
-        event.target.value = '';
-        ocrAttachmentNotice('Já há um anexo em processamento.', 'error');
-        return;
-      }
-      /* limite de 1 anexo por operação: substitui o anterior — fecha uma
-         revisão aberta para não deixar campos obsoletos na tela */
-      if (ocrState.attachment) ocrAbortReview('Substituindo o anexo anterior. Nada foi gravado.');
-
-      const registration = await globalThis.LivroCaixaAttachments.manager.register(file);
-      if (!registration.ok) {
-        event.target.value = '';
-        ocrAttachmentNotice(ocrFileErrorMessage(registration.code), 'error');
-        ocrSetFallback(registration.code === 'UNSUPPORTED_FILE');
-        return;
-      }
-      ocrState.attachment = registration.attachment;
-      ocrRenderChip();
-      await ocrRunPipeline(registration.attachment);
-    });
-
-    const cancelBtn = document.getElementById('btnOcrReviewCancel');
-    if (cancelBtn) cancelBtn.addEventListener('click', () => ocrAbortReview('Anexo descartado. Nada foi gravado.'));
-    const closeBtn = document.getElementById('btnOcrReviewClose');
-    if (closeBtn) closeBtn.addEventListener('click', () => ocrAbortReview('Revisão encerrada. Nada foi gravado.'));
-
-    const confirmBtn = document.getElementById('btnOcrReviewConfirm');
-    if (confirmBtn) {
-      confirmBtn.addEventListener('click', async () => {
-        if (ocrState.confirming) return;
-        const model = ocrState.model;
-        if (!model) { ocrReviewNotice('Nada para confirmar.', 'error'); return; }
-
-        const bankSelect = document.getElementById('fBanco');
-        const categorySelect = document.getElementById('fCategoria');
-        const bankOptions = bankSelect ? Array.from(bankSelect.options).map((o) => o.value) : [];
-        const categoryOptions = categorySelect ? Array.from(categorySelect.options).map((o) => o.value) : [];
-
-        /* validação final ANTES de tocar no fluxo financeiro */
-        const result = globalThis.LivroCaixaReview.validate(model, { bankOptions, categoryOptions });
-        if (!result.ok) {
-          ocrShowErrors(result.errors);
-          ocrReviewNotice('Confira os campos destacados antes de confirmar.', 'error');
-          return;
-        }
-        ocrShowErrors([]);
-        ocrReviewNotice('');
-
-        ocrState.confirming = true;
-        const originalLabel = confirmBtn.textContent;
-        confirmBtn.disabled = true;
-        confirmBtn.textContent = 'Confirmando…';
-        try {
-          ocrFillLaunchForm(result.value);
-          /* fluxo EXISTENTE de criação: mesmas validações, mesmo saldo,
-             mesma persistência, mesmos eventos e mesmo tratamento de erro */
-          const saved = await saveMovementFromForm();
-          if (saved) {
-            /* Comprovante final no chat também para quem confirmou pela
-               revisão: marca ANTES do release (que preserva "confirmed"). */
-            if (chatProposal.status === 'awaiting') chatProposal.status = 'confirmed';
-            ocrReleaseAll();
-            window.LivroCaixaChat?.open?.();
-          } else {
-            ocrReviewNotice('O lançamento não foi concluído. Revise e tente novamente.', 'error');
-          }
-        } catch (err) {
-          ocrReviewNotice('Falha inesperada ao confirmar. Nada foi gravado duas vezes.', 'error');
-        } finally {
-          ocrState.confirming = false;
-          confirmBtn.disabled = false;
-          confirmBtn.textContent = originalLabel;
-        }
-      });
-    }
-
-    const manualBtn = document.getElementById('btnLiaManualEntry');
-    if (manualBtn) {
-      manualBtn.addEventListener('click', () => {
-        ocrSetFallback(false);
-        ocrReleaseAll();
-        ocrAttachmentNotice('');
-        openNewEntryModal();
-      });
-    }
-
-    /* Fechamento do painel por qualquer via (Escape, clique fora, outro
-       painel) → libera Blob/ObjectURL e zera o estado. */
-    const reviewPanel = document.getElementById('panelOcrReview');
-    if (reviewPanel && typeof MutationObserver === 'function') {
-      let wasOpen = false;
-      const observer = new MutationObserver(() => {
-        const open = reviewPanel.classList.contains('open');
-        if (wasOpen && !open && (ocrState.model || ocrState.attachment)) {
-          ocrReleaseAll();
-          ocrReviewNotice('');
-        }
-        wasOpen = open;
-      });
-      observer.observe(reviewPanel, { attributes: true, attributeFilter: ['class'] });
-    }
-
-    /* Mesma semântica para a Transferência universal aberta pelo balão:
-       fechar (Escape, clique fora, salvar) encerra o estado da revisão —
-       mas só quando o painel foi aberto pelo balão, para não afetar o
-       fluxo manual de transferência. */
-    const transferPanel = document.getElementById('panelTransferencia');
-    if (transferPanel && typeof MutationObserver === 'function') {
-      let wasOpen = false;
-      const observer = new MutationObserver(() => {
-        const open = transferPanel.classList.contains('open');
-        if (wasOpen && !open && ocrState.openedTransfer) {
-          ocrReleaseAll();
-        }
-        wasOpen = open;
-      });
-      observer.observe(transferPanel, { attributes: true, attributeFilter: ['class'] });
-    }
-  })();
-
   document.getElementById('iUnidades').addEventListener('input', updateInvestmentMainValue);
   document.getElementById('iCotacao').addEventListener('input', updateInvestmentMainValue);
   document.getElementById('iValorSimples').addEventListener('input', updateFixedIncomeFormCurrent);
@@ -3528,7 +3259,7 @@ document.getElementById('tSalvar').onclick = async () => {
   document.getElementById('fabAdd').onclick = () => {
     const activeTab = document.body.dataset.tab || currentTab;
     if (activeTab === 'dashboard') {
-      window.LivroCaixaChat?.open();
+      openModal('panelAiChat');
       return;
     }
     if (activeTab === 'bills') openBillModal();
@@ -3580,7 +3311,6 @@ document.getElementById('tSalvar').onclick = async () => {
         renderUserBar();
         startSessionSecurity();
         startFeatureAutomation();
-        window.LivroCaixaAI?.refreshQuota?.({ throttleMs: 15000 });
         /* Limpa eventos do usuário anterior (se houver). */
         loadState().then(() => {
         }).catch(err => {

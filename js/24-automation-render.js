@@ -32,6 +32,32 @@
     }
   }
 
+  function addReconciliationToHistory(bankId, calculated, reported, difference, isMatch) {
+    const bank = banks.find(b => b.id === bankId);
+    if (!bank) return;
+
+    const historyKey = 'reconciliationHistory';
+    try {
+      const stored = localStorage.getItem(historyKey);
+      const history = stored ? JSON.parse(stored) : [];
+      const entry = {
+        bankId,
+        bankName: bank.name,
+        calculated,
+        reported,
+        difference,
+        isMatch,
+        timestamp: Date.now(),
+        date: todayISO()
+      };
+      history.unshift(entry);
+      if (history.length > 50) history.length = 50;
+      localStorage.setItem(historyKey, JSON.stringify(history));
+      renderReconciliationHistory();
+    } catch (err) {
+    }
+  }
+
   async function autoGenerateRecurringBills() {
     if (!currentUser) { return 0; }
     const now = new Date(); const key = billMonthKey(now); const year = now.getFullYear(); const month = now.getMonth(); const candidates = recurringBills.filter(bill => billAppliesToMonth(bill, year, month) && !billGeneratedForMonth(bill, key) && bill.bank && bill.bank !== 'a-definir');
@@ -250,12 +276,6 @@
   function openModal(panelId) {
     closeFilterChoice();
     const overlay = document.getElementById('modalOverlay');
-    /* Se outro painel for aberto enquanto o chat está no ar, o chat fecha
-       pelo mesmo caminho (cancela requisição + devolve foco) para o estado
-       interno não divergir do que está visível. */
-    if (panelId !== 'panelAiChat' && window.LivroCaixaChat?.isOpen?.()) {
-      window.LivroCaixaChat.close();
-    }
     // Fecha TODOS os painéis antes de abrir um (evita modais lado a lado)
     document.querySelectorAll('.panel.open').forEach(p => p.classList.remove('open'));
     const panel = document.getElementById(panelId);

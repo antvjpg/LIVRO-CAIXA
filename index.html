@@ -26,30 +26,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-  <script src="./js/domain/card-engine-v3-combined.js"></script>
+<script src="./js/domain/card-engine-v3-combined.js"></script>
   <script src="./js/domain/financial-client.js"></script>
-  <!-- V.20-02 — camada de abstração de anexos/OCR (contrato estável
-       globalThis.LivroCaixaOCR). Módulos puros, sem dependência de
-       Android/Capacitor: o PWA continua funcional sem recursos nativos. -->
-  <script src="./ocr/limits.js"></script>
-  <script src="./ocr/log.js"></script>
-  <script src="./ocr/attachment-manager.js"></script>
-  <script src="./ocr/extractor.js"></script>
-  <script src="./ocr/ocr-adapter.js"></script>
-  <script src="./ocr/lia-interpret.js"></script>
-  <script src="./ocr/review.js"></script>
-<!-- Contrato do Chat IA (V.20-02) — fonte única de limites/validação,
-        compartilhada com o Worker. O módulo expõe
-        window.LivroCaixaChatContract antes do DOMContentLoaded. -->
-  <script type="module" src="./js/domain/ai-chat-contract.js"></script>
-  <!-- Persistência do histórico do chat no IndexedDB (V.20-02). -->
-  <script type="module" src="./js/domain/chat-persistence.js"></script>
-  <!-- Contrato da Ponte de IA (Fase 1): exposição global
-       window.LivroCaixaMcpContract, usada por js/33-mcp-bridge.js para
-       montar/sanitizar o envelope externo depositado no Worker. -->
-  <script type="module" src="./js/domain/mcp-financial-contract.js"></script>
-  <!-- Armazenamento criptografado para chaves sensíveis (ex: chave OpenRouter). -->
-  <script type="module" src="./js/domain/secure-storage.js"></script>
   <!-- Sanitização de entrada para prevenir XSS. -->
   <script type="module" src="./js/domain/security-utils.js"></script>
 
@@ -668,13 +646,6 @@
             accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
             hidden
           >
-          <button
-            type="button"
-            id="btnReadReceipt"
-            style="width:100%;"
-          >
-            Ler comprovante com IA
-          </button>
           <div
             id="receiptFileStatus"
             aria-live="polite"
@@ -921,13 +892,6 @@
             accept="image/jpeg,image/png,image/webp,application/pdf,.pdf"
             hidden
           >
-          <button
-            type="button"
-            id="btnReadTransferReceipt"
-            style="width:100%;"
-          >
-            Ler comprovante com IA
-          </button>
           <div
             id="transferReceiptFileStatus"
             aria-live="polite"
@@ -1494,9 +1458,11 @@
       </div>
     </div>
 
-    <!-- CHAT IA (V.20-02) — modal aberto pelo FAB da Visão Geral.
+<!-- CHAT IA (V.20-02) — modal aberto pelo FAB da Visão Geral.
          Reutiliza o overlay/painel padrão: Escape e fechamento global
-         continuam funcionando pelo caminho já existente. -->
+         continuam funcionando pelo caminho já existente.
+         Implementação de IA removida — mantido apenas como estrutura visual
+         para futura reconstrução. -->
     <div class="panel" id="panelAiChat" role="dialog" aria-modal="true" aria-labelledby="aiChatTitle">
       <h3 id="aiChatTitle">LIA • IA Financeira
         <button type="button" class="modal-close" id="btnAiChatClose" aria-label="Fechar conversa" title="Fechar">×</button>
@@ -1509,65 +1475,9 @@
 
       <div class="ai-chat-notice" id="aiChatNotice" role="status" aria-live="polite" hidden></div>
 
-      <div class="ai-chat-messages" id="aiChatMessages" role="log" aria-live="polite" tabindex="0"></div>
-
-      <form class="ai-chat-composer" id="aiChatForm" autocomplete="off">
-        <label class="ai-chat-label" for="aiChatInput">Pergunte sobre suas finanças</label>
-        <div class="ai-chat-row">
-          <!-- V.20-02 — anexo da LIA: validação + OCR + revisão obrigatória.
-               Este input nunca cria movimentação; só alimenta o pipeline. -->
-          <input
-            type="file"
-            id="liaAttachmentFile"
-            accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp,application/pdf,.pdf"
-            hidden
-          >
-<button type="button" id="btnLiaAttach" class="ai-attach-btn"
-                   aria-label="Anexar imagem ou documento" title="Anexar imagem ou documento">
-            <i class="fi fi-rr-paperclip-vertical" aria-hidden="true"></i>
-          </button>
-          <input type="text" id="aiChatInput" name="aiChatInput" placeholder="Ex: quanto gastei em mercado este mês?"
-                 enterkeyhint="send">
-          <button type="submit" id="btnAiChatSend" class="primary" aria-label="Enviar pergunta">
-            <i class="fi fi-rr-paper-plane-top" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div class="ai-attachment-chip" id="liaAttachmentChip" hidden></div>
-      </form>
-
-      <div class="ai-chat-notice" id="liaAttachmentNotice" role="status" aria-live="polite" hidden></div>
-      <!-- fallback suportado quando a leitura não está disponível:
-           o usuário segue para o lançamento manual (fluxo existente). -->
-      <div class="ocr-fallback-row" id="liaAttachmentFallback" hidden>
-        <button type="button" id="btnLiaManualEntry">Abrir lançamento manual</button>
+      <div class="ai-chat-messages" id="aiChatMessages" role="log" aria-live="polite" tabindex="0">
+        <p class="placeholder">Funcionalidade de IA em reformulação. O modal abre e fecha normalmente.</p>
       </div>
-    </div>
-
-    <!-- V.20-02 — revisão humana obrigatória do anexo lido pela LIA.
-         Nenhum elemento deste painel grava dado por si só: a confirmação
-         alimenta o fluxo EXISTENTE de criação de movimentação (fSalvar),
-         com as mesmas validações, persistência e tratamento de erro. -->
-    <div class="panel" id="panelOcrReview" role="dialog" aria-modal="true" aria-labelledby="ocrReviewTitle">
-      <h3 id="ocrReviewTitle">Revisar anexo
-        <button type="button" class="modal-close" id="btnOcrReviewClose" aria-label="Fechar revisão" title="Fechar">×</button>
-      </h3>
-
-      <p class="ocr-review-intro" id="ocrReviewIntro">
-        Confira o que foi reconhecido. Nada é gravado até você confirmar.
-      </p>
-
-      <div class="ocr-attachment-preview" id="ocrAttachmentPreview" hidden></div>
-      <div class="ocr-review-notice" id="ocrReviewNotice" role="status" aria-live="polite" hidden></div>
-
-      <div class="ocr-field-list" id="ocrReviewFields"></div>
-
-      <div class="ocr-review-actions">
-        <button type="button" id="btnOcrReviewCancel">Cancelar</button>
-        <button type="button" id="btnOcrReviewConfirm" class="primary" data-single-action="1">Confirmar e lançar</button>
-      </div>
-      <p class="hint ocr-review-hint" id="ocrReviewHint">
-        A confirmação usa o fluxo de lançamento manual, com as mesmas validações e persistência.
-      </p>
     </div>
 
     <div class="panel" id="panelThemePicker" data-no-autofocus>
@@ -1637,17 +1547,14 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
   <script defer src="./js/20-dashboard.js?v=20-25"></script>
   <script defer src="./js/21-ai-features.js?v=20-25"></script>
   <script defer src="./js/22-profile.js?v=20-26"></script>
-  <script defer src="./js/23-ai-chat.js?v=20-26"></script>
   <script defer src="./js/24-automation-render.js?v=20-25"></script>
   <script defer src="./js/25-bills-receivables.js?v=20-25"></script>
   <script defer src="./js/26-receipts.js?v=20-25"></script>
   <script defer src="./js/27-cards.js?v=20-25"></script>
-  <script defer src="./js/28-ocr-lia.js?v=20-25"></script>
   <script defer src="./js/29-invest-movements.js?v=20-25"></script>
   <script defer src="./js/30-transfer-receipts.js?v=20-25"></script>
   <script defer src="./js/31-import-export.js?v=20-25"></script>
   <script defer src="./js/32-auth-wiring.js?v=20-25"></script>
-  <script defer src="./js/33-mcp-bridge.js?v=20-26"></script>
   <script defer src="./js/99-init.js?v=20-28"></script>
   <script src="./js/domain/simple-log.js?v=1"></script>
 

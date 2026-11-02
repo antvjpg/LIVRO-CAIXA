@@ -1,5 +1,7 @@
 # Auditoria Técnica Cruzada - Subsistema de IA (LIA) - LIVRO-CAIXA
 
+> **NOTA HISTÓRICA (Nov/2026):** Esta implementação da LIA/IA foi **removida completamente** em novembro de 2026. Este documento permanece apenas como registro histórico da auditoria realizada antes da remoção. A funcionalidade de IA não está mais disponível no aplicativo.
+
 ## Sumário Executivo
 
 Esta auditoria técnica examinou o subsistema de Inteligência Artificial do LIVRO-CAIXA, abrangendo arquitetura, provedores, contexto financeiro, prompts, persistência, segurança e testes. O subsistema apresenta arquitetura tricampeada (frontend/validação → worker/roteamento → provedores/execução) com boa separação de responsabilidades, mas possui 3 criticidades operacionais e 7 itens de melhoria identificados.

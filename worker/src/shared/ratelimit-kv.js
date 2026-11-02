@@ -19,8 +19,8 @@ function rateLimitKey(prefix, key) {
 export async function isRateLimitedKV(key, env, options = {}) {
   if (!env.RATE_LIMIT_KV) return false; // fallback: sem KV = sem limit
 
-  const limitEnvVar = options.limitEnvVar || "AI_RATE_LIMIT_PER_MINUTE";
-  const defaultLimit = options.defaultLimit || DEFAULT_RATE_LIMIT;
+  const limitEnvVar = options.limitEnvVar || "FINANCIAL_RATE_LIMIT_PER_MINUTE";
+  const defaultLimit = options.defaultLimit || DEFAULT_FINANCIAL_RATE_LIMIT;
   const prefix = options.prefix || "";
 
   const configured = Number(env[limitEnvVar]);

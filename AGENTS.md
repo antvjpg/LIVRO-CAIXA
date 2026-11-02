@@ -94,7 +94,7 @@ O projeto historicamente possui:
 
 - uma aplicação SPA;
 - JavaScript vanilla;
-- HTML/CSS/JavaScript em arquivos separados (no momento desta documentação: `index.html` é HTML puro, sem JS inline — o JS vive em `js/00-bootstrap.js` … `js/33-mcp-bridge.js` + `js/99-init.js` (dispatcher de `DOMContentLoaded`), com `js/legacy/patches.js` (remendos), `js/domain/*` (domínio) e `js/data/emoji-catalog.js` (dados); o CSS vive em `style/*.css`);
+- HTML/CSS/JavaScript em arquivos separados (no momento desta documentação: `index.html` é HTML puro, sem JS inline — o JS vive em `js/00-bootstrap.js` … `js/32-auth-wiring.js` + `js/99-init.js` (dispatcher de `DOMContentLoaded`), com `js/legacy/patches.js` (remendos), `js/domain/*` (domínio) e `js/data/emoji-catalog.js` (dados); o CSS vive em `style/*.css`);
 - o antigo `app.js` **não existe mais**: foi dividido em `js/`. Referências a `app.js` em auditorias, READMEs e documentação antiga são **históricas** — localize o arquivo atual antes de confiar nelas;
 - Firebase;
 - Firestore;
@@ -469,7 +469,6 @@ Podem existir, dependendo do estado atual:
 - console técnico;
 - LOG geral;
 - verificação de consistência;
-- diagnóstico por IA;
 - logs locais;
 - logs persistidos;
 - logs relacionados à autenticação.
@@ -1619,3 +1618,26 @@ Portanto:
 E, principalmente:
 
 > **o estado atual do repositório é a fonte de verdade sobre a implementação atual. Este arquivo define como trabalhar no projeto, não uma fotografia permanente de como o projeto deve ser.**
+
+---
+
+## Nota histórica — Remoção da LIA/IA (Nov/2026)
+
+A implementação da LIA (assistente de IA conversacional), OCR assistido e integração MCP (Model Context Protocol) foi **removida completamente** em novembro de 2026, conforme solicitação de refatoração.
+
+O que foi removido:
+- Frontend: `js/23-ai-chat.js`, `js/28-ocr-lia.js`, `js/33-mcp-bridge.js`
+- Contratos: `js/domain/ai-chat-contract.js`, `js/domain/chat-persistence.js`, `js/domain/mcp-financial-contract.js`, `js/domain/secure-storage.js`
+- OCR pipeline: pasta `ocr/` (7 módulos)
+- Worker: rotas `/ai`, `/quota`, `/mcp`, `/bridge/*`, OAuth; pastas `worker/src/ai/` e `worker/src/mcp/`
+- Variáveis do Worker: `QUOTA_KV`, `AI_PROVIDER`, `GROQ_DAILY_LIMIT`, `MCP_OAUTH_*`
+- Testes: `e2e/lia/`, `worker/test/ai*.test.mjs`, `worker/test/mcp-*.test.mjs`, `worker/test/v20-01-ocr-modules.test.mjs`
+
+O que foi **preservado**:
+- Modal `#panelAiChat` no `index.html` (estrutura visual apenas, sem funcionalidade de IA)
+- Funções financeiras independentes em `js/21-ai-features.js` (categorização, anomalias, revisão mensal, juros compostos)
+- `buildFinancialSnapshot()` e `runDiagnostics()` em `js/22-profile.js`
+- Gateway financeiro `/financial` no Worker (BCB, Tesouro, rate limit próprio)
+- Todas as funcionalidades financeiras: contas, lançamentos, cartões, caixinhas, metas, investimentos, orçamentos, recebíveis, conciliação, notificações
+
+Esta nota serve como registro histórico; o AGENTS.md permanece focado nas regras permanentes de engenharia.

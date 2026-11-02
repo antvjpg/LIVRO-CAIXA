@@ -20,7 +20,6 @@ O Livro-Caixa é uma aplicação financeira pessoal em forma de SPA/PWA, constru
 - **Orçamentos** — limites por categoria com barra de progresso e alertas
 - **Contas a receber e boletos** — controle de valores a vencer e pagamentos
 - **Importação/exportação** — extratos, backups e transferência de dados
-- **OCR com LIA** — leitura de extratos e sugestões contextuais por IA
 - **Personalização** — temas claro/escuro, moedas (BRL/USD/BTC) e fontes
 - **Offline-first** — PWA instalável com cache via Service Worker
 
@@ -31,7 +30,7 @@ O Livro-Caixa é uma aplicação financeira pessoal em forma de SPA/PWA, constru
 | Frontend | HTML/CSS/JavaScript vanilla (sem build) |
 | Autenticação | Firebase Auth (e-mail/senha e Google) |
 | Persistência | Cloud Firestore (sincronização + cache offline) |
-| IA / indicadores | Cloudflare Worker [`livro-caixa-ai`](worker/) — LIA + endpoints `/financial` (BCB/Tesouro) |
+| IA / indicadores | Cloudflare Worker [`livro-caixa-ai`](worker/) — endpoints `/financial` (BCB/Tesouro) |
 | PWA | Service Worker (`sw.js`) + `manifest.webmanifest` |
 | Deploy | GitHub Pages + Cloudflare Workers (CI automático) |
 
@@ -53,7 +52,7 @@ ou qualquer servidor estático (`python3 -m http.server`, `npx serve` etc.). Nã
 index.html            SPA única (HTML puro)
 manifest.webmanifest  PWA
 sw.js                 Service Worker (shell precache, network-first)
-js/                   26 módulos (00-bootstrap … 33-mcp-bridge + 99-init)
+js/                   22 módulos (00-bootstrap … 32-auth-wiring + 99-init)
   js/domain/          domínio isolado (card engine, cliente financeiro)
   js/legacy/          patches de compatibilidade
   js/data/            catálogo de emojis
