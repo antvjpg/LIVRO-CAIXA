@@ -71,3 +71,50 @@
     };
     fab.setAttribute('aria-label', labels[tab] || 'Adicionar');
   }
+
+  auth.onAuthStateChanged(user => {
+    window.authResolved = true;
+    loadGeneration++;
+    currentUser = user;
+    window.currentUser = currentUser;
+
+    try {
+      if (user) {
+        clearSessionMemory();
+        firstLoadDone = false;
+        renderBalances();
+        const overlay = document.getElementById('authOverlay');
+        if (overlay) overlay.classList.add('hidden');
+        renderUserBar();
+        startSessionSecurity();
+        startFeatureAutomation();
+        loadState().then(() => {
+        }).catch(err => {
+          console.warn('[INIT] Falha ao carregar dados após autenticação:', err);
+        }).finally(() => {
+          const syncOv = document.getElementById('syncOverlay');
+          if (syncOv) syncOv.classList.add('hidden');
+        });
+        setTimeout(checkLocalPinLock, 700);
+      } else {
+        stopSessionSecurity();
+        pinUnlocked = false;
+        hidePinOverlay();
+        clearPinActivity();
+        if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
+        realtimeUnsubscribers.forEach(unsub => unsub());
+        realtimeUnsubscribers = [];
+        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
+        banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
+        clearSessionMemory();
+        firstLoadDone = false;
+        renderBalances();
+        if (syncOverlay) syncOverlay.classList.add('hidden');
+        if (overlay) overlay.classList.remove('hidden');
+        renderUserBar();
+        window.currentUser = null;
+      }
+    } catch (err) {
+      console.error('[INIT] Erro no callback de autenticação:', err);
+    }
+  });

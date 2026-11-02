@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
      em 8s (callback Firebase pendurado ou erro antes do auth), revela o login
      em vez de deixar o loader preso. Se a sessão chegar depois do timeout,
      o fluxo normal esconde o login e segue. */
-  let authResolved = false;
+  window.authResolved = false;
   setTimeout(() => {
-    if (authResolved) return;
+    if (window.authResolved) return;
     const loginOv = document.getElementById('authOverlay');
     const loaderOv = document.getElementById('syncOverlay');
     if (loaderOv) loaderOv.classList.add('hidden');
@@ -859,8 +859,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   const APP_VERSION_LABEL = 'Livro-Caixa V.20-02 (opencode)';
 
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
-  syncProfileEmail();
-  try { auth?.onAuthStateChanged?.(() => syncProfileEmail()); } catch (e) {}
 
 
   // Acessibilidade: elementos com role=button precisam responder a Enter/Espaço.
@@ -3280,66 +3278,4 @@ document.getElementById('tSalvar').onclick = async () => {
 
   initMoneyMasks();
   markSingleActionButtons();
-
-  auth.onAuthStateChanged(user => {
-    authResolved = true;
-    loadGeneration++;
-    currentUser = user;
-    window.currentUser = currentUser;
-
-    try {
-      if (user) {
-        window.logEvent('INFO', 'Autenticação', 'Sessão iniciada', 'Usuário autenticado.');
-        console.log('Autenticação','Sessão iniciada','Sucesso','Usuário autenticado.');
-      }
-      const overlay = document.getElementById('authOverlay');
-      const syncOverlay = document.getElementById('syncOverlay');
-      if (user) {
-        clearSessionMemory();
-        firstLoadDone = false;
-        renderBalances();
-        if (overlay) overlay.classList.add('hidden');
-        /* syncOverlay não é escondido aqui: loadState() assume o controle dele
-           (mostra na linha 30 de 17-sync-persistence.js e esconde no finally
-           anexado abaixo), evitando um gap onde nenhum overlay cobre a tela e o
-           skeleton de carregamento (is-data-loading) fique visível por cima do
-           conteúdo. */
-        renderUserBar();
-        startSessionSecurity();
-        startFeatureAutomation();
-        /* Limpa eventos do usuário anterior (se houver). */
-        loadState().then(() => {
-        }).catch(err => {
-          console.warn('[INIT] Falha ao carregar dados após autenticação:', err);
-        }).finally(() => {
-          /* Garante que o loader nunca fique preso, mesmo se loadState travar
-             ou rejeitar. */
-          const syncOv = document.getElementById('syncOverlay');
-          if (syncOv) syncOv.classList.add('hidden');
-        });
-        setTimeout(checkLocalPinLock, 700);
-      } else {
-        stopSessionSecurity();
-        pinUnlocked = false;
-        hidePinOverlay();
-        clearPinActivity();
-        if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
-        realtimeUnsubscribers.forEach(unsub => unsub());
-        realtimeUnsubscribers = [];
-        lastSynced = { banks: {}, categories: {}, entries: {}, investments: {}, pockets: {}, yieldsLog: {}, recurringBills: {}, receivables: {}, budgets: {}, goals: {}, invoiceLaunches: {}, cards: {}, purchases: {} };
-        banks = []; categories = []; entries = []; investments = []; pockets = []; yieldsLog = []; recurringBills = []; receivables = []; budgets = []; goals = []; cards = []; purchases = [];
-        clearSessionMemory();
-        firstLoadDone = false;
-        renderBalances();
-        if (syncOverlay) syncOverlay.classList.add('hidden');
-        if (overlay) overlay.classList.remove('hidden');
-        renderUserBar();
-        /* Remove eventos do usuário que encerrou a sessão. */
-        window.logEvent('INFO', 'Autenticação', 'Sessão encerrada', 'Usuário deslogado.');
-        window.currentUser = null;
-      }
-    } catch (err) {
-      console.error('[INIT] Erro no callback de autenticação:', err);
-    }
-  });
 });
