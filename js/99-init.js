@@ -2711,10 +2711,6 @@ const TRANSFER_RECEIPT_ALLOWED_TYPES = new Set([
   'application/pdf'
 ]);
 
-document.getElementById('btnReadTransferReceipt')?.onclick = () => {
-  document.getElementById('transferReceiptFile')?.click();
-};
-
 document.getElementById('transferReceiptFile').addEventListener('change', (ev) => {
   const file = ev.target.files?.[0];
   if (!file) return;
