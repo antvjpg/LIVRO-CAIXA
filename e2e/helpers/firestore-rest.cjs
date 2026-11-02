@@ -151,7 +151,7 @@ async function probeAuthProvider() {
     res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'invalid@invalid.invalid', password: 'x', returnSecureToken: true }),
+      body: JSON.stringify({ email: 'invalid@invalid.invalid', password: 'Probe123!', returnSecureToken: true }),
       signal: controller.signal,
     });
     clearTimeout(timeout);
