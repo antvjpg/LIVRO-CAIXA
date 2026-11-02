@@ -41,23 +41,11 @@ import { validateChatPayload, CHAT_LIMITS } from "../../js/domain/ai-chat-contra
 import { buildChatSystemPrompt } from "./ai/chat-prompt.js";
 import { authenticate } from "./ai/auth.js";
 import { requireAppCheck } from "./ai/appcheck.js";
-import { getFreeQuotaKV, getOpenRouterUsageKV, getQuotaForProvider, burnQuotaForProvider, quotaHeaderValues } from "./ai/quota-kv.js";
+import { getQuotaForProvider, burnQuotaForProvider, quotaHeaderValues } from "./ai/quota-kv.js";
 import { isRateLimitedKV } from "./ai/ratelimit-kv.js";
 import { resolveProvider, providerMissingKey, ProviderError } from "./ai/provider.js";
 import {
   RETRYABLE_STATUS,
-  modelList as openRouterModelList,
-  callOpenRouter,
-  failureFromResult as openRouterFailureFromResult,
-  emptyReplyFailure as openRouterEmptyReplyFailure
-} from "./ai/openrouter.js";
-import {
-  modelList as googleModelList,
-  callGoogle,
-  failureFromResult as googleFailureFromResult,
-  emptyReplyFailure as googleEmptyReplyFailure
-} from "./ai/google.js";
-import {
   modelList as groqModelList,
   callGroq,
   failureFromResult as groqFailureFromResult,
@@ -86,100 +74,18 @@ const BRIDGE_TOKEN_MAX_BODY_BYTES = 8 * 1024;
 const MAX_RATE_BUCKETS = 500;
 const rateBuckets = new Map();
 
-/* Resolve o provedor de IA ativo pela variável AI_PROVIDER.
-   Padrão: openrouter. Valores: openrouter | google | groq. */
-function resolveAiProvider(env) {
-  const name = String(env.AI_PROVIDER || "openrouter").toLowerCase();
-  switch (name) {
-    case "openrouter":
-      return {
-        name,
-        modelList: () => openRouterModelList(env),
-        callModel: (model, messages, maxTokens, referer, options) =>
-          callOpenRouter(model, env, messages, maxTokens, referer, options),
-        failureFromResult: (result, model) => openRouterFailureFromResult(result, model, env),
-        emptyReplyFailure: (model) => openRouterEmptyReplyFailure(model),
-        missingKey: () => !env.OPENROUTER_API_KEY,
-        providerName: "openrouter"
-      };
-    case "google":
-      return {
-        name,
-        modelList: () => googleModelList(env),
-        callModel: (model, messages, maxTokens, referer, options) =>
-          callGoogle(model, env, messages, maxTokens, referer, options),
-        failureFromResult: (result, model) => googleFailureFromResult(result, model, env),
-        emptyReplyFailure: (model) => googleEmptyReplyFailure(model),
-        missingKey: () => !env.GOOGLE_API_KEY,
-        providerName: "google"
-      };
-    case "groq":
-      return {
-        name,
-        modelList: () => groqModelList(env),
-        callModel: (model, messages, maxTokens, referer, options) =>
-          callGroq(model, env, messages, maxTokens, referer, options),
-        failureFromResult: (result, model) => groqFailureFromResult(result, model, env),
-        emptyReplyFailure: (model) => groqEmptyReplyFailure(model),
-        missingKey: () => !env.GROQ_API_KEY,
-        providerName: "groq"
-      };
-    default:
-      return null;
-  }
-}
-
-/* Resolve o provedor escolhido pelo usuário no frontend (via payload.aiProvider).
-   Padrão: openrouter. Valores: openrouter | google | groq. */
-function resolveAiProviderByName(env, providerName) {
-  const name = String(providerName || "openrouter").toLowerCase();
-  switch (name) {
-    case "openrouter":
-      return {
-        name,
-        modelList: () => openRouterModelList(env),
-        callModel: (model, messages, maxTokens, referer, options) =>
-          callOpenRouter(model, env, messages, maxTokens, referer, options),
-        failureFromResult: (result, model) => openRouterFailureFromResult(result, model, env),
-        emptyReplyFailure: (model) => openRouterEmptyReplyFailure(model),
-        missingKey: () => !env.OPENROUTER_API_KEY,
-        providerName: "openrouter"
-      };
-    case "google":
-      return {
-        name,
-        modelList: () => googleModelList(env),
-        callModel: (model, messages, maxTokens, referer, options) =>
-          callGoogle(model, env, messages, maxTokens, referer, options),
-        failureFromResult: (result, model) => googleFailureFromResult(result, model, env),
-        emptyReplyFailure: (model) => googleEmptyReplyFailure(model),
-        missingKey: () => !env.GOOGLE_API_KEY,
-        providerName: "google"
-      };
-    case "groq":
-      return {
-        name,
-        modelList: () => groqModelList(env),
-        callModel: (model, messages, maxTokens, referer, options) =>
-          callGroq(model, env, messages, maxTokens, referer, options),
-        failureFromResult: (result, model) => groqFailureFromResult(result, model, env),
-        emptyReplyFailure: (model) => groqEmptyReplyFailure(model),
-        missingKey: () => !env.GROQ_API_KEY,
-        providerName: "groq"
-      };
-    default:
-      return null;
-  }
-}
-
-function providerMissingKeyMessage(providerName) {
-  const map = {
-    openrouter: "OPENROUTER_API_KEY",
-    google: "GOOGLE_API_KEY",
-    groq: "GROQ_API_KEY"
+/* Provedor fixo: Groq. Não há seletor nem fallback para outros provedores. */
+function getGroqProvider(env) {
+  return {
+    name: "groq",
+    modelList: () => groqModelList(env),
+    callModel: (model, messages, maxTokens, referer, options) =>
+      callGroq(model, env, messages, maxTokens, referer, options),
+    failureFromResult: (result, model) => groqFailureFromResult(result, model, env),
+    emptyReplyFailure: (model) => groqEmptyReplyFailure(model),
+    missingKey: () => !env.GROQ_API_KEY,
+    providerName: "groq"
   };
-  const key = map[providerName] || "AI_API_KEY";
-  return `Chave ${key} não configurada no servidor.`;
 }
 
 function isRateLimitedMemory(key, env, options = {}) {
@@ -292,8 +198,7 @@ async function handleFetch(request, env) {
       const quotaAuth = await authenticate(request, env, cors);
       if (quotaAuth instanceof Response) return quotaAuth;
 
-      const providerName = String(env.AI_PROVIDER || "openrouter").toLowerCase();
-      const quota = await getQuotaForProvider(env, providerName);
+      const quota = await getQuotaForProvider(env, "groq");
       if (!quota) {
         return json(
           { error: "Não foi possível consultar o limite de leituras agora.", code: "quota_unavailable" },
@@ -309,52 +214,7 @@ async function handleFetch(request, env) {
           remaining: quota.remaining,
           resetAt: quota.resetAt,
           day: quota.day,
-          provider: quota.provider || providerName
-        },
-        200,
-        cors
-      );
-    }
-
-/* Monitor de uso gratuito do OpenRouter: somente administrador autenticado.
-        GET /openrouter-usage → { free_model_daily_requests: { used, limit, remaining }, timestamp }.
-        Sem cache (leitura autoritativa a pedido); a chave e a resposta integral
-        do provedor nunca saem do Worker. */
-      if (url.pathname === "/openrouter-usage") {
-        if (!cors) return json({ error: "Origem não autorizada.", code: "origin_blocked" }, 403, null);
-        if (request.method !== "GET") {
-          return json({ error: "Método não permitido.", code: "method_not_allowed" }, 405, cors);
-        }
-
-        const appCheck = await requireAppCheck(request, env, cors);
-        if (!appCheck.ok) return appCheck.response;
-
-        const auth = await authenticate(request, env, cors);
-        if (auth instanceof Response) return auth;
-
-        const adminEmails = String(env.OPENROUTER_USAGE_ADMIN_EMAIL || "")
-          .split(",")
-          .map(e => e.trim().toLowerCase())
-          .filter(Boolean);
-        const claimEmail = String(auth.claims?.email || "").trim().toLowerCase();
-        if (!adminEmails.length || !adminEmails.includes(claimEmail)) {
-          return json({ error: "Acesso restrito ao administrador.", code: "admin_forbidden" }, 403, cors);
-        }
-
-      const usage = await getOpenRouterUsageKV(env);
-      if (!usage.ok) {
-        const status = usage.code === "openrouter_key_missing" ? 503 : 502;
-        const errorText =
-          usage.code === "openrouter_key_missing"
-            ? "Chave OpenRouter não configurada."
-            : "Não foi possível consultar o uso do OpenRouter agora.";
-        return json({ error: errorText, code: usage.code }, status, cors);
-      }
-
-      return json(
-        {
-          free_model_daily_requests: { used: usage.used, limit: usage.limit, remaining: usage.remaining },
-          timestamp: new Date().toISOString()
+          provider: quota.provider || "groq"
         },
         200,
         cors
@@ -549,38 +409,19 @@ async function handleFetch(request, env) {
 const body = await readJsonBody(request);
     if (!body.ok) return json(body.body, body.status, cors);
 
-    /* Provedor: prioridade 1 = escolha explícita do frontend (aiProvider no payload).
-       Prioridade 2 = configuração do servidor (AI_PROVIDER env var).
-       Prioridade 3 = padrão 'openrouter'. */
-    const frontendProvider = body.payload?.aiProvider;
-    let provider;
-    if (frontendProvider) {
-      provider = resolveAiProviderByName(env, String(frontendProvider).toLowerCase());
-    } else {
-      provider = resolveAiProvider(env);
-    }
-    if (!provider) {
-      provider = resolveAiProviderByName(env, 'openrouter');
-    }
-    if (!provider) {
-      return json(
-        { error: "Provedor de IA não suportado.", code: "unsupported_provider" },
-        503,
-        cors
-      );
-    }
+    /* Provedor fixo: Groq. Não há seletor no frontend nem fallback. */
+    const provider = getGroqProvider(env);
     if (provider.missingKey()) {
       return json(
-        { error: providerMissingKeyMessage(provider.providerName), code: "missing_server_key" },
+        { error: "Chave GROQ_API_KEY não configurada no servidor.", code: "missing_server_key" },
         503,
         cors
       );
     }
 
-    /* Garante o cache de cota ANTES de decidir sobre o limite diário.
-       Usa quota específica do provedor resolvido. */
-    const providerName = provider.providerName;
-    let quota = await getQuotaForProvider(env, providerName);
+    /* Garante o cache de cota ANTES de decidir sobre o limite diário. */
+    let quota = await getQuotaForProvider(env, "groq");
+    console.log(`[ai] quota check limit=${quota?.limit} remaining=${quota?.remaining} provider=${quota?.provider}`);
     const quotaHeaders = () => quotaHeaderValues(quota);
 
     if (quota && quota.remaining <= 0) {
@@ -650,12 +491,15 @@ const body = await readJsonBody(request);
       });
 
 /* Conta na cota apenas o que deu certo: tentativas que o provedor
-          recusou (402/404, falha de rede) não gastam o dia. */
-       if (result.ok) {
-         await burnQuotaForProvider(env, providerName);
-         const refreshed = await getQuotaForProvider(env, providerName);
-         if (refreshed) quota = refreshed;
-       }
+           recusou (402/404, falha de rede) não gastam o dia. */
+        if (result.ok) {
+          await burnQuotaForProvider(env, "groq");
+          const refreshed = await getQuotaForProvider(env, "groq");
+          if (refreshed) {
+            console.log(`[ai] quota refreshed limit=${refreshed.limit} remaining=${refreshed.remaining} used=${refreshed.used}`);
+            quota = refreshed;
+          }
+        }
 
       if (!result.ok) {
         const status = result.status || 0;
