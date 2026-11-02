@@ -78,6 +78,8 @@ module.exports = async () => {
     console.warn('[C.O.D.E.] autoprovisionamento desligado (CODE_TEST_AUTO_PROVISION=0) — suítes ficarão BLOCKED');
   }
 
-  /* 3) estado mínimo para o projeto "setup" não falhar por arquivo ausente */
-  if (!fs.existsSync(config.statePath)) writeEmptyState();
+  /* 3) storageState mínimo para o projeto "setup": sempre reseta o arquivo
+      de sessão para evitar reutilizar credenciais expiradas de runs anteriores
+      (o arquivo qa-session.json pode ter sido deixado por uma run abortada). */
+  writeEmptyState();
 };
