@@ -1832,8 +1832,7 @@ document.getElementById('receiptFile').addEventListener('change', (ev) => {
     `Comprovante selecionado: ${file.name} · ${sizeMB} MB. Pronto para análise.`
   );
 
-  runReceiptAIAnalysis();
-});
+  });
 receiptAIResponseText = '';
   purchaseCalcMode = 'installment';
 
@@ -2764,9 +2763,7 @@ document.getElementById('transferReceiptFile').addEventListener('change', (ev) =
     `Comprovante selecionado: ${file.name} · ${sizeMB} MB. Pronto para análise.`
   );
 
-  runTransferReceiptAIAnalysis();
 });
-
 document.getElementById('tSalvar').onclick = async () => {
     const dateInput = document.getElementById('tData').value;
 
