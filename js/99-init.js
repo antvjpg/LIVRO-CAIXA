@@ -298,6 +298,34 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeAllPanels();
   });
+
+  /* Navegação interna do botão/gesto Voltar: fecha modais primeiro;
+     se não houver modal aberto, volta para a aba inicial "Caixa";
+     na raiz, deixa o sistema tratar a saída normalmente. */
+  const appBackState = { livrocaixa: true };
+  const hasOpenBackOverlay = () => Boolean(
+    document.getElementById('modalOverlay')?.classList.contains('open') ||
+    document.querySelector('.panel.open') ||
+    document.getElementById('emojiFloatOverlay')?.classList.contains('open') ||
+    document.getElementById('bill-day-panel-v19-16')
+  );
+  const goBackInsideApp = () => {
+    if (hasOpenBackOverlay()) {
+      try { closeAllPanels(); } catch (_) {}
+      return true;
+    }
+    if ((document.body.dataset.tab || 'caixa') !== 'caixa') {
+      try { window.switchTab('caixa'); } catch (_) {}
+      return true;
+    }
+    return false;
+  };
+  window.addEventListener('popstate', () => {
+    if (!goBackInsideApp()) return; // na raiz: deixa o sistema fechar o app
+    try { history.pushState(appBackState, ''); } catch (_) {}
+  });
+  // Entrada extra para consumir a primeira ação de Voltar dentro do app
+  try { history.pushState(appBackState, ''); } catch (_) {}
   LAST_TAB_STORAGE_KEY = 'livrocaixa_last_tab';
   TAB_NAMES = ['dash', 'dashboard', 'caixa', 'invest', 'pockets', 'cards', 'receivables', 'bills', 'profile', 'goals'];
   currentTab = 'caixa';
@@ -3164,9 +3192,10 @@ document.getElementById('tSalvar').onclick = async () => {
     const authSubmit = document.getElementById('authSubmit');
     const authPassToggle = document.getElementById('authPassToggle');
     const authGoogle = document.getElementById('authGoogle');
+    const authForgotPassword = document.getElementById('authForgotPassword');
 
     // Se NENHUM elemento de auth existir, a tela de login foi removida
-    const authElementsExist = authToggleLink || authSubmit || authPassToggle || authGoogle;
+    const authElementsExist = authToggleLink || authSubmit || authPassToggle || authGoogle || authForgotPassword;
     if (!authElementsExist) {
       return; // tela de login antiga removida / ainda não montada
     }
@@ -3201,7 +3230,7 @@ document.getElementById('tSalvar').onclick = async () => {
         const authTitle = document.getElementById('authTitle');
         const authSubmitBtn = document.getElementById('authSubmit');
         const authToggleWrap = document.getElementById('authToggleWrap');
-        if (authTitle) authTitle.textContent = isSignupMode ? 'Criar conta' : 'Entrar';
+        if (authTitle) authTitle.textContent = isSignupMode ? 'Criar conta' : 'Bem Vindo de volta';
         if (authSubmitBtn) authSubmitBtn.textContent = isSignupMode ? 'Criar conta' : 'Entrar';
         if (authToggleWrap) {
           authToggleWrap.innerHTML = isSignupMode
@@ -3227,6 +3256,32 @@ document.getElementById('tSalvar').onclick = async () => {
         if (eyeOpen) eyeOpen.style.display = showing ? 'block' : 'none';
         if (eyeClosed) eyeClosed.style.display = showing ? 'none' : 'block';
         btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+      };
+    }
+
+    // Recuperar senha via e-mail (se o link de recuperação existir)
+    if (authForgotPassword) {
+      authForgotPassword.onclick = () => {
+        const emailEl = document.getElementById('authEmail');
+        const email = emailEl ? emailEl.value.trim() : '';
+
+        if (!email) {
+          setAuthError('Informe seu e-mail para recuperar a senha.');
+          if (emailEl) emailEl.focus();
+          return;
+        }
+
+        setAuthError('');
+        const operacaoForgot = window.beginLogOperation('Autenticação', 'Recuperação de senha');
+        auth.sendPasswordResetEmail(email)
+          .then(() => {
+            setAuthError('Enviamos um link de recuperação para seu e-mail.', true);
+            window.logEvent('INFO', 'Autenticação', 'Recuperação de senha', 'E-mail de recuperação enviado.', null, window.operationDuration(operacaoForgot));
+          })
+          .catch(err => {
+            setAuthError(translateAuthError(err.code));
+            window.logEvent('ERROR', 'Autenticação', 'Falha na recuperação de senha', err.code || 'unknown', null, window.operationDuration(operacaoForgot));
+          });
       };
     }
 

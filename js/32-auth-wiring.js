@@ -28,16 +28,17 @@
     renderFeatureProfile();
   }
 
-  function setAuthError(msg) {
+  function setAuthError(msg, success = false) {
     const el = document.getElementById('authError');
-
     if (el) {
       el.textContent = msg || '';
+      el.classList.toggle('success', Boolean(success));
     }
   }
 
   function translateAuthError(code) {
     const map = {
+      'auth/user-disabled': 'Esta conta está desativada.',
       'auth/invalid-email': 'E-mail inválido.',
       'auth/user-not-found': 'Conta não encontrada. Crie uma conta.',
       'auth/wrong-password': 'Senha incorreta.',

@@ -2134,7 +2134,9 @@ body{
 header.app-header{
   padding-top:calc(33px + env(safe-area-inset-top, 0px));
 }
-#authOverlay,
+#authOverlay{
+  padding-top:env(safe-area-inset-top, 0px);
+}
 #pinOverlay,
 #syncOverlay,
 .modal-overlay{
