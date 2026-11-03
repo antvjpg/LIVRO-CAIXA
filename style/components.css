@@ -679,7 +679,10 @@
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
-    padding:24px 32px;
+    padding-top:calc(24px + env(safe-area-inset-top, 0px));
+    padding-right:max(24px, env(safe-area-inset-right, 0px));
+    padding-bottom:calc(24px + env(safe-area-inset-bottom, 0px));
+    padding-left:max(24px, env(safe-area-inset-left, 0px));
     overflow-y:auto;
   }
   #authOverlay.hidden{display:none;}
@@ -713,19 +716,16 @@
   }
   @keyframes sync-spin{ to{ transform:rotate(360deg); } }
   .auth-box{
-  /* Background do overlay ja fornece a composicao - sem card externo */
-  background:transparent;
-  /* Cantos arredondados integrados ao design imersivo */
-  border-radius:0;
-  padding:0;
-  /* Sombra removida - o overlay fornece profundidade */
-  box-shadow:none;
   width:100%;
   /* max-width centraliza o conteudo no overlay */
   max-width:420px;
   margin:auto auto 6vh;
+  padding:32px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:0 18px 42px var(--shadow);
   position:static;
-  border:none;
   overflow:visible;
   }
   .auth-box-brand{
@@ -739,7 +739,6 @@
     font-weight:700;
     letter-spacing:.12em;
   }
-  .auth-box-brand .fi{font-size:64px;line-height:1;}
   .auth-box h2{
     font-family:var(--font-ui);
     margin:0 0 7px;
@@ -758,9 +757,7 @@
     letter-spacing:0;
     text-align:center;
   }
-  .auth-box label{margin-top:14px;font-size:10px;font-weight:600;letter-spacing:.04em;}
-  .auth-box input{min-height:52px;margin-bottom:16px;background:transparent;border:1px solid var(--line);border-radius:18px;}
-  .auth-box input:focus{border:2px solid var(--accent);outline:none}
+  .auth-box input{min-height:48px;margin-bottom:16px;background:var(--surface-raised);border:1px solid var(--line);border-radius:12px;}
   .auth-forgot{
   margin-top:10px;
   display:flex;
@@ -806,7 +803,6 @@
   .pass-wrap input,.email-wrap input{width:100%;box-sizing:border-box;margin-bottom:0;}
   .pass-wrap input{padding-right:48px;padding-left:38px;}
   .email-wrap input{padding-left:38px;}
-  .email-wrap input,.pass-wrap input{min-height:44px;}
   .pass-icon,.email-icon{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:24px;color:var(--ink-soft);pointer-events:none;line-height:1;}
   .pass-toggle{
     position:absolute;
@@ -827,20 +823,19 @@
   .pass-toggle:active{transform:translateY(-50%) scale(.975);}
   #authSubmit{min-height:48px;border-radius:11px;font-size:12px;font-weight:700;letter-spacing:.02em;}
   #authDiagnosticToggle{border-radius:14px;}
-  #authGoogle{min-height:44px;border:1px solid var(--line);border-radius:18px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;display:flex;align-items:center;justify-content:center;gap:10px;}
+  #authGoogle{min-height:48px;border:1px solid var(--line);border-radius:12px;background:var(--surface-raised);color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;display:flex;align-items:center;justify-content:center;gap:10px;}
   #authGoogle:hover{background:var(--green-soft);color:var(--ink);}
   body:not(.dark-mode) #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 38%),var(--paper);}
-  body:not(.dark-mode) .auth-box{background:transparent;border-color:transparent;box-shadow:none;}
   body:not(.dark-mode) .auth-box-brand,body:not(.dark-mode) .auth-toggle a{color:var(--accent);}
-  body:not(.dark-mode) .auth-box input,body:not(.dark-mode) #authGoogle{background:var(--paper);border-color:var(--line);color:var(--ink);}
-  body:not(.dark-mode) #authGoogle:hover{background:var(--surface-raised);color:var(--ink);}
   body.dark-mode #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 38%),var(--paper);}
-  body.dark-mode .auth-box{background:transparent;border-color:transparent;box-shadow:none;}
   body.dark-mode .auth-box-brand{color:var(--accent);}
   body.dark-mode .auth-box p.sub{color:var(--ink-soft);}
-  body.dark-mode .auth-box input,body.dark-mode #authGoogle{background:var(--paper);border-color:var(--line);color:var(--ink);}
-  body.dark-mode #authGoogle:hover{background:var(--surface-raised);color:var(--ink);}
   body.dark-mode .auth-toggle a{color:var(--accent);}
+  /* Foco dos campos — declarado por último para não ser apagado pela cascata de tema */
+  body:not(.dark-mode) .auth-box input:focus,
+  body.dark-mode .auth-box input:focus{border-color:var(--accent);}
+  body:not(.dark-mode) .auth-box input:focus-visible,
+  body.dark-mode .auth-box input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   #userBar{
     
     font-size:11px;

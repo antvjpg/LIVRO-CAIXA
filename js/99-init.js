@@ -1632,6 +1632,24 @@ window.deletePocket = function(id) {
     render();
   };
 
+  window.openNewEntryModal = function() {
+    editingEntryId = null;
+    currentType = 'in';
+    document.getElementById('fData').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('fDesc').value = '';
+    document.getElementById('fBanco').value = banks[0]?.id || '';
+    document.getElementById('fCategoria').value = '';
+    setMoneyInput('fValor', 0);
+    const tglIn = document.getElementById('tglIn');
+    const tglOut = document.getElementById('tglOut');
+    if (tglIn) { tglIn.classList.add('active-in'); tglIn.classList.remove('active-out'); }
+    if (tglOut) { tglOut.classList.remove('active-out'); tglOut.classList.remove('active-in'); }
+    document.getElementById('panelNovoTitle').innerHTML = 'Novo lançamento <button type="button" class="modal-close" onclick="closeAllPanels()">×</button>';
+    document.getElementById('fSalvar').textContent = 'Adicionar';
+    if (typeof updateCategoryTriggerLabel === 'function') updateCategoryTriggerLabel();
+    openModal('panelNovo');
+  };
+
   // ===== Feature 14 — Log de alterações: painel de histórico do lançamento =====
   window.openEntryHistory = function(id) {
     const entry = entries.find(e => e.id === id);

@@ -1484,7 +1484,7 @@ function renderCategoryManageList() {
     const list = group.investments;
     const isOpen = expandedInstitutionKeys.has(group.key);
     const entries = list.map((inv, idx) => ({ inv, idx }));
-    const visibleEntries = isOpen ? entries : entries.slice(0, 2);
+    const visibleEntries = isOpen ? entries : entries.slice(0, 1);
     const hiddenCount = Math.max(0, entries.length - visibleEntries.length);
     const firstIdx = entries.length ? entries[0].idx : -1;
     const lastIdx = entries.length ? entries[entries.length - 1].idx : -1;
@@ -1545,10 +1545,10 @@ function renderCategoryManageList() {
       return assetHtml;
     }).join('');
     const assetsId = 'institution-assets-' + gi;
-    const viewAllButton = list.length > 2
+    const viewAllButton = list.length > 1
       ? '<button type="button" class="institution-view-all" data-institution-key="' + escapeHTML(group.key) + '" onclick="instToggle(this)" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + assetsId + '">' + (isOpen ? 'Ver menos' : 'Ver investimentos') + '</button>'
       : '';
-    const moreBlock = (list.length > 2 && !isOpen) ? '<div class="institution-more"><span>+ ' + hiddenCount + ' outros investimentos</span>' + viewAllButton + '</div>' : (list.length > 2 ? viewAllButton : '');
+    const moreBlock = (list.length > 1 && !isOpen) ? '<div class="institution-more"><span>+ ' + hiddenCount + ' outros investimentos</span>' + viewAllButton + '</div>' : (list.length > 1 ? viewAllButton : '');
     return [
       '      <article class="institution-card" data-institution-key="' + escapeHTML(group.key) + '">',
       '        <header class="institution-card-header">',
@@ -1559,7 +1559,7 @@ function renderCategoryManageList() {
       '              <span>' + list.length + ' investimentos</span>',
       '            </div>',
       '          </div>',
-          (list.length > 2 ? '          <button type="button" class="institution-menu" aria-label="Ver investimentos" title="Ver mais/menos investimentos" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + assetsId + '" data-institution-key="' + escapeHTML(group.key) + '" onclick="instToggle(this)">\u25bc</button>' : ''),
+          (list.length > 1 ? '          <button type="button" class="institution-menu" aria-label="Ver investimentos" title="Ver mais/menos investimentos" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + assetsId + '" data-institution-key="' + escapeHTML(group.key) + '" onclick="instToggle(this)">\u25bc</button>' : ''),
           '          <button type="button" class="action-btn icon-button edit institution-rename" aria-label="Editar instituição" title="Editar instituição" data-institution-key="' + escapeHTML(group.key) + '" onclick="instEdit(this)"></button>',
       '        </header>',
       '        <div class="institution-summary">',

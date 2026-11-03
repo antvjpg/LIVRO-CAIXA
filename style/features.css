@@ -2134,9 +2134,6 @@ body{
 header.app-header{
   padding-top:calc(33px + env(safe-area-inset-top, 0px));
 }
-#authOverlay{
-  padding-top:env(safe-area-inset-top, 0px);
-}
 #pinOverlay,
 #syncOverlay,
 .modal-overlay{
@@ -7134,6 +7131,12 @@ body[data-tab="dashboard"] #viewDashboard.active {
 @keyframes diag-pulse{
   0%,100%{opacity:.4;transform:scale(1)}
   50%{opacity:1;transform:scale(1.15)}
+}
+@media (prefers-reduced-motion: reduce){
+  #authDiagnosticToggle::after,
+  #authDiagnosticToggle > span{
+    animation:none;
+  }
 }
 
 #authDiagnosticOverlay .panel{
