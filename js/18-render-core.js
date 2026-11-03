@@ -2718,6 +2718,35 @@ function renderCategoryManageList() {
   function removeBiometric() {
     localStorage.removeItem(biometricKey());
   }
+  function sanitizePinInput(value) {
+    return String(value || '').replace(/\D/g, '').slice(0, 8);
+  }
+  async function attemptPinUnlock({ showIncomplete = false } = {}) {
+    const input = document.getElementById('pinUnlockInput');
+    const error = document.getElementById('pinUnlockError');
+    if (!input) return false;
+
+    const pin = sanitizePinInput(input.value);
+    if (pin !== input.value) input.value = pin;
+    if (pin.length < 4) {
+      if (showIncomplete && error) error.textContent = 'O PIN deve ter entre 4 e 8 dígitos.';
+      return false;
+    }
+
+    const ok = await unlockWithLocalPin(pin);
+    if (ok) {
+      input.value = '';
+      if (error) error.textContent = '';
+      return true;
+    }
+
+    if (pin.length >= 8) {
+      if (error) error.textContent = 'PIN incorreto.';
+      input.value = '';
+      input.focus();
+    }
+    return false;
+  }
   async function unlockWithBiometric() {
     if (!hasBiometric() || !supportsWebAuthn()) return false;
     const rec = getBiometricRecord();
@@ -2738,16 +2767,40 @@ function renderCategoryManageList() {
   }
   async function tryBiometricUnlockOnShow() {
     const btn = document.getElementById('btnBiometricUnlock');
-    if (btn) btn.hidden = !(hasBiometric() && supportsWebAuthn());
-    if (!(hasBiometric() && supportsWebAuthn())) return;
-      try {
-        await unlockWithBiometric();
-      } catch (err) {
-      /* usuário cancelou ou falhou — permanece no PIN */
+    const pinInput = document.getElementById('pinUnlockInput');
+    const error = document.getElementById('pinUnlockError');
+
+    const canBio = hasBiometric() && supportsWebAuthn();
+    if (btn) btn.hidden = !canBio;
+    if (!canBio) { pinInput?.focus(); return; }
+
+    if (error) error.textContent = 'Aguarde a digital…';
+    try {
+      const ok = await unlockWithBiometric();
+      if (!ok) {
+        if (error) error.textContent = 'Digital não reconhecida. Use o PIN.';
+        pinInput?.focus();
+      }
+    } catch (err) {
+      if (error) error.textContent = 'Biometria cancelada ou indisponível. Use o PIN.';
+      pinInput?.focus();
     }
   }
 
-  function showPinOverlay() { if (!currentUser || !hasLocalPin() || pinUnlocked) return; const overlay = document.getElementById('pinOverlay'); overlay?.classList.remove('hidden'); overlay?.setAttribute('aria-hidden', 'false'); document.body.classList.add('is-pin-locked'); const bioBtn = document.getElementById('btnBiometricUnlock'); if (bioBtn) bioBtn.hidden = !(hasBiometric() && supportsWebAuthn()); setTimeout(() => { document.getElementById('pinUnlockInput')?.focus(); tryBiometricUnlockOnShow(); }, 0); }
+  function showPinOverlay() {
+    if (!currentUser || !hasLocalPin() || pinUnlocked) return;
+    const overlay = document.getElementById('pinOverlay');
+    overlay?.classList.remove('hidden');
+    overlay?.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('is-pin-locked');
+    const bioBtn = document.getElementById('btnBiometricUnlock');
+    if (bioBtn) bioBtn.hidden = !(hasBiometric() && supportsWebAuthn());
+    if (hasBiometric() && supportsWebAuthn()) {
+      setTimeout(tryBiometricUnlockOnShow, 50);
+      return;
+    }
+    setTimeout(() => { document.getElementById('pinUnlockInput')?.focus(); }, 0);
+  }
   function hidePinOverlay() { markPinActivity(); const overlay = document.getElementById('pinOverlay'); overlay?.classList.add('hidden'); overlay?.setAttribute('aria-hidden', 'true'); document.body.classList.remove('is-pin-locked'); }
   async function unlockWithLocalPin(pin) { const record = getLocalPinRecord(); if (!record) { pinUnlocked = true; hidePinOverlay(); return true; } const valid = (await hashLocalPin(pin)) === record.hash; if (!valid) return false; pinUnlocked = true; hidePinOverlay(); return true; }
   function pinGraceMs() { const m = Number(featureSettings.lockGraceMinutes); return Number.isFinite(m) && m > 0 ? Math.round(m) * 60000 : 0; }

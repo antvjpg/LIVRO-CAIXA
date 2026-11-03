@@ -739,7 +739,7 @@
     font-weight:700;
     letter-spacing:.12em;
   }
-  .auth-box-brand .fi{font-size:13px;line-height:1;}
+  .auth-box-brand .fi{font-size:64px;line-height:1;}
   .auth-box h2{
     font-family:var(--font-ui);
     margin:0 0 7px;
@@ -829,12 +829,12 @@
   #authDiagnosticToggle{border-radius:14px;}
   #authGoogle{min-height:44px;border:1px solid var(--line);border-radius:18px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;display:flex;align-items:center;justify-content:center;gap:10px;}
   #authGoogle:hover{background:var(--green-soft);color:var(--ink);}
-  body:not(.dark-mode) #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 29%),var(--paper);}
+  body:not(.dark-mode) #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 38%),var(--paper);}
   body:not(.dark-mode) .auth-box{background:transparent;border-color:transparent;box-shadow:none;}
   body:not(.dark-mode) .auth-box-brand,body:not(.dark-mode) .auth-toggle a{color:var(--accent);}
   body:not(.dark-mode) .auth-box input,body:not(.dark-mode) #authGoogle{background:var(--paper);border-color:var(--line);color:var(--ink);}
   body:not(.dark-mode) #authGoogle:hover{background:var(--surface-raised);color:var(--ink);}
-  body.dark-mode #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 29%),var(--paper);}
+  body.dark-mode #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 38%),var(--paper);}
   body.dark-mode .auth-box{background:transparent;border-color:transparent;box-shadow:none;}
   body.dark-mode .auth-box-brand{color:var(--accent);}
   body.dark-mode .auth-box p.sub{color:var(--ink-soft);}

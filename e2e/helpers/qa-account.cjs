@@ -29,7 +29,7 @@ async function toggleMode(page) {
   await page.locator('#authToggleLink, #authToggleLink2').first().click();
   await page.waitForFunction(() => {
     const t = document.getElementById('authTitle');
-    return t && (t.textContent === 'Criar conta' || t.textContent === 'Entrar');
+    return t && (t.textContent === 'Criar conta' || t.textContent === 'Bem Vindo de volta');
   });
 }
 
@@ -269,7 +269,7 @@ async function signInOrCreate(page, creds, opts = {}) {
 
   let err = r.error || '';
   if (err.includes(MSG.exists)) {
-    if ((await authTitle()) !== 'Entrar') await toggleMode(page);
+    if ((await authTitle()) !== 'Bem Vindo de volta') await toggleMode(page);
     r = await submit(page, creds);
     if (r.loggedIn) return finish({ status: 'ok', how: 'login-apos-colisao' });
     err = r.error || '';

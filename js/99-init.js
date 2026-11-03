@@ -1149,7 +1149,24 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       renderDashboardTab();
     });
   }
-  document.getElementById('btnPinUnlock')?.addEventListener('click', async () => { const input = document.getElementById('pinUnlockInput'); const error = document.getElementById('pinUnlockError'); try { const ok = await unlockWithLocalPin(input?.value || ''); if (!ok) { if (error) error.textContent = 'PIN incorreto.'; input.value = ''; input.focus(); return; } input.value = ''; if (error) error.textContent = ''; } catch (err) { if (error) error.textContent = 'Não foi possível validar o PIN.'; console.error(err); } });
+  document.getElementById('btnPinUnlock')?.addEventListener('click', async () => {
+    try {
+      await attemptPinUnlock({ showIncomplete: true });
+    } catch (err) {
+      const error = document.getElementById('pinUnlockError');
+      if (error) error.textContent = 'Não foi possível validar o PIN.';
+      console.error(err);
+    }
+  });
+  let pinAutoUnlockTimer = 0;
+  document.getElementById('pinUnlockInput')?.addEventListener('input', (event) => {
+    const sanitized = String(event.target.value || '').replace(/\D/g, '').slice(0, 8);
+    if (sanitized !== event.target.value) event.target.value = sanitized;
+    clearTimeout(pinAutoUnlockTimer);
+    pinAutoUnlockTimer = setTimeout(() => {
+      attemptPinUnlock({ showIncomplete: false });
+    }, 160);
+  });
   (function bindPinUnlockKeys() {
     const input = document.getElementById('pinUnlockInput');
     if (!input) return;
@@ -3200,9 +3217,11 @@ document.getElementById('tSalvar').onclick = async () => {
       return; // tela de login antiga removida / ainda não montada
     }
 
-    // Login com e-mail/senha (se o botão de submit existir)
-    if (authSubmit) {
-      authSubmit.onclick = () => {
+    // Login com e-mail/senha via formulário nativo (melhora heurística do gerenciador de senhas)
+    const authForm = document.getElementById('authForm');
+    if (authForm) {
+      authForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         const emailEl = document.getElementById('authEmail');
         const passEl = document.getElementById('authPass');
         const email = emailEl ? emailEl.value.trim() : '';
@@ -3220,7 +3239,7 @@ document.getElementById('tSalvar').onclick = async () => {
           setAuthError(translateAuthError(err.code));
           window.logEvent('ERROR', 'Autenticação', 'Falha no login com e-mail', err.message || String(err), null, window.operationDuration(operacao));
         });
-      };
+      });
     }
 
     // Alternar modo de signup (se o link de toggle existir)
@@ -3230,8 +3249,10 @@ document.getElementById('tSalvar').onclick = async () => {
         const authTitle = document.getElementById('authTitle');
         const authSubmitBtn = document.getElementById('authSubmit');
         const authToggleWrap = document.getElementById('authToggleWrap');
+        const authPassInput = document.getElementById('authPass');
         if (authTitle) authTitle.textContent = isSignupMode ? 'Criar conta' : 'Bem Vindo de volta';
         if (authSubmitBtn) authSubmitBtn.textContent = isSignupMode ? 'Criar conta' : 'Entrar';
+        if (authPassInput) authPassInput.setAttribute('autocomplete', isSignupMode ? 'new-password' : 'current-password');
         if (authToggleWrap) {
           authToggleWrap.innerHTML = isSignupMode
             ? 'Já tem conta? <a id="authToggleLink2">Entrar</a>'

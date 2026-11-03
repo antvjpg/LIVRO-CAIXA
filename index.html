@@ -43,22 +43,29 @@
 <body>
 <div id="authOverlay" class="hidden">
   <div class="auth-box">
-    <div class="auth-box-brand"><i class="fi fi-rr-lock" aria-hidden="true"></i> LIVRO-CAIXA</div>
+    <div class="auth-box-brand">
+      <svg class="auth-book-icon" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M2 4.5h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"></path>
+        <path d="M22 4.5h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"></path>
+      </svg>
+    </div>
     <h2 id="authTitle">Bem Vindo de volta</h2>
     <p class="sub">Livro-Caixa · sincronizado</p>
-    <div class="email-wrap">
-      <i class="fi fi-rr-envelope email-icon" aria-hidden="true"></i>
-      <input type="email" id="authEmail" aria-label="E-mail" placeholder="voce@email.com">
-    </div>
-    <div class="pass-wrap">
-      <i class="fi fi-rr-lock pass-icon" aria-hidden="true"></i>
-      <input type="password" id="authPass" aria-label="Senha" placeholder="mínimo 6 caracteres">
-      <button type="button" class="pass-toggle" id="authPassToggle" aria-label="Mostrar senha">
-        <i id="eyeOpen" class="fi fi-rr-eye" aria-hidden="true"></i>
-        <i id="eyeClosed" class="fi fi-rr-eye-crossed" aria-hidden="true" style="display:none;"></i>
-      </button>
-    </div>
-    <button class="primary" id="authSubmit" style="width:100%;margin-top:14px;">Entrar</button>
+    <form id="authForm" autocomplete="on" method="post" action="javascript:void(0)">
+      <div class="email-wrap">
+        <i class="fi fi-rr-envelope email-icon" aria-hidden="true"></i>
+        <input type="email" id="authEmail" name="username" autocomplete="username" aria-label="E-mail" placeholder="voce@email.com">
+      </div>
+      <div class="pass-wrap">
+        <i class="fi fi-rr-lock pass-icon" aria-hidden="true"></i>
+        <input type="password" id="authPass" name="password" autocomplete="current-password" aria-label="Senha" placeholder="mínimo 6 caracteres">
+        <button type="button" class="pass-toggle" id="authPassToggle" aria-label="Mostrar senha">
+          <i id="eyeOpen" class="fi fi-rr-eye" aria-hidden="true"></i>
+          <i id="eyeClosed" class="fi fi-rr-eye-crossed" aria-hidden="true" style="display:none;"></i>
+        </button>
+      </div>
+      <button class="primary" type="submit" id="authSubmit" style="width:100%;margin-top:14px;">Entrar</button>
+    </form>
     <div class="auth-forgot"><button type="button" id="authForgotPassword">Esqueci minha senha</button></div>
     <div class="auth-error" id="authError"></div>
     <div style="display:flex;align-items:center;gap:10px;margin:16px 0;">
@@ -107,7 +114,7 @@
   <section class="pin-box" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
     <div class="pin-lock-icon"><i class="fi fi-rr-lock" aria-hidden="true"></i></div>
     <h2 id="pinTitle">Aplicativo bloqueado</h2>
-    <p class="hint">Use a biometria ou digite o PIN local para continuar. Isso não substitui o login da conta.</p>
+    <p class="hint">Use a digital (abre automaticamente) ou digite o PIN local para continuar. Isso não substitui o login da conta.</p>
     <input type="password" id="pinUnlockInput" inputmode="numeric" enterkeyhint="go" autocomplete="one-time-code" maxlength="8" placeholder="PIN de 4 a 8 dígitos" aria-label="PIN local">
     <div id="pinUnlockError" class="auth-error" aria-live="polite"></div>
     <button type="button" class="primary" id="btnPinUnlock" style="width:100%;margin-top:12px;">Desbloquear com PIN</button>
