@@ -751,3 +751,6 @@ body.dark-mode .emoji-trigger,body.dark-mode .emoji-picker,body.dark-mode .emoji
 #panelCategoria .cat-list-item{position:relative;}
 #panelCategoria .manage-item-copy{flex:1;overflow-wrap:break-word;}
 #panelCategoria .manage-item-actions{flex:0 0 auto;}
+
+#panelBanco .manage-item-copy strong,
+#panelBanco .manage-item-value{color:var(--ink);}
