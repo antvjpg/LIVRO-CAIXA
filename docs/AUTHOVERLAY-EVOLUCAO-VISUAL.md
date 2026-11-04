@@ -38,9 +38,9 @@ BACKGROUND
   - `border-radius: 24px`
   - `padding: 32px`
   - `max-width: 420px`
-  - `box-shadow: 0 18px 42px var(--shadow)`
+  - `box-shadow: 0 18px 42px var(--shadow-color)`
 
-Observação: `--shadow-lg` não existe no Design System; foi usado `--shadow`.
+Observação: `--shadow-lg` não existe no Design System; foi usado `--shadow-color`.
 
 ### Campos e botão Google
 
@@ -80,7 +80,7 @@ A sobrescrita antiga de `features.css` foi removida.
 ### Placeholder/elevação/tema
 
 - Campos usam `var(--surface-raised)` para distinguir da Surface principal.
-- `.auth-box` usa `var(--surface)`, `var(--line)` e `var(--shadow)`.
+- `.auth-box` usa `var(--surface)`, `var(--line)` e `var(--shadow-color)`.
 - Regras duplicadas de background transparente de `.auth-box` no claro e escuro foram removidas.
 
 ### Acessibilidade de movimento

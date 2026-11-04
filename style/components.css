@@ -3,7 +3,7 @@
   .period-bar{
     display:flex; align-items:center; justify-content:space-between; gap:8px;
     margin:0 0 12px; padding:8px 12px; border:1px solid var(--line);
-    border-radius:14px; background:var(--surface); box-shadow:0 3px 10px var(--shadow);
+    border-radius:14px; background:var(--surface); box-shadow:0 3px 10px var(--shadow-color);
   }
   .period-bar-copy{min-width:0;}
   .period-eyebrow{display:block; color:var(--accent); font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:2px;}
@@ -14,10 +14,10 @@
     background:var(--paper); color:var(--ink); font-size:13px; font-weight:700; text-transform:none; letter-spacing:0;
   }
   .period-picker-wrap{position:relative;}
-  .period-picker-button{min-width:138px; font-size:11px; font-family:var(--font-ui);}
+  .period-picker-button{min-width:138px; font-size:11px; font-family:var(--font-family-ui);}
   .period-picker-input{position:absolute; inset:0; width:100%; height:100%; opacity:0; pointer-events:none; cursor:pointer;}
   .period-all.is-active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
-  .period-nav:hover,.period-picker-button:hover,.period-all:hover{background:var(--accent-soft); color:var(--ink);}
+  .period-nav:hover,.period-picker-button:hover,.period-all:hover{background:var(--accent-subtle); color:var(--ink);}
   .period-hint{margin-top:4px; color:var(--ink-soft); font-size:9.5px;}
   .period-summary{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:-4px 0 18px;}
   .period-summary-card{padding:11px 12px; border:1px solid var(--line); border-radius:11px; background:var(--paper-2); min-width:0;}
@@ -86,7 +86,7 @@
   }
   button:hover{background:var(--ink);color:var(--paper);}
   button:active{transform:scale(0.98);}
-  button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
+  button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-solid);}
   button.primary:hover{background:var(--accent);filter:brightness(0.92);}
   button:focus, input:focus, select:focus, textarea:focus, a:focus, [tabindex]:focus{outline:none;}
   button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, [tabindex]:focus-visible{
@@ -108,7 +108,7 @@
   .modal-overlay{
     position:fixed;
     inset:0;
-    background:var(--overlay);
+    background:var(--overlay-color);
     z-index:90;
     display:flex;
     align-items:center;
@@ -131,7 +131,7 @@
     max-width:560px;
     max-height:90vh;
     overflow-y:auto;
-    box-shadow:0 10px 30px var(--shadow);
+    box-shadow:0 10px 30px var(--shadow-color);
     display:none;
     flex-shrink:0;
   }
@@ -184,10 +184,10 @@
   }
   .type-toggle{display:flex;border:1.5px solid var(--ink);border-radius:2px;overflow:hidden;}
   .type-toggle button{border:none;flex:1;border-radius:0;padding:10px 4px;}
-  .type-toggle button.active-in{background:var(--success);color:var(--on-accent);}
-  .type-toggle button.active-out{background:var(--danger);color:var(--on-accent);}
+  .type-toggle button.active-in{background:var(--success);color:var(--on-solid);}
+  .type-toggle button.active-out{background:var(--danger);color:var(--on-solid);}
 
-  .movement-tabs button.active-yield{background:var(--warning);color:var(--on-accent);}
+  .movement-tabs button.active-yield{background:var(--warning);color:var(--on-solid);}
   .movement-tabs button{min-height:38px;}
 
   input[readonly]{opacity:0.8;cursor:not-allowed;background:var(--paper);}
@@ -268,14 +268,14 @@
     line-height:1;
   }
   .cat-view-toggle button:hover{
-    background:var(--accent-soft);
+    background:var(--accent-subtle);
     color:var(--ink);
   }
   .cat-view-toggle button.is-active,
   .cat-view-toggle button.is-active:hover{
     background:var(--accent);
     border-color:var(--accent);
-    color:var(--accent-ink);
+    color:var(--accent-foreground);
   }
   .cat-summary.is-bar .chart-container{
     flex:1.3;
@@ -621,14 +621,14 @@
     height:56px;
     border-radius:50%;
     background:var(--accent);
-    color:var(--accent-ink);
+    color:var(--accent-foreground);
     border:none;
     padding:0;
     font-size:24px;
     line-height:1;
     display:grid;
     place-items:center;
-    box-shadow:0 4px 14px var(--shadow);
+    box-shadow:0 4px 14px var(--shadow-color);
     cursor:pointer;
     z-index:60;
     transition:transform 0.15s ease, background 0.2s ease, color 0.2s ease;
@@ -724,7 +724,7 @@
   background:var(--surface);
   border:1px solid var(--line);
   border-radius:24px;
-  box-shadow:0 18px 42px var(--shadow);
+  box-shadow:0 18px 42px var(--shadow-color);
   position:static;
   overflow:visible;
   }
@@ -740,7 +740,7 @@
     letter-spacing:.12em;
   }
   .auth-box h2{
-    font-family:var(--font-ui);
+    font-family:var(--font-family-ui);
     margin:0 0 7px;
     font-size:27px;
     font-weight:700;
@@ -748,7 +748,7 @@
     text-align:center;
   }
   .auth-box p.sub{
-    font-family:var(--font-ui);
+    font-family:var(--font-family-ui);
     font-size:12px;
     font-weight:500;
     color:var(--ink-soft);
@@ -824,7 +824,7 @@
   #authSubmit{min-height:48px;border-radius:11px;font-size:12px;font-weight:700;letter-spacing:.02em;}
   #authDiagnosticToggle{border-radius:14px;}
   #authGoogle{min-height:48px;border:1px solid var(--line);border-radius:12px;background:var(--surface-raised);color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;display:flex;align-items:center;justify-content:center;gap:10px;}
-  #authGoogle:hover{background:var(--accent-soft);color:var(--ink);}
+  #authGoogle:hover{background:var(--accent-subtle);color:var(--ink);}
   body:not(.dark-mode) #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 38%),var(--paper);}
   body:not(.dark-mode) .auth-box-brand,body:not(.dark-mode) .auth-toggle a{color:var(--accent);}
   body.dark-mode #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 38%),var(--paper);}
@@ -1013,7 +1013,7 @@
   .quote-refresh-btn{
     display:inline-flex; align-items:center; gap:8px; min-height:40px; padding:0 12px; border:1px solid color-mix(in srgb,var(--accent) 35%,transparent); border-radius:10px; background:var(--paper); color:var(--ink); font-size:13px; font-weight:700; cursor:pointer;
   }
-  .quote-refresh-btn:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .quote-refresh-btn:hover{background:var(--accent-subtle);border-color:var(--accent);}
   .quote-refresh-icon{display:grid;place-items:center;width:24px;height:24px;flex:0 0 auto;}
   .quote-refresh-icon i{font-size:16px;line-height:1;display:block;}
   .quote-refresh-icon.is-spinning{animation:quoteRefreshPulse 0.6s ease-in-out infinite;}
@@ -1034,7 +1034,7 @@
     background:var(--paper-2);
     padding:12px;
     margin:12px 0 8px;
-    font-family:var(--font-ui), monospace;
+    font-family:var(--font-family-ui), monospace;
     font-size:12px;
     color:var(--ink-soft);
     line-height:1.5;
@@ -1066,9 +1066,9 @@
     flex-shrink:0;
     white-space:nowrap;
   }
-  .log-entry.info .log-badge{ background:var(--info-soft); color:var(--info); }
-  .log-entry.warn .log-badge{ background:var(--warning-soft); color:var(--warning); }
-  .log-entry.error .log-badge{ background:var(--danger-soft); color:var(--danger); }
+  .log-entry.info .log-badge{ background:var(--info-subtle); color:var(--info); }
+  .log-entry.warn .log-badge{ background:var(--warning-subtle); color:var(--warning); }
+  .log-entry.error .log-badge{ background:var(--danger-subtle); color:var(--danger); }
   .log-actions{
     display:flex;
     gap:8px;
@@ -1094,7 +1094,7 @@
     border:1px solid var(--line);
     border-radius:12px;
     background:var(--paper);
-    box-shadow:0 4px 14px var(--shadow);
+    box-shadow:0 4px 14px var(--shadow-color);
     margin:12px 0;
     overflow:hidden;
     display:flex;
@@ -1109,7 +1109,7 @@
     background:transparent;
     padding:10px;
     margin:0;
-    font-family:var(--font-ui), monospace;
+    font-family:var(--font-family-ui), monospace;
     font-size:12px;
     color:var(--ink-soft);
     line-height:1.5;

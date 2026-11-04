@@ -8,9 +8,9 @@
       ink: readVar('--ink', '#1C2B24'),
       inkSoft: readVar('--ink-soft', '#4C5A52'),
       lineColor: readVar('--line', '#D8D2C1'),
-      green: readVar('--dash-flow-income', readVar('--green', '#3E9B6E')),
-      red: readVar('--dash-flow-expense', readVar('--red', '#C2553B')),
-      gold: readVar('--dash-flow-patrimony', readVar('--gold', '#B08D3E')),
+      green: readVar('--dash-flow-income', readVar('--color-green', '#3E9B6E')),
+      red: readVar('--dash-flow-expense', readVar('--color-red', '#C2553B')),
+      gold: readVar('--dash-flow-patrimony', readVar('--color-gold', '#B08D3E')),
       money,
       tick: value => {
         return moneyDisplaySymbol() + Math.round(moneyToDisplay(Number(value) || 0)).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
@@ -228,7 +228,7 @@
             display: !isMobileLayout,
             position: 'bottom',
             labels: {
-              font: { family: 'var(--font-ui)', size: 11, weight: '500' },
+              font: { family: 'var(--font-family-ui)', size: 11, weight: '500' },
               color: textColor,
               boxWidth: 12
             }
@@ -330,7 +330,7 @@
           legend: {
             position: 'bottom',
             labels: {
-              font: { family: 'var(--font-ui)', size: 11, weight: '500' },
+              font: { family: 'var(--font-family-ui)', size: 11, weight: '500' },
               color: inkSoft,
               boxWidth: 12,
               padding: 12
@@ -1363,7 +1363,7 @@
           legend: {
             position: 'bottom',
             labels: {
-              font: { family: 'var(--font-ui)', size: 11, weight: '500' },
+              font: { family: 'var(--font-family-ui)', size: 11, weight: '500' },
               color: inkSoft,
               boxWidth: 12,
               padding: 12
@@ -1564,7 +1564,7 @@
             <span>${goal.hasCurrent ? fmt(goal.current) : '—'} de ${fmt(goal.target)}</span>
           </div>
           <div class="dash-goal-progress">
-            <div class="dash-goal-bar" style="--pct:${goal.pct.toFixed(2)}%;--bar-color:${goal.pct >= 100 ? 'var(--green)' : 'var(--accent)'}"></div>
+            <div class="dash-goal-bar" style="--pct:${goal.pct.toFixed(2)}%;--bar-color:${goal.pct >= 100 ? 'var(--color-green)' : 'var(--accent)'}"></div>
             <span class="dash-goal-pct">${goal.hasCurrent ? goal.pct.toFixed(0).replace('.', ',') + '%' : 'sem origem'}</span>
           </div>
         </div>`).join('')

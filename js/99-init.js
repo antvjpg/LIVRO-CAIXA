@@ -1243,13 +1243,13 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     if (diffLabel) {
       if (isMatch) {
         diffLabel.textContent = 'Saldo conferido — nenhuma diferença';
-        diffLabel.style.color = 'var(--green)';
+        diffLabel.style.color = 'var(--color-green)';
       } else if (difference > 0) {
         diffLabel.textContent = 'O extrato bancário informa mais que o calculado';
-        diffLabel.style.color = 'var(--gold)';
+        diffLabel.style.color = 'var(--color-gold)';
       } else {
         diffLabel.textContent = 'O saldo calculado é maior que o informado';
-        diffLabel.style.color = 'var(--red)';
+        diffLabel.style.color = 'var(--color-red)';
       }
     }
 

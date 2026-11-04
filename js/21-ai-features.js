@@ -177,7 +177,7 @@
     if (!options.length) return '';
     const rows = options.map(option => {
       const pct = scenario.netFinal > 0 ? (option.delta / scenario.netFinal) * 100 : null;
-      const color = option.delta >= 0 ? 'var(--green,#327957)' : 'var(--red,#B3432B)';
+      const color = option.delta >= 0 ? 'var(--color-green,#327957)' : 'var(--color-red,#B3432B)';
       const sign = option.delta >= 0 ? '+' : '−';
       const deltaText = pct === null ? '' : ` <em style="color:${color}">${sign}${fmt(Math.abs(option.delta))} (${sign}${compoundPctLabel(Math.abs(pct))}%)</em>`;
       return `<div class="compound-calc-row"><span>${escapeHTML(option.name)} · ${escapeHTML(option.ref)}</span><b>${fmt(option.netFinal)}${deltaText}</b></div>`;

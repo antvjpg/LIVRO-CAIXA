@@ -114,7 +114,7 @@ function editInstitution(btn, key) {
     const bgRgbs = bgStops.length ? bgStops : (bgSolid ? [bgSolid] : [[28, 43, 36]]);
     const meanBg = bgRgbs.reduce((acc, rgb) => [acc[0] + rgb[0], acc[1] + rgb[1], acc[2] + rgb[2]], [0, 0, 0]).map(value => Math.round(value / bgRgbs.length));
     const byContrast = (a, b) => contrastRatio(b, meanBg) - contrastRatio(a, meanBg);
-    const hueCandidates = [readVar('--accent', ''), readVar('--gold', ''), readVar('--green', '')].map(toRgb).filter(Boolean).sort(byContrast);
+    const hueCandidates = [readVar('--accent', ''), readVar('--color-gold', ''), readVar('--color-green', '')].map(toRgb).filter(Boolean).sort(byContrast);
     const anchorCandidates = [readVar('--paper', ''), readVar('--ink', '')].map(toRgb).filter(Boolean).sort(byContrast);
     const chosen = hueCandidates.find(rgb => contrastRatio(rgb, meanBg) >= 3)
       || anchorCandidates.find(rgb => contrastRatio(rgb, meanBg) >= 3)
@@ -534,7 +534,7 @@ function editInstitution(btn, key) {
       match = v.match(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
       return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : null;
     };
-    const hueCandidates = [readVar('--accent', ''), readVar('--gold', ''), readVar('--green', '')].map(toRgb).filter(Boolean);
+    const hueCandidates = [readVar('--accent', ''), readVar('--color-gold', ''), readVar('--color-green', '')].map(toRgb).filter(Boolean);
     const colors = hueCandidates.length ? hueCandidates : [[28, 43, 36]];
     investBreakdownChartInstance = new Chart(canvas, {
       type: 'bar',
@@ -1251,7 +1251,7 @@ function renderCategoryManageList() {
       const confirmBtn = document.createElement('button');
       confirmBtn.type = 'button';
       confirmBtn.style.background = 'var(--accent)';
-      confirmBtn.style.color = 'var(--accent-ink)';
+      confirmBtn.style.color = 'var(--accent-foreground)';
       confirmBtn.style.padding = '8px 16px';
       confirmBtn.style.border = 'none';
       confirmBtn.style.borderRadius = '4px';
