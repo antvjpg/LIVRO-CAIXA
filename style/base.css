@@ -9,7 +9,7 @@
   .export-preview-bank{margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);min-width:0;}
   .export-preview-bank h4{margin:0 0 6px;font-size:13px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
   .export-preview-bank h4 small{font-weight:500;color:var(--ink-soft);font-size:11px;}
-  .export-preview-sub{margin:6px 0 4px;font-size:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
+  .export-preview-sub{margin:6px 0 4px;font-size:var(--font-size-small);display:flex;flex-wrap:wrap;gap:6px;align-items:baseline;}
   .export-preview-sub small{color:var(--ink-soft);}
   .export-preview-row{
     display:grid;

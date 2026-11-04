@@ -7,7 +7,7 @@
   }
   .period-bar-copy{min-width:0;}
   .period-eyebrow{display:block; color:var(--accent); font-size:9px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:2px;}
-  .period-active-label{font-size:13px; font-weight:750; letter-spacing:-.02em;}
+  .period-active-label{font-size:var(--font-size-body); font-weight:750; letter-spacing:-.02em;}
   .period-controls{display:flex; align-items:center; gap:6px; flex-shrink:0;}
   .period-nav,.period-all,.period-picker-button{
     min-width:36px; height:36px; padding:0 9px; border:1px solid var(--line); border-radius:10px;
