@@ -24,6 +24,17 @@
    ========================================================= */
 :root{
     --font-ui:'Plus Jakarta Sans',sans-serif;
+    --font-size-caption:10px;
+    --font-size-small:12px;
+    --font-size-body:13px;
+    --font-size-title:18px;
+    --font-size-heading:27px;
+    --font-weight-regular:400;
+    --font-weight-medium:500;
+    --font-weight-semibold:600;
+    --font-weight-bold:700;
+    --line-height-tight:1.15;
+    --line-height-body:1.5;
     --paper:#F8F7F2;
     --paper-2:#F0F0EA;
     --ink:#19352A;
@@ -36,9 +47,26 @@
     --gold:#B89034;
     --gold-rgb:184,144,52;
     --gold-soft:#F2E8D0;
+    --success:#1F6F45;
+    --success-soft:#E7F3EA;
+    --danger:#B3432B;
+    --danger-soft:#F7E8E4;
+    --warning:#A65A17;
+    --warning-soft:#F8ECD9;
+    --warning-rgb:166,90,23;
+    --success-ink:#F5FBF6;
+    --warning-ink:#1A1408;
+    --danger-ink:#F8F0EC;
+    --info-ink:#EFF7FA;
+    --info:#246E8A;
+    --info-soft:#E5EEF3;
     --on-accent:#FFFFFF;
     --overlay:rgba(0,0,0,0.65);
     --shadow:rgba(20,48,36,.08);
+    --shadow-sm:0 1px 3px var(--shadow);
+    --shadow-md:0 4px 14px var(--shadow);
+    --shadow-lg:0 18px 42px var(--shadow);
+    --shadow-overlay:0 -18px 50px rgba(0,0,0,.28);
     --hover-soft:rgba(0,0,0,0.03);
     --surface:#FFFEFA;
     --surface-raised:#FCFDF9;
@@ -48,15 +76,18 @@
     --accent-to:#3A8A62;
     --accent-ink:#FFFEF9;
     --accent-muted:#E8F2EB;
+    --accent-soft:var(--accent-muted);
     --header-from:#153429;
     --header-to:#1D3B30;
     --header-ink:#F9F8F3;
     --header-control-bg:rgba(9,30,21,.42);
     --action-border:#C9D9CC;
+    --radius-xs:8px;
     --radius-sm:11px;
     --radius-md:14px;
     --radius-lg:15px;
     --radius-xl:18px;
+    --radius-2xl:24px;
     --radius-pill:999px;
     /* Cores fixas do gráfico de fluxo do Dashboard — não são redefinidas por tema. */
     --dash-flow-income:#3E9B6E;
@@ -104,7 +135,7 @@
     --paper:#F9F9F9; --paper-2:#F0F0F0; --ink:#1A1A1A; --ink-soft:#646464;
     --green:#E85002; --green-soft:#FFF0E8; --line:#E8E8E8; --gold:#F16001; --gold-rgb:241,96,1; --gold-soft:#FFEDDF;
     --red:#C10801; --red-soft:#FFE8E0;
-    --surface:#FFFFFF; --surface-raised:#FFFFFF; --surface-accent:#E85002;
+    --surface:#FFFFFF; --surface-raised:#F4F4F4; --surface-accent:#E85002;
     --accent:#E85002; --accent-rgb:232,80,2; --accent-to:#F16001; --accent-ink:#FFFFFF; --accent-muted:#FFF0E8;
     --header-from:#C10801; --header-to:#E85002; --header-ink:#FFFFFF;
     --header-control-bg:rgba(0,0,0,.28); --action-border:#FFD4B8;
@@ -114,7 +145,7 @@
   body:not(.dark-mode)[data-light-theme="3"] {
     --paper:#FAF9F6; --paper-2:#eeeee5; --ink:#31572C; --ink-soft:#3D7A5C;
     --line:color-mix(in srgb,#90A955 35%,#FAF9F6);
-    --surface:#ffffff; --surface-raised:#ffffff; --surface-accent:#31572C;
+    --surface:#ffffff; --surface-raised:#F3F6EF; --surface-accent:#31572C;
     --green:#357A57; --green-soft:#f2f6c6;
     --gold:#90A955; --gold-rgb:144,169,85; --gold-soft:#f2f6c6; --red:#90A955; --red-soft:#e8efe0;
     --accent:#40916C; --accent-rgb:64,145,108; --accent-to:#4EA77B; --accent-ink:#FAF9F6; --accent-muted:color-mix(in srgb,#ECF39E 55%,#FAF9F6);
@@ -146,6 +177,19 @@
     --green-soft:#2A3A2E;
     --red:#E06B54;
     --red-soft:#48241D;
+    --success:#7AD3A3;
+    --success-soft:#183C2E;
+    --danger:#F0785E;
+    --danger-soft:#3B2420;
+    --warning:#E4BC62;
+    --warning-soft:#3A301B;
+    --warning-rgb:228,188,98;
+    --success-ink:#0E2018;
+    --warning-ink:#1A1408;
+    --danger-ink:#1A0D0A;
+    --info-ink:#0B1F2B;
+    --info:#80C9E0;
+    --info-soft:#1D3240;
     --line:#2A3A2E;
     --gold:#C9A86A;
     --gold-rgb:201,168,106;

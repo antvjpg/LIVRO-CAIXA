@@ -149,7 +149,7 @@
   
   font-size:10px;
   color:var(--accent);
-  background:var(--green-soft);
+  background:var(--success-soft);
   border-radius:999px;
   padding:5px 9px;
   white-space:nowrap;
@@ -204,7 +204,7 @@
   max-width:45%;
   padding:6px 10px;
   border-radius:999px;
-  background:var(--green-soft);
+  background:var(--success-soft);
   color:var(--accent);
   font-size:10px;
   font-weight:800;
@@ -279,8 +279,8 @@
   color:var(--ink);
   overflow-wrap:anywhere;
 }
-#viewDash .dash-kpi strong.positive{color:var(--green);}
-#viewDash .dash-kpi strong.negative{color:var(--red);}
+#viewDash .dash-kpi strong.positive{color:var(--success);}
+#viewDash .dash-kpi strong.negative{color:var(--danger);}
 #viewDash .dash-kpi-note{
   font-size:9px;
   line-height:1.3;
@@ -309,14 +309,14 @@
   font-weight:700;
   white-space:nowrap;
 }
-#viewDash .dash-delta.up{color:var(--green);}
-#viewDash .dash-delta.down{color:var(--red);}
+#viewDash .dash-delta.up{color:var(--success);}
+#viewDash .dash-delta.down{color:var(--danger);}
 #viewDash .dash-delta.muted{color:var(--ink-soft);font-weight:500;}
 #viewDash .dash-inline-note{
   margin:11px 0 0;
   padding:8px 10px;
   border-radius:9px;
-  background:var(--green-soft);
+  background:var(--success-soft);
   color:var(--ink-soft);
   font-size:10px;
   line-height:1.4;
@@ -389,7 +389,7 @@
   height:19px;
   padding:0 5px;
   border-radius:999px;
-  background:var(--green-soft);
+  background:var(--success-soft);
   color:var(--accent);
   
   font-size:9px;
@@ -425,7 +425,7 @@
 }
 #viewDash .dash-bucket-row.overdue strong,
 #viewDash .dash-bucket-row.overdue b,
-#viewDash .dash-bucket-row.overdue span{color:var(--red);}
+#viewDash .dash-bucket-row.overdue span{color:var(--danger);}
 #viewDash .dash-more{
   display:block;
   padding:4px 0 0 8px;
@@ -459,7 +459,7 @@
   min-width:24px;
   height:24px;
   padding:0 8px;
-  background:var(--green-soft);
+  background:var(--success-soft);
   color:var(--accent);
   border-radius:999px;
   
@@ -490,7 +490,7 @@
   font-size:9px;
   font-weight:600;
   color:var(--accent);
-  background:var(--green-soft);
+  background:var(--success-soft);
   border:1px solid var(--accent);
   border-radius:6px;
   cursor:pointer;
@@ -540,19 +540,19 @@
 }
 /* Status visual nas linhas de cartão — hierarquia sem quebrar o layout */
 #viewDash .dash-card-line.tone-critical{
-  border-left:2px solid var(--red);
+  border-left:2px solid var(--danger);
   padding-left:8px;
   margin-left:-10px;
 }
-#viewDash .dash-card-line.tone-critical b{color:var(--red);}
-#viewDash .dash-card-line.tone-critical strong{color:var(--red);}
+#viewDash .dash-card-line.tone-critical b{color:var(--danger);}
+#viewDash .dash-card-line.tone-critical strong{color:var(--danger);}
 #viewDash .dash-card-line.tone-warn{
-  border-left:2px solid var(--gold);
+  border-left:2px solid var(--warning);
   padding-left:8px;
   margin-left:-10px;
 }
-#viewDash .dash-card-line.tone-warn b{color:var(--gold);font-weight:800;}
-#viewDash .dash-card-line.tone-ok b{color:var(--green);}
+#viewDash .dash-card-line.tone-warn b{color:var(--warning);font-weight:800;}
+#viewDash .dash-card-line.tone-ok b{color:var(--success);}
 
 /* ---- 05 patrimônio e metas ---- */
 #viewDash .dash-part-row{
@@ -629,12 +629,12 @@
   border-color:color-mix(in srgb,var(--accent) 35%,var(--line));
 }
 #viewDash .dash-evo-item.dash-evo-delta.positive{
-  background:color-mix(in srgb,var(--green) 11%,var(--surface));
-  border-color:color-mix(in srgb,var(--green) 38%,var(--line));
+  background:color-mix(in srgb,var(--success) 11%,var(--surface));
+  border-color:color-mix(in srgb,var(--success) 38%,var(--line));
 }
 #viewDash .dash-evo-item.dash-evo-delta.negative{
-  background:color-mix(in srgb,var(--red) 11%,var(--surface));
-  border-color:color-mix(in srgb,var(--red) 38%,var(--line));
+  background:color-mix(in srgb,var(--danger) 11%,var(--surface));
+  border-color:color-mix(in srgb,var(--danger) 38%,var(--line));
 }
 #viewDash .dash-evo-item.dash-evo-delta strong{
   font-size:14px;
@@ -652,8 +652,8 @@
   color:var(--ink);
   overflow-wrap:anywhere;
 }
-#viewDash .dash-evo-item strong.positive{color:var(--green);}
-#viewDash .dash-evo-item strong.negative{color:var(--red);}
+#viewDash .dash-evo-item strong.positive{color:var(--success);}
+#viewDash .dash-evo-item strong.negative{color:var(--danger);}
 
 #viewDash .dash-goal-row{
   display:flex;
@@ -711,7 +711,7 @@
 
 /* ---- 06 saúde financeira ---- */
 #viewDash .dash-health-section{
-  background:linear-gradient(135deg,rgba(var(--accent-rgb),0.03),rgba(var(--gold-rgb),0.03));
+  background:linear-gradient(135deg,rgba(var(--accent-rgb),0.03),rgba(var(--warning-rgb),0.03));
   border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);
   border-radius:16px;
 }
@@ -721,7 +721,7 @@
 
 /* ---- 07 indicadores do mercado (BCB/Tesouro) ---- */
 #viewDash .dash-indicators-section{
-  background:linear-gradient(135deg,rgba(var(--gold-rgb),0.04),transparent);
+  background:linear-gradient(135deg,rgba(var(--warning-rgb),0.04),transparent);
   border:1px dashed color-mix(in srgb,var(--line) 88%,transparent);
   border-radius:16px;
 }
@@ -759,9 +759,9 @@
   place-items:center;
   font-size:14px;
 }
-#viewDash .dash-metric-icon.positive{background:var(--green-soft);color:var(--green);}
-#viewDash .dash-metric-icon.negative{background:var(--red-soft);color:var(--red);}
-#viewDash .dash-metric-icon.neutral{background:var(--gold-soft);color:var(--gold);}
+#viewDash .dash-metric-icon.positive{background:var(--success-soft);color:var(--success);}
+#viewDash .dash-metric-icon.negative{background:var(--danger-soft);color:var(--danger);}
+#viewDash .dash-metric-icon.neutral{background:var(--warning-soft);color:var(--warning);}
 #viewDash .dash-metric-content{
   flex:1;
   min-width:0;
@@ -785,8 +785,8 @@
   overflow-wrap:anywhere;
   line-height:1.2;
 }
-#viewDash .dash-metric-value.positive{color:var(--green);}
-#viewDash .dash-metric-value.negative{color:var(--red);}
+#viewDash .dash-metric-value.positive{color:var(--success);}
+#viewDash .dash-metric-value.negative{color:var(--danger);}
 #viewDash .dash-metric-value.neutral{color:var(--ink-soft);}
 #viewDash .dash-metric-note{
   font-size:9px;
@@ -974,12 +974,12 @@
   font-size:9px;font-weight:800;line-height:1.4;
   background:var(--surface);border:1px solid var(--line);color:var(--ink);
 }
-.budget-status.normal{background:var(--green-soft);border-color:color-mix(in srgb,var(--green) 45%,transparent);}
-.budget-status.atencao{background:var(--gold-soft);border-color:color-mix(in srgb,var(--gold) 60%,transparent);}
-.budget-status.excedido{background:var(--red-soft);border-color:color-mix(in srgb,var(--red) 45%,transparent);}
+.budget-status.normal{background:var(--success-soft);border-color:color-mix(in srgb,var(--success) 45%,transparent);}
+.budget-status.atencao{background:var(--warning-soft);border-color:color-mix(in srgb,var(--warning) 60%,transparent);}
+.budget-status.excedido{background:var(--danger-soft);border-color:color-mix(in srgb,var(--danger) 45%,transparent);}
 #viewProfile .feature-budget-row span.budget-status{font-weight:800;color:var(--ink);}
-#viewProfile .feature-budget-row span.budget-status.normal{color:var(--green);}
-#viewProfile .feature-budget-row span.budget-status.excedido{color:var(--red);}
+#viewProfile .feature-budget-row span.budget-status.normal{color:var(--success);}
+#viewProfile .feature-budget-row span.budget-status.excedido{color:var(--danger);}
 @media (min-width:1024px){
   main{max-width:1120px;}
   .panel{max-width:700px;}
@@ -1010,8 +1010,8 @@
   font-size:9px;
   font-weight:800;
   white-space:nowrap;
-  background:color-mix(in srgb,var(--gold) 14%,var(--surface));
-  color:var(--gold);
+  background:color-mix(in srgb,var(--warning) 14%,var(--surface));
+  color:var(--warning);
 }
 #viewReceivables .bill-status.recv-recebido{
   background:color-mix(in srgb,var(--accent) 15%,var(--surface));
@@ -1023,6 +1023,6 @@
   text-decoration:line-through;
 }
 #viewReceivables .bill-status.overdue{
-  background:color-mix(in srgb,var(--red) 12%,var(--surface));
-  color:var(--red);
+  background:color-mix(in srgb,var(--danger) 12%,var(--surface));
+  color:var(--danger);
 }

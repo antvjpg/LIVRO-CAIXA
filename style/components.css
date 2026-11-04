@@ -17,14 +17,14 @@
   .period-picker-button{min-width:138px; font-size:11px; font-family:var(--font-ui);}
   .period-picker-input{position:absolute; inset:0; width:100%; height:100%; opacity:0; pointer-events:none; cursor:pointer;}
   .period-all.is-active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
-  .period-nav:hover,.period-picker-button:hover,.period-all:hover{background:var(--green-soft); color:var(--ink);}
+  .period-nav:hover,.period-picker-button:hover,.period-all:hover{background:var(--accent-soft); color:var(--ink);}
   .period-hint{margin-top:4px; color:var(--ink-soft); font-size:9.5px;}
   .period-summary{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:-4px 0 18px;}
   .period-summary-card{padding:11px 12px; border:1px solid var(--line); border-radius:11px; background:var(--paper-2); min-width:0;}
   .period-summary-card small{display:block; color:var(--ink-soft); font-size:9px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px;}
   .period-summary-card strong{display:block; font-size:14px; font-variant-numeric:tabular-nums; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .period-summary-card .positive{color:var(--green);}
-  .period-summary-card .negative{color:var(--red);}
+  .period-summary-card .positive{color:var(--success);}
+  .period-summary-card .negative{color:var(--danger);}
   @media (max-width:680px){
     .period-bar{align-items:stretch; flex-direction:column; gap:6px; padding:8px 10px;}
     .period-controls{width:100%;}
@@ -63,7 +63,7 @@
   .openrouter-usage-bar span{
     display:block;
     height:100%;
-    background:var(--green);
+    background:var(--accent);
     border-radius:99px;
     transition:width .3s ease;
   }
@@ -86,11 +86,11 @@
   }
   button:hover{background:var(--ink);color:var(--paper);}
   button:active{transform:scale(0.98);}
-  button.primary{background:var(--green);border-color:var(--green);color:var(--on-accent);}
-  button.primary:hover{background:var(--green);filter:brightness(0.92);}
+  button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);}
+  button.primary:hover{background:var(--accent);filter:brightness(0.92);}
   button:focus, input:focus, select:focus, textarea:focus, a:focus, [tabindex]:focus{outline:none;}
   button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, [tabindex]:focus-visible{
-    outline:2px solid var(--gold);
+    outline:2px solid var(--accent);
     outline-offset:3px;
   }
   html,body,button,input,select,textarea,a,label,
@@ -184,10 +184,10 @@
   }
   .type-toggle{display:flex;border:1.5px solid var(--ink);border-radius:2px;overflow:hidden;}
   .type-toggle button{border:none;flex:1;border-radius:0;padding:10px 4px;}
-  .type-toggle button.active-in{background:var(--green);color:#fff;}
-  .type-toggle button.active-out{background:var(--red);color:#fff;}
+  .type-toggle button.active-in{background:var(--success);color:var(--on-accent);}
+  .type-toggle button.active-out{background:var(--danger);color:var(--on-accent);}
 
-  .movement-tabs button.active-yield{background:var(--gold);color:var(--on-accent);}
+  .movement-tabs button.active-yield{background:var(--warning);color:var(--on-accent);}
   .movement-tabs button{min-height:38px;}
 
   input[readonly]{opacity:0.8;cursor:not-allowed;background:var(--paper);}
@@ -268,7 +268,7 @@
     line-height:1;
   }
   .cat-view-toggle button:hover{
-    background:var(--green-soft);
+    background:var(--accent-soft);
     color:var(--ink);
   }
   .cat-view-toggle button.is-active,
@@ -366,7 +366,7 @@
   }
   @media (max-width:680px){.chart-center-total-value{font-size:13px;}.cat-summary .chart-container{height:150px;}}
   .balance-card.total .balance-symbol{cursor:pointer;}
-  .balance-card.total .balance-symbol:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .balance-card.total .balance-symbol:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   .cat-row .cat-name{
     width:130px;
     min-width:0;
@@ -463,15 +463,15 @@
   }
   tbody tr:hover{background:var(--hover-soft);}
 
-  .amt.in{color:var(--green);}
-  .amt.out{color:var(--red);}
+  .amt.in{color:var(--success);}
+  .amt.out{color:var(--danger);}
 
   .action-btn{
     border:none;background:none;color:var(--ink-soft);
     font-size:14px;padding:2px 4px;cursor:pointer;
   }
   .action-btn:hover{color:var(--ink);}
-  .action-btn.del:hover{color:var(--red);}
+  .action-btn.del:hover{color:var(--danger);}
 
   .bank-list-item, .cat-list-item, .invest-card{
     display:flex;
@@ -568,8 +568,8 @@
     font-size:12px;
   }
   .yield-row > span:first-child{color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;}
-  .yield-pos{color:var(--green);  flex-shrink:0;}
-  .yield-neg{color:var(--red);  flex-shrink:0;}
+  .yield-pos{color:var(--success);  flex-shrink:0;}
+  .yield-neg{color:var(--danger);  flex-shrink:0;}
   .yield-inline{font-size:10px;margin-left:6px;vertical-align:middle;}
   .yield-actions{display:flex; gap:2px; flex-shrink:0;}
   .yield-actions .action-btn{padding:2px 5px; font-size:11px;}
@@ -601,16 +601,16 @@
     opacity:.7;
   }
   .rentability-inline.positive{
-    color:var(--green);
+    color:var(--success);
   }
   .rentability-inline.negative{
-    color:var(--red);
+    color:var(--danger);
   }
   .rentability-inline.positive::before{
-    color:var(--green);
+    color:var(--success);
   }
   .rentability-inline.negative::before{
-    color:var(--red);
+    color:var(--danger);
   }
 
   .fab-add{
@@ -660,7 +660,7 @@
   .import-row input, .import-row select{padding:6px 8px;font-size:13px;}
   .import-row .import-status{grid-column:1/-1;font-size:11px;line-height:1.35;color:var(--ink-soft);}
   .import-row.is-duplicate{opacity:.68;}.import-row.is-duplicate .import-status{color:var(--out);font-weight:700;}
-  .import-summary{margin:9px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink-soft);font-size:12px;line-height:1.4;}.import-summary b{color:var(--ink);}.import-summary .import-ready{color:var(--green);font-weight:700;}.import-summary .import-warning{color:var(--out);font-weight:700;}
+  .import-summary{margin:9px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink-soft);font-size:12px;line-height:1.4;}.import-summary b{color:var(--ink);}.import-summary .import-ready{color:var(--success);font-weight:700;}.import-summary .import-warning{color:var(--out);font-weight:700;}
 #importSummary:empty::before{content:"Nenhum arquivo analisado ainda.";color:var(--ink-soft);font-size:12px;}
   .hint{font-size:12px;color:var(--ink-soft);margin-top:8px;}
   footer{
@@ -709,7 +709,7 @@
     width:34px;
     height:34px;
     border:3px solid var(--line);
-    border-top-color:var(--green);
+    border-top-color:var(--success);
     border-radius:50%;
     margin:0 auto 14px;
     animation:sync-spin 0.8s linear infinite;
@@ -734,7 +734,7 @@
     justify-content:center;
     gap:7px;
     margin-bottom:18px;
-    color:var(--green);
+    color:var(--success);
     font-size:10px;
     font-weight:700;
     letter-spacing:.12em;
@@ -768,7 +768,7 @@
 }
 .auth-forgot a,
 .auth-forgot button{
-  color:var(--gold, #B89034);
+  color:var(--warning);
   text-decoration:none;
   font-weight:500;
   background:none;
@@ -784,20 +784,20 @@
 .auth-forgot a:hover,
 .auth-forgot button:hover{text-decoration:underline;}
   .auth-error{
-    color:var(--red);
+    color:var(--danger);
     font-size:12px;
     font-weight:500;
     margin-top:10px;
     min-height:16px;
   }
-  .auth-error.success{color:var(--green);}
+  .auth-error.success{color:var(--success);}
   .auth-toggle{
     margin-top:16px;
     font-size:12px;
     font-weight:500;
     text-align:center;
   }
-  .auth-toggle a{color:var(--green);cursor:pointer;font-weight:700;text-decoration:none;}
+  .auth-toggle a{color:var(--accent);cursor:pointer;font-weight:700;text-decoration:none;}
   .auth-toggle a:hover{text-decoration:underline;}
   .pass-wrap,.email-wrap{position:relative;display:flex;align-items:center;margin-bottom:10px;}
   .pass-wrap input,.email-wrap input{width:100%;box-sizing:border-box;margin-bottom:0;}
@@ -824,7 +824,7 @@
   #authSubmit{min-height:48px;border-radius:11px;font-size:12px;font-weight:700;letter-spacing:.02em;}
   #authDiagnosticToggle{border-radius:14px;}
   #authGoogle{min-height:48px;border:1px solid var(--line);border-radius:12px;background:var(--surface-raised);color:var(--ink);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;display:flex;align-items:center;justify-content:center;gap:10px;}
-  #authGoogle:hover{background:var(--green-soft);color:var(--ink);}
+  #authGoogle:hover{background:var(--accent-soft);color:var(--ink);}
   body:not(.dark-mode) #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 38%),var(--paper);}
   body:not(.dark-mode) .auth-box-brand,body:not(.dark-mode) .auth-toggle a{color:var(--accent);}
   body.dark-mode #authOverlay{background:radial-gradient(circle at 85% 9%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 38%),var(--paper);}
@@ -847,11 +847,11 @@
   #userBar button{padding:6px 10px;font-size:10.5px;}
   .sync-dot{
     width:8px;height:8px;border-radius:50%;
-    background:var(--green);
+    background:var(--success);
     display:inline-block;
   }
-  .sync-dot.saving{background:var(--gold);}
-  .sync-dot.sync-error{background:#d9534f;}
+  .sync-dot.saving{background:var(--warning);}
+  .sync-dot.sync-error{background:var(--danger);}
   
   @media (max-width:768px){
     .import-row{grid-template-columns:1fr; gap:4px; padding:10px 0;}
@@ -906,10 +906,10 @@
     flex-shrink: 0;
   }
   .card-border-line.receita {
-    background: var(--green);
+    background: var(--accent);
   }
   .card-border-line.despesa {
-    background: var(--red);
+    background: var(--danger);
   }
   .card-info {
     display: flex;
@@ -973,10 +973,10 @@
     font-variant-numeric: tabular-nums;
   }
   .card-amount.receita {
-    color: var(--green);
+    color: var(--success);
   }
   .card-amount.despesa {
-    color: var(--red);
+    color: var(--danger);
   }
   .card-actions {
     display: flex;
@@ -997,7 +997,7 @@
     color: var(--ink);
   }
   .btn-action.delete:hover {
-    color: var(--red);
+    color: var(--danger);
   }
   .single-action-locked{opacity:0.65;cursor:wait;}
   .profile-grouped-list{position:relative;}
@@ -1013,7 +1013,7 @@
   .quote-refresh-btn{
     display:inline-flex; align-items:center; gap:8px; min-height:40px; padding:0 12px; border:1px solid color-mix(in srgb,var(--accent) 35%,transparent); border-radius:10px; background:var(--paper); color:var(--ink); font-size:13px; font-weight:700; cursor:pointer;
   }
-  .quote-refresh-btn:hover{background:var(--green-soft);border-color:var(--accent);}
+  .quote-refresh-btn:hover{background:var(--accent-soft);border-color:var(--accent);}
   .quote-refresh-icon{display:grid;place-items:center;width:24px;height:24px;flex:0 0 auto;}
   .quote-refresh-icon i{font-size:16px;line-height:1;display:block;}
   .quote-refresh-icon.is-spinning{animation:quoteRefreshPulse 0.6s ease-in-out infinite;}
@@ -1053,9 +1053,9 @@
     align-items:flex-start;
     gap:8px;
   }
-  .log-entry.info{ border-left-color:var(--green); }
-  .log-entry.warn{ border-left-color:var(--gold); }
-  .log-entry.error{ border-left-color:var(--red); }
+  .log-entry.info{ border-left-color:var(--info); }
+  .log-entry.warn{ border-left-color:var(--warning); }
+  .log-entry.error{ border-left-color:var(--danger); }
   .log-badge{
     font-size:10px;
     font-weight:700;
@@ -1066,9 +1066,9 @@
     flex-shrink:0;
     white-space:nowrap;
   }
-  .log-entry.info .log-badge{ background:var(--green-soft); color:var(--green); }
-  .log-entry.warn .log-badge{ background:color-mix(in srgb, var(--gold) 15%, var(--paper)); color:var(--ink); }
-  .log-entry.error .log-badge{ background:var(--red-soft); color:var(--red); }
+  .log-entry.info .log-badge{ background:var(--info-soft); color:var(--info); }
+  .log-entry.warn .log-badge{ background:var(--warning-soft); color:var(--warning); }
+  .log-entry.error .log-badge{ background:var(--danger-soft); color:var(--danger); }
   .log-actions{
     display:flex;
     gap:8px;
