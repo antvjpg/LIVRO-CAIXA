@@ -239,7 +239,7 @@ M js/99-init.js
 
 ### Arquivos Criados
 
-- `REFATORACAO-AUTENTICACAO-RELATORIO.md` - este relatório técnico
+- `docs/REFATORACAO-AUTENTICACAO-RELATORIO.md` - este relatório técnico
 
 ### Arquivos Removidos
 

@@ -85,7 +85,7 @@ npm run code:test      # suítes E2E completas (requer Chromium)
 |---|---|
 | [`AGENTS.md`](AGENTS.md) | Regras de engenharia, segurança e manutenção do repositório |
 | [`CHECKLIST_TESTES.md`](CHECKLIST_TESTES.md) | Roteiro de teste funcional das alterações implementadas |
-| [`DOCUMENTACAO_VARIAVEIS_CSS.md`](DOCUMENTACAO_VARIAVEIS_CSS.md) | Variáveis CSS e como criar temas |
+| [`docs/DOCUMENTACAO_VARIAVEIS_CSS.md`](docs/DOCUMENTACAO_VARIAVEIS_CSS.md) | Variáveis CSS e como criar temas |
 | [`e2e/AUDITORIA.md`](e2e/AUDITORIA.md) | Auditoria de arquitetura, auth e persistência |
 | [`e2e/visual/AUDITORIA-VISUAL-MODAIS.md`](e2e/visual/AUDITORIA-VISUAL-MODAIS.md) | Auditoria visual dos modais (achados e revisões) |
 | [`.opencode/skills/auditoria/SKILL.md`](.opencode/skills/auditoria/SKILL.md) | Skill de auditoria técnica cruzada — arquitetura, regras financeiras, C.O.D.E., E2E, Worker, Firebase, PWA + auditoria cruzada |
