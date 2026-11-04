@@ -83,6 +83,13 @@ Descrevem significado, não cor fixa:
 - `--font-weight-*` — pesos;
 - `--line-height-*` — espaçamento vertical.
 
+Adoção inicial: a escala vem sendo incorporada de forma gradual, sem substituir indiscriminadamente valores existentes.
+
+- `--font-size-caption`, `--font-size-small`, `--font-size-body`, `--font-size-title`, `--line-height-body` e `--font-weight-semibold` já possuem consumidores.
+- `--font-size-heading`, `--line-height-tight`, `--font-weight-regular`, `--font-weight-medium` e `--font-weight-bold` seguem sem consumidores.
+- Intermediários e pesos superiores (`650`, `750`, `800`, `850`, `900`) e valores compactos (`9px`, `11px`, etc.) são preservados quando representam controles, ícones, financeiro ou hierarquia específica.
+- Famílias alternativas (`Open Sans` sem 500/800, por exemplo) e `clamp()`/`media queries` não são substituídos automaticamente.
+
 ### 1.5 Geometria, foco e sombras
 
 - `--radius-xs`, `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-xl`, `--radius-2xl`, `--radius-pill`;
@@ -175,17 +182,17 @@ Não criar variáveis roll-out globais para estados transitórios; quando um ele
 | Token | Valor | Escopo/origem | Uso |
 |---|---|---|---|
 | `--font-family-ui` | `'Plus Jakarta Sans',sans-serif` | `:root`, `style/themes.css` | Família principal |
-| `--font-size-caption` | `10px` | `:root` | legendas |
-| `--font-size-small` | `12px` | `:root` | texto secundário |
-| `--font-size-body` | `13px` | `:root` | texto base |
-| `--font-size-title` | `18px` | `:root` | títulos |
-| `--font-size-heading` | `27px` | `:root` | heading grande |
-| `--font-weight-regular` | `400` | `:root` | regular |
-| `--font-weight-medium` | `500` | `:root` | médio |
-| `--font-weight-semibold` | `600` | `:root` | semibold |
-| `--font-weight-bold` | `700` | `:root` | bold |
-| `--line-height-tight` | `1.15` | `:root` | linha compacta |
-| `--line-height-body` | `1.5` | `:root` | linha de corpo |
+| `--font-size-caption` | `10px` | `:root` | Microtexto/legendas; `.history-quote` (`style/features.css`) |
+| `--font-size-small` | `12px` | `:root` | Texto secundário/auxiliares; `.export-preview-sub` (`style/base.css`), `.feature-profile-intro`, `.profile-heading-integrated p`, `.profile-group-title` (`style/features.css`) |
+| `--font-size-body` | `13px` | `:root` | Texto padrão; `.period-active-label` (`style/components.css`), `.analysis-card-body` (`style/features.css`) |
+| `--font-size-title` | `18px` | `:root` | Títulos; `.profile-heading-integrated h2` (`style/features.css`) |
+| `--font-size-heading` | `27px` | `:root` | Heading grande; sem consumidor até nova validação |
+| `--font-weight-regular` | `400` | `:root` | Peso normal; sem consumidor |
+| `--font-weight-medium` | `500` | `:root` | Peso médio; sem consumidor |
+| `--font-weight-semibold` | `600` | `:root` | Semibold; `.history-quote` (`style/features.css`) |
+| `--font-weight-bold` | `700` | `:root` | Bold; sem consumidor |
+| `--line-height-tight` | `1.15` | `:root` | Compacto; sem consumidor |
+| `--line-height-body` | `1.5` | `:root` | Corpo/multilinha; `.feature-profile-intro`, `.analysis-card-body` (`style/features.css`) |
 
 ### 2.2 Superfície, papel e texto
 
@@ -283,10 +290,10 @@ Não criar variáveis roll-out globais para estados transitórios; quando um ele
 | `--on-solid` | Root `#FFFFFF`; tema sobrescreve | `:root` + temas/body.dark | Texto sobre fundo sólido |
 | `--overlay-color` | Root `rgba(0,0,0,0.65)`; tema sobrescreve | `:root` + temas | Overlay de modais |
 | `--shadow-color` | Root `rgba(20,48,36,.08)`; tema sobrescreve | `:root` + temas/body.dark | Cor das sombras |
-| `--shadow-sm` | `0 1px 3px var(--shadow-color)` | `:root` | Sombra pequena |
-| `--shadow-md` | `0 4px 14px var(--shadow-color)` | `:root` | Sombra média |
-| `--shadow-lg` | `0 18px 42px var(--shadow-color)` | `:root` | Sombra grande |
-| `--shadow-overlay` | `0 -18px 50px rgba(0,0,0,.28)` | `:root` | Sombra de overlay |
+| `--shadow-sm` | `0 1px 3px var(--shadow-color)` | `:root` | Sombra pequena; `.balance-card` (`style/base.css`), `.feature-profile-switch:after` (`style/features.css`) |
+| `--shadow-md` | `0 4px 14px var(--shadow-color)` | `:root` | Sombra média; `.fab-add`, `.log-card` (`style/components.css`) |
+| `--shadow-lg` | `0 18px 42px var(--shadow-color)` | `:root` | Sombra grande; `.auth-box` (`style/components.css`) |
+| `--shadow-overlay` | `0 -18px 50px rgba(0,0,0,.28)` | `:root` | Sombra de overlay; sem consumidor |
 | `--theme-swatch` | por opção de tema, definida nos seletores em `style/themes.css` | `style/themes.css` | Cor do swatch do seletor |
 | `--z-modal` | `1400` | `:root` | Camada modal |
 | `--z-fab` | `1300` | `:root` | Camada FAB |
