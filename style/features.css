@@ -2943,7 +2943,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-weight:800;
   letter-spacing:.1em;
   text-transform:uppercase;
-  color:var(--muted);
+  color:var(--ink-soft);
 }
 
 .bill-value-block input{
@@ -2991,7 +2991,7 @@ body.dark-mode #panelBill #billParcelasFields{
   font-size:9px;
   font-weight:800;
   letter-spacing:.06em;
-  color:var(--muted);
+  color:var(--ink-soft);
 }
 
 .bill-form-sheet input,
@@ -3275,7 +3275,7 @@ body.dark-mode #panelBill #billParcelasFields{
 #receiptFileStatus{
   margin-top:8px;
   font-size:12px;
-  color:var(--muted);
+  color:var(--ink-soft);
 }
 
 /* =========================================================
@@ -5920,7 +5920,7 @@ body[data-tab="goals"] #modalOverlay,
 .card-section label{
   display:block;
   margin-bottom:7px;
-  color:var(--muted);
+  color:var(--ink-soft);
   font-size:12px;
   font-weight:800;
   letter-spacing:.04em;
@@ -5961,7 +5961,7 @@ body[data-tab="goals"] #modalOverlay,
 
 .card-cycle-hint{
   margin-top:11px;
-  color:var(--muted);
+  color:var(--ink-soft);
   font-size:11px;
   line-height:1.45;
 }
@@ -6524,7 +6524,7 @@ body:not(.dark-mode) .goals-form-body select {
     var(--paper) 82%,
     transparent
   );
-  color: var(--muted);
+  color: var(--ink-soft);
   cursor: grab;
   touch-action: none;
   -webkit-user-select: none;
@@ -6881,7 +6881,7 @@ body[data-tab="dashboard"] #viewDashboard.active {
   background:color-mix(in srgb,var(--surface,var(--paper)) 88%,var(--accent) 4%);
 }
 .credit-card-summary-title{
-  color:var(--muted);
+  color:var(--ink-soft);
   font-size:11px;
   font-weight:750;
   letter-spacing:.04em;
@@ -6934,7 +6934,7 @@ body[data-tab="dashboard"] #viewDashboard.active {
   white-space:nowrap;
 }
 .credit-card-titular-main span{
-  color:var(--muted);
+  color:var(--ink-soft);
   font-size:10px;
 }
 .credit-card-titular-name{
@@ -6947,7 +6947,7 @@ body[data-tab="dashboard"] #viewDashboard.active {
   display:flex;
   flex-wrap:wrap;
   gap:4px 10px;
-  color:var(--muted);
+  color:var(--ink-soft);
   font-size:10.5px;
 }
 .credit-card-titular-values b{

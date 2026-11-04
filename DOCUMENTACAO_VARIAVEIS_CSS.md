@@ -11,6 +11,40 @@ Este documento descreve **os tokens CSS efetivamente existentes** após a padron
 
 A referência é o CSS do repositório local. Se este documento e o código divergirem, **o código atual prevalece**.
 
+## Sumário
+
+- [1. Convenção de nomenclatura](#1-convenção-de-nomenclatura)
+  - [1.1 Identidade visual](#11-identidade-visual)
+  - [1.2 Tokens semânticos](#12-tokens-semânticos)
+  - [1.3 Tokens de superfície](#13-tokens-de-superfície)
+  - [1.4 Tipografia](#14-tipografia)
+  - [1.5 Geometria, foco e sombras](#15-geometria-foco-e-sombras)
+  - [1.6 Tokens de ação/componentes](#16-tokens-de-açãocomponentes)
+  - [1.7 Classificação de propriedades por origem](#17-classificação-de-propriedades-por-origem)
+- [2. Inventário completo (pós-migração)](#2-inventário-completo-pós-migração)
+  - [2.1 Tipografia](#21-tipografia)
+  - [2.2 Superfície, papel e texto](#22-superfície-papel-e-texto)
+  - [2.3 Identidade visual](#23-identidade-visual)
+  - [2.4 Estados semânticos](#24-estados-semânticos)
+  - [2.5 Header](#25-header)
+  - [2.6 Ações e controles](#26-ações-e-controles)
+  - [2.7 On-solid, overlay, shadow, swatch e foco](#27-on-solid-overlay-shadow-swatch-e-foco)
+  - [2.8 Gráficos e paleta fixa do dashboard](#28-gráficos-e-paleta-fixa-do-dashboard)
+  - [2.9 Componentes e locais](#29-componentes-e-locais)
+- [3. Temas](#3-temas)
+  - [3.1 Claras](#31-claras)
+  - [3.2 Escuras](#32-escuras)
+  - [3.3 Regra de sobrescrita](#33-regra-de-sobrescrita)
+- [4. Aliases e compatibilidade](#4-aliases-e-compatibilidade)
+  - [4.1 Aliases removidos](#41-aliases-removidos)
+  - [4.2 Nomes preservados intencionalmente](#42-nomes-preservados-intencionalmente)
+  - [4.3 Aliases temporários](#43-aliases-temporários)
+- [5. Governança: criar tokens novos](#5-governança-criar-tokens-novos)
+- [6. Exemplos de criação de tema](#6-exemplos-de-criação-de-tema)
+  - [6.1 Tema claro hipotético (ID 6)](#61-tema-claro-hipotético-id-6)
+  - [6.2 Tema escuro hipotético (ID 6)](#62-tema-escuro-hipotético-id-6)
+- [7. Ordem de carregamento e escopo](#7-ordem-de-carregamento-e-escopo)
+
 ## 1. Convenção de nomenclatura
 
 ### 1.1 Identidade visual
@@ -85,19 +119,50 @@ Regra crítica: **cada ação foi separada por propriedade**, não por um único
 
 `--action-border` genérico foi preservado e é a borda padrão de ações não específicas.
 
-### 1.7 Variáveis dinâmicas de execução
+### 1.7 Classificação de propriedades por origem
 
-São setadas pelo JavaScript/contexto e **não** são tokens globais:
+As propriedades abaixo **não são tokens globais de tema**. A origem e a finalidade determinam como elas devem ser usadas e documentadas.
 
-- `--theme-swatch` — cor do botão de tema no seletor;
-- `--category-color` — cor de categoria vinda dos dados;
-- `--dash-pill-i` — índice do donut do dashboard;
-- `--nav-indicator-x` — posição do indicador da bottom nav;
-- `--pill-left`, `--pill-width`, `--pill-height` — métricas medidas em runtime;
-- `--v1616-ease`, `--v1616-fast` — constantes locais de transição;
-- `--toggle-active-bg`, `--toggle-active-border`, `--toggle-active-foreground` — controle ativo, definido por tema/body.
+#### 1.7.1 Propriedade local definida por CSS (seletor de tema)
 
-Não criar variáveis roll-out globais para estados transitórios.
+| Propriedade | Origem | Definição | Finalidade | Escopo |
+|---|---|---|---|---|
+| `--theme-swatch` | Seletores CSS em `style/themes.css` | `.light-theme-option[data-theme="N"]` / `.dark-theme-option[data-theme="N"]` | Cor de amostra do botão de tema no seletor | Local do botão/seletor de tema |
+
+Não é injetada por JavaScript; o JavaScript apenas ativa `aria-pressed`/seleção.
+
+#### 1.7.2 Propriedades dinâmicas de execução (runtime/inline)
+
+| Propriedade | Finalidade | Onde é aplicada | Quem define/atualiza | Tempo de execução / injeção | Escopo |
+|---|---|---|---|---|---|
+| `--category-color` | Cor de categoria vinda dos dados | `.cat-row`, `.cat-bar`, `.card-category`, seletor/listas de categorias | Templates JS em `js/18-render-core.js`, `js/20-dashboard.js`; consumida em `style/layout.css` e `style/components.css` | Injetada em `style="--category-color:..."` durante o render | Escopo local do elemento renderizado |
+| `--dash-pill-i` | Posição da pílula indicadora do filtro segmentado de período do Dashboard | `.dash-segmented-pill` | `index.html` (base) e `js/20-dashboard.js` (`setProperty`) | Atualizada em tempo de execução; traduzida em `translateX` no CSS | Local à pílula do filtro segmentado |
+| `--nav-indicator-x` | Posição do indicador da bottom nav | `.mobile-bottom-nav::before` | `js/00-bootstrap.js` (`updateNavIndicator`) com inicialização em CSS | Atualizada em tempo de execução; transformada em `translateX` | Local à bottom nav |
+| `--pill-left` | Posição horizontal da pílula do alternador de visualização | `.cat-view-toggle::before` | `js/18-render-core.js` (`updateCatViewPill`) | Medida em runtime (`getBoundingClientRect`) | Local ao alternador |
+| `--pill-width` | Largura da pílula do alternador | `.cat-view-toggle::before` | `js/18-render-core.js` | Medida em runtime | Local ao alternador |
+| `--pill-height` | Altura da pílula do alternador | `.cat-view-toggle::before` | `js/18-render-core.js` | Medida em runtime | Local ao alternador |
+| `--share` | Percentual preenchido das barras de distribuição patrimônio | `.dash-part-mini-bar::before` | `js/20-dashboard.js` (render do dashboard) | Injetada em `style="--share:..."` durante o render | Local ao elemento da barra |
+| `--pct` | Percentual preenchido das barras de meta | `.dash-goal-bar` | `js/20-dashboard.js` (render do dashboard) | Injetada em `style="--pct:..."` durante o render | Local ao elemento da barra |
+| `--bar-color` | Cor do preenchimento das barras | `.dash-part-mini-bar::before`, `.dash-goal-bar` | `js/20-dashboard.js`; consumida em `style/dashboard-chat.css` | Injetada em `style="--bar-color:..."`; aceita `var(--accent)` / `var(--color-green)` ou cor direta | Local ao elemento da barra |
+
+#### 1.7.3 Tokens auxiliares globais
+
+| Token | Origem | Definição | Finalidade | Escopo |
+|---|---|---|---|---|
+| `--v1616-ease` | `style/features.css` | `:root { --v1616-ease: cubic-bezier(.23,1,.32,1); }` | Curva de easing das transições | Global auxiliar (não é cor) |
+| `--v1616-fast` | `style/features.css` | `:root { --v1616-fast: 180ms; }` | Duração base de microtransições | Global auxiliar (não é cor) |
+
+#### 1.7.4 Tokens de tema/controle
+
+| Token | Origem | Finalidade |
+|---|---|---|
+| `--toggle-active-bg` | Definido em `body` e redefinido em `body.dark-mode` | Fundo do controle ativo |
+| `--toggle-active-border` | Idem | Borda ativa |
+| `--toggle-active-foreground` | Idem | Texto/ícone do controle ativo |
+
+Não são propriedades injetadas por JavaScript.
+
+Não criar variáveis roll-out globais para estados transitórios; quando um elemento resolve dinamicamente, use um nome local/runtime como `--nav-indicator-x`, não um token de tema.
 
 ---
 
@@ -222,7 +287,7 @@ Não criar variáveis roll-out globais para estados transitórios.
 | `--shadow-md` | `0 4px 14px var(--shadow-color)` | `:root` | Sombra média |
 | `--shadow-lg` | `0 18px 42px var(--shadow-color)` | `:root` | Sombra grande |
 | `--shadow-overlay` | `0 -18px 50px rgba(0,0,0,.28)` | `:root` | Sombra de overlay |
-| `--theme-swatch` | por opção de tema | `style/themes.css` / seletor | Cor do swatch |
+| `--theme-swatch` | por opção de tema, definida nos seletores em `style/themes.css` | `style/themes.css` | Cor do swatch do seletor |
 | `--z-modal` | `1400` | `:root` | Camada modal |
 | `--z-fab` | `1300` | `:root` | Camada FAB |
 
@@ -238,10 +303,12 @@ Não são sobrescritos pelos temas.
 
 ### 2.9 Componentes e locais
 
+As propriedades dinâmicas de execução estão descritas na seção **1.7.2** (`--category-color`, `--dash-pill-i`, `--nav-indicator-x`, `--pill-left`, `--pill-width`, `--pill-height`, `--share`, `--pct`, `--bar-color`).
+
 | Token | Valor/função | Escopo | Uso |
 |---|---|---|---|
-| `--v1616-ease` | `cubic-bezier(.23,1,.32,1)` | `style/features.css` | Curva de transição |
-| `--v1616-fast` | `180ms` | `style/features.css` | Duração base |
+| `--v1616-ease` | `cubic-bezier(.23,1,.32,1)` | `style/features.css` (`:root`) | Curva de transição |
+| `--v1616-fast` | `180ms` | `style/features.css` (`:root`) | Duração base |
 | `--radius-xs` | `8px` | `:root` | Raio pequeno |
 | `--radius-sm` | `11px` | `:root` | Raio pequeno |
 | `--radius-md` | `14px` | `:root` | Raio médio |
@@ -269,7 +336,7 @@ body.dark-mode[data-dark-theme="N"] { ... }
 |---|---|---|
 | 1 | Oliva | chrome creme + oliva escuro no accent/header; `--accent:#5F7A43`, `--color-green:#437A4E`, `--color-gold:#B08D3E`, `--on-solid:#F7FAF6` |
 | 2 | Verde | palette default do `:root` (`--accent:#327957`) |
-| 3 | Lima | verde-lima; `--accent:#40916C`, `--color-gold/#color-red = #90A955`, `--line: color-mix(...)` |
+| 3 | Lima | verde-lima; `--accent:#40916C`, `--color-gold` e `--color-red` = `#90A955`, `--line: color-mix(...)` |
 | 4 | Terracota | terracota; `--accent:#C66F50`, `--header-from:#8F4F3C`, `--surface-raised:#FFFBF5` |
 | 5 | Laranja | laranja; `--accent:#E85002`, `--header-from:#C10801` |
 
