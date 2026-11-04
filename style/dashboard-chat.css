@@ -244,6 +244,9 @@
   flex-shrink:0;
   white-space:nowrap;
 }
+#viewDash .dash-two-col > .dash-panel:first-of-type > .dash-panel-head .js-money{
+  color:var(--ink);
+}
 
 /* ---- 01 resumo ---- */
 #viewDash .dash-kpis{

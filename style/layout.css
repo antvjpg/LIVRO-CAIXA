@@ -211,7 +211,10 @@
     .mobile-bottom-nav button.is-disabled { opacity:.35; pointer-events:none; }
     body.dark-mode { background:var(--paper); }
     body.dark-mode main,body.dark-mode .mobile-bottom-nav { background:var(--paper); }
-    body.dark-mode .nav-tabs,body.dark-mode .balance-card:not(.total),body.dark-mode .cat-summary,body.dark-mode .ledger,body.dark-mode .invest-box,body.dark-mode .panel { background:var(--surface); border-color:var(--line); color:var(--accent-subtle); box-shadow:0 6px 16px rgba(0,0,0,.18),inset 0 1px 0 color-mix(in srgb,var(--header-foreground) 14%,transparent); }
+    body.dark-mode .nav-tabs,body.dark-mode .balance-card:not(.total),body.dark-mode .ledger,body.dark-mode .panel { background:var(--surface); border-color:var(--line); color:var(--accent-subtle); box-shadow:0 6px 16px rgba(0,0,0,.18),inset 0 1px 0 color-mix(in srgb,var(--header-foreground) 14%,transparent); }
+    body.dark-mode .cat-summary { background:var(--surface); border-color:var(--line); color:var(--ink); box-shadow:0 6px 16px rgba(0,0,0,.18),inset 0 1px 0 color-mix(in srgb,var(--header-foreground) 14%,transparent); }
+    /* Contraste: accent-subtle é tinta de superfície; caixinhas/investimentos usam texto principal. */
+    body.dark-mode .invest-box { background:var(--surface); border-color:var(--line); color:var(--ink); box-shadow:0 6px 16px rgba(0,0,0,.18),inset 0 1px 0 color-mix(in srgb,var(--header-foreground) 14%,transparent); }
     body.dark-mode .balance-card.total { background:linear-gradient(125deg,var(--surface-accent),var(--accent-subtle)); border-color:var(--accent); color:var(--ink); box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),0 13px 28px rgba(0,0,0,.34),0 0 24px color-mix(in srgb,var(--accent) 18%,transparent); }
     body.dark-mode .balance-card.total .label,body.dark-mode .balance-card.total .amount { color:var(--ink); opacity:1; }
     body.dark-mode .balance-card.total .balance-symbol { background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--ink); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent); }
