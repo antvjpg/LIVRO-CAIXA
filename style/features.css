@@ -3321,7 +3321,7 @@ body.dark-mode #panelBill #billParcelasFields{
   color:var(--ink);
   border:1px solid color-mix(in srgb,var(--line) 72%,transparent);
   border-radius:28px 28px 0 0;
-  box-shadow:0 -18px 50px rgba(20,48,36,.20);
+  box-shadow:var(--shadow-overlay);
   overflow-x:hidden;
   overflow-y:auto;
 }
