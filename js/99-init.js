@@ -837,20 +837,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
 
   let pendingReconciliation = null;
   document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = document.getElementById('featurePin')?.value || ''; try { await saveLocalPin(pin); document.getElementById('featurePin').value = ''; status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.'; } catch (err) { status.textContent = err.message; } });
-  document.getElementById('btnEnableBiometric')?.addEventListener('click', async () => {
-    const status = document.getElementById('pinSettingsStatus');
-    try {
-      await registerBiometric();
-      if (status) status.textContent = 'Biometria ativada neste aparelho. No bloqueio, o sistema pedirá digital/rosto.';
-    } catch (err) {
-      if (status) status.textContent = err.message || 'Não foi possível ativar a biometria.';
-    }
-  });
-  document.getElementById('btnDisableBiometric')?.addEventListener('click', () => {
-    removeBiometric();
-    const status = document.getElementById('pinSettingsStatus');
-    if (status) status.textContent = 'Biometria desativada neste aparelho. O PIN continua ativo.';
-  });
   document.getElementById('btnBiometricUnlock')?.addEventListener('click', async () => {
     const error = document.getElementById('pinUnlockError');
     try {
@@ -1051,27 +1037,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       if (block3State) {
         const text = document.createTextNode('Configure um PIN antes de vincular a biometria.');
         block3State.appendChild(text);
-      }
-    }
-
-    // Controle de visibilidade dos botões de biometria
-    const btnEnableBio = document.getElementById('btnEnableBiometric');
-    const btnDisableBio = document.getElementById('btnDisableBiometric');
-    if (btnEnableBio && btnDisableBio) {
-      const hasBio = hasBiometric();
-      const supportsWa = supportsWebAuthn();
-      if (hasPin && hasBio && supportsWa) {
-        // Biometria vinculada - mostrar desativar, esconder ativar
-        btnEnableBio.style.display = 'none';
-        btnDisableBio.style.display = 'inline-block';
-      } else if (hasPin && !hasBio && supportsWa) {
-        // Biometria disponível para vincular - mostrar ativar, esconder desativar
-        btnEnableBio.style.display = 'inline-block';
-        btnDisableBio.style.display = 'none';
-      } else {
-        // Biometria indisponível - esconder ambos
-        btnEnableBio.style.display = 'none';
-        btnDisableBio.style.display = 'none';
       }
     }
 

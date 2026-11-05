@@ -2658,6 +2658,7 @@ function renderCategoryManageList() {
     return `<span title="Referência externa (BCB/Tesouro), não altera este saldo">Ref.: ${escapeHTML(parts.join(' · '))}</span>`;
   }
   let pinUnlocked;
+let biometricAuthInProgress = false;
 
   let lastPinActivity;
 
@@ -2691,7 +2692,18 @@ function renderCategoryManageList() {
     return bytes.buffer;
   }
   function supportsWebAuthn() {
-    return typeof window !== 'undefined' && window.PublicKeyCredential && typeof navigator.credentials?.create === 'function';
+    if (typeof window === 'undefined') return false;
+    if (!window.PublicKeyCredential) return false;
+    if (typeof navigator.credentials?.create !== 'function') return false;
+    // Check for platform authenticator availability when possible
+    try {
+      if (window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
+        return window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable({ timeout: 60000 });
+      }
+    } catch (e) {
+      // Ignore errors in availability check - fall back to basic API check
+    }
+    return true;
   }
   async function registerBiometric() {
     if (!currentUser) throw new Error('Faça login antes de ativar a biometria.');
@@ -2750,6 +2762,11 @@ function renderCategoryManageList() {
   async function unlockWithBiometric() {
     if (!hasBiometric() || !supportsWebAuthn()) return false;
     const rec = getBiometricRecord();
+    // NOTE: This function does NOT perform cryptographic verification of the WebAuthn assertion.
+    // The assertion returned by navigator.credentials.get() is not validated for signature,
+    // challenge, rpIdHash, or public key matching. This is a convenience local flow, not a
+    // cryptographically secure authentication boundary. Strong authentication requires server-side
+    // validation of the assertion's signature, challenge, and rpIdHash.
     const challenge = crypto.getRandomValues(new Uint8Array(32));
     const assertion = await navigator.credentials.get({
       publicKey: {
@@ -2772,23 +2789,25 @@ function renderCategoryManageList() {
 
     const canBio = hasBiometric() && supportsWebAuthn();
     if (btn) btn.hidden = !canBio;
-    if (!canBio) { pinInput?.focus(); return; }
+    if (!canBio) { pinInput?.focus(); biometricAuthInProgress = false; return; }
 
-    if (error) error.textContent = 'Aguarde a digital…';
+    if (error) error.textContent = 'Aguarde a verificação no dispositivo…';
     try {
       const ok = await unlockWithBiometric();
       if (!ok) {
-        if (error) error.textContent = 'Digital não reconhecida. Use o PIN.';
+        if (error) error.textContent = 'Falha na verificação. Use o PIN.';
         pinInput?.focus();
       }
     } catch (err) {
       if (error) error.textContent = 'Biometria cancelada ou indisponível. Use o PIN.';
       pinInput?.focus();
     }
+    biometricAuthInProgress = false;
   }
 
   function showPinOverlay() {
-    if (!currentUser || !hasLocalPin() || pinUnlocked) return;
+    if (!currentUser || !hasLocalPin() || pinUnlocked || biometricAuthInProgress) return;
+    biometricAuthInProgress = true;
     const overlay = document.getElementById('pinOverlay');
     overlay?.classList.remove('hidden');
     overlay?.setAttribute('aria-hidden', 'false');
@@ -2799,9 +2818,9 @@ function renderCategoryManageList() {
       setTimeout(tryBiometricUnlockOnShow, 50);
       return;
     }
-    setTimeout(() => { document.getElementById('pinUnlockInput')?.focus(); }, 0);
+    setTimeout(() => { document.getElementById('pinUnlockInput')?.focus(); biometricAuthInProgress = false; }, 0);
   }
-  function hidePinOverlay() { markPinActivity(); const overlay = document.getElementById('pinOverlay'); overlay?.classList.add('hidden'); overlay?.setAttribute('aria-hidden', 'true'); document.body.classList.remove('is-pin-locked'); }
+  function hidePinOverlay() { markPinActivity(); biometricAuthInProgress = false; const overlay = document.getElementById('pinOverlay'); overlay?.classList.add('hidden'); overlay?.setAttribute('aria-hidden', 'true'); document.body.classList.remove('is-pin-locked'); }
   async function unlockWithLocalPin(pin) { const record = getLocalPinRecord(); if (!record) { pinUnlocked = true; hidePinOverlay(); return true; } const valid = (await hashLocalPin(pin)) === record.hash; if (!valid) return false; pinUnlocked = true; hidePinOverlay(); return true; }
   function pinGraceMs() { const m = Number(featureSettings.lockGraceMinutes); return Number.isFinite(m) && m > 0 ? Math.round(m) * 60000 : 0; }
   function markPinActivity() { lastPinActivity = Date.now(); }
