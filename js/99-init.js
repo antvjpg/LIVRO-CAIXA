@@ -839,7 +839,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   });
 
   let pendingReconciliation = null;
-  document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = document.getElementById('featurePin')?.value || ''; try { await saveLocalPin(pin); document.getElementById('featurePin').value = ''; status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.'; } catch (err) { status.textContent = err.message; } });
+  document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = prompt('Digite um PIN de 4 a 8 dígitos numéricos'); if (pin) { const validPin = pin.replace(/\D/g, '').slice(0, 8); if (/^\d{4,8}$/.test(validPin)) { try { await saveLocalPin(validPin); status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.'; } catch (err) { status.textContent = err.message; } } else { status.textContent = 'PIN deve ter entre 4 e 8 dígitos numéricos.'; } } else { status.textContent = 'Operação cancelada.'; } });
   document.getElementById('btnBiometricUnlock')?.addEventListener('click', async () => {
     const error = document.getElementById('pinUnlockError');
     try {
