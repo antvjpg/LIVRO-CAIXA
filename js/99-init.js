@@ -869,7 +869,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     if (block1State) {
       block1State.innerHTML = '';
       if (lockOnOpen) {
-        const text = document.createTextNode('Solicitar desbloqueio ao abrir ou voltar ao aplicativo');
+        const text = document.createTextNode('Desbloquear ao abrir');
         block1State.appendChild(text);
       } else {
         const text = document.createTextNode('Bloqueio desativado - abertura direta permitida');
