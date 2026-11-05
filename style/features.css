@@ -461,6 +461,21 @@
     cursor:pointer;
     border:1px solid var(--line);
     transition:all .2s ease;
+  position:relative;
+  }
+  .circle{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:var(--accent);
+    left:12px;
+    transition:left .3s ease;
+  }
+  .circle.right{
+    left:calc(100% - 32px);
   }
   .block-pill:hover{background:var(--accent);color:var(--on-solid);}
   .block-pill:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}

@@ -864,8 +864,8 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     const hasBio = hasBiometric();
     const supportsWa = supportsWebAuthn();
 
-    // BLOCO 1: Bloqueio do aplicativo
-    const block1State = document.getElementById('block1-state');
+// BLOCO 1: Bloqueio do aplicativo
+const block1State = document.getElementById('block1-state');
     if (block1State) {
       block1State.innerHTML = '';
       if (lockOnOpen) {
@@ -875,6 +875,16 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
         const text = document.createTextNode('Bloqueio desativado - abertura direta permitida');
         block1State.appendChild(text);
       }
+    }
+
+// Atualiza a esfera da pill do Block 1 para ficar na mesma linha do título
+const circle1 = document.getElementById('block1-circle');
+if (circle1) {
+  if (lockOnOpen) {
+    circle1.classList.add('right');
+  } else {
+    circle1.classList.remove('right');
+  }
 }
 
 // BLOCO 2: PIN de segurança
