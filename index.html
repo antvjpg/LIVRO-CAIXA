@@ -572,10 +572,9 @@
           <!-- BLOCO 1: Bloqueio do aplicativo -->
           <div class="block-app-lock">
             <h4>Bloqueio do aplicativo</h4>
-            <label class="block-toggle">
-              <input type="checkbox" id="chkLockOnOpen" checked>
-              <span class="block-toggle-slider"></span>
-            </label>
+            <div class="block-pill" id="block1-pill">
+              <span>Bloquear ao abrir</span>
+            </div>
             <p>Exige PIN ou biometria ao abrir ou retornar ao aplicativo, conforme o intervalo de tolerância configurado.</p>
             <div class="block-state" id="block1-state">
               <!-- Estado dinâmico inserido pelo JS -->
@@ -605,11 +604,9 @@
           <!-- BLOCO 4: Bloqueio automático -->
           <div class="block-auto-lock">
             <h4>Bloqueio automático</h4>
-            <label class="block-toggle">
-              <input type="checkbox" id="block4-lock-on">
-              <span class="block-toggle-slider"></span>
+            <div class="block-pill" id="block4-pill">
               <span>Solicitar desbloqueio ao abrir</span>
-            </label>
+            </div>
             <select class="block-select" id="block4-select">
               <option value="">Selecione o intervalo</option>
               <option value="0">Sem tolerância</option>
