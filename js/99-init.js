@@ -865,25 +865,268 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; clearPinActivity(); closeAllPanels(); showPinOverlay(); });
 
   // Autosave para PIN (debounce 1s ao sair do campo)
-  let pinAutosaveTimer = 0;
-  document.getElementById('featurePin')?.addEventListener('blur', () => {
-    clearTimeout(pinAutosaveTimer);
-    pinAutosaveTimer = setTimeout(async () => {
-      const pin = document.getElementById('featurePin')?.value || '';
-      if (pin.length >= 4) {
-        const status = document.getElementById('pinSettingsStatus');
-        try {
-          await saveLocalPin(pin);
-          document.getElementById('featurePin').value = '';
-          if (status) status.textContent = 'PIN salvo automaticamente.';
-        } catch (err) {
-          if (status) status.textContent = err.message;
+
+
+  // === Atualização dinâmica da interface de Proteção Local ===
+  function updateProtectionLocalUI() {
+    const lockOnOpen = featureSettings.lockOnOpen === true;
+    const lockGrace = featureSettings.lockGraceMinutes || 0;
+    const hasPin = hasLocalPin();
+    const hasBio = hasBiometric();
+    const supportsWa = supportsWebAuthn();
+
+    // BLOCO 1: Bloqueio do aplicativo
+    const block1State = document.getElementById('block1-state');
+    if (block1State) {
+      block1State.innerHTML = '';
+      if (lockOnOpen) {
+        const text = document.createTextNode('Solicitar desbloqueio ao abrir ou voltar ao aplicativo');
+        block1State.appendChild(text);
+      } else {
+        const text = document.createTextNode('Bloqueio desativado - abertura direta permitida');
+        block1State.appendChild(text);
+      }
+    }
+
+    // BLOCO 2: PIN de segurança
+    const block2PinState = document.getElementById('block2-pin-state');
+    const block2PinActions = document.getElementById('block2-pin-actions');
+    if (block2PinState) block2PinState.innerHTML = '';
+    if (block2PinActions) block2PinActions.innerHTML = '';
+
+    if (hasPin) {
+      // PIN configurado - Estado B
+      if (block2PinState) {
+        const text = document.createTextNode('PIN configurado');
+        block2PinState.appendChild(text);
+      }
+      if (block2PinActions) {
+        const btnChange = document.createElement('button');
+        btnChange.className = 'btn-pin primary';
+        btnChange.textContent = 'Alterar PIN';
+        btnChange.addEventListener('click', () => {
+          const newPin = prompt('Digite um novo PIN de 4 a 8 dígitos');
+          if (newPin && newPin.length >= 4 && newPin.length <= 8 && /^\d+$/.test(newPin)) {
+            saveLocalPin(newPin).then(() => {
+              updateProtectionLocalUI();
+              const status = document.getElementById('pinSettingsStatus');
+              if (status) status.textContent = 'PIN alterado com sucesso.';
+            }).catch(err => {
+              if (status) status.textContent = err.message;
+            });
+          } else {
+            alert('PIN deve ter 4 a 8 dígitos numéricos.');
+          }
+        });
+        block2PinActions.appendChild(btnChange);
+
+        const btnRemove = document.createElement('button');
+        btnRemove.className = 'btn-pin secondary';
+        btnRemove.textContent = 'Remover PIN';
+        btnRemove.addEventListener('click', () => {
+          if (confirm('Remover o PIN também desvincula a biometria deste dispositivo. Tem certeza?')) {
+            removeLocalPin();
+            updateProtectionLocalUI();
+            const status = document.getElementById('pinSettingsStatus');
+            if (status) status.textContent = 'PIN removido deste dispositivo.';
+          }
+        });
+        block2PinActions.appendChild(btnRemove);
+      }
+    } else {
+      // Sem PIN - Estado A
+      if (block2PinState) {
+        const text = document.createTextNode('Configure um PIN antes de vincular a biometria.');
+        block2PinState.appendChild(text);
+      }
+      if (block2PinActions) {
+        const btnSetPin = document.createElement('button');
+        btnSetPin.className = 'btn-pin primary';
+        btnSetPin.textContent = 'Configurar PIN';
+        btnSetPin.addEventListener('click', () => {
+          const pin = prompt('Crie um PIN de 4 a 8 dígitos para proteger o acesso neste dispositivo');
+          if (pin && pin.length >= 4 && pin.length <= 8 && /^\d+$/.test(pin)) {
+            saveLocalPin(pin).then(() => {
+              updateProtectionLocalUI();
+              const status = document.getElementById('pinSettingsStatus');
+              if (status) status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.';
+            }).catch(err => {
+              if (status) status.textContent = err.message;
+            });
+          } else {
+            alert('PIN deve ter 4 a 8 dígitos numéricos.');
+          }
+        });
+        block2PinActions.appendChild(btnSetPin);
+        // Input field for PIN (shown when no PIN is configured)
+        const pinInputContainer = document.createElement('div');
+        pinInputContainer.className = 'block-pin-input';
+        pinInputContainer.style.marginTop = '8px';
+        const pinLabel = document.createElement('label');
+        pinLabel.for = 'block2-pin-input';
+        pinLabel.textContent = 'Novo PIN';
+        const pinInput = document.createElement('input');
+        pinInput.type = 'password';
+        pinInput.id = 'block2-pin-input';
+        pinInput.placeholder = '4 a 8 dígitos';
+        pinInput.maxlength = '8';
+        const pinBtn = document.createElement('button');
+        pinBtn.className = 'btn-pin secondary';
+        pinBtn.textContent = 'Confirmar';
+        pinBtn.addEventListener('click', () => {
+          const enteredPin = document.getElementById('block2-pin-input').value;
+          if (enteredPin && enteredPin.length >= 4 && enteredPin.length <= 8 && /^\d+$/.test(enteredPin)) {
+            saveLocalPin(enteredPin).then(() => {
+              updateProtectionLocalUI();
+              const status = document.getElementById('pinSettingsStatus');
+              if (status) status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.';
+            }).catch(err => {
+              if (status) status.textContent = err.message;
+            });
+          } else {
+            alert('PIN deve ter 4 a 8 dígitos numéricos.');
+          }
+        });
+        pinInputContainer.appendChild(pinLabel);
+        pinInputContainer.appendChild(pinInput);
+        pinInputContainer.appendChild(pinBtn);
+        block2PinActions.appendChild(pinInputContainer);
+      }
+    }
+
+    // BLOCO 3: Biometria
+    const block3State = document.getElementById('block3-state');
+    if (block3State) block3State.innerHTML = '';
+
+    if (hasPin) {
+      // PIN configurado
+      if (supportsWa && hasBio) {
+        // Estado C - Biometria vinculada
+        if (block3State) {
+          const indicator = document.createElement('span');
+          indicator.textContent = 'Vinculada';
+          block3State.appendChild(indicator);
+          const btnUnlink = document.createElement('button');
+          btnUnlink.textContent = 'Desvincular biometria';
+          btnUnlink.className = 'btn-primary small';
+          btnUnlink.addEventListener('click', () => {
+            removeBiometric();
+            updateProtectionLocalUI();
+          });
+          block3State.appendChild(btnUnlink);
+        }
+        // Informar que PIN continua disponível
+        const pinNote = document.createElement('div');
+        pinNote.style.fontSize = '12px';
+        pinNote.style.color = 'var(--ink-soft)';
+        pinNote.textContent = 'PIN continua disponível como alternativa';
+        block3State.appendChild(pinNote);
+      } else if (hasPin && !supportsWa) {
+        // Sem suporte WebAuthn
+        if (block3State) {
+          const text = document.createTextNode('Indisponível neste aparelho. O desbloqueio por PIN continua disponível.');
+          block3State.appendChild(text);
+        }
+      } else {
+        // PIN configurado, biometria não vinculada
+        if (block3State) {
+          const text = document.createTextNode('Não vinculada');
+          block3State.appendChild(text);
+          const btnLink = document.createElement('button');
+          btnLink.textContent = 'Vincular biometria';
+          btnLink.className = 'btn-primary small';
+          btnLink.addEventListener('click', () => {
+            registerBiometric().then(() => {
+              updateProtectionLocalUI();
+            }).catch(err => {
+              const status = document.getElementById('pinSettingsStatus');
+              if (status) status.textContent = err.message || 'Não foi possível vincular a biometria.';
+            });
+          });
+          block3State.appendChild(btnLink);
         }
       }
-    }, 1000);
-  });
+    } else {
+      // Sem PIN - Estado A
+      if (block3State) {
+        const text = document.createTextNode('Configure um PIN antes de vincular a biometria.');
+        block3State.appendChild(text);
+      }
+    }
 
-  // ===== V.19 — Perfil: versão, logout com confirmação =====
+    // Controle de visibilidade dos botões de biometria
+    const btnEnableBio = document.getElementById('btnEnableBiometric');
+    const btnDisableBio = document.getElementById('btnDisableBiometric');
+    if (btnEnableBio && btnDisableBio) {
+      const hasBio = hasBiometric();
+      const supportsWa = supportsWebAuthn();
+      if (hasPin && hasBio && supportsWa) {
+        // Biometria vinculada - mostrar desativar, esconder ativar
+        btnEnableBio.style.display = 'none';
+        btnDisableBio.style.display = 'inline-block';
+      } else if (hasPin && !hasBio && supportsWa) {
+        // Biometria disponível para vincular - mostrar ativar, esconder desativar
+        btnEnableBio.style.display = 'inline-block';
+        btnDisableBio.style.display = 'none';
+      } else {
+        // Biometria indisponível - esconder ambos
+        btnEnableBio.style.display = 'none';
+        btnDisableBio.style.display = 'none';
+      }
+    }
+
+    // BLOCO 4: Bloqueio automático
+    const block4LockOn = document.getElementById('block4-lock-on');
+    const block4Select = document.getElementById('block4-select');
+    const block4State = document.getElementById('block4-state');
+    if (block4LockOn && block4Select && block4State) {
+      block4LockOn.innerHTML = '';
+      block4Select.innerHTML = '<option value="">Selecione o intervalo</option>';
+      block4State.innerHTML = '';
+
+      // Toggle para ativar/desativar bloqueio automático
+      const lockOnInput = document.createElement('input');
+      lockOnInput.type = 'checkbox';
+      lockOnInput.checked = lockOnOpen;
+      lockOnInput.disabled = !hasPin;
+      lockOnInput.addEventListener('change', () => {
+        featureSettings = normalizeFeatureSettings({ ...featureSettings, lockOnOpen: lockOnInput.checked });
+        persistFeatureSettings();
+        persistProfileSettings().catch(err => console.error(err));
+        render();
+        updateProtectionLocalUI();
+      });
+      block4LockOn.appendChild(lockOnInput);
+      const lockOnLabel = document.createElement('span');
+      lockOnLabel.style.marginLeft = '8px';
+      lockOnLabel.textContent = 'Solicitar desbloqueio ao abrir';
+      block4LockOn.appendChild(lockOnLabel);
+
+      const graceOptions = ['0', '1', '5', '10'];
+      graceOptions.forEach(val => {
+        const opt = document.createElement('option');
+        opt.value = val;
+        if (val === String(lockGrace)) opt.selected = true;
+        opt.textContent = val === '0' ? 'Sem tolerância' : val + ' minuto' + (val > 1 ? 's' : '');
+        block4Select.appendChild(opt);
+      });
+
+      if (lockOnOpen) {
+        if (lockGrace > 0) {
+          block4State.innerHTML = 'Intervalo de tolerância configurado para ' + lockGrace + ' min';
+        } else {
+          block4State.innerHTML = 'Sem tolerância (bloqueio na abertura)';
+        }
+        block4Select.disabled = false;
+      } else {
+        block4State.innerHTML = 'Bloqueio automático desativado';
+        block4Select.disabled = true;
+      }
+    }
+  }
+
+  // Executar na inicialização
+  document.addEventListener('DOMContentLoaded', updateProtectionLocalUI);
   const APP_VERSION_LABEL = 'Livro-Caixa V.20-02 (opencode)';
 
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
