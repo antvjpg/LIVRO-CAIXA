@@ -883,7 +883,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       block1Pill.innerHTML = '';
       if (lockOnOpen) {
         const span = document.createElement('span');
-        span.textContent = 'Desbloquear ao abrir';
+        span.textContent = 'Desbloquear';
         block1Pill.appendChild(span);
       } else {
         const span = document.createElement('span');
@@ -1112,7 +1112,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
         block4Pill.innerHTML = '';
         if (lockOnOpen) {
           const span = document.createElement('span');
-          span.textContent = 'Desbloquear ao abrir';
+          span.textContent = 'Desbloquear';
           block4Pill.appendChild(span);
         } else {
           const span = document.createElement('span');
