@@ -2695,14 +2695,11 @@ let biometricAuthInProgress = false;
     if (typeof window === 'undefined') return false;
     if (!window.PublicKeyCredential) return false;
     if (typeof navigator.credentials?.create !== 'function') return false;
-    // Check for platform authenticator availability when possible
-    try {
-      if (window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
-        return window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable({ timeout: 60000 });
-      }
-    } catch (e) {
-      // Ignore errors in availability check - fall back to basic API check
-    }
+    // A API WebAuthn (navigator.credentials.create/get) está disponível.
+    // A verificação de autenticador de plataforma (isUserVerifyingPlatformAuthenticatorAvailable)
+    // retorna uma Promise e nao pode ser usada diretamente em condicao booleana sem async/await.
+    // Consumidores que necessitam verificar a disponibilidade do autenticador devem fazer
+    // uma chamada assíncrona separada. Esta funcao apenas confirma o suporte basico da API.
     return true;
   }
   async function registerBiometric() {

@@ -53,6 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
   pendingImportSource = '';
   currentType = 'in';
   editingEntryId = null;
+  
+  // Atualizar interface de Proteção Local após featuresettings estar inicializado
+  updateProtectionLocalUI();
   editingBankId = null;
   editingCategoryId = null;
 
@@ -1091,7 +1094,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   }
 
   // Executar na inicialização
-  document.addEventListener('DOMContentLoaded', updateProtectionLocalUI);
   const APP_VERSION_LABEL = 'Livro-Caixa V.20-02 (opencode)';
 
   document.getElementById('profileAppVersion') && (document.getElementById('profileAppVersion').textContent = APP_VERSION_LABEL);
