@@ -597,7 +597,7 @@ function editInstitution(btn, key) {
       <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" role="button" tabindex="0" aria-expanded="${patrimonySparkVisible}" aria-controls="patrimonySparkBox" aria-label="${patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio'}"><i class="fi fi-rr-wallet" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && totalPatrimonio < 0 ? 'neg' : ''}">${totalLabel}</span>
       ${balancesReady ? `<div class="patrimony-spark-box${patrimonySparkVisible ? '' : ' is-collapsed'}" id="patrimonySparkBox" aria-hidden="${!patrimonySparkVisible}"><canvas id="patrimonySparkline" role="img" aria-label="Evolução do patrimônio nos últimos 6 meses"></canvas></div>` : ''}
-      <span class="balance-insight is-${balancesReady ? flowInsight.kind : 'neutral'}"><strong>${escapeHTML(insightValue)}</strong><span>${escapeHTML(insightDetail)}</span></span>
+      
     </div>
     <div class="balance-card bank-summary-card" role="button" tabindex="0" aria-label="Ver saldos dos bancos" title="Ver saldos dos bancos">
       <div class="balance-card-head"><span class="label">Bancos</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-bank" aria-hidden="true"></i></span></div>
