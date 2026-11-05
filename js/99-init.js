@@ -875,24 +875,9 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
         const text = document.createTextNode('Bloqueio desativado - abertura direta permitida');
         block1State.appendChild(text);
       }
-    }
+}
 
-    // Atualiza a pill do Block 1 para refletir o estado atual
-    const block1Pill = document.getElementById('block1-pill');
-    if (block1Pill) {
-      block1Pill.innerHTML = '';
-      if (lockOnOpen) {
-        const span = document.createElement('span');
-        span.textContent = 'Desbloquear';
-        block1Pill.appendChild(span);
-      } else {
-        const span = document.createElement('span');
-        span.textContent = 'Sem bloqueio';
-        block1Pill.appendChild(span);
-      }
-    }
-
-    // BLOCO 2: PIN de segurança
+// BLOCO 2: PIN de segurança
     const block2PinState = document.getElementById('block2-pin-state');
     const block2PinActions = document.getElementById('block2-pin-actions');
     if (block2PinState) block2PinState.innerHTML = '';
@@ -1104,21 +1089,6 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
       } else {
         block4State.innerHTML = 'Bloqueio automático desativado';
         block4Select.disabled = true;
-      }
-
-      // Atualiza a pill do Block 4 para refletir o estado atual
-      const block4Pill = document.getElementById('block4-pill');
-      if (block4Pill) {
-        block4Pill.innerHTML = '';
-        if (lockOnOpen) {
-          const span = document.createElement('span');
-          span.textContent = 'Desbloquear';
-          block4Pill.appendChild(span);
-        } else {
-          const span = document.createElement('span');
-          span.textContent = 'Sem bloqueio';
-          block4Pill.appendChild(span);
-        }
       }
     }
   }
