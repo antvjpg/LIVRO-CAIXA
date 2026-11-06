@@ -2824,16 +2824,40 @@ let biometricAuthInProgress = false;
   function persistPinActivity() { try { if (pinUnlocked && hasLocalPin() && featureSettings.lockOnOpen !== false) sessionStorage.setItem('livrocaixa-pin-grace', String(lastPinActivity)); } catch (err) {} }
   function clearPinActivity() { lastPinActivity = 0; try { sessionStorage.removeItem('livrocaixa-pin-grace'); } catch (err) {} }
   function lockPinNow() { pinUnlocked = false; clearPinActivity(); showPinOverlay(); }
-  function checkLocalPinLock() {
-    if (!hasLocalPin() || featureSettings.lockOnOpen === false) { pinUnlocked = true; clearPinActivity(); return; }
+function checkLocalPinLock() {
+    const pinRecord = getLocalPinRecord();
+
+    // Caso 1: Nenhum registro de PIN existe (PIN não configurado)
+    if (!pinRecord) {
+        // Apenas desbloqueia se lockOnOpen permitir; caso contrário, mantém bloqueado
+        if (featureSettings.lockOnOpen === false) {
+            pinUnlocked = true;
+            clearPinActivity();
+        }
+        // Se lockOnOpen está true, o app permanece bloqueado até o usuário configurar um PIN
+        return;
+    }
+
+    // Caso 2: Registro de PIN existe, mas está corrompido ou inválido (hash ausente/errado)
+    if (typeof pinRecord.hash !== 'string' || pinRecord.hash.length !== 64) {
+        // Registro corrompido: NÃO desbloquear o app. Apresentar mensagem de recuperação mais tarde.
+        // O app permanece bloqueado; o usuário deve restaurar ou reconfigurar o PIN.
+        return;
+    }
+
+    // Caso 3: PIN válido configurado - verificar grace period
     const grace = pinGraceMs();
     if (grace > 0) {
-      let saved = 0;
-      try { saved = Number(sessionStorage.getItem('livrocaixa-pin-grace')) || 0; } catch (err) {}
-      if (saved > 0 && Date.now() - saved < grace) { pinUnlocked = true; lastPinActivity = saved; return; }
+        let saved = 0;
+        try { saved = Number(sessionStorage.getItem('livrocaixa-pin-grace')) || 0; } catch (err) {}
+        if (saved > 0 && Date.now() - saved < grace) { 
+            pinUnlocked = true; 
+            lastPinActivity = saved; 
+            return; 
+        }
     }
     lockPinNow();
-  }
+}
 
   function budgetFor(categoryId) {
     const matches = budgets.filter(item => item.categoryId === categoryId);
