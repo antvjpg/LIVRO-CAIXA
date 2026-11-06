@@ -1,0 +1,17 @@
+# Configuração do GitHub Pages
+# O submódulo deepseek-harness contém documentação do harness com
+# exemplos de Liquid que quebram o parser — deve ficar fora do site.
+exclude:
+  - deepseek-harness
+  - node_modules
+  - worker
+  - package.json
+  - package-lock.json
+  - firebase.json
+  - firestore.rules
+  - CLA*
+  - AGENTS.md
+  - "*.log"
+  - "*.bak-*"
+  - "*.backup-*"
+  - "*.jsonc"
