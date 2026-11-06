@@ -87,6 +87,11 @@
       // a inicialização como completa.
       if (typeof initialisationComplete === "undefined") {
         window.initialisationComplete = true;
+        // Atualizar estado transitório para "ready" quando a inicialização
+        // estiver completa (currentUser e featureSettings resolvidos)
+        try {
+          window.initialisationState = 'ready';
+        } catch (e) {}
       }
     } catch (e) {}
 

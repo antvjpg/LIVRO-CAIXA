@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   pendingOperations = {}; // Rastreador de operações pendentes por ID
   window.pendingOperations = pendingOperations; // Tornar acessível para outros módulos
   initialisationComplete = false; // Será definido após a inicialização completa
+  initialisationState = 'loading'; // Estados: 'loading', 'ready', 'error'
   // Inicia o rastreamento de uma operação assíncrona
   function trackOperation(operationId) {
     pendingOperations[operationId] = { startedAt: Date.now(), userId: currentUser?.uid };
