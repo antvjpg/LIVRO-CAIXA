@@ -1109,6 +1109,19 @@ if (circle1) {
         block4Select.appendChild(opt);
       });
 
+      // Atualizar lockGraceMinutes quando o usuário mudar o seleção
+      block4Select.addEventListener('change', () => {
+        const selectedVal = block4Select.value;
+        featureSettings = normalizeFeatureSettings({
+          ...featureSettings,
+          lockGraceMinutes: selectedVal === '' ? 0 : parseInt(selectedVal, 10),
+        });
+        persistFeatureSettings();
+        persistProfileSettings().catch(err => console.error(err));
+        render();
+        updateProtectionLocalUI();
+      });
+
       if (lockOnOpen) {
         if (lockGrace > 0) {
           block4State.innerHTML = 'Intervalo de tolerância configurado para ' + lockGrace + ' min';
