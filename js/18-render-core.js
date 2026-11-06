@@ -2830,6 +2830,13 @@ function hasBiometric() {
   function clearPinActivity() { lastPinActivity = 0; try { sessionStorage.removeItem('livrocaixa-pin-grace'); } catch (err) {} }
   function lockPinNow() { pinUnlocked = false; clearPinActivity(); showPinOverlay(); }
 function checkLocalPinLock() {
+    // Se ainda não inicializou, não tomar decisões de bloqueio
+    if (window.initialisationState === 'loading') {
+      // Agendar nova verificação após próximo ciclo de event loop
+      setTimeout(checkLocalPinLock, 100);
+      return;
+    }
+
     const pinRecord = getLocalPinRecord();
 
     // Caso 1: Nenhum registro de PIN existe (PIN não configurado)
