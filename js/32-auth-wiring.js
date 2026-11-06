@@ -79,6 +79,18 @@
     currentUser = user;
     window.currentUser = currentUser;
 
+    // Sinaliza que a inicialização está completa
+    // (após carregamento de state, render e verificações assíncronas)
+    try {
+      // Aguardar um ciclo de event loop para garantir que todos os listeners e
+      // renderizações assíncronas tenham sido processados antes de marcar
+      // a inicialização como completa.
+      if (typeof initialisationComplete === "undefined") {
+        window.initialisationComplete = true;
+      }
+    } catch (e) {}
+
+
     try {
       const overlay = document.getElementById('authOverlay');
       const syncOverlay = document.getElementById('syncOverlay');

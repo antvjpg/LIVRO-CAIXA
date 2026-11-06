@@ -53,11 +53,27 @@ document.addEventListener('DOMContentLoaded', () => {
   pendingImportSource = '';
   currentType = 'in';
   editingEntryId = null;
-  
-  // Atualizar interface de Proteção Local após featuresettings estar inicializado
-  updateProtectionLocalUI();
-  editingBankId = null;
-  editingCategoryId = null;
+  pendingOperations = {}; // Rastreador de operações pendentes por ID
+  window.pendingOperations = pendingOperations; // Tornar acessível para outros módulos
+  initialisationComplete = false; // Será definido após a inicialização completa
+  // Inicia o rastreamento de uma operação assíncrona
+  function trackOperation(operationId) {
+    pendingOperations[operationId] = { startedAt: Date.now(), userId: currentUser?.uid };
+  }
+  // Remove o rastro de uma operação ao concluí-la
+  function finishOperation(operationId) {
+    delete pendingOperations[operationId];
+  }
+  // Invalida todas as operações de um usuário diferente
+  function invalidateUserOperations(uid) {
+    Object.keys(pendingOperations).forEach(id => {
+      if (pendingOperations[id].userId && pendingOperations[id].userId !== uid) {
+        delete pendingOperations[id];
+      }
+    });
+  }
+
+// Atualizar interface de Proteção Local após featuresettings estar inicializado
 
   let returnToEntryAfterCategory = false;
   editingInvestId = null;
@@ -839,9 +855,11 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
   });
 
   let pendingReconciliation = null;
-  document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = prompt('Digite um PIN de 4 a 8 dígitos numéricos'); if (pin) { const validPin = pin.replace(/\D/g, '').slice(0, 8); if (/^\d{4,8}$/.test(validPin)) { try { await saveLocalPin(validPin); status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.'; } catch (err) { status.textContent = err.message; } } else { status.textContent = 'PIN deve ter entre 4 e 8 dígitos numéricos.'; } } else { status.textContent = 'Operação cancelada.'; } });
+  document.getElementById('btnSaveLocalPin')?.addEventListener('click', async () => { const status = document.getElementById('pinSettingsStatus'); const pin = prompt('Digite um PIN de 4 a 8 dígitos numéricos'); if (pin) { const validPin = pin.replace(/\D/g, '').slice(0, 8); if (/^\d{4,8}$/.test(validPin)) { const opId = `pin_save_${Date.now()}`; trackOperation(opId); try { await saveLocalPin(validPin); finishOperation(opId); status.textContent = 'PIN ativado. Você pode vincular a biometria neste aparelho.'; } catch (err) { finishOperation(opId); status.textContent = err.message; } } else { status.textContent = 'PIN deve ter entre 4 e 8 dígitos numéricos.'; } } else { status.textContent = 'Operação cancelada.'; } });
   document.getElementById('btnBiometricUnlock')?.addEventListener('click', async () => {
     const error = document.getElementById('pinUnlockError');
+    const opId = `bio_unlock_${Date.now()}`;
+    trackOperation(opId);
     try {
       const ok = await unlockWithBiometric();
       if (!ok) { if (error) error.textContent = 'Biometria não concluída. Ative em Perfil → Proteção local ou use o PIN.'; return; }
@@ -849,6 +867,7 @@ document.getElementById('btnRunAnomalyScan')?.addEventListener('click', () => {
     } catch (err) {
       if (error) error.textContent = 'Biometria cancelada ou falhou. Use o PIN.';
     }
+    finishOperation(opId);
   });
   document.getElementById('btnClearLocalPin')?.addEventListener('click', () => { removeLocalPin(); const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'PIN removido deste dispositivo.'; });
   document.getElementById('btnLockNow')?.addEventListener('click', () => { if (!hasLocalPin()) { const status = document.getElementById('pinSettingsStatus'); if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.'; return; } pinUnlocked = false; clearPinActivity(); closeAllPanels(); showPinOverlay(); });
