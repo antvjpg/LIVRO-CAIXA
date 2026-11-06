@@ -2670,13 +2670,18 @@ let biometricAuthInProgress = false;
   function removeLocalPin() { localStorage.removeItem(localPinKey()); removeBiometric(); pinUnlocked = true; hidePinOverlay(); clearPinActivity(); }
   function hasLocalPin() { const record = getLocalPinRecord(); return Boolean(record && typeof record.hash === 'string' && record.hash.length === 64); }
   function biometricKey() { return `livrocaixa-webauthn-${currentUser?.uid || 'anonymous'}`; }
-  function getBiometricRecord() {
-    try { return JSON.parse(localStorage.getItem(biometricKey()) || 'null'); } catch (e) { return null; }
-  }
-  function hasBiometric() {
-    const rec = getBiometricRecord();
-    return Boolean(rec && rec.credentialId);
-  }
+function getBiometricRecord() {
+  try { 
+    const record = JSON.parse(localStorage.getItem(biometricKey()) || 'null');
+    // Isolamento por usuário: se o registro pertencer a outro usuário, retornar null
+    if (record && record.uid && record.uid !== currentUser?.uid) return null;
+    return record; 
+  } catch (e) { return null; }
+}
+function hasBiometric() {
+  const rec = getBiometricRecord();
+  return Boolean(rec && rec.credentialId && rec.uid === currentUser?.uid);
+}
   function bufferToBase64Url(buffer) {
     const bytes = new Uint8Array(buffer);
     let str = '';
