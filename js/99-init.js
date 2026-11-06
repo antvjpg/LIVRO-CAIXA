@@ -550,15 +550,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   pinUnlocked = false;
-  lastPinActivity = 0;
+  lastPinActivity = {};
 
-  document.addEventListener('pointerdown', () => { if (pinUnlocked) lastPinActivity = Date.now(); }, { passive: true });
-  document.addEventListener('keydown', () => { if (pinUnlocked) lastPinActivity = Date.now(); }, { passive: true });
+  document.addEventListener('pointerdown', () => { if (pinUnlocked && typeof markPinActivity === 'function') markPinActivity(); }, { passive: true });
+  document.addEventListener('keydown', () => { if (pinUnlocked && typeof markPinActivity === 'function') markPinActivity(); }, { passive: true });
   window.addEventListener('pagehide', () => { if (pinUnlocked && hasLocalPin()) markPinActivity(); persistPinActivity(); });
   setInterval(() => {
     if (!pinUnlocked || !currentUser || !hasLocalPin() || featureSettings.lockOnOpen === false) return;
     const grace = pinGraceMs();
-    if (grace > 0 && Date.now() - lastPinActivity >= grace) lockPinNow();
+    if (grace > 0 && (!currentUser?.uid || Date.now() - (lastPinActivity?.[currentUser.uid] || 0) >= grace)) lockPinNow();
   }, 20000);
   loadFeatureSettings();
   loadViewPeriod();
@@ -1074,9 +1074,17 @@ if (circle1) {
     }
 
     // BLOCO 4: Bloqueio automático
-    const block4LockOn = document.getElementById('block4-lock-on');
+    // Bloco 4: Bloqueio automático. O HTML atual não possui #block4-lock-on;
+    // cria um contêiner dinâmico dentro de .block-auto-lock se necessário.
+    let block4LockOn = document.getElementById('block4-lock-on');
     const block4Select = document.getElementById('block4-select');
     const block4State = document.getElementById('block4-state');
+    const autoLockWrapper = block4Select?.parentElement;
+    if (!block4LockOn && autoLockWrapper) {
+      block4LockOn = document.createElement('div');
+      block4LockOn.id = 'block4-lock-on';
+      autoLockWrapper.insertBefore(block4LockOn, block4Select);
+    }
     if (block4LockOn && block4Select && block4State) {
       block4LockOn.innerHTML = '';
       block4Select.innerHTML = '<option value="">Selecione o intervalo</option>';
@@ -1441,7 +1449,7 @@ if (circle1) {
     if (document.visibilityState === 'hidden') { if (pinUnlocked && hasLocalPin()) markPinActivity(); persistPinActivity(); return; }
     if (currentUser && hasLocalPin() && featureSettings.lockOnOpen !== false) {
       const grace = pinGraceMs();
-      if (grace > 0 && pinUnlocked && Date.now() - lastPinActivity < grace) return;
+      if (grace > 0 && pinUnlocked && currentUser?.uid && Date.now() - (lastPinActivity?.[currentUser.uid] || 0) < grace) return;
       lockPinNow();
     }
   });
@@ -3625,32 +3633,4 @@ document.getElementById('tSalvar').onclick = async () => {
 
   initMoneyMasks();
   markSingleActionButtons();
-});
-// Phase 7: Acessibilidade - Restaurar foco após desbloqueio
-// Guardar o elemento com foco antes de abrir o modal
-let previousFocusElement = document.activeElement;
-
-// No handler do desbloqueio por PIN, restaurar foco
-document.getElementById('btnPinUnlock')?.addEventListener('click', async () => {
-  if (!hasLocalPin()) {
-    const status = document.getElementById('pinSettingsStatus');
-    if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.';
-    return;
-  }
-  pinUnlocked = false;
-  clearPinActivity();
-  closeAllPanels();
-  showPinOverlay();
-  
-  // Phase 7: Após o overlay ser mostrado, restaurar foco após o usuário digitar o PIN
-  const pinOverlay = document.getElementById('pinOverlay');
-  if (pinOverlay) {
-    const handlePinInputFocus = () => {
-      if (previousFocusElement && previousFocusElement.focus) {
-        previousFocusElement.focus();
-      }
-      document.getElementById('pinUnlockInput')?.removeEventListener('focus', handlePinInputFocus);
-    };
-    document.getElementById('pinUnlockInput')?.addEventListener('focus', handlePinInputFocus);
-  }
 });

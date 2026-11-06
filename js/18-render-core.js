@@ -2660,15 +2660,31 @@ function renderCategoryManageList() {
   let pinUnlocked;
 let biometricAuthInProgress = false;
 
-  let lastPinActivity;
+  let lastPinActivity = {};
 
   function localPinKey() { return `livrocaixa-local-pin-${currentUser?.uid || 'anonymous'}`; }
-  function getLocalPinRecord() { try { return JSON.parse(localStorage.getItem(localPinKey()) || 'null'); } catch (err) { return null; } }
+  function getLocalPinRecord() {
+    const raw = localStorage.getItem(localPinKey());
+    if (window.PinProtection && typeof window.PinProtection.classifyPinRecord === 'function') {
+      return window.PinProtection.classifyPinRecord(raw);
+    }
+    // Fallback: mesma lógica, mínima. Mantida para ambientes sem o módulo.
+    if (raw === null) return { exists: false, valid: false, error: 'no_record', record: null };
+    try {
+      const record = JSON.parse(raw);
+      if (record === null) return { exists: true, valid: false, error: 'json_null', record: null };
+      if (typeof record !== 'object') return { exists: true, valid: false, error: 'json_type_invalid', record: null };
+      if (typeof record.hash !== 'string' || record.hash.length !== 64) return { exists: true, valid: false, error: 'hash_missing_or_invalid', record };
+      return { exists: true, valid: true, error: null, record };
+    } catch (err) {
+      return { exists: false, valid: false, error: 'parse_error', record: null };
+    }
+  }
   async function hashLocalPin(pin) { const bytes = new TextEncoder().encode(String(pin)); const digest = await crypto.subtle.digest('SHA-256', bytes); return Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join(''); }
   function validLocalPin(pin) { return /^\d{4,8}$/.test(String(pin || '')); }
-  async function saveLocalPin(pin) { if (!validLocalPin(pin)) throw new Error('O PIN deve ter entre 4 e 8 dígitos.'); localStorage.setItem(localPinKey(), JSON.stringify({ hash: await hashLocalPin(pin), createdAt: new Date().toISOString() })); pinUnlocked = true; markPinActivity(); }
+  async function saveLocalPin(pin) { if (!validLocalPin(pin)) throw new Error('O PIN deve ter entre 4 e 8 dígitos.'); const sessionUid = currentUser?.uid; if (!sessionUid) throw new Error('Faça login antes de ativar a biometria.'); try { const existing = JSON.parse(localStorage.getItem(localPinKey()) || '{}'); if (existing && existing.hash) { throw new Error('Já existe um PIN cadastrado neste dispositivo.'); } const hash = await hashLocalPin(pin); if (!currentUser?.uid || currentUser.uid !== sessionUid) throw new Error('A conta foi alterada durante a operação. Tente novamente.'); localStorage.setItem(localPinKey(), JSON.stringify({ hash, createdAt: new Date().toISOString(), uid: sessionUid })); pinUnlocked = true; markPinActivity(); } catch (err) { throw new Error('Não foi possível salvar o PIN: ' + err.message); } }
   function removeLocalPin() { localStorage.removeItem(localPinKey()); removeBiometric(); pinUnlocked = true; hidePinOverlay(); clearPinActivity(); }
-  function hasLocalPin() { const record = getLocalPinRecord(); return Boolean(record && typeof record.hash === 'string' && record.hash.length === 64); }
+  function hasLocalPin() { const r = getLocalPinRecord(); return r.exists && r.valid; }
   function biometricKey() { return `livrocaixa-webauthn-${currentUser?.uid || 'anonymous'}`; }
 function getBiometricRecord() {
   try { 
@@ -2725,8 +2741,9 @@ function hasBiometric() {
       }
     });
     if (!cred) throw new Error('Registro biométrico cancelado.');
+    if (!currentUser?.uid) throw new Error('A sessão foi encerrada durante o registro biométrico.');
     const credentialId = bufferToBase64Url(cred.rawId);
-    localStorage.setItem(biometricKey(), JSON.stringify({ credentialId, createdAt: new Date().toISOString() }));
+    localStorage.setItem(biometricKey(), JSON.stringify({ credentialId, createdAt, uid: currentUser.uid }));
     return true;
   }
   function removeBiometric() {
@@ -2762,6 +2779,8 @@ function hasBiometric() {
     return false;
   }
   async function unlockWithBiometric() {
+    if (!currentUser?.uid) return false;
+    const sessionUid = currentUser.uid;
     if (!hasBiometric() || !supportsWebAuthn()) return false;
     const rec = getBiometricRecord();
     // NOTE: This function does NOT perform cryptographic verification of the WebAuthn assertion.
@@ -2780,6 +2799,7 @@ function hasBiometric() {
       }
     });
     if (!assertion) return false;
+    if (!currentUser?.uid || currentUser.uid !== sessionUid) return false;
     pinUnlocked = true;
     hidePinOverlay();
     return true;
@@ -2807,13 +2827,66 @@ function hasBiometric() {
     biometricAuthInProgress = false;
   }
 
+  let pinOverlayPreviousFocus = null;
+
+  function setRestOfAppInert(active) {
+    const targets = document.querySelectorAll('body > *:not(#pinOverlay):not(script):not(style)');
+    targets.forEach(el => {
+      if (active) {
+        el.setAttribute('inert', '');
+        el.setAttribute('aria-hidden', 'true');
+      } else {
+        el.removeAttribute('inert');
+        el.removeAttribute('aria-hidden');
+      }
+    });
+  }
+
+  function trapPinFocus(event) {
+    const overlay = document.getElementById('pinOverlay');
+    if (!overlay || overlay.classList.contains('hidden')) return;
+    if (event.key !== 'Tab') return;
+    const focusable = Array.from(overlay.querySelectorAll('button:not([hidden]), input:not([hidden]), [href]')).filter(el => el.offsetParent !== null || el === document.activeElement);
+    if (!focusable.length) { event.preventDefault(); return; }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!overlay.contains(document.activeElement)) {
+      event.preventDefault();
+      first.focus();
+      return;
+    }
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function restorePinFocus() {
+    const prev = pinOverlayPreviousFocus;
+    pinOverlayPreviousFocus = null;
+    if (prev && document.contains(prev) && typeof prev.focus === 'function') {
+      try { prev.focus(); } catch (err) {}
+    }
+  }
+
   function showPinOverlay() {
     if (!currentUser || !hasLocalPin() || pinUnlocked || biometricAuthInProgress) return;
     biometricAuthInProgress = true;
     const overlay = document.getElementById('pinOverlay');
+    // Guardar o elemento com foco antes de mostrar o modal
+    if (document.activeElement && document.activeElement !== document.body && !overlay?.contains(document.activeElement)) {
+      pinOverlayPreviousFocus = document.activeElement;
+    } else {
+      pinOverlayPreviousFocus = null;
+    }
     overlay?.classList.remove('hidden');
     overlay?.setAttribute('aria-hidden', 'false');
     document.body.classList.add('is-pin-locked');
+    setRestOfAppInert(true);
+    document.addEventListener('keydown', trapPinFocus, true);
     const bioBtn = document.getElementById('btnBiometricUnlock');
     if (bioBtn) bioBtn.hidden = !(hasBiometric() && supportsWebAuthn());
     if (hasBiometric() && supportsWebAuthn()) {
@@ -2822,25 +2895,24 @@ function hasBiometric() {
     }
     setTimeout(() => { document.getElementById('pinUnlockInput')?.focus(); biometricAuthInProgress = false; }, 0);
   }
-  function hidePinOverlay() { markPinActivity(); biometricAuthInProgress = false; const overlay = document.getElementById('pinOverlay'); overlay?.classList.add('hidden'); overlay?.setAttribute('aria-hidden', 'true'); document.body.classList.remove('is-pin-locked'); }
-  async function unlockWithLocalPin(pin) { const record = getLocalPinRecord(); if (!record) { pinUnlocked = true; hidePinOverlay(); return true; } const valid = (await hashLocalPin(pin)) === record.hash; if (!valid) return false; pinUnlocked = true; hidePinOverlay(); return true; }
+  function hidePinOverlay() { markPinActivity(); biometricAuthInProgress = false; const overlay = document.getElementById('pinOverlay'); overlay?.classList.add('hidden'); overlay?.setAttribute('aria-hidden', 'true'); document.body.classList.remove('is-pin-locked'); setRestOfAppInert(false); document.removeEventListener('keydown', trapPinFocus, true); restorePinFocus(); }
+  async function unlockWithLocalPin(pin) { const sessionUid = currentUser?.uid; const r = getLocalPinRecord(); if (!r.exists || !r.valid) return false; const valid = (await hashLocalPin(pin)) === r.record.hash; if (!currentUser?.uid || currentUser.uid !== sessionUid) return false; if (!valid) return false; pinUnlocked = true; markPinActivity(); hidePinOverlay(); return true; }
   function pinGraceMs() { const m = Number(featureSettings.lockGraceMinutes); return Number.isFinite(m) && m > 0 ? Math.round(m) * 60000 : 0; }
   function markPinActivity() { if (currentUser?.uid) lastPinActivity[currentUser.uid] = Date.now(); else lastPinActivity = {} }
-  function persistPinActivity() { try { if (pinUnlocked && hasLocalPin() && featureSettings.lockOnOpen !== false) sessionStorage.setItem('livrocaixa-pin-grace-' + (currentUser?.uid || 'global'), String(lastPinActivity)); } catch (err) {} }
-  function clearPinActivity() { lastPinActivity = 0; try { sessionStorage.removeItem('livrocaixa-pin-grace-' + (currentUser?.uid || 'global')); } catch (err) {} }
+  function persistPinActivity() { try { if (pinUnlocked && hasLocalPin() && featureSettings.lockOnOpen !== false) { const stamp = currentUser?.uid && lastPinActivity[currentUser.uid] ? lastPinActivity[currentUser.uid] : Date.now(); sessionStorage.setItem('livrocaixa-pin-grace-' + (currentUser?.uid || 'global'), String(stamp)); } } catch (err) {} }
+  function clearPinActivity() { lastPinActivity = {}; try { sessionStorage.removeItem('livrocaixa-pin-grace-' + (currentUser?.uid || 'global')); } catch (err) {} }
   function lockPinNow() { pinUnlocked = false; clearPinActivity(); showPinOverlay(); }
 function checkLocalPinLock() {
     // Se ainda não inicializou, não tomar decisões de bloqueio
     if (window.initialisationState === 'loading') {
-      // Agendar nova verificação após próximo ciclo de event loop
-      setTimeout(checkLocalPinLock, 100);
+      // O início do ciclo de vida resolve a inicialização; nao usar setTimeout como garantia
       return;
     }
 
-    const pinRecord = getLocalPinRecord();
+    const result = getLocalPinRecord();
 
     // Caso 1: Nenhum registro de PIN existe (PIN não configurado)
-    if (!pinRecord) {
+    if (!result.exists) {
         // Apenas desbloqueia se lockOnOpen permitir; caso contrário, mantém bloqueado
         if (featureSettings.lockOnOpen === false) {
             pinUnlocked = true;
@@ -2851,22 +2923,24 @@ function checkLocalPinLock() {
     }
 
     // Caso 2: Registro de PIN existe, mas está corrompido ou inválido (hash ausente/errado)
-    if (typeof pinRecord.hash !== 'string' || pinRecord.hash.length !== 64) {
-        // Registro corrompido: NÃO desbloquear o app. Apresentar mensagem de recuperação mais tarde.
-        // O app permanece bloqueado; o usuário deve restaurar ou reconfigurar o PIN.
+    if (!result.valid) {
+        // Registro corrompido: NÃO desbloquear o app.
+        // O app permanece bloqueado; o usuário deve reconfigurar o PIN.
         return;
     }
 
     // Caso 3: PIN válido configurado - verificar grace period
     const grace = pinGraceMs();
-    if (grace > 0) {
-        let saved = 0;
-        try { saved = Number(sessionStorage.getItem('livrocaixa-pin-grace-' + (currentUser?.uid || 'global'))) || 0; } catch (err) {}
-        if (saved > 0 && Date.now() - saved < grace) { 
-            pinUnlocked = true; 
-            lastPinActivity = saved; 
-            return; 
-        }
+    const key = 'livrocaixa-pin-grace-' + (currentUser?.uid || 'global');
+    let saved = 0;
+    try { saved = Number(sessionStorage.getItem(key)) || 0; } catch (err) {}
+    const decision = (window.PinProtection && typeof window.PinProtection.evaluateLock === 'function')
+      ? window.PinProtection.evaluateLock({ recordResult: result, lockOnOpen: featureSettings.lockOnOpen, graceMs: grace, lastPinActivity: saved, now: Date.now() })
+      : { pinUnlocked: grace > 0 && saved > 0 && Date.now() - saved < grace };
+    if (decision.pinUnlocked) {
+        pinUnlocked = true;
+        lastPinActivity = currentUser?.uid ? { [currentUser.uid]: saved } : {};
+        return;
     }
     lockPinNow();
 }
