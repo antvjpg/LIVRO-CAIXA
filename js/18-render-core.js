@@ -2825,9 +2825,9 @@ function hasBiometric() {
   function hidePinOverlay() { markPinActivity(); biometricAuthInProgress = false; const overlay = document.getElementById('pinOverlay'); overlay?.classList.add('hidden'); overlay?.setAttribute('aria-hidden', 'true'); document.body.classList.remove('is-pin-locked'); }
   async function unlockWithLocalPin(pin) { const record = getLocalPinRecord(); if (!record) { pinUnlocked = true; hidePinOverlay(); return true; } const valid = (await hashLocalPin(pin)) === record.hash; if (!valid) return false; pinUnlocked = true; hidePinOverlay(); return true; }
   function pinGraceMs() { const m = Number(featureSettings.lockGraceMinutes); return Number.isFinite(m) && m > 0 ? Math.round(m) * 60000 : 0; }
-  function markPinActivity() { lastPinActivity = Date.now(); }
-  function persistPinActivity() { try { if (pinUnlocked && hasLocalPin() && featureSettings.lockOnOpen !== false) sessionStorage.setItem('livrocaixa-pin-grace', String(lastPinActivity)); } catch (err) {} }
-  function clearPinActivity() { lastPinActivity = 0; try { sessionStorage.removeItem('livrocaixa-pin-grace'); } catch (err) {} }
+  function markPinActivity() { if (currentUser?.uid) lastPinActivity[currentUser.uid] = Date.now(); else lastPinActivity = {} }
+  function persistPinActivity() { try { if (pinUnlocked && hasLocalPin() && featureSettings.lockOnOpen !== false) sessionStorage.setItem('livrocaixa-pin-grace-' + (currentUser?.uid || 'global'), String(lastPinActivity)); } catch (err) {} }
+  function clearPinActivity() { lastPinActivity = 0; try { sessionStorage.removeItem('livrocaixa-pin-grace-' + (currentUser?.uid || 'global')); } catch (err) {} }
   function lockPinNow() { pinUnlocked = false; clearPinActivity(); showPinOverlay(); }
 function checkLocalPinLock() {
     // Se ainda não inicializou, não tomar decisões de bloqueio
@@ -2861,7 +2861,7 @@ function checkLocalPinLock() {
     const grace = pinGraceMs();
     if (grace > 0) {
         let saved = 0;
-        try { saved = Number(sessionStorage.getItem('livrocaixa-pin-grace')) || 0; } catch (err) {}
+        try { saved = Number(sessionStorage.getItem('livrocaixa-pin-grace-' + (currentUser?.uid || 'global'))) || 0; } catch (err) {}
         if (saved > 0 && Date.now() - saved < grace) { 
             pinUnlocked = true; 
             lastPinActivity = saved; 

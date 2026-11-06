@@ -3626,3 +3626,31 @@ document.getElementById('tSalvar').onclick = async () => {
   initMoneyMasks();
   markSingleActionButtons();
 });
+// Phase 7: Acessibilidade - Restaurar foco após desbloqueio
+// Guardar o elemento com foco antes de abrir o modal
+let previousFocusElement = document.activeElement;
+
+// No handler do desbloqueio por PIN, restaurar foco
+document.getElementById('btnPinUnlock')?.addEventListener('click', async () => {
+  if (!hasLocalPin()) {
+    const status = document.getElementById('pinSettingsStatus');
+    if (status) status.textContent = 'Ative um PIN antes de bloquear o aplicativo.';
+    return;
+  }
+  pinUnlocked = false;
+  clearPinActivity();
+  closeAllPanels();
+  showPinOverlay();
+  
+  // Phase 7: Após o overlay ser mostrado, restaurar foco após o usuário digitar o PIN
+  const pinOverlay = document.getElementById('pinOverlay');
+  if (pinOverlay) {
+    const handlePinInputFocus = () => {
+      if (previousFocusElement && previousFocusElement.focus) {
+        previousFocusElement.focus();
+      }
+      document.getElementById('pinUnlockInput')?.removeEventListener('focus', handlePinInputFocus);
+    };
+    document.getElementById('pinUnlockInput')?.addEventListener('focus', handlePinInputFocus);
+  }
+});
