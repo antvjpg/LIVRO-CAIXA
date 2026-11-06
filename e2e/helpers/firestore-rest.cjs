@@ -163,8 +163,11 @@ async function probeAuthProvider() {
     return { ok: false, code: 'network_error', message: `Falha de rede ao contatar o Identity Toolkit: ${err.message}` };
   }
   const codigo = body?.error?.message || String(res.status);
-  if (res.status === 400 && codigo.includes('INVALID_EMAIL')) {
-    return { ok: true, code: 'provider_active', message: 'Provedor E-mail/senha está ativo (Firebase respondeu INVALID_EMAIL para e-mail inválido).' };
+  if (res.status === 400 && (codigo.includes('INVALID_EMAIL') || codigo.includes('EMAIL_EXISTS'))) {
+    return { ok: true, code: 'provider_active', message: 'Provedor E-mail/senha está ativo (Firebase processou a requisição de cadastro de teste).' };
+  }
+  if (res.status === 400 && codigo.includes('TOO_MANY_ATTEMPTS_TRY_LATER')) {
+    return { ok: false, code: 'auth_rate_limited', message: 'Provedor ativo, mas a cota de requisições do Identity Toolkit está temporariamente esgotada (sinal: TOO_MANY_ATTEMPTS_TRY_LATER). Aguardar a janela de cota.' };
   }
   if (res.status === 400 && (codigo.includes('OPERATION_NOT_ALLOWED') || codigo.includes('PASSWORD_LOGIN_DISABLED'))) {
     return { ok: false, code: 'provider_disabled', message: 'Provedor E-mail/senha está DESABILITADO no Firebase Console (sinal: ' + codigo + ').' };
