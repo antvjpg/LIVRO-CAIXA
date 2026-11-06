@@ -134,7 +134,7 @@
 
       if (changed) {
         if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
-        await persistNow(operation);
+        await persistNow(operacao);
       }
 
       if (thisLoadGeneration !== loadGeneration || currentUser?.uid !== loadUserUid) return;
