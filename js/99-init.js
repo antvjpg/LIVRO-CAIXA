@@ -1601,7 +1601,6 @@ if (circle1) {
     if (action === 'bills') window.switchTab('bills');
     if (action === 'receivables') window.switchTab('receivables');
     if (action === 'cards') window.switchTab('cards');
-    if (action === 'diagnostico') openDiagnostics();
     if (action === 'novoLog') openModal('panelLOG');
     if (action === 'lab') openFeatureProfile();
     if (action === 'reports') { window.switchTab('caixa'); setTimeout(() => scrollTo('categorySummary'), 20); }

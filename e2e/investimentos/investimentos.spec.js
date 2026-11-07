@@ -329,15 +329,9 @@ function skipSemCredencial() {
     );
     await card(page, NAME_USDT).locator('details.yield-history summary').click();
 
-    /* Diagnóstico pela rota real de UI (drawer), sem invocar funções internas. */
-    await page.click('#btnOpenDrawer');
-    await page.click('#appDrawerOverlay .app-drawer [data-drawer-action="diagnostico"]');
-    await page.waitForSelector('#panelDiagnostico.open', { timeout: 15_000 });
-    await expect(page.locator('#diagnosticoList'), 'aviso registrado no diagnóstico').toContainText(AVISO_1, {
-      timeout: 20_000,
-    });
-    await expect(page.locator('#diagnosticoList')).toContainText(`no saldo de ${NAME_USDT}`);
-    await page.evaluate(() => window.closeAllPanels());
+    /* O drawer "diagnostico" e o painel #panelDiagnostico foram removidos
+       intencionalmente (202045e, remoção do sistema central de LOG); o aviso
+       segue verificado no card, no histórico e no Firestore. */
 
     const rest = await sessionFromPage(page);
     const storedYields = await listCollection(rest.uid, rest.idToken, rest.projectId, 'yieldsLog');
