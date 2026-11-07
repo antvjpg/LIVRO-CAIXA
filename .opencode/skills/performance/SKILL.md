@@ -27,10 +27,10 @@ Não use para substituir a skill de auditoria. Esta skill não faz diagnóstico 
 
 Pode permanecer documentado:
 
-- Arquitetura SPA/PWA do LIVRO-CAIXA: HTML puro (`index.html`) + módulos JS (`js/00-bootstrap.js` … `js/33-mcp-bridge.js`, `js/99-init.js`) + CSS (`style/*.css`) + Service Worker (`sw.js`);
+- Arquitetura SPA/PWA do LIVRO-CAIXA: HTML puro (`index.html`) + módulos JS (`js/00-bootstrap.js` … `js/32-auth-wiring.js`, `js/99-init.js`) + CSS (`style/*.css`) + Service Worker (`sw.js`);
 - Backend: Cloudflare Worker (`worker/`) + Firebase (Auth, Firestore, Messaging, App Check);
 - QA: C.O.D.E. (`e2e/`, `worker/test/`, `.github/workflows/`);
-- Módulos de domínio: `js/domain/` (card-engine, financial-client, ai-chat-contract, mcp-financial-contract, chat-persistence);
+- Módulos de domínio: `js/domain/` (card-engine, financial-client, pin-protection, secure-storage, security-utils, audit-trail, simple-log);
 - Regras financeiras que não podem ser alteradas por otimizações (saldos, parcelas, faturas, limites, rentabilidade);
 - Princípios de segurança (isolamento por UID, App Check, CORS, rate limit).
 
@@ -45,16 +45,14 @@ São caminhos de investigação, não inventário definitivo. Sempre verificar s
 - `js/27-cards.js` — cartões / faturas;
 - `js/25-bills-receivables.js` — contas a receber;
 - `js/31-import-export.js` — import/export;
-- `js/28-ocr-lia.js` — OCR / LIA;
-- `js/21-ai-features.js` — funcionalidades de IA;
-- `js/23-ai-chat.js` — chat de IA;
+- `js/21-ai-features.js` — análise financeira interna (categorização, anomalias, revisão mensal, juros compostos — sem serviço de IA externo; a LIA/IA e o OCR foram removidos em nov/2026);
 - `js/17-sync-persistence.js` — sincronização e persistência;
 - `style/features.css` — CSS de funcionalidades (arquivo grande);
 - `style/layout.css` — CSS de layout;
 - `sw.js` — Service Worker;
 - `manifest.webmanifest` — manifesto PWA;
 - `index.html` — HTML shell da aplicação;
-- `worker/src/` — Cloudflare Worker (ai, financial, mcp, push, shared);
+- `worker/src/` — Cloudflare Worker (financial, push, shared);
 - `worker/test/` — testes do Worker;
 - `.github/workflows/` — CI/CD;
 - `e2e/` — testes E2E e oráculos;
@@ -124,22 +122,21 @@ Investigar:
 
 Investigar:
 
-- Chamadas ao Cloudflare Worker (`/ai`, `/financial`, `/mcp`, `/bridge/snapshot`, `/bridge/token`);
-- Latência de APIs externas (OpenRouter, BCB SGS, Tesouro Nacional);
+- Chamadas ao Cloudflare Worker (`/financial`);
+- Latência de APIs externas (BCB SGS, Tesouro Nacional);
 - Cache de indicadores financeiros (TTL, backoff após falha);
 - Rate limit por usuário/IP no Worker;
-- Tamanho de payload (snapshot até 64 KB, token até 8 KB).
 
 ### 3.6 Carregamento inicial e PWA
 
 Investigar:
 
 - Service Worker (`sw.js`) — estratégia network-first, APP_SHELL, cache versionado;
-- Recursos fora do precache (módulo OCR e outros);
+- Recursos fora do precache;
 - Arquivos obsoletos no cache (versões antigas);
 - Atualização interrompida do SW;
 - CSS grande (`style/features.css`, `style/layout.css`) — impacto no render inicial;
-- Imagens/assets (`icon-192.png`, `icon-512.png`, `ocr/`).
+- Imagens/assets (`icon-192.png`, `icon-512.png`).
 
 ### 3.7 Concorrência e assíncrono
 

@@ -1,5 +1,7 @@
 # AuthOverlay — Evolução Visual
 
+> **Histórico 03/11/2026 — entrega pontual.** Números de linha e tokens citados tratam do código na data da entrega; conferir o código atual (AGENTS.md §2/§45).
+
 Data: 2026-11-03
 
 ## Resumo

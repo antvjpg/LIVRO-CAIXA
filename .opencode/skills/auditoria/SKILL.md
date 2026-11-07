@@ -45,8 +45,8 @@ Sua arquitetura pode incluir:
 - módulos de domínio;
 - patches de compatibilidade;
 - Cloudflare Worker;
-- serviços externos de indicadores financeiros;
-- integração com IA e OCR;
+- serviços externos de indicadores financeiros (BCB/Tesouro, via gateway `/financial`);
+- análise financeira interna (sem serviço de IA externo — a LIA/IA, o OCR e o MCP foram removidos do projeto em nov/2026);
 - infraestrutura própria de testes C.O.D.E.
 
 As funcionalidades financeiras incluem, conforme a implementação atual:
@@ -113,7 +113,7 @@ Quando aplicável, incluir:
 - serviços externos;
 - Service Worker;
 - cache;
-- APIs de IA.
+- gateway financeiro (`/financial`).
 
 ### Eixo B — Cruzamento entre funcionalidades
 
@@ -471,7 +471,7 @@ Auditar:
 - integração com IA;
 - prompt injection.
 
-Para IA e OCR, identificar:
+Para análise de dados financeiros (análise interna sem IA externa, ou dados de indicadores via gateway `/financial`), identificar:
 
 - quais dados são enviados;
 - finalidade;
@@ -760,11 +760,11 @@ Identificar todos os componentes que integram o C.O.D.E.:
 - Oráculos — `e2e/oracles/*.js`, `e2e/oracles/*.test.mjs`, testes de sintaxe;
 - Fixtures — `e2e/fixtures/fixtures.js`, `e2e/fixtures/v20-01-fixtures.js`, `e2e/seeds/`;
 - Testes — `worker/test/*.test.mjs`, `e2e/oracles/*.test.mjs`, `e2e/security/*.test.mjs`;
-- Scripts de diagnóstico — `e2e/scripts/*.cjs`, `.livro-caixa-index.diff`, `checklist_testes.md`;
-- Relatórios — `e2e/reports/generate-report.cjs`, `AUDIT_important_summary.md`, `notion_summary.md`;
-- Logs — `.livro-caixa-index.diff`, arquivos `*.backup-*`, `*.bak-*`;
-- Workflows — `.github/workflows/code-e2e.yml`, `.github/workflows/worker.yml`, `.github/workflows/pages.yml`, `.github/workflows/eol-check.yml`, `.github/workflows/model-failed-alert.yml`;
-- Configurações — `package.json`, `playwright.config.js`, `firebase.json`, `wrangler.toml`;
+- Scripts de diagnóstico — `e2e/scripts/*.cjs`;
+- Relatórios — `e2e/reports/generate-report.cjs`, `e2e/reports/history.jsonl`;
+- Logs — arquivos `*.backup-*`, `*.bak-*`;
+- Workflows — `.github/workflows/code-e2e.yml`, `.github/workflows/worker.yml`, `.github/workflows/pages.yml`, `.github/workflows/eol-check.yml`, `.github/workflows/firestore.yml`, `.github/workflows/model-failed-alert.yml`;
+- Configurações — `package.json`, `playwright.config.cjs`, `firebase.json`, `wrangler.toml`;
 - Ferramentas auxiliares — Chromium headless, CDP, `chrome-remote-interface`, `firebase-tools`.
 
 Mapear responsabilidades, dependências, entradas e saídas de cada componente.
@@ -814,7 +814,7 @@ Verificar:
 
 Investigar:
 
-- **Workflows**: `code-e2e.yml`, `worker.yml`, `pages.yml`, `eol-check.yml`, `model-failed-alert.yml`;
+- **Workflows**: `code-e2e.yml`, `worker.yml`, `pages.yml`, `eol-check.yml`, `firestore.yml`, `model-failed-alert.yml`;
 - **Gatilhos**: push, pull_request, workflow_dispatch, schedule;
 - **Dependências**: pacotes instalados, versões fixadas, variáveis de ambiente;
 - **Testes executados**: suítes rodadas em cada workflow;
@@ -847,12 +847,11 @@ Audita os testes E2E como camada independente de validação comportamental do L
 
 Investigar a estrutura real de:
 
-- `playwright.config.js` — configuração de projetos, dispositivos, reporters;
+- `playwright.config.cjs` — configuração de projetos, dispositivos, reporters;
 - `e2e/auth/` — testes de autenticação (login, Google, signup, sessão);
 - `e2e/smoke/` — testes smoke (funcionalidades críticas);
 - `e2e/movimentacoes/` — fluxos de lançamentos de entrada/saída/transferência;
 - `e2e/orcamento/` — fluxos de categorias, limites, alertas de orçamento;
-- `e2e/lia/` — fluxos de IA/OCR (LIA);
 - `e2e/seguranca/` — fluxos de segurança e validação;
 - `e2e/caixinhas/` — fluxos de caixinhas, aportes, progresso;
 - `e2e/metas/` — fluxos de metas financeiras;
@@ -1003,13 +1002,11 @@ Auditar integralmente o Worker como infraestrutura independente, integrada ao fr
 Investigar:
 
 - `worker/wrangler.toml` — configuração, variáveis de ambiente, bindings;
-- `worker/src/index.js` — handler principal (602 linhas, tabela de rotas);
-- `worker/src/ai/` — integração OpenRouter (autenticação, quota, rate limit, modelos, fallback);
+- `worker/src/index.js` — handler principal (112 linhas, tabela de rotas);
 - `worker/src/financial/` — gateway financeiro (BCB SGS, Tesouro Nacional);
-- `worker/src/mcp/` — protocolo MCP (snapshot, token, OAuth, bridge);
 - `worker/src/push/` — dispatch de push (Firestore → preferências → FCM);
 - `worker/src/shared/` — utilitários HTTP, validação, rate limit KV/memory;
-- `worker/test/` — testes do Worker (21 arquivos, `node:test`, sem rede);
+- `worker/test/` — testes do Worker (5 arquivos, `node:test`, sem rede);
 - `worker/package.json` — dependências (miniflare);
 - `.github/workflows/worker.yml` — CI do Worker (testes, dry-run, deploy, smoke `/health`).
 
@@ -1031,40 +1028,25 @@ Para cada endpoint, identificar:
 
 Construir matriz endpoint × segurança.
 
-Endpoints a auditar:
+Endpoints a auditar (estado atual, ver `worker/src/index.js`):
 
 | Endpoint | Método | Autenticação | App Check | CORS | Rate Limit |
 |---|---|---|---|---|---|
 | OPTIONS * | OPTIONS | none | Não | Allowlist | Não |
 | GET /health | GET | none | Não | Sim | Não |
-| GET /quota | GET | Firebase | Sim | Sim | Sim |
-| GET /openrouter-usage | GET | Firebase admin | Sim | Sim | Sim |
-| POST /ai | POST | Firebase | Sim | Sim | Sim |
 | GET /financial/ | GET | none | Não | Allowlist | Sim |
-| POST /mcp | POST | MCP token | Não | Não | Sim |
-| GET /.well-known/oauth-* | GET | none | Não | Sim | Não |
-| POST /register | POST | none | Não | Sim | Sim |
-| GET/POST /authorize | GET/POST | OAuth | Não | Sim | Não |
-| POST /token | POST | OAuth code/PKCE | Não | Sim | Sim |
-| POST /bridge/snapshot | POST | Firebase | Sim | Sim | Sim |
-| POST/DELETE /bridge/token | POST/DELETE | Firebase | Sim | Sim | Sim |
 
-### 3. Inteligência Artificial
+> Rotas removidas em nov/2026 (`/ai`, `/quota`, `/openrouter-usage`, `/mcp`, OAuth `/.well-known/oauth-*`, `/register`, `/authorize`, `/token`, `/bridge/*`) retornam 404; auditorias futuras devem confirmar a ausência delas, não auditá-las.
 
-Auditar:
+### 3. Análise financeira interna (sem IA externa)
 
-- Firebase ID Token (claims, issuer, audience, expiração, assinatura, JWKS);
-- App Check;
-- Chave OpenRouter (segredo, rotação);
-- Seleção de modelos (lista de modelos, fallback);
-- Prompts (system prompt, contexto financeiro);
-- Imagens e PDFs (upload, validação, tamanho);
-- Limites (cota diária, max tokens, timeout do provedor);
-- Cotas (consumo, remaining, resetAt);
-- Rate limit (por usuário, por IP);
-- Falhas externas (OpenRouter indisponível, erros 402/404/429/5xx).
+A LIA/IA conversacional, o OCR assistido e a integração MCP foram removidos em nov/2026. Auditar:
 
-Confrontar contratos do Worker com os consumidores reais do frontend (`js/domain/ai-chat-contract.js`, `js/domain/mcp-financial-contract.js`).
+- `js/21-ai-features.js` — análise interna: categorização, anomalias, revisão mensal, juros compostos (sem chamadas externas);
+- `js/22-profile.js` — `buildFinancialSnapshot()` e `runDiagnostics()` (payload local, não enviado a serviço de IA);
+- `js/domain/financial-client.js` — cliente do gateway (`GET /financial/`, BCB/Tesouro);
+- Proteção de dados financeiros: quais dados entram em payloads locais/externos, finalidade, validação, exposição;
+- Ausência confirmada de chamadas a provedores de IA (OpenRouter/Groq/Google) no código atual.
 
 ### 4. Indicadores Financeiros
 
@@ -1091,37 +1073,15 @@ Confrontar: `Worker → financial-client.js → interface`.
 
 Indicadores externos não podem alterar saldos, lançamentos ou patrimônio financeiro.
 
-### 5. MCP e OAuth
+### 5. MCP e OAuth (removidos)
 
-Auditar o fluxo:
+A integração MCP (snapshot, token, OAuth, bridge) foi removida em nov/2026. Auditar apenas:
 
-```
-APLICATIVO → SNAPSHOT → KV → AUTENTICAÇÃO → MCP → FERRAMENTA → AGENTE EXTERNO
-```
+- Ausência das rotas `/mcp`, `/bridge/*`, `/.well-known/oauth-*`, `/register`, `/authorize`, `/token` no Worker e no frontend;
+- Ausência de variáveis de ambiente relacionadas (`MCP_OAUTH_*`, quota KV);
+- Ausência de contratos legados (`js/domain/mcp-financial-contract.js`, `ai-chat-contract.js`, `chat-persistence.js`) e resíduos no código.
 
-Verificar:
-
-- Isolamento por UID;
-- Sanitização de dados sensíveis;
-- Limite de tamanho (64 KB snapshot, 8 KB token);
-- TTL (snapshot TTL 1 hora);
-- Consistência (hash vs token bruto);
-- Tokens (emissão, revogação, um token ativo por conta);
-- Hashes (KV armazena apenas hash);
-- Emissão (token bruto aparece uma vez);
-- Revogação (gerar novo revoga anteriores);
-- Concorrência (rate limit antes da autenticação);
-- OAuth Discovery (RFC 9728/8414);
-- PKCE S256;
-- Redirect URI;
-- Authorization Code;
-- Refresh Token;
-- Rotação;
-- Audience.
-
-Confirmar que a V1 permanece somente leitura.
-
-Qualquer possibilidade de escrita deve ser tratada como mudança de segurança e escopo.
+> Qualquer reintrodução de superfície MCP/OAuth deve ser tratada como mudança de segurança e escopo.
 
 ### 6. Push
 
@@ -1165,14 +1125,14 @@ Não presumir atomicidade de operações KV.
 
 Auditar:
 
-- Secrets (chaves OpenRouter, credenciais Firebase);
-- Tokens (MCP, OAuth, Firebase ID Token);
+- Secrets (credenciais Firebase, tokens de provedor quando aplicável);
+- Tokens (Firebase ID Token);
 - Logs (sem credenciais, sem dados financeiros);
 - CORS (allowlist de origens);
 - SSRF (validação de baseUrl);
 - Injeção (validação de corpo JSON, sanitização);
-- Autenticação (Firebase ID Token, MCP token, OAuth);
-- Autorização (admin emails para /openrouter-usage);
+- Autenticação (Firebase ID Token);
+- Autorização (admin emails quando aplicável);
 - Rate limit (por usuário, por IP, por rota);
 - Abuso de endpoints (limites de corpo, janelas de tempo);
 - Manipulação de headers (Origin, cf-connecting-ip).
@@ -1187,7 +1147,7 @@ Investigar:
 
 - Wrangler (deploy, dry-run, bindings);
 - Bindings (variáveis de ambiente, secrets);
-- Secrets (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, OPENROUTER_API_KEY);
+- Secrets (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID);
 - CI (`.github/workflows/worker.yml`);
 - Dry-run (empacota sem publicar);
 - Deploy real (apenas em `main` com environment production);
@@ -1239,8 +1199,8 @@ Investigar:
 
 Verificar:
 
-- Cache versionado (CACHE_NAME=livro-caixa-shell-v20-35);
-- APP_SHELL (módulos js/, patches, emoji, CSS — ocr/ fora do APP_SHELL);
+- Cache versionado (CACHE_NAME=livro-caixa-shell-v20-56, conforme `sw.js`);
+- APP_SHELL (módulos js/, patches, emoji, CSS — `ocr/` removido do projeto em nov/2026);
 - Estratégias de cache (network-first para HTML/JS/CSS);
 - Recursos ausentes (módulos não precacheados);
 - Arquivos obsoletos (versões antigas no cache);
@@ -1250,7 +1210,7 @@ Verificar:
 - Troca de usuário (isolamento de cache por sessão);
 - Recuperação offline (dados persistidos localmente).
 
-Investigar especificamente módulos OCR e outros recursos que possam não integrar o precache.
+Investigate especificamente recursos citados no precache mas ausentes do disco (e vice-versa).
 
 ### 3. Firebase
 
@@ -1291,7 +1251,6 @@ Mapear:
 - cdnjs;
 - jsDelivr;
 - Firebase SDK;
-- OpenRouter;
 - Outros serviços encontrados no código.
 
 Verificar:
@@ -1310,7 +1269,7 @@ Investigar:
 
 - Permissões GitHub Actions (contents: read, environment: production);
 - Actions fixadas por SHA (ex: `actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09`);
-- Secrets (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, OPENROUTER_USAGE_ADMIN_EMAIL);
+- Secrets (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID);
 - Arquivos publicados (o que vai para GitHub Pages);
 - Artefatos (o que é armazenado como artifact do CI);
 - Recursos externos (CDNs, APIs externas);
@@ -1333,7 +1292,7 @@ A auditoria cruzada investiga as fronteiras entre as quatro infraestruturas. Cad
 | E2E | Firebase | Persistência de dados e identidade de usuário nos testes E2E |
 | E2E | GitHub Pages | Correspondência entre versão testada em E2E e versão publicada |
 | Worker | Firebase | Autenticação Firebase e isolamento por UID no Worker |
-| Worker | Frontend | Compatibilidade de contratos (IA, financeiro, MCP, bridge) |
+| Worker | Frontend | Compatibilidade de contratos (financeiro, push) |
 | Worker | Push | Consistência entre planejamento de push e execução real |
 | PWA | Firebase | Sessão de usuário e sincronização offline com Firestore |
 | PWA | Worker | Atualização do PWA e compatibilidade de endpoints do Worker |
@@ -1350,7 +1309,7 @@ Investigar especialmente:
 5. **Dados offline divergentes da persistência remota** — inconsistência entre cache local e Firestore;
 6. **Testes que não detectam falhas nas integrações** — lacunas de cobertura entre camadas;
 7. **Diferenças entre ambiente local, CI e produção** — comportamento diferente por ambiente;
-8. **Dependências externas que comprometem funcionalidades** — CDN, OpenRouter, BCB, Tesouro indisponíveis;
+8. **Dependências externas que comprometem funcionalidades** — CDN, BCB, Tesouro indisponíveis;
 9. **Problemas de identidade e isolamento entre serviços** — vazamento de dados entre usuários;
 10. **Falhas de propagação de erros entre camadas** — erro em uma camada não é reportado corretamente.
 

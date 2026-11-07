@@ -3,7 +3,7 @@
 Data: 2026-09-27 · Repositório: `antvjpg/LIVRO-CAIXA` · Branch: `feature/code-qa` · HEAD `1152fbc`
 Método: inspeção direta de código (nenhuma alteração no aplicativo foi feita nesta fase).
 
-> **Atualizado em 23/10/2026 (main `2154a82` + refatoração de módulos).** A auditoria original foi feita em `1152fbc`, quando todo o JS era inline em `index.html`. Em `208c0eb` o JS passou para `app.js` + `patches.js`; na refatoração atual `app.js` foi dividido em `js/` (`js/00-bootstrap.js`…`js/33-mcp-bridge.js`, `js/99-init.js`), com `js/legacy/patches.js`, `js/domain/*` e `js/data/emoji-catalog.js`. As referências `app.js:<linha>` abaixo são **históricas** (o conteúdo foi preservado nos módulos `js/`); as referências `index.html:<linha>` são HTML.
+> **Atualizado em 07/11/2026 (main `a44c74b`).** A auditoria original foi feita em `1152fbc`, quando todo o JS era inline em `index.html`. Em `208c0eb` o JS passou para `app.js` + `patches.js`; na refatoração atual `app.js` foi dividido em `js/` (`js/00-bootstrap.js`…`js/32-auth-wiring.js`, `js/99-init.js`), com `js/legacy/patches.js`, `js/domain/*` e `js/data/emoji-catalog.js`. Em novembro de 2026 a LIA/IA, o OCR assistido e a integração MCP foram removidos do projeto (o módulo `js/33-mcp-bridge.js` e a pasta `ocr/` não existem mais). As referências `app.js:<linha>` abaixo são **históricas** (o conteúdo foi preservado nos módulos `js/`); as referências `index.html:<linha>` são HTML.
 
 ---
 
@@ -11,9 +11,9 @@ Método: inspeção direta de código (nenhuma alteração no aplicativo foi fei
 
 | Camada | Achado | Onde |
 |---|---|---|
-| Frontend | SPA única: `index.html` (HTML puro) + módulos `js/` (`js/00`…`js/33`, `js/99-init.js`, `js/legacy/patches.js`, `js/domain/*`, `js/data/emoji-catalog.js`), CSS em `style/*.css` | raiz + `js/` |
-| PWA | Service Worker network-first HTML/JS/CSS, shell precacheado (módulos `js/`, patches, emoji e CSS — `ocr/` fora do APP_SHELL desde `574dfa2`) | `sw.js:2` (`CACHE_NAME=livro-caixa-shell-v20-35`) |
-| Backend | Cloudflare Worker `livro-caixa-ai` (IA + indicadores `/financial`) | `worker/wrangler.toml`, `worker/src/index.js` |
+| Frontend | SPA única: `index.html` (HTML puro) + módulos `js/` (`js/00`…`js/32`, `js/99-init.js`, `js/legacy/patches.js`, `js/domain/*`, `js/data/emoji-catalog.js`), CSS em `style/*.css` | raiz + `js/` |
+| PWA | Service Worker network-first HTML/JS/CSS, shell precacheado (módulos `js/`, patches, emoji e CSS — a pasta `ocr/` foi removida do projeto em nov/2026) | `sw.js:2` (`CACHE_NAME=livro-caixa-shell-v20-56`) |
+| Backend | Cloudflare Worker `livro-caixa-ai` (apenas `/financial` e push; IA/MCP removidos) | `worker/wrangler.toml`, `worker/src/index.js` |
 | Indicadores | `js/domain/financial-client.js` (BCB SGS + Tesouro) — única porta de entrada do FE para `/financial` | `js/domain/financial-client.js:1-35` |
 | Cartões | Motor próprio: `js/domain/card-engine-v3-combined.js` (engine + adapter no mesmo arquivo) | `js/domain/` |
 | Build | **Não existe** — app estático servido direto (dev em `http://127.0.0.1:8000`) | `worker/wrangler.toml:10` (`ALLOW_ORIGINS` inclui `localhost:8000`) |
@@ -64,8 +64,8 @@ Selectors estáveis encontrados (usados pelo C.O.D.E., todos existentes — nenh
 
 ## 5. Worker e testes existentes
 
-- Testes do Worker: `worker/test/*.test.mjs` (21 arquivos, `node:test`, **sem rede**, executados por CI).
-- CI: `.github/workflows/worker.yml` — roda `node --test worker/test/*.test.mjs` + dry-run do deploy; deploy real só em `main` com `environment: production`. Desde então também `code-e2e.yml` (C.O.D.E.), `pages.yml` (GitHub Pages), `eol-check.yml` e `model-failed-alert.yml`.
+- Testes do Worker: `worker/test/*.test.mjs` (5 arquivos: `audit-trail`, `financial`, `financial-client`, `simple-log`, `style-layout`; `node:test`, **sem rede**, executados por CI).
+- CI: `.github/workflows/worker.yml` — roda `node --test worker/test/*.test.mjs` + dry-run do deploy; deploy real só em `main` com `environment: production`. Desde então também `code-e2e.yml` (C.O.D.E.), `pages.yml` (GitHub Pages), `eol-check.yml`, `firestore.yml` (regras do Firestore) e `model-failed-alert.yml`.
 - **Não existia** `package.json` nem testes frontend/Playwright na época. Hoje: `package.json` na raiz (scripts `code:*` + `@playwright/test` só como devDependency) e `worker/package.json` — ver `e2e/README.md` §2.
 
 ## 6. Ambiente (limitações verificadas)
@@ -81,9 +81,10 @@ Selectors estáveis encontrados (usados pelo C.O.D.E., todos existentes — nenh
 | `gh` CLI | instalado e autenticado ✓ (ausente na época original) |
 | Espaço em disco | 75 GB livres ✓ |
 
-**Conclusão (atualizada em 25/10/2026)**: a validação real da suíte E2E
-completa é o **CI do GitHub** — run `40199204709` em 25/10/2026 terminou
-`43 passed` com `QA CREATED=SIM | FIRESTORE=PASS | AUTH=PASS` e cleanup `PASS`.
+**Conclusão (atualizada em 07/11/2026)**: a validação real da suíte E2E
+completa é o **CI do GitHub** — run `42397573276` em 07/11/2026 (commit `a44c74b`) terminou
+success com `PASS=34 FAIL=0 BLOCKED=0 SKIPPED=0 FLAKY=0`, gate `--strict`,
+`QA CREATED=SIM | FIRESTORE=PASS | AUTH=PASS` e cleanup `PASS`.
 No Termux, a inspeção local em navegador real agora é possível (Chromium do
 sistema + spoof de plataforma) e é usada pelo harness de auditoria visual; o
 caminho validado para a suíte completa (`npm run code:test`) continua sendo

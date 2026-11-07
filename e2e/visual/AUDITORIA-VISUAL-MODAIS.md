@@ -1,5 +1,6 @@
 # Auditoria visual dos modais — desktop
 
+> **Histórico 19–25/10/2026.** Segmento de auditoria encerrado: a LIA/IA, o OCR e o MCP foram removidos em nov/2026 (ex.: `panelAiChat` é só estrutura visual, `openAiChat` não existe mais; `panelOcrReview` e `ocr/` não existem). Contagens de runs e testes referem-se ao snapshot de outubro (run final atual: `42397573276`, 07/11/2026 — ver `e2e/README.md` §5).
 > Documento técnico da auditoria e das alterações realizadas.
 > Data: 19/10/2026 · Viewport: **1440×900** · Chromium 153 (Playwright) · Tema claro.
 > Revisão: 22/10/2026 · `main` = `2154a82` · reexecutada em 23/10/2026 — ver §11.
@@ -406,7 +407,7 @@ nenhum arquivo de produção foi tocado.
 | Commit | Tema |
 |---|---|
 | `f0d4280` | feat UI: cards de total, cards do dashboard, chrome dos modais |
-| `264f487` | 11 gaps de UI do ciclo pós-`f0d4280` (ver `CHECKLIST_TESTES.md`) |
+| `264f487` | 11 gaps de UI do ciclo pós-`f0d4280` (roteiro de testes da época não arquivado) |
 | `d934ca6` | revisão visual dos modais + 28 prints — **introduziu o bug do §12.2** |
 | `444164a` | adiciona `js/domain` e `ocr/` ao APP_SHELL do SW |
 | `574dfa2` | fix do CI: ocr fora do precache, `CACHE_NAME=v20-35`, `rentability-box` restaurada |

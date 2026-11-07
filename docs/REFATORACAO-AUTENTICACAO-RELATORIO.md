@@ -1,5 +1,7 @@
 # Relatório Técnico: Auditoria e Refatoração do Ciclo de Autenticação do LIVRO-CAIXA
 
+> **HISTÓRICO — relatório da refatoração de autenticação.** Linhas e arquivos citados (`app.js`, `99-init.js`) referem-se ao estado na época; conferir o código atual antes de agir (AGENTS.md §2/§45). A Proteção local foi objeto de ciclo corretivo dedicado (ver página do Notion “Proteção local — Plano de execução por fases”, encerrado em 07/11/2026).
+
 ## A. Diagnóstico Inicial
 
 ### Problemas Encontrados

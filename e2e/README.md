@@ -3,22 +3,29 @@
 Infraestrutura de QA/E2E/auditoria do LIVRO-CAIXA. Fase própria (`feature/code-qa`):
 nenhuma alteração em código de produção (`index.html`, dados persistidos ou worker).
 
-> **Estado desta entrega (25/10/2026):** ambiente QA autônomo (identidade
+> **Estado atual (07/11/2026):** ambiente QA autônomo (identidade
 > efêmera por run, criação pela UI real, exclusão no teardown, relatório com
-> seção `QA ENVIRONMENT`, zero GitHub Secret) **e execução real validada**:
-> run `40199204709` do CI em 25/10/2026 terminou **`43 passed`** com
+> seção `QA ENVIRONMENT`, zero GitHub Secret) e execução real validada:
+> run `42397573276` (commit `a44c74b`) terminou **success —
+> `PASS=34 FAIL=0 BLOCKED=0 SKIPPED=0 FLAKY=0`** com
 > `QA CREATED=SIM | FIRESTORE=PASS | AUTH=PASS` e cleanup `PASS`
-> (artefato `code-e2e-evidencias`). No Termux não há `playwright install`
-> (`Unsupported platform: android`), mas o Chromium do sistema +
-> spoof de plataforma habilita inspeção local — usado pelo harness
+> (artefato `code-e2e-evidencias`), gate `--strict` aprovado. No Termux não há
+> `playwright install` (`Unsupported platform: android`), mas o Chromium do
+> sistema + spoof de plataforma habilita inspeção local — usado pelo harness
 > `e2e/visual/audit-modais.cjs`; o caminho validado da suíte completa
 > continua sendo CI/PC.
+>
+> Nota: o histórico de runs 1–7 e do ciclo corretivo (até `42397573276`) está
+> registrado na página “Proteção local — Plano de execução por fases” do Notion.
+> A LIA (assistente de IA), o OCR assistido e a integração MCP foram removidos
+> em novembro de 2026; qualquer referência histórica a eles neste arquivo é
+> contexto, não estado atual.
 
 ## 1. Organização
 
 ```
 package.json               scripts code:* + devDependency @playwright/test (só dev)
-playwright.config.js       setup → smoke → movimentacoes; globalSetup/globalTeardown
+playwright.config.cjs      setup → suítes; globalSetup/globalTeardown
 e2e/
   AUDITORIA.md             FASE 0 — auditoria arquivo:linha (auth, persistência, seletores)
   visual/                  auditoria visual dos modais (harness local, sem CI)
@@ -29,6 +36,15 @@ e2e/
                            grava storageState (só cookies/localStorage)
   smoke/smoke.spec.js      aplicação operacional + Visão Geral
   movimentacoes/           banco → entrada → saída → UI × oracle × Firestore → reload
+  caixinhas/               caixinhas (aporte, resgate, progresso)
+  cartoes/                 cartões (cadastro, limites)
+  categorias/              categorias e subcategorias
+  integracao/cartao-fatura.spec.js      cartão/fatura: total, limite, pagamento
+  integracao/movimentacao-dashboard.spec.js  movimentações agregadas no dashboard
+  investimentos/           agrupamento por instituição, CRUD serial, persistência
+  metas/                   metas (criação, fontes, progresso, edição, exclusão)
+  orcamento/               orçamentos por categoria
+  seguranca/               regras do Firestore em produção
   helpers/
     identity.js            identidade efêmera da run (gera, mascara, decide exclusão)
     cleanup.js             cleanup em 2 camadas (Firestore + Auth) → qa-summary.json
@@ -38,25 +54,29 @@ e2e/
                            (refaz a sessão em cada suíte, com trace pausado)
     firestore-rest.js      REST somente no escopo livrocaixa/{uid} + deleteOwnAccount
     env.js                 resolução de credenciais + guarda isQaEmail
-    app.js, console-watch  page object e evidência de erros de console
+    app.cjs, console-watch.cjs  page object e evidência de erros de console
     sanitize.js            mascarador de e-mail/senha/token para relatórios
   fixtures/fixtures.js     dados determinísticos (marcadores CODE_TEST_*)
   fixtures/v20-01-fixtures.js  documentos sintéticos V.20-01 (CODE_V2001_*)
   oracles/                 cálculo INDEPENDENTE do app + testes unitários (node:test)
     document.js            oráculo por LINHA do documento (algoritmo distinto)
-    v20-01-ocr-extraction.test.mjs  18 garantias da extração/revisão (sem browser)
-  security/security.test.mjs  44 garantias auditáveis do próprio C.O.D.E.
-  security/v20-01-privacy.test.mjs  16 garantias do fluxo de anexos/OCR
-  security/v20-02-prompt-injection.test.mjs  8 garantias contra prompt injection
+    bank.test.mjs, goal.test.mjs, investment.test.mjs, invoice-cycle.test.mjs,
+    oracle.test.mjs, pin-divergence.test.mjs, pin-protection.test.mjs,
+    pocket.test.mjs, receivable.test.mjs, v20-02-*.test.mjs
+  security/security.test.mjs  garantias auditáveis do próprio C.O.D.E.
+  security/v20-02-budget-status.test.mjs, v20-02-prompt-injection.test.mjs,
+    v20-02-contextual-suggestions.test.mjs
   seeds/reset.cjs          cleanup manual de dados (só Firestore)
   seeds/cleanup.cjs        cleanup manual completo (Firestore + Auth efêmera)
   reports/generate-report.cjs  relatório + QA ENVIRONMENT (gitignored)
+  reports/history.jsonl    histórico persistente de runs (gitignored)
   scripts/list-tests.cjs   listagem de testes no Termux (shim, sem browser)
   scripts/syntax-check.cjs sintaxe dos módulos js/ (inclui js/domain e js/legacy),
-                           js/data/emoji-catalog.js, sw.js + módulos ocr/
+                           js/data/emoji-catalog.js e sw.js
                            (index.html é HTML puro desde 208c0eb)
   .env.example             contrato do fallback manual (opcional)
-worker/test/v20-01-ocr-modules.test.mjs  25 testes da abstração OCR (node:test)
+worker/test/               testes do Worker (node:test): financial, financial-client,
+                           audit-trail, simple-log, style-layout
 .github/workflows/code-e2e.yml  CI sem secrets: sintaxe → oracles → segurança →
                                 chromium → suítes → relatório → limpeza → artefatos
 ```
@@ -71,13 +91,11 @@ nenhum segredo no Git nem em artefato; bloqueio aparece como `BLOCKED`, nunca so
 |---|---|---|
 | `npm run code:oracles` | testes unitários dos oracles (sem browser) | sim |
 | `npm run code:list` | descobre/lista os testes (shim de plataforma) | sim |
-| `npm run code:security` | 68 garantias do próprio C.O.D.E. (offline) | sim |
-| `npm run code:syntax` | valida sintaxe dos módulos `js/`, `js/data/emoji-catalog.js`, `sw.js` + módulos `ocr/` | sim |
-| `npm run code:v20` | suíte V.20-01 (anexos/OCR): worker + oracles + segurança | sim |
-| `npm run code:v20-02` | oracles + segurança V.20-02 (prompt injection) | sim |
-| `npm run code:mcp` | testes `worker/test/mcp-*.test.mjs` | sim |
-| `npm run code:test` | suítes + relatório `--strict` (sai 1 se FAIL/BLOCKED) | **não** |
-| `npm run code:smoke` / `code:movimentacoes` / `code:orcamento` / `code:lia` / `code:metas` / `code:investimentos` | suíte individual | **não** |
+| `npm run code:security` | 52 garantias do próprio C.O.D.E. (offline) | sim |
+| `npm run code:syntax` | valida sintaxe dos módulos `js/`, `js/data/emoji-catalog.js`, `sw.js` | sim |
+| `npm run code:test` | suítes + relatório `--strict` (sai 1 se FAIL/BLOCKED/FLAKY) | **não** |
+| `npm run code:smoke` / `code:movimentacoes` / `code:orcamento` / `code:metas` / `code:investimentos` | suíte individual (projeto Playwright) | **não** |
+| `npx playwright test --project=<nome>` | qualquer suíte (caixinhas, cartoes, categorias, integracao, seguranca…) | **não** |
 | `npm run code:test:headed` | idem com navegador visível | não |
 | `npm run code:report` | gera `e2e/reports/CODE-relatorio-<data>.md` | sim |
 | `npm run code:report:strict` | idem + exit 1 se houver `FAIL`/`BLOCKED` | sim |
@@ -176,23 +194,26 @@ sobrou arquivo de identidade (run abortada).
 
 ## 5. Cobertura atual (matriz honesta)
 
-Execução de referência: **CI run `40199204709` (25/10/2026) — `43 passed`**.
+Execução de referência: **CI run `42397573276` (07/11/2026, commit `a44c74b`) — `PASS=34 FAIL=0 BLOCKED=0 SKIPPED=0 FLAKY=0`**, gate `--strict` aprovado.
 
 | Área | Teste | Oracle unitário | Executado em navegador |
 |---|---|---|---|
-| Abertura/carregamento/Visão Geral | `smoke` (2) | — | **sim (CI)** |
-| Sessão QA (login/criação) | `auth/qa.setup` (1) | — | **sim (CI)** |
-| Criar banco + entrada + saída + saldo | `movimentacoes` (1) | `balance`, `movement`, `money` | **sim (CI)** |
+| Abertura/carregamento/Visão Geral | `smoke` | — | **sim (CI)** |
+| Sessão QA (login/criação) | `auth/qa.setup` | — | **sim (CI)** |
+| Criar banco + entrada + saída + saldo | `movimentacoes` | `balance`, `movement`, `money` | **sim (CI)** |
 | Persistência (reload + Firestore REST) | `movimentacoes` | idem | **sim (CI)** |
-| Regras do Firestore em produção | `seguranca/regras-firestore` (1) | — | **sim (CI)** |
-| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (68, offline) | — | não precisa |
-| Edição/exclusão de lançamentos | pendente | pendente | — |
-| Caixinhas | `caixinhas` (5) | `pocket`, `money` | **sim (CI)** |
-| Metas (criação, fontes, progresso, edição, exclusão) | `metas` (7) | `goal`, `money` | **sim (CI)** |
-| Investimentos (CRUD, movimentações, rentabilidade, histórico) | `investimentos`, `investimentos-crud` (7) | `investment`, `money` | **sim (CI)** |
-| Orçamentos | `orcamento` (8) | — | **sim (CI)** |
-| LIA (sugestões contextuais, offline, erros do Worker) | `lia` (11) | — | **sim (CI)** |
-| Cartões/faturas, contas a receber | pendente | pendente | — |
+| Regras do Firestore em produção | `seguranca/regras-firestore` | — | **sim (CI)** |
+| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (52, offline) | — | não precisa |
+| Oráculos unitários | `code:oracles` (116) | — | não precisa |
+| Cartões/faturas (estado da fatura, limite, pagamento) | `integracao/cartao-fatura` | `cartao-fatura`, `card` | **sim (CI)** |
+| Movimentações no dashboard | `integracao/movimentacao-dashboard` | `dashboard-movimento` | **sim (CI)** |
+| Caixinhas | `caixinhas` | `pocket`, `money` | **sim (CI)** |
+| Metas (criação, fontes, progresso, edição, exclusão) | `metas` | `goal`, `money` | **sim (CI)** |
+| Investimentos (agrupamento, CRUD, movimentações, rentabilidade, histórico) | `investimentos*` (3 specs) | `investment`, `money` | **sim (CI)** |
+| Orçamentos | `orcamento` | `v20-02-budget-status` | **sim (CI)** |
+| Categorias | `categorias` | — | **sim (CI)** |
+| Cartões (UI) | `cartoes` | `card` | **sim (CI)** |
+| Boletos/contas a pagar, valores a receber, conciliação, notificações | pendente | pendente | — |
 
 ## 6. Limitações conhecidas
 
@@ -225,12 +246,14 @@ Execução de referência: **CI run `40199204709` (25/10/2026) — `43 passed`**
 ## 7. Próximos passos
 
 1. ~~Confirmar no Console que E-mail/senha segue ATIVADO~~ — **concluído**:
-   signup + login reais passaram no CI (`40199204709`: `AUTH=PASS`).
+   signup + login reais passaram no CI (`42397573276`: `AUTH=PASS`).
 2. ~~Autorizar commit/push de `feature/code-qa`~~ — **concluído**: pipeline
    `C.O.D.E. E2E` verde em `main`.
 3. ~~Ler o resultado em *Actions → C.O.D.E. E2E*~~ — **concluído**:
-   `43 passed`, relatório + `QA ENVIRONMENT` + evidências no artefato
-   `code-e2e-evidencias`.
-4. Novas fases: edição/exclusão, cartões/faturas e contas a receber.
+   `PASS=34 FAIL=0 BLOCKED=0 SKIPPED=0 FLAKY=0`, relatório + `QA ENVIRONMENT` +
+   evidências no artefato `code-e2e-evidencias`.
+4. Novas frentes (lacunas conhecidas): boletos/contas a pagar, valores a
+   receber, conciliação, notificações, spec E2E da Proteção local (PIN) e
+   offline/PWA/responsividade no CI.
 5. Validações visuais pendentes dos modais: tema escuro e telas estreitas
    (ver `e2e/visual/AUDITORIA-VISUAL-MODAIS.md` §10).

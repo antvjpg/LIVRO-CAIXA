@@ -19,7 +19,7 @@ A referência é o CSS do repositório local. Se este documento e o código dive
   - [1.3 Tokens de superfície](#13-tokens-de-superfície)
   - [1.4 Tipografia](#14-tipografia)
   - [1.5 Geometria, foco e sombras](#15-geometria-foco-e-sombras)
-  - [1.6 Tokens de ação/componentes](#16-tokens-de-açãocomponentes)
+  - [1.6 Tokens de ação/componentes](#16-tokens-de-acaocomponentes)
   - [1.7 Classificação de propriedades por origem](#17-classificação-de-propriedades-por-origem)
 - [2. Inventário completo (pós-migração)](#2-inventário-completo-pós-migração)
   - [2.1 Tipografia](#21-tipografia)

@@ -1,5 +1,7 @@
 # Matriz de Cobertura — Fluxos Financeiros (Fase 6 — Critério de Aceite Global)
 
+> **DOCUMENTO HISTÓRICO (Fases 1–6 do LOG, 2026).** Esta matriz referencia funções em `js/99-init.js` (hoje apenas dispatcher de `DOMContentLoaded`) e arquivos de teste (`diagnostic-log-cycle*.test.mjs`, `backup-restore.test.mjs`) que não existem mais. A taxonomia de fluxos continua útil como checklist, mas **localidades, funções e contagens não representam o código atual** — para cobertura real, ver `e2e/README.md` §5 e `e2e/oracles/` + `worker/test/` (contagens verificadas em 07/11/2026: oráculos 116, segurança 52, worker 97, E2E 34).
+
 Demonstra que a cobertura dos fluxos financeiros é baseada em **matriz + testes**, não em suposição.
 
 ## Legenda

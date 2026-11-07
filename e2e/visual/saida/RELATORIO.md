@@ -1,5 +1,6 @@
 # Auditoria visual dos modais — desktop
 
+> Gerado automaticamente em 25/10/2026 — snapshot histórico; regenerar via `e2e/visual/audit-modais.cjs` para o estado atual.
 - Executado: 2026-10-25T14:48:07.292Z
 - Viewport: 1440x900
 - Modo: **estrutura sem autenticação** (estado vazio, sem dados reais)
