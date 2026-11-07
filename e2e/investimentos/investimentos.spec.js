@@ -54,7 +54,9 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
 const card = (page, name) => page.locator('#investGrid .asset-card', { hasText: name });
 
 async function expandAllInstitutionGroups(page) {
-  for (let attempt = 0; attempt < 10; attempt++) {
+  // Click all "Ver investimentos" buttons to expand collapsed institution groups
+  // This ensures all .asset-card elements are visible for assertion
+  for (let attempt = 0; attempt < 15; attempt++) {
     const buttons = page.locator('.institution-view-all');
     const count = await buttons.count();
     let anyClicked = false;
@@ -67,13 +69,22 @@ async function expandAllInstitutionGroups(page) {
       }
     }
     if (!anyClicked) break;
-    // Wait for re-render: wait for at least one asset card to be attached to DOM
+    // Wait for DOM re-render after clicking expand buttons
     try {
       await page.waitForSelector('.asset-card', { state: 'attached', timeout: 5_000 });
     } catch (e) {
       // Continue regardless - the re-render may be in progress
     }
-    if (anyClicked) break;
+    // If we clicked buttons, try again to ensure all groups are expanded
+    // (some groups may need multiple clicks or the re-render may reveal new buttons)
+    if (anyClicked) {
+      // Check if there are still expandable buttons
+      const remainingButtons = await page.locator('.institution-view-all').count();
+      // If no expandable buttons remain, we're done
+      if (remainingButtons === 0) break;
+    } else {
+      break;
+    }
   }
 }
 
