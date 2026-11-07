@@ -123,7 +123,7 @@ function errorReasonFull(message) {
     .map((l) => l.trim())
     .filter(Boolean);
   if (!lines.length) return 'erro sem mensagem';
-  return lines.join(' | ').slice(0, 1200);
+  return lines.join(' | ').slice(0, 4000);
 }
 
 /* Motivo de skip: anotação "skip" com descrição quando existir. */
@@ -173,6 +173,10 @@ function walk(suite, titles, out) {
       });
       /* soma todas as tentativas (retries): é o tempo real gasto no teste */
       const duration = (t.results || []).reduce((sum, r) => sum + (Number(r?.duration) || 0), 0);
+      const attempts = (t.results || []).map((r) => ({
+        status: r?.status || 'unknown',
+        duration: Number(r?.duration) || 0,
+      }));
       out.push({
         suite: chain.join(' › ') || '(sem suíte)',
         title: spec.title,
@@ -180,6 +184,7 @@ function walk(suite, titles, out) {
         reason: sanitizeText(cls === 'FAIL' ? errorReason(result?.error?.message) : reason),
         reasonFull: cls === 'FAIL' ? sanitizeText(errorReasonFull(result?.error?.message)) : '',
         duration,
+        attempts,
         attachments,
         file: spec.file || '',
       });
@@ -258,6 +263,91 @@ for (const t of tests) {
 }
 w('');
 
+/* ---- Resumo por suíte ---- */
+const porSuite = new Map();
+for (const t of tests) {
+  if (!porSuite.has(t.suite)) {
+    porSuite.set(t.suite, { PASS: 0, FAIL: 0, BLOCKED: 0, SKIPPED: 0, FLAKY: 0, duration: 0, total: 0 });
+  }
+  const g = porSuite.get(t.suite);
+  g[t.cls] = (g[t.cls] || 0) + 1;
+  g.duration += t.duration;
+  g.total += 1;
+}
+w('## Resumo por suíte');
+w('');
+w('| Suíte | PASS | FAIL | BLOCKED | SKIPPED | FLAKY | Tempo |');
+w('|---|---:|---:|---:|---:|---:|---:|');
+for (const [suite, g] of [...porSuite.entries()].sort((a, b) => b[1].duration - a[1].duration)) {
+  w(`| ${suite.replace(/\|/g, '\\|')} | ${g.PASS} | ${g.FAIL} | ${g.BLOCKED} | ${g.SKIPPED} | ${g.FLAKY} | ${formatDuration(g.duration)} |`);
+}
+w('');
+
+/* ---- Testes mais lentos ---- */
+const lentos = [...tests].sort((a, b) => b.duration - a.duration).slice(0, 10);
+if (lentos.length) {
+  w('## Testes mais lentos (top 10)');
+  w('');
+  for (const t of lentos) {
+    const tent = t.attempts?.length > 1 ? ` · ${t.attempts.length} tentativa(s)` : '';
+    w(`- **${t.cls}** ${t.title} — ${formatDuration(t.duration)}${tent}`);
+  }
+  w('');
+}
+
+/* ---- Histórico entre runs (delta) ---- */
+const historyPath = path.join(config.reportsDir, 'history.jsonl');
+let historico = [];
+if (fs.existsSync(historyPath)) {
+  try {
+    historico = fs
+      .readFileSync(historyPath, 'utf8')
+      .split('\n')
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
+  } catch {
+    historico = [];
+  }
+}
+const entradaAtual = {
+  date: new Date().toISOString().slice(0, 10),
+  pass: counts.PASS,
+  fail: counts.FAIL,
+  blocked: counts.BLOCKED,
+  skipped: counts.SKIPPED,
+  flaky: counts.FLAKY,
+};
+const anterior = historico.length ? historico[historico.length - 1] : null;
+const jaRegistrado =
+  anterior &&
+  anterior.date === entradaAtual.date &&
+  anterior.pass === entradaAtual.pass &&
+  anterior.fail === entradaAtual.fail &&
+  anterior.blocked === entradaAtual.blocked &&
+  anterior.skipped === entradaAtual.skipped &&
+  anterior.flaky === entradaAtual.flaky;
+if (!jaRegistrado) {
+  try {
+    fs.appendFileSync(historyPath, JSON.stringify(entradaAtual) + '\n');
+    historico.push(entradaAtual);
+  } catch {
+    /* histórico é auxiliar: nunca quebra a geração do relatório */
+  }
+}
+w('## Histórico de runs');
+w('');
+if (!anterior) {
+  w('- Sem run anterior registrada — esta é a primeira entrada do histórico.');
+} else {
+  const delta = (k) => {
+    const d = (entradaAtual[k] ?? 0) - (anterior[k] ?? 0);
+    return d === 0 ? '±0' : `${d > 0 ? '+' : ''}${d}`;
+  };
+  w(`- Run anterior (${anterior.date}): PASS=${anterior.pass} FAIL=${anterior.fail} BLOCKED=${anterior.blocked} SKIPPED=${anterior.skipped ?? 0} FLAKY=${anterior.flaky ?? 0}`);
+  w(`- Delta: PASS ${delta('pass')} · FAIL ${delta('fail')} · BLOCKED ${delta('blocked')} · SKIPPED ${delta('skipped')} · FLAKY ${delta('flaky')}`);
+}
+w('');
+
 const failures = tests.filter((t) => t.cls === 'FAIL' || t.cls === 'FLAKY');
 if (failures.length) {
   w('## Falhas e evidências');
@@ -269,6 +359,12 @@ if (failures.length) {
     w(`- Arquivo: \`${t.file}\``);
     w(`- Tempo: ${formatDuration(t.duration)}`);
     w(`- Motivo: ${t.reasonFull || t.reason || 'não informado'}`);
+    if (t.attempts?.length > 1) {
+      const seq = t.attempts
+        .map((a, i) => `${i + 1}ª ${a.status === 'passed' ? 'passou' : a.status === 'failed' ? 'falhou' : a.status} (${formatDuration(a.duration)})`)
+        .join(' · ');
+      w(`- Tentativas: ${seq}`);
+    }
     if (t.attachments.length) {
       w('- Evidências:');
       for (const a of t.attachments) w(`  - ${a.name}${a.path ? `: \`${a.path}\`` : ' (corpo embutido)'}`);
@@ -277,7 +373,7 @@ if (failures.length) {
         w(`**${a.name}:**`);
         w('');
         w('```');
-        w(a.corpo.split('\n').slice(0, 40).join('\n'));
+        w(a.corpo.split('\n').slice(0, 120).join('\n'));
         w('```');
       }
     }
@@ -289,7 +385,7 @@ if (failures.length) {
       w('**Forense da suíte (`e2e/reports/evidencia/`):**');
       w('');
       w('```');
-      w(fs.readFileSync(evidFile, 'utf8').trim().split('\n').slice(0, 60).join('\n'));
+      w(fs.readFileSync(evidFile, 'utf8').trim().split('\n').slice(0, 150).join('\n'));
       w('```');
     }
     w('');

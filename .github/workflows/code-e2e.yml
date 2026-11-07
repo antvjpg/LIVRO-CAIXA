@@ -71,7 +71,7 @@ jobs:
           {
             echo "## C.O.D.E. — resultado"
             echo '```'
-            cat e2e/reports/CODE-relatorio-*.md 2>/dev/null | sed -n '1,60p' || echo "sem relatório"
+            cat e2e/reports/CODE-relatorio-*.md 2>/dev/null | sed -n '1,220p' || echo "sem relatório"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
