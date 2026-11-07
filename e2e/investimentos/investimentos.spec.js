@@ -64,10 +64,16 @@ async function expandAllInstitutionGroups(page) {
       if (text && text.trim().includes('Ver investimentos')) {
         await btn.click();
         anyClicked = true;
-        await page.waitForTimeout(150);
       }
     }
     if (!anyClicked) break;
+    // Wait for re-render: wait for at least one asset card to be attached to DOM
+    try {
+      await page.waitForSelector('.asset-card', { state: 'attached', timeout: 5_000 });
+    } catch (e) {
+      // Continue regardless - the re-render may be in progress
+    }
+    if (anyClicked) break;
   }
 }
 
