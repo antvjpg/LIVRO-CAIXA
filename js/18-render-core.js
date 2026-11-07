@@ -1457,6 +1457,14 @@ function renderCategoryManageList() {
   let unitsWarningLogged;
 
   const expandedInstitutionKeys = new Set();
+  loadInvestInstExpansion();
+
+  function loadInvestInstExpansion() {
+    try {
+      const keys = JSON.parse(localStorage.getItem('livro-caixa-invest-inst-expanded') || '[]');
+      keys.forEach((k) => expandedInstitutionKeys.add(k));
+    } catch (_) { /* armazenamento indisponível */ }
+  }
 
   function toggleInvestmentsInstitutionView(key) {
     const set = expandedInstitutionKeys;

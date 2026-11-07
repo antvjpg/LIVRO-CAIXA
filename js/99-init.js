@@ -2498,6 +2498,15 @@ VALOR: ${fmt(pseudoBill.amount)}
     } else {
       targetItem = { id: 'inv' + Date.now(), createdAt: todayISO(), order: investments.length, ...record };
       investments.push(targetItem);
+      // Auto-expand the institution group so the new card is visible
+      const instInput = document.getElementById('iInstituicao');
+      const instValue = instInput ? instInput.value.trim() : '';
+      const instKey = String(instValue).trim().toLowerCase() || 'sem-instituicao';
+      try {
+        const existing = JSON.parse(localStorage.getItem('livro-caixa-invest-inst-expanded') || '[]');
+        if (!existing.includes(instKey)) existing.push(instKey);
+        localStorage.setItem('livro-caixa-invest-inst-expanded', JSON.stringify(existing));
+      } catch (_) { /* armazenamento indisponível */ }
     }
 
     if (targetItem && type === 'Renda Fixa') syncDerivedInvestmentValue(targetItem);
