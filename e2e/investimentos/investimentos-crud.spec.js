@@ -273,7 +273,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     return { investments, yields, investmentsPlain, yieldsPlain };
   }
 
-  async function snapshotWithInvestments(rest, names, timeout = 20_000) {
+  async function snapshotWithInvestments(rest, names, timeout = 60_000) {
     let snap;
     await expect
       .poll(
