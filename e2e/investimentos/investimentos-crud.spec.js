@@ -56,6 +56,24 @@ function toPlainYield(fields) {
 
 const card = (page, name) => page.locator('#investGrid .asset-card', { hasText: name });
 
+async function expandAllInstitutionGroups(page) {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const buttons = page.locator('.institution-view-all');
+    const count = await buttons.count();
+    let anyClicked = false;
+    for (let i = 0; i < count; i++) {
+      const btn = buttons.nth(i);
+      const text = await btn.textContent();
+      if (text && text.trim().includes('Ver investimentos')) {
+        await btn.click();
+        anyClicked = true;
+        await page.waitForTimeout(150);
+      }
+    }
+    if (!anyClicked) break;
+  }
+}
+
 test.describe.serial('Investimentos — CRUD completo (serial)', () => {
   let watchAtual = null;
   let dialogsAtual = null;
@@ -320,6 +338,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     expect(await app.isLoggedIn(page), 'sessão preservada após o reload').toBe(true);
     await app.waitForDataReady(page);
     await openInvest(page);
+    await expandAllInstitutionGroups(page);
     for (const name of [NAME_ST, NAME_RF, NAME_OUT, NAME_BTC]) {
       await expect(card(page, name), `card ${name} visível após reload`).toBeVisible({ timeout: 20_000 });
     }

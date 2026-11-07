@@ -51,9 +51,27 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
   const PRECO_USDT = 5;
   const AVISO_1 = '1 movimentação sem quantidade não entra no saldo';
 
-  const card = (page, name) => page.locator('#investGrid .asset-card', { hasText: name });
+const card = (page, name) => page.locator('#investGrid .asset-card', { hasText: name });
 
-  function skipSemCredencial() {
+async function expandAllInstitutionGroups(page) {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const buttons = page.locator('.institution-view-all');
+    const count = await buttons.count();
+    let anyClicked = false;
+    for (let i = 0; i < count; i++) {
+      const btn = buttons.nth(i);
+      const text = await btn.textContent();
+      if (text && text.trim().includes('Ver investimentos')) {
+        await btn.click();
+        anyClicked = true;
+        await page.waitForTimeout(150);
+      }
+    }
+    if (!anyClicked) break;
+  }
+}
+
+function skipSemCredencial() {
     const creds = resolveCredentials();
     if (!creds) {
       test.skip(true, `BLOCKED: credenciais QA indisponíveis — ${guardReasonText() || 'sem credencial'}`);
@@ -155,6 +173,7 @@ test.describe.serial('Investimentos — movimentações sem quantidade e concili
     }
     await clickGuarded(page, '#iSalvar');
     await waitInvestPanelClosed(page);
+    await expandAllInstitutionGroups(page);
     await expect(card(page, name)).toBeVisible({ timeout: 15_000 });
   }
 
