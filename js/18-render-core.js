@@ -982,10 +982,19 @@ function editInstitution(btn, key) {
   }
 
   function categoryIcon(category, flow = 'in') {
-    if (category?.icon) return category.icon;
+    const resolve = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon : null;
+    const base = category?.icon || '';
+    if (base) return resolve ? resolve(base) : base;
     const name = String(category?.name || '');
     const match = CATEGORY_ICON_RULES.find(([rule]) => rule.test(name));
-    return match ? match[1] : (flow === 'out' ? '↘' : '↗');
+    if (match) return resolve ? resolve(match[1]) : match[1];
+    return flow === 'out' ? 'trending-down' : 'trending-up';
+  }
+  function categoryIconHTML(category, flow = 'in') {
+    if (typeof LC_ICON !== 'undefined') {
+      return `<i class="${LC_ICON.getIconClass(categoryIcon(category, flow))}" aria-hidden="true"></i>`;
+    }
+    return escapeHTML(categoryIcon(category, flow));
   }
 
   let EMOJI_CATALOG;
@@ -997,10 +1006,15 @@ function editInstitution(btn, key) {
     try { return /\p{Extended_Pictographic}/u.test(String(value || '')); } catch (err) { return String(value || '').trim().length > 0; }
   }
   function setCategoryDraftIcon(icon) {
-    const value = String(icon || '📦').trim();
-    document.getElementById('cIcon').value = value;
-    document.getElementById('cEmojiPreview').textContent = value;
-    document.getElementById('cEmojiLabel').textContent = emojiLabel(value);
+    const resolved = typeof LC_ICON !== 'undefined'
+      ? LC_ICON.resolveIcon(icon)
+      : String(icon || 'package').trim();
+    document.getElementById('cIcon').value = resolved;
+    document.getElementById('cEmojiPreview').innerHTML = typeof LC_ICON !== 'undefined'
+      ? `<i class="${LC_ICON.getIconClass(resolved)}" aria-hidden="true"></i>`
+      : escapeHTML(resolved);
+    const label = typeof LC_ICON !== 'undefined' ? LC_ICON.getIconLabel(resolved) : null;
+    document.getElementById('cEmojiLabel').textContent = label || 'Ícone personalizado';
   }
   let emojiFloatPending;
 
@@ -1011,21 +1025,21 @@ function editInstitution(btn, key) {
   function normalizeEmojiSearch(value) {
     return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
   }
-  function suggestEmojiForCategoryName(name) {
+  function suggestIconForCategoryName(name) {
     const query = normalizeEmojiSearch(name);
-    if (!query) return null;
-    const entries = EMOJI_CATALOG.map(([emoji, label, group]) => ({ emoji, l: normalizeEmojiSearch(label), g: normalizeEmojiSearch(group) }));
+    if (!query || typeof LC_ICON === 'undefined') return null;
+    const entries = LC_ICON.getTablerIconCatalog().map((entry) => ({ id: entry.id, l: normalizeEmojiSearch(entry.label), g: normalizeEmojiSearch(entry.group) }));
     const match = entries.find(e => e.l === query)
       || entries.find(e => e.l.startsWith(query))
       || entries.find(e => e.l.includes(query))
       || entries.find(e => e.g === query)
       || entries.find(e => query.includes(e.l));
-    return match ? match.emoji : null;
+    return match ? match.id : null;
   }
   function applyCategoryNameSuggestion() {
     if (categoryIconTouched) return;
-    const suggestion = suggestEmojiForCategoryName(document.getElementById('cNome').value);
-    const current = document.getElementById('cIcon').value || '📦';
+    const suggestion = suggestIconForCategoryName(document.getElementById('cNome').value);
+    const current = document.getElementById('cIcon').value || 'package';
     if (suggestion) {
       if (current !== suggestion) {
         categoryIconSuggested = suggestion;
@@ -1033,38 +1047,44 @@ function editInstitution(btn, key) {
       }
     } else if (categoryIconSuggested && current === categoryIconSuggested) {
       categoryIconSuggested = null;
-      setCategoryDraftIcon('📦');
+      setCategoryDraftIcon('package');
     }
   }
   function renderEmojiFloatGrid() {
-    const current = emojiFloatPending || document.getElementById('cIcon').value || '📦';
+    const entries = typeof LC_ICON !== 'undefined' ? LC_ICON.getTablerIconCatalog() : [];
+    const current = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(emojiFloatPending || document.getElementById('cIcon').value || 'package') : (emojiFloatPending || document.getElementById('cIcon').value || 'package');
     const rawQuery = document.getElementById('emojiFloatSearch')?.value || '';
     const query = normalizeEmojiSearch(rawQuery);
-    const matches = EMOJI_CATALOG.filter(([emoji, label, group]) => !query
-      || normalizeEmojiSearch(label).includes(query)
-      || normalizeEmojiSearch(group).includes(query)
-      || emoji.includes(query));
+    const matches = entries.filter((entry) => !query
+      || normalizeEmojiSearch(entry.label).includes(query)
+      || normalizeEmojiSearch(entry.group).includes(query)
+      || entry.id.includes(query));
     let html = '';
     let lastGroup = '';
-    for (const [emoji, label, group] of matches) {
-      if (group && group !== lastGroup) {
-        lastGroup = group;
-        html += `<div class="emoji-float-group">${escapeHTML(group)}</div>`;
+    for (const entry of matches) {
+      if (entry.group && entry.group !== lastGroup) {
+        lastGroup = entry.group;
+        html += `<div class="emoji-float-group">${escapeHTML(entry.group)}</div>`;
       }
-      html += `<button type="button" class="${emoji === current ? 'selected' : ''}" data-emoji="${emoji}" title="${escapeHTML(label)}" aria-label="${escapeHTML(label)}" aria-pressed="${emoji === current}"><span class="emoji-float-btn-emoji">${emoji}</span><span class="emoji-float-btn-label">${escapeHTML(label)}</span></button>`;
+      const selected = entry.id === current;
+      html += `<button type="button" class="${selected ? 'selected' : ''}" data-icon="${entry.id}" title="${escapeHTML(entry.label)}" aria-label="${escapeHTML(entry.label)}" aria-pressed="${selected}"><i class="${LC_ICON.getIconClass(entry.id)}" aria-hidden="true"></i><span class="emoji-float-btn-label">${escapeHTML(entry.label)}</span></button>`;
     }
     if (!matches.length) {
-      html = `<div class="emoji-float-empty">Nenhum emoji encontrado para “${escapeHTML(rawQuery)}”</div>`;
+      html = `<div class="emoji-float-empty">Nenhum ícone encontrado para “${escapeHTML(rawQuery)}”</div>`;
     }
     document.getElementById('emojiFloatGrid').innerHTML = html;
     updateEmojiFloatPreview(current);
   }
   function updateEmojiFloatPreview(icon) {
-    document.getElementById('emojiFloatPreviewIcon').textContent = icon;
-    document.getElementById('emojiFloatPreviewLabel').textContent = emojiLabel(icon);
+    const resolved = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(icon) : String(icon || '');
+    document.getElementById('emojiFloatPreviewIcon').innerHTML = typeof LC_ICON !== 'undefined'
+      ? `<i class="${LC_ICON.getIconClass(resolved)}" aria-hidden="true"></i>`
+      : escapeHTML(resolved);
+    const label = typeof LC_ICON !== 'undefined' ? LC_ICON.getIconLabel(resolved) : emojiLabel(icon);
+    document.getElementById('emojiFloatPreviewLabel').textContent = label || emojiLabel(icon);
   }
   function openEmojiFloat() {
-    emojiFloatPending = document.getElementById('cIcon').value || '📦';
+    emojiFloatPending = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(document.getElementById('cIcon').value || 'package') : (document.getElementById('cIcon').value || 'package');
     document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
     document.getElementById('emojiFloatNativeInput').value = '';
     document.getElementById('emojiFloatSearch').value = '';
@@ -1083,9 +1103,9 @@ function editInstitution(btn, key) {
       if (event.target.id === 'emojiFloatOverlay') closeEmojiFloat();
     };
     document.getElementById('emojiFloatGrid').onclick = event => {
-      const button = event.target.closest('[data-emoji]');
+      const button = event.target.closest('[data-icon]');
       if (!button) return;
-      emojiFloatPending = button.dataset.emoji;
+      emojiFloatPending = button.dataset.icon;
       document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
       renderEmojiFloatGrid();
     };
@@ -1106,8 +1126,80 @@ function editInstitution(btn, key) {
       setCategoryDraftIcon(emojiFloatPending || document.getElementById('cIcon').value);
       closeEmojiFloat();
     };
-    setCategoryDraftIcon(document.getElementById('cIcon').value || '📦');
+    setCategoryDraftIcon(document.getElementById('cIcon').value || 'package');
   }
+
+  // --- Objetivo: seletor de ícones Tabler (reutiliza LC_ICON catálogo) ---
+  function openGoalEmojiFloat() {
+    emojiFloatPending = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(document.getElementById('goalIcone').value || 'target') : (document.getElementById('goalIcone').value || 'target');
+    document.getElementById('goalEmojiFloatNativeBox').classList.remove('is-open');
+    renderGoalEmojiFloatGrid();
+  }
+
+  function renderGoalEmojiFloatGrid() {
+    const current = emojiFloatPending || document.getElementById('goalIcone').value || 'target';
+    const rawQuery = document.getElementById('goalEmojiFloatSearch')?.value || '';
+    const query = normalizeEmojiSearch(rawQuery);
+    const entries = typeof LC_ICON !== 'undefined' ? LC_ICON.getTablerIconCatalog() : [];
+    const matches = entries.filter((entry) => !query
+      || normalizeEmojiSearch(entry.label).includes(query)
+      || normalizeEmojiSearch(entry.group).includes(query)
+      || entry.id.includes(query));
+    let html = '';
+    let lastGroup = '';
+    for (const entry of matches) {
+      if (entry.group && entry.group !== lastGroup) {
+        lastGroup = entry.group;
+        html += `<div class="emoji-float-group">${escapeHTML(entry.group)}</div>`;
+      }
+      const selected = entry.id === current;
+      html += `<button type="button" class="${selected ? 'selected' : ''}" data-icon="${entry.id}" title="${escapeHTML(entry.label)}" aria-label="${escapeHTML(entry.label)}" aria-pressed="${selected}"><i class="${LC_ICON.getIconClass(entry.id)}" aria-hidden="true"></i><span class="emoji-float-btn-label">${escapeHTML(entry.label)}</span></button>`;
+    }
+    if (!matches.length) {
+      html = `<div class="emoji-float-empty">Nenhum ícone encontrado para “${escapeHTML(rawQuery)}”</div>`;
+    }
+    document.getElementById('goalEmojiFloatGrid').innerHTML = html;
+    updateGoalEmojiFloatPreview(current);
+  }
+
+  function updateGoalEmojiFloatPreview(icon) {
+    const resolved = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(icon) : String(icon || '');
+    document.getElementById('goalEmojiFloatPreviewIcon').innerHTML = typeof LC_ICON !== 'undefined'
+      ? `<i class="${LC_ICON.getIconClass(resolved)}" aria-hidden="true"></i>`
+      : escapeHTML(resolved);
+    const label = typeof LC_ICON !== 'undefined' ? LC_ICON.getIconLabel(resolved) : emojiLabel(icon);
+    document.getElementById('goalEmojiFloatPreviewLabel').textContent = label || emojiLabel(icon);
+  }
+
+  function openGoalEmojiFloatWrapper() {
+    openGoalEmojiFloat();
+  }
+
+  function closeGoalEmojiFloat() {
+    document.getElementById('goalEmojiFloatOverlay').classList.remove('open');
+    renderGoalEmojiFloatGrid();
+  }
+
+  function goalEmojiFloatConfirm() {
+    const selected = emojiFloatPending || document.getElementById('goalIcone').value;
+    setGoalDraftIcon(selected);
+    closeGoalEmojiFloat();
+  }
+
+  function setGoalDraftIcon(icon) {
+    const resolved = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(icon) : icon;
+    document.getElementById('goalIcone').value = resolved;
+    updateGoalPreviewIcon(resolved);
+  }
+
+  function updateGoalPreviewIcon(icon) {
+    const resolved = typeof LC_ICON !== 'undefined' ? LC_ICON.getIconClass(icon) : `ti ti-${icon}`;
+    document.getElementById('goalEmojiPreview').innerHTML = `<i class="${resolved}" aria-hidden="true"></i>`;
+    document.getElementById('goalEmojiLabel').textContent = typeof LC_ICON !== 'undefined' ? LC_ICON.getIconLabel(icon) : emojiLabel(icon);
+  }
+
+  // Hooks de abertura/fecho do seletor de metas
+  document.getElementById('goalEmojiCatalog').onclick = openGoalEmojiFloatWrapper;
 
   function renderCategorySelect() {
     const sel = document.getElementById('fCategoria');
@@ -1134,9 +1226,10 @@ function editInstitution(btn, key) {
     const [catId, subId] = value.includes('::') ? value.split('::') : [value, ''];
     const cat = categories.find(c => c.id === catId);
     if (!cat) { summary.textContent = 'Sem categoria'; return; }
-    const icon = categoryIcon(cat);
     const sub = subId && Array.isArray(cat.subcategories) ? cat.subcategories.find(s => s.id === subId) : null;
-    summary.textContent = sub ? `${icon} ${cat.name} › ${sub.name}` : `${icon} ${cat.name}`;
+    summary.innerHTML = sub
+      ? `${categoryIconHTML(cat)} ${escapeHTML(cat.name)} › ${escapeHTML(sub.name)}`
+      : `${categoryIconHTML(cat)} ${escapeHTML(cat.name)}`;
   }
 
   function renderCatPickerList() {
@@ -1153,13 +1246,12 @@ function editInstitution(btn, key) {
       const matchingSubs = subs.filter(s => !query || String(s.name || '').toLocaleLowerCase('pt-BR').includes(query));
       if (!catMatch && !matchingSubs.length) return;
       const color = categoryColor(c);
-      const icon = categoryIcon(c);
       if (catMatch || !subs.length) {
-        rows.push(`<button type="button" class="filter-choice-option cat-pick-option ${current === c.id ? 'is-selected' : ''}" data-value="${c.id}"><span class="category-dot" style="background:${color}">${escapeHTML(icon)}</span><span>${escapeHTML(c.name)}${subs.length ? ' (sem subcategoria)' : ''}</span></button>`);
+        rows.push(`<button type="button" class="filter-choice-option cat-pick-option ${current === c.id ? 'is-selected' : ''}" data-value="${c.id}"><span class="category-dot" style="background:${color}">${categoryIconHTML(c)}</span><span>${escapeHTML(c.name)}${subs.length ? ' (sem subcategoria)' : ''}</span></button>`);
       }
       matchingSubs.forEach(s => {
         const val = `${c.id}::${s.id}`;
-        rows.push(`<button type="button" class="filter-choice-option cat-pick-option cat-pick-sub ${current === val ? 'is-selected' : ''}" data-value="${val}"><span class="category-dot" style="background:${color};opacity:.7">${escapeHTML(icon)}</span><span>${escapeHTML(c.name)} › ${escapeHTML(s.name || '')}</span></button>`);
+        rows.push(`<button type="button" class="filter-choice-option cat-pick-option cat-pick-sub ${current === val ? 'is-selected' : ''}" data-value="${val}"><span class="category-dot" style="background:${color};opacity:.7">${categoryIconHTML(c)}</span><span>${escapeHTML(c.name)} › ${escapeHTML(s.name || '')}</span></button>`);
       });
     });
     list.innerHTML = rows.join('') + (categories.length === 0 && !query ? '<div class="filter-choice-empty">Nenhuma categoria cadastrada. Toque em + para criar.</div>' : '');
@@ -1207,7 +1299,7 @@ function renderCategoryManageList() {
       }).join(' ');
       return `
       <div class="cat-list-item">
-        <span class="category-dot" style="background:${categoryColor(c)}">${categoryIcon(c)}</span>
+        <span class="category-dot" style="background:${categoryColor(c)}">${categoryIconHTML(c)}</span>
         <strong class="cat-name">${escapeHTML(c.name)}</strong>
         <div class="cat-actions">
           <button type="button" class="action-btn icon-button tiny add" onclick="openSubcategoryPopover('${c.id}')" aria-label="Adicionar subcategoria" title="Adicionar subcategoria"><i class="fi fi-rr-plus" aria-hidden="true"></i></button>
@@ -2144,7 +2236,7 @@ function renderCategoryManageList() {
       html += `
         <div class="card-lancamento">
           <div class="card-left">
-            <div class="card-border-line"><span class="movement-category-icon">${escapeHTML(categoryIcon(cat, e.type))}</span></div>
+            <div class="card-border-line"><span class="movement-category-icon">${categoryIconHTML(cat, e.type)}</span></div>
             <div class="card-info">
               <span class="card-date">${dateFmt}</span>
               <h3 class="card-title" title="${escapeHTML(e.desc)}" onclick="this.classList.toggle('is-expanded')">${escapeHTML(e.desc)}</h3>

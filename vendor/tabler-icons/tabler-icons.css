@@ -51,3 +51,5 @@
 .ti-sparkles:before { content: "\f6d7"; }
 .ti-target:before { content: "\eb35"; }
 .ti-star:before { content: "\eb2e"; }
+.ti-trending-up:before { content: "\eb43"; }
+.ti-trending-down:before { content: "\eb42"; }

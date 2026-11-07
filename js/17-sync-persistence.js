@@ -374,8 +374,13 @@ document.body.classList.remove('is-data-loading');
       if (goal.name == null) goal.name = '';
       goal.name = String(goal.name).slice(0, 200);
 
-      if (goal.icon == null || !String(goal.icon).trim()) goal.icon = '🎯';
-      else goal.icon = String(goal.icon).slice(0, 8);
+      if (goal.icon == null || !String(goal.icon).trim()) goal.icon = 'target';
+      else {
+        // Converte emojis legados via resolvedor central; preservar IDs Tabler válidos
+        const resolved = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(String(goal.icon)) : String(goal.icon);
+        // Se o resolvedor retornou 'target' (ou fallback), mantém; senão, usa o valor resolvido
+        goal.icon = resolved === 'target' || !resolved ? 'target' : resolved;
+      }
 
       if (goal.targetAmount == null) {
         goal.targetAmount = 0;

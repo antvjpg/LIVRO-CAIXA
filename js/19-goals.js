@@ -185,10 +185,13 @@
       ? `Necessário ≈ ${fmt(plan.perMonth)}/mês`
       : '';
 
+    const resolvedIcon = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(goal.icon || 'target') : (goal.icon || 'target');
+    const iconClass = typeof LC_ICON !== 'undefined' ? LC_ICON.getIconClass(resolvedIcon) : `ti ti-${resolvedIcon}`;
+
     return `<article class="goal-card-v2" data-goal-id="${escapeHTML(goal.id)}">
       <div class="goal-card-v2-top">
         <div class="goal-card-v2-title">
-          <span class="goal-card-v2-icon" aria-hidden="true">${escapeHTML(goal.icon || '🎯')}</span>
+          <span class="goal-card-v2-icon" aria-hidden="true">${iconClass}</span>
           <strong>${escapeHTML(goal.name || 'Meta')}</strong>
           <span class="goal-card-v2-badge ${statusClass}">${escapeHTML(statusLabel)}</span>
         </div>
@@ -239,7 +242,8 @@
   function resetGoalForm() {
     editingGoalId = null;
     document.getElementById('goalNome').value = '';
-    document.getElementById('goalIcone').value = '🎯';
+    const defaultIcon = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon('target') : 'target';
+    document.getElementById('goalIcone').value = defaultIcon;
     setMoneyInput('goalValorObjetivo', 0);
     refreshGoalCaixinhaOptions('');
     document.getElementById('goalCaixinha').value = '';

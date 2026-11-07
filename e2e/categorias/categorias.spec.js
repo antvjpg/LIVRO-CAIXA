@@ -27,6 +27,7 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
   /* Nomes únicos por execução para não colidir com dados reais */
   const uniq = Date.now().toString(36);
   const catName = `CatTeste ${uniq}`;
+  const catTabler = `CatTabler ${uniq}`;
   const catNameEdited = `${catName} Editada`;
   const subName = `SubTeste ${uniq}`;
   const subNameEdited = `${subName} v2`;
@@ -262,3 +263,74 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await expect(page.locator('#subcat-popover')).toBeHidden({ timeout: 5_000 });
   });
 });
+
+  /* ---------- Ícones Tabler (Fase 2) ---------- */
+
+  async function abrirSeletorDeIcones(page) {
+    await openCategoryModal(page);
+    await page.click('#btnEmojiCatalog');
+    await expect(page.locator('#emojiFloatOverlay.open')).toBeVisible({ timeout: 5_000 });
+  }
+
+  test('seletor Tabler: abre, seleciona ícone e o preview atualiza', async ({ page }) => {
+    await abrirSeletorDeIcones(page);
+
+    /* grade usa o catálogo Tabler (botões com data-icon, não data-emoji) */
+    await expect(page.locator('#emojiFloatGrid [data-icon]')).toHaveCount(53);
+    await expect(page.locator('#emojiFloatGrid [data-emoji]')).toHaveCount(0);
+
+    /* seleciona e o preview reflete a classe Tabler */
+    await page.locator('#emojiFloatGrid [data-icon="shopping-cart"]').click();
+    await expect(page.locator('#emojiFloatPreviewIcon i.ti-shopping-cart')).toHaveCount(1);
+
+    await page.click('#emojiFloatConfirm');
+
+    /* preview do formulário mostra o ícone Tabler e o draft normaliza para o id */
+    await expect(page.locator('#cEmojiPreview i.ti-shopping-cart')).toHaveCount(1);
+    await expect(page.locator('#cIcon')).toHaveValue('shopping-cart');
+
+    /* fecha a overlay */
+    await expect(page.locator('#emojiFloatOverlay.open')).toHaveCount(0);
+    await closeCategoryModal(page);
+  });
+
+  test('sugestão automática: nome da categoria sugere ícone Tabler válido', async ({ page }) => {
+    await openCategoryModal(page);
+    await page.fill('#cNome', 'Mercado');
+    await expect(page.locator('#cIcon')).toHaveValue('shopping-cart');
+    await expect(page.locator('#cEmojiPreview i.ti-shopping-cart')).toHaveCount(1);
+    await page.fill('#cNome', 'NomeSemMatchesXY');
+    await expect(page.locator('#cIcon')).toHaveValue('package');
+    await closeCategoryModal(page);
+  });
+
+  test('persistência: categoria salva com ID Tabler e edita convertendo legado', async ({ page }) => {
+    await abrirSeletorDeIcones(page);
+    await page.fill('#cNome', catTabler);
+    await page.locator('#emojiFloatGrid [data-icon="heart"]').click();
+    await page.click('#emojiFloatConfirm');
+    await esperaTrava(page, '#cSalvar');
+    await page.click('#cSalvar');
+    await expect(catRow(page, catTabler)).toBeVisible({ timeout: 10_000 });
+
+    /* linha da categoria renderiza <i> Tabler */
+    await expect(catRow(page, catTabler).locator('.category-dot i.ti-heart')).toHaveCount(1);
+
+    /* valor persistido em memória é o ID Tabler (não emoji) */
+    const persistido = await page.evaluate((nome) => {
+      const found = (typeof categories !== 'undefined' ? categories : window.categories || [])
+        .find((c) => c.name === nome);
+      return found ? found.icon : null;
+    }, catTabler);
+    expect(persistido).toBe('heart');
+
+    /* edição converte emoji legado gravado à força para ID Tabler no draft */
+    await page.evaluate((nome) => {
+      const col = typeof categories !== 'undefined' ? categories : window.categories;
+      const found = col.find((c) => c.name === nome);
+      if (found) found.icon = '📈';
+    }, catTabler);
+    await catRow(page, catTabler).locator('.cat-actions .action-btn[aria-label*="ditar"], .cat-actions .action-btn[aria-label*="dit"]').first().click();
+    await expect(page.locator('#cIcon')).toHaveValue('chart-line');
+    await closeCategoryModal(page);
+  });

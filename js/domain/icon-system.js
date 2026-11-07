@@ -41,12 +41,25 @@ export function getIconClass(value) {
   return `ti ti-${resolveIcon(value)}`;
 }
 
+const LABELS = new Map(TABLER_ICON_CATALOG.map((entry) => [entry.id, entry.label]));
+
+export function getIconLabel(value) {
+  const id = resolveIcon(value);
+  return LABELS.get(id) ?? null;
+}
+
+export function getTablerIconCatalog() {
+  return TABLER_ICON_CATALOG.map((entry) => ({ ...entry }));
+}
+
 const LC_ICON = {
   FALLBACK_ICON,
   isValidTablerIcon,
   getLegacyIconMapping,
   resolveIcon,
   getIconClass,
+  getIconLabel,
+  getTablerIconCatalog,
 };
 
 globalThis.LC_ICON = LC_ICON;

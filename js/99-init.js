@@ -571,7 +571,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!goal) return;
     editingGoalId = id;
     document.getElementById('goalNome').value = goal.name || '';
-    document.getElementById('goalIcone').value = goal.icon || '🎯';
+    const defaultIcon = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(goal.icon || 'target') : (goal.icon || 'target');
+    document.getElementById('goalIcone').value = defaultIcon;
     setMoneyInput('goalValorObjetivo', goal.targetAmount || 0);
     refreshGoalCaixinhaOptions(goal.sourceId ? `${goal.sourceType}:${goal.sourceId}` : (goal.caixinhaId ? `pocket:${goal.caixinhaId}` : ''));
     document.getElementById('goalCaixinha').value = goal.sourceId ? `${goal.sourceType}:${goal.sourceId}` : (goal.caixinhaId ? `pocket:${goal.caixinhaId}` : '');
@@ -667,7 +668,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const existingGoal = editingGoalId ? goals.find(g => g.id === editingGoalId) : null;
     const record = {
       name,
-      icon: document.getElementById('goalIcone').value.trim() || '🎯',
+      icon: typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(document.getElementById('goalIcone').value.trim()) : (document.getElementById('goalIcone').value.trim() || 'target'),
       targetAmount,
       startDate,
       deadline,
@@ -2415,7 +2416,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     categoryIconTouched = false;
     categoryIconSuggested = null;
     document.getElementById('cNome').value = '';
-    document.getElementById('cIcon').value = '📦';
+    document.getElementById('cIcon').value = 'package';
     document.getElementById('cSalvar').textContent = 'Adicionar';
     openModal('panelCategoria');
   };
@@ -2437,7 +2438,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     categoryIconTouched = false;
     categoryIconSuggested = null;
     document.getElementById('cNome').value = '';
-    document.getElementById('cIcon').value = '📦';
+    document.getElementById('cIcon').value = 'package';
     document.getElementById('cSalvar').textContent = 'Adicionar categoria';
     openModal('panelCategoria');  };
 
@@ -2918,7 +2919,9 @@ VALOR: ${fmt(pseudoBill.amount)}
 
   document.getElementById('cSalvar').onclick = async () => {
     const name = document.getElementById('cNome').value.trim();
-    const icon = document.getElementById('cIcon').value || '📦';
+    const icon = typeof LC_ICON !== 'undefined'
+      ? LC_ICON.resolveIcon(document.getElementById('cIcon').value || 'package')
+      : (document.getElementById('cIcon').value || 'package');
     if (!name) { alert('Dê um nome à categoria.'); return; }
     let savedCategoryId = editingCategoryId;
     if (editingCategoryId) {
@@ -2934,7 +2937,7 @@ VALOR: ${fmt(pseudoBill.amount)}
     await saveCategories();
     populateFilterControls();
     document.getElementById('cNome').value = '';
-    setCategoryDraftIcon('📦');
+    setCategoryDraftIcon('package');
     render();
     if (returnToEntryAfterCategory) {
       returnToEntryAfterCategory = false;

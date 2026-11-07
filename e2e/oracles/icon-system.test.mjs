@@ -122,3 +122,22 @@ test('determinismo: chamadas repetidas retornam o mesmo valor e não mutam entra
   assert.equal(ICON.resolveIcon(input), ICON.resolveIcon(input));
   assert.equal(ICON.getIconClass(input), ICON.getIconClass(input));
 });
+
+test('getIconLabel: id e legado retornam o rótulo do catálogo', () => {
+  assert.equal(ICON.getIconLabel('chart-line'), 'Investimento');
+  assert.equal(ICON.getIconLabel('📈'), 'Investimento');
+  assert.equal(ICON.getIconLabel('texto-inexistente'), 'Padrão (fallback)');
+});
+
+test('getTablerIconCatalog: retorna cópia com entradas do catálogo', () => {
+  const catalog = ICON.getTablerIconCatalog();
+  assert.equal(catalog.length, TABLER_ICON_CATALOG.length);
+  catalog.push({ id: 'x', label: 'x', group: 'x' });
+  assert.equal(ICON.getTablerIconCatalog().length, TABLER_ICON_CATALOG.length);
+});
+
+test('setas de fluxo in/out resolvidas pelo catálogo', () => {
+  assert.equal(ICON.resolveIcon('↗'), 'trending-up');
+  assert.equal(ICON.resolveIcon('↘'), 'trending-down');
+  assert.equal(ICON.resolveIcon('↔️'), 'arrows-exchange');
+});

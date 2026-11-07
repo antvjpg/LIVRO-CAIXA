@@ -55,6 +55,8 @@ export const TABLER_ICON_CATALOG = [
   { id: 'paw', label: 'Pets', group: 'Lazer' },
   { id: 'sparkles', label: 'Outros', group: 'Outros' },
   { id: 'target', label: 'Meta', group: 'Metas' },
+  { id: 'trending-up', label: 'Receita', group: 'Fluxo' },
+  { id: 'trending-down', label: 'Despesa', group: 'Fluxo' },
   { id: 'star', label: 'Padrão (fallback)', group: 'Sistema' },
 ];
 
@@ -109,4 +111,7 @@ export const TABLER_LEGACY_EMOJI_MAP = {
   '🐾': 'paw',
   '✨': 'sparkles',
   '🎯': 'target',
+  '↔️': 'arrows-exchange',
+  '↗': 'trending-up',
+  '↘': 'trending-down',
 };
