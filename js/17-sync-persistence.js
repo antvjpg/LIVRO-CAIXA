@@ -66,6 +66,12 @@
           if (!snap.metadata.hasPendingWrites) {
             lastSynced[name] = arrToMap(getStateArray(name));
           }
+          /* Mudanças externas (outro dispositivo/aba ou escrita direta) após o
+             carregamento inicial precisam refletir na UI — sem render(), o estado
+             muda em memória mas a tela fica obsoleta (ex.: aviso de movimentação
+             legada sem quantidade semeado via SDK). Durante o carregamento
+             inicial, o render único do finally evita flicker. */
+          if (firstLoadDone) render();
           resolve();
         }, err => {
           if (!resolved) { resolved = true; reject(err); } else { console.error(err); }

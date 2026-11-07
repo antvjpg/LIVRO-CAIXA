@@ -1542,7 +1542,7 @@ function renderCategoryManageList() {
         '          ' + investmentReferenceHTML(inv),
         '          ' + (inv.dueDate ? '<span>Venc.: ' + inv.dueDate.split('-').reverse().join('/') + '</span>' : ''),
         '        </div>',
-        '        ' + (() => { const items = yieldsLog.filter(y => y.targetType === 'invest' && y.targetId === inv.id && periodMatchesMovement(y) && (y.kind || 'rendimento') === 'rendimento'); if (!items.length) return ''; const totalYield = items.reduce((s, y) => s + y.amount, 0); return `<span class="rentability-inline${totalYield >= 0 ? ' positive' : ' negative'}">${totalYield >= 0 ? '+' : ''}${fmt(totalYield)} (Rendimento)</span>`; })(),
+        '        ' + rentabilityHTML('invest', inv.id, displayVal),
         '        ' + yieldHistoryHTML('invest', inv.id),
         '        <div class="asset-card-actions item-action-row">',
         '          <div class="reorder-actions">',
