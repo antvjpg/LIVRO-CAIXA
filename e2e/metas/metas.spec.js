@@ -444,6 +444,11 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
     await createInvestment(page, { name: investName, type: g.invest.type, value: g.invest.value });
     await openGoals(page);
     await createGoal(page, { name: g.m5.name, target: g.m5.target, source: investName });
+    /* vínculo com investimento recém-criado: poll tolera a janela de
+       sync/render em que o card ainda exibe 0/— (mesmo padrão do m4) */
+    await expect
+      .poll(async () => (await cardState(page, g.m5.name)).current, { timeout: 20_000, message: 'valor atual após vínculo com investimento' })
+      .toBe(e.m5.current);
     const s5 = await expectGoal(page, g.m5.name, e.m5, {
       badge: 'Ativa',
       meta: expectedMeta({ remaining: e.m5.remaining }),
