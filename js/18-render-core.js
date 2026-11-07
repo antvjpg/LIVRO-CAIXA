@@ -1466,6 +1466,13 @@ function renderCategoryManageList() {
     } catch (_) { /* armazenamento indisponível */ }
   }
 
+  // Helper to check if a group is considered open:
+  // - if expandedInstitutionKeys has saved keys, only those groups are open
+  // - if expandedInstitutionKeys is empty (fresh session), all groups are open by default
+  function isGroupOpen(key) {
+    return expandedInstitutionKeys.has(key) || expandedInstitutionKeys.size === 0;
+  }
+
   function toggleInvestmentsInstitutionView(key) {
     const set = expandedInstitutionKeys;
     if (set.has(key)) set.delete(key); else set.add(key);
@@ -1490,7 +1497,7 @@ function renderCategoryManageList() {
 
   function buildInvestmentsGroupCardHTML(group, gi) {
     const list = group.investments;
-    const isOpen = expandedInstitutionKeys.has(group.key);
+    const isOpen = isGroupOpen(group.key);
     const entries = list.map((inv, idx) => ({ inv, idx }));
     const visibleEntries = isOpen ? entries : entries.slice(0, 1);
     const hiddenCount = Math.max(0, entries.length - visibleEntries.length);
