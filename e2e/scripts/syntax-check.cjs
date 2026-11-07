@@ -60,9 +60,11 @@ const JS_FILES = [
   'js/32-auth-wiring.js',
   'js/99-init.js',
   'js/data/emoji-catalog.js',
+  'js/data/tabler-icon-catalog.js',
   'js/legacy/patches.js',
   'js/domain/card-engine-v3-combined.js',
   'js/domain/financial-client.js',
+  'js/domain/icon-system.js',
   'sw.js',
   'src/diagnostic/login-diagnostic.js'
 ];
