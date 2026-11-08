@@ -243,8 +243,9 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await expect(subLabel(page, catName, subNameEdited)).toBeVisible({ timeout: 10_000 });
 
     /* --- excluir subcategoria via × --- */
-    /* (confirm() aceito pelo handler customizado) */
+    /* removeSubcategory usa showConfirm (modal customizado, não confirm() nativo) */
     await subLabel(page, catName, subNameEdited).locator('.sub-del').click();
+    await page.click('#custom-confirm-overlay #confirm-ok');
 
     /* subcategoria some */
     await expect(subLabel(page, catName, subNameEdited)).toBeHidden({ timeout: 10_000 });
