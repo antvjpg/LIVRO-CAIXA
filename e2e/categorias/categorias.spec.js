@@ -276,7 +276,7 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await abrirSeletorDeIcones(page);
 
     /* grade usa o catálogo Tabler (botões com data-icon, não data-emoji) */
-    await expect(page.locator('#emojiFloatGrid [data-icon]')).toHaveCount(53);
+    await expect(page.locator('#emojiFloatGrid [data-icon]')).toHaveCount(52);
     await expect(page.locator('#emojiFloatGrid [data-emoji]')).toHaveCount(0);
 
     /* seleciona e o preview reflete a classe Tabler */

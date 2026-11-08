@@ -191,7 +191,7 @@
     return `<article class="goal-card-v2" data-goal-id="${escapeHTML(goal.id)}">
       <div class="goal-card-v2-top">
         <div class="goal-card-v2-title">
-          <span class="goal-card-v2-icon" aria-hidden="true">${iconClass}</span>
+          <span class="goal-card-v2-icon" aria-hidden="true"><i class="${iconClass}" aria-hidden="true"></i></span>
           <strong>${escapeHTML(goal.name || 'Meta')}</strong>
           <span class="goal-card-v2-badge ${statusClass}">${escapeHTML(statusLabel)}</span>
         </div>

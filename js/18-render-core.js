@@ -1086,7 +1086,6 @@ function editInstitution(btn, key) {
   function openEmojiFloat() {
     emojiFloatPending = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(document.getElementById('cIcon').value || 'package') : (document.getElementById('cIcon').value || 'package');
     document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
-    document.getElementById('emojiFloatNativeInput').value = '';
     document.getElementById('emojiFloatSearch').value = '';
     renderEmojiFloatGrid();
     document.getElementById('emojiFloatOverlay').classList.add('open');
@@ -1109,24 +1108,10 @@ function editInstitution(btn, key) {
       document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
       renderEmojiFloatGrid();
     };
-    document.getElementById('emojiFloatKeyboard').onclick = () => {
-      document.getElementById('emojiFloatNativeBox').classList.add('is-open');
-      requestAnimationFrame(() => document.getElementById('emojiFloatNativeInput').focus({ preventScroll: true }));
-    };
-    document.getElementById('emojiFloatNativeUse').onclick = () => {
-      const input = document.getElementById('emojiFloatNativeInput');
-      const value = input.value.trim();
-      if (!isEmojiValue(value)) { alert('Digite ou cole um emoji válido do teclado.'); return; }
-      emojiFloatPending = value;
-      updateEmojiFloatPreview(value);
-      renderEmojiFloatGrid();
-    };
-    document.getElementById('emojiFloatConfirm').onclick = () => {
-      categoryIconTouched = true;
-      setCategoryDraftIcon(emojiFloatPending || document.getElementById('cIcon').value);
-      closeEmojiFloat();
-    };
-    setCategoryDraftIcon(document.getElementById('cIcon').value || 'package');
+  function closeEmojiFloat() {
+    document.getElementById('emojiFloatOverlay').classList.remove('open');
+  }
+  setCategoryDraftIcon(document.getElementById('cIcon').value || 'package');
   }
 
   // --- Objetivo: seletor de ícones Tabler (reutiliza LC_ICON catálogo) ---
@@ -1200,6 +1185,19 @@ function editInstitution(btn, key) {
 
   // Hooks de abertura/fecho do seletor de metas
   document.getElementById('goalEmojiCatalog').onclick = openGoalEmojiFloatWrapper;
+  document.getElementById('goalEmojiFloatClose').onclick = closeGoalEmojiFloat;
+  document.getElementById('goalEmojiFloatOverlay').onclick = event => {
+    if (event.target.id === 'goalEmojiFloatOverlay') closeGoalEmojiFloat();
+  };
+  document.getElementById('goalEmojiFloatSearch').addEventListener('input', renderGoalEmojiFloatGrid);
+  document.getElementById('goalEmojiFloatGrid').onclick = event => {
+    const button = event.target.closest('[data-icon]');
+    if (!button) return;
+    emojiFloatPending = button.dataset.icon;
+    document.getElementById('goalEmojiFloatNativeBox').classList.remove('is-open');
+    renderGoalEmojiFloatGrid();
+  };
+  document.getElementById('goalEmojiFloatConfirm').onclick = goalEmojiFloatConfirm;
 
   function renderCategorySelect() {
     const sel = document.getElementById('fCategoria');
