@@ -96,6 +96,12 @@ module.exports = defineConfig({
       use: { storageState: STATE },
     },
     {
+      name: 'categorias',
+      dependencies: ['setup'],
+      testMatch: /categorias\/.*\.spec\.js$/,
+      use: { storageState: STATE },
+    },
+    {
       name: 'investimentos',
       dependencies: ['setup'],
       testMatch: /investimentos\/.*\.spec\.js$/,
