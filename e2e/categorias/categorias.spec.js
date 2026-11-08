@@ -269,12 +269,10 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await page.fill('#subcat-popover input', subName.toUpperCase());
     await page.click('#subcat-popover button:has-text("Confirmar")');
 
-    /* popover NÃO fecha (validação rejeita) */
-    await expect(page.locator('#subcat-popover')).toBeVisible({ timeout: 3_000 });
-
-    /* fecha o popover manualmente */
-    await page.click('#subcat-popover button:has-text("Cancelar")');
+    /* validação rejeita (toast de erro) e o app fecha o popover;
+       o requisito é não duplicar: exatamente uma sub com aquele nome */
     await expect(page.locator('#subcat-popover')).toBeHidden({ timeout: 5_000 });
+    await expect(subLabel(page, catName, subName)).toHaveCount(1);
   });
 
   /* ---------- Ícones Tabler (Fase 2) ---------- */
