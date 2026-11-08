@@ -180,14 +180,10 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     /* clica no botão de excluir (ícone lixeira, classe .delete) */
     await catRow(page, alvo).locator('.cat-actions .action-btn.delete').click();
 
-    /* dialog confirm() é aceito pelo attachDialogHandler */
-    await page.waitForFunction(() => !document.querySelector('#panelCategoria.open'), null, { timeout: 10_000 });
-
-    /* reabre e verifica que sumiu */
-    await openCategoryModal(page);
+    /* dialog confirm() é aceito pelo attachDialogHandler; o painel permanece
+       aberto após excluir (deleteCategory não o fecha) — a linha some da lista */
     await expect(catRow(page, alvo)).toBeHidden({ timeout: 10_000 });
-    const depois = await countCategories(page);
-    expect(depois).toBe(antes - 1);
+    await expect.poll(() => countCategories(page), { timeout: 10_000 }).toBe(antes - 1);
   });
 
   /* ---------- Subcategorias ---------- */
