@@ -82,10 +82,16 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     return page.locator('#catManageList .cat-list-item').count();
   }
 
-  /* Verifica se uma subcategoria está visível dentro da linha da categoria */
+  /* Label de subcategoria: no DOM, .sub-cats-line é IRMÃ (following-sibling)
+     do .cat-list-item, não filha — localizar a partir da linha da categoria */
+  const subLabel = (page, catName, subName) =>
+    catRow(page, catName)
+      .locator('xpath=following-sibling::div[contains(@class,"sub-cats-line")]')
+      .locator('.sub-cat-label', { hasText: subName });
+
+  /* Verifica se uma subcategoria está visível na linha da categoria */
   async function subcategoryVisible(page, catName, subName) {
-    const row = catRow(page, catName);
-    return row.locator('.sub-cat-label', { hasText: subName }).isVisible().catch(() => false);
+    return subLabel(page, catName, subName).isVisible().catch(() => false);
   }
 
   /* Espera a trava anti-duplo liberar (mesmo padrão de helpers/app.js) */
@@ -213,7 +219,7 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await expect(page.locator('#subcat-popover')).toBeHidden({ timeout: 5_000 });
 
     /* subcategoria aparece na linha da categoria */
-    await expect(catRow(page, catName).locator('.sub-cat-label', { hasText: subName })).toBeVisible({ timeout: 10_000 });
+    await expect(subLabel(page, catName, subName)).toBeVisible({ timeout: 10_000 });
 
     /* --- editar subcategoria via prompt --- */
     /* o prompt() é interceptado pelo attachDialogHandler que aceita com texto default;
@@ -222,19 +228,19 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
       /* prompt abre com valor atual — aceita e substitui */
       await dialog.accept(subNameEdited);
     });
-    await catRow(page, catName).locator('.sub-cat-label', { hasText: subName }).click();
+    await subLabel(page, catName, subName).click();
 
     /* aguarda re-render com novo nome */
-    await expect(catRow(page, catName).locator('.sub-cat-label', { hasText: subNameEdited })).toBeVisible({ timeout: 10_000 });
+    await expect(subLabel(page, catName, subNameEdited)).toBeVisible({ timeout: 10_000 });
 
     /* --- excluir subcategoria via × --- */
     page.once('dialog', async (dialog) => {
       await dialog.accept();
     });
-    await catRow(page, catName).locator('.sub-cat-label', { hasText: subNameEdited }).locator('..').locator('.sub-del').click();
+    await subLabel(page, catName, subNameEdited).locator('.sub-del').click();
 
     /* subcategoria some */
-    await expect(catRow(page, catName).locator('.sub-cat-label', { hasText: subNameEdited })).toBeHidden({ timeout: 10_000 });
+    await expect(subLabel(page, catName, subNameEdited)).toBeHidden({ timeout: 10_000 });
   });
 
   test('não duplica subcomcategoria com mesmo nome (case-insensitive)', async ({ page }) => {
@@ -242,12 +248,12 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
 
     /* garante categoria com subcategoria existente */
     const row = catRow(page, catName);
-    const temSub = await row.locator('.sub-cat-label', { hasText: subName }).isVisible().catch(() => false);
+    const temSub = await subLabel(page, catName, subName).isVisible().catch(() => false);
     if (!temSub) {
       await row.locator('.cat-actions .action-btn.add').click();
       await page.fill('#subcat-popover input', subName);
       await page.click('#subcat-popover button:has-text("Confirmar")');
-      await expect(row.locator('.sub-cat-label', { hasText: subName })).toBeVisible({ timeout: 10_000 });
+      await expect(subLabel(page, catName, subName)).toBeVisible({ timeout: 10_000 });
     }
 
     /* tenta adicionar subcomcategoria com mesmo nome (caixa diferente) */
