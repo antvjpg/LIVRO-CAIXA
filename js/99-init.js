@@ -2496,7 +2496,7 @@ VALOR: ${fmt(pseudoBill.amount)}
       }
       editingInvestId = null;
     } else {
-      targetItem = { id: 'inv' + Date.now(), createdAt: todayISO(), order: investments.length, ...record };
+      targetItem = { id: 'inv' + Date.now() + Math.random().toString(36).slice(2, 7), createdAt: todayISO(), order: investments.length, ...record };
       investments.push(targetItem);
       // Auto-expand the institution group so the new card is visible
       const instInput = document.getElementById('iInstituicao');
