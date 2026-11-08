@@ -144,6 +144,7 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
       await page.click('#cSalvar');
       await expect(catRow(page, catName)).toBeVisible({ timeout: 10_000 });
     }
+    const totalAntes = await countCategories(page);
 
     /* clica no botão de editar (ícone lápis) */
     await catRow(page, catName).locator('.cat-actions .action-btn[aria-label*="ditar"], .cat-actions .action-btn[aria-label*="dit"]').first().click();
@@ -160,8 +161,9 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     /* botão volta para "Adicionar" */
     await expect(page.locator('#cSalvar')).toHaveText('Adicionar');
 
-    /* nome atualizado na lista */
+    /* nome atualizado na lista (sem duplicar: total inalterado) */
     await expect(catRow(page, catNameEdited)).toBeVisible({ timeout: 10_000 });
+    expect(await countCategories(page)).toBe(totalAntes);
   });
 
   test('exclui categoria com confirmação', async ({ page }) => {
@@ -191,10 +193,12 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
   test('adiciona subcategoria via popover, edita e exclui', async ({ page }) => {
     await openCategoryModal(page);
 
-    /* recria a categoria base para este teste */
-    await page.fill('#cNome', catName);
-    await esperaTrava(page, '#cSalvar');
-    await page.click('#cSalvar');
+    /* garante a categoria base (pode ter sido criada em testes anteriores) */
+    if (!(await catRow(page, catName).isVisible().catch(() => false))) {
+      await page.fill('#cNome', catName);
+      await esperaTrava(page, '#cSalvar');
+      await page.click('#cSalvar');
+    }
     await expect(catRow(page, catName)).toBeVisible({ timeout: 10_000 });
 
     /* --- adicionar subcategoria via popover --- */
