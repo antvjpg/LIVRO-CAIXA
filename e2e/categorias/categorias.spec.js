@@ -9,6 +9,7 @@ const app = require('../helpers/app');
 const qa = require('../helpers/qa-account');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials, guardReasonText } = require('../helpers/env');
+const { signIn, listCollection } = require('../helpers/firestore-rest');
 
 test.describe.serial('Categorias — CRUD, subcategorias e persistência', () => {
   let watchAtual = null;
@@ -349,5 +350,46 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await catRow(page, catTabler).locator('.cat-actions .action-btn[aria-label*="ditar"], .cat-actions .action-btn[aria-label*="dit"]').first().click();
     await expect(page.locator('#cIcon')).toHaveValue('chart-line');
     await closeCategoryModal(page);
+  });
+
+  test('legacy category icon via Firestore: histórico carrega e renderiza Tabler sem reescrever o valor', async ({ page }) => {
+    const creds = skipSemCredencial();
+    const uniq = Date.now().toString(36);
+    const legacyName = `CatHistórica ${uniq}`;
+    const legacyId = `cat-hist-${uniq}`;
+
+    /* Seed no Firestore em formato histórico pré-Tabler (icon em emoji).
+       Percorre o fluxo REAL de leitura: reload reexecuta loadState
+       (onSnapshot → setStateArray) e o render resolve via LC_ICON. */
+    await page.evaluate(async ({ id, name }) => {
+      const uid = window.firebase?.auth?.()?.currentUser?.uid;
+      if (!uid) throw new Error('uid ausente');
+      await window.firebase.firestore().collection('livrocaixa').doc(uid)
+        .collection('categories').doc(id)
+        .set({ id, name, icon: '❤️' });
+    }, { id: legacyId, name: legacyName });
+
+    try {
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await app.waitForDataReady(page);
+      await openCategoryModal(page);
+      await expect(catRow(page, legacyName)).toBeVisible({ timeout: 20_000 });
+      await expect(catRow(page, legacyName).locator('.category-dot i.ti-heart')).toHaveCount(1);
+
+      /* Sem write-back: o valor armazenado permanece o emoji (não destrutivo) */
+      const rest = await signIn(creds.email, creds.password);
+      const stored = (await listCollection(rest.uid, rest.idToken, rest.projectId, 'categories'))
+        .find((d) => d.fields.name === legacyName);
+      expect(stored, 'categoria histórica no Firestore').toBeTruthy();
+      expect(stored.fields.icon).toBe('❤️');
+    } finally {
+      await page.evaluate(async (id) => {
+        const uid = window.firebase?.auth?.()?.currentUser?.uid;
+        if (!uid) return;
+        await window.firebase.firestore().collection('livrocaixa').doc(uid).collection('categories').doc(id).delete();
+      }, legacyId).catch(() => {});
+    }
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
 });

@@ -881,4 +881,57 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
 
     expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
+
+  test('legacy goal icon via Firestore: histórico carrega, normaliza e renderiza Tabler', async ({ page }) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+
+    const uniq = Date.now().toString(36);
+    const legacyName = `Meta Histórica ${uniq}`;
+    const legacyId = `goal-hist-${uniq}`;
+
+    /* Seed no Firestore em formato histórico pré-Tabler (icon em emoji).
+       Diferente do teste anterior (injeção em memória), este percorre o
+       fluxo REAL de leitura: reload reexecuta loadState (onSnapshot →
+       normalizeGoals → persistência → render). */
+    await page.evaluate(async ({ id, name }) => {
+      const uid = window.firebase?.auth?.()?.currentUser?.uid;
+      if (!uid) throw new Error('uid ausente');
+      await window.firebase.firestore().collection('livrocaixa').doc(uid)
+        .collection('goals').doc(id)
+        .set({ id, name, icon: '🎯', targetAmount: 100, status: 'active' });
+    }, { id: legacyId, name: legacyName });
+
+    try {
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await app.waitForDataReady(page);
+      await openGoals(page);
+      await expect(card(page, legacyName)).toBeVisible({ timeout: 20_000 });
+      await expect(card(page, legacyName).locator('.goal-card-v2-icon i.ti-target')).toHaveCount(1);
+
+      /* Em memória, normalizeGoals converteu para o ID Tabler */
+      const memIcon = await page.evaluate((n) => {
+        const col = typeof goals !== 'undefined' ? goals : window.goals || [];
+        const found = col.find((g) => g.name === n);
+        return found ? found.icon : null;
+      }, legacyName);
+      expect(memIcon).toBe('target');
+
+      /* Persistência: write-back não destrutivo (só o ícone é convertido) */
+      const rest = await signIn(creds.email, creds.password);
+      const stored = (await storedGoals(rest)).find((d) => d.name === legacyName);
+      expect(stored, 'meta histórica no Firestore').toBeTruthy();
+      expect(Number(stored.targetAmount)).toBe(100);
+      expect(stored.status).toBe('active');
+      expect(stored.icon).toBe('target');
+    } finally {
+      await page.evaluate(async (id) => {
+        const uid = window.firebase?.auth?.()?.currentUser?.uid;
+        if (!uid) return;
+        await window.firebase.firestore().collection('livrocaixa').doc(uid).collection('goals').doc(id).delete();
+      }, legacyId).catch(() => {});
+    }
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
 });
