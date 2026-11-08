@@ -204,4 +204,4 @@ Exigência de qualidade: sinal verde de CI não substitui cobertura de ponta a p
 
 ## Licença
 
-Uso pessoal — todos os direitos reservados (`UNLICENSED`).
+Uso pessoal — todos os direitos reservados. Ver arquivo `LICENSE` na raiz do repositório.
