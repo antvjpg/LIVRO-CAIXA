@@ -718,8 +718,7 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
     await openGoals(page);
 
     /* open the goals form */
-    await page.click('#btnNewGoal');
-    await expect(page.locator('#panelGoalForm.open')).toBeVisible({ timeout: 5_000 });
+    await openGoalForm(page);
 
     /* open the icon selector */
     await page.click('#goalEmojiCatalog');
@@ -758,8 +757,7 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
     await startPage(page, creds);
     await openGoals(page);
 
-    await page.click('#btnNewGoal');
-    await expect(page.locator('#panelGoalForm.open')).toBeVisible({ timeout: 5_000 });
+    await openGoalForm(page);
 
     /* default icon is target */
     const initialValue = await page.locator('#goalIcone').inputValue();
@@ -789,8 +787,7 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
 
     const goalName = `Meta Tabler ${Date.now().toString(36)}`;
 
-    await page.click('#btnNewGoal');
-    await expect(page.locator('#panelGoalForm.open')).toBeVisible({ timeout: 5_000 });
+    await openGoalForm(page);
 
     /* open selector, search and select chart-line */
     await page.click('#goalEmojiCatalog');
