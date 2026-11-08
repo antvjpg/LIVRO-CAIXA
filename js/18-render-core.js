@@ -1300,7 +1300,7 @@ function renderCategoryManageList() {
       overlay.style.display = 'flex';
       overlay.style.justifyContent = 'center';
       overlay.style.alignItems = 'center';
-      overlay.style.zIndex = '1000';
+      overlay.style.zIndex = '1500';
       const content = document.createElement('div');
       content.style.background = 'var(--surface)';
       content.style.padding = '20px';
