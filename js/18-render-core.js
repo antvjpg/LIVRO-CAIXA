@@ -1097,6 +1097,11 @@ function editInstitution(btn, key) {
       emojiFloatPending = button.dataset.icon;
       renderEmojiFloatGrid();
     };
+    document.getElementById('emojiFloatConfirm').onclick = () => {
+      categoryIconTouched = true;
+      setCategoryDraftIcon(emojiFloatPending || document.getElementById('cIcon').value);
+      closeEmojiFloat();
+    };
   function closeEmojiFloat() {
     document.getElementById('emojiFloatOverlay').classList.remove('open');
   }
