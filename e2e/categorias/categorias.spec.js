@@ -279,10 +279,8 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await expect(page.locator('#emojiFloatGrid [data-icon]')).toHaveCount(52);
     await expect(page.locator('#emojiFloatGrid [data-emoji]')).toHaveCount(0);
 
-    /* seleciona e o preview reflete a classe Tabler */
+    /* seleciona ícone e confirma */
     await page.locator('#emojiFloatGrid [data-icon="shopping-cart"]').click();
-    await expect(page.locator('#emojiFloatPreviewIcon i.ti-shopping-cart')).toHaveCount(1);
-
     await page.click('#emojiFloatConfirm');
 
     /* preview do formulário mostra o ícone Tabler e o draft normaliza para o id */

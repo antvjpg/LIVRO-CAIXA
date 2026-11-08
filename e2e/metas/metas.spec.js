@@ -709,4 +709,111 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
 
     expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
+
+  // ========== Tabler Icon Selector Tests (Fase 7) ==========
+
+  test('goal icon selector: opens, searches, selects and confirms', async ({ page }, testInfo) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+    await openGoals(page);
+
+    /* open the goals form */
+    await page.click('#btnNewGoal');
+    await expect(page.locator('#panelGoalForm.open')).toBeVisible({ timeout: 5_000 });
+
+    /* open the icon selector */
+    await page.click('#goalEmojiCatalog');
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toBeVisible({ timeout: 5_000 });
+
+    /* grid uses Tabler catalog */
+    await expect(page.locator('#goalEmojiFloatGrid [data-icon]')).toHaveCount(52);
+    await expect(page.locator('#goalEmojiFloatGrid [data-emoji]')).toHaveCount(0);
+
+    /* search for specific icon */
+    await page.fill('#goalEmojiFloatSearch', 'target');
+    await expect(page.locator('#goalEmojiFloatGrid [data-icon="target"]')).toBeVisible();
+
+    /* clear search */
+    await page.fill('#goalEmojiFloatSearch', '');
+    await expect(page.locator('#goalEmojiFloatGrid [data-icon="heart"]')).toBeVisible();
+
+    /* select a different icon */
+    await page.locator('#goalEmojiFloatGrid [data-icon="heart"]').click();
+
+    /* confirm selection */
+    await page.click('#goalEmojiFloatConfirm');
+
+    /* overlay closes */
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toHaveCount(0);
+
+    /* form preview shows selected icon */
+    await expect(page.locator('#goalEmojiPreview i.ti-heart')).toHaveCount(1);
+    await expect(page.locator('#goalIcone')).toHaveValue('heart');
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
+
+  test('goal icon selector: cancel preserves previous value', async ({ page }) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+    await openGoals(page);
+
+    await page.click('#btnNewGoal');
+    await expect(page.locator('#panelGoalForm.open')).toBeVisible({ timeout: 5_000 });
+
+    /* default icon is target */
+    const initialValue = await page.locator('#goalIcone').inputValue();
+    expect(initialValue).toBe('target');
+
+    /* open selector and select different icon */
+    await page.click('#goalEmojiCatalog');
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toBeVisible({ timeout: 5_000 });
+    await page.locator('#goalEmojiFloatGrid [data-icon="heart"]').click();
+
+    /* cancel instead of confirm */
+    await page.locator('#goalEmojiFloatClose').click();
+
+    /* overlay closes */
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toHaveCount(0);
+
+    /* value preserved (not changed by cancel) */
+    await expect(page.locator('#goalIcone')).toHaveValue(initialValue);
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
+
+  test('goal icon selector: persistence and legacy conversion', async ({ page }) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+    await openGoals(page);
+
+    await page.click('#btnNewGoal');
+    await expect(page.locator('#panelGoalForm.open')).toBeVisible({ timeout: 5_000 });
+
+    /* fill goal data */
+    await page.fill('#goalNome', 'Meta Tabler Teste');
+    await page.fill('#goalValorObjetivo', '100');
+
+    /* open selector and select icon */
+    await page.click('#goalEmojiCatalog');
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toBeVisible({ timeout: 5_000 });
+    await page.locator('#goalEmojiFloatGrid [data-icon="chart-line"]').click();
+    await page.click('#goalEmojiFloatConfirm');
+
+    /* verify icon persisted in form */
+    await expect(page.locator('#goalIcone')).toHaveValue('chart-line');
+    await expect(page.locator('#goalEmojiPreview i.ti-chart-line')).toHaveCount(1);
+
+    /* save goal (if form validation passes) */
+    const saveButton = page.locator('#btnSaveGoal');
+    if (await saveButton.isEnabled()) {
+      await saveButton.click();
+      await expect(page.locator('#goalsList .goal-card-v2')).toBeVisible({ timeout: 10_000 });
+
+      /* card renders Tabler icon */
+      await expect(page.locator('#goalsList .goal-card-v2-icon i.ti-chart-line')).toHaveCount(1);
+    }
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
 });

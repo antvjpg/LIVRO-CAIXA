@@ -1073,7 +1073,6 @@ function editInstitution(btn, key) {
       html = `<div class="emoji-float-empty">Nenhum ícone encontrado para “${escapeHTML(rawQuery)}”</div>`;
     }
     document.getElementById('emojiFloatGrid').innerHTML = html;
-    updateEmojiFloatPreview(current);
   }
   function updateEmojiFloatPreview(icon) {
     const resolved = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(icon) : String(icon || '');
@@ -1085,9 +1084,9 @@ function editInstitution(btn, key) {
   }
   function openEmojiFloat() {
     emojiFloatPending = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(document.getElementById('cIcon').value || 'package') : (document.getElementById('cIcon').value || 'package');
+    document.getElementById('emojiFloatOverlay').classList.add('open');
     document.getElementById('emojiFloatSearch').value = '';
     renderEmojiFloatGrid();
-    document.getElementById('emojiFloatOverlay').classList.add('open');
   }
   function closeEmojiFloat() {
     document.getElementById('emojiFloatOverlay').classList.remove('open');
@@ -1142,7 +1141,6 @@ function editInstitution(btn, key) {
       html = `<div class="emoji-float-empty">Nenhum ícone encontrado para “${escapeHTML(rawQuery)}”</div>`;
     }
     document.getElementById('goalEmojiFloatGrid').innerHTML = html;
-    updateGoalEmojiFloatPreview(current);
   }
 
   function updateGoalEmojiFloatPreview(icon) {
@@ -1160,7 +1158,6 @@ function editInstitution(btn, key) {
 
   function closeGoalEmojiFloat() {
     document.getElementById('goalEmojiFloatOverlay').classList.remove('open');
-    renderGoalEmojiFloatGrid();
   }
 
   function goalEmojiFloatConfirm() {
