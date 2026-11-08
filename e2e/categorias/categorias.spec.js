@@ -177,8 +177,8 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
 
     const antes = await countCategories(page);
 
-    /* clica no botão de excluir (ícone lixeira, classe .del) */
-    await catRow(page, alvo).locator('.cat-actions .action-btn.del').click();
+    /* clica no botão de excluir (ícone lixeira, classe .delete) */
+    await catRow(page, alvo).locator('.cat-actions .action-btn.delete').click();
 
     /* dialog confirm() é aceito pelo attachDialogHandler */
     await page.waitForFunction(() => !document.querySelector('#panelCategoria.open'), null, { timeout: 10_000 });
@@ -262,7 +262,6 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await page.click('#subcat-popover button:has-text("Cancelar")');
     await expect(page.locator('#subcat-popover')).toBeHidden({ timeout: 5_000 });
   });
-});
 
   /* ---------- Ícones Tabler (Fase 2) ---------- */
 
@@ -339,3 +338,4 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await expect(page.locator('#cIcon')).toHaveValue('chart-line');
     await closeCategoryModal(page);
   });
+});
