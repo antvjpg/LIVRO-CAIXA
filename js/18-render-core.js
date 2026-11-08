@@ -1085,7 +1085,6 @@ function editInstitution(btn, key) {
   }
   function openEmojiFloat() {
     emojiFloatPending = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(document.getElementById('cIcon').value || 'package') : (document.getElementById('cIcon').value || 'package');
-    document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
     document.getElementById('emojiFloatSearch').value = '';
     renderEmojiFloatGrid();
     document.getElementById('emojiFloatOverlay').classList.add('open');
@@ -1105,7 +1104,6 @@ function editInstitution(btn, key) {
       const button = event.target.closest('[data-icon]');
       if (!button) return;
       emojiFloatPending = button.dataset.icon;
-      document.getElementById('emojiFloatNativeBox').classList.remove('is-open');
       renderEmojiFloatGrid();
     };
   function closeEmojiFloat() {
@@ -1117,7 +1115,7 @@ function editInstitution(btn, key) {
   // --- Objetivo: seletor de ícones Tabler (reutiliza LC_ICON catálogo) ---
   function openGoalEmojiFloat() {
     emojiFloatPending = typeof LC_ICON !== 'undefined' ? LC_ICON.resolveIcon(document.getElementById('goalIcone').value || 'target') : (document.getElementById('goalIcone').value || 'target');
-    document.getElementById('goalEmojiFloatNativeBox').classList.remove('is-open');
+    document.getElementById('goalEmojiFloatOverlay').classList.add('open');
     renderGoalEmojiFloatGrid();
   }
 
@@ -1194,7 +1192,6 @@ function editInstitution(btn, key) {
     const button = event.target.closest('[data-icon]');
     if (!button) return;
     emojiFloatPending = button.dataset.icon;
-    document.getElementById('goalEmojiFloatNativeBox').classList.remove('is-open');
     renderGoalEmojiFloatGrid();
   };
   document.getElementById('goalEmojiFloatConfirm').onclick = goalEmojiFloatConfirm;
