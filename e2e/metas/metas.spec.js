@@ -782,36 +782,104 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
     expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
 
-  test('goal icon selector: persistence and legacy conversion', async ({ page }) => {
+  test('goal icon selector: mandatory save and persistence after reload', async ({ page }) => {
     const creds = skipSemCredencial();
     await startPage(page, creds);
     await openGoals(page);
 
+    const goalName = `Meta Tabler ${Date.now().toString(36)}`;
+
     await page.click('#btnNewGoal');
     await expect(page.locator('#panelGoalForm.open')).toBeVisible({ timeout: 5_000 });
 
-    /* fill goal data */
-    await page.fill('#goalNome', 'Meta Tabler Teste');
-    await page.fill('#goalValorObjetivo', '100');
-
-    /* open selector and select icon */
+    /* open selector, search and select chart-line */
     await page.click('#goalEmojiCatalog');
     await expect(page.locator('#goalEmojiFloatOverlay.open')).toBeVisible({ timeout: 5_000 });
+    await page.fill('#goalEmojiFloatSearch', 'chart-line');
+    await expect(page.locator('#goalEmojiFloatGrid [data-icon="chart-line"]')).toBeVisible();
     await page.locator('#goalEmojiFloatGrid [data-icon="chart-line"]').click();
     await page.click('#goalEmojiFloatConfirm');
 
-    /* verify icon persisted in form */
+    /* form received the semantic ID */
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toHaveCount(0);
     await expect(page.locator('#goalIcone')).toHaveValue('chart-line');
     await expect(page.locator('#goalEmojiPreview i.ti-chart-line')).toHaveCount(1);
 
-    /* save goal (if form validation passes) */
-    const saveButton = page.locator('#btnSaveGoal');
-    if (await saveButton.isEnabled()) {
-      await saveButton.click();
-      await expect(page.locator('#goalsList .goal-card-v2')).toBeVisible({ timeout: 10_000 });
+    /* fill required fields */
+    await page.fill('#goalNome', goalName);
+    await fillMoney(page, '#goalValorObjetivo', 100);
 
-      /* card renders Tabler icon */
-      await expect(page.locator('#goalsList .goal-card-v2-icon i.ti-chart-line')).toHaveCount(1);
+    /* save button must be enabled — mandatory save, no silent skip */
+    const saveButton = page.locator('#btnSaveGoal');
+    await expect(saveButton).toBeEnabled({ timeout: 5_000 });
+    await clickSaveGoal(page);
+
+    /* goal created with the selected icon */
+    await expect(card(page, goalName)).toBeVisible({ timeout: 10_000 });
+    await expect(card(page, goalName).locator('.goal-card-v2-icon i.ti-chart-line')).toHaveCount(1);
+
+    /* reload: goal must survive with the same icon */
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await app.waitForDataReady(page);
+    await openGoals(page);
+    await expect(card(page, goalName)).toBeVisible({ timeout: 10_000 });
+    await expect(card(page, goalName).locator('.goal-card-v2-icon i.ti-chart-line')).toHaveCount(1);
+
+    /* persisted value in memory is the Tabler ID */
+    const persisted = await page.evaluate((name) => {
+      const col = typeof goals !== 'undefined' ? goals : window.goals || [];
+      const found = col.find((g) => g.name === name);
+      return found ? found.icon : null;
+    }, goalName);
+    expect(persisted).toBe('chart-line');
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
+
+  test('legacy goal icon: emoji record resolves through the real render flow', async ({ page }) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+
+    const legacyName = `Meta Legada ${Date.now().toString(36)}`;
+    const legacyId = `goal-legacy-${Date.now().toString(36)}`;
+
+    /* prepare a historical record with a legacy emoji (format used before Tabler):
+       goals[] entries carry `icon` as an emoji string, resolved at render time
+       via LC_ICON.resolveIcon() in goalMarkup(). Injected into the live array,
+       then rendered through the real openTab flow — no storage layer invented. */
+    await page.evaluate(({ id, name }) => {
+      const col = typeof goals !== 'undefined' ? goals : window.goals;
+      col.push({ id, name, icon: '🎯', targetAmount: 100, status: 'active' });
+    }, { id: legacyId, name: legacyName });
+
+    try {
+      /* real read flow: opening the tab renders the list via renderGoalsList/goalMarkup */
+      await openGoals(page);
+      await expect(card(page, legacyName)).toBeVisible({ timeout: 10_000 });
+
+      /* visual representation resolves the legacy emoji to the Tabler class */
+      await expect(card(page, legacyName).locator('.goal-card-v2-icon i.ti-target')).toHaveCount(1);
+
+      /* resolver maps the legacy value correctly */
+      const resolved = await page.evaluate(() => LC_ICON.resolveIcon('🎯'));
+      expect(resolved).toBe('target');
+      const iconClass = await page.evaluate(() => LC_ICON.getIconClass('🎯'));
+      expect(iconClass).toBe('ti ti-target');
+
+      /* display resolution must not rewrite the original record */
+      const raw = await page.evaluate((name) => {
+        const col = typeof goals !== 'undefined' ? goals : window.goals || [];
+        const found = col.find((g) => g.name === name);
+        return found ? found.icon : null;
+      }, legacyName);
+      expect(raw).toBe('🎯');
+    } finally {
+      /* cleanup: injected record never reached Firestore (not saved) */
+      await page.evaluate((id) => {
+        const col = typeof goals !== 'undefined' ? goals : window.goals;
+        const idx = col.findIndex((g) => g.id === id);
+        if (idx >= 0) col.splice(idx, 1);
+      }, legacyId).catch(() => {});
     }
 
     expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);

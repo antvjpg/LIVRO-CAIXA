@@ -5,7 +5,7 @@ name: C.O.D.E. E2E
 # UI real e a exclui no teardown (só se foi criada por esta run).
 on:
   push:
-    branches: [main, feature/code-qa]
+    branches: [main, feature/code-qa, feat/tabler-icon-foundation]
   pull_request:
     branches: [main]
   workflow_dispatch:

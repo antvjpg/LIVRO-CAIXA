@@ -322,6 +322,13 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     }, catTabler);
     expect(persistido).toBe('heart');
 
+    /* reload: a categoria deve sobreviver e exibir o mesmo ícone */
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await app.waitForDataReady(page);
+    await openCategoryModal(page);
+    await expect(catRow(page, catTabler)).toBeVisible({ timeout: 10_000 });
+    await expect(catRow(page, catTabler).locator('.category-dot i.ti-heart')).toHaveCount(1);
+
     /* edição converte emoji legado gravado à força para ID Tabler no draft */
     await page.evaluate((nome) => {
       const col = typeof categories !== 'undefined' ? categories : window.categories;
