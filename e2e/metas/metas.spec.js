@@ -9,7 +9,7 @@ const app = require('../helpers/app');
 const qa = require('../helpers/qa-account');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials, guardReasonText } = require('../helpers/env');
-const { signIn, listCollection } = require('../helpers/firestore-rest');
+const { signIn, listCollection, deleteDoc } = require('../helpers/firestore-rest');
 const { fixtures } = require('../fixtures/fixtures');
 const {
   goalRemaining,
@@ -882,7 +882,7 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
     expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
 
-  test('legacy goal icon via Firestore: histórico carrega, normaliza e renderiza Tabler', async ({ page }) => {
+  test('legacy goal icon via Firestore: histórico carrega, normaliza e renderiza Tabler', async ({ page }, testInfo) => {
     const creds = skipSemCredencial();
     await startPage(page, creds);
 
@@ -893,16 +893,18 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
     /* Seed no Firestore em formato histórico pré-Tabler (icon em emoji).
        Diferente do teste anterior (injeção em memória), este percorre o
        fluxo REAL de leitura: reload reexecuta loadState (onSnapshot →
-       normalizeGoals → persistência → render). */
-    await page.evaluate(async ({ id, name }) => {
-      const uid = window.firebase?.auth?.()?.currentUser?.uid;
-      if (!uid) throw new Error('uid ausente');
-      await window.firebase.firestore().collection('livrocaixa').doc(uid)
-        .collection('goals').doc(id)
-        .set({ id, name, icon: '🎯', targetAmount: 100, status: 'active' });
-    }, { id: legacyId, name: legacyName });
-
+       normalizeGoals → persistência → render). Semeadura dentro do try:
+       a limpeza é garantida mesmo se seed/load/assert falhar. */
+    let failure = null;
     try {
+      await page.evaluate(async ({ id, name }) => {
+        const uid = window.firebase?.auth?.()?.currentUser?.uid;
+        if (!uid) throw new Error('uid ausente');
+        await window.firebase.firestore().collection('livrocaixa').doc(uid)
+          .collection('goals').doc(id)
+          .set({ id, name, icon: '🎯', targetAmount: 100, status: 'active' });
+      }, { id: legacyId, name: legacyName });
+
       await page.reload({ waitUntil: 'domcontentloaded' });
       await app.waitForDataReady(page);
       await openGoals(page);
@@ -924,13 +926,25 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
       expect(Number(stored.targetAmount)).toBe(100);
       expect(stored.status).toBe('active');
       expect(stored.icon).toBe('target');
+    } catch (err) {
+      failure = err;
     } finally {
-      await page.evaluate(async (id) => {
-        const uid = window.firebase?.auth?.()?.currentUser?.uid;
-        if (!uid) return;
-        await window.firebase.firestore().collection('livrocaixa').doc(uid).collection('goals').doc(id).delete();
-      }, legacyId).catch(() => {});
+      /* Limpeza garantida via helper REST existente (deleteDoc), scoped ao
+         uid QA e ao id exclusivo deste teste. Falha de limpeza é explícita:
+         anotada no teste e lançada quando não há erro funcional anterior
+         (nunca mascara a causa original nem vira sucesso silencioso). */
+      try {
+        const rest = await signIn(creds.email, creds.password);
+        await deleteDoc(rest.uid, rest.idToken, rest.projectId, `livrocaixa/${rest.uid}/goals/${legacyId}`);
+      } catch (cleanupErr) {
+        testInfo.annotations.push({
+          type: 'cleanup',
+          description: `exclusão do documento de teste falhou: ${(cleanupErr && cleanupErr.message) || cleanupErr}`,
+        });
+        if (!failure) failure = cleanupErr;
+      }
     }
+    if (failure) throw failure;
 
     expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });

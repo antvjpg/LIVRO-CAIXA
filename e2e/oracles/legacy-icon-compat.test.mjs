@@ -74,29 +74,21 @@ function createAppContext() {
       },
     }
   );
+  // NOTA: o estado do app (goals, categories, ...) é declarado com `let` em
+  // js/10-state-utils.js — bindings lexicais do contexto, que sombreiam
+  // propriedades do sandbox. Por isso estado é lido/escrito via scripts no
+  // contexto (state()/init), nunca via propriedades do sandbox.
   const sandbox = {
     console,
     document: documentStub,
-    goals: [],
-    categories: [],
-    banks: [],
-    pockets: [],
-    investments: [],
-    yieldsLog: [],
-    entries: [],
-    recurringBills: [],
-    receivables: [],
-    budgets: [],
-    invoiceLaunches: [],
-    cards: [],
-    purchases: [],
-    todayISO: () => '2026-11-08',
     LC_ICON,
   };
   sandbox.window = sandbox;
   sandbox.globalThis = sandbox;
   const ctx = vm.createContext(sandbox);
   for (const f of [
+    'js/10-state-utils.js',
+    'js/11-financial-domain.js',
     'js/16-events-modals.js',
     'js/17-sync-persistence.js',
     'js/19-goals.js',
@@ -105,13 +97,30 @@ function createAppContext() {
     const code = fs.readFileSync(path.join(ROOT, f), 'utf8');
     new vm.Script(code, { filename: f }).runInContext(ctx);
   }
+  new vm.Script(
+    `todayISO = () => '2026-11-08';
+     banks = []; categories = []; entries = []; investments = []; pockets = [];
+     yieldsLog = []; recurringBills = []; receivables = []; budgets = [];
+     goals = []; invoiceLaunches = []; cards = []; purchases = [];`,
+    { filename: 'harness-init' }
+  ).runInContext(ctx);
+  // fmt/normalizeMoney são atribuídos no init do app (js/99-init.js) e
+  // dependem das funções reais de dinheiro acima. Extrai o texto-fonte
+  // real dessas atribuições (sem recopiá-las) para exercitar goalMarkup()
+  // sem divergir da produção.
+  const initSrc99 = fs.readFileSync(path.join(ROOT, 'js/99-init.js'), 'utf8');
+  const normalizeMoneyMatch = /^\s*normalizeMoney = \(n\) => \{[\s\S]*?\};/m.exec(initSrc99);
+  const fmtMatch = /^\s*fmt = \(n\) => \{[\s\S]*?\};/m.exec(initSrc99);
+  assert.ok(normalizeMoneyMatch && fmtMatch, 'normalizeMoney/fmt não encontrados em js/99-init.js');
+  new vm.Script(`${normalizeMoneyMatch[0]}\n${fmtMatch[0]}`, { filename: 'money-fmt (js/99-init.js)' }).runInContext(ctx);
   // CATEGORY_ICON_RULES é atribuído no init do app (js/99-init.js); extrai o
   // literal REAL do fonte para cobrir o fallback por nome no render.
-  const initSrc = fs.readFileSync(path.join(ROOT, 'js/99-init.js'), 'utf8');
+  const initSrc = initSrc99;
   const rulesMatch = /CATEGORY_ICON_RULES = (\[[\s\S]*?\]);/.exec(initSrc);
   assert.ok(rulesMatch, 'CATEGORY_ICON_RULES não encontrado em js/99-init.js');
   new vm.Script(`CATEGORY_ICON_RULES = ${rulesMatch[1]};`, { filename: 'category-rules' }).runInContext(ctx);
-  return { sandbox, ctx };
+  const state = (name) => new vm.Script(name, { filename: 'state' }).runInContext(ctx);
+  return { sandbox, ctx, state };
 }
 
 function clone(v) {
@@ -145,15 +154,16 @@ const EXPECTED_GOAL_ICONS = {
 };
 
 test('metas: load real (setStateArray → normalizeGoals → normalizeAllGoalStatuses) converte emojis legados', () => {
-  const { sandbox } = createAppContext();
+  const { sandbox, state } = createAppContext();
   const original = clone(GOAL_DOCS);
 
   // Sequência exata do loadState() (js/17-sync-persistence.js:65,126,129)
   sandbox.setStateArray('goals', clone(GOAL_DOCS));
   sandbox.normalizeGoals();
   sandbox.normalizeAllGoalStatuses();
+  const goals = state('goals');
 
-  for (const goal of sandbox.goals) {
+  for (const goal of goals) {
     const expected = EXPECTED_GOAL_ICONS[goal.id];
     assert.equal(goal.icon, expected, `ícone de ${goal.id}`);
     // Render: goalMarkup resolve via LC_ICON.getIconClass(goal.icon)
@@ -163,7 +173,7 @@ test('metas: load real (setStateArray → normalizeGoals → normalizeAllGoalSta
   // Não-destruição: valores originais (exceto icon e campos novos com default)
   // permanecem idênticos; nenhum campo original é removido.
   for (const orig of original) {
-    const norm = sandbox.goals.find((g) => g.id === orig.id);
+    const norm = goals.find((g) => g.id === orig.id);
     assert.ok(norm, `documento ${orig.id} preservado`);
     for (const [key, value] of Object.entries(orig)) {
       if (key === 'icon') continue;
@@ -175,14 +185,14 @@ test('metas: load real (setStateArray → normalizeGoals → normalizeAllGoalSta
   }
   // Conjunto de documentos idêntico (nada adicionado/removido).
   assert.deepEqual(
-    new Set(sandbox.goals.map((g) => g.id)),
+    new Set(goals.map((g) => g.id)),
     new Set(original.map((g) => g.id)),
     'nenhum documento adicionado ou removido'
   );
 });
 
 test('metas: diff de write-back (arrToMap) não destrutivo', () => {
-  const { sandbox } = createAppContext();
+  const { sandbox, state } = createAppContext();
   const original = clone(GOAL_DOCS);
   sandbox.setStateArray('goals', clone(GOAL_DOCS));
   sandbox.normalizeGoals();
@@ -190,7 +200,7 @@ test('metas: diff de write-back (arrToMap) não destrutivo', () => {
 
   // Mesma comparação JSON de id que o commitDiff usa para decidir escritas.
   const oldMap = sandbox.arrToMap(original);
-  const newMap = sandbox.arrToMap(sandbox.goals);
+  const newMap = sandbox.arrToMap(state('goals'));
   assert.deepEqual(new Set(Object.keys(newMap)), new Set(Object.keys(oldMap)), 'mesmos ids');
   for (const id of Object.keys(oldMap)) {
     const before = oldMap[id];
@@ -203,6 +213,40 @@ test('metas: diff de write-back (arrToMap) não destrutivo', () => {
   }
 });
 
+test('metas: goalMarkup() real renderiza ícones Tabler para valores históricos', () => {
+  const { sandbox } = createAppContext();
+  assert.equal(typeof sandbox.goalMarkup, 'function', 'goalMarkup real carregado');
+
+  const cases = [
+    [{ id: 'm-target', name: 'Meta Antiga', icon: '🎯', targetAmount: 100, status: 'active' }, 'ti ti-target', '🎯'],
+    [{ id: 'm-heart', name: 'Reserva Saúde', icon: '❤️', targetAmount: 500, status: 'active' }, 'ti ti-heart', '❤️'],
+    [{ id: 'm-chart', name: 'Investir', icon: '📈', targetAmount: 1000, status: 'active' }, 'ti ti-chart-line', '📈'],
+    [{ id: 'm-new', name: 'Meta Nova', icon: 'chart-line', targetAmount: 200, status: 'active' }, 'ti ti-chart-line', null],
+    [{ id: 'm-unknown', name: 'Meta X', icon: '🦄', targetAmount: 50, status: 'active' }, 'ti ti-star', '🦄'],
+  ];
+  for (const [goal, expectedClass, rawEmoji] of cases) {
+    const html = sandbox.goalMarkup(clone(goal));
+    // HTML produzido pela função real: span do ícone contém o <i> Tabler
+    const spanMatch = /<span class="goal-card-v2-icon" aria-hidden="true">(.*?)<\/span>/.exec(html);
+    assert.ok(spanMatch, `span do ícone presente para ${goal.id}`);
+    assert.match(spanMatch[1], new RegExp(`<i class="${expectedClass.replace(/ /g, '\\s')}" aria-hidden="true"></i>`), `classe Tabler de ${goal.id}`);
+    if (rawEmoji) {
+      assert.ok(!spanMatch[1].includes(rawEmoji), `emoji bruto não vaza no HTML de ${goal.id}`);
+    }
+    // Demais partes do card real continuam intactas (sem regressão)
+    assert.match(html, new RegExp(`data-goal-id="${goal.id}"`), `card de ${goal.id}`);
+    assert.match(html, new RegExp(`<strong>${goal.name}</strong>`), `nome de ${goal.id}`);
+  }
+
+  // Integração: após normalizeGoals (load), goalMarkup renderiza a mesma classe
+  const { sandbox: sb2, state: state2 } = createAppContext();
+  sb2.setStateArray('goals', [{ id: 'm-hist', name: 'Meta Histórica', icon: '🎯', targetAmount: 100, status: 'active' }]);
+  sb2.normalizeGoals();
+  const normalized = state2('goals').find((g) => g.id === 'm-hist');
+  assert.equal(normalized.icon, 'target', 'normalização no load');
+  assert.match(sb2.goalMarkup(normalized), /<i class="ti ti-target" aria-hidden="true"><\/i>/, 'render pós-load');
+});
+
 const CAT_DOCS = [
   { id: 'c-heart', name: 'Saúde', icon: '❤️' },
   { id: 'c-chart', name: 'Investimento', icon: '📈' },
@@ -213,20 +257,20 @@ const CAT_DOCS = [
 ];
 
 test('categorias: load preserva o valor armazenado (sem normalização nem write-back)', () => {
-  const { sandbox } = createAppContext();
+  const { sandbox, state } = createAppContext();
   const original = clone(CAT_DOCS);
   sandbox.setStateArray('categories', clone(CAT_DOCS));
 
-  const byId = new Map(sandbox.categories.map((c) => [c.id, c]));
+  const byId = new Map(state('categories').map((c) => [c.id, c]));
   for (const orig of original) {
     assert.deepEqual(byId.get(orig.id), orig, `categoria ${orig.id} intacta após load`);
   }
 });
 
 test('categorias: render resolve emojis legados para classes Tabler', () => {
-  const { sandbox } = createAppContext();
+  const { sandbox, state } = createAppContext();
   sandbox.setStateArray('categories', clone(CAT_DOCS));
-  const byId = new Map(sandbox.categories.map((c) => [c.id, c]));
+  const byId = new Map(state('categories').map((c) => [c.id, c]));
 
   // categoryIconHTML é o renderizador real (js/18-render-core.js:993-998)
   assert.match(sandbox.categoryIconHTML(byId.get('c-heart')), /<i class="ti ti-heart"/);
