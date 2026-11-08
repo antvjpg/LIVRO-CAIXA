@@ -37,6 +37,7 @@
   <link rel="stylesheet" href="./style/layout.css?v=20-36">
   <link rel="stylesheet" href="./style/features.css?v=20-31">
   <link rel="stylesheet" href="./style/dashboard-chat.css?v=20-24">
+  <link rel="stylesheet" href="./vendor/tabler-icons/tabler-icons.css">
 <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
 </head>
@@ -729,10 +730,10 @@
           </div>
           <div>
             <label for="btnEmojiCatalog">Ícone</label>
-            <input type="hidden" id="cIcon" value="📦">
+            <input type="hidden" id="cIcon" value="package">
             <div class="category-icon-picker">
               <button type="button" class="emoji-trigger" id="btnEmojiCatalog" aria-haspopup="dialog">
-                <span class="emoji-trigger-preview" id="cEmojiPreview">📦</span>
+                <span class="emoji-trigger-preview" id="cEmojiPreview"></span>
                 <span class="emoji-trigger-copy"><strong id="cEmojiLabel">Outros</strong><span>Toque para escolher um ícone</span></span>
                 <span class="emoji-trigger-chevron" aria-hidden="true">⌄</span>
               </button>
@@ -1441,8 +1442,13 @@
           <input type="text" id="goalNome" placeholder="Ex: Reserva de emergência">
         </div>
         <div>
-          <label for="goalIcone">ÍCONE</label>
-          <input type="text" id="goalIcone" maxlength="4" placeholder="🎯" value="🎯">
+          <label for="goalEmojiCatalog">ÍCONE</label>
+          <input type="hidden" id="goalIcone" value="target">
+          <button type="button" class="emoji-trigger" id="goalEmojiCatalog" aria-haspopup="dialog">
+            <span class="emoji-trigger-preview" id="goalEmojiPreview"></span>
+            <span class="emoji-trigger-copy"><strong id="goalEmojiLabel">Outros</strong><span>Toque para escolher um ícone</span></span>
+            <span class="emoji-trigger-chevron" aria-hidden="true">⌃</span>
+          </button>
         </div>
         <div>
           <label for="goalValorObjetivo">VALOR OBJETIVO</label>
@@ -1563,6 +1569,8 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
 [PATCH] CORREÇÕES / COMPATIBILIDADE
 =========================================================
 -->
+<script type="module" src="./js/data/tabler-icon-catalog.js"></script>
+<script type="module" src="./js/domain/icon-system.js"></script>
 <script src="./js/data/emoji-catalog.js?v=20-02"></script>
   <script src="./js/00-bootstrap.js?v=20-33"></script>
   <script src="./js/10-state-utils.js?v=20-25"></script>
@@ -1611,16 +1619,25 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
       <div class="emoji-float-grid" id="emojiFloatGrid" aria-live="polite"></div>
     </div>
     <div class="emoji-float-footer">
-      <button type="button" class="emoji-float-native" id="emojiFloatKeyboard">⌨ Usar emoji do teclado</button>
-      <div class="emoji-float-native-box" id="emojiFloatNativeBox">
-        <input type="text" id="emojiFloatNativeInput" inputmode="text" maxlength="16" placeholder="🪴" aria-label="Emoji personalizado">
-        <button type="button" id="emojiFloatNativeUse" class="primary">Usar</button>
-      </div>
-      <div class="emoji-float-preview">
-        <span id="emojiFloatPreviewIcon">📦</span>
-        <span id="emojiFloatPreviewLabel">Nenhum emoji selecionado</span>
-      </div>
       <button type="button" class="primary" id="emojiFloatConfirm" style="width:100%">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="emoji-float-overlay" id="goalEmojiFloatOverlay" role="dialog" aria-modal="true" aria-label="Escolher ícone da meta">
+  <div class="emoji-float-window">
+    <div class="emoji-float-head">
+      <strong>Escolher ícone</strong>
+      <button type="button" class="emoji-float-close" id="goalEmojiFloatClose" aria-label="Fechar">✕</button>
+    </div>
+    <div class="emoji-float-body">
+      <div class="emoji-float-search">
+        <input type="search" id="goalEmojiFloatSearch" placeholder="Buscar por nome ou ícone…" aria-label="Buscar ícone">
+      </div>
+      <div class="emoji-float-grid" id="goalEmojiFloatGrid" aria-live="polite"></div>
+    </div>
+    <div class="emoji-float-footer">
+      <button type="button" class="primary" id="goalEmojiFloatConfirm" style="width:100%">Confirmar</button>
     </div>
   </div>
 </div>

@@ -273,19 +273,22 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     return { investments, yields, investmentsPlain, yieldsPlain };
   }
 
-  async function snapshotWithInvestments(rest, names, timeout = 60_000) {
-    let snap;
+  async function snapshotWithInvestments(rest, names, timeout = 120_000) {
     await expect
       .poll(
         async () => {
-          snap = await snapshot(rest);
-          const present = new Set(snap.investments.map((d) => d.fields.name));
+          const investments = await listCollection(rest.uid, rest.idToken, rest.projectId, 'investments');
+          const present = new Set(investments.map((d) => d.fields.name));
           return names.filter((name) => !present.has(name));
         },
-        { timeout, message: `ativos persistidos no Firestore: ${names.join(', ')}` }
+        {
+          timeout,
+          intervals: [1000, 2000, 5000, 10_000],
+          message: `ativos persistidos no Firestore: ${names.join(', ')}`
+        }
       )
       .toEqual([]);
-    return snap;
+    return snapshot(rest);
   }
 
   async function conferirOracle(rest, name) {

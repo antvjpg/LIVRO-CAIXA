@@ -9,6 +9,7 @@ const app = require('../helpers/app');
 const qa = require('../helpers/qa-account');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials, guardReasonText } = require('../helpers/env');
+const { signIn, listCollection, deleteDoc } = require('../helpers/firestore-rest');
 
 test.describe.serial('Categorias — CRUD, subcategorias e persistência', () => {
   let watchAtual = null;
@@ -27,6 +28,7 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
   /* Nomes únicos por execução para não colidir com dados reais */
   const uniq = Date.now().toString(36);
   const catName = `CatTeste ${uniq}`;
+  const catTabler = `CatTabler ${uniq}`;
   const catNameEdited = `${catName} Editada`;
   const subName = `SubTeste ${uniq}`;
   const subNameEdited = `${subName} v2`;
@@ -81,10 +83,16 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     return page.locator('#catManageList .cat-list-item').count();
   }
 
-  /* Verifica se uma subcategoria está visível dentro da linha da categoria */
+  /* Label de subcategoria: no DOM, .sub-cats-line é IRMÃ (following-sibling)
+     do .cat-list-item, não filha — localizar a partir da linha da categoria */
+  const subLabel = (page, catName, subName) =>
+    catRow(page, catName)
+      .locator('xpath=following-sibling::div[contains(@class,"sub-cats-line")]')
+      .locator('.sub-cat-label', { hasText: subName });
+
+  /* Verifica se uma subcategoria está visível na linha da categoria */
   async function subcategoryVisible(page, catName, subName) {
-    const row = catRow(page, catName);
-    return row.locator('.sub-cat-label', { hasText: subName }).isVisible().catch(() => false);
+    return subLabel(page, catName, subName).isVisible().catch(() => false);
   }
 
   /* Espera a trava anti-duplo liberar (mesmo padrão de helpers/app.js) */
@@ -143,6 +151,7 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
       await page.click('#cSalvar');
       await expect(catRow(page, catName)).toBeVisible({ timeout: 10_000 });
     }
+    const totalAntes = await countCategories(page);
 
     /* clica no botão de editar (ícone lápis) */
     await catRow(page, catName).locator('.cat-actions .action-btn[aria-label*="ditar"], .cat-actions .action-btn[aria-label*="dit"]').first().click();
@@ -159,8 +168,9 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     /* botão volta para "Adicionar" */
     await expect(page.locator('#cSalvar')).toHaveText('Adicionar');
 
-    /* nome atualizado na lista */
+    /* nome atualizado na lista (sem duplicar: total inalterado) */
     await expect(catRow(page, catNameEdited)).toBeVisible({ timeout: 10_000 });
+    expect(await countCategories(page)).toBe(totalAntes);
   });
 
   test('exclui categoria com confirmação', async ({ page }) => {
@@ -176,28 +186,40 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
 
     const antes = await countCategories(page);
 
-    /* clica no botão de excluir (ícone lixeira, classe .del) */
-    await catRow(page, alvo).locator('.cat-actions .action-btn.del').click();
+    /* clica no botão de excluir (ícone lixeira, classe .delete) */
+    await catRow(page, alvo).locator('.cat-actions .action-btn.delete').click();
 
-    /* dialog confirm() é aceito pelo attachDialogHandler */
-    await page.waitForFunction(() => !document.querySelector('#panelCategoria.open'), null, { timeout: 10_000 });
-
-    /* reabre e verifica que sumiu */
-    await openCategoryModal(page);
+    /* dialog confirm() é aceito pelo attachDialogHandler; o painel permanece
+       aberto após excluir (deleteCategory não o fecha) — a linha some da lista */
     await expect(catRow(page, alvo)).toBeHidden({ timeout: 10_000 });
-    const depois = await countCategories(page);
-    expect(depois).toBe(antes - 1);
+    await expect.poll(() => countCategories(page), { timeout: 10_000 }).toBe(antes - 1);
   });
 
   /* ---------- Subcategorias ---------- */
 
   test('adiciona subcategoria via popover, edita e exclui', async ({ page }) => {
+    /* O handler global (attachDialogHandler) aceita prompts com o texto default.
+       Para editar via prompt precisamos responder com o novo nome: substituímos
+       o handler, mantendo o registro no sink (afterEach usa em falhas). */
+    page.removeAllListeners('dialog');
+    const sinkDialog = dialogsAtual;
+    page.on('dialog', async (dialog) => {
+      sinkDialog.push({ type: dialog.type(), message: dialog.message() });
+      if (dialog.type() === 'prompt' && dialog.message() === 'Nome da subcategoria:') {
+        await dialog.accept(subNameEdited);
+      } else {
+        await dialog.accept();
+      }
+    });
+
     await openCategoryModal(page);
 
-    /* recria a categoria base para este teste */
-    await page.fill('#cNome', catName);
-    await esperaTrava(page, '#cSalvar');
-    await page.click('#cSalvar');
+    /* garante a categoria base (pode ter sido criada em testes anteriores) */
+    if (!(await catRow(page, catName).isVisible().catch(() => false))) {
+      await page.fill('#cNome', catName);
+      await esperaTrava(page, '#cSalvar');
+      await page.click('#cSalvar');
+    }
     await expect(catRow(page, catName)).toBeVisible({ timeout: 10_000 });
 
     /* --- adicionar subcategoria via popover --- */
@@ -212,28 +234,22 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await expect(page.locator('#subcat-popover')).toBeHidden({ timeout: 5_000 });
 
     /* subcategoria aparece na linha da categoria */
-    await expect(catRow(page, catName).locator('.sub-cat-label', { hasText: subName })).toBeVisible({ timeout: 10_000 });
+    await expect(subLabel(page, catName, subName)).toBeVisible({ timeout: 10_000 });
 
     /* --- editar subcategoria via prompt --- */
-    /* o prompt() é interceptado pelo attachDialogHandler que aceita com texto default;
-       precisamos interceptar e enviar o novo nome */
-    page.once('dialog', async (dialog) => {
-      /* prompt abre com valor atual — aceita e substitui */
-      await dialog.accept(subNameEdited);
-    });
-    await catRow(page, catName).locator('.sub-cat-label', { hasText: subName }).click();
+    /* (handler customizado no início do teste responde com o novo nome) */
+    await subLabel(page, catName, subName).click();
 
     /* aguarda re-render com novo nome */
-    await expect(catRow(page, catName).locator('.sub-cat-label', { hasText: subNameEdited })).toBeVisible({ timeout: 10_000 });
+    await expect(subLabel(page, catName, subNameEdited)).toBeVisible({ timeout: 10_000 });
 
     /* --- excluir subcategoria via × --- */
-    page.once('dialog', async (dialog) => {
-      await dialog.accept();
-    });
-    await catRow(page, catName).locator('.sub-cat-label', { hasText: subNameEdited }).locator('..').locator('.sub-del').click();
+    /* removeSubcategory usa showConfirm (modal customizado, não confirm() nativo) */
+    await subLabel(page, catName, subNameEdited).locator('.sub-del').click();
+    await page.click('#custom-confirm-overlay #confirm-ok');
 
     /* subcategoria some */
-    await expect(catRow(page, catName).locator('.sub-cat-label', { hasText: subNameEdited })).toBeHidden({ timeout: 10_000 });
+    await expect(subLabel(page, catName, subNameEdited)).toBeHidden({ timeout: 10_000 });
   });
 
   test('não duplica subcomcategoria com mesmo nome (case-insensitive)', async ({ page }) => {
@@ -241,12 +257,12 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
 
     /* garante categoria com subcategoria existente */
     const row = catRow(page, catName);
-    const temSub = await row.locator('.sub-cat-label', { hasText: subName }).isVisible().catch(() => false);
+    const temSub = await subLabel(page, catName, subName).isVisible().catch(() => false);
     if (!temSub) {
       await row.locator('.cat-actions .action-btn.add').click();
       await page.fill('#subcat-popover input', subName);
       await page.click('#subcat-popover button:has-text("Confirmar")');
-      await expect(row.locator('.sub-cat-label', { hasText: subName })).toBeVisible({ timeout: 10_000 });
+      await expect(subLabel(page, catName, subName)).toBeVisible({ timeout: 10_000 });
     }
 
     /* tenta adicionar subcomcategoria com mesmo nome (caixa diferente) */
@@ -254,11 +270,140 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await page.fill('#subcat-popover input', subName.toUpperCase());
     await page.click('#subcat-popover button:has-text("Confirmar")');
 
-    /* popover NÃO fecha (validação rejeita) */
-    await expect(page.locator('#subcat-popover')).toBeVisible({ timeout: 3_000 });
-
-    /* fecha o popover manualmente */
-    await page.click('#subcat-popover button:has-text("Cancelar")');
+    /* validação rejeita (toast de erro) e o app fecha o popover;
+       o requisito é não duplicar: exatamente uma sub com aquele nome */
     await expect(page.locator('#subcat-popover')).toBeHidden({ timeout: 5_000 });
+    await expect(subLabel(page, catName, subName)).toHaveCount(1);
+  });
+
+  /* ---------- Ícones Tabler (Fase 2) ---------- */
+
+  async function abrirSeletorDeIcones(page) {
+    await openCategoryModal(page);
+    await page.click('#btnEmojiCatalog');
+    await expect(page.locator('#emojiFloatOverlay.open')).toBeVisible({ timeout: 5_000 });
+  }
+
+  test('seletor Tabler: abre, seleciona ícone e o preview atualiza', async ({ page }) => {
+    await abrirSeletorDeIcones(page);
+
+    /* grade usa o catálogo Tabler (botões com data-icon, não data-emoji) */
+    await expect(page.locator('#emojiFloatGrid [data-icon]')).toHaveCount(52);
+    await expect(page.locator('#emojiFloatGrid [data-emoji]')).toHaveCount(0);
+
+    /* seleciona ícone e confirma */
+    await page.locator('#emojiFloatGrid [data-icon="shopping-cart"]').click();
+    await page.click('#emojiFloatConfirm');
+
+    /* preview do formulário mostra o ícone Tabler e o draft normaliza para o id */
+    await expect(page.locator('#cEmojiPreview i.ti-shopping-cart')).toHaveCount(1);
+    await expect(page.locator('#cIcon')).toHaveValue('shopping-cart');
+
+    /* fecha a overlay */
+    await expect(page.locator('#emojiFloatOverlay.open')).toHaveCount(0);
+    await closeCategoryModal(page);
+  });
+
+  test('sugestão automática: nome da categoria sugere ícone Tabler válido', async ({ page }) => {
+    await openCategoryModal(page);
+    await page.fill('#cNome', 'Mercado');
+    await expect(page.locator('#cIcon')).toHaveValue('shopping-cart');
+    await expect(page.locator('#cEmojiPreview i.ti-shopping-cart')).toHaveCount(1);
+    await page.fill('#cNome', 'NomeSemMatchesXY');
+    await expect(page.locator('#cIcon')).toHaveValue('package');
+    await closeCategoryModal(page);
+  });
+
+  test('persistência: categoria salva com ID Tabler e edita convertendo legado', async ({ page }) => {
+    await abrirSeletorDeIcones(page);
+    await page.fill('#cNome', catTabler);
+    await page.locator('#emojiFloatGrid [data-icon="heart"]').click();
+    await page.click('#emojiFloatConfirm');
+    await esperaTrava(page, '#cSalvar');
+    await page.click('#cSalvar');
+    await expect(catRow(page, catTabler)).toBeVisible({ timeout: 10_000 });
+
+    /* linha da categoria renderiza <i> Tabler */
+    await expect(catRow(page, catTabler).locator('.category-dot i.ti-heart')).toHaveCount(1);
+
+    /* valor persistido em memória é o ID Tabler (não emoji) */
+    const persistido = await page.evaluate((nome) => {
+      const found = (typeof categories !== 'undefined' ? categories : window.categories || [])
+        .find((c) => c.name === nome);
+      return found ? found.icon : null;
+    }, catTabler);
+    expect(persistido).toBe('heart');
+
+    /* reload: a categoria deve sobreviver e exibir o mesmo ícone */
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await app.waitForDataReady(page);
+    await openCategoryModal(page);
+    await expect(catRow(page, catTabler)).toBeVisible({ timeout: 10_000 });
+    await expect(catRow(page, catTabler).locator('.category-dot i.ti-heart')).toHaveCount(1);
+
+    /* edição converte emoji legado gravado à força para ID Tabler no draft */
+    await page.evaluate((nome) => {
+      const col = typeof categories !== 'undefined' ? categories : window.categories;
+      const found = col.find((c) => c.name === nome);
+      if (found) found.icon = '📈';
+    }, catTabler);
+    await catRow(page, catTabler).locator('.cat-actions .action-btn[aria-label*="ditar"], .cat-actions .action-btn[aria-label*="dit"]').first().click();
+    await expect(page.locator('#cIcon')).toHaveValue('chart-line');
+    await closeCategoryModal(page);
+  });
+
+  test('legacy category icon via Firestore: histórico carrega e renderiza Tabler sem reescrever o valor', async ({ page }, testInfo) => {
+    const creds = skipSemCredencial();
+    const uniq = Date.now().toString(36);
+    const legacyName = `CatHistórica ${uniq}`;
+    const legacyId = `cat-hist-${uniq}`;
+
+    /* Seed no Firestore em formato histórico pré-Tabler (icon em emoji).
+       Percorre o fluxo REAL de leitura: reload reexecuta loadState
+       (onSnapshot → setStateArray) e o render resolve via LC_ICON.
+       Semeadura dentro do try: limpeza garantida mesmo se seed/load/assert falhar. */
+    let failure = null;
+    try {
+      await page.evaluate(async ({ id, name }) => {
+        const uid = window.firebase?.auth?.()?.currentUser?.uid;
+        if (!uid) throw new Error('uid ausente');
+        await window.firebase.firestore().collection('livrocaixa').doc(uid)
+          .collection('categories').doc(id)
+          .set({ id, name, icon: '❤️' });
+      }, { id: legacyId, name: legacyName });
+
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await app.waitForDataReady(page);
+      await openCategoryModal(page);
+      await expect(catRow(page, legacyName)).toBeVisible({ timeout: 20_000 });
+      await expect(catRow(page, legacyName).locator('.category-dot i.ti-heart')).toHaveCount(1);
+
+      /* Sem write-back: o valor armazenado permanece o emoji (não destrutivo) */
+      const rest = await signIn(creds.email, creds.password);
+      const stored = (await listCollection(rest.uid, rest.idToken, rest.projectId, 'categories'))
+        .find((d) => d.fields.name === legacyName);
+      expect(stored, 'categoria histórica no Firestore').toBeTruthy();
+      expect(stored.fields.icon).toBe('❤️');
+    } catch (err) {
+      failure = err;
+    } finally {
+      /* Limpeza garantida via helper REST existente (deleteDoc), scoped ao
+         uid QA e ao id exclusivo deste teste. Falha de limpeza é explícita:
+         anotada no teste e lançada quando não há erro funcional anterior
+         (nunca mascara a causa original nem vira sucesso silencioso). */
+      try {
+        const rest = await signIn(creds.email, creds.password);
+        await deleteDoc(rest.uid, rest.idToken, rest.projectId, `livrocaixa/${rest.uid}/categories/${legacyId}`);
+      } catch (cleanupErr) {
+        testInfo.annotations.push({
+          type: 'cleanup',
+          description: `exclusão do documento de teste falhou: ${(cleanupErr && cleanupErr.message) || cleanupErr}`,
+        });
+        if (!failure) failure = cleanupErr;
+      }
+    }
+    if (failure) throw failure;
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
 });

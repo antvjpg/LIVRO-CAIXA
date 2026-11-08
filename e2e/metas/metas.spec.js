@@ -9,7 +9,7 @@ const app = require('../helpers/app');
 const qa = require('../helpers/qa-account');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials, guardReasonText } = require('../helpers/env');
-const { signIn, listCollection } = require('../helpers/firestore-rest');
+const { signIn, listCollection, deleteDoc } = require('../helpers/firestore-rest');
 const { fixtures } = require('../fixtures/fixtures');
 const {
   goalRemaining,
@@ -706,6 +706,245 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
       body: `contaA_goals=4 contaB_goals=${storedB.length} uidB=${rest2.uid.slice(0, 6)}…`,
       contentType: 'text/plain',
     });
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
+
+  // ========== Tabler Icon Selector Tests (Fase 7) ==========
+
+  test('goal icon selector: opens, searches, selects and confirms', async ({ page }, testInfo) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+    await openGoals(page);
+
+    /* open the goals form */
+    await openGoalForm(page);
+
+    /* open the icon selector */
+    await page.click('#goalEmojiCatalog');
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toBeVisible({ timeout: 5_000 });
+
+    /* grid uses Tabler catalog */
+    await expect(page.locator('#goalEmojiFloatGrid [data-icon]')).toHaveCount(52);
+    await expect(page.locator('#goalEmojiFloatGrid [data-emoji]')).toHaveCount(0);
+
+    /* search for specific icon */
+    await page.fill('#goalEmojiFloatSearch', 'target');
+    await expect(page.locator('#goalEmojiFloatGrid [data-icon="target"]')).toBeVisible();
+
+    /* clear search */
+    await page.fill('#goalEmojiFloatSearch', '');
+    await expect(page.locator('#goalEmojiFloatGrid [data-icon="heart"]')).toBeVisible();
+
+    /* select a different icon */
+    await page.locator('#goalEmojiFloatGrid [data-icon="heart"]').click();
+
+    /* confirm selection */
+    await page.click('#goalEmojiFloatConfirm');
+
+    /* overlay closes */
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toHaveCount(0);
+
+    /* form preview shows selected icon */
+    await expect(page.locator('#goalEmojiPreview i.ti-heart')).toHaveCount(1);
+    await expect(page.locator('#goalIcone')).toHaveValue('heart');
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
+
+  test('goal icon selector: cancel preserves previous value', async ({ page }) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+    await openGoals(page);
+
+    await openGoalForm(page);
+
+    /* default icon is target */
+    const initialValue = await page.locator('#goalIcone').inputValue();
+    expect(initialValue).toBe('target');
+
+    /* open selector and select different icon */
+    await page.click('#goalEmojiCatalog');
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toBeVisible({ timeout: 5_000 });
+    await page.locator('#goalEmojiFloatGrid [data-icon="heart"]').click();
+
+    /* cancel instead of confirm */
+    await page.locator('#goalEmojiFloatClose').click();
+
+    /* overlay closes */
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toHaveCount(0);
+
+    /* value preserved (not changed by cancel) */
+    await expect(page.locator('#goalIcone')).toHaveValue(initialValue);
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
+
+  test('goal icon selector: mandatory save and persistence after reload', async ({ page }) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+    await openGoals(page);
+
+    const goalName = `Meta Tabler ${Date.now().toString(36)}`;
+
+    await openGoalForm(page);
+
+    /* open selector, search and select chart-line */
+    await page.click('#goalEmojiCatalog');
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toBeVisible({ timeout: 5_000 });
+    await page.fill('#goalEmojiFloatSearch', 'chart-line');
+    await expect(page.locator('#goalEmojiFloatGrid [data-icon="chart-line"]')).toBeVisible();
+    await page.locator('#goalEmojiFloatGrid [data-icon="chart-line"]').click();
+    await page.click('#goalEmojiFloatConfirm');
+
+    /* form received the semantic ID */
+    await expect(page.locator('#goalEmojiFloatOverlay.open')).toHaveCount(0);
+    await expect(page.locator('#goalIcone')).toHaveValue('chart-line');
+    await expect(page.locator('#goalEmojiPreview i.ti-chart-line')).toHaveCount(1);
+
+    /* fill required fields */
+    await page.fill('#goalNome', goalName);
+    await fillMoney(page, '#goalValorObjetivo', 100);
+
+    /* save button must be enabled — mandatory save, no silent skip */
+    const saveButton = page.locator('#btnSaveGoal');
+    await expect(saveButton).toBeEnabled({ timeout: 5_000 });
+    await clickSaveGoal(page);
+
+    /* goal created with the selected icon */
+    await expect(card(page, goalName)).toBeVisible({ timeout: 10_000 });
+    await expect(card(page, goalName).locator('.goal-card-v2-icon i.ti-chart-line')).toHaveCount(1);
+
+    /* reload: goal must survive with the same icon */
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await app.waitForDataReady(page);
+    await openGoals(page);
+    await expect(card(page, goalName)).toBeVisible({ timeout: 10_000 });
+    await expect(card(page, goalName).locator('.goal-card-v2-icon i.ti-chart-line')).toHaveCount(1);
+
+    /* persisted value in memory is the Tabler ID */
+    const persisted = await page.evaluate((name) => {
+      const col = typeof goals !== 'undefined' ? goals : window.goals || [];
+      const found = col.find((g) => g.name === name);
+      return found ? found.icon : null;
+    }, goalName);
+    expect(persisted).toBe('chart-line');
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
+
+  test('legacy goal icon: emoji record resolves through the real render flow', async ({ page }) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+
+    const legacyName = `Meta Legada ${Date.now().toString(36)}`;
+    const legacyId = `goal-legacy-${Date.now().toString(36)}`;
+
+    /* prepare a historical record with a legacy emoji (format used before Tabler):
+       goals[] entries carry `icon` as an emoji string, resolved at render time
+       via LC_ICON.resolveIcon() in goalMarkup(). Injected into the live array,
+       then rendered through the real openTab flow — no storage layer invented. */
+    await page.evaluate(({ id, name }) => {
+      const col = typeof goals !== 'undefined' ? goals : window.goals;
+      col.push({ id, name, icon: '🎯', targetAmount: 100, status: 'active' });
+    }, { id: legacyId, name: legacyName });
+
+    try {
+      /* real read flow: opening the tab renders the list via renderGoalsList/goalMarkup */
+      await openGoals(page);
+      await expect(card(page, legacyName)).toBeVisible({ timeout: 10_000 });
+
+      /* visual representation resolves the legacy emoji to the Tabler class */
+      await expect(card(page, legacyName).locator('.goal-card-v2-icon i.ti-target')).toHaveCount(1);
+
+      /* resolver maps the legacy value correctly */
+      const resolved = await page.evaluate(() => LC_ICON.resolveIcon('🎯'));
+      expect(resolved).toBe('target');
+      const iconClass = await page.evaluate(() => LC_ICON.getIconClass('🎯'));
+      expect(iconClass).toBe('ti ti-target');
+
+      /* display resolution must not rewrite the original record */
+      const raw = await page.evaluate((name) => {
+        const col = typeof goals !== 'undefined' ? goals : window.goals || [];
+        const found = col.find((g) => g.name === name);
+        return found ? found.icon : null;
+      }, legacyName);
+      expect(raw).toBe('🎯');
+    } finally {
+      /* cleanup: injected record never reached Firestore (not saved) */
+      await page.evaluate((id) => {
+        const col = typeof goals !== 'undefined' ? goals : window.goals;
+        const idx = col.findIndex((g) => g.id === id);
+        if (idx >= 0) col.splice(idx, 1);
+      }, legacyId).catch(() => {});
+    }
+
+    expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
+  });
+
+  test('legacy goal icon via Firestore: histórico carrega, normaliza e renderiza Tabler', async ({ page }, testInfo) => {
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+
+    const uniq = Date.now().toString(36);
+    const legacyName = `Meta Histórica ${uniq}`;
+    const legacyId = `goal-hist-${uniq}`;
+
+    /* Seed no Firestore em formato histórico pré-Tabler (icon em emoji).
+       Diferente do teste anterior (injeção em memória), este percorre o
+       fluxo REAL de leitura: reload reexecuta loadState (onSnapshot →
+       normalizeGoals → persistência → render). Semeadura dentro do try:
+       a limpeza é garantida mesmo se seed/load/assert falhar. */
+    let failure = null;
+    try {
+      await page.evaluate(async ({ id, name }) => {
+        const uid = window.firebase?.auth?.()?.currentUser?.uid;
+        if (!uid) throw new Error('uid ausente');
+        await window.firebase.firestore().collection('livrocaixa').doc(uid)
+          .collection('goals').doc(id)
+          .set({ id, name, icon: '🎯', targetAmount: 100, status: 'active' });
+      }, { id: legacyId, name: legacyName });
+
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await app.waitForDataReady(page);
+      await openGoals(page);
+      await expect(card(page, legacyName)).toBeVisible({ timeout: 20_000 });
+      await expect(card(page, legacyName).locator('.goal-card-v2-icon i.ti-target')).toHaveCount(1);
+
+      /* Em memória, normalizeGoals converteu para o ID Tabler */
+      const memIcon = await page.evaluate((n) => {
+        const col = typeof goals !== 'undefined' ? goals : window.goals || [];
+        const found = col.find((g) => g.name === n);
+        return found ? found.icon : null;
+      }, legacyName);
+      expect(memIcon).toBe('target');
+
+      /* Persistência: write-back não destrutivo (só o ícone é convertido) */
+      const rest = await signIn(creds.email, creds.password);
+      const stored = (await storedGoals(rest)).find((d) => d.name === legacyName);
+      expect(stored, 'meta histórica no Firestore').toBeTruthy();
+      expect(Number(stored.targetAmount)).toBe(100);
+      expect(stored.status).toBe('active');
+      expect(stored.icon).toBe('target');
+    } catch (err) {
+      failure = err;
+    } finally {
+      /* Limpeza garantida via helper REST existente (deleteDoc), scoped ao
+         uid QA e ao id exclusivo deste teste. Falha de limpeza é explícita:
+         anotada no teste e lançada quando não há erro funcional anterior
+         (nunca mascara a causa original nem vira sucesso silencioso). */
+      try {
+        const rest = await signIn(creds.email, creds.password);
+        await deleteDoc(rest.uid, rest.idToken, rest.projectId, `livrocaixa/${rest.uid}/goals/${legacyId}`);
+      } catch (cleanupErr) {
+        testInfo.annotations.push({
+          type: 'cleanup',
+          description: `exclusão do documento de teste falhou: ${(cleanupErr && cleanupErr.message) || cleanupErr}`,
+        });
+        if (!failure) failure = cleanupErr;
+      }
+    }
+    if (failure) throw failure;
 
     expect(watchAtual.pageErrors(), 'erros não tratados durante o fluxo').toHaveLength(0);
   });
