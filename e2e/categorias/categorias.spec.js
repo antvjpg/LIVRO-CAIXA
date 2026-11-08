@@ -197,6 +197,20 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
   /* ---------- Subcategorias ---------- */
 
   test('adiciona subcategoria via popover, edita e exclui', async ({ page }) => {
+    /* O handler global (attachDialogHandler) aceita prompts com o texto default.
+       Para editar via prompt precisamos responder com o novo nome: substituímos
+       o handler, mantendo o registro no sink (afterEach usa em falhas). */
+    page.removeAllListeners('dialog');
+    const sinkDialog = dialogsAtual;
+    page.on('dialog', async (dialog) => {
+      sinkDialog.push({ type: dialog.type(), message: dialog.message() });
+      if (dialog.type() === 'prompt' && dialog.message() === 'Nome da subcategoria:') {
+        await dialog.accept(subNameEdited);
+      } else {
+        await dialog.accept();
+      }
+    });
+
     await openCategoryModal(page);
 
     /* garante a categoria base (pode ter sido criada em testes anteriores) */
@@ -222,21 +236,14 @@ test.describe.serial('Categorias — CRUD, subcategorias e persistência', () =>
     await expect(subLabel(page, catName, subName)).toBeVisible({ timeout: 10_000 });
 
     /* --- editar subcategoria via prompt --- */
-    /* o prompt() é interceptado pelo attachDialogHandler que aceita com texto default;
-       precisamos interceptar e enviar o novo nome */
-    page.once('dialog', async (dialog) => {
-      /* prompt abre com valor atual — aceita e substitui */
-      await dialog.accept(subNameEdited);
-    });
+    /* (handler customizado no início do teste responde com o novo nome) */
     await subLabel(page, catName, subName).click();
 
     /* aguarda re-render com novo nome */
     await expect(subLabel(page, catName, subNameEdited)).toBeVisible({ timeout: 10_000 });
 
     /* --- excluir subcategoria via × --- */
-    page.once('dialog', async (dialog) => {
-      await dialog.accept();
-    });
+    /* (confirm() aceito pelo handler customizado) */
     await subLabel(page, catName, subNameEdited).locator('.sub-del').click();
 
     /* subcategoria some */
