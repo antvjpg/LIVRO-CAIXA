@@ -418,7 +418,41 @@
     <div id="cardsGrid" class="cards-grid"></div>
   </div>
 
-  <div id="viewProfile" class="tab-content">
+  <!-- ABA: INÍCIO -->
+    <!-- [VIEW] Início — Patrimônio, resumo e saúde financeira condensados -->
+    <div id="viewInicio" class="tab-content">
+      <div class="inicio-header">
+        <h2>Início</h2>
+        <p class="hint">Resumo financeiro rápido</p>
+      </div>
+
+      <div class="inicio-grid">
+        <!-- Patrimônio total -->
+        <div class="inicio-card balance-card">
+          <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" role="button" tabindex="0" aria-expanded="false" aria-controls="patrimonySparkBox" aria-label="Mostrar gráfico do patrimônio"><i class="fi fi-rr-wallet" aria-hidden="true"></i></span></div>
+          <span class="amount">—</span>
+        </div>
+
+        <!-- Saúde financeira -->
+        <div class="inicio-card advanced-dashboard-card">
+          <div class="balance-card-head"><span class="label">Saúde Financeira</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-heart" aria-hidden="true"></i></span></div>
+          <div id="advancedDashboard" class="advanced-dashboard"></div>
+        </div>
+
+        <!-- Próximos compromissos -->
+        <div class="inicio-card dashboard-next-payment-card">
+          <div class="balance-card-head"><span class="label">Próximo Pagamento</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-calendar-day" aria-hidden="true"></i></span></div>
+          <div id="dashboardNextPayment" class="dashboard-next-payment-card"></div>
+        </div>
+      </div>
+
+      <div class="inicio-footer">
+        <div class="cashflow-mini-summary" id="cashflowMiniSummary" aria-label="Resumo do fluxo do mês"></div>
+        <button type="button" class="primary" id="fabAdd" title="Adicionar" aria-label="Adicionar"><i class="fi fi-rr-plus add-icon" aria-hidden="true"></i><i class="fi fi-rr-messages fab-chat-icon" aria-hidden="true"></i></button>
+      </div>
+    </div>
+
+    <div id="viewProfile" class="tab-content">
     <section class="profile-shell" aria-label="Área de perfil">
       <div class="profile-heading profile-heading-integrated">
         <button type="button" class="profile-avatar" id="btnOpenAvatarGrid" aria-label="Foto de perfil" title="Foto de perfil"><i class="fi fi-rr-user" aria-hidden="true"></i></button>

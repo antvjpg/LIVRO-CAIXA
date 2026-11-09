@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Entrada extra para consumir a primeira ação de Voltar dentro do app
   try { history.pushState(appBackState, ''); } catch (_) {}
   LAST_TAB_STORAGE_KEY = 'livrocaixa_last_tab';
-  TAB_NAMES = ['dash', 'dashboard', 'caixa', 'invest', 'pockets', 'cards', 'receivables', 'bills', 'profile', 'goals'];
+  TAB_NAMES = ['dash', 'dashboard', 'caixa', 'invest', 'pockets', 'cards', 'receivables', 'bills', 'profile', 'goals', 'inicio'];
   currentTab = 'caixa';
   lastTabRestored = false;
 
