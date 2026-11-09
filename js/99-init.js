@@ -1,17 +1,13 @@
 /* LIVRO-CAIXA · js/99-init.js — dispatcher DOMContentLoaded: fiiação (listeners, handlers e chamadas) extraída de app.js (app.js: 457-15501). Separação por responsabilidade; conteúdo preservado. */
 /* [JS 10] INICIALIZAÇÃO / BOOTSTRAP */
 document.addEventListener('DOMContentLoaded', () => {
-  /* Rede de segurança: registrada NO INÍCIO do handler para que qualquer erro
-     posterior em inicialização não impeça o registro. Se a sessão não resolver
-     em 8s (callback Firebase pendurado ou erro antes do auth), revela o login
-     em vez de deixar o loader preso. Se a sessão chegar depois do timeout,
-     o fluxo normal esconde o login e segue. */
-  window.authResolved = false;
-  setTimeout(() => {
-    if (window.authResolved) return;
-    const loginOv = document.getElementById('authOverlay');
-    const loaderOv = document.getElementById('syncOverlay');
-    if (loaderOv) loaderOv.classList.add('hidden');
+if (typeof window.authResolved === 'undefined') window.authResolved = false; // R2: inicializa guardrail (watchdog/fallback)
+const loginOv = document.getElementById('authOverlay');
+setTimeout(() => {
+if (window.authResolved && typeof window.__releaseAuthBoot === 'function' && !window.__authBootReleased) {
+    window.__releaseAuthBoot();
+  }
+  if (window.authResolved && typeof currentUser !== 'undefined' && currentUser) return;
     if (loginOv) loginOv.classList.remove('hidden');
   }, 8000);
 
@@ -55,8 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
   editingEntryId = null;
   pendingOperations = {}; // Rastreador de operações pendentes por ID
   window.pendingOperations = pendingOperations; // Tornar acessível para outros módulos
-  initialisationComplete = false; // Será definido após a inicialização completa
-  initialisationState = 'loading'; // Estados: 'loading', 'ready', 'error'
+  /* FASE 3 · R2 — dono único do estado (ver contrato em 32-auth-wiring.js):
+     se o callback de autenticação já resolveu antes/durante o boot e marcou
+     'ready'/true, NÃO rebaixar para 'loading'/false (checkLocalPinLock em
+     18:2994 leria 'loading' e abortaria indevidamente). Só inicializa quando
+     o valor ainda não foi escrito ou não é 'ready'. */
+  if (window.initialisationComplete !== true) initialisationComplete = false; // Será definido após a inicialização completa
+  if (window.initialisationState !== 'ready') initialisationState = 'loading'; // Estados: 'loading', 'ready', 'error'
   // Inicia o rastreamento de uma operação assíncrona
   function trackOperation(operationId) {
     pendingOperations[operationId] = { startedAt: Date.now(), userId: currentUser?.uid };
@@ -3644,4 +3645,6 @@ document.getElementById('tSalvar').onclick = async () => {
 
   initMoneyMasks();
   markSingleActionButtons();
+
+  if (typeof window.__releaseAuthBoot === 'function') window.__releaseAuthBoot(); // R2: libera estado pendente
 });

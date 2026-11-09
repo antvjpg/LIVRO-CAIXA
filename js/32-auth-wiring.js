@@ -73,13 +73,15 @@
     fab.setAttribute('aria-label', labels[tab] || 'Adicionar');
   }
 
-  auth.onAuthStateChanged(user => {
-    window.authResolved = true;
-    loadGeneration++;
-    currentUser = user;
-    window.currentUser = currentUser;
+  /* R2 · boot gate: este arquivo é o único escritor do estado pós-boot;
+     99-init.js libera com window.__releaseAuthBoot() ao fim do DCL.
+     Antes da liberação, só o estado mais recente fica pendente (coalesce)
+     e é processado uma vez. Detalhes: Notion, relatório FASE 3. */
+  let pendingAuthUser;
+  let pendingAuthQueued = false;
+  window.__authBootReleased = false;
 
-
+  function processAuthState(user) {
     try {
       const overlay = document.getElementById('authOverlay');
       const syncOverlay = document.getElementById('syncOverlay');
@@ -125,4 +127,32 @@
     } catch (err) {
       console.error('[INIT] Erro no callback de autenticação:', err);
     }
+  }
+
+  /* R2: chamado por 99-init.js (fim do DCL) e pelo watchdog; idempotente. */
+  window.__releaseAuthBoot = function () {
+    if (window.__authBootReleased) return;
+    window.__authBootReleased = true;
+    if (pendingAuthQueued) {
+      pendingAuthQueued = false;
+      const user = pendingAuthUser;
+      pendingAuthUser = undefined;
+      processAuthState(user);
+    }
+  };
+
+  auth.onAuthStateChanged(user => {
+    // flags imediatas fora do gate (leitores síncronos observam no mesmo instante)
+    window.authResolved = true;
+    loadGeneration++;
+    currentUser = user;
+    window.currentUser = currentUser;
+
+    if (window.__authBootReleased) {
+      processAuthState(user);
+      return;
+    }
+    // boot pendente: só o estado mais recente aguarda a liberação
+    pendingAuthUser = user;
+    pendingAuthQueued = true;
   });

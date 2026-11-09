@@ -20,7 +20,7 @@
 
   let lastSynced;
 
-  let realtimeUnsubscribers;
+  let realtimeUnsubscribers = []; // R1: nasce como array (evita forEach em undefined antes de 99:458)
 
 
   /* Firestore rejeita undefined ("Unsupported field value") e rejeita o

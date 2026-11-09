@@ -17,7 +17,7 @@
     pocketMovementEditingId = null;
     yieldTarget = null;
     editingYieldId = null;
-    closeAllPanels();
+    if (typeof closeAllPanels === 'function') closeAllPanels(); // R1: pode rodar antes de 99 definir
     ['authPass','authEmail'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
@@ -57,7 +57,11 @@
   }
 
   function startSessionSecurity() {
-    if (sessionSecurityStarted) return;
+    if (sessionSecurityStarted) {
+      // R5: re-login não re-registra listeners, mas o timer morreu no logout — rearma (idempotente)
+      scheduleSessionTimeout();
+      return;
+    }
     sessionSecurityStarted = true;
     ['pointerdown','keydown','touchstart','click'].forEach(evt => {
       document.addEventListener(evt, registerSessionActivity, { passive: true });
