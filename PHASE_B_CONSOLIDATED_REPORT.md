@@ -82,6 +82,7 @@
   - [7.7 Documentos .md](#77-documentos-md)
 - [8. Pendências Gerais da Phase B](#8-pendências-gerais-da-phase-b)
 - [9. Próximos Passos (Fase C)](#9-próximos-passos-fase-c)
+- [FASE C.1 — AUDITORIA DE CSS](#fase-c1--auditoria-de-css)
 
 ---
 
@@ -1056,6 +1057,302 @@ Itens pendentes (⏳) — registrados, mas não bloqueadores para o encerramento
 
 ---
 
-**Fase C — C.0: PREPARAÇÃO E BASELINE (CONCLUÍDA)**
+## FASE C.1 — AUDITORIA DE CSS (LIVRO-CAIXA)
 
-*Documento diagnóstico da Fase C. Baseline estrutural identificada: versão do código (HEAD `bf58015`), inventário CSS (6 locais + vendor + 2 externas), Service Worker (`livro-caixa-shell-v20-57`), e baseline da view Início (canvas único, ARIA coerente, 4 cenários headless validados). Limitações formalmente registradas: sem screenshots, tema claro/escuro não testado, device físico não testado. Fonte de baseline para C.1, C.2, etc.*
+### 1. CONTEXTO E ESTADO DO PROJETO
+
+A Fase C.0 — Preparação e Baseline foi formalmente concluída e aprovada.
+
+A Fase C.1 está autorizada para execução.
+
+Repositório: "antvjpg/LIVRO-CAIXA"
+Branch esperada: "feat/app-navigation-redesign"
+
+O documento de consolidação da Fase B contém intencionalmente o histórico da Fase C. Preserve essa organização documental.
+
+O relatório principal é:
+
+"PHASE_B_CONSOLIDATED_REPORT.md"
+
+Antes de começar, confirme a branch, o HEAD completo e o estado do working tree. Não presuma que o ambiente local está sincronizado com o GitHub.
+
+### 2. OBJETIVO DA C.1
+
+Realizar uma auditoria técnica, exclusivamente diagnóstica, da arquitetura CSS atual do LIVRO-CAIXA.
+
+Investigar:
+
+1. Cobertura dos elementos HTML pelas folhas CSS.
+2. Correspondência entre seletores CSS e elementos existentes no DOM.
+3. Seletores sem correspondência e possíveis regras obsoletas.
+4. Elementos relevantes sem cobertura adequada de estilos.
+5. Duplicidades e conflitos entre declarações.
+6. Problemas de especificidade e regras sobrescritas.
+7. Ordem de carregamento e dependências entre folhas CSS.
+8. Media queries, breakpoints e cobertura responsiva.
+9. Consistência dos estilos entre as views existentes.
+10. Dependências visuais de componentes compartilhados.
+
+### 3. ARQUIVOS E ESCOPO DA INSPEÇÃO
+
+Comece pelo inventário confirmado na C.0:
+
+- "style/themes.css"
+- "style/base.css"
+- "style/components.css"
+- "style/layout.css"
+- "style/features.css"
+- "style/dashboard-chat.css"
+- "vendor/tabler-icons/tabler-icons.css"
+
+Considere também as folhas externas Flaticon referenciadas no HTML.
+
+Inspecione, conforme necessário:
+
+- "index.html"
+- Arquivos JavaScript responsáveis por criar, alterar ou remover classes CSS.
+- Elementos dinâmicos e componentes renderizados por JavaScript.
+- Regras de tema claro e escuro.
+- Regras mobile e desktop.
+
+Não limite a análise a uma busca textual simples. Um seletor aparentemente sem correspondência estática pode ser aplicado dinamicamente pelo JavaScript.
+
+Investigue essas situações antes de classificá-lo como obsoleto.
+
+### 4. MÉTODO DE AUDITORIA
+
+#### 4.1 Inventário e carregamento
+
+- Confirmar a ordem real de carregamento.
+- Identificar "@import", dependências e sobreposições.
+- Verificar referências a arquivos inexistentes.
+- Diferenciar arquivos CSS referenciados de arquivos existentes não utilizados.
+- Identificar dependências externas.
+
+#### 4.2 Cobertura dos seletores
+
+Classificar os seletores encontrados em:
+
+- Correspondência confirmada no DOM.
+- Correspondência dinâmica pelo JavaScript.
+- Correspondência condicional.
+- Sem correspondência identificada.
+- Não conclusivo.
+
+Não classificar automaticamente seletores sem correspondência como código morto.
+
+#### 4.3 Cobertura dos componentes
+
+Investigar especialmente:
+
+- Navegação inferior.
+- Sidebar e drawer.
+- Header.
+- View Início ("#viewInicio").
+- Cards patrimoniais.
+- Gráficos e sparklines.
+- Resumos financeiros.
+- Movimentações.
+- Contas e investimentos.
+- Perfil e segurança.
+- Modais e overlays.
+- Formulários e filtros.
+- Estados vazios, carregamento e erro.
+
+Identificar componentes que dependem de estilos compartilhados e riscos de alterações colaterais.
+
+#### 4.4 Cascata e duplicidades
+
+Investigar:
+
+- Declarações repetidas.
+- Regras conflitantes.
+- Seletores com especificidade excessiva.
+- Propriedades sobrescritas posteriormente.
+- Uso excessivo de "!important".
+- Variáveis CSS duplicadas ou inconsistentes.
+- Dependências implícitas da ordem dos arquivos.
+
+Diferenciar duplicidade intencional de conflito real.
+
+#### 4.5 Responsividade
+
+Analisar:
+
+- Breakpoints existentes.
+- Media queries repetidas ou conflitantes.
+- Regras específicas para mobile.
+- Regras específicas para desktop.
+- Componentes que não possuem adaptação adequada.
+- Possíveis problemas de overflow, largura, altura e espaçamento.
+
+Quando houver navegador disponível, utilizar as dimensões de referência da C.0:
+
+- Mobile: 390 × 844.
+- Desktop: 1440 × 900.
+
+Se não houver navegador ou emulação disponível, fazer análise estática e declarar essa limitação. Não inventar resultados visuais.
+
+#### 4.6 Temas
+
+Investigar a utilização dos tokens e variáveis dos temas claro e escuro.
+
+Identificar:
+
+- Valores fixos que ignoram tokens semânticos.
+- Contrastes potencialmente inadequados.
+- Componentes que não acompanham a troca de tema.
+- Inconsistências entre fundos, textos, bordas, estados e superfícies.
+
+Não alterar a paleta nem redefinir tokens nesta etapa.
+
+### 5. CLASSIFICAÇÃO DOS ACHADOS
+
+Cada problema deve conter:
+
+- Identificador.
+- Arquivo e localização.
+- Evidência concreta.
+- Comportamento observado ou risco identificado.
+- Impacto.
+- Prioridade.
+- Recomendação.
+
+Use as prioridades:
+
+- P0: bloqueio crítico ou risco grave.
+- P1: problema importante com impacto funcional ou visual relevante.
+- P2: inconsistência moderada ou manutenção dificultada.
+- P3: melhoria de baixa prioridade.
+
+Não atribuir prioridade sem justificar o impacto.
+
+Classificar também a confiança da conclusão:
+
+- Confirmado.
+- Provável.
+- Não confirmado.
+
+### 6. LIMITES OBRIGATÓRIOS
+
+Esta etapa é exclusivamente diagnóstica.
+
+NÃO:
+
+- Modifique arquivos CSS.
+- Modifique HTML ou JavaScript.
+- Remova seletores ou regras.
+- Reorganize folhas CSS.
+- Crie novos tokens.
+- Refatore componentes.
+- Altere temas.
+- Implemente correções.
+- Inicie o redesign visual.
+- Modifique a navegação.
+- Faça alterações funcionais nos gráficos.
+- Instale ou atualize dependências.
+- Faça commit ou push.
+
+Preserve integralmente todas as alterações preexistentes, inclusive arquivos modificados e não rastreados.
+
+É expressamente proibido usar:
+
+- "git reset"
+- "git checkout"
+- "git restore"
+- "git clean"
+
+Não sobrescreva, descarte, reverta ou modifique alterações fora do escopo autorizado.
+
+Se encontrar uma alteração preexistente que interfira na auditoria, registre-a e continue apenas quando for seguro.
+
+### 7. DOCUMENTAÇÃO OBRIGATÓRIA
+
+Registre os resultados diretamente em:
+
+"PHASE_B_CONSOLIDATED_REPORT.md"
+
+Crie uma seção própria:
+
+"FASE C.1 — AUDITORIA DE CSS"
+
+Não remova, reescreva ou reorganize o histórico da Fase B nem as seções anteriores da Fase C.
+
+A seção deve conter:
+
+1. Identificação da versão auditada.
+2. Estado do Git.
+3. Inventário CSS atualizado.
+4. Ordem de carregamento.
+5. Cobertura dos seletores.
+6. Elementos sem cobertura identificados.
+7. Regras duplicadas e conflitos.
+8. Análise de especificidade e cascata.
+9. Análise responsiva.
+10. Análise dos temas.
+11. Achados classificados por prioridade.
+12. Recomendações de correção.
+13. Limitações da auditoria.
+14. Critérios de conclusão e pendências.
+
+Toda afirmação técnica deve possuir evidência verificável: arquivo, seletor, trecho, linha ou resultado de ferramenta.
+
+Não apresente suposições como fatos.
+
+### 8. CRITÉRIOS DE CONCLUSÃO
+
+A C.1 somente poderá ser considerada concluída quando:
+
+- O inventário CSS estiver conferido.
+- A cobertura dos seletores tiver sido investigada.
+- Os componentes principais tiverem sido avaliados.
+- Duplicidades e conflitos relevantes estiverem documentados.
+- A responsividade tiver sido analisada.
+- Os temas tiverem sido avaliados.
+- Os achados estiverem classificados e justificados.
+- As limitações estiverem explícitas.
+- O relatório estiver atualizado sem perda do histórico anterior.
+
+Se algum item não puder ser verificado, registre como pendente. Não declare conclusão artificialmente.
+
+### 9. ENTREGA E AGUARDO DE AUTORIZAÇÃO
+
+Ao terminar, apresente:
+
+1. Resumo executivo.
+2. Branch e SHA auditados.
+3. Arquivos efetivamente inspecionados.
+3. Quantidade de achados por prioridade.
+4. Principais problemas encontrados.
+5. Limitações e verificações não realizadas.
+5. Confirmação de que nenhum arquivo funcional foi alterado.
+6. Estado final do working tree.
+6. Caminho da seção atualizada no relatório.
+
+Não faça commit nem push nesta execução.
+
+IMPORTANTE: concluir a auditoria não autoriza implementar as correções.
+
+Pare ao finalizar o diagnóstico e aguarde minha revisão e autorização explícita para a próxima atividade.
+
+A C.1 possui escopo próprio. Não inicie tarefas da C.2 ou de etapas posteriores.
+
+---
+
+### 10. Resumo Executivo (placeholder para preenchimento posterior)
+
+*Resumo executivo da auditoria C.1 — a ser preenchido após conclusão do diagnóstico. Incluir: branch e SHA auditados, arquivos inspecionados, quantidade de achados por prioridade (P0/P1/P2/P3), principais problemas encontrados, limitações da auditoria e pendências para correção.*
+
+### 11. Verificação de Conformidade (placeholder)
+
+*Confirmar que nenhum arquivo funcional do aplicativo foi alterado durante esta auditoria diagnóstico. Working tree state e hash de integridade dos arquivos CSS auditados.*
+
+### 12. Pendências para Próximos Ciclos
+
+*Itens identificados na C.1 que requerem atenção em ciclos subsequentes (C.2, C.3, etc.): seletores dinâmicos não confirmados, cobertura de responsividade em device físico, validação de temas em cenários reais, etc.*
+
+---
+
+**Fase C — C.1: AUDITORIA DE CSS**
+
+*Etapa diagnóstica de auditoria da arquitetura CSS. Inspecionou-se a cobertura dos seletores, componentes, cascata, duplicidades, responsividade e temas. Baseline da C.0 mantida. Próximo passo: conclusão do diagnóstico e revisão.*
