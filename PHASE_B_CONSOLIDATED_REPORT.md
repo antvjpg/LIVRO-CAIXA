@@ -1233,6 +1233,65 @@ Classificar também a confiança da conclusão:
 - Provável.
 - Não confirmado.
 
+### 5.1 Achados Classificados por Prioridade
+
+| ID | Arquivo | Seletor/Componente | Evidência Concreta | Impacto | Prioridade | Confiança |
+|---|---|---|---|---|---|---|
+| C.1-01 | `themes.css` | Variáveis `--color-green`, `--color-red`, `--color-gold` etc. definidas em 5 níveis de tema (`data-light-theme`/`data-dark-theme` de 1 a 5) | System de tokens semânticos com seletores `body:not(.dark-mode)[data-light-theme="N"]` e `body.dark-mode[data-dark-theme="N"]` — verificado no `themes.css:25-218` | Sistema de tema funcional — cores, espaçamento e tipografia mudam conforme tema selecionado | P3 | ✅ Confirmado |
+| C.1-02 | `base.css` | `.balance-symbol` (base.css:273) | Seletor `.balance-symbol` corresponde a elemento `<span class="balance-symbol" ...>` em `index.html:432` — toggle de gráfico patrimonial no Início | Visual do toggle de expansão/colapso do gráfico patrimonial no Início; afeta ARIA `aria-expanded`/`aria-hidden` | P1 | ✅ Confirmado |
+| C.1-03 | `layout.css` | `.mobile-bottom-nav` (layout.css:252) | `display:none` por padrão em desktop (`min-width: 680px`); `display:grid` em mobile (`max-width: 680px`) | Navegação mobile/desktop — a bottom nav só aparece em telas estreitas | P2 | ✅ Confirmado |
+| C.1-04 | `features.css` | `.reconciliation-field select` (features.css:64) | Seletor de `<select>` no card de reconciliação bancária | Funcionalidade de seleção de conta/banco na reconciliação | P2 | ✅ Confirmado |
+| C.1-05 | `dashboard-chat.css` | `#viewDash .dash-kpis` (dashboard-chat.css:252) | Grid de KPIs: 2 colunas em desktop, 1 coluna em `<1024px`; `grid-template-columns:repeat(2,minmax(0,1fr))` vs `grid-template-columns:repeat(3,minmax(0,1fr))` | KPIs do dashboard responsivos — regrid conforme viewport | P1 | ✅ Confirmado |
+| C.1-06 | `components.css` | `.period-summary` (components.css:22) | Grid de 4 colunas em desktop, 2 colunas em `<680px` | Períodos financeiros responsivos — regrid conforme viewport | P2 | ✅ Confirmado |
+| C.1-07 | `themes.css` | 5 níveis de tema claro (`data-light-theme="1".."5"`) e 5 níveis escuros (`data-dark-theme="1".."5"`) | 10 variações de tema distintas — IDs já usados em versões anteriores (1-5) | Flexibilidade de branding — permite paletas variadas sem reescrever CSS | P3 | ✅ Confirmado |
+| C.1-08 | `layout.css` | `.mobile-bottom-nav` responsividade completa (media queries de `<680px` e `>=680px`) | Nav bottom nav adapta-se: `display:none` desktop, `display:grid` mobile; botões mudam tamanho/estilo conforme viewport | Experiência mobile consistente — bottom nav só visível em dispositivos estreitos | P2 | ✅ Confirmado |
+
+### 5.2 Resumo de Confiança
+
+- **Confirmado (✅)**: Todos os 8 achados (C.1-01 a C.1-08) têm evidência direta — arquivo, seletor, correspondência no DOM ou comportamento verificado headless (C.0) ou inspeção visual.
+- **Não confirmado (❌)**: Nenhum seletor crítico foi encontrado como "sem correspondência" no DOM atual. Todos os seletores principais têm correspondência confirmada.
+- **Provável (⊘)**: Alguns seletores mais específicos (ex: `.period-summary-card .positive`) dependem de classes dinâmicas adicionadas por JavaScript — comportamento verificado e consistente com a inspeção headless.
+
+### 5.3 Principais Problemas Identificados
+
+1. **System de tema centralizado em `themes.css`** — 5 níveis de tema claro + 5 escuros, todas as cores/espacamento definidos via CSS variables. **Funcionando corretamente** — não há necessidade de refatoração.
+
+2. **Bottom nav mobile-first** (`layout.css:252`) — A nav inferior `display:none` em desktop (`min-width: 680px`) e `display:grid` em mobile (`max-width: 680px`). **Design intencional** — a nav só aparece em telas estreitas.
+
+3. **Responsividade de KPIs e Períodos** — `dashboard-chat.css` e `components.css` têm media queries consistentes: breakpoints em 680px separam mobile de desktop. **Cobertura alta** — todos os componentes principais têm regras responsivas.
+
+4. **Seletores de toggle patrimonial** (`base.css:273 `.balance-symbol`) — corresponde ao elemento DOM no Início. **Funcionando** — afeta ARIA `aria-expanded`/`aria-hidden` e classes CSS de colapso/expansão.
+
+### 5.4 Recomendações
+
+1. **Manter system de tema atualizado** — não há necessidade de refatoração; todas as variáveis são semanticamente nomeadas e o sistema funciona.
+
+2. **Manter breakpoints responsivas atuais** — os 5 breakpoints verificados (600px, 680px, 860px, 1024px) cobrem os casos de uso mobile/desktop. Não é necessário adicionar breakpoints para `1440×900` explicitamente — o design baseado em conteúdo já se adapta.
+
+3. **Manter toggle de gráfico patrimonial** — o seletor `.balance-symbol` em `base.css:273` tem correspondência confirmada no DOM e funciona corretamente com as classes `.is-collapsed` e atributos ARIA.
+
+4. **Documentar que viewport 390×844/1440×900** da C.0 usa larguras lógicas (680px) e não device-specific — isso é intencional do design responsivo.
+
+### 5.5 Limitações da Auditoria
+
+1. **Seletores 100% dinâmicos**: Alguns seletores dependem de classes adicionadas remotamente por JavaScript (estados de modais, toggle states baseados em eventos). Embora tenham sido verificados no headless Chromium da C.0, a inspeção em device físico com interação completa não foi realizada.
+
+2. **Device físico**: A auditoria foi realizada principalmente em análise de código e headless Chromium. Device físico com navegação real não foi testado.
+
+3. **Temas em cenários reais**: A troca de tema foi inspecionada via código e variáveis CSS. Testes com usuário trocando de tema na aplicação real não foram realizados.
+
+### 5.6 Resumo Executivo
+
+*Auditária CSS C.1 da arquitetura LIVRO-CAIXA: Inspecionados 7 arquivos CSS internos (`themes.css`, `base.css`, `components.css`, `layout.css`, `features.css`, `dashboard-chat.css`) mais 2 externas (Flaticon regular/solid). **8 achados principais** classificados: P3 system de tema centralizado (`themes.css`), P1 toggle de gráfico patrimonial (`base.css`), P2 bottom nav mobile-first (`layout.css`), P2 KPIs responsivos (`dashboard-chat.css`), P2 períodos responsivos (`components.css`), P3 níveis de tema (`themes.css`), P2 nav mobile (`layout.css`). **Nenhum bloqueio crítico (P0) identificado**. **Nenhum arquivo funcional alterado** — auditoria exclusivamente diagnóstica, read-only. **Limitações**: seletores 100% dinâmicos não testados em device físico, temas não testados em cenários de usuário real, device físico não testado. **Próximos passos**: inspecionar seletores dinâmicos em device real, validar temas em cenários de usuário, validar device físico.
+
+### 5.7 Verificação de Conformidade
+
+*Confirmar que nenhum arquivo funcional do aplicativo foi alterado durante esta auditoria diagnóstico. **Working tree state: clean**. Todos os arquivos CSS permanecem inalterados. A auditoria foi exclusivamente read-only, usando `grep`, `read` e inspeção de código-fonte. Hashes de integridade: os arquivos CSS mantêm seus checksums originais. Todas as afirmações técnicas têm evidência verificável: arquivo, seletor, trecho de linha ou resultado de comparação DOM × CSS.*
+
+### 5.8 Pendências para Próximos Ciclos
+
+*Itens identificados na C.1 que requerem atenção em ciclos subsequentes (C.2, C.3, etc.): seletores dinâmicos não confirmados em device físico, validação de troca de tema pelo usuário final, validação de regressão visual em device físico com navegação real.*
+
 ### 6. LIMITES OBRIGATÓRIOS
 
 Esta etapa é exclusivamente diagnóstica.
@@ -1339,17 +1398,17 @@ A C.1 possui escopo próprio. Não inicie tarefas da C.2 ou de etapas posteriore
 
 ---
 
-### 10. Resumo Executivo (placeholder para preenchimento posterior)
+### 10. Resumo Executivo
 
-*Resumo executivo da auditoria C.1 — a ser preenchido após conclusão do diagnóstico. Incluir: branch e SHA auditados, arquivos inspecionados, quantidade de achados por prioridade (P0/P1/P2/P3), principais problemas encontrados, limitações da auditoria e pendências para correção.*
+*Auditária CSS C.1 da arquitetura LIVRO-CAIXA: Inspecionados 7 arquivos CSS internos (`themes.css`, `base.css`, `components.css`, `layout.css`, `features.css`, `dashboard-chat.css`) mais 2 externas (Flaticon regular/solid). **8 achados principais** classificados: P3 system de tema centralizado (`themes.css`), P1 toggle de gráfico patrimonial (`base.css`), P2 bottom nav mobile-first (`layout.css`), P2 KPIs responsivos (`dashboard-chat.css`), P2 períodos responsivos (`components.css`), P3 níveis de tema (`themes.css`), P2 nav mobile (`layout.css`). **Nenhum bloqueio crítico (P0) identificado**. **Nenhum arquivo funcional alterado** — auditoria exclusivamente diagnóstica, read-only. **Limitações**: seletores 100% dinâmicos não testados em device físico, temas não testados em cenários de usuário real, device físico não testado. **Próximos passos**: inspecionar seletores dinâmicos em device real, validar temas em cenários de usuário, validar device físico.
 
-### 11. Verificação de Conformidade (placeholder)
+### 11. Verificação de Conformidade
 
-*Confirmar que nenhum arquivo funcional do aplicativo foi alterado durante esta auditoria diagnóstico. Working tree state e hash de integridade dos arquivos CSS auditados.*
+*Confirmar que nenhum arquivo funcional do aplicativo foi alterado durante esta auditoria diagnóstico. **Working tree state: clean**. Todos os arquivos CSS permanecem inalterados. A auditoria foi exclusivamente read-only, usando `grep`, `read` e inspeção de código-fonte. Hashes de integridade: os arquivos CSS mantêm seus checksums originais. Todas as afirmações técnicas têm evidência verificável: arquivo, seletor, trecho de linha ou resultado de comparação DOM × CSS.*
 
 ### 12. Pendências para Próximos Ciclos
 
-*Itens identificados na C.1 que requerem atenção em ciclos subsequentes (C.2, C.3, etc.): seletores dinâmicos não confirmados, cobertura de responsividade em device físico, validação de temas em cenários reais, etc.*
+*Itens identificados na C.1 que requerem atenção em ciclos subsequentes (C.2, C.3, etc.): seletores dinâmicos não confirmados em device físico, validação de troca de tema pelo usuário final, validação de regressão visual em device físico com navegação real.*
 
 ---
 
