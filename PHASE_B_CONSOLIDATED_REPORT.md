@@ -6,12 +6,12 @@
 ## HEAD
 - Inicial: `9181d0d Merge pull request #9 from antvjpg/feat/tabler-icon-foundation`
 - Consolidação documental: `fa9f016` / `0491603`
-- B.1.3.3: implementação real do ciclo de vida do gráfico (seção 3.8)
-- B.1.3.4: encerramento — remoção da referência obsoleta e evidências funcionais
-  headless (seção 3.8.9)
+- B.1.3.3: `7633e36` — implementação real do ciclo de vida do gráfico (seção 3.8)
+- B.1.3.4: `4539c5f` — encerramento, remoção da referência obsoleta e evidências
+  funcionais headless (seção 3.8.9)
 
 ## Resumo Geral
-- **Commits pushados:** `b884038` (Phase B), `68d12ad` (Phase B.1), `0ffbe5c` (Phase B.1.2), `9374ea5` (Phase B.1.2.1), `da922f8` (Phase B.1.2.2), `d2733e8` (Phase B.1.3), `51917e3` (Phase B.1.3.1), `fa9f016` (consolidação documental), `0491603` (auditoria documental), `7633e36` (B.1.3.3), B.1.3.4 (encerramento e evidências headless)
+- **Commits pushados:** `b884038` (Phase B), `68d12ad` (Phase B.1), `0ffbe5c` (Phase B.1.2), `9374ea5` (Phase B.1.2.1), `da922f8` (Phase B.1.2.2), `d2733e8` (Phase B.1.3), `51917e3` (Phase B.1.3.1), `fa9f016` (consolidação documental), `0491603` (auditoria documental), `7633e36` (B.1.3.3), `4539c5f` (B.1.3.4 — encerramento e evidências headless)
 - **Arquivos modificados:** `index.html`, `js/18-render-core.js`, `js/20-dashboard.js`, `js/99-init.js`, `PHASE_B_CONSOLIDATED_REPORT.md`
 - **Total de linhas alteradas:** ~250+ across multiple files
 - **Nenhum commit nem push indevido** — todas as alterações foram planejadas e documentadas
