@@ -817,7 +817,7 @@ listener e do estado inicial está na seção 3.8 (B.1.3.3).
 
 ---
 
-**Fase B — Consolidada em 2026-11-10 · revisada em B.1.3.3**
+**Fase B — Consolidada e Concluída em 2026-11-10 · B.1.3.4**
 
 *Documento único da Phase B. Consolida o histórico técnico das subfases, registra as
 tentativas (3.6/3.7), a implementação efetiva (3.8) e as validações estáticas, com as
