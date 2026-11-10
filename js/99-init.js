@@ -481,7 +481,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   VIEW_PERIOD_KEY = 'livrocaixa_view_period_v18_08';
   viewPeriod = { mode: 'month', month: currentMonthYM() };
-  patrimonySparklineInstance = null;
   PATRIMONY_SPARK_STORAGE_KEY = 'livro-caixa-patrimony-spark';
   patrimonySparkVisible = localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY) !== '0';
   /* INVEST_TOTAL_*_KEY são `const` globais em js/18-render-core.js (mesmo valor).

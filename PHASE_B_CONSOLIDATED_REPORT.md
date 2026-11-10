@@ -6,15 +6,82 @@
 ## HEAD
 - Inicial: `9181d0d Merge pull request #9 from antvjpg/feat/tabler-icon-foundation`
 - Consolidação documental: `fa9f016` / `0491603`
-- Final: commit da Phase B.1.3.3 (este commit — ver seção 3.8)
+- B.1.3.3: implementação real do ciclo de vida do gráfico (seção 3.8)
+- B.1.3.4: encerramento — remoção da referência obsoleta e evidências funcionais
+  headless (seção 3.8.9)
 
 ## Resumo Geral
-- **Commits pushados:** `b884038` (Phase B), `68d12ad` (Phase B.1), `0ffbe5c` (Phase B.1.2), `9374ea5` (Phase B.1.2.1), `da922f8` (Phase B.1.2.2), `d2733e8` (Phase B.1.3), `51917e3` (Phase B.1.3.1), `fa9f016` (consolidação documental), `0491603` (auditoria documental), B.1.3.3 (implementação real do ciclo de vida do gráfico)
+- **Commits pushados:** `b884038` (Phase B), `68d12ad` (Phase B.1), `0ffbe5c` (Phase B.1.2), `9374ea5` (Phase B.1.2.1), `da922f8` (Phase B.1.2.2), `d2733e8` (Phase B.1.3), `51917e3` (Phase B.1.3.1), `fa9f016` (consolidação documental), `0491603` (auditoria documental), `7633e36` (B.1.3.3), B.1.3.4 (encerramento e evidências headless)
 - **Arquivos modificados:** `index.html`, `js/18-render-core.js`, `js/20-dashboard.js`, `js/99-init.js`, `PHASE_B_CONSOLIDATED_REPORT.md`
 - **Total de linhas alteradas:** ~250+ across multiple files
 - **Nenhum commit nem push indevido** — todas as alterações foram planejadas e documentadas
 
 > **Aviso de leitura:** as seções 3.6 e 3.7 registram as *tentativas* das fases B.1.3.1/B.1.3.2. A auditoria independente de B.1.3.3 (seção 3.8) demonstrou que aquelas tentativas **não eliminaram** os defeitos 1, 3, 4 e 5. A correção efetiva está descrita, com trechos removidos e incluídos, na seção 3.8.
+
+## Sumário
+
+- [Branch](#branch)
+- [HEAD](#head)
+- [Resumo Geral](#resumo-geral)
+- [1. Phase B.1.2.1 — Diagnóstico Forense da função openGoalsPanel()](#1-phase-b121--diagnóstico-forense-da-função-opengoalspanel)
+  - [1.1 Histórico](#11-histórico)
+  - [1.2 Arquivos Modificados](#12-arquivos-modificados)
+  - [1.3 Evidências Técnicas](#13-evidências-técnicas)
+  - [1.4 Pendências](#14-pendências)
+  - [1.5 Conclusão](#15-conclusão)
+- [2. Phase B.1.2.2 — Integração de Saúde Financeira na aba Início](#2-phase-b122--integração-de-saúde-financeira-na-aba-início)
+  - [2.1 Histórico](#21-histórico)
+  - [2.2 Arquivos Modificados](#22-arquivos-modificados)
+  - [2.3 Evidências Técnicas](#23-evidências-técnicas)
+  - [2.4 Pendências](#24-pendências)
+  - [2.5 Conclusão](#25-conclusão)
+- [3. Phase B.1.3 — Integração de Patrimônio Total no Início](#3-phase-b13--integração-de-patrimônio-total-no-início)
+  - [3.1 Histórico](#31-histórico)
+  - [3.2 Arquivos Modificados](#32-arquivos-modificados)
+  - [3.3 Evidências Técnicas (B.1.3)](#33-evidências-técnicas-b13)
+  - [3.4 Problemas da Auditoria Independente B.1.3.1](#34-problemas-da-auditoria-independente-b131)
+  - [3.5 Conclusão (revisada)](#35-conclusão-revisada)
+  - [3.6 Tentativa B.1.3.1 — registro histórico (insuficiente)](#36-tentativa-b131--registro-histórico-insuficiente)
+    - [Bug 1 — Instância Chart.js única compartilhada indevidamente](#bug-1--instância-chartjs-única-compartilhada-indevidamente)
+    - [Bug 2 — Referência ARIA incorreta no controle do Início](#bug-2--referência-aria-incorreta-no-controle-do-início)
+    - [Bug 3 — Estado visual/ARIA não sincronizado entre os dois contextos](#bug-3--estado-visualaria-não-sincronizado-entre-os-dois-contextos)
+    - [Bug 4 — Estado inicial inconsistente (HTML x CSS x persistência)](#bug-4--estado-inicial-inconsistente-html-x-css-x-persistência)
+  - [3.7 Tentativa B.1.3.2 — registro histórico (insuficiente)](#37-tentativa-b132--registro-histórico-insuficiente)
+    - [Bug 5 — Listener do Início dependente de flag/condição instável](#bug-5--listener-do-início-dependente-de-flagcondição-instável)
+    - [Bug 6 — Contradição documental no relatório consolidado](#bug-6--contradição-documental-no-relatório-consolidado)
+  - [3.8 Phase B.1.3.3 — Implementação real do ciclo de vida do gráfico](#38-phase-b133--implementação-real-do-ciclo-de-vida-do-gráfico)
+    - [3.8.1 Motivação e escopo](#381-motivação-e-escopo)
+    - [3.8.2 Mudança 1 — uma instância Chart.js por contexto](#382-mudança-1--uma-instância-chartjs-por-contexto)
+    - [3.8.3 Mudança 2 — inicialização no ciclo normal e ao ativar a aba](#383-mudança-2--inicialização-no-ciclo-normal-e-ao-ativar-a-aba)
+    - [3.8.4 Mudança 3 — estado inicial consistente (HTML ↔ JS ↔ CSS)](#384-mudança-3--estado-inicial-consistente-html--js--css)
+    - [3.8.5 Mudança 4 — listener por delegação em #viewInicio](#385-mudança-4--listener-por-delegação-em-viewinicio)
+    - [3.8.6 Resumo das alterações por arquivo](#386-resumo-das-alterações-por-arquivo)
+    - [3.8.7 Validações executadas e limitações](#387-validações-executadas-e-limitações)
+    - [3.8.8 Critérios de conclusão](#388-critérios-de-conclusão)
+    - [3.8.9 Phase B.1.3.4 — Encerramento: referência obsoleta e evidências funcionais](#389-phase-b134--encerramento-referência-obsoleta-e-evidências-funcionais)
+      - [Motivação](#motivação)
+      - [Mudança — remoção da referência obsoleta](#mudança--remoção-da-referência-obsoleta)
+      - [Verificação de referências](#verificação-de-referências)
+      - [Validação estática](#validação-estática)
+      - [Validação funcional (Chromium headless + CDP)](#validação-funcional-chromium-headless--cdp)
+      - [Conclusão da B.1.3.4](#conclusão-da-b134)
+- [4. Phase B.1.3.1 — Correção da integração do gráfico patrimonial](#4-phase-b131--correção-da-integração-do-gráfico-patrimonial)
+- [5. Phase B.1.3.2 — Correção do ciclo de vida, sincronização e consolidação documental](#5-phase-b132--correção-do-ciclo-de-vida-sincronização-e-consolidação-documental)
+- [6. Consolidado de Arquivos .md da Phase B](#6-consolidado-de-arquivos-md-da-phase-b)
+  - [6.1 PHASE_B_SUMMARY.md](#61-phase_b_summarymd)
+  - [6.2 PHASE_B1.2.1_REPORT.md](#62-phase_b121_reportmd)
+  - [6.3 PHASE_B1.2.2_HEALTH_CARD_FIX_REPORT.md](#63-phase_b122_health_card_fix_reportmd)
+  - [6.4 PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md](#64-phase_b13_patrimony_integration_reportmd)
+- [7. Evidências Técnicas Consolidadas](#7-evidências-técnicas-consolidadas)
+  - [7.1 Sintaxe JavaScript Validada](#71-sintaxe-javascript-validada)
+  - [7.2 Verificação de IDs Duplicados](#72-verificação-de-ids-duplicados)
+  - [7.3 Instâncias Chart.js](#73-instâncias-chartjs)
+  - [7.4 Acessibilidade (ARIA)](#74-acessibilidade-aria)
+  - [7.5 Estado Persistente](#75-estado-persistente)
+  - [7.6 Cálculos Financeiros](#76-cálculos-financeiros)
+  - [7.7 Documentos .md](#77-documentos-md)
+- [8. Pendências Gerais da Phase B](#8-pendências-gerais-da-phase-b)
+- [9. Próximos Passos (Fase C)](#9-próximos-passos-fase-c)
 
 ---
 
@@ -479,34 +546,151 @@ outra aba ativa. Enter/Espaço continuam suportados com `preventDefault()`.
 - `node --check js/99-init.js` — OK
 - `git diff --check` — OK (sem problemas de whitespace)
 - Verificação estática de referências: não restou `patrimonySparklineInstance`
-  (singular); todas as referências usam `patrimonySparklineInstances[ctx]`
+  (singular) em `.js`; todas as referências usam `patrimonySparklineInstances[ctx]`
+  (a única ocorrência restante estava em `js/99-init.js` e foi removida na B.1.3.4 —
+  ver 3.8.9)
 - Verificação estática de listeners: delegação presente em `#viewInicio`;
   flag marcada somente após instalação
 - Verificação estática de HTML: `aria-expanded="true"` e `aria-hidden="false"`
   coerentes com o default do JS
+- **Teste funcional em Chromium headless via CDP (B.1.3.4)** — desktop 694px e
+  mobile 390×844 emulado; sessão simulada (`currentUser`/`firstLoadDone`), sem login
+  real. Resultados em 3.8.9.
 
 **Não executado (limitação de ambiente):**
 
-- Teste funcional em navegador/device (Termux sem GUI; Playwright indisponível)
-- Cenários: abrir Início expandido, recolher, alternar para Livro-Caixa, voltar,
-  atualizar dados com cada aba ativa, reload com preferência salva `'0'` e sem preferência
-- Verificação de que ambos os canvas têm dimensões > 0 após a troca de aba
+- Teste em device físico / navegador com login real e dados reais
+- Regressão visual comparativa (screenshots antes/depois) em device
 
 ### 3.8.8 Critérios de conclusão
 
 | Critério | Status |
 |---|---|
-| Duas instâncias Chart.js coexistem (uma por contexto) | ✅ Implementado (verificação estática) |
-| Início inicializa no ciclo normal | ✅ Implementado (verificação estática) |
-| Estado inicial HTML/JS/CSS coerente (default expandido) | ✅ Implementado (verificação estática) |
-| Listener robusto por delegação | ✅ Implementado (verificação estática) |
-| Sizing correto ao ativar aba | ✅ Implementado (verificação estática) |
-| Validação funcional em navegador | ❌ Pendente (ambiente) |
-| Regressão visual do Início/Livro-Caixa | ❌ Pendente (ambiente) |
+| Duas instâncias Chart.js coexistem (uma por contexto) | ✅ Verificado (headless CDP) |
+| Início inicializa no ciclo normal | ✅ Verificado (headless CDP) |
+| Estado inicial HTML/JS/CSS coerente (default expandido) | ✅ Verificado (headless CDP) |
+| Listener robusto por delegação | ✅ Verificado (headless CDP) |
+| Sizing correto ao ativar aba | ✅ Verificado (headless CDP: 0 → 664px em mobile) |
+| Referência obsoleta `patrimonySparklineInstance` removida | ✅ Verificado (B.1.3.4) |
+| Validação funcional em navegador headless | ✅ Executada (sem erros de console) |
+| Regressão visual em device físico / login real | ❌ Pendente (ambiente) |
 
-> **Conclusão:** a B.1.3.3 corrige os defeitos confirmados pela auditoria no nível de
-> código e de validação estática. A fase **não** deve ser considerada aprovada
-> funcionalmente enquanto os cenários da seção 3.8.7 não forem executados em navegador.
+> **Conclusão:** a B.1.3.3 corrige os defeitos confirmados pela auditoria; a B.1.3.4
+> remove a referência obsoleta e executa os cenários funcionais em Chromium headless.
+> A fase está **aprovada no nível estrutural e funcional-headless**, restando apenas a
+> validação em device físico com login/dados reais (seção 3.8.9).
+
+### 3.8.9 Phase B.1.3.4 — Encerramento: referência obsoleta e evidências funcionais
+
+#### Motivação
+
+A auditoria da B.1.3.3 apontou uma pendência pontual: `js/99-init.js` ainda atribuía
+`patrimonySparklineInstance = null;`, variável singular substituída pelo registro
+`patrimonySparklineInstances`. Em script clássico sem `'use strict'`, a atribuição
+criaria uma propriedade global obsoleta — sem quebrar a aplicação, mas incoerente com
+a arquitetura nova.
+
+#### Mudança — remoção da referência obsoleta
+
+Arquivo: `js/99-init.js` (bloco de inicialização do `DOMContentLoaded`).
+
+**Removido:**
+
+```js
+  viewPeriod = { mode: 'month', month: currentMonthYM() };
+  patrimonySparklineInstance = null;
+  PATRIMONY_SPARK_STORAGE_KEY = 'livro-caixa-patrimony-spark';
+```
+
+**Incluído (estado final):**
+
+```js
+  viewPeriod = { mode: 'month', month: currentMonthYM() };
+  PATRIMONY_SPARK_STORAGE_KEY = 'livro-caixa-patrimony-spark';
+```
+
+Nenhuma inicialização adicional é necessária: `patrimonySparklineInstances` já nasce
+com `{ inicio: null, strip: null }` em `js/18-render-core.js:53`.
+
+#### Verificação de referências
+
+```bash
+grep -rn "patrimonySparklineInstance\b" --include="*.js" --include="*.html" --include="*.mjs" .
+```
+
+Resultado: **nenhuma ocorrência** em código. As únicas ocorrências restantes estão
+neste relatório, dentro dos blocos "Removido" de 3.8.2 (registro histórico), o que é
+intencional.
+
+#### Validação estática
+
+- `node --check js/18-render-core.js` — OK
+- `node --check js/99-init.js` — OK
+- `git diff --check` — OK
+
+#### Validação funcional (Chromium headless + CDP)
+
+Ambiente: Termux/Android, `chromium-browser --headless=new --no-sandbox` com
+`--remote-debugging-port=9222`, servidor local `python3 -m http.server 8000`.
+Automação via `chrome-remote-interface` (já presente em `devDependencies`), cache
+desabilitado e Service Worker parado para garantir os arquivos atuais.
+
+**Limitação metodológica:** a sessão foi simulada em página
+(`currentUser = { uid: 'cdp-test' }` e `firstLoadDone = true`), pois o login Firebase
+real não está disponível neste ambiente. O objetivo foi validar o ciclo de vida dos
+gráficos, não a autenticação.
+
+**Cenário 1 — perfil limpo, desktop (largura ~694px):**
+
+| Verificação | Resultado |
+|---|---|
+| Preferência salva | `null` (sem preferência) |
+| `patrimonySparkVisible` | `true` |
+| `aria-hidden` / `aria-expanded` iniciais | `"false"` / `"true"` |
+| Classe `is-collapsed` inicial | ausente |
+| Instâncias criadas | `strip` e `inicio`, objetos distintos |
+| Canvas | `patrimonySparkline` e `patrimonySparklineInicio` |
+| Largura de ambos os canvas | 694px |
+| Erros de console | 0 |
+
+**Cenário 2 — mobile emulado 390×844, perfil limpo:**
+
+| Verificação | Resultado |
+|---|---|
+| Preferência salva | `null` → default expandido |
+| `aria-hidden` / `aria-expanded` | `"false"` / `"true"` |
+| Canvas do Início antes de ativar a aba | largura 0 (oculto) |
+| Após `switchTab('inicio')` | largura 664px, altura 128px |
+| Instância `strip` preservada | sim |
+| Erros de console | 0 |
+
+O resultado "0 → 664px" confirma a causa raiz documentada em 3.8.3: canvas oculto mede
+0×0 e precisa ser recriado ao ativar a aba.
+
+**Cenário 3 — recolher pelo strip e reabrir pelo Início:**
+
+| Ação | Resultado |
+|---|---|
+| `togglePatrimonySparkline('strip')` | `patrimonySparkVisible = false`; `strip` destruída; `inicio` preservada |
+| `aria-hidden` dos dois boxes | `"true"` |
+| Preferência persistida | `"0"` |
+| Clique no símbolo do Início (delegação) | `patrimonySparkVisible = true`; Início recriado com 694px; ARIA `"false"`/`"true"` |
+| Erros de console | 0 |
+
+**Cenário 4 — reload com preferência `'0'`:**
+
+| Verificação | Resultado |
+|---|---|
+| `patrimonySparkVisible` após reload | `false` |
+| `aria-hidden` / `aria-expanded` | `"true"` / `"false"` |
+| Função `renderPatrimonySparkline` disponível | sim |
+
+#### Conclusão da B.1.3.4
+
+- Referência obsoleta removida; código coerente com o registro por contexto.
+- Os quatro cenários funcionais passaram em Chromium headless, sem erros de console.
+- Pendência remanescente: repetir os cenários em device físico com login e dados reais,
+  incluindo regressão visual comparativa.
 
 ---
 
@@ -612,9 +796,10 @@ listener e do estado inicial está na seção 3.8 (B.1.3.3).
 
 | Prioridade | Item | Fase Responsável | Status |
 |------------|------|------------------|--------|
-| Alta | Testes em navegador/device para validação visual | B.1.3.3 | ❌ Pendente |
-| Alta | Validar coexistência dos dois gráficos e sizing ao trocar de aba | B.1.3.3 | ❌ Pendente |
-| Alta | Validar reload com preferência salva `'0'`, `'1'` e sem preferência | B.1.3.3 | ❌ Pendente |
+| Alta | Validar em device físico com login/dados reais (regressão visual) | B.1.3.4 | ❌ Pendente (ambiente) |
+| Alta | Coexistência dos dois gráficos e sizing ao trocar de aba | B.1.3.4 | ✅ Headless CDP (0 → 664px) |
+| Alta | Reload com preferência `'0'` e sem preferência | B.1.3.4 | ✅ Headless CDP |
+| Alta | Referência obsoleta `patrimonySparklineInstance` | B.1.3.4 | ✅ Removida |
 | Média | Testes de alternância de aba (Início ↔ Dashboard) | B.1.2.2 | ❌ Pendente |
 | Média | Validação visual do card Saúde Financeira | B.1.2.2 | ❌ Pendente |
 | Baixa | Possível futura integração de indicadores adicionais ao card saúde | B.1.2.2 | ⏳ Opcional |
@@ -624,9 +809,9 @@ listener e do estado inicial está na seção 3.8 (B.1.3.3).
 
 ## 9. Próximos Passos (Fase C)
 
-- Executar os cenários de validação da seção 3.8.7 em navegador/device físico
+- Repetir os cenários de 3.8.9 em device físico, com login e dados reais
+- Capturar screenshots antes/depois para regressão visual
 - Definir nova feature flag ou fase para expansões adicionais
-- Atualizar este relatório com os resultados de validação funcional
 - Considerar refatoração de gráficos caso haja necessidade de novos componentes
 - Manter compatibilidade retroativa com versões anteriores do app
 
