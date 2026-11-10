@@ -628,6 +628,13 @@ function editInstitution(btn, key) {
     });
     const bankSummaryCard = strip.querySelector('.bank-summary-card');
     const openBankPanel = () => openBankManagementPanel();
+
+    // Atualiza card de Patrimônio Total da view Início
+    const inicioBalanceCard = document.querySelector('#viewInicio .inicio-card.balance-card .amount');
+    if (inicioBalanceCard) {
+      inicioBalanceCard.textContent = totalLabel;
+      inicioBalanceCard.className = `amount ${balancesReady && totalPatrimonio < 0 ? 'neg' : ''}`;
+    }
     bankSummaryCard?.addEventListener('click', openBankPanel);
     bankSummaryCard?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {

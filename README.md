@@ -4,6 +4,7 @@
 [![Worker](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/worker.yml/badge.svg)](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/worker.yml)
 [![GitHub Pages](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/pages.yml/badge.svg)](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/pages.yml)
 [![Firestore rules](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/firestore.yml/badge.svg)](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/firestore.yml)
+[![License: All Rights Reserved](https://img.shields.io/badge/License-All%20Rights%20Reserved-red.svg)](LICENSE)
 
 Controle financeiro pessoal sincronizado e disponível offline. PWA completo — funciona no celular e no desktop, com ou sem conexão.
 
