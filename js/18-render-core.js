@@ -654,6 +654,15 @@ function editInstitution(btn, key) {
         openInvestTab();
       }
     });
+    // Atualiza card de patrimônio da view Início (mesmo cálculo, DOM diferente)
+    if (typeof currentTab !== 'undefined' && currentTab === 'inicio') {
+      const inicioBalanceCard = document.querySelector('#viewInicio .inicio-card.balance-card .amount');
+      if (inicioBalanceCard) {
+        const totalPatrimonio = bankTotal + pocketTotal + investTotal;
+        inicioBalanceCard.textContent = balancesReady ? fmt(totalPatrimonio) : '—';
+        inicioBalanceCard.classList.toggle('neg', balancesReady && totalPatrimonio < 0);
+      }
+    }
   }
 
   function getDashboardAlerts() {

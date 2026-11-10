@@ -1752,6 +1752,49 @@
       panel.classList.remove('open');
     });
 
+    // Atualiza cards da view Início (mesmo cálculo, DOM diferente)
+    if (typeof currentTab !== 'undefined' && currentTab === 'inicio') {
+      // Atualiza patrimônio total
+      const inicioBalance = document.querySelector('#viewInicio .inicio-card.balance-card .amount');
+      if (inicioBalance) {
+        const totalPatrimonio = totalBankBalance() + totalPocketBalance() + totalInvestBalance();
+        inicioBalance.textContent = balancesReady ? fmt(totalPatrimonio) : '—';
+        inicioBalance.classList.toggle('neg', balancesReady && totalPatrimonio < 0);
+      }
+      // Atualiza saúde financeira
+      const inicioAdvanced = document.querySelector('#viewInicio .advanced-dashboard');
+      if (inicioAdvanced) {
+        const monthNet = monthIncome - monthExpense;
+        const health = monthNet < 0 ? 'Atenção' : monthNet > 0 ? 'Equilibrado' : 'Comece seu acompanhamento';
+        inicioAdvanced.innerHTML = `<span>${health}</span>`;
+      }
+      // Atualiza próximo pagamento
+      const inicioNextPayment = document.querySelector('#viewInicio .dashboard-next-payment-card .next-pay-inner');
+      if (inicioNextPayment) {
+        const today = todayISO().slice(0, 10);
+        const list = (typeof pendingBills !== 'undefined' && Array.isArray(pendingBills) ? pendingBills : [])
+          .filter(bill => {
+            try {
+              if (typeof billPaidForMonth === 'function' && billPaidForMonth(bill, month)) return false;
+              if (typeof billGeneratedForMonth === 'function' && billGeneratedForMonth(bill, month)) return false;
+              const st = typeof billStatus === 'function' ? billStatus(bill, month) : '';
+              if (st === 'Pago — não lançado' || st === 'Lançado' || st === 'Atrasado') return false;
+            } catch (e) {}
+            const due = String(billDueDateForMonth(bill, year, monthIndex) || '').slice(0, 10);
+            return due && due >= today;
+          })
+          .sort((a, b) => String(billDueDateForMonth(a, year, monthIndex)).localeCompare(String(billDueDateForMonth(b, year, monthIndex))));
+        const next = list[0];
+        if (!next) {
+          inicioNextPayment.innerHTML = '<span class="next-pay-kicker">Próximo pagamento</span><strong>Nenhum pagamento pendente</strong>';
+          return;
+        }
+        const due = String(billDueDateForMonth(next, year, monthIndex)).slice(0, 10);
+        const dueFmt = due.split('-').reverse().join('/');
+        inicioNextPayment.innerHTML = '<div class="next-pay-inner"><span class="next-pay-kicker">Próximo pagamento</span><div class="next-pay-row"><strong>' + (next.name || 'Conta') + '</strong><b>' + fmt(next.amount) + '</b></div><span class="hint">Vence em ' + dueFmt + '</span></div>';
+      }
+    }
+
     window.switchTab('goals');
     return;
   }

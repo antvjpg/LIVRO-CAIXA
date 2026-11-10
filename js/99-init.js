@@ -420,7 +420,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('viewBills')?.classList.toggle('active', tabName === 'bills');
     document.getElementById('viewProfile')?.classList.toggle('active', tabName === 'profile');
     document.getElementById('viewGoals')?.classList.toggle('active', tabName === 'goals');
-    document.getElementById('balanceStrip')?.classList.toggle('section-hidden', tabName !== 'caixa');
+    document.getElementById('viewInicio')?.classList.toggle('active', tabName === 'inicio');
+    document.getElementById('balanceStrip')?.classList.toggle('section-hidden', tabName !== 'caixa' && tabName !== 'inicio');
     document.getElementById('universalPeriodBar')?.classList.toggle('section-hidden', !['caixa','invest','pockets'].includes(tabName));
     if (tabName === 'bills') renderBills();
     if (tabName === 'cards') renderCards();
