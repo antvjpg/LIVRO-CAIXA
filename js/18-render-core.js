@@ -75,7 +75,14 @@ function editInstitution(btn, key) {
   }
 
   function renderPatrimonySparkline(enabled, context) {
+    const targetCanvasId = context === 'inicio' ? 'patrimonySparklineInicio' : 'patrimonySparkline';
     if (patrimonySparklineInstance) {
+      // Apenas destrua se a instância existente estiver no mesmo canvas alvo
+      if (patrimonySparklineInstance.canvas?.id !== targetCanvasId) {
+        // Instância de outro contexto — não destrua, mantenha-a ativa
+        // O gráfico do outro contexto continuará em seu canvas próprio
+        return;
+      }
       patrimonySparklineInstance.destroy();
       patrimonySparklineInstance = null;
     }
@@ -197,6 +204,22 @@ function editInstitution(btn, key) {
     if (box) {
       box.classList.toggle('is-collapsed', !patrimonySparkVisible);
       box.setAttribute('aria-hidden', String(!patrimonySparkVisible));
+    }
+    // Sincroniza o outro contexto
+    const otherContext = context === 'inicio' ? 'strip' : 'inicio';
+    const otherSymbol = otherContext === 'inicio'
+      ? document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol')
+      : document.querySelector('#balanceStrip .balance-card.total .balance-symbol');
+    const otherBox = otherContext === 'inicio'
+      ? document.querySelector('#viewInicio .inicio-card.balance-card .patrimony-spark-box')
+      : document.getElementById('patrimonySparkBox');
+    if (otherSymbol) {
+      otherSymbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
+      otherSymbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
+    }
+    if (otherBox) {
+      otherBox.classList.toggle('is-collapsed', !patrimonySparkVisible);
+      otherBox.setAttribute('aria-hidden', String(!patrimonySparkVisible));
     }
     if (patrimonySparkVisible) {
       renderPatrimonySparkline(!!currentUser && !!firstLoadDone, context);
@@ -677,6 +700,22 @@ function editInstitution(btn, key) {
         const totalPatrimonio = bankTotal + pocketTotal + investTotal;
         inicioBalanceCard.textContent = balancesReady ? fmt(totalPatrimonio) : '—';
         inicioBalanceCard.classList.toggle('neg', balancesReady && totalPatrimonio < 0);
+      }
+      // Sincroniza estado inicial do gráfico com base no localStorage
+      const storedSparkState = localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY)
+      const initialSparkVisible = storedSparkState ? storedSparkState === "1" : undefined
+      if (initialSparkVisible !== undefined) {
+        patrimonySparkVisible = initialSparkVisible
+        const inicioBox = document.querySelector("#viewInicio .inicio-card.balance-card .patrimony-spark-box")
+        const inicioSymbol = document.querySelector("#viewInicio .inicio-card.balance-card .balance-symbol")
+        if (inicioBox) {
+          inicioBox.classList.toggle("is-collapsed", !patrimonySparkVisible)
+          inicioBox.setAttribute("aria-hidden", String(!patrimonySparkVisible))
+        }
+        if (inicioSymbol) {
+          inicioSymbol.setAttribute("aria-expanded", String(patrimonySparkVisible))
+          inicioSymbol.setAttribute("aria-label", patrimonySparkVisible ? "Recolher gráfico do patrimônio" : "Mostrar gráfico do patrimônio")
+        }
       }
 
       // Inicializa listener do toggle de gráfico para a view Início (única execução)
