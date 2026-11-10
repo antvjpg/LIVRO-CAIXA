@@ -427,7 +427,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabName === 'cards') renderCards();
     if (tabName === 'receivables') renderReceivables();
     if (tabName === 'invest') { renderInvestments(); refreshStaleInvestmentQuotes(); }
-    if (tabName === 'dashboard') renderAdvancedDashboard();
+    if (tabName === 'dashboard' || tabName === 'inicio') {
+  renderAdvancedDashboard();
+}
     if (tabName === 'dash') renderDashboardTab();
     if (tabName === 'caixa') renderCategorySummary();
     const navEl = document.querySelector('.mobile-bottom-nav');
