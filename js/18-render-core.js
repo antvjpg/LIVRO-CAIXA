@@ -48,7 +48,9 @@ function editInstitution(btn, key) {
 
 
   /* [JS 08] RENDERIZAÇÃO / VIEWS */
-  let patrimonySparklineInstance;
+  /* B.1.3.3 — uma instância Chart.js por contexto (Início e strip), para que
+     os dois gráficos coexistam sem que um destrua o outro. */
+  const patrimonySparklineInstances = { inicio: null, strip: null };
   let investBreakdownChartInstance;
 
   let PATRIMONY_SPARK_STORAGE_KEY;
@@ -75,23 +77,14 @@ function editInstitution(btn, key) {
   }
 
   function renderPatrimonySparkline(enabled, context) {
-    const targetCanvasId = context === 'inicio' ? 'patrimonySparklineInicio' : 'patrimonySparkline';
-    if (patrimonySparklineInstance) {
-      // Apenas destrua se a instância existente estiver no mesmo canvas alvo
-      if (patrimonySparklineInstance.canvas?.id !== targetCanvasId) {
-        // Instância de outro contexto — não destrua, mantenha-a ativa
-        // O gráfico do outro contexto continuará em seu canvas próprio
-        return;
-      }
-      patrimonySparklineInstance.destroy();
-      patrimonySparklineInstance = null;
+    const ctx = context === 'inicio' ? 'inicio' : 'strip';
+    const targetCanvasId = ctx === 'inicio' ? 'patrimonySparklineInicio' : 'patrimonySparkline';
+    const existing = patrimonySparklineInstances[ctx];
+    if (existing) {
+      try { existing.destroy(); } catch (_) { /* instância já inválida */ }
+      patrimonySparklineInstances[ctx] = null;
     }
-    let canvas;
-    if (context === 'inicio') {
-      canvas = document.getElementById('patrimonySparklineInicio');
-    } else {
-      canvas = document.getElementById('patrimonySparkline');
-    }
+    const canvas = document.getElementById(targetCanvasId);
     if (!enabled || !patrimonySparkVisible || !canvas) return;
     const series = dashboardMonthSeries(6);
     const styles = getComputedStyle(document.body);
@@ -138,7 +131,7 @@ function editInstitution(btn, key) {
     const min = Math.min(...values);
     const max = Math.max(...values);
     const pad = Math.max((max - min) * 0.15, 1);
-    patrimonySparklineInstance = new Chart(canvas, {
+    patrimonySparklineInstances[ctx] = new Chart(canvas, {
       type: 'line',
       data: {
         labels: series.map(item => item.label),
@@ -650,6 +643,9 @@ function editInstitution(btn, key) {
     strip.innerHTML = html;
     markValueRefresh(strip);
     renderPatrimonySparkline(balancesReady, 'strip');
+    // B.1.3.3 — inicializa também o gráfico da view Início no ciclo normal
+    // (antes só era criado no toggle, o que impedia o segundo gráfico).
+    renderPatrimonySparkline(balancesReady, 'inicio');
     const sparkToggleSymbol = strip.querySelector('.balance-card.total .balance-symbol');
     sparkToggleSymbol?.addEventListener('click', () => togglePatrimonySparkline('strip'));
     sparkToggleSymbol?.addEventListener('keydown', (event) => {
@@ -693,46 +689,35 @@ function editInstitution(btn, key) {
         openInvestTab();
       }
     });
-    // Atualiza card de patrimônio da view Início (mesmo cálculo, DOM diferente)
-    if (typeof currentTab !== 'undefined' && currentTab === 'inicio') {
-      const inicioBalanceCard = document.querySelector('#viewInicio .inicio-card.balance-card .amount');
-      if (inicioBalanceCard) {
-        const totalPatrimonio = bankTotal + pocketTotal + investTotal;
-        inicioBalanceCard.textContent = balancesReady ? fmt(totalPatrimonio) : '—';
-        inicioBalanceCard.classList.toggle('neg', balancesReady && totalPatrimonio < 0);
-      }
-      // Sincroniza estado inicial do gráfico com base no localStorage
-      const storedSparkState = localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY)
-      const initialSparkVisible = storedSparkState ? storedSparkState === "1" : undefined
-      if (initialSparkVisible !== undefined) {
-        patrimonySparkVisible = initialSparkVisible
-        const inicioBox = document.querySelector("#viewInicio .inicio-card.balance-card .patrimony-spark-box")
-        const inicioSymbol = document.querySelector("#viewInicio .inicio-card.balance-card .balance-symbol")
-        if (inicioBox) {
-          inicioBox.classList.toggle("is-collapsed", !patrimonySparkVisible)
-          inicioBox.setAttribute("aria-hidden", String(!patrimonySparkVisible))
-        }
-        if (inicioSymbol) {
-          inicioSymbol.setAttribute("aria-expanded", String(patrimonySparkVisible))
-          inicioSymbol.setAttribute("aria-label", patrimonySparkVisible ? "Recolher gráfico do patrimônio" : "Mostrar gráfico do patrimônio")
-        }
-      }
+    // B.1.3.3 — estado visual do gráfico do Início sempre derivado de
+    // patrimonySparkVisible (não apenas quando há preferência salva).
+    const inicioBox = document.querySelector('#viewInicio .inicio-card.balance-card .patrimony-spark-box');
+    const inicioSymbol = document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol');
+    if (inicioBox) {
+      inicioBox.classList.toggle('is-collapsed', !patrimonySparkVisible);
+      inicioBox.setAttribute('aria-hidden', String(!patrimonySparkVisible));
+    }
+    if (inicioSymbol) {
+      inicioSymbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
+      inicioSymbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
+    }
 
-      // Inicializa listener do toggle de gráfico para a view Início (única execução)
-      if (typeof window.__patrimonyInicioListenerSetup === 'undefined') {
-        window.__patrimonyInicioListenerSetup = true;
-        const inicioSparkSymbol = document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol');
-        if (inicioSparkSymbol) {
-          inicioSparkSymbol.addEventListener('click', () => {
+    // B.1.3.3 — listener por delegação em #viewInicio: sobrevive à troca de
+    // innerHTML dos filhos e independe da aba ativa no momento da carga.
+    if (!window.__patrimonyInicioListenerSetup) {
+      const viewInicio = document.getElementById('viewInicio');
+      if (viewInicio) {
+        const isSparkSymbol = (target) => target instanceof Element && !!target.closest('.inicio-card.balance-card .balance-symbol');
+        viewInicio.addEventListener('click', (event) => {
+          if (isSparkSymbol(event.target)) togglePatrimonySparkline('inicio');
+        });
+        viewInicio.addEventListener('keydown', (event) => {
+          if ((event.key === 'Enter' || event.key === ' ') && isSparkSymbol(event.target)) {
+            event.preventDefault();
             togglePatrimonySparkline('inicio');
-          });
-          inicioSparkSymbol.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              togglePatrimonySparkline('inicio');
-            }
-          });
-        }
+          }
+        });
+        window.__patrimonyInicioListenerSetup = true;
       }
     }
   }

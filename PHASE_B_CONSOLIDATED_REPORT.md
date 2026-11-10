@@ -5,13 +5,16 @@
 
 ## HEAD
 - Inicial: `9181d0d Merge pull request #9 from antvjpg/feat/tabler-icon-foundation`
-- Final: `51917e3 Phase B.1.3.1: Correcao da integracao do grafico patrimonial entre Inicio e Libro-Caixa`
+- Consolidação documental: `fa9f016` / `0491603`
+- Final: commit da Phase B.1.3.3 (este commit — ver seção 3.8)
 
 ## Resumo Geral
-- **Commits pushados:** `b884038` (Phase B), `68d12ad` (Phase B.1), `0ffbe5c` (Phase B.1.2), `9374ea5` (Phase B.1.2.1), `da922f8` (Phase B.1.2.2), `d2733e8` (Phase B.1.3), `51917e3` (Phase B.1.3.1)
-- **Arquivos modificados:** `index.html`, `js/18-render-core.js`, `js/20-dashboard.js`, `js/99-init.js`, `PHASE_*.md` reports
-- **Total de linhas alteradas:** ~200+ across multiple files
+- **Commits pushados:** `b884038` (Phase B), `68d12ad` (Phase B.1), `0ffbe5c` (Phase B.1.2), `9374ea5` (Phase B.1.2.1), `da922f8` (Phase B.1.2.2), `d2733e8` (Phase B.1.3), `51917e3` (Phase B.1.3.1), `fa9f016` (consolidação documental), `0491603` (auditoria documental), B.1.3.3 (implementação real do ciclo de vida do gráfico)
+- **Arquivos modificados:** `index.html`, `js/18-render-core.js`, `js/20-dashboard.js`, `js/99-init.js`, `PHASE_B_CONSOLIDATED_REPORT.md`
+- **Total de linhas alteradas:** ~250+ across multiple files
 - **Nenhum commit nem push indevido** — todas as alterações foram planejadas e documentadas
+
+> **Aviso de leitura:** as seções 3.6 e 3.7 registram as *tentativas* das fases B.1.3.1/B.1.3.2. A auditoria independente de B.1.3.3 (seção 3.8) demonstrou que aquelas tentativas **não eliminaram** os defeitos 1, 3, 4 e 5. A correção efetiva está descrita, com trechos removidos e incluídos, na seção 3.8.
 
 ---
 
@@ -91,9 +94,12 @@ A Phase B.1.2.2 foi técnica concluída com a integração do card Saúde Financ
 
 ### 3.3 Evidências Técnicas (B.1.3)
 - ✅ IDs únicos no DOM: `patrimonySparkline` (strip), `patrimonySparklineInicio` (início)
-- ✅ `renderPatrimonySparkline(enabled, context)` — destruição condicional por canvas alvo
-- ✅ `togglePatrimonySparkline(context)` — sincronização do outro contexto
-- ✅ Estado inicial sincronizado a partir de `PATRIMONY_SPARK_STORAGE_KEY`
+- ⚠️ `renderPatrimonySparkline(enabled, context)` — na B.1.3 recebeu `context`, mas a
+  destruição condicional introduzida depois se mostrou incorreta (ver 3.6/3.8.2)
+- ⚠️ `togglePatrimonySparkline(context)` — sincronizava o outro contexto, mas o gráfico
+  do Início nunca era criado no ciclo normal (ver 3.8.3)
+- ⚠️ Estado inicial: a intenção era sincronizar via `PATRIMONY_SPARK_STORAGE_KEY`, mas
+  só funcionava com preferência salva (ver 3.8.4)
 - ✅ Código validado: `node --check js/18-render-core.js` — passou sem erros
 - ✅ `git diff --check` — sem problemas de whitespace
 - ✅ `openGoalsPanel()` e health card continua funcionando (regressões preservadas)
@@ -109,13 +115,23 @@ Foram identificados e corrigidos 5 problemas adicionais:
 A esses soma-se um problema documental (Bug 6, seção 3.7): contradição sobre
 documentos "preservados" no relatório consolidado.
 
-### 3.5 Conclusão
-A Phase B.1.3 foi técnica concluída com a integração do valor patrimonial ao card da view Início, eliminação da duplicidade de IDs e mecanismo reutilizado sem criação de segundo sistema de gráficos ou estados independentes.
+> **Resultado da reverificação (B.1.3.3):** a auditoria independente confirmou que os
+> problemas 1, 3, 4 e 5 continuavam presentes no código após as tentativas descritas
+> em 3.6/3.7. Os itens 1 e 3 tinham sido "corrigidos" de forma que apenas trocava o
+> sintoma de lugar; 4 e 5 nunca chegaram a ser implementados de fato. Ver seção 3.8.
 
-### 3.6 Auditoria das Correções — B.1.3.1 (gráfico patrimonial)
+### 3.5 Conclusão (revisada)
+A integração do valor patrimonial ao card da view Início e a eliminação da duplicidade
+de IDs foram concluídas em B.1.3. O ciclo de vida do gráfico, porém, **não** estava
+correto ao final de B.1.3.2: apenas um dos dois gráficos era criado, o estado inicial
+divergia do HTML e o listener do Início era frágil. A correção efetiva é a B.1.3.3
+(seção 3.8).
+
+### 3.6 Tentativa B.1.3.1 — registro histórico (insuficiente)
 
 Esta seção substitui a referência ao arquivo removido `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md`.
-Todo o conteúdo técnico está agora aqui.
+Ela descreve o que **foi tentado** em B.1.3.1. O veredito ao final de cada bug indica se
+a correção sobreviveu à reverificação de B.1.3.3.
 
 #### Bug 1 — Instância Chart.js única compartilhada indevidamente
 - **Arquivo:** `js/18-render-core.js`
@@ -127,6 +143,9 @@ Todo o conteúdo técnico está agora aqui.
   passou a ser derivado do contexto (`patrimonySparklineInicio` vs `patrimonySparkline`).
   A instância só é destruída quando pertence ao mesmo canvas alvo.
 - **Evidência:** `node --check js/18-render-core.js` OK.
+- **Veredito (B.1.3.3):** ❌ insuficiente. O guard `return` introduzido aqui era
+  justamente o defeito: ao renderizar o segundo contexto, a função abortava e o
+  segundo gráfico nunca era criado. Corrigido de fato em 3.8.2.
 
 #### Bug 2 — Referência ARIA incorreta no controle do Início
 - **Arquivo:** `index.html`
@@ -152,8 +171,11 @@ Todo o conteúdo técnico está agora aqui.
 - **Correção:** `renderBalances()` lê `localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY)`
   e aplica `is-collapsed` + ARIA de forma consistente quando há preferência salva.
 - **Evidência:** `node --check js/18-render-core.js` OK; bloco verificado no diff.
+- **Veredito (B.1.3.3):** ❌ insuficiente. A sincronização só ocorria quando existia
+  preferência salva (`initialSparkVisible !== undefined`) e somente se a aba Início já
+  estivesse ativa. Sem preferência salva, o HTML permanecia divergente. Corrigido em 3.8.4.
 
-### 3.7 Auditoria das Correções — B.1.3.2 (ciclo de vida e listeners)
+### 3.7 Tentativa B.1.3.2 — registro histórico (insuficiente)
 
 #### Bug 5 — Listener do Início dependente de flag/condição instável
 - **Arquivo:** `js/18-render-core.js`
@@ -163,6 +185,10 @@ Todo o conteúdo técnico está agora aqui.
   verificação de existência do elemento antes de registrar `click`/`keydown`;
   suporte a Enter/Space com `event.preventDefault()`.
 - **Evidência:** `node --check js/18-render-core.js` OK.
+- **Veredito (B.1.3.3):** ❌ insuficiente. A flag `__patrimonyInicioListenerSetup` era
+  marcada **antes** de verificar se o elemento existia; o listener era direto no símbolo
+  (não sobrevive à troca de filhos por `innerHTML`) e todo o bloco continuava dentro de
+  `if (currentTab === 'inicio')`. Corrigido em 3.8.5.
 
 #### Bug 6 — Contradição documental no relatório consolidado
 - **Arquivo:** `PHASE_B_CONSOLIDATED_REPORT.md`
@@ -174,17 +200,329 @@ Todo o conteúdo técnico está agora aqui.
 
 ---
 
+### 3.8 Phase B.1.3.3 — Implementação real do ciclo de vida do gráfico
+
+### 3.8.1 Motivação e escopo
+
+A auditoria independente de B.1.3.3 reprovou as fases anteriores e confirmou, no código,
+quatro defeitos ainda presentes:
+
+1. **Instância única + `return` precoce:** `renderPatrimonySparkline()` abortava ao
+   encontrar a instância do outro contexto, então o segundo gráfico nunca era criado.
+2. **Início sem inicialização no ciclo normal:** só existia chamada com `'strip'`;
+   o gráfico do Início dependia exclusivamente do toggle.
+3. **Estado inicial divergente:** HTML do Início iniciava recolhido/`aria-hidden="true"`,
+   enquanto o JS iniciava visível (default `true`).
+4. **Listener frágil:** flag marcada antes da checagem de existência, listener direto no
+   símbolo e bloco condicionado a `currentTab === 'inicio'`.
+
+Decisões de escopo tomadas com o usuário:
+
+- **Default visual:** expandido (alinha HTML ao JS e ao comportamento do strip).
+- **Autorizado alterar `js/99-init.js`** para re-renderizar o gráfico ao ativar a aba,
+  evitando canvas 0×0 quando a view está oculta.
+- **Documentação:** registrar explicitamente os trechos removidos e incluídos.
+
+### 3.8.2 Mudança 1 — uma instância Chart.js por contexto
+
+**Arquivo:** `js/18-render-core.js` (topo do bloco `[JS 08]` e `renderPatrimonySparkline`).
+
+**Removido:**
+
+```js
+let patrimonySparklineInstance;
+```
+
+**Incluído:**
+
+```js
+/* B.1.3.3 — uma instância Chart.js por contexto (Início e strip), para que
+   os dois gráficos coexistam sem que um destrua o outro. */
+const patrimonySparklineInstances = { inicio: null, strip: null };
+```
+
+**Removido (início da função):**
+
+```js
+function renderPatrimonySparkline(enabled, context) {
+  const targetCanvasId = context === 'inicio' ? 'patrimonySparklineInicio' : 'patrimonySparkline';
+  if (patrimonySparklineInstance) {
+    // Apenas destrua se a instância existente estiver no mesmo canvas alvo
+    if (patrimonySparklineInstance.canvas?.id !== targetCanvasId) {
+      // Instância de outro contexto — não destrua, mantenha-a ativa
+      // O gráfico do outro contexto continuará em seu canvas próprio
+      return;
+    }
+    patrimonySparklineInstance.destroy();
+    patrimonySparklineInstance = null;
+  }
+  let canvas;
+  if (context === 'inicio') {
+    canvas = document.getElementById('patrimonySparklineInicio');
+  } else {
+    canvas = document.getElementById('patrimonySparkline');
+  }
+  if (!enabled || !patrimonySparkVisible || !canvas) return;
+```
+
+**Incluído:**
+
+```js
+function renderPatrimonySparkline(enabled, context) {
+  const ctx = context === 'inicio' ? 'inicio' : 'strip';
+  const targetCanvasId = ctx === 'inicio' ? 'patrimonySparklineInicio' : 'patrimonySparkline';
+  const existing = patrimonySparklineInstances[ctx];
+  if (existing) {
+    try { existing.destroy(); } catch (_) { /* instância já inválida */ }
+    patrimonySparklineInstances[ctx] = null;
+  }
+  const canvas = document.getElementById(targetCanvasId);
+  if (!enabled || !patrimonySparkVisible || !canvas) return;
+```
+
+**Removido (criação do Chart.js):**
+
+```js
+patrimonySparklineInstance = new Chart(canvas, {
+```
+
+**Incluído:**
+
+```js
+patrimonySparklineInstances[ctx] = new Chart(canvas, {
+```
+
+**Efeito:** cada contexto destrói/recria apenas a própria instância. Atualizar o
+Livro-Caixa não destrói mais o gráfico do Início e vice-versa. O `return` precoce que
+impedia a criação do segundo gráfico foi eliminado.
+
+### 3.8.3 Mudança 2 — inicialização no ciclo normal e ao ativar a aba
+
+**Arquivo:** `js/18-render-core.js` (`renderBalances`).
+
+**Incluído (logo após a renderização do strip):**
+
+```js
+renderPatrimonySparkline(balancesReady, 'strip');
+// B.1.3.3 — inicializa também o gráfico da view Início no ciclo normal
+// (antes só era criado no toggle, o que impedia o segundo gráfico).
+renderPatrimonySparkline(balancesReady, 'inicio');
+```
+
+**Arquivo:** `js/99-init.js` (`switchTabOriginal`).
+
+**Incluído (após `renderAdvancedDashboard()` e os `classList.toggle` das views):**
+
+```js
+// B.1.3.3 — canvas oculto renderiza 0×0; ao ativar a aba, recria o gráfico
+// já com a view visível para corrigir o dimensionamento.
+if (tabName === 'caixa' || tabName === 'inicio') {
+  if (typeof renderPatrimonySparkline === 'function') {
+    const sparkReady = !!currentUser && !!firstLoadDone;
+    renderPatrimonySparkline(sparkReady, 'strip');
+    if (tabName === 'inicio') renderPatrimonySparkline(sparkReady, 'inicio');
+  }
+}
+```
+
+**Efeito:** o gráfico do Início passa a ser criado no fluxo normal de dados. Como um
+canvas dentro de view oculta mede 0×0, a recriação no `switchTab` garante dimensionamento
+correto quando Início/Livro-Caixa se tornam visíveis. O strip também é recriado ao voltar
+para `caixa`/`inicio`, cobrindo o caso de carga inicial em aba diferente.
+
+### 3.8.4 Mudança 3 — estado inicial consistente (HTML ↔ JS ↔ CSS)
+
+**Arquivo:** `index.html` (card Patrimônio Total em `#viewInicio`).
+
+**Removido:**
+
+```html
+<span class="balance-symbol" role="button" tabindex="0" aria-expanded="false" aria-controls="patrimonySparkBoxInicio" aria-label="Mostrar gráfico do patrimônio">…</span>
+…
+<div class="patrimony-spark-box" id="patrimonySparkBoxInicio" aria-hidden="true">…</div>
+```
+
+**Incluído:**
+
+```html
+<span class="balance-symbol" role="button" tabindex="0" aria-expanded="true" aria-controls="patrimonySparkBoxInicio" aria-label="Recolher gráfico do patrimônio">…</span>
+…
+<div class="patrimony-spark-box" id="patrimonySparkBoxInicio" aria-hidden="false">…</div>
+```
+
+**Arquivo:** `js/18-render-core.js` (`renderBalances`).
+
+**Removido (bloco condicionado à aba e à preferência salva):**
+
+```js
+// Atualiza card de patrimônio da view Início (mesmo cálculo, DOM diferente)
+if (typeof currentTab !== 'undefined' && currentTab === 'inicio') {
+  const inicioBalanceCard = document.querySelector('#viewInicio .inicio-card.balance-card .amount');
+  if (inicioBalanceCard) {
+    const totalPatrimonio = bankTotal + pocketTotal + investTotal;
+    inicioBalanceCard.textContent = balancesReady ? fmt(totalPatrimonio) : '—';
+    inicioBalanceCard.classList.toggle('neg', balancesReady && totalPatrimonio < 0);
+  }
+  // Sincroniza estado inicial do gráfico com base no localStorage
+  const storedSparkState = localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY)
+  const initialSparkVisible = storedSparkState ? storedSparkState === "1" : undefined
+  if (initialSparkVisible !== undefined) {
+    patrimonySparkVisible = initialSparkVisible
+    const inicioBox = document.querySelector("#viewInicio .inicio-card.balance-card .patrimony-spark-box")
+    const inicioSymbol = document.querySelector("#viewInicio .inicio-card.balance-card .balance-symbol")
+    if (inicioBox) {
+      inicioBox.classList.toggle("is-collapsed", !patrimonySparkVisible)
+      inicioBox.setAttribute("aria-hidden", String(!patrimonySparkVisible))
+    }
+    if (inicioSymbol) {
+      inicioSymbol.setAttribute("aria-expanded", String(patrimonySparkVisible))
+      inicioSymbol.setAttribute("aria-label", patrimonySparkVisible ? "Recolher gráfico do patrimônio" : "Mostrar gráfico do patrimônio")
+    }
+  }
+```
+
+**Incluído:**
+
+```js
+// B.1.3.3 — estado visual do gráfico do Início sempre derivado de
+// patrimonySparkVisible (não apenas quando há preferência salva).
+const inicioBox = document.querySelector('#viewInicio .inicio-card.balance-card .patrimony-spark-box');
+const inicioSymbol = document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol');
+if (inicioBox) {
+  inicioBox.classList.toggle('is-collapsed', !patrimonySparkVisible);
+  inicioBox.setAttribute('aria-hidden', String(!patrimonySparkVisible));
+}
+if (inicioSymbol) {
+  inicioSymbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
+  inicioSymbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
+}
+```
+
+**Observação:** o bloco removido também repetia a atualização do `amount` do Início
+(já feita antes em `renderBalances`). A duplicação foi eliminada sem perda de
+comportamento: o valor continua sendo atualizado no primeiro bloco, incondicionalmente.
+
+**Efeito:** o HTML nasce expandido e coerente com `patrimonySparkVisible = true`; a
+sincronização de classe/ARIA acontece sempre, com ou sem preferência salva e
+independentemente da aba ativa.
+
+### 3.8.5 Mudança 4 — listener por delegação em `#viewInicio`
+
+**Arquivo:** `js/18-render-core.js` (`renderBalances`).
+
+**Removido:**
+
+```js
+// Inicializa listener do toggle de gráfico para a view Início (única execução)
+if (typeof window.__patrimonyInicioListenerSetup === 'undefined') {
+  window.__patrimonyInicioListenerSetup = true;
+  const inicioSparkSymbol = document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol');
+  if (inicioSparkSymbol) {
+    inicioSparkSymbol.addEventListener('click', () => {
+      togglePatrimonySparkline('inicio');
+    });
+    inicioSparkSymbol.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        togglePatrimonySparkline('inicio');
+      }
+    });
+  }
+}
+```
+
+**Incluído:**
+
+```js
+// B.1.3.3 — listener por delegação em #viewInicio: sobrevive à troca de
+// innerHTML dos filhos e independe da aba ativa no momento da carga.
+if (!window.__patrimonyInicioListenerSetup) {
+  const viewInicio = document.getElementById('viewInicio');
+  if (viewInicio) {
+    const isSparkSymbol = (target) => target instanceof Element && !!target.closest('.inicio-card.balance-card .balance-symbol');
+    viewInicio.addEventListener('click', (event) => {
+      if (isSparkSymbol(event.target)) togglePatrimonySparkline('inicio');
+    });
+    viewInicio.addEventListener('keydown', (event) => {
+      if ((event.key === 'Enter' || event.key === ' ') && isSparkSymbol(event.target)) {
+        event.preventDefault();
+        togglePatrimonySparkline('inicio');
+      }
+    });
+    window.__patrimonyInicioListenerSetup = true;
+  }
+}
+```
+
+**Efeito:** a flag só é marcada se `#viewInicio` existir; o listener fica no contêiner
+estável (não no símbolo recriável) e funciona mesmo que `renderBalances()` rode com
+outra aba ativa. Enter/Espaço continuam suportados com `preventDefault()`.
+
+### 3.8.6 Resumo das alterações por arquivo
+
+| Arquivo | Alteração | Tipo |
+|---|---|---|
+| `js/18-render-core.js` | Registro `patrimonySparklineInstances` por contexto | Remoção + inclusão |
+| `js/18-render-core.js` | `renderPatrimonySparkline` sem `return` precoce; destrói só o próprio contexto | Remoção + inclusão |
+| `js/18-render-core.js` | `renderBalances` inicializa `'inicio'` no ciclo normal | Inclusão |
+| `js/18-render-core.js` | Sincronização de estado do Início sempre aplicada; remove duplicação de `amount` | Remoção + inclusão |
+| `js/18-render-core.js` | Listener por delegação em `#viewInicio` | Remoção + inclusão |
+| `js/99-init.js` | Re-render dos gráficos ao ativar `caixa`/`inicio` (sizing) | Inclusão |
+| `index.html` | Default expandido (`aria-expanded="true"`, `aria-hidden="false"`) | Remoção + inclusão |
+| `PHASE_B_CONSOLIDATED_REPORT.md` | Seção 3.8, vereditos 3.6/3.7, correções 6.4/7.3/7.4/7.5 | Remoção + inclusão |
+
+### 3.8.7 Validações executadas e limitações
+
+**Executado:**
+
+- `node --check js/18-render-core.js` — OK
+- `node --check js/99-init.js` — OK
+- `git diff --check` — OK (sem problemas de whitespace)
+- Verificação estática de referências: não restou `patrimonySparklineInstance`
+  (singular); todas as referências usam `patrimonySparklineInstances[ctx]`
+- Verificação estática de listeners: delegação presente em `#viewInicio`;
+  flag marcada somente após instalação
+- Verificação estática de HTML: `aria-expanded="true"` e `aria-hidden="false"`
+  coerentes com o default do JS
+
+**Não executado (limitação de ambiente):**
+
+- Teste funcional em navegador/device (Termux sem GUI; Playwright indisponível)
+- Cenários: abrir Início expandido, recolher, alternar para Livro-Caixa, voltar,
+  atualizar dados com cada aba ativa, reload com preferência salva `'0'` e sem preferência
+- Verificação de que ambos os canvas têm dimensões > 0 após a troca de aba
+
+### 3.8.8 Critérios de conclusão
+
+| Critério | Status |
+|---|---|
+| Duas instâncias Chart.js coexistem (uma por contexto) | ✅ Implementado (verificação estática) |
+| Início inicializa no ciclo normal | ✅ Implementado (verificação estática) |
+| Estado inicial HTML/JS/CSS coerente (default expandido) | ✅ Implementado (verificação estática) |
+| Listener robusto por delegação | ✅ Implementado (verificação estática) |
+| Sizing correto ao ativar aba | ✅ Implementado (verificação estática) |
+| Validação funcional em navegador | ❌ Pendente (ambiente) |
+| Regressão visual do Início/Livro-Caixa | ❌ Pendente (ambiente) |
+
+> **Conclusão:** a B.1.3.3 corrige os defeitos confirmados pela auditoria no nível de
+> código e de validação estática. A fase **não** deve ser considerada aprovada
+> funcionalmente enquanto os cenários da seção 3.8.7 não forem executados em navegador.
+
+---
+
 ## 4. Phase B.1.3.1 — Correção da integração do gráfico patrimonial
 
-Conteúdo consolidado na seção 3.6 deste documento. Não há documento externo de
-referência: `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md` foi removido e seu conteúdo
-técnico foi incorporado aqui.
+Conteúdo consolidado na seção 3.6 deste documento (registro histórico da tentativa).
+Não há documento externo de referência: `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md`
+foi removido e seu conteúdo técnico foi incorporado aqui. A correção efetiva do ciclo
+de vida está na seção 3.8 (B.1.3.3).
 
 ## 5. Phase B.1.3.2 — Correção do ciclo de vida, sincronização e consolidação documental
 
-Conteúdo consolidado na seção 3.7 deste documento. Não há documento externo de
-referência: `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md` foi removido e seu conteúdo
-técnico foi incorporado aqui.
+Conteúdo consolidado na seção 3.7 deste documento (registro histórico da tentativa).
+Não há documento externo de referência: `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md`
+foi removido e seu conteúdo técnico foi incorporado aqui. A correção efetiva do
+listener e do estado inicial está na seção 3.8 (B.1.3.3).
 
 ---
 
@@ -207,7 +545,7 @@ técnico foi incorporado aqui.
 
 ### 6.4 PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md
 - **Tamanho:** 17.482 bytes
-- **Conteúdo:** **Documento canônico** — integração completa da Phase B.1.3, incluindo:
+- **Conteúdo:** registro histórico da integração B.1.3 (não é fonte canônica; o conteúdo foi incorporado a este documento), incluindo:
   - Diagnóstico original da B.1.3
   - Implementação da B.1.3
   - Auditor independente B.1.3.1 (4 problemas identificados)
@@ -225,7 +563,8 @@ técnico foi incorporado aqui.
 ### 7.1 Sintaxe JavaScript Validada
 - ✅ `node --check js/20-dashboard.js` — passou sem erros (Phase B.1.2.2)
 - ✅ `node --check js/99-init.js` — passou sem erros (Phase B.1.2.2)
-- ✅ `node --check js/18-render-core.js` — passou sem erros (Phase B.1.3, B.1.3.1, B.1.3.2)
+- ✅ `node --check js/18-render-core.js` — passou sem erros (Phase B.1.3, B.1.3.1, B.1.3.2, B.1.3.3)
+- ✅ `git diff --check` — passou sem problemas de whitespace (B.1.3.3)
 
 ### 7.2 Verificação de IDs Duplicados
 - ✅ HTML: Apenas um `id="patrimonySparkline"` (do `#balanceStrip`)
@@ -233,21 +572,25 @@ técnico foi incorporado aqui.
 - ✅ HTML: `id="patrimonySparkBoxInicio"` único (spark box do Início)
 
 ### 7.3 Instâncias Chart.js
-- ✅ `renderPatrimonySparkline()` — destruição condicional por canvas alvo
+- ✅ Registro por contexto implementado: `patrimonySparklineInstances = { inicio, strip }`
+- ✅ `renderPatrimonySparkline(ctx)` destrói apenas a instância do próprio contexto
 - ✅ Não há duas instâncias Chart.js simultâneas no mesmo canvas
-- ✅ Atualização do gráfico do Livro-Caixa não destrói o gráfico do Início
-- ✅ Atualização do gráfico do Início não destrói o gráfico do Livro-Caixa
+- ✅ Atualização do Livro-Caixa não destrói o gráfico do Início (por construção)
+- ✅ Atualização do gráfico do Início não destrói o do Livro-Caixa (por construção)
+- ⏳ Confirmação funcional em navegador — pendente (seção 3.8.7)
 
 ### 7.4 Acessibilidade (ARIA)
 - ✅ Todos os `aria-controls` apontam para elementos existentes
-- ✅ `aria-expanded` e `aria-label` sincronizados entre contextos
-- ✅ `aria-hidden` consistente com classe `is-collapsed`
-- ✅ Suporte a teclado (Enter/Space) com `event.preventDefault()`
+- ✅ `aria-expanded`/`aria-label` aplicados sempre, a partir de `patrimonySparkVisible`
+- ✅ `aria-hidden` consistente com a classe `is-collapsed`
+- ✅ Suporte a teclado (Enter/Space) com `event.preventDefault()` na delegação
+- ⏳ Validação com leitor de tela/navegador — pendente (seção 3.8.7)
 
 ### 7.5 Estado Persistente
 - ✅ `PATRIMONY_SPARK_STORAGE_KEY` respeitado no `localStorage`
-- ✅ Estado inicial sincronizado a partir do armazenamento persistido
+- ✅ Default expandido (`true`) coerente entre HTML e JS
 - ✅ Toggling um contexto afeta o estado compartilhado (por design)
+- ⏳ Cenários de reload com `'0'`, `'1'` e sem preferência — pendentes (seção 3.8.7)
 
 ### 7.6 Cálculos Financeiros
 - ✅ Nenhuma alteração em regras financeiras
@@ -256,7 +599,7 @@ técnico foi incorporado aqui.
 - ✅ Classe visual `'neg'` aplicada corretamente em ambos os contextos
 
 ### 7.7 Documentos .md
-- ✅ 1 arquivo .md da Phase B existe: `PHASE_B_CONSOLIDATED_REPORT.md` (fonte canônica)
+- ✅ 1 arquivo .md da Phase B existe: `PHASE_B_CONSOLIDATED_REPORT.md` (documento único atual)
 - ✅ 4 arquivos foram removidos em `fa9f016` e tiveram o conteúdo incorporado:
   `PHASE_B_SUMMARY.md`, `PHASE_B1.2.1_REPORT.md`,
   `PHASE_B1.2.2_HEALTH_CARD_FIX_REPORT.md`, `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md`
@@ -269,24 +612,28 @@ técnico foi incorporado aqui.
 
 | Prioridade | Item | Fase Responsável | Status |
 |------------|------|------------------|--------|
-| Alta | Testes em navegador/device para validação visual | B.1.3 | ❌ Pendente |
+| Alta | Testes em navegador/device para validação visual | B.1.3.3 | ❌ Pendente |
+| Alta | Validar coexistência dos dois gráficos e sizing ao trocar de aba | B.1.3.3 | ❌ Pendente |
+| Alta | Validar reload com preferência salva `'0'`, `'1'` e sem preferência | B.1.3.3 | ❌ Pendente |
 | Média | Testes de alternância de aba (Início ↔ Dashboard) | B.1.2.2 | ❌ Pendente |
 | Média | Validação visual do card Saúde Financeira | B.1.2.2 | ❌ Pendente |
 | Baixa | Possível futura integração de indicadores adicionais ao card saúde | B.1.2.2 | ⏳ Opcional |
-| Baixa | Definir se o toggle de gráfico deve funcionar apenas no strip global ou também na view Início | B.1.3 | ⏳ Definido (consolidado) |
+| Baixa | Toggle de gráfico no strip global e na view Início | B.1.3 | ✅ Definido (ambos, estado compartilhado) |
 
 ---
 
 ## 9. Próximos Passos (Fase C)
 
-- Executar validações em navegador/device físico
+- Executar os cenários de validação da seção 3.8.7 em navegador/device físico
 - Definir nova feature flag ou fase para expansões adicionais
-- Atualizar relatórios markdown com resultados de validação
+- Atualizar este relatório com os resultados de validação funcional
 - Considerar refatoração de gráficos caso haja necessidade de novos componentes
 - Manter compatibilidade retroativa com versões anteriores do app
 
 ---
 
-**Fase B — Consolidada em 2026-11-10**
+**Fase B — Consolidada em 2026-11-10 · revisada em B.1.3.3**
 
-*Documento gerado automaticamente a partir dos relatórios individuais da Phase B, consolidando todo o histórico técnico, implementações corrigidas e evidências técnicas de todas as subfases.*
+*Documento único da Phase B. Consolida o histórico técnico das subfases, registra as
+tentativas (3.6/3.7), a implementação efetiva (3.8) e as validações estáticas, com as
+pendências funcionais explicitadas na seção 3.8.7.*
