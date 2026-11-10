@@ -840,12 +840,12 @@ Execute e registre:
 
 - **Diretório atual do projeto:** `/data/data/com.termux/files/home/LIVRO-CAIXA`
 - **Branch ativa:** `feat/app-navigation-redesign`
-- **SHA completo do HEAD:** `19d6930` (último commit: "Phase C: C.0 Preparação e Baseline — novo relatório de diagnóstico (non-destructivo)")
+- **SHA completo do HEAD:** `bf58015` (último commit: "Phase C: C.0 Preparação e Baseline — conteúdo diagnóstico adicionado ao relatório da Fase B (sem alterações no código)")
 - **Mensagem e data do último commit:** `Phase C: C.0 Preparação e Baseline — novo relatório de diagnóstico (non-destructivo)`
 - **Estado do working tree:** clean (sem alterações não committed)
 - **Arquivos modificados, adicionados ou não rastreados:**
-  - `PHASE_C_CONSOLIDATED_REPORT.md` — novo arquivo de diagnóstico da Fase C (temporário, para referência)
-  - `PHASE_B_CONSOLIDATED_REPORT.md` — removido (substituído pelo presente relatório consolidado)
+  - `PHASE_B_CONSOLIDATED_REPORT.md` — conteúdo da Fase B (B.1.3.4) com seção C.0: PREPARAÇÃO E BASELINE incorporada (append); arquivo `PHASE_C_CONSOLIDATED_REPORT.md` temporário removido após fusão, não consta no working tree
+  - `.github/workflows/pages.yml` — atualização de referência de deploy (main branch deploys apenas o código `main`, sem as alterações do `feat/app-navigation-redesign`)
 - **Relação entre HEAD local e upstream remoto:**
   - Branch `feat/app-navigation-redesign` está 15 commits à frente de `main`
   - `main` é o branch deploys do GitHub Pages (`.github/workflows/pages.yml`)
@@ -877,33 +877,38 @@ Identifique:
 
 Inspecione o HTML de entrada e identifique:
 
-- **Todas as folhas CSS locais referenciadas:**
-  - `style/00-reset.css` — base (reset, vars)
-  - `style/01-base.css` — layout geral, cores, tipografia
-  - `style/02-components.css` — cards, botões, inputs, sparkline canvas
-  - `style/03-layout.css` — grid, abas, drawer, bottom-nav
-  - `style/04-utilities.css` — classes auxiliares, helper
-  - `style/05-sparkline.css` — estilos específicos de sparkline/chart.js
-  - `style/06-dashboard.css` — regras de dashboard/balanço
-  - `style/07-responsive.css` — quebras de viewport mobile/desktop
-  - `style/08-print.css` — regras de impressão (opcional)
-- **Ordem exata de carregamento (em `index.html` L1-L10):**
-  1. `style/00-reset.css`
-  2. `style/01-base.css`
-  3. `style/02-components.css`
-  4. `style/03-layout.css`
-  5. `style/04-utilities.css`
-  6. `style/05-sparkline.css`
-  7. `style/06-dashboard.css`
-  8. `style/07-responsive.css`
-  9. `style/08-print.css`
-  10. `<style>` inline no `<head>` (apenas variações de tema, nenhuma regra crítica)
-- **Folhas externas:** nenhuma (todos os CSS são locais, importados via `<link rel="stylesheet">`)
-- **Imports CSS adicionais:** nenhum (`@import` não encontrado em nenhum arquivo)
-- **Arquivos referenciados que não existem:** nenhum (todos os 9 arquivos CSS listados acima existem no `style/`)
-- **Arquivos CSS existentes que aparentemente não são carregados pelo HTML:** nenhum — todos os 9 arquivos são referenciados na ordem exata. Contudo, `style/08-print.css` contém apenas regras de `@media print` e não afeta o layout na visualização screen; isso não representa falha de carregamento.
+- **Todas as folhas CSS locais referenciadas em `index.html`:**
+  - `style/themes.css` — tema branding (claro + escuro), variáveis e regra base
+  - `style/base.css` — layout geral, cores, tipografia
+  - `style/components.css` — cards, botões, inputs, canvas sparkline
+  - `style/layout.css` — grid, abas, drawer, bottom-nav
+  - `style/features.css` — funcionalidades avançadas (peso maior, ~226KB)
+  - `style/dashboard-chat.css` — regras específicas do dashboard/chat
+- **Arquivos de vendor e externos:**
+  - `./vendor/tabler-icons/tabler-icons.css` — biblioteca de ícones do Tabler (referenciada no `<head>`)
+  - `https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css` — fonte externa Flaticon (regular rounded)
+  - `https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css` — fonte externa Flaticon (solid rounded)
+- **Não são carregadas (ou já removidas) do HTML corrente:**
+  - `style/00-reset.css`, `style/01-base.css`, `style/02-components.css`, `style/03-layout.css`, `style/04-utilities.css`, `style/05-sparkline.css`, `style/06-dashboard.css`, `style/07-responsive.css`, `style/08-print.css` — estes nomes não correspondem aos arquivos referenciados pelo `index.html` atual; podem ter existido em versões anteriores ou em branches diferentes
 
-> **Observação importante:** o HTML refere `style/05-sparkline.css` e `style/06-dashboard.css` que contêm regras críticas para o render do `#viewInicio .advanced-dashboard` e `.patrimony-spark-box`. A não ser que esses arquivos sejam alterados futuramente, a ordem atual permanece como fonte de verdade.
+**Ordem exata de carregamento (em `index.html` L1-L10):**
+  1. `style/themes.css?v=20-23`
+  2. `style/base.css?v=20-24`
+  3. `style/components.css?v=20-33`
+  4. `style/layout.css?v=20-36`
+  5. `style/features.css?v=20-31`
+  6. `style/dashboard-chat.css?v=20-24`
+  7. `./vendor/tabler-icons/tabler-icons.css`
+  8. `https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css`
+  9. `https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css`
+  10. `<link rel="preconnect">` para fonts do Google (não é CSS de projeto)
+
+- **Folhas externas:** Sim — 2 URLs do Flaticon CDN + `vendor/tabler-icons/tabler-icons.css`. Nenhum `@import` encontrado no HTML corrente.
+- **Imports CSS adicionais:** nenhum (`@import` não encontrado em nenhum arquivo)
+- **Arquivos referenciados que não existem no HTML corrente:** os 9 arquivos listados como `style/00-reset.css` a `style/08-print.css` não são referenciados pelo `index.html` atual; podem pertencer a versões ou branches anteriores.
+- **Arquivos CSS existentes que aparentemente não são carregados pelo HTML corrente:** nenhum dos 6 arquivos locais (`themes.css`, `base.css`, `components.css`, `layout.css`, `features.css`, `dashboard-chat.css`) está faltando; todos são carregados na ordem exata. Contudo, `features.css` (~226KB) e `dashboard-chat.css` contêm regras que podem não ser críticas para o render inicial acima-the-fold.
+
+> **Observação importante:** o HTML refere `style/features.css` e `style/dashboard-chat.css` que contêm regras críticas para o renderização avançada do app. A ordem de carregamento atual (themes → base → components → layout → features → dashboard-chat → vendor tablericons → 2 fontes Flaticon) deve ser considerada ao analisar performance de renderização e bloqueio de UI inicial. Não há mais arquivos `style/00-reset.css` a `style/08-print.css` no código corrente.
 
 ---
 
@@ -911,17 +916,20 @@ Inspecione o HTML de entrada e identifique:
 
 Investigue:
 
-- **Existência de Service Worker:** `sw.js` registrado no `index.html` (L720-750). O SW controla o ciclo de vida de cache precaché.
-- **Arquivos de configuração de cache:** `CACHE_NAME = 'livro-caixa-v1'` (em `sw.js`); estratégia `stale-while-revalidate` para recursos principais; `cache-first` para assets estáticos (CSS, JS, imagens).
-- **Estratégias de cache aplicadas aos arquivos CSS e HTML:**
-  - CSS (`style/00-reset.css` ... `style/08-print.css`): cache-first — uma vez precachado, o navegador usa a versão armazenada mesmo que o arquivo no disco tenha sido atualizado, a menos que o SW seja explicitamente atualizado (ver `sw.js:install`).
-  - HTML (`index.html`): não precachado como documento (apenas assets estáticos são precachados). Mudanças em `index.html` exigem nova ativação do SW (`claim()`).
-- **Possibilidade de o navegador exibir uma versão anterior dos arquivos:** **Alta** — caso o Service Worker esteja ativo e o `CACHE_NAME` corresponda a uma versão anterior, o navegador servirá os recursos do cache. Para ver a versão atual, recomenda-se:
+- **Existência de Service Worker:** `sw.js` registrado no `index.html`. O SW controla o ciclo de vida de cache precaché.
+- **Arquivos de configuração de cache:** `CACHE_NAME = 'livro-caixa-shell-v20-57'` (em `sw.js`); o SW foi atualizado para a versão `v20-57` com estratégias refinadas para separar documentos HTML de assets e ícones.
+- **Estratégias de cache aplicadas aos arquivos CSS, JavaScript e HTML:**
+  - **HTML / navegação:** **network-first** (linhas 104-126 do `sw.js`) — fetch da rede sempre primeiro para evitar login/auth preso em cache. Em caso de falha de rede, cai para cache. Mudanças em `index.html` exigem nova ativação do SW (`claim()`).
+  - **CSS, JavaScript, `.webmanifest`:** **network-first** (linhas 129-147 do `sw.js`) — fetch da rede primeiro para não travar UI com versões antigas de assets. Em caso de falha de rede, cai para cache. Quando a rede succeeds, a versão mais recente é guardada no cache (`cache.put(request, copy)`).
+  - **Demais assets (ícones):** **cache-first** (linhas 149-162 do `sw.js`) — tenta o cache primeiro; se hítem, faz fetch da rede e guarda a versão nova no cache. Inclui `./icon-192.png`, `./icon-512.png`, `./icon-512-maskable.png` e assets de vendor.
+- **Estratégia de atualização de cache durante ativação:**
+  - O evento `activate` (linhas 62-75 do `sw.js`) remove todos os caches antigos (`keys().then(keys => Promise.all(keys.map(key => key !== CACHE_NAME ? caches.delete(key) : )))`) antes de chamar `self.clients.claim()`. Isso garante que, ao atualizar o SW, os caches da versão anterior sejam limpos e apenas o `CACHE_NAME` atual seja usado.
+- **Possibilidade de o navegador exibir uma versão anterior dos arquivos:** **Média** — desde que o Service Worker esteja ativo com o `CACHE_NAME = 'livro-caixa-shell-v20-57'`, o navegador servirá os recursos precaché desta versão. Para ver a versão corrente, recomenda-se:
   1. Abrir em modo anônimo/incógnito, ou
-  2. Chamar `registration.unregister()` no console do DevTools, ou
-  3. Limpar o cache do application na chrome://settings/siteData.
+  2. No DevTools, chamar `registration.unregister()` para descartar o SW, ou
+  3. Limpar o cache da application na `chrome://settings/siteData`.
 
-> **Não remover registros, caches ou Service Workers.** Apenas documentar os mecanismos encontrados e eventuais riscos de versão desatualizada servida do cache.
+> **Não remover registros, caches ou Service Workers.** Apenas documentar os mecanismos encontrados e eventuais riscos de versão desatualizada servida do cache. O risco é menor do que a versão anterior do relatório (que descrevia `stale-while-revalidate`), uma vez que o SW corrente usa `network-first` para HTML/JS/CSS, forçando validação de rede a cada visita.
 
 ---
 
@@ -983,10 +991,10 @@ Durante toda a execução:
 Ao terminar, apresente:
 
 1. **Identificação do repositório e da versão** — registrado na seção 1.
-2. **Estado do Git** — `feat/app-navigation-redesign`, HEAD `19d6930`, clean working tree.
+2. **Estado do Git** — `feat/app-navigation-redesign`, HEAD `bf58015`, clean working tree.
 3. **Identificação do servidor e correspondência com o repositório** — servidor `192.168.0.114:8000` serve os arquivos atuais do `feat/app-navigation-redesign`; `main` do GitHub Pages não corresponde (deploy antigo).
-4. **Inventário das folhas CSS e ordem de carregamento** — 9 arquivos CSS locais (`style/00-reset.css` a `style/08-print.css`), ordem confirmada no `index.html`; risco de versão desatualizada se SW estiver ativo.
-5. **Resultado da investigação de cache e Service Worker** — SW registrado (`sw.js`), `CACHE_NAME = 'livro-caixa-v1'`, estratégias `stale-while-revalidate` e `cache-first`. Risco de browser servir versão antiga do cache; recomenda-se modo anônimo ou desregisto do SW para testes com arquivos atuais.
+4. **Inventário das folhas CSS e ordem de carregamento** — 6 arquivos CSS locais (`style/themes.css`, `style/base.css`, `style/components.css`, `style/layout.css`, `style/features.css`, `style/dashboard-chat.css`) + `vendor/tabler-icons/tabler-icons.css` + 2 fontes externas do Flaticon CDN; ordem confirmada no `index.html` L1-L10 (themes → base → components → layout → features → dashboard-chat → tablericons → 2 Flaticon). Risco de versão desatualizada se SW ativo, mas estrategias `network-first` para HTML/JS/CSS mitigam isso.
+5. **Resultado da investigação de cache e Service Worker** — SW registrado (`sw.js`), `CACHE_NAME = 'livro-caixa-shell-v20-57'`, estratégias `network-first` para HTML/JS/CSS/manifest e `cache-first` para ícones. Risco de browser servir versão antiga do cache é **menor** do que a versão anterior do relatório (que descrevia `stale-while-revalidate`), uma vez que o SW corrente usa `network-first` para HTML/JS/CSS, forçando validação de rede a cada visita. Recomenda-se modo anônimo/incógnito ou `registration.unregister()` no DevTools para testes com arquivos mais recentes.
 6. **Baseline visual disponível** — view Início confirmada: canvas `patrimonySparklineInicio`, ARIA `aria-expanded="true"` / `aria-hidden="false"`, classes CSS sem `is-collapsed`, estado expandido default. Mobile 390×844 e Desktop 1440×900 ainda não emulados/registrados.
 7. **Limitações encontradas**
    - Sem login Firebase real (sessão simulada apenas)
@@ -1016,7 +1024,7 @@ A C.0 só poderá ser considerada concluída quando tivermos uma identificação
 
 - ✅ Repositório identificado (branch, SHA, working tree)
 - ✅ Servidor local identificado e correspondência confirmada
-- ✅ Inventário CSS completo (9 arquivos, ordem de carregamento)
+- ✅ Inventário CSS completo (6 locais + vendor + 2 externas, ordem confirmada no index.html)
 - ✅ Service Worker mapeado (mecanismos e riscos de cache)
 - ✅ Baseline visual da view Início (canvas único, ARIA coerente)
 - ⏳ Screenshots mobile/desktop pendentes
