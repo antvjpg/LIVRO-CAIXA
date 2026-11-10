@@ -74,12 +74,17 @@ function editInstitution(btn, key) {
     } catch (_) { /* armazenamento indisponível */ }
   }
 
-  function renderPatrimonySparkline(enabled) {
+  function renderPatrimonySparkline(enabled, context) {
     if (patrimonySparklineInstance) {
       patrimonySparklineInstance.destroy();
       patrimonySparklineInstance = null;
     }
-    const canvas = document.getElementById('patrimonySparkline');
+    let canvas;
+    if (context === 'inicio') {
+      canvas = document.getElementById('patrimonySparklineInicio');
+    } else {
+      canvas = document.getElementById('patrimonySparkline');
+    }
     if (!enabled || !patrimonySparkVisible || !canvas) return;
     const series = dashboardMonthSeries(6);
     const styles = getComputedStyle(document.body);
@@ -174,13 +179,17 @@ function editInstitution(btn, key) {
     });
   }
 
-  function togglePatrimonySparkline() {
+  function togglePatrimonySparkline(context) {
     patrimonySparkVisible = !patrimonySparkVisible;
     try {
       localStorage.setItem(PATRIMONY_SPARK_STORAGE_KEY, patrimonySparkVisible ? '1' : '0');
     } catch (error) { /* armazenamento indisponível: estado vale só para a sessão */ }
-    const symbol = document.querySelector('#balanceStrip .balance-card.total .balance-symbol');
-    const box = document.getElementById('patrimonySparkBox');
+    const symbol = context === 'inicio'
+      ? document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol')
+      : document.querySelector('#balanceStrip .balance-card.total .balance-symbol');
+    const box = context === 'inicio'
+      ? document.querySelector('#viewInicio .inicio-card.balance-card .patrimony-spark-box')
+      : document.getElementById('patrimonySparkBox');
     if (symbol) {
       symbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
       symbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
@@ -190,9 +199,9 @@ function editInstitution(btn, key) {
       box.setAttribute('aria-hidden', String(!patrimonySparkVisible));
     }
     if (patrimonySparkVisible) {
-      renderPatrimonySparkline(!!currentUser && !!firstLoadDone);
+      renderPatrimonySparkline(!!currentUser && !!firstLoadDone, context);
     } else {
-      setTimeout(() => { if (!patrimonySparkVisible) renderPatrimonySparkline(false); }, 320);
+      setTimeout(() => { if (!patrimonySparkVisible) renderPatrimonySparkline(false, context); }, 320);
     }
   }
 
@@ -617,13 +626,13 @@ function editInstitution(btn, key) {
     <div class="invest-breakdown-box${investBreakdownVisible ? '' : ' is-collapsed'}" id="investBreakdownBox" aria-hidden="${!investBreakdownVisible}"></div>`;
     strip.innerHTML = html;
     markValueRefresh(strip);
-    renderPatrimonySparkline(balancesReady);
+    renderPatrimonySparkline(balancesReady, 'strip');
     const sparkToggleSymbol = strip.querySelector('.balance-card.total .balance-symbol');
-    sparkToggleSymbol?.addEventListener('click', togglePatrimonySparkline);
+    sparkToggleSymbol?.addEventListener('click', () => togglePatrimonySparkline('strip'));
     sparkToggleSymbol?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        togglePatrimonySparkline();
+        togglePatrimonySparkline('strip');
       }
     });
     const bankSummaryCard = strip.querySelector('.bank-summary-card');
@@ -668,6 +677,23 @@ function editInstitution(btn, key) {
         const totalPatrimonio = bankTotal + pocketTotal + investTotal;
         inicioBalanceCard.textContent = balancesReady ? fmt(totalPatrimonio) : '—';
         inicioBalanceCard.classList.toggle('neg', balancesReady && totalPatrimonio < 0);
+      }
+
+      // Inicializa listener do toggle de gráfico para a view Início (única execução)
+      if (typeof window.__patrimonyInicioListenerSetup === 'undefined') {
+        window.__patrimonyInicioListenerSetup = true;
+        const inicioSparkSymbol = document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol');
+        if (inicioSparkSymbol) {
+          inicioSparkSymbol.addEventListener('click', () => {
+            togglePatrimonySparkline('inicio');
+          });
+          inicioSparkSymbol.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              togglePatrimonySparkline('inicio');
+            }
+          });
+        }
       }
     }
   }
