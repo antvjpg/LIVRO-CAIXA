@@ -86,7 +86,8 @@ A Phase B.1.2.2 foi técnica concluída com a integração do card Saúde Financ
 ### 3.2 Arquivos Modificados
 - `index.html` — ID do canvas da view Início alterado de `patrimonySparkline` para `patrimonySparklineInicio`; `aria-controls` atualizado para `patrimonySparkBoxInicio`
 - `js/18-render-core.js` — 4 correções técnicas (gerenciamento de instância Chart.js, sincronização de contexto, estado inicial do localStorage)
-- `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md` — Relatório técnico detalhando todas as correções da B.1.3, B.1.3.1 e B.1.3.2
+- `PHASE_B_CONSOLIDATED_REPORT.md` — este documento, que incorporou o antigo
+  `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md` (removido em `fa9f016`)
 
 ### 3.3 Evidências Técnicas (B.1.3)
 - ✅ IDs únicos no DOM: `patrimonySparkline` (strip), `patrimonySparklineInicio` (início)
@@ -98,32 +99,92 @@ A Phase B.1.2.2 foi técnica concluída com a integração do card Saúde Financ
 - ✅ `openGoalsPanel()` e health card continua funcionando (regressões preservadas)
 
 ### 3.4 Problemas da Auditoria Independente B.1.3.1
-Foram identificados e corrigidos 4 problemas adicionais:
+Foram identificados e corrigidos 5 problemas adicionais:
 1. Instância única do Chart.js compartilhada indevidamente
 2. Referência ARIA incorreta no controle do gráfico da aba Início
 3. Estado visual e acessibilidade não sincronizados entre os dois contextos
 4. Estado inicial inconsistente entre visibilidade, classes CSS e atributos ARIA
+5. Listener do Início dependente de flag/condição instável e de recriação de DOM
+
+A esses soma-se um problema documental (Bug 6, seção 3.7): contradição sobre
+documentos "preservados" no relatório consolidado.
 
 ### 3.5 Conclusão
 A Phase B.1.3 foi técnica concluída com a integração do valor patrimonial ao card da view Início, eliminação da duplicidade de IDs e mecanismo reutilizado sem criação de segundo sistema de gráficos ou estados independentes.
 
-### 3.6 Seção B.1.3.1 — Correção da integração do gráfico patrimonial
+### 3.6 Auditoria das Correções — B.1.3.1 (gráfico patrimonial)
 
-*(Conteúdo incluso no relatório — mesma estrutura da seção anterior no PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md)*
+Esta seção substitui a referência ao arquivo removido `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md`.
+Todo o conteúdo técnico está agora aqui.
 
-### 3.7 Seção B.1.3.2 — Correção do ciclo de vida, sincronização e consolidação documental
+#### Bug 1 — Instância Chart.js única compartilhada indevidamente
+- **Arquivo:** `js/18-render-core.js`
+- **Sintoma:** `renderPatrimonySparkline()` destruía sempre a instância anterior,
+  independentemente do canvas alvo. Atualizar o Livro-Caixa destruía o gráfico do
+  Início e vice-versa, porque `getElementById('patrimonySparkline')` resolvia sempre
+  o mesmo elemento.
+- **Correção:** adicionado parâmetro `context` (`'inicio'` | `'strip'`); o canvas alvo
+  passou a ser derivado do contexto (`patrimonySparklineInicio` vs `patrimonySparkline`).
+  A instância só é destruída quando pertence ao mesmo canvas alvo.
+- **Evidência:** `node --check js/18-render-core.js` OK.
 
-*(Conteúdo incluso no relatório — mesma estrutura da seção anterior no PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md)*
+#### Bug 2 — Referência ARIA incorreta no controle do Início
+- **Arquivo:** `index.html`
+- **Sintoma:** `aria-controls="patrimonySparkBox"` apontava para um ID existente apenas
+  no `#balanceStrip`; o spark box do Início não possuía `id` próprio.
+- **Correção:** adicionado `id="patrimonySparkBoxInicio"` ao spark box do Início e
+  ajustado `aria-controls="patrimonySparkBoxInicio"` no símbolo `.balance-symbol`.
+- **Evidência:** `git diff` do `index.html`; IDs únicos confirmados.
+
+#### Bug 3 — Estado visual/ARIA não sincronizado entre os dois contextos
+- **Arquivo:** `js/18-render-core.js`
+- **Sintoma:** `togglePatrimonySparkline(context)` atualizava somente o contexto acionado;
+  o outro contexto mantinha `aria-expanded`, `aria-label` e `is-collapsed` defasados.
+- **Correção:** após o toggle, o contexto oposto é sincronizado (símbolo e contêiner),
+  quando presente no DOM.
+- **Evidência:** `node --check js/18-render-core.js` OK.
+
+#### Bug 4 — Estado inicial inconsistente (HTML x CSS x persistência)
+- **Arquivo:** `js/18-render-core.js`
+- **Sintoma:** o contêiner do Início iniciava com `aria-hidden="true"` mas sem
+  `is-collapsed`; o CSS usa `is-collapsed` para colapsar. Divergência entre HTML,
+  JS e `PATRIMONY_SPARK_STORAGE_KEY`.
+- **Correção:** `renderBalances()` lê `localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY)`
+  e aplica `is-collapsed` + ARIA de forma consistente quando há preferência salva.
+- **Evidência:** `node --check js/18-render-core.js` OK; bloco verificado no diff.
+
+### 3.7 Auditoria das Correções — B.1.3.2 (ciclo de vida e listeners)
+
+#### Bug 5 — Listener do Início dependente de flag/condição instável
+- **Arquivo:** `js/18-render-core.js`
+- **Sintoma:** o listener podia não ser instalado (ou ser reinstalado) conforme a aba
+  ativa e a recriação de DOM (`renderBalances()` substitui `#balanceStrip` via `innerHTML`).
+- **Correção:** instalação única protegida por `window.__patrimonyInicioListenerSetup`;
+  verificação de existência do elemento antes de registrar `click`/`keydown`;
+  suporte a Enter/Space com `event.preventDefault()`.
+- **Evidência:** `node --check js/18-render-core.js` OK.
+
+#### Bug 6 — Contradição documental no relatório consolidado
+- **Arquivo:** `PHASE_B_CONSOLIDATED_REPORT.md`
+- **Sintoma:** o consolidado declarava "preservados" documentos que foram removidos no
+  mesmo commit `fa9f016`; a seção 7.7 afirmava "5 arquivos .md preservados (sem exclusões)".
+- **Correção:** afirmações falsas substituídas por registro explícito de remoção e
+  incorporação de conteúdo (ver seções 6 e 7.7).
+- **Evidência:** este documento (revisado).
 
 ---
 
 ## 4. Phase B.1.3.1 — Correção da integração do gráfico patrimonial
 
-*(Idêntico ao conteúdo já existente no PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md, seção B.1.3.1)*
+Conteúdo consolidado na seção 3.6 deste documento. Não há documento externo de
+referência: `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md` foi removido e seu conteúdo
+técnico foi incorporado aqui.
 
 ## 5. Phase B.1.3.2 — Correção do ciclo de vida, sincronização e consolidação documental
 
-*(Idêntico ao conteúdo já existente no PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md, seção B.1.3.2)*
+Conteúdo consolidado na seção 3.7 deste documento. Não há documento externo de
+referência: `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md` foi removido e seu conteúdo
+técnico foi incorporado aqui.
 
 ---
 
@@ -132,17 +193,17 @@ A Phase B.1.3 foi técnica concluída com a integração do valor patrimonial ao
 ### 6.1 PHASE_B_SUMMARY.md
 - **Tamanho:** 2.922 bytes
 - **Conteúdo:** Resumo geral da Phase B — arquivos modificados, aceitação de critérios, pendências
-- **Status:** Preservado como documento de visão geral da Phase B
+- **Status:** Removido em `fa9f016` — conteúdo incorporado a este documento
 
 ### 6.2 PHASE_B1.2.1_REPORT.md
 - **Tamanho:** 7.183 bytes
 - **Conteúdo:** Relatório forense da Phase B.1.2.1 — diagnóstico de openGoalsPanel(), código removido, inserção em renderAdvancedDashboard()
-- **Status:** Preservado como documento específico da fase B.1.2.1
+- **Status:** Removido em `fa9f016` — conteúdo incorporado a este documento
 
 ### 6.3 PHASE_B1.2.2_HEALTH_CARD_FIX_REPORT.md
 - **Tamanho:** 6.053 bytes
 - **Conteúdo:** Relatório de correção da Phase B.1.2.2 — integração de saúde financeira na aba Início, reaproveitamento de cálculo existente
-- **Status:** Preservado como documento específico da fase B.1.2.2
+- **Status:** Removido em `fa9f016` — conteúdo incorporado a este documento
 
 ### 6.4 PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md
 - **Tamanho:** 17.482 bytes
@@ -153,9 +214,9 @@ A Phase B.1.3 foi técnica concluída com a integração do valor patrimonial ao
   - Correções da B.1.3.1 (IDs únicos, toggle duplicado, relatório)
   - Correções da B.1.3.2 (gerenciamento de instância Chart.js, ARIA, sincronização, estado inicial)
   - Testes executados e não executados
-  - Liminações remanescentes
+  - Limitações remanescentes
   - Conclusão técnica
-- **Status:** Documento canônico da integração do Patrimônio Total
+- **Status:** Removido em `fa9f016` — conteúdo incorporado às seções 3.6 e 3.7 deste documento
 
 ---
 
@@ -183,22 +244,24 @@ A Phase B.1.3 foi técnica concluída com a integração do valor patrimonial ao
 - ✅ `aria-hidden` consistente com classe `is-collapsed`
 - ✅ Suporte a teclado (Enter/Space) com `event.preventDefault()`
 
-### 7.4 Estado Persistente
+### 7.5 Estado Persistente
 - ✅ `PATRIMONY_SPARK_STORAGE_KEY` respeitado no `localStorage`
 - ✅ Estado inicial sincronizado a partir do armazenamento persistido
 - ✅ Toggling um contexto afeta o estado compartilhado (por design)
 
-### 7.5 Cálculos Financeiros
+### 7.6 Cálculos Financeiros
 - ✅ Nenhuma alteração em regras financeiras
 - ✅ `totalPatrimonio = totalBankBalance() + totalPocketBalance() + totalInvestBalance()` preservado
 - ✅ `balancesReady = !!currentUser && !!firstLoadDone` preservado
 - ✅ Classe visual `'neg'` aplicada corretamente em ambos os contextos
 
-### 7.6 Documentos .md
-- ✅ 5 arquivos .md da Phase B preservados (sem exclusões)
-- ✅ Documento canônico `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md` contém todo o histórico técnico
-- ✅ Documentos das fases anteriores (B.1.2.1, B.1.2.2) mantidos separadamente
-- ✅ Nenhum documento foi removido sem registro prévio
+### 7.7 Documentos .md
+- ✅ 1 arquivo .md da Phase B existe: `PHASE_B_CONSOLIDATED_REPORT.md` (fonte canônica)
+- ✅ 4 arquivos foram removidos em `fa9f016` e tiveram o conteúdo incorporado:
+  `PHASE_B_SUMMARY.md`, `PHASE_B1.2.1_REPORT.md`,
+  `PHASE_B1.2.2_HEALTH_CARD_FIX_REPORT.md`, `PHASE_B1.3_PATRIMONY_INTEGRATION_REPORT.md`
+- ✅ Remoção registrada explicitamente neste documento (não é "preservação")
+- ✅ Histórico completo permanece acessível no Git (commits anteriores a `fa9f016`)
 
 ---
 
@@ -226,4 +289,4 @@ A Phase B.1.3 foi técnica concluída com a integração do valor patrimonial ao
 
 **Fase B — Consolidada em 2026-11-10**
 
-*Documento gerado automaticamente a partir dos relatórios individuais da Phase B, consolidando todo o histórico técnico, implementações corrigidas e evidências técnicas across todas as fases subfases.*
+*Documento gerado automaticamente a partir dos relatórios individuais da Phase B, consolidando todo o histórico técnico, implementações corrigidas e evidências técnicas de todas as subfases.*
