@@ -2010,7 +2010,154 @@ A C.1 possui escopo próprio. Não inicie tarefas da C.2 ou de etapas posteriore
 
 ---
 
-# FASE C.2 — AUDITORIA E ESPECIFICAÇÃO DA NAVEGAÇÃO
+## C.1.3 — Execução da Medição CSS × DOM no Chromium
+
+### 1. Referência
+
+- Repositório: `antvjpg/LIVRO-CAIXA`
+- Branch: `feat/app-navigation-redesign`
+- HEAD de referência: `b6d7f91d8b192ecdfd63575e1fbdf135182a8485`
+- Relatório: `PHASE_B_CONSOLIDATED_REPORT.md`
+
+HEAD confirmado antes da execução: `b6d7f91d8b192ecdfd63575e1fbdf135182a8485` (sem novos commits).
+
+### 2. Objetivo
+
+Obter uma medição reproduzível da correspondência entre os seletores das sete folhas CSS locais e o DOM real da aplicação, utilizando a infraestrutura já existente no repositório (Chromium headless via Chrome DevTools Protocol), sem instalar dependências nem alterar o aplicativo.
+
+### 3. Infraestrutura utilizada (já existente no repositório)
+
+| Item | Caminho | Uso na C.1.3 |
+|---|---|---|
+| Chromium headless | `chromium-browser --headless=new --no-sandbox --remote-debugging-port=9222` | Navegador real para renderização e medição via CDP |
+| Servidor HTTP local | `python3 -m http.server 8000 --bind 127.0.0.1` | Servir `index.html` localmente |
+| Chrome DevTools Protocol | `chrome-remote-interface` (módulo npm do projeto) | Navegar, emular viewports, avaliar JavaScript no DOM |
+| Script de medição | `.tmp-c13/medicao-linear.mjs` (temporário, fora do repositório) | Extração e teste de seletores |
+| Script de injeção | `.tmp-c13/inject-measure.js` (temporário, fora do repositório) | JS executado no contexto da página para extrair e testar seletores |
+
+Os scripts temporários foram armazenados em `.tmp-c13/` (dentro do repositório, não commitados) e não são parte do código funcional.
+
+### 4. Método utilizado
+
+1. Iniciar servidor HTTP local na porta 8000 servindo a raiz do repositório.
+2. Iniciar Chromium headless com `--remote-debugging-port=9222 --no-sandbox --disable-gpu`.
+3. Conectar via CDP (`chrome-remote-interface`).
+4. Para cada viewport (mobile 390×844 e desktop 1440×900):
+   - a. Emular o viewport via `Emulation.setDeviceMetricsOverride`.
+   - b. Navegar para `http://127.0.0.1:8000/index.html`.
+   - c. Aguardar `load` e estabilização do app (`is-data-loading` removido e `syncOverlay` oculto).
+   - d. Para cada estado (base, dark-mode, classes-applied):
+      - i. Aplicar o estado (adicionar `dark-mode` ao `body`, ou classes específicas em elementos).
+      - ii. Injetar JavaScript que:
+         - Percorre `document.styleSheets` das 7 folhas CSS locais.
+         - Extrai seletores de `CSSStyleRule` (tipo 1), incluindo dentro de `@media` (tipo 4) e `@supports` (tipo 12).
+         - Separa seletores agrupados por vírgula, respeitando parênteses de `:not()`, `:is()`, etc. e strings.
+         - Deduplica seletores idênticos.
+         - Testa cada seletor com `document.querySelectorAll()`.
+         - Registra contagem de elementos correspondentes e classificação (estática / sem-correspondência / inconclusivo).
+      - iii. Coletar resultados e limpar o estado antes do próximo.
+5. Consolidar resultados em JSON.
+
+**Regras de deduplicação:** seletores idênticos (mesmo texto) aparecem uma única vez, independentemente de quantas regras CSS os contenham. Seletores agrupados por vírgula são contados individualmente.
+
+**Não contam como seletores:** declarações de propriedades, variáveis CSS (`--*`), nomes de classes isolados sem seletor, regras `@import` de folhas externas (Flaticon).
+
+### 5. Resultados quantitativos
+
+| Viewport | Estado | Total de seletores | Estática (correspondência) | Sem correspondência | Inconclusivo |
+|---|---|---|---|---|---|
+| mobile 390×844 | base | 2.681 | 886 | 1.795 | 0 |
+| mobile 390×844 | dark-mode | 2.681 | 945 | 1.736 | 0 |
+| mobile 390×844 | classes-applied | 2.681 | 945 | 1.736 | 0 |
+| desktop 1440×900 | base | 2.681 | 886 | 1.795 | 0 |
+| desktop 1440×900 | dark-mode | 2.681 | 945 | 1.736 | 0 |
+| desktop 1440×900 | classes-applied | 2.681 | 945 | 1.736 | 0 |
+
+**Total de seletores individuais extraídos:** 2.681 (distintos, após deduplicação).
+
+**Seletores com correspondência estática no estado base:** 886 (33,0%).
+
+**Seletores sem correspondência no estado base:** 1.795 (67,0%).
+
+#### Diferença entre viewports
+
+Não houve diferença quantitativa entre mobile e desktop em nenhum estado. O número de seletores estáticos, sem correspondência e inconclusivos é idêntico nos dois viewports.
+
+#### Efeito dos estados dinâmicos
+
+A adição de `dark-mode` e classes condicionais (`is-collapsed`, `is-expanded`, `tab-changing`) aumentou a correspondência estática de 886 para 945 (+59 seletores), confirmando que parte dos seletores sem correspondência no estado base depende de estados dinâmicos.
+
+### 6. Categorização dos seletores sem correspondência (estado base, mobile)
+
+Dos 1.795 seletores sem correspondência no estado base (mobile 390×844):
+
+| Categoria | Quantidade | Descrição |
+|---|---|---|
+| Pseudo-classe dinâmica | 296 | Seletores com `:hover`, `:focus`, `:active`, `:visited`, `:target`, `:checked`, `:disabled`, `:not()`, `:is()`, etc. que dependem de interação do usuário. |
+| Pseudo-elemento | 150 | Seletores com `::before`, `::after`, `::placeholder`, `::selection`, etc. que não representam elementos independentes no DOM. |
+| Classe condicional | 222 | Seletores com classes de estado como `.dark-mode`, `.is-collapsed`, `.is-expanded`, `.tab-changing`, `.is-data-loading`, etc. |
+| Atributo condicional | 42 | Seletores com seletores de atributo como `[data-light-theme="X"]`, `[aria-*]`, etc. |
+| Outro | 1.085 | Seletores diversos sem correspondência imediata (inclui seletores de contexto aninhado, seletores de componentes condicionais, etc.). |
+
+**A ausência de correspondência no HTML estático não caracteriza automaticamente um seletor obsoleto.** Muitos seletores só se aplicam após interação do usuário, mudança de tema, ou renderização condicional por JavaScript.
+
+#### Seletores sem correspondência por folha CSS (estado base, mobile)
+
+| Folha CSS | Sem correspondência |
+|---|---|
+| `features.css` | 1.041 |
+| `layout.css` | 254 |
+| `components.css` | 190 |
+| `dashboard-chat.css` | 167 |
+| `base.css` | 55 |
+| `tabler-icons.css` | 52 |
+| `themes.css` | 36 |
+
+### 7. Exemplo de seletores por categoria
+
+**Pseudo-classe dinâmica (exemplos):**
+- `body:not(.dark-mode)[data-light-theme="4"]`
+- `body:not(.dark-mode)[data-light-theme="5"]`
+- `body.dark-mode[data-dark-theme="1"] .balance-card:not(.total) .balance`
+
+**Pseudo-elemento (exemplos):**
+- `body.dark-mode[data-dark-theme="1"] .mobile-bottom-nav::before`
+- `::selection`
+- `.universal-search-field input::placeholder`
+
+**Classe condicional (exemplos):**
+- `body.dark-mode`
+- `body.dark-mode[data-dark-theme="4"]`
+
+### 8. Limitações
+
+1. **Não houve renderização visual completa:** a medição testa seletores contra o DOM, mas não valida a renderização visual (cores, layout, sobreposições).
+2. **Estados dinâmicos limitados:** apenas `dark-mode`, `is-collapsed`, `is-expanded` e `tab-changing` foram testados. Outros estados gerados pelo JavaScript (ex.: durante interações de usuário real) não foram cobertos.
+3. **Folhas externas não acessíveis:** as folhas Flaticon (CDN) retornaram erro de CORS ao tentar ler `cssRules`; não foram incluídas na contagem.
+4. **Não foi testado em device físico:** a medição ocorreu em Chromium headless em ambiente Termux/Android, não em device físico do usuário final.
+5. **Não há comparação antes/depois:** esta é a primeira medição quantitativa reproduzível; não há baseline anterior para comparação de regressão.
+
+### 9. Conclusão da C.1.3
+
+A medição reproduzível foi executada com sucesso utilizando a infraestrutura já existente no repositório (Chromium headless + CDP), sem instalar dependências e sem alterar qualquer arquivo funcional.
+
+**Resultados principais:**
+- 2.681 seletores individuais distintos extraídos das 7 folhas CSS locais.
+- 886 seletores (33,0%) com correspondência estática no estado base.
+- 1.795 seletores (67,0%) sem correspondência no estado base, dos quais 296 são pseudo-classes dinâmicas, 150 pseudo-elementos, 222 classes condicionais e 42 atributos condicionais — categorias que não indicam obsoletos por si só.
+- 0 seletores inconclusivos.
+- Não há diferença entre viewports mobile e desktop.
+- Estados dinâmicos aumentam a correspondência em +59 seletores.
+
+**C.1 ainda não aprovada:** a cobertura CSS × DOM agora está quantificada, mas a classificação qualitativa dos 1.085 seletores da categoria "outro" e a revisão de duplicidades/conflitos com exemplos concretos ainda pendem. A C.1 permanece em auditoria, não aprovada.
+
+**Nenhum arquivo funcional do aplicativo foi alterado.** Apenas documentação foi adicionada a este relatório.
+
+---
+
+**Fase C — C.1.3: EXECUÇÃO DA MEDIÇÃO CSS × DOM NO CHROMIUM**
+
+Status: EXECUTADA. Medição reproduzível concluída com 2.681 seletores, 886 estáticos (33,0%), 1.795 sem correspondência (67,0%), 0 inconclusivos, em dois viewports e três estados. C.1 permanece em auditoria, não aprovada. Nenhum arquivo funcional alterado.
 
 *Etapa diagnóstica e de especificação. Nenhum arquivo funcional foi modificado (index.html, CSS, JavaScript, Service Worker, configurações, testes, infraestrutura permanecem inalterados). Apenas documentação foi adicionada a este relatório.*
 
