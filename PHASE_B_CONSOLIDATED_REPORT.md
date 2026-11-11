@@ -2528,3 +2528,216 @@ Não reabrir a C.2 por ausência de testes que pertencem às fases de implementa
 **Fase C — C.2: AUDITORIA E ESPECIFICAÇÃO DA NAVEGAÇÃO**
 
 Status: APROVADA COMO ESPECIFICAÇÃO ARQUITETURAL. Cinco áreas definidas; Contas centralizada por nova view ("#viewContas"); Análises associada a "dash" ("#viewDash"); Dashboard legado ("#viewDashboard") preservado; mobile com bottom navigation (cinco destinos); desktop com sidebar baseada no drawer existente; dispatcher único ("window.switchTab") preservado. Implementação ainda não executada. Nenhum arquivo funcional alterado nesta etapa.
+
+---
+
+## C.1.2 — Revisão Independente e Consolidação da Auditoria CSS
+
+### 1. Identificação da revisão
+
+- Repositório: "antvjpg/LIVRO-CAIXA"
+- Branch: "feat/app-navigation-redesign"
+- HEAD: "9df29a286e6e7840a8d7ffef512d53c373ababa8"
+- Arquivo de referência: "PHASE_B_CONSOLIDATED_REPORT.md"
+- Escopo: auditoria documental e estática, sem implementação.
+
+Esta revisão confrontou as conclusões registradas nas seções C.1, C.1.1 e C.1.1.1 com os arquivos CSS e HTML publicados na branch.
+
+### 2. Inventário CSS consolidado
+
+O "index.html" referencia nove folhas de estilo:
+
+Locais:
+
+1. "style/themes.css"
+2. "style/base.css"
+3. "style/components.css"
+4. "style/layout.css"
+5. "style/features.css"
+6. "style/dashboard-chat.css"
+7. "vendor/tabler-icons/tabler-icons.css"
+
+Externas:
+
+8. Flaticon regular-rounded.
+9. Flaticon solid-rounded.
+
+A ordem de carregamento está confirmada no HTML.
+
+A referência a "style/emoji-catalog.css", presente na seção C.1.1, é incorreta. O arquivo não faz parte do inventário de folhas carregadas.
+
+A seção C.1.1.1 já registra essa correção. Esta revisão estabelece o inventário acima como referência consolidada.
+
+### 3. Integridade das contagens anteriores
+
+A auditoria anterior registra 3.022 seletores extraídos de sete folhas locais.
+
+Essa quantidade deve ser interpretada como uma contagem obtida por extração textual simplificada, não como uma quantidade comprovada de seletores efetivamente aplicáveis ao DOM.
+
+Também foram registrados:
+
+- 463 IDs no HTML;
+- 369 classes no HTML;
+- 122 IDs identificados nas folhas CSS;
+- 894 classes identificadas nas folhas CSS.
+
+Essas quantidades são referências de identificação, não elementos HTML distintos nem correspondências completas de seletores.
+
+Classificação: os números históricos são preservados como resultados declarados da extração anterior, mas não constituem prova suficiente de cobertura CSS × DOM.
+
+### 4. Estado da cobertura CSS × DOM
+
+A C.1.1.1 reconheceu expressamente que a correspondência completa não foi classificada quantitativamente.
+
+Portanto:
+
+Categoria| Situação
+|---|---|
+Correspondência estática| Parcialmente investigada
+Correspondência dinâmica| Não quantificada integralmente
+Correspondência condicional| Não quantificada integralmente
+Sem correspondência| Não quantificada integralmente
+Inconclusiva| Não quantificada integralmente
+
+Não é tecnicamente correto afirmar que os 277 seletores restantes foram classificados apenas por terem sido mencionados como dinâmicos, condicionais ou sem correspondência.
+
+A classificação deve ser baseada em evidência individual ou em método automatizado reproduzível.
+
+A ausência de correspondência no HTML estático não caracteriza automaticamente um seletor obsoleto.
+
+### 5. Revisão dos achados
+
+A seção C.1.1.1 corrigiu duas conclusões anteriores importantes:
+
+#### 5.1 ".balance-symbol"
+
+A regra CSS e o elemento HTML correspondente foram identificados.
+
+Entretanto, a existência da regra não comprova defeito de acessibilidade ou de interação.
+
+O elemento possui atributos de acessibilidade registrados no HTML, incluindo "role", "tabindex", "aria-expanded" e "aria-controls".
+
+Conclusão: observação de implementação, sem defeito P1 comprovado.
+
+#### 5.2 "#viewDash .dash-kpis"
+
+A regra base estabelece duas colunas, e a regra mobile examinada também mantém duas colunas.
+
+A regra de três colunas mencionada anteriormente pertence a ".dash-metrics", componente diferente.
+
+Conclusão: a alegação de falha responsiva anterior estava incorreta. Não há defeito comprovado nesse achado.
+
+#### 5.3 Responsividade da navegação inferior
+
+".mobile-bottom-nav" fica oculta por padrão e é exibida dentro da media query mobile.
+
+Esse comportamento corresponde à arquitetura mobile-first existente.
+
+Conclusão: característica intencional, não defeito por si só.
+
+#### 5.4 Temas
+
+"themes.css" centraliza as definições de tema claro e escuro por variáveis e atributos do documento.
+
+A existência de múltiplas variações de tema não constitui problema técnico.
+
+Conclusão: sistema existente identificado; sua qualidade visual e contraste precisam ser avaliados separadamente, sem presumir defeito apenas pela quantidade de temas.
+
+#### 5.5 Reconciliação e períodos
+
+Os registros anteriores mencionam ".reconciliation-field select" e ".period-summary".
+
+A existência dessas regras não demonstra, isoladamente, inconsistência funcional ou visual.
+
+Para classificá-las como defeitos, é necessário apresentar um comportamento inadequado concreto e sua consequência para o usuário.
+
+Conclusão: manter como componentes auditados, sem atribuir prioridade de defeito sem evidência de impacto.
+
+### 6. Revisão específica da view Início
+
+A análise anterior identificou ausência de regras dedicadas para:
+
+- "#viewInicio";
+- ".inicio-header";
+- ".inicio-grid";
+- ".inicio-card".
+
+Também identificou regras compartilhadas para:
+
+- ".balance-card";
+- ".patrimony-spark-box";
+- ".advanced-dashboard";
+- ".dashboard-next-payment-card";
+- ".next-pay-inner";
+- ".cashflow-mini-summary".
+
+A ausência de regras específicas para os quatro primeiros seletores não demonstra ausência de estilo.
+
+Herança, seletores ancestrais, regras compartilhadas e estilos globais continuam aplicáveis.
+
+A conclusão correta é que a estrutura externa do Início não possui uma camada CSS dedicada identificada, enquanto seus componentes internos reutilizam estilos existentes.
+
+Não classificar isso automaticamente como defeito. A adequação visual deverá ser julgada na auditoria visual C.3.
+
+### 7. Prioridades consolidadas
+
+Com base nas evidências apresentadas até aqui:
+
+Categoria| Quantidade comprovada
+|---|---|
+P0| 0
+P1| 0
+P2| 0
+P3| 0
+Observações técnicas sem defeito comprovado| 6
+
+A contagem acima não significa que o aplicativo esteja livre de problemas CSS.
+
+Significa apenas que os seis achados históricos apresentados não sustentam, com as evidências registradas, uma classificação de defeito com prioridade.
+
+Novos achados poderão ser adicionados se forem demonstrados por evidências concretas.
+
+### 8. Limitações que permanecem
+
+1. A correspondência integral dos seletores CSS com o DOM não foi quantificada por método reproduzível.
+2. Estados dinâmicos gerados pelo JavaScript não foram integralmente classificados.
+3. A cascata efetivamente computada não foi examinada em todos os componentes.
+4. Não houve validação visual completa nos viewports de referência.
+5. A troca de temas não foi validada em uma sessão real de usuário.
+6. As folhas externas foram identificadas no HTML, mas seu carregamento efetivo em rede não foi confirmado.
+
+Essas limitações devem permanecer explícitas.
+
+A ausência de validação visual ou de aparelho físico não deve ser apresentada como defeito funcional comprovado.
+
+### 9. Critérios de aprovação restantes
+
+A C.1 ainda exige:
+
+- Método reproduzível de extração e classificação dos seletores.
+- Classificação quantitativa das correspondências estáticas.
+- Tratamento documentado dos seletores dinâmicos e condicionais.
+- Revisão dos conflitos e duplicidades com exemplos concretos.
+- Separação entre características intencionais e defeitos.
+- Consolidação inequívoca das conclusões históricas.
+- Registro das limitações de validação visual.
+
+Não é necessário coletar SHA-256 de cada arquivo para demonstrar integridade quando a comparação Git e os identificadores dos objetos do repositório são suficientes.
+
+### 10. Conclusão da revisão independente
+
+C.1 — EM AUDITORIA, NÃO APROVADA AINDA.
+
+A revisão corrigiu a interpretação dos achados anteriores e consolidou o inventário de arquivos.
+
+Entretanto, a cobertura CSS × DOM ainda não está demonstrada integralmente.
+
+A próxima atividade deverá concentrar-se exclusivamente nessa lacuna metodológica, sem modificar arquivos funcionais e sem iniciar C.3.
+
+Preservar todas as seções históricas da Fase B e da Fase C.
+
+Nenhuma implementação CSS está autorizada nesta etapa.
+
+---
+
+Fim da revisão independente C.1.2.
