@@ -2276,6 +2276,255 @@ Ao finalizar, aguardar revisão e autorização explícita para a próxima etapa
 
 ---
 
+## C.2.12 — Consolidação Final da Arquitetura de Navegação
+
+Base auditada: "feat/app-navigation-redesign"
+
+Commit de referência: "3a0a8522b838f6cce81f106de7d99fff10d05f6a"
+
+Natureza: decisão arquitetural e consolidação documental. Nenhum código funcional deve ser alterado nesta etapa.
+
+### 1. Objetivo
+
+Consolidar a especificação da navegação em cinco áreas principais, eliminando as pendências documentais da C.2.10 e da C.2.11.
+
+Esta seção estabelece o contrato de navegação que deverá orientar a implementação posterior.
+
+As decisões abaixo preservam os identificadores e as funcionalidades existentes, evitando a criação de um segundo sistema de navegação.
+
+### 2. Contrato definitivo das cinco áreas
+
+Ordem| Área| Identificador principal| View principal| Responsabilidade
+|---|---|---|---|---|
+1| Início| "inicio"| "#viewInicio"| Visão consolidada do patrimônio e situação financeira
+2| Movimentos| "caixa"| "#viewCaixa"| Histórico e gerenciamento de lançamentos
+3| Contas| "contas"| "#viewContas" (nova composição)| Centralização das contas e produtos financeiros
+4| Análises| "dash"| "#viewDash"| Indicadores, evolução e análise financeira
+5| Perfil| "profile"| "#viewProfile"| Conta, preferências, segurança e configurações
+
+Esses são os cinco destinos principais da experiência.
+
+A implementação deve preservar os nomes canônicos indicados, sem renomear indiscriminadamente as views e funções existentes.
+
+### 3. Decisão sobre Contas
+
+#### 3.1 Necessidade da view centralizadora
+
+O código atual possui cinco views independentes:
+
+- "invest" → "#viewInvest"
+- "pockets" → "#viewPockets"
+- "bills" → "#viewBills"
+- "receivables" → "#viewReceivables"
+- "cards" → "#viewCards"
+
+Nenhuma delas representa sozinha o conjunto de funcionalidades que a área Contas deve apresentar.
+
+Portanto, fica definida a criação de uma view centralizadora:
+
+- Identificador lógico: "contas"
+- Elemento: "#viewContas"
+- Responsabilidade: apresentar uma visão resumida das subáreas e permitir acesso direto a cada uma.
+
+#### 3.2 Regras de implementação futura
+
+A nova view deverá:
+
+1. Reutilizar dados, renderizadores e componentes existentes.
+2. Apresentar acesso às cinco subáreas.
+3. Evitar duplicar formulários, cadastros ou regras de negócio.
+4. Preservar cada subárea como view independente.
+5. Permitir retornar à centralização sem perder dados ou estado financeiro.
+6. Não mover ou recriar as views existentes apenas para formar a composição.
+7. Não implementar uma segunda lógica de dispatcher.
+
+A view centralizadora não deverá assumir o papel de banco de dados ou camada de negócio.
+
+#### 3.3 Subáreas
+
+Subárea| Identificador preservado| View existente
+|---|---|---|
+Investimentos| "invest"| "#viewInvest"
+Caixinhas| "pockets"| "#viewPockets"
+Contas recorrentes| "bills"| "#viewBills"
+Valores a receber| "receivables"| "#viewReceivables"
+Cartões| "cards"| "#viewCards"
+
+Metas ("goals") permanece como funcionalidade independente de planejamento, preservando seu patch e comportamento atual. Não será incorporada automaticamente a Contas.
+
+### 4. Decisão sobre Análises e Dashboard legado
+
+Fica estabelecida a seguinte distinção:
+
+Identificador| View| Tratamento
+|---|---|---|
+"dash"| "#viewDash"| Destino principal de Análises
+"dashboard"| "#viewDashboard"| Destino legado distinto, preservado por compatibilidade
+
+A navegação principal deverá utilizar "dash".
+
+"dashboard" não será transformado em alias de "dash", nem removido nesta etapa.
+
+O mapeamento atual em "updateNavIndicator()" que converte "dash" em "dashboard" deverá ser corrigido na implementação da navegação, para que o indicador visual represente o destino lógico correto.
+
+Chamadas legadas a "dashboard" deverão continuar funcionando até que seus consumidores sejam individualmente avaliados.
+
+Não remover "#viewDashboard", "renderAdvancedDashboard()" ou seus elementos sem auditoria específica de dependências.
+
+### 5. Navegação mobile
+
+A bottom navigation deverá apresentar os cinco destinos na seguinte ordem:
+
+Posição| Destino| Rótulo
+|---|---|---|
+1| "inicio"| Início
+2| "caixa"| Movimentos
+3| "contas"| Contas
+4| "dash"| Análises
+5| "profile"| Perfil
+
+Regras:
+
+- Um único botão ativo por vez.
+- O indicador visual deve acompanhar o identificador efetivamente ativo.
+- "contas" deverá abrir "#viewContas".
+- Selecionar novamente o destino ativo deverá manter o usuário naquela área e permitir a atualização prevista pelo dispatcher.
+- O FAB deverá preservar seus comportamentos contextuais.
+- A restauração de sessão deverá reconhecer os novos destinos.
+- Destinos legados continuarão compatíveis, mas não ocuparão posições na navegação principal.
+
+A barra inferior continua sendo exclusiva do breakpoint mobile, conforme o CSS atual.
+
+### 6. Navegação desktop
+
+Fica definida uma sidebar persistente como mecanismo principal de navegação desktop.
+
+A implementação deverá reutilizar a estrutura de ações e os elementos de navegação já existentes no drawer ("#appDrawerOverlay", ".app-drawer" e ".drawer-nav"), evitando manter dois conjuntos independentes de destinos.
+
+Diretrizes:
+
+1. Reaproveitar os mesmos cinco destinos principais.
+2. Preservar o acesso às subáreas de Contas.
+3. Preservar Metas e ações secundárias.
+4. Reaproveitar a lógica de "switchTab()".
+5. Não duplicar listeners ou regras de navegação.
+6. Adaptar a apresentação responsivamente: sidebar persistente no desktop e menu lateral sobreposto no mobile.
+7. Não introduzir uma nova camada de estado de navegação.
+
+A sidebar é uma decisão de arquitetura de interface, não uma afirmação de que ela já existe no código atual.
+
+### 7. Contrato técnico do dispatcher
+
+O dispatcher existente deverá continuar sendo a fonte única de transição entre views.
+
+A implementação futura deverá:
+
+- Preservar "window.switchTab".
+- Preservar "window.switchTabOriginal".
+- Preservar o patch de Metas.
+- Preservar os consumidores existentes de "switchTab()".
+- Incluir "contas" no contrato de destinos somente quando "#viewContas" estiver implementada.
+- Atualizar o estado de navegação e o indicador visual de forma consistente.
+- Não converter "dash" em "dashboard".
+- Manter compatibilidade com identificadores legados.
+- Preservar persistência de sessão e restauração.
+- Preservar os comportamentos de filtros, FAB, autenticação e botão Voltar.
+
+A criação de um novo dispatcher é expressamente desnecessária.
+
+### 8. Drawer e acessos secundários
+
+O drawer atual possui 11 botões visíveis:
+
+- 8 na seção principal;
+- 3 na seção secundária.
+
+Perfil aparece apenas uma vez.
+
+A implementação futura deverá reorganizar a apresentação em torno das cinco áreas principais, mantendo os acessos às subáreas e ações secundárias.
+
+Ações reconhecidas pelo listener, mas sem botão HTML correspondente, não deverão ser tratadas como itens atualmente disponíveis ao usuário.
+
+Não adicionar ações sem verificar sua função, destino e necessidade na experiência final.
+
+### 9. Matriz de rastreabilidade e riscos
+
+Elemento| Decisão| Risco a controlar
+|---|---|---|
+"#viewInicio"| Primeiro destino principal| Renderização e patrimônio
+"#viewCaixa"| Movimentos| Filtros e histórico
+"#viewContas"| Nova view centralizadora| Reutilização sem duplicação
+"#viewInvest"| Subárea preservada| Renderização e atualização de cotações
+"#viewPockets"| Subárea preservada| Saldos e movimentações
+"#viewBills"| Subárea preservada| Calendário e recorrências
+"#viewReceivables"| Subárea preservada| Valores a receber
+"#viewCards"| Subárea preservada| Faturas e compras
+"#viewDash"| Análises| Indicador ativo correto
+"#viewDashboard"| Legado preservado| Compatibilidade
+"#viewProfile"| Perfil| Segurança e configurações
+"#viewGoals"| Funcionalidade independente| Patch de Metas
+Bottom nav| Cinco destinos principais| Sincronização visual
+Sidebar desktop| Reuso do drawer| Responsividade e estado
+FAB| Comportamento contextual| Não duplicar nem perder ações
+Persistência| Preservar sessão| Restauração de destino válido
+
+A análise estática da ordem de execução do patch de Metas e do wrapper FAB não demonstrou conflito de sobrescrita. A validação dinâmica desse encadeamento permanece como teste da implementação posterior, não como bloqueio da especificação.
+
+### 10. Critérios definitivos de aceite da C.2
+
+Critério| Resultado
+|---|---|
+Identificação das views existentes| Atendido
+Identificação dos destinos atuais da bottom nav| Atendido
+Inventário do drawer e ações| Atendido
+Diferenciação entre "dash" e "dashboard"| Atendido
+Definição das cinco áreas principais| Atendido
+Definição do ponto de entrada de Contas| Atendido
+Preservação das subáreas existentes| Atendido
+Definição da navegação mobile| Atendido
+Definição da navegação desktop| Atendido
+Contrato de compatibilidade do dispatcher| Atendido
+Tratamento dos riscos de migração| Atendido documentalmente
+Preservação de funcionalidades financeiras e de autenticação| Definida como requisito obrigatório
+Separação entre auditoria e implementação| Atendido
+
+Limitações que não bloqueiam a C.2
+
+Não foram executados nesta etapa:
+
+- Testes funcionais da nova navegação.
+- Testes em dispositivo físico.
+- Validação visual da sidebar futura.
+- Testes de regressão do dispatcher após implementação.
+
+Essas verificações pertencem às etapas de implementação e validação posteriores.
+
+A ausência desses testes não invalida a especificação arquitetural, desde que sejam exigidos como critérios de aceite da implementação.
+
+### 11. Conclusão consolidada
+
+C.2 — APROVADA COMO AUDITORIA E ESPECIFICAÇÃO ARQUITETURAL.
+
+A navegação futura fica definida em cinco áreas principais:
+
+1. Início.
+2. Movimentos.
+3. Contas.
+4. Análises.
+5. Perfil.
+
+A especificação preserva as funcionalidades existentes, define a nova centralização de Contas, mantém a compatibilidade dos identificadores legados e estabelece mecanismos responsivos para mobile e desktop.
+
+A aprovação desta etapa autoriza o uso desta especificação como referência para as fases seguintes.
+
+Não autoriza, por si só, qualquer alteração de código nesta etapa.
+
+A implementação deverá ocorrer somente na fase correspondente, com auditoria de impacto, testes de regressão e preservação integral das funcionalidades existentes.
+
+Não reabrir a C.2 por ausência de testes que pertencem às fases de implementação e validação.
+
+---
+
 **Fase C — C.2: AUDITORIA E ESPECIFICAÇÃO DA NAVEGAÇÃO**
 
-*Etapa diagnóstica de navegação. Mapeou-se o mecanismo de switchTab, 11 views, bottom nav de 5 botões, drawer de 11 ações (8 principais + 3 secundárias), 22 consumidores de switchTab, matriz de rastreabilidade das cinco áreas, 13 riscos de migração (R1, R6, R11 corrigidos na revisão C.2.11) e especificação proposta (mobile, desktop, subáreas, contrato). Classificação: CONCLUÍDA COM RESSALVAS — NÃO APROVADA PARA LIBERAÇÃO DA IMPLEMENTAÇÃO. Nenhum arquivo funcional alterado.*
+Status: APROVADA COMO ESPECIFICAÇÃO ARQUITETURAL. Cinco áreas definidas; Contas centralizada por nova view ("#viewContas"); Análises associada a "dash" ("#viewDash"); Dashboard legado ("#viewDashboard") preservado; mobile com bottom navigation (cinco destinos); desktop com sidebar baseada no drawer existente; dispatcher único ("window.switchTab") preservado. Implementação ainda não executada. Nenhum arquivo funcional alterado nesta etapa.
