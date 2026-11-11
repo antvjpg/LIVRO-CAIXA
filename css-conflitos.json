@@ -1,7 +1,8 @@
 {
   "total_detectado_agregado_original": 67,
   "total_registros_analisados_individualmente": 9,
-  "nota": "Os 67 conflitos foram detectados por medição automatizada (C.1.3/C.1.4). Os 9 registros abaixo foram revisados individualmente na etapa C.1.4.2 contra todas as declarações reais das 7 folhas CSS locais, ordem de carregamento no index.html, media queries, especificidade e !important. Os demais 58 registros da contagem agregada nao foram individualmente verificados por falta de dados brutos que permitam reconstrucao completa. Nao ha fabricacao de dados: somente os 9 abaixo sao apresentados com evidencia individual verificavel.",
+  "total_diferencas_efetivas_valor": 5,
+  "nota": "Os 67 conflitos foram detectados por medição automatizada (C.1.3/C.1.4). Os 9 registros abaixo foram revisados individualmente na etapa C.1.4.2 contra todas as declarações reais das 7 folhas CSS locais, ordem de carregamento no index.html, media queries, especificidade e !important. Os demais 58 registros da contagem agregada nao foram individualmente verificados por falta de dados brutos que permitam reconstrucao completa. Nao ha fabricacao de dados: somente os 9 abaixo sao apresentados com evidencia individual verificavel. Os 9 registros nao equivalem a 9 conflitos efetivos: apenas 5 apresentam diferenca efetiva de valor; os demais 4 sao variacoes responsivas ou repeticoes idênticas.",
   "ordem_carregamento_index_html": [
     "1. style/themes.css?v=20-23 (index.html:34)",
     "2. style/base.css?v=20-24 (index.html:35)",
@@ -18,24 +19,24 @@
       "seletor": ".export-preview",
       "propriedade": "max-height",
       "declaracoes": [
-        { "arquivo": "base.css", "linha": 8, "valor": "280px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,1" },
-        { "arquivo": "layout.css", "linha": 202, "valor": "280px", "media_query": "@media (max-width:680px)", "especificidade": "0,0,1" },
-        { "arquivo": "features.css", "linha": 884, "valor": "clamp(160px, calc(92svh - 340px), 420px)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,1" }
+        { "arquivo": "base.css", "linha": 8, "valor": "280px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,0" },
+        { "arquivo": "layout.css", "linha": 202, "valor": "280px", "media_query": "@media (max-width:680px)", "especificidade": "0,1,0" },
+        { "arquivo": "features.css", "linha": 884, "valor": "clamp(160px, calc(92svh - 340px), 420px)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,0" }
       ],
-      "analise": "base.css:8 e layout.css:202 declaram o mesmo valor (280px) = redundancia, nao conflito de valores. features.css:884 declara valor diferente (clamp) em escopo geral, vence base.css por ordem de carregamento (posicao 5 sobre 1). layout.css:202 esta em media query oposta (mobile <=680px) e declara o mesmo valor de base.css, portanto nao compete com features.css:884 no desktop.",
-      "classificacao": "Diferenca efetiva introduzida por features.css:884 (clamp vs 280px). Redundancia entre base.css:8 e layout.css:202 (mesmo valor).",
-      "vencedor_efetivo": { "contexto_geral_desktop": "features.css:884 (clamp)", "contexto_mobile_ate_680px": "layout.css:202 (280px, mesma que base.css)" }
+      "analise": "base.css:8 e layout.css:202 declaram o mesmo valor (280px) = redundancia, nao conflito de valores entre elas. features.css:884 declara valor diferente (clamp) em escopo geral, mesma especificidade (0,1,0) que base.css:8 e layout.css:202. Como features.css e carregado apos layout.css (posicao 5 sobre 4) e apos base.css (posicao 5 sobre 1), features.css:884 prevalece EM TODOS os contextos, incluindo mobile <=680px. layout.css:202 nao eh vencedora em nenhum contexto: seu valor (280px) e igual a base.css:8 (redundancia) e e sobrescrito por features.css:884 (clamp, mesmo nivel de especificidade, ordem posterior).",
+      "classificacao": "Diferenca efetiva introduzida por features.css:884 (clamp vs 280px). Redundancia entre base.css:8 e layout.css:202 (mesmo valor, nenhuma vence sobre a outra).",
+      "vencedor_efetivo": { "todos_os_contextos": "features.css:884 (clamp(160px, calc(92svh - 340px), 420px))", "observacao": "layout.css:202 nao vence em nenhum contexto: mesmo valor que base.css (redundancia) e sobrescrito por features.css:884 (mesma especificidade, ordem posterior)" }
     },
     {
       "numero": 2,
       "seletor": ".export-preview-bank h4",
       "propriedade": "margin",
       "declaracoes": [
-        { "arquivo": "base.css", "linha": 10, "valor": "0 0 6px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 881, "valor": "0 0 8px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 889, "valor": "0 0 14px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" }
+        { "arquivo": "base.css", "linha": 10, "valor": "0 0 6px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,1" },
+        { "arquivo": "features.css", "linha": 881, "valor": "0 0 8px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,1" },
+        { "arquivo": "features.css", "linha": 889, "valor": "0 0 14px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,1" }
       ],
-      "analise": "Tres declaracoes em escopo geral, mesma especificidade (0,0,2). Ordem: base.css (pos 1) < features.css (pos 5). Dentro de features.css, a declaracao mais recente vence: 889 (0 0 14px) sobrescreve 881 (0 0 8px). features.css vence base.css por ordem de carregamento.",
+      "analise": "Tres declaracoes em escopo geral, mesma especificidade (0,1,1). Ordem: base.css (pos 1) < features.css (pos 5). Dentro de features.css, a declaracao mais recente vence: 889 (0 0 14px) sobrescreve 881 (0 0 8px). features.css vence base.css por ordem de carregamento.",
       "classificacao": "Conflito efetivo de valores (6px vs 8px vs 14px).",
       "vencedor_efetivo": "features.css:889 (margin:0 0 14px)"
     },
@@ -44,14 +45,14 @@
       "seletor": ".export-preview-bank h4",
       "propriedade": "font-size",
       "declaracoes": [
-        { "arquivo": "base.css", "linha": 10, "valor": "13px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 881, "valor": "15px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 889, "valor": "17px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 908, "valor": "15px", "media_query": "@media (max-width:768px)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 915, "valor": "14px", "media_query": "@media (max-width:480px)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 938, "valor": "14px", "media_query": "@media (max-width:768px)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 945, "valor": "13px", "media_query": "@media (max-width:480px)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 948, "valor": "15px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" }
+        { "arquivo": "base.css", "linha": 10, "valor": "13px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,1" },
+        { "arquivo": "features.css", "linha": 881, "valor": "15px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,1" },
+        { "arquivo": "features.css", "linha": 889, "valor": "17px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,1" },
+        { "arquivo": "features.css", "linha": 908, "valor": "15px", "media_query": "@media (max-width:768px)", "especificidade": "0,1,1" },
+        { "arquivo": "features.css", "linha": 915, "valor": "14px", "media_query": "@media (max-width:480px)", "especificidade": "0,1,1" },
+        { "arquivo": "features.css", "linha": 938, "valor": "14px", "media_query": "@media (max-width:768px)", "especificidade": "0,1,1" },
+        { "arquivo": "features.css", "linha": 945, "valor": "13px", "media_query": "@media (max-width:480px)", "especificidade": "0,1,1" },
+        { "arquivo": "features.css", "linha": 948, "valor": "15px", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,1" }
       ],
       "analise": "Declaracoes gerais: base.css:10 (13px), features.css:881 (15px), features.css:889 (17px), features.css:948 (15px). A mais recente em escopo geral e 948 (15px), que vence base.css por ordem de carregamento. Em @media (max-width:768px): 938 (14px) vence 908 (15px). Em @media (max-width:480px): 945 (13px) vence 915 (14px).",
       "classificacao": "Conflito efetivo em escopo geral (13px vs 15px vs 17px vs 15px). Sobreescritas responsivas em breakpoints 768px e 480px.",
@@ -62,11 +63,11 @@
       "seletor": ".export-preview-bank h4 small",
       "propriedade": "color",
       "declaracoes": [
-        { "arquivo": "base.css", "linha": 11, "valor": "var(--ink-soft)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 881, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 890, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 920, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" },
-        { "arquivo": "features.css", "linha": 949, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,2" }
+        { "arquivo": "base.css", "linha": 11, "valor": "var(--ink-soft)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,2" },
+        { "arquivo": "features.css", "linha": 881, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,2" },
+        { "arquivo": "features.css", "linha": 890, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,2" },
+        { "arquivo": "features.css", "linha": 920, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,2" },
+        { "arquivo": "features.css", "linha": 949, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,1,2" }
       ],
       "analise": "features.css:881, 890, 920, 949 declaram o mesmo valor (var(--accent)) = repeticao idêntica, nao conflito entre si. Apenas diferenca real e base.css:11 (var(--ink-soft)) vs features.css (var(--accent)), vencido por features.css por ordem de carregamento (pos 5 sobre 1).",
       "classificacao": "Repeticao idêntica entre features.css:881/890/920/949 (mesmo valor var(--accent)). Unica diferenca efetiva: base.css:11 vs features.css (vencido por features.css).",
@@ -115,8 +116,8 @@
       "seletor": "header.app-header",
       "propriedade": "align-items",
       "declaracoes": [
-        { "arquivo": "base.css", "linha": 92, "valor": "center", "media_query": "@media (min-width:681px)", "especificidade": "0,0,1" },
-        { "arquivo": "layout.css", "linha": 8, "valor": "flex-start", "media_query": "@media (max-width:680px)", "especificidade": "0,0,1" }
+        { "arquivo": "base.css", "linha": 92, "valor": "center", "media_query": "@media (min-width:681px)", "especificidade": "0,1,1" },
+        { "arquivo": "layout.css", "linha": 8, "valor": "flex-start", "media_query": "@media (max-width:680px)", "especificidade": "0,1,1" }
       ],
       "analise": "Breakpoints opostos: min-width:681px (desktop) vs max-width:680px (mobile). Nao estao ativos simultaneamente. Nao ha conflito de cascata; e variacao responsiva por breakpoint.",
       "classificacao": "Variacao responsiva entre breakpoints (min-width:681px vs max-width:680px). NAO e conflito de cascata.",
@@ -127,8 +128,8 @@
       "seletor": "header.app-header .header-search-bar .fi",
       "propriedade": "color",
       "declaracoes": [
-        { "arquivo": "base.css", "linha": 88, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,0,3" },
-        { "arquivo": "layout.css", "linha": 27, "valor": "var(--color-gold)", "media_query": "@media (max-width:680px)", "especificidade": "0,0,3" }
+        { "arquivo": "base.css", "linha": 88, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,3,1" },
+        { "arquivo": "layout.css", "linha": 27, "valor": "var(--color-gold)", "media_query": "@media (max-width:680px)", "especificidade": "0,3,1" }
       ],
       "analise": "base.css:88 esta em escopo geral (aplica em todos os breakpoints). layout.css:27 esta dentro de @media (max-width:680px) (aplica so em mobile). Em mobile <=680px, ambas estariam ativas: mesma especificidade (0,0,3), layout.css vence por ordem de carregamento (posicao 4 sobre 1). Em desktop >680px, so base.css:88 esta ativa.",
       "classificacao": "Conflito efetivo apenas no contexto mobile <=680px (var(--accent) vs var(--color-gold), vencido por layout.css). Em desktop, apenas base.css:88 aplica.",
@@ -136,11 +137,13 @@
     }
   ],
   "resumo_classificacao": {
-    "conflito_efetivo": 4,
-    "variacao_responsiva": 4,
-    "repeticao_idêntica": 1,
-    "redundancia_valor_igual": 1,
-    "falso_positivo": 0
+    "registros_analisados": 9,
+    "diferencas_efetivas_valor": 5,
+    "variacoes_responsivas_nao_conflito": 4,
+    "repeticoes_idênticas_internas": "presentes em registros 4 e 5 (nao sao registros separados)",
+    "redundancias_internas": "presente no registro 1 (base.css:8 e layout.css:202 mesmo valor 280px)",
+    "falso_positivo": 0,
+    "nota": "Os 9 registros analisados nao equivalem a 9 conflitos efetivos. Apenas 5 apresentam diferenca efetiva de valor entre declaracoes. Os demais 4 sao variacoes responsivas entre breakpoints mutuamente exclusivos (nao sao conflitos de cascata). Repeticoes idênticas e redundancias aparecem como sub-elementos dentro de alguns registros, nao como categorias de registro separadas."
   },
   "limitacao_58_pendentes": "Os 58 registros restantes da contagem agregada de 67 nao possuem dados brutos (arquivo, linha, valor, media query, especificidade) que permitam revisao individual. A contagem de 67 nao pode ser tratada como 67 conflitos individualmente comprovados."
 }

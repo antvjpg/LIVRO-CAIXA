@@ -2587,7 +2587,111 @@ Justificativa:
 
 ---
 
-## C.2.1 Identificação da versão auditada
+## C.1.4.2.1 — Correções da revisão independente (adendo à C.1.4.2)
+
+Esta subseção corrige inconsistências factuais identificadas na revisão independente do commit `b7f5725` (Phase C.1.4.2). Preserva integralmente o conteúdo histórico da seção C.1.4.2; as correções abaixo são apresentadas como adendo rastreável, sem apagar ou sobrescrever o registro anterior.
+
+### 1. Referência dos SHAs
+
+| Item | SHA |
+|---|---|
+| SHA-base/inicial (C.1.4.2) | `7b1bfc67fdbf00dac3f6417091a443956d7d375f` |
+| SHA-final da execução C.1.4.2.1 | `b7f57259377396c597bfc67a6109220e364f1e8f` |
+
+O commit-base (`7b1bfc6`) é diferente do commit que publicou a documentação corrigida (`b7f5725`). Não confundir os dois.
+
+### 2. Correção das especificidades CSS (tupla convencional: IDs, classes/atributos/pseudo-classes, elementos/pseudo-elementos)
+
+| # | Seletor | Especificidade incorreta (C.1.4.2) | Especificidade correta |
+|---|---|---|---|
+| 1 | `.export-preview` | `0,0,1` | `(0,1,0)` — 1 classe |
+| 2 | `.export-preview-bank h4` | `0,0,2` | `(0,1,1)` — 1 classe + 1 elemento |
+| 3 | `.export-preview-bank h4 small` | `0,0,2` | `(0,1,2)` — 1 classe + 2 elementos |
+| 4 | `main` | `0,0,1` | `(0,0,1)` — 1 elemento (já estava correto) |
+| 5 | `header.app-header` | `0,0,1` | `(0,1,1)` — 1 elemento + 1 classe |
+| 6 | `header.app-header .header-search-bar .fi` | `0,0,3` | `(0,3,1)` — 1 elemento + 3 classes |
+
+Os registros 2, 3, 4, 5, 6, 7 do `css-conflitos.json` foram atualizados com as especificidades corretas. Os registros 5, 6 e 7 (`main`) mantêm `(0,0,1)` inalterado.
+
+### 3. Correção do vencedor de "max-height" (`.export-preview`)
+
+**Conclusão anterior (C.1.4.2):** `features.css:884` vence no desktop; `layout.css:202` vence no mobile ≤680px.
+
+**Correção (C.1.4.2.1):** `features.css:884` prevalece **em todos os contextos**, incluindo mobile ≤680px.
+
+**Fundamento:**
+- `base.css:8`: `280px`, escopo geral, especificidade `(0,1,0)`
+- `layout.css:202`: `280px`, `@media (max-width:680px)`, especificidade `(0,1,0)`
+- `features.css:884`: `clamp(160px, calc(92svh - 340px), 420px)`, escopo geral, especificidade `(0,1,0)`
+
+`base.css:8` e `layout.css:202` declaram o mesmo valor (`280px`) = redundância entre si, não conflito. `features.css:884` declara valor diferente (`clamp`), mesma especificidade `(0,1,0)`, e é carregada por último (posição 5 sobre 1 e 4). Portanto `features.css:884` vence `base.css:8` e `layout.css:202` em **todos** os contextos, incluindo mobile. `layout.css:202` não é vencedora em nenhum contexto.
+
+### 4. Reconciliação da contagem de conflitos
+
+Os 9 registros analisados **não equivalem a 9 conflitos efetivos**. Distinção correta:
+
+| Categoria | Quantidade | Registros |
+|---|---|---|
+| Diferenças efetivas de valor | 5 | 1 (`.export-preview`/max-height), 2 (`.export-preview-bank h4`/margin), 3 (`.export-preview-bank h4`/font-size), 4 (`.export-preview-bank h4 small`/color), 9 (`header.app-header .header-search-bar .fi`/color) |
+| Variações responsivas (não são conflitos de cascata) | 4 | 5 (`main`/max-width), 6 (`main`/margin), 7 (`main`/padding), 8 (`header.app-header`/align-items) |
+| Repetições idênticas internas | presente | registro 4 (4 declarações com `var(--accent)` idênticas), registro 5 (2 declarações `1120px` idênticas) |
+| Redundâncias internas | presente | registro 1 (`base.css:8` e `layout.css:202` com mesmo valor `280px`) |
+| Falsos positivos | 0 | — |
+
+**`header.app-header` / `align-items` NÃO é conflito:** as declarações estão em media queries distintas (`@media (min-width:681px)` e `@media (max-width:680px)`), breakpoints opostos, nunca ativos simultaneamente. Classificado como variação responsiva.
+
+**Totais reconciliados:** 9 registros analisados = 5 diferenças efetivas + 4 variações responsivas. Não somar categorias sobrepostas como se fossem registros exclusivos.
+
+### 5. Tabela corrigida — Vencedores efetivos
+
+| # | Seletor | Propriedade | Diferença efetiva? | Vencedor efetivo |
+|---|---|---|---|---|
+| 1 | `.export-preview` | max-height | Sim | `features.css:884` (clamp, todos os contextos) |
+| 2 | `.export-preview-bank h4` | margin | Sim | `features.css:889` (0 0 14px) |
+| 3 | `.export-preview-bank h4` | font-size | Sim | `features.css:948` (15px geral); 938 (14px @768px); 945 (13px @480px) |
+| 4 | `.export-preview-bank h4 small` | color | Sim (apenas vs base.css) | `features.css` (var(--accent)); `features.css:881/890/920/949` são repetição idêntica entre si |
+| 5 | `main` | max-width | Não | Variação responsiva: `base.css:68` (geral), `layout.css:40` (mobile), `dashboard-chat.css:966/987` (desktop ≥1024px) |
+| 6 | `main` | margin | Não | Variação responsiva: `base.css:68` (geral), `layout.css:40` (mobile) |
+| 7 | `main` | padding | Não | Variação responsiva: `base.css:68` (geral), `layout.css:40` (mobile) |
+| 8 | `header.app-header` | align-items | Não | Variação responsiva: `base.css:92` (desktop ≥681px), `layout.css:8` (mobile ≤680px) — nunca simultâneos |
+| 9 | `header.app-header .header-search-bar .fi` | color | Sim (apenas mobile ≤680px) | `base.css:88` (desktop/geral); `layout.css:27` (mobile ≤680px) |
+
+### 6. Ressalva de não-reprodução independente
+
+Os seguintes números foram declarados na execução original da C.1.4/C.1.4.2, mas **não puderam ser reproduzidos independentemente a partir dos artefatos atualmente versionados no repositório**:
+
+| Número | Fonte original | Status de reprodução |
+|---|---|---|
+| 1.127 seletores classificados | `.tmp-c13/outro-refinado.json` (não versionado) | Não reproduzível |
+| 201 seletores potencialmente obsoletos | `.tmp-c13/outro-refinado.json` (não versionado) | Não reproduzível |
+| 42 seletores reintegrados | não encontrado nos dados disponíveis | Não reproduzível |
+| 67 conflitos agregados | `.tmp-c13/css-conflitos.json` (não versionado) | Não reproduzível |
+| 58 conflitos pendentes | derivado de 67 − 9 | Não reproduzível |
+| 126 seletores com referência textual | análise em `index.html` + `js/` | Reproduzível |
+| 75 seletores sem referência textual | análise em `index.html` + `js/` | Reproduzível |
+
+**Distinção:**
+- **Resultado documentado pela execução:** os números acima, registrados na C.1.4.2.
+- **Resultado verificável no repositório:** apenas os 9 registros de `css-conflitos.json` (arquivo versionado) e as declarações CSS verificáveis nos arquivos `style/*.css`.
+- **Resultado não reproduzível:** todos os números que dependem de `.tmp-c13/` (pasta não versionada, contendo scripts temporários de medição).
+
+Não foram criados 58 registros artificiais para completar a contagem. Nenhum dos 201 seletores potencialmente obsoletos foi declarado obsoleto.
+
+### 7. Verificações executadas
+
+1. ✅ Nove registros do `css-conflitos.json` conferidos quanto a especificidades (tupla convencional corrigida).
+2. ✅ Coerência entre JSON e relatório verificada (5 diferenças efetivas + 4 variações responsivas = 9 registros).
+3. ✅ Cinco conflitos efetivos corretamente identificados (registros 1, 2, 3, 4, 9).
+4. ✅ `header.app-header` / `align-items` classificado como variação responsiva (não conflito).
+5. ✅ Vencedor de `max-height` corrigido: `features.css:884` vence em todos os contextos.
+6. ✅ SHAs confirmados: base `7b1bfc6`, final `b7f5725`.
+7. ✅ Diff verificado: somente `css-conflitos.json` e `PHASE_B_CONSOLIDATED_REPORT.md` modificados.
+
+### 8. Veredito atualizado — C.1
+
+**C.1 — NÃO APROVADA.**
+
+Justificativa mantida da C.1.4.2, com as correções factuais acima. Nenhuma alteração funcional foi feita. Não houve commit, push ou deploy nesta etapa. C.3 permanece bloqueado aguardando revisão independente e autorização explícita do usuário.
 
 | Item | Valor |
 |---|---|
