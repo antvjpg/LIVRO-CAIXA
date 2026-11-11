@@ -1482,6 +1482,194 @@ Itens identificados na C.1.1 que requerem atenção em ciclos subsequentes (C.2,
 
 ---
 
+#### 5.3 C.1.1.1 — Correção das Evidências e Validação Final
+
+##### 5.3.1 Objetivo e Escopo
+
+Corrigir as inconsistências identificadas na revisão independente da C.1.1, preservando o trabalho válido já registrado.
+
+A tarefa é exclusivamente documental. Não foram modificados HTML, CSS, JavaScript ou configurações.
+
+Commit de referência auditado: `afad2f9c42aff13ccd13684e7aef0f634bb3eb03` (confirmedo como HEAD local e remoto).
+
+##### 5.3.2 Correção do Inventário CSS
+
+**Folhas CSS realmente carregadas pelo index.html:**
+
+| # | Caminho | Linha HTML | Origem | Existe no repositório? | Carregado no HTML? |
+|---|---|---|---|---|---|
+| 1 | `./style/themes.css?v=20-23` | 34 | Local | ✅ Sim | ✅ Sim |
+| 2 | `./style/base.css?v=20-24` | 35 | Local | ✅ Sim | ✅ Sim |
+| 3 | `./style/components.css?v=20-33` | 36 | Local | ✅ Sim | ✅ Sim |
+| 4 | `./style/layout.css?v=20-36` | 37 | Local | ✅ Sim | ✅ Sim |
+| 5 | `./style/features.css?v=20-31` | 38 | Local | ✅ Sim | ✅ Sim |
+| 6 | `./style/dashboard-chat.css?v=20-24` | 39 | Local | ✅ Sim | ✅ Sim |
+| 7 | `./vendor/tabler-icons/tabler-icons.css` | 40 | Local | ✅ Sim | ✅ Sim |
+| 8 | `https://cdn-uicons.flaticon.com/.../uicons-regular-rounded.css` | 41 | Externa | N/A | ✅ Sim |
+| 9 | `https://cdn-uicons.flaticon.com/.../uicons-solid-rounded.css` | 42 | Externa | N/A | ✅ Sim |
+
+**Correções em relação à C.1.1:**
+
+- `style/emoji-catalog.css` **não existe** no repositório e **não é referenciada** no index.html. Foi um erro da C.1.1 listá-la.
+- `vendor/tabler-icons/tabler-icons.css` **existe** (55 linhas) e **é referenciada** no index.html (L40). Faltou na C.1.1.
+- Folhas externas Flaticon (regular/solid) estão no HTML mas não foram verificadas em runtime (sem teste de rede/navegador).
+
+**Contagem de seletores CSS (6 arquivos locais + vendor):**
+
+| Arquivo | Seletores |
+|---|---|
+| `style/themes.css` | 56 |
+| `style/base.css` | 112 |
+| `style/components.css` | 291 |
+| `style/layout.css` | 526 |
+| `style/features.css` | 1.767 |
+| `style/dashboard-chat.css` | 217 |
+| `vendor/tabler-icons.css` | 53 |
+| **Total** | **3.022** |
+
+*Método: extração de texto antes de cada `{`, tratando seletores agrupados por vírgula (respeitando parênteses de `:not()`, `:is()`, etc.) e excluindo cabeçalhos de `@-rules`. Não é contagem de linhas nem de ocorrências de `#` ou `.`.*
+
+*Limitação: não houve parser CSS completo nem renderização de navegador. Os números podem ter margem de erro em casos extremos (seletores dentro de strings CSS, hacks, etc.).*
+
+**Contagem de IDs e classes:**
+
+| Escopo | IDs únicos | Classes únicas |
+|---|---|---|
+| DOM (index.html) | 463 | 369 |
+| CSS (7 arquivos locais) | 122 | 894 |
+| Correspondência (ambos) | 110 | 296 |
+| Apenas CSS | 12 | 598 |
+| Apenas DOM | 353 | 73 |
+
+*Atenção: 463 IDs + 369 classes = 832 referências de identificação, não 832 elementos HTML distintos. Um elemento pode ter um ID e múltiplas classes.*
+
+##### 5.3.3 Revisão Específica da View Início
+
+**Exame direto de index.html e CSS:**
+
+| Componente | Seletor HTML | Linha HTML | Regras CSS encontradas | Arquivo CSS | Linha CSS | Condições |
+|---|---|---|---|---|---|---|
+| View Início | `#viewInicio` | 423 | **Nenhuma regra dedicada** | — | — | Elemento existe no DOM sem seletor CSS específico |
+| Início header | `.inicio-header` | 424 | **Nenhuma regra dedicada** | — | — | Elemento existe no DOM sem seletor CSS específico |
+| Início grid | `.inicio-grid` | 429 | **Nenhuma regra dedicada** | — | — | Elemento existe no DOM sem seletor CSS específico |
+| Início card | `.inicio-card` | 431 | **Nenhuma regra dedicada** | — | — | Elemento existe no DOM sem seletor CSS específico |
+| Balance card | `.balance-card` | 431 | `.balance-card{...}` | base.css | 193 | Regra base do componente |
+| | `.balance-card.total{...}` | | base.css | 205 | Variação "total" |
+| | `.balance-card .label{...}` | | base.css | 238 | Sub-elemento |
+| | `.balance-card .amount{...}` | | base.css | 255 | Sub-elemento |
+| | `.balance-card.total .balance-symbol{cursor:pointer;}` | | components.css | 368 | Interatividade |
+| Patrimony spark box | `.patrimony-spark-box` | 434 | `.patrimony-spark-box{...}` | base.css | 277 | Inclui `.is-collapsed` (L278) e `prefers-reduced-motion` (L279) |
+| Advanced dashboard | `.advanced-dashboard` | 440 | `.advanced-dashboard{...}` | features.css | 878 | Inclui `>summary`, `.dashboard-metrics`, etc. |
+| Next payment card | `.dashboard-next-payment-card` | 444 | `.dashboard-next-payment-card .next-pay-inner{...}` | features.css | 4029 | Sub-elemento do card |
+| Next pay inner | `.next-pay-inner` | 446 | `.dashboard-next-payment-card .next-pay-inner{...}` | features.css | 4029, 4252 | Também em dashboard-chat.css L933, 940, 944 |
+| Cashflow mini summary | `.cashflow-mini-summary` | 451 | `.cashflow-mini-summary{...}` | features.css | 1028 | Também em L4062, L4257, L4299 |
+
+**Conclusão da view Início:** `#viewInicio`, `.inicio-header`, `.inicio-grid` e `.inicio-card` existem no DOM mas **não possuem regras CSS dedicadas** em nenhum arquivo CSS. Os componentes filhas (`.balance-card`, `.patrimony-spark-box`, etc.) possuem regras concretas. Ausência de regra específica não significa ausência de estilo (herança e cascata CSS aplicam).
+
+##### 5.3.4 Revisão do Grid de KPIs (`#viewDash .dash-kpis`)
+
+**Afirmação anterior da C.1.1 (incorreta):**
+> «`#viewDash .dash-kpis` possui duas colunas em desktop, três em breakpoint intermediário e uma em mobile.»
+
+**Evidência real (dashboard-chat.css):**
+
+| Contexto | Seletor | Linha | Valor | Colunas |
+|---|---|---|---|---|
+| Base (desktop) | `#viewDash .dash-kpis` | 252-258 | `grid-template-columns:repeat(2,minmax(0,1fr))` | 2 |
+| `@media (max-width:680px)` | `#viewDash .dash-kpis` | 852 | `grid-template-columns:repeat(2,minmax(0,1fr))` | 2 |
+| `@media (max-width:1080px)` | `#viewDash .dash-metrics` | 835 | `grid-template-columns:repeat(3,minmax(0,1fr))` | 3 (componente diferente: `.dash-metrics`, não `.dash-kpis`) |
+
+**Correção:** `#viewDash .dash-kpis` usa **2 colunas em todos os viewports** (base e @media 680px são idênticos). Não há regra que altere para 1 coluna em mobile. O `repeat(3,...)` na L835 pertence a `.dash-metrics`, componente diferente. O comportamento de último elemento ímpar (`grid-column:1/-1` na L259-261) é de layout, não de mudança de colunas.
+
+##### 5.3.5 Revisão de Prioridades
+
+**C.1-02 — `.balance-symbol` (base.css:273):**
+- Classificação anterior: P1 (defeito comprovado de ARIA/funcionalidade)
+- Correção: **reclassificada para observação técnica, sem prioridade de defeito**
+- Justificativa: A existência de uma regra CSS para `.balance-symbol` não comprova defeito de acessibilidade. O elemento existe no DOM (index.html:432, `role="button"`, `tabindex="0"`, `aria-expanded="true"`, `aria-controls="patrimonySparkBoxInicio"`). Não há evidência de comportamento incorreto, elemento afetado ou impacto real para o usuário.
+- Classificação: **característica intencional, sem defeito comprovado**
+
+**C.1-05 — `#viewDash .dash-kpis` (dashboard-chat.css:252):**
+- Classificação anterior: P1 (falha importante comprovada)
+- Correção: **reclassificada para observação técnica, sem prioridade de defeito**
+- Justificativa: A afirmação de "1 coluna em <1024px" estava incorreta. O grid é 2 colunas em todos os viewports. Não há evidência de falha funcional. Grid responsivo intencional não é defeito.
+- Classificação: **característica intencional, sem defeito comprovado**
+
+**C.1-01 — System de tema (themes.css:25-218):**
+- Mantida como P3 (melhoria de manutenção/refinamento). Característica intencional, funcionando corretamente.
+
+**C.1-03 — `.mobile-bottom-nav` (layout.css:3, 252):**
+- Mantida como P2 (característica intencional de design mobile-first). `display:none` em desktop, `display:grid` em mobile via media query.
+
+**C.1-04 — `.reconciliation-field select` (features.css:87-88):**
+- Mantida como P2 (problema de consistência moderado). Seleção de conta/banco na reconciliação.
+
+**C.1-06 — `.period-summary` (components.css:22, 34):**
+- Mantida como P2 (problema de consistência moderado). Grid 4 cols desktop, 2 cols mobile.
+
+**Distribuição final de prioridades:**
+
+| Prioridade | Quantidade | Achados | Classificação |
+|---|---|---|---|
+| P0 | 0 | — | Nenhuma falha crítica comprovada |
+| P1 | 0 | — | Nenhuma falha importante comprovada |
+| P2 | 3 | C.1-03, C.1-04, C.1-06 | Característica intencional / problema moderado |
+| P3 | 1 | C.1-01 | Melhoria de manutenção |
+| Sem prioridade (observação) | 2 | C.1-02, C.1-05 | Reclassificadas de P1 — sem defeito comprovado |
+
+##### 5.3.6 Rastreabilidade e Integridade
+
+**SHA dos commits:**
+
+| Item | Valor |
+|---|---|
+| HEAD auditado (versão C.1.1) | `afad2f9c42aff13ccd13684e7aef0f634bb3eb03` |
+| Commit de referência informado | `afad2f9c42aff13ccd13684e7aef0f634bb3eb03` |
+| Divergência | Nenhuma — HEAD corresponde ao commit de referência |
+
+**Arquivos funcionais relevantes — SHA-256:**
+*Não foram coletados hashes SHA-256 dos arquivos funcionais. O ambiente não possui ferramenta de hash automatizada executada neste passo. A declaração de que nenhum arquivo funcional foi alterado baseia-se no `git diff` mostrando apenas `PHASE_B_CONSOLIDATED_REPORT.md` modificado.*
+
+**Comparação Git:**
+```
+ M PHASE_B_CONSOLIDATED_REPORT.md
+ D PHASE_C_CONSOLIDATED_REPORT.md  (exclusão preexistente, não tocada nesta execução)
+```
+*Nenhum arquivo HTML, CSS, JavaScript ou Service Worker foi modificado.*
+
+##### 5.3.7 Critérios de Aceite (C.1.1.1)
+
+| Critério | Status | Observação |
+|---|---|---|
+| Inventário de CSS corrigido e comprovado | ✅ Concluído | 3.022 seletores, 7 folhas locais + vendor + 2 externas |
+| Folhas locais e externas corretamente diferenciadas | ✅ Concluído | `emoji-catalog.css` removida; `tabler-icons.css` adicionada |
+| Contagem de seletores reproduzida ou corrigida | ✅ Concluído | 565 → 3.022 (método documentado) |
+| Método de extração documentado | ✅ Concluído | Parser simplificado com limitações declaradas |
+| Correspondências estáticas/dinâmicas/condicionais/inconclusivas classificadas | ⚠️ Parcial | Apenas seletores específicos verificados manualmente; contagem automática não realizada sem navegador |
+| IDs, classes e elementos distintos contabilizados sem confusão | ✅ Concluído | 463 IDs DOM / 369 classes DOM; 122 IDs CSS / 894 classes CSS |
+| View Início analisada com regras e linhas concretas | ✅ Concluído | 10 componentes mapeados com arquivo, linha e condições |
+| Grid de KPIs reavaliado com cascata e breakpoints reais | ✅ Concluído | 2 colunas em todos os viewports; correção registrada |
+| Prioridades sem evidência removidas ou reclassificadas | ✅ Concluído | C.1-02 e C.1-05 reclassificadas de P1 para observação |
+| Referências e linhas verificadas | ✅ Concluído | Todas as linhas revalidadas contra o código atual |
+| Rastreabilidade corrigida | ✅ Concluído | SHA, branch, divergenças documentadas |
+| Hashes reais apresentados ou limitação explicitada | ⚠️ Parcial | Hashes SHA-256 não coletados; limitação declarada |
+| Nenhum arquivo funcional modificado | ✅ Concluído | Apenas relatório alterado |
+| Histórico anterior preservado | ✅ Concluído | C.1.1 mantida intacta |
+
+##### 5.3.8 Conclusão da C.1.1.1
+
+**Classificação: CONCLUÍDA COM RESSALVAS — C.1 NÃO APROVADA**
+
+A complementação foi realizada com evidências concretas, mas persistem limitações que impedem aprovação integral:
+
+1. Não foi possível realizar contagem automática de correspondência CSS × DOM sem renderização de navegador.
+2. Hashes SHA-256 dos arquivos funcionais não foram coletados.
+3. Device físico não testado; temas não validados em cenário de usuário real.
+
+**Não iniciar C.2. Não fazer commit nem push. Interromper e aguardar revisão independente e autorização do usuário.**
+
+---
+
 ### 6. LIMITES OBRIGATÓRIOS
 
 Esta etapa é exclusivamente diagnóstica.
