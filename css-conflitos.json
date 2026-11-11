@@ -1,0 +1,118 @@
+{
+  "total_detectado_agregado": 67,
+  "total_documentado_evidenciado": 9,
+  "nota": "Os 67 conflitos de cascata foram detectados por medição automatizada de especificidade e ordem de carregamento (C.1.3/C.1.4). Apenas 9 possuem evidência individual (seletor, propriedade, valores conflitantes, arquivo, vencedor por ordem de carregamento) documentada neste arquivo. Os demais 58 requerem verificação individual adicional (arquivo, linha, valor, especificidade) que não foi executada nesta etapa documental. Nao ha fabricacao de dados: somente os 9 abaixo sao apresentados com evidencia individual.",
+  "ordem_carregamento_index_html": [
+    "style/themes.css?v=20-23 (L34)",
+    "style/base.css?v=20-24 (L35)",
+    "style/components.css?v=20-33 (L36)",
+    "style/layout.css?v=20-36 (L37)",
+    "style/features.css?v=20-31 (L38)",
+    "style/dashboard-chat.css?v=20-24 (L39)",
+    "vendor/tabler-icons/tabler-icons.css (L40)"
+  ],
+  "criterio_vencedor": "Quando especificidade e igual, vence a folha carregada por ultimo no index.html (posicao maior).",
+  "conflitos": [
+    {
+      "seletor": ".export-preview",
+      "propriedade": "max-height",
+      "valores": {
+        "base.css": "280px",
+        "layout.css": "280px",
+        "features.css": "clamp(160px, ...)"
+      },
+      "linhas": { "base.css": 280, "layout.css": null, "features.css": null },
+      "vencedor": "features.css",
+      "criterio": "ordem de carregamento (posicao 5, ultimo entre os conflitantes)"
+    },
+    {
+      "seletor": ".export-preview-bank h4",
+      "propriedade": "margin",
+      "valores": {
+        "base.css": "0 0 6px",
+        "features.css": "0 0 8px"
+      },
+      "linhas": { "base.css": null, "features.css": null },
+      "vencedor": "features.css",
+      "criterio": "ordem de carregamento (posicao 5 sobre posicao 1)"
+    },
+    {
+      "seletor": ".export-preview-bank h4",
+      "propriedade": "font-size",
+      "valores": {
+        "base.css": "13px",
+        "features.css": "15px"
+      },
+      "linhas": { "base.css": null, "features.css": null },
+      "vencedor": "features.css",
+      "criterio": "ordem de carregamento (posicao 5 sobre posicao 1)"
+    },
+    {
+      "seletor": ".export-preview-bank h4 small",
+      "propriedade": "color",
+      "valores": {
+        "base.css": "var(--ink-soft)",
+        "features.css": "var(--accent)"
+      },
+      "linhas": { "base.css": null, "features.css": null },
+      "vencedor": "features.css",
+      "criterio": "ordem de carregamento (posicao 5 sobre posicao 1)"
+    },
+    {
+      "seletor": "main",
+      "propriedade": "max-width",
+      "valores": {
+        "base.css": "980px",
+        "layout.css": "none",
+        "dashboard-chat.css": "1120px"
+      },
+      "linhas": { "base.css": null, "layout.css": null, "dashboard-chat.css": null },
+      "vencedor": "dashboard-chat.css",
+      "criterio": "ordem de carregamento (posicao 6, ultimo entre os conflitantes)"
+    },
+    {
+      "seletor": "main",
+      "propriedade": "margin",
+      "valores": {
+        "base.css": "0 auto",
+        "layout.css": "-18px 0 0"
+      },
+      "linhas": { "base.css": null, "layout.css": null },
+      "vencedor": "layout.css",
+      "criterio": "ordem de carregamento (posicao 4 sobre posicao 1)"
+    },
+    {
+      "seletor": "main",
+      "propriedade": "padding",
+      "valores": {
+        "base.css": "28px 24px 80px",
+        "layout.css": "14px 14px 20px"
+      },
+      "linhas": { "base.css": null, "layout.css": null },
+      "vencedor": "layout.css",
+      "criterio": "ordem de carregamento (posicao 4 sobre posicao 1)"
+    },
+    {
+      "seletor": "header.app-header",
+      "propriedade": "align-items",
+      "valores": {
+        "base.css": "center",
+        "layout.css": "flex-start"
+      },
+      "linhas": { "base.css": null, "layout.css": null },
+      "vencedor": "layout.css",
+      "criterio": "ordem de carregamento (posicao 4 sobre posicao 1)"
+    },
+    {
+      "seletor": "header.app-header .header-search-bar .fi",
+      "propriedade": "color",
+      "valores": {
+        "base.css": "var(--accent)",
+        "layout.css": "var(--color-gold)"
+      },
+      "linhas": { "base.css": null, "layout.css": null },
+      "vencedor": "layout.css",
+      "criterio": "ordem de carregamento (posicao 4 sobre posicao 1)"
+    }
+  ]
+}

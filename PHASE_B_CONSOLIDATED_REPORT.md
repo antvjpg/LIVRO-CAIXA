@@ -2209,7 +2209,9 @@ Após correção de taxonomia da C.1.3 (42 seletores previamente classificados c
 
 **Total: 1.127 seletores** (fechamento matemático: 521 + 239 + 201 + 118 + 26 + 22 = 1.127 ✓)
 
-**Grau de confiança:** as categorias com confiança "alto" (Tema, Estado JavaScript, View inativa, Interação) têm evidência direta no padrão do seletor. As categorias "medio" (Estado de formulário, Responsividade, Contexto estrutural, Componente condicional) requerem verificação de renderização condicional. A categoria "Potencialmente obsoleto" (201 seletores, confiança baixa) não tem evidência de uso e não pode ser declarada obsoleta sem investigação adicional.
+**Grau de confiança:** as categorias com confiança "alto" (Tema, View inativa) têm evidência direta no padrão do seletor. As categorias "medio" (Estado de formulário, Contexto estrutural, Componente condicional) requerem verificação de renderização condicional. A categoria "Potencialmente obsoleto" (201 seletores, confiança baixa) não tem evidência de uso e não pode ser declarada obsoleta sem investigação adicional.
+
+**Nota de escopo:** o pedido de categorias separadas para "estado JavaScript", "interação" e "responsividade" não pôde ser atendido nesta etapa porque a medição C.1.3 testou correspondência de seletor contra o DOM estático, sem produzir recorte por estado de JS, interação de usuário ou breakpoints de responsividade. Essas categorias ficam como lacuna declarada para verificação futura.
 
 **A ausência de correspondência no HTML estático não caracteriza automaticamente obsolescência.** 201 seletores (17,8% dos "outro") permanecem como "potencialmente obsoletos" pendentes de verificação manual.
 
@@ -2262,9 +2264,11 @@ Foram analisadas 2.818 regras CSS (seletor individual × arquivo) nas 7 folhas l
 
 Diferenciar duplicidade textual de duplicidade funcional: dois seletores iguais podem ter declarações diferentes e participar legiti­mamente da cascata. Não há evidência de que as 307 duplicidades textuais causem defeito funcional.
 
-#### 7.2 Conflitos de cascata comprovados (67)
+#### 7.2 Conflitos de cascata detectados (67 agregado; 9 com evidencia individual)
 
-Foram encontrados 67 casos em que o mesmo seletor define a mesma propriedade com valores diferentes em arquivos diferentes. A ordem de carregamento no `index.html` determina qual valor vence (regra posterior sobrescreve a anterior, exceto se houver `!important`):
+Foram encontrados 67 casos em que o mesmo seletor define a mesma propriedade com valores diferentes em arquivos diferentes, detectados por medição automatizada de especificidade e ordem de carregamento (C.1.3/C.1.4). A ordem de carregamento no `index.html` determina qual valor vence (regra posterior sobrescreve a anterior, exceto se houver `!important`):
+
+A tabela abaixo apresenta os 9 conflitos com evidencia individual completa. Os demais 58 conflitos detectados permanecem como contagem agregada; sua documentacao individual (arquivo, linha, valor, especificidade) requer verificacao adicional nao executada nesta etapa.
 
 | Seletor | Propriedade | Conflito (arquivo: valor) | Vence (ordem HTML) |
 |---|---|---|---|
@@ -2278,7 +2282,8 @@ Foram encontrados 67 casos em que o mesmo seletor define a mesma propriedade com
 | `header.app-header` | align-items | base.css: center, layout.css: flex-start | layout.css |
 | `header.app-header .header-search-bar .fi` | color | base.css: var(--accent), layout.css: var(--color-gold) | layout.css |
 
-**Total de conflitos de cascata confirmados: 67** (arquivo, linha, propriedade e valor evidenciados em `css-conflitos.json`).
+**Total de conflitos de cascata detectados: 67** (contagem agregada por medição automatizada).
+**Conflitos documentados com evidencia individual: 9** (tabela acima e `css-conflitos.json`).
 
 Não foram chamadas de "conflitantes" regras que apenas compartilham uma propriedade sem sobreposição efetiva de elemento.
 
@@ -2356,11 +2361,76 @@ A cobertura CSS × DOM agora está quantificada e os seletores classificados. Os
 
 **Fase C — C.1.4: CLASSIFICAÇÃO QUALITATIVA DOS SELETORES E AUDITORIA DA CASCATA CSS**
 
-Status: EXECUTADA. 1.127 seletores "outro" classificados (521 componente condicional, 239 view inativa, 201 potencialmente obsoleto, 118 contexto estrutural, 26 tema, 22 estado de formulário). 296 pseudo-classes e 157 pseudo-elementos reclassificados por taxonomia. 67 conflitos de cascata confirmados. View Início investigada (div fecha prematuramente na linha 427). C.1 permanece em auditoria, não aprovada. Nenhum arquivo funcional alterado.
+Status: EXECUTADA. 1.127 seletores "outro" classificados (521 componente condicional, 239 view inativa, 201 potencialmente obsoleto, 118 contexto estrutural, 26 tema, 22 estado de formulário). 296 pseudo-classes e 157 pseudo-elementos reclassificados por taxonomia. 67 conflitos de cascata detectados (agregado); 9 documentados com evidencia individual em `css-conflitos.json`. View Inicio investigada: #viewInicio abre L423 e fecha L454, todos os elementos internos estao dentro da div (correcao C.1.4.1; nao ha fechamento prematuro). C.1 permanece em auditoria, não aprovada. Nenhum arquivo funcional alterado.
 
 *Etapa diagnóstica e de especificação. Nenhum arquivo funcional foi modificado (index.html, CSS, JavaScript, Service Worker, configurações, testes, infraestrutura permanecem inalterados). Apenas documentação foi adicionada a este relatório.*
 
 *Autorização: concedida pelo usuário para iniciar esta etapa.*
+
+---
+
+## C.1.4.1 — Correção documental pontual da C.1.4 (após revisão independente)
+
+Esta seção corrige achados da C.1.4 identificados na revisão independente. Nao houve nova medição geral, nenhuma alteracao funcional e nenhum arquivo HTML/CSS/JS modificado. Apenas documentacao.
+
+### 1. Correcao da view Inicio (substitui secao 8.1 e 8.2 da C.1.4)
+
+A afirmacao da C.1.4 de que `#viewInicio` fecha prematuramente na linha 427 esta **incorreta**. Conferido diretamente em `index.html`:
+
+- `#viewInicio` abre na linha 423 e **fecha na linha 454** (apos `.inicio-footer`).
+- Todos os elementos estao **dentro** de `#viewInicio`: `.inicio-header` (L424-427), `.inicio-grid` (L429-448), `.inicio-card` x3 (L431-447), `.inicio-footer` (L450-453).
+- Nao ha fechamento prematuro. A matriz da secao 8.1 da C.1.4 estava incorreta e e substituida abaixo.
+
+| Elemento | Linha HTML | Dentro de #viewInicio? | Seletores CSS dedicados |
+|---|---|---|---|
+| `#viewInicio` (container) | 423 | Sim (proprio) | Nenhum (somente `.tab-content` generico) |
+| `.inicio-header` | 424 | Sim | Nenhum |
+| `.inicio-grid` | 429 | **Sim** | Nenhum |
+| `.inicio-card` (balance-card, Patrimônio) | 431 | **Sim** | `base.css:193` (base), `components.css:368` (`.balance-symbol`) |
+| `.patrimony-spark-box` | 434 | **Sim** | `base.css:277` (inclui `.is-collapsed`, `prefers-reduced-motion`) |
+| `.advanced-dashboard-card` | 438 | **Sim** | `features.css:878` (`.advanced-dashboard`) |
+| `.dashboard-next-payment-card` | 444 | **Sim** | `features.css:4029` (`.next-pay-inner`) |
+| `.next-pay-inner` | 446 | **Sim** | `features.css:4029`, `dashboard-chat.css:933` |
+| `.cashflow-mini-summary` | 451 | **Sim** | `features.css:1028` |
+| Botao Adicionar (inicio-footer) | 452 | **Sim** | Nenhuma regra especifica |
+| `</div>` (fim de #viewInicio) | 454 | — | — |
+
+**Conclusao corrigida:** A ausencia de regras CSS dedicadas para `#viewInicio`, `.inicio-header`, `.inicio-grid` e `.inicio-card` nao demonstra ausencia de estilo — esses elementos herdam estilos globais e de componentes compartilhados. **Nao e um problema estrutural HTML.** A afirmacao de que `switchTab('inicio')` ativa somente o cabeçalho nao e demonstrada pelo DOM e foi removida.
+
+### 2. Evidencia da auditoria de cascata (substitui afirmacao de 67 evidenciados)
+
+A C.1.4 afirmou 67 conflitos de cascata "confirmados" com evidencia em `css-conflitos.json`, mas esse arquivo nao existia e apenas 9 exemplos apareciam na tabela.
+
+**Correcao:** Criado `css-conflitos.json` contendo os 9 conflitos com evidencia individual (seletor, propriedade, valores, arquivo, vencedor por ordem de carregamento). Os 67 conflitos permanecem como contagem agregada detectada por medição automatizada na C.1.3/C.1.4; a documentacao individual de todos os 67 requer verificacao adicional nao executada nesta etapa documental.
+
+| Status | Quantidade | Base |
+|---|---|---|
+| Detectados (agregado, automatizado) | 67 | Mediçao C.1.3/C.1.4 (especificidade + ordem de carregamento) |
+| Documentados com evidencia individual | 9 | `css-conflitos.json` (este relatorio) |
+| Pendentes de verificacao individual | 58 | Requerem arquivo, linha, valor e especificidade por caso |
+
+### 3. Rastreabilidade da classificacao dos seletores (secao 4 da C.1.4)
+
+A C.1.4 classificou os 1.127 seletores "outro" por padroes reconheciveis, nao por inspecao individual manual de cada um. Isso e uma **limitacao metodologica declarada**, nao um defeito.
+
+Faltavam categorias separadas para: estado JavaScript, interacao e responsividade. Essas categorias nao foram criadas porque a medição C.1.3 nao produziu esse recorte (a analise testou correspondencia de seletor contra DOM estático, nao estado de JS, interacao ou breakpoints de responsividade). O relatorio registra essa lacuna explicitamente na secao 9 (Limitacoes) da C.1.4.
+
+### 4. Consistencia de contagem (1.085 → 1.127)
+
+A mudanca de 1.085 para 1.127 seletores se deve a reintegracao de 42 seletores previamente classificados como "atributo condicional" na C.1.3. O fechamento matematico da C.1.4 esta correto: 521 + 239 + 201 + 118 + 26 + 22 = 1.127. Nao ha duplicacao nem omissao na soma.
+
+### 5. Resumo das alteracoes desta correcao
+
+| Item | Antes (C.1.4) | Depois (C.1.4.1) |
+|---|---|---|
+| viewInicio fechamento | Prematuro na L427 | Fecha na L454, todos os elementos dentro |
+| viewInicio problema estrutural | Declarado como problema HTML | Removido; nao e problema |
+| switchTab('inicio') | Afirmado ativar apenas header | Removido; nao demostrado |
+| css-conflitos.json | Nao existia | Criado com 9 conflitos evidenciados |
+| Conflitos cascata | 67 "confirmados" (só 9 na tabela) | 67 agregado + 9 evidenciados individualmente |
+| Categorias JS/interacao/responsividade | Ausentes | Lacuna registrada explicitamente |
+
+**C.1 permanece em auditoria, nao aprovada.** Esta e uma correcao documental pontual. Nao iniciar C.3. Aguardar revisao independente e autorizacao explicita para a proxima etapa.
 
 *Resultado esperado: C.2 CONCLUÍDA / CONCLUÍDA COM RESSALVAS / INCOMPLETA (definido na seção 13).*
 
