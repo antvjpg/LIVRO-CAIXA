@@ -2685,7 +2685,7 @@ Não foram criados 58 registros artificiais para completar a contagem. Nenhum do
 3. ✅ Cinco conflitos efetivos corretamente identificados (registros 1, 2, 3, 4, 9).
 4. ✅ `header.app-header` / `align-items` classificado como variação responsiva (não conflito).
 5. ✅ Vencedor de `max-height` corrigido: `features.css:884` vence em todos os contextos.
-6. ✅ SHAs confirmados: base `7b1bfc6`, final `b7f5725`.
+6. ✅ SHAs confirmados: SHA-base da C.1.4.2 `7b1bfc6`; commit de publicação da C.1.4.2 `b7f5725`; commit de publicação da C.1.4.2.1 `7a649b6`. Os três identificadores correspondem a momentos distintos do histórico.
 7. ✅ Diff verificado: somente `css-conflitos.json` e `PHASE_B_CONSOLIDATED_REPORT.md` modificados.
 
 ### 8. Veredito atualizado — C.1
