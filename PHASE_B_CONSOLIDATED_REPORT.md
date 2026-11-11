@@ -3415,3 +3415,70 @@ Não reabrir a C.2 por ausência de testes que pertencem às fases de implementa
 
 Status: APROVADA COMO ESPECIFICAÇÃO ARQUITETURAL. Cinco áreas definidas; Contas centralizada por nova view ("#viewContas"); Análises associada a "dash" ("#viewDash"); Dashboard legado ("#viewDashboard") preservado; mobile com bottom navigation (cinco destinos); desktop com sidebar baseada no drawer existente; dispatcher único ("window.switchTab") preservado. Implementação ainda não executada. Nenhum arquivo funcional alterado nesta etapa.
 
+---
+
+## C.3.0 — Coleta de Evidências Visuais para Auditoria Independente
+
+SHA de referência do HEAD: `23b6c63a50e9ebb5aa1ee8837b4134bc2f536007`
+
+Branch: `feat/app-navigation-redesign`
+
+### 1. Objetivo
+
+Produzir capturas atuais do LIVRO-CAIXA para que a auditoria visual (C.3) seja realizada independentemente pelo ChatGPT, sem diagnóstico, classificação de defeitos ou aprovação nesta etapa.
+
+### 2. Escopo e método
+
+- **Aplicativo real capturado**, sem modificação de HTML, CSS, JavaScript ou Worker.
+- **Ferramenta:** Chromium headless via CDP (Chrome DevTools Protocol), servidor local `python3 -m http.server 8000`.
+- **Viewport mobile:** 390 × 844.
+- **Viewport desktop:** 1440 × 900.
+- **Temas:** oliva claro (padrão) e oliva escuro (aplicado via mecanismo real do app: Perfil → Aparência → `.dark-theme-option[data-theme="1"]`).
+- **Espera por renderização** antes de cada captura.
+- **Sobreposição de auth (`#authOverlay`) ocultada apenas em runtime** (manipulação de DOM temporária, não persistida) para permitir a visualização do app sem credenciais QA.
+
+### 3. Matriz de capturas realizadas (24/24)
+
+| Viewport | Tema | Telas capturadas | Total |
+|----------|------|------------------|-------|
+| Mobile 390×844 | Oliva claro | tela-inicial, view-inicio, view-livro-caixa, drawer-aberto, perfil, nav-mobile | 6 |
+| Mobile 390×844 | Oliva escuro | mesma matriz | 6 |
+| Desktop 1440×900 | Oliva claro | mesma matriz | 6 |
+| Desktop 1440×900 | Oliva escuro | mesma matriz | 6 |
+
+Telas:
+
+1. **tela-inicial** — Tela inicial do app (viewCaixa aberta por padrão).
+2. **view-inicio** — View Início (`#viewInicio`).
+3. **view-livro-caixa** — View Livro-Caixa (`#viewCaixa`).
+4. **drawer-aberto** — Drawer aberto (`#appDrawerOverlay`).
+5. **perfil** — View Perfil (`#viewProfile`).
+6. **nav-mobile** — Navegação mobile inferior (`mobile-bottom-nav`).
+
+### 4. Limitações registradas
+
+- **Autenticação Firebase:** não foram disponibilizadas credenciais QA para login real. O overlay de auth foi ocultado temporariamente via JavaScript (somente em runtime) para permitir a captura das telas do app. Isso não representa login autenticado nem dados reais do usuário.
+- **Nenhum arquivo de fonte foi modificado.** As capturas refletem o estado atual do código no HEAD `23b6c63`.
+- **Não foram realizadas correções**, testes funcionais, validação visual de sidebar futura ou regressão do dispatcher.
+
+### 5. Arquivos criados
+
+Diretório: `e2e/visual/c3/evidencias/`
+
+- **24 arquivos PNG**, nomeados no padrão `N-viewport-tema-tela.png` (de `1-` a `24-`).
+- **1 arquivo `manifest.json`**, contendo para cada captura: nome do arquivo, viewport, resolução, tema, tela, descrição, estado, data/hora e SHA do HEAD utilizado.
+
+### 6. Estado do Git
+
+- `e2e/visual/c3/` — novo diretório não versionado (24 PNGs + manifest.json).
+- Nenhum arquivo de fonte (HTML, CSS, JS, Worker) alterado.
+- `PHASE_C_CONSOLIDATED_REPORT.md` — exclusão pré-existente, não tocada.
+- `.tmp-c13/` — scripts temporários não versionados, intocados.
+- Nenhum commit, push ou deploy executado nesta etapa.
+
+---
+
+**Fase C — C.3.0: COLETA DE EVIDÊNCIAS VISUAIS**
+
+Status: CONCLUÍDA — 24 capturas realizadas e documentadas em `e2e/visual/c3/evidencias/`. Pronto para auditoria visual independente. Nenhum diagnóstico, classificação de defeitos ou aprovação da C.3 produzidos nesta etapa.
+
