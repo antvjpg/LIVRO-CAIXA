@@ -131,7 +131,7 @@
         { "arquivo": "base.css", "linha": 88, "valor": "var(--accent)", "media_query": "nenhuma (escopo geral)", "especificidade": "0,3,1" },
         { "arquivo": "layout.css", "linha": 27, "valor": "var(--color-gold)", "media_query": "@media (max-width:680px)", "especificidade": "0,3,1" }
       ],
-      "analise": "base.css:88 esta em escopo geral (aplica em todos os breakpoints). layout.css:27 esta dentro de @media (max-width:680px) (aplica so em mobile). Em mobile <=680px, ambas estariam ativas: mesma especificidade (0,0,3), layout.css vence por ordem de carregamento (posicao 4 sobre 1). Em desktop >680px, so base.css:88 esta ativa.",
+      "analise": "base.css:88 esta em escopo geral (aplica em todos os breakpoints). layout.css:27 esta dentro de @media (max-width:680px) (aplica so em mobile). Em mobile <=680px, ambas estariam ativas: mesma especificidade (0,3,1), layout.css vence por ordem de carregamento (posicao 4 sobre 1). Em desktop >680px, so base.css:88 esta ativa.",
       "classificacao": "Conflito efetivo apenas no contexto mobile <=680px (var(--accent) vs var(--color-gold), vencido por layout.css). Em desktop, apenas base.css:88 aplica.",
       "vencedor_efetivo": { "geral/desktop": "base.css:88 (var(--accent))", "@media(max-width:680px)": "layout.css:27 (var(--color-gold))" }
     }

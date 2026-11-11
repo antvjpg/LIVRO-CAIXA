@@ -2595,10 +2595,11 @@ Esta subseção corrige inconsistências factuais identificadas na revisão inde
 
 | Item | SHA |
 |---|---|
-| SHA-base/inicial (C.1.4.2) | `7b1bfc67fdbf00dac3f6417091a443956d7d375f` |
-| SHA-final da execução C.1.4.2.1 | `b7f57259377396c597bfc67a6109220e364f1e8f` |
+| SHA-base da C.1.4.2 | `7b1bfc67fdbf00dac3f6417091a443956d7d375f` |
+| Commit de publicação da C.1.4.2 | `b7f57259377396c597bfc67a6109220e364f1e8f` |
+| Commit de publicação da C.1.4.2.1 | `7a649b6df41ff025d300c9cb0649968c1b7ce8ee` |
 
-O commit-base (`7b1bfc6`) é diferente do commit que publicou a documentação corrigida (`b7f5725`). Não confundir os dois.
+O SHA-base identifica a versão de referência utilizada na execução da C.1.4.2. O commit "b7f5725" publicou a C.1.4.2. Já o commit "7a649b6" publicou as correções da C.1.4.2.1. Esses três identificadores representam momentos distintos e não devem ser tratados como equivalentes.
 
 ### 2. Correção das especificidades CSS (tupla convencional: IDs, classes/atributos/pseudo-classes, elementos/pseudo-elementos)
 
@@ -2611,7 +2612,7 @@ O commit-base (`7b1bfc6`) é diferente do commit que publicou a documentação c
 | 5 | `header.app-header` | `0,0,1` | `(0,1,1)` — 1 elemento + 1 classe |
 | 6 | `header.app-header .header-search-bar .fi` | `0,0,3` | `(0,3,1)` — 1 elemento + 3 classes |
 
-Os registros 2, 3, 4, 5, 6, 7 do `css-conflitos.json` foram atualizados com as especificidades corretas. Os registros 5, 6 e 7 (`main`) mantêm `(0,0,1)` inalterado.
+Os registros 1, 2, 3, 4, 8 e 9 do `css-conflitos.json` tiveram suas especificidades corrigidas nesta revisão. Os registros 5, 6 e 7, referentes ao seletor `main`, já apresentavam a especificidade correta `(0,0,1)` e foram mantidos sem alteração. Portanto, seis registros receberam correção e três registros conservaram os valores que já estavam corretos.
 
 ### 3. Correção do vencedor de "max-height" (`.export-preview`)
 
@@ -2691,7 +2692,7 @@ Não foram criados 58 registros artificiais para completar a contagem. Nenhum do
 
 **C.1 — NÃO APROVADA.**
 
-Justificativa mantida da C.1.4.2, com as correções factuais acima. Nenhuma alteração funcional foi feita. Não houve commit, push ou deploy nesta etapa. C.3 permanece bloqueado aguardando revisão independente e autorização explícita do usuário.
+**Natureza da execução:** esta etapa foi exclusivamente documental. Nenhuma alteração funcional foi feita. As alterações foram publicadas por meio do commit `7a649b6df41ff025d300c9cb0649968c1b7ce8ee` e enviadas ao repositório remoto (push). Não houve deploy.
 
 | Item | Valor |
 |---|---|
