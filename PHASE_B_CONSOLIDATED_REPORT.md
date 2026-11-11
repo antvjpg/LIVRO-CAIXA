@@ -1875,7 +1875,7 @@ D PHASE_C_CONSOLIDATED_REPORT.md
 ```js
 TAB_NAMES = ['dash', 'dashboard', 'caixa', 'invest', 'pockets', 'cards', 'receivables', 'bills', 'profile', 'goals', 'inicio'];
 ```
-*11 destinos registrados. Atenção: `dash` e `dashboard` são entradas distintas.*
+*11 destinos registrados. **`dash` e `dashboard` são destinos distintos, não aliases equivalentes.** `switchTab('dash')` ativa `#viewDash` (dashboard analítico com `renderDashboardTab()`); `switchTab('dashboard')` ativa `#viewDashboard` (visão geral antiga com `renderAdvancedDashboard()`). A conversão feita por `updateNavIndicator()` (mapear `'dash' → 'dashboard'` apenas para localizar o botão visual da navegação inferior) **não** unifica as duas views em uma única funcionalidade.*
 
 **`currentTab`** (js/99-init.js:351): inicializado como `'caixa'`.
 
@@ -1903,7 +1903,7 @@ TAB_NAMES = ['dash', 'dashboard', 'caixa', 'invest', 'pockets', 'cards', 'receiv
 - Senão: remove estado de goals, chama `runOriginalSwitchTab(tab, this, arguments)` (que é `switchTabOriginal`), depois reforça a pílula do bottom nav usando `nav.dataset.active`, e garante que `document.body.dataset.tab` não fique preso em `'goals'`.
 - Intercepta clique em `[data-drawer-action="goals"]` (L89-99): `preventDefault`, `switchTab('goals')`, fecha drawer.
 
-**Wrapper FAB — `js/99-init.js:3645-3652`**: captura `origSwitchTab = window.switchTab` e redefine `window.switchTab` como wrapper que chama o original e depois `updateFabAriaLabel(tab)`. Isso ocorre **após** o patch de metas (ordem de carregamento dos scripts: patches.js é o último script do body, L1681; 99-init.js é L1634). A ordem de scripts é: `... 32-auth-wiring.js (L1633), 99-init.js (L1634), simple-log.js (L1635), patches.js (L1681)`. Como patches.js roda por último, seu `window.switchTab` sobrescreve o wrapper de 99-init.js? Não: patches.js não captura o wrapper, captura `window.switchTabOriginal` diretamente. Então o wrapper de 99-init.js (que chama updateFabAriaLabel) pode ser **perdido** se patches.js redefinir `window.switchTab` após. Isso é um risco de ordem de execução documentado.
+**Wrapper FAB — `js/99-init.js:3645-3652`**: captura `origSwitchTab = window.switchTab` e redefine `window.switchTab` como wrapper que chama o original e depois `updateFabAriaLabel(tab)`. Ordem de execução corrigida: `patches.js` é um **script clássico sem `defer`**, carregado no final do corpo do HTML (L1681), e executa durante a análise do documento, **antes** do callback `DOMContentLoaded` de `99-init.js` (carregado com `defer`, L1634). Assim, quando o callback de `99-init.js` captura a função em `origSwitchTab`, o patch de Metas já está instalado em `window.switchTab`. O encadeamento é: (1) `patches.js` instala seu wrapper; (2) `99-init.js` executa seu callback; (3) captura a função já modificada; (4) o wrapper do FAB passa a chamar o patch de Metas; (5) o patch encaminha destinos comuns para `switchTabOriginal()`. **Não é um conflito comprovado de ordem de execução.** A interação completa ainda pode ser validada em runtime.
 
 **Restauração de sessão** (js/99-init.js:459-467): lê `sessionStorage.getItem(LAST_TAB_STORAGE_KEY)`, se válido e em `TAB_NAMES`, define `currentTab`, `lastTabRestored = true`, `document.body.dataset.tab = savedTab`, e chama `window.switchTab(savedTab)`.
 
@@ -1965,7 +1965,7 @@ TAB_NAMES = ['dash', 'dashboard', 'caixa', 'invest', 'pockets', 'cards', 'receiv
 
 **Comportamento mobile:** `.mobile-bottom-nav` fica fixo; esconde ao rolar para baixo (`nav-hidden`, js/99-init.js:1340-1373) e mostra ao rolar para cima ou perto do topo.
 
-**Comportamento desktop:** o bottom nav está sempre presente (não há sidebar desktop). Não há ocultação condicional por breakpoint no HTML/CSS para o bottom nav (verificado: `.mobile-bottom-nav` em layout.css L3 e L252, display:none em desktop? precisa confirmar — na C.1.1.1 foi anotado que `display:none` em desktop, `display:grid` em mobile via media query).
+**Comportamento desktop:** o bottom nav **não está visível em desktop** — `.mobile-bottom-nav` tem `display: none` acima de 680px (`style/layout.css`, fora da media query) e `display: grid` apenas dentro de `@media (max-width:680px)`. Não há sidebar desktop comprovada. O drawer é um mecanismo separado (`#appDrawerOverlay` / `.app-drawer`).
 
 **FAB:** `#fabAdd` (index.html L668). `updateFabAriaLabel` (js/32-auth-wiring.js:59-74) define labels por tab: dashboard→"Conversar com IA financeira", bills→"Adicionar conta recorrente", receivables→"Adicionar valor a receber", invest→"Adicionar investimento", pockets→"Adicionar caixinha", cards→"Adicionar cartão", goals→"Adicionar meta", caixa→"Adicionar lançamento", contas→"Adicionar lançamento". Para `inicio` e `profile` usa fallback "Adicionar".
 
@@ -1991,11 +1991,11 @@ TAB_NAMES = ['dash', 'dashboard', 'caixa', 'invest', 'pockets', 'cards', 'receiv
 **Ações secundárias (drawer-nav-secondary)**:
 | `data-drawer-action` | Rótulo | Destino / comportamento | Arquivo:linha |
 |---|---|---|---|
-| `profile` | "Perfil" | `switchTab('profile')` + scroll top | js/99-init.js:1625 (duplicado com principal!) |
+| `profile` | "Perfil" | `switchTab('profile')` + scroll top | js/99-init.js:1625 (apenas na seção secundária) |
 | `lab` | "LABS" | `openFeatureProfile()` → `renderFeatureProfile()` + `openModal('panelFeatureProfile')` | js/20-dashboard.js:1746 |
 | `novoLog` | "Novo LOG" | `openModal('panelLOG')` | js/99-init.js:1616 |
 
-**Duplicidades com bottom nav:** `profile` aparece tanto no drawer principal quanto no secundário. `overview` (Livro-Caixa) mapeia para `caixa`, que já está no bottom nav. `dash` (Dashboard) no drawer mapeia para `switchTab('dash')`, enquanto o bottom nav usa `dashboard` (diferença de identificador).
+**Duplicidades com bottom nav:** `overview` (Livro-Caixa) mapeia para `caixa`, que já está no bottom nav. `dash` (Dashboard) no drawer mapeia para `switchTab('dash')`, enquanto o bottom nav usa `dashboard` (diferença de identificador). Perfil aparece apenas uma vez, na seção secundária do drawer (não há duplicidade).
 
 **Funcionalidades acessíveis somente pelo drawer:** `lab` (LABS), `novoLog` (Novo LOG), `overview` (acesso rápido ao caixa sem usar bottom nav), `dash` (acesso ao dash via identificador diferente do bottom nav).
 
@@ -2051,7 +2051,7 @@ Classificação: Destino principal / Subárea / Ação contextual / Ferramenta a
 | Colar texto / Importar PDF-DOCX | `panelPaste`, `panelImport` (modais) | Contas | Toolbar viewCaixa | entries | Ferramenta auxiliar |
 | Exportar extrato / backup | `panelExportFormat` (modal) | Contas | Toolbar viewCaixa | jspdf, pdf.js, xlsx, docx, mammoth | Ferramenta auxiliar |
 | Filtros de movimentações | `panelFiltros` (modal) | Contas | viewCaixa (btnOpenFilters) | entries, banks, categories | Ferramenta auxiliar |
-| Dashboard (análise) | `viewDash` | Análises | Bottom nav (dashboard), drawer dash, switchTab('dash') | dashFilters, entries, renderDashboardTab | Destino principal — Análises |
+| Dashboard (análise) | `viewDash` | Análises | Drawer `dash`, switchTab('dash'); **não** pelo bottom nav (o botão `dashboard` ativa `viewDashboard`) | dashFilters, entries, renderDashboardTab | Destino principal — Análises |
 | Visão Geral | `viewDashboard` | Início | Bottom nav (dashboard), switchTab('dashboard') | renderAdvancedDashboard, dashboardNextPayment | Subárea de Início / alternativa de dashboard |
 | Início (patrimônio, saúde, próximo pagamento, fluxo) | `viewInicio` | Início | **Não acessível pelo bottom nav**; drawer não tem ação; switchTab('inicio') disponível mas sem trigger UI | renderAdvancedDashboard, renderPatrimonySparkline, patrimonySparkVisible | **Gap de navegação** — view existe mas sem botão |
 | Contas recorrentes & Calendário | `viewBills` | Contas | Bottom nav? Não. Drawer bills, switchTab('bills') | recurringBills, renderBills | Destino principal — Contas |
@@ -2085,17 +2085,17 @@ Classificação: Destino principal / Subárea / Ação contextual / Ferramenta a
 
 | # | Risco | Evidência (arquivo:linha) | Dependências | Consequência | Recomendação | Confiança |
 |---|---|---|---|---|---|---|
-| R1 | `dash` vs `dashboard` são destinos distintos | TAB_NAMES tem ambos (js/99-init.js:350); updateNavIndicator mapeia `dash→dashboard` (js/00-bootstrap.js:55); drawer usa `dash` (L1611), bottom nav usa `dashboard` (L1638) | updateNavIndicator, switchTab | Chamar `switchTab('dash')` ativa a view `viewDash` mas o indicador do bottom nav cai no fallback `caixa` (sem botão `dash`). Inconsistência visual. | Manter ambos como aliases; decidir um canônico para o bottom nav. | Alta |
+| R1 | `dash` vs `dashboard` são destinos distintos (não aliases) | TAB_NAMES tem ambos (js/99-init.js:350); `switchTabOriginal()` ativa views diferentes: `dash`→`#viewDash` (`renderDashboardTab()`), `dashboard`→`#viewDashboard` (`renderAdvancedDashboard()`); `updateNavIndicator` mapeia `dash→dashboard` exclusivamente para lookup do botão visual (js/00-bootstrap.js:55); drawer usa `dash` (L1611), bottom nav usa `dashboard` (L1638) | updateNavIndicator, switchTab | Chamar `switchTab('dash')` ativa `#viewDash` mas o indicador visual do bottom nav é convertido para `dashboard` (sem botão `dash`), produzindo divergência entre a view ativa e o destino representado na navegação inferior. | **Não declarar `dash` como alias de `dashboard`.** Preservar `dashboard` como identificador legado de `#viewDashboard`; utilizar `dash` como identificador da view analítica `#viewDash`. Corrigir `updateNavIndicator` para que o estado visual corresponda ao destino efetivamente ativo. | Alta |
 | R2 | `viewCaixa` vs `viewInicio` | `viewCaixa` (L299) é a aba inicial; `viewInicio` (L423) existe sem botão | switchTab, balanceStrip (esconde se não caixa/inicio), universalPeriodBar | Início é funcional mas não alcançável pela UI principal. | Adicionar `inicio` como destino principal ou expor via drawer. | Alta |
 | R3 | `viewInvest` vs `viewPockets` | Ambos usam `yieldsLog`; Invest tem `renderInvestments()`+`refreshStaleInvestmentQuotes()` (switchTab L429); Pockets via `render()` | investments, pockets, yieldsLog | Separação conceitual existente (investimentos vs caixinhas) deve ser preservada. | Não fundir; manter como subáreas de Contas. | Alta |
 | R4 | Cartões, contas recorrentes, valores a receber | `viewCards` (L410), `viewBills` (L330), `viewReceivables` (L361) — views independentes | cards, purchases, invoiceLaunches, recurringBills, receivables | Nenhum está no bottom nav (só invest e pockets estão). Acesso só via drawer ou switchTab direto. | Avaliar se merecem destaque no bottom nav das cinco áreas. | Média |
 | R5 | Metas e vínculo com caixinhas | `viewGoals` (L277); goals.caixinhaId vincula a pockets (js/19-goals.js); patch de metas sobrescreve switchTab para goals (patches.js:19-87) | goals, pockets, banks, investments | O patch de metas é um interceptador agressivo que desvia `switchTab('goals')` do comportamento padrão. | Preservar o patch como comportamento de `goals`; documentar no contrato de navegação. | Alta |
-| R6 | FAB global e comportamentos contextuais | `updateFabAriaLabel` (js/32-auth-wiring.js:59-74) define labels por tab; wrapper `origSwitchTab` (js/99-init.js:3645) chama updateFabAriaLabel após cada switchTab | FAB, currentTab | O wrapper FAB pode ser sobrescrito pelo patch de metas (ordem de scripts). | Garantir ordem de execução; não criar segundo FAB. | Média |
+| R6 | FAB global e comportamentos contextuais | `updateFabAriaLabel` (js/32-auth-wiring.js:59-74) define labels por tab; wrapper `origSwitchTab` (js/99-init.js:3645) captura a função `window.switchTab` já modificada pelo patch de Metas (ordem de scripts: patches.js clássico sem `defer` executa antes do callback `DOMContentLoaded` de 99-init.js com `defer`) | FAB, currentTab | Não é um conflito comprovado de ordem de execução: o wrapper FAB chama o patch de Metas, que encaminha destinos comuns para `switchTabOriginal()`. O `updateFabAriaLabel` é executado após cada `switchTab`, incluindo destinos interceptados pelo patch de Metas. | Preservar o encadeamento atual (patch primeiro, wrapper depois); validar comportamento em runtime; não criar segundo FAB. | Média |
 | R7 | `balanceStrip` e `universalPeriodBar` | switchTab esconde balanceStrip se não caixa/inicio (L424); esconde periodBar se não caixa/invest/pockets (L425) | balanceStrip, universalPeriodBar | Mudar a organização das áreas pode afetar a visibilidade desses strips. | Mapear quais das cinco áreas mostram cada strip. | Alta |
 | R8 | Filtros compartilhados vs independentes | `dashFilters` (viewDash, js/20-dashboard.js); filtros de caixa (panelFiltros); filtros de bills (billTitularFilter, billsStatusFilter) | dashFilters, entries, recurringBills | Filtros são independentes por view; não há filtro global unificado. | Documentar que cada área mantém seus próprios filtros. | Média |
 | R9 | Persistência/restauração da aba | sessionStorage `livrocaixa_last_tab` (js/15-tabs-nav.js:14-18); restaurada no bootstrap (js/99-init.js:459-467) | sessionStorage, switchTab | Sobrevive a F5, não ao fechar o app. Volta para `caixa` ao reabrir. | Manter comportamento; considerar se `inicio` deve ser a aba padrão. | Alta |
 | R10 | Chamadas de switchTab() por outros módulos | 22 pontos mapeados (seção C.2.5) | Todos os renderizadores | Qualquer mudança na assinatura de switchTab afeta todos os consumidores. | Não alterar assinatura; adicionar aliases se necessário. | Alta |
-| R11 | Atalhos do drawer | 12 ações no drawer (js/99-init.js:1607-1627 + patch goals) | switchTab, openModal | `profile` duplicado (principal e secundário); `banks` e `categories` existem como funções mas não como ações de drawer. | Limpar duplicidade; expor banks/categories se desejado. | Média |
+| R11 | Atalhos do drawer | 11 botões visíveis no drawer (8 principais + 3 secundárias; index.html L161-182); Perfil aparece apenas uma vez, na seção secundária. Ações `entries`, `reports`, `banks`, `categories`, `theme` são reconhecidas pelo listener JS (js/99-init.js:1607-1627) mas não possuem botão `data-drawer-action` no HTML | switchTab, openModal | Distinguir botões existentes de ações apenas reconhecidas pelo listener. `banks` e `categories` existem como funções mas não estão expostas como itens de navegação visíveis. Não adicionar automaticamente ao drawer. | Revisar o drawer após definir os cinco destinos; não adicionar ações sem botão correspondente. | Média |
 | R12 | Navegação após login/logout/restauração | `auth.onAuthStateChanged` (js/32-auth-wiring.js:76-128); restauração de sessão (js/99-init.js:459-467) | auth, currentUser, sessionStorage | Após logout volta para tela de login; após login restaura última aba ou caixa. | Preservar fluxo de auth; não alterar comportamento de sessão. | Alta |
 | R13 | Botão Voltar (Android/navegador) | `goBackInsideApp` + `popstate` (js/99-init.js:322-348); `history.pushState(appBackState)` (L348) | currentTab, modais, overlays | Se não está em caixa, Voltar leva para caixa; se está em caixa, fecha o app. | Preservar; se `inicio` se tornar padrão, avaliar se Voltar deve ir para início ou caixa. | Alta |
 
@@ -2112,12 +2112,12 @@ Cinco áreas com identificadores lógicos canônicos:
 | Início | `inicio` | "Início" | `viewInicio` (com reuso de `viewDashboard` componentes) | Visão consolidada rápida | Patrimônio total, saúde financeira, próximo pagamento, resumo de fluxo do mês | Toque no balance-symbol (colapsar/expandir patrimônio) |
 | Movimentos | `caixa` | "Livro-Caixa" | `viewCaixa` | Histórico de lançamentos | Lançamentos (entradas/saídas), resumo do período, fluxo mini, ledger mensal | Novo lançamento, transferência, colar texto, importar/exportar, filtrar |
 | Contas | `contas` (composição) | "Contas" | `viewInvest` + `viewPockets` + `viewBills` + `viewReceivables` + `viewCards` | Bancos, caixinhas, investimentos, contas recorrentes, cartões, recebíveis | Saldos, distribuição patrimonial, calendário de contas, valores a receber, faturas de cartão | Novo invest, aporte/resgate, nova conta/fatura, novo cartão, lançar fatura |
-| Análises | `dashboard` | "Análises" | `viewDash` (canônico) | Dashboard analítico | Evolução, indicadores, gráficos, comparações, projeções, categorias | Alterar período, conta, comparar |
+| Análises | `dash` | "Análises" | `viewDash` | Dashboard analítico | Evolução, indicadores, gráficos, comparações, projeções, categorias | Alterar período, conta, comparar |
 | Perfil | `profile` | "Perfil" | `viewProfile` | Dados da conta e preferências | Dados da conta, aparência, moeda, fonte, orçamento, proteção local (PIN/biometria), conciliação, metas | Logout, alterar PIN, biometria, tema, orçamento |
 
 **Notas:**
-- `dash` é tratado como alias legado de `dashboard` (updateNavIndicator já faz esse mapeamento em js/00-bootstrap.js:55).
-- `contas` não é um único ID de view no HTML; é uma composição lógica de 5 views existentes. Cada subárea mantém seu `switchTab` próprio.
+- `dash` e `dashboard` **não são aliases**: são destinos distintos que ativam views diferentes (`#viewDash` vs `#viewDashboard`). O `updateNavIndicator` mapeia `'dash' → 'dashboard'` apenas para lookup do botão visual da navegação inferior, não para unificar as views.
+- `contas` não é um único ID de view no HTML; é uma composição lógica de 5 views existentes (`invest`, `pockets`, `bills`, `receivables`, `cards`). Não existe `switchTab('contas')` nem `"contas"` em `TAB_NAMES`. Cada subárea mantém seu `switchTab` próprio.
 - `inicio` é o identificador já existente (`viewInicio`, `switchTab('inicio')`, TAB_NAMES inclui `inicio`).
 
 ### 8.2 Navegação mobile (bottom nav)
@@ -2128,8 +2128,8 @@ Especificar cinco destinos principais:
 |---|---|---|---|---|
 | 1 | `inicio` | Início | `viewInicio` | `.is-active` quando `dataset.tab === 'inicio'` |
 | 2 | `caixa` | Livro-Caixa | `viewCaixa` | `.is-active` quando `dataset.tab === 'caixa'` |
-| 3 | `contas` | Contas | (composição: invest/pockets/bills/receivables/cards) | — (subáreas) |
-| 4 | `dashboard` | Análises | `viewDash` | `.is-active` quando `dataset.tab === 'dashboard'` |
+| 3 | `contas` (área lógica) | Contas | (composição: invest/pockets/bills/receivables/cards; não há `switchTab('contas')` nem entrada definida) | — (ponto de entrada a definir) |
+| 4 | `dash` | Análises | `viewDash` | `.is-active` quando `dataset.tab === 'dash'` |
 | 5 | `profile` | Perfil | `viewProfile` | `.is-active` quando `dataset.tab === 'profile'` |
 
 **Regras de comportamento:**
@@ -2153,16 +2153,23 @@ Especificar cinco destinos principais:
 
 ### 8.3 Navegação desktop
 
-O aplicativo atualmente **não tem sidebar desktop**; o bottom nav está presente em todos os breakpoints (verificado: `.mobile-bottom-nav` em layout.css, display controlado por media query — na C.1.1.1 anotado `display:none` em desktop, `display:grid` em mobile, mas isso precisa ser confirmado no CSS atual).
+O aplicativo atualmente **não tem sidebar desktop**. A bottom navigation **não está visível em desktop**:
+
+| Ambiente | Comportamento CSS atual |
+|---|---|
+| Desktop, acima de 680px | Bottom navigation oculta (`.mobile-bottom-nav { display: none; }` em `style/layout.css`, fora da media query) |
+| Mobile, até 680px | Bottom navigation exibida como grid (`.mobile-bottom-nav { display: grid; }` dentro de `@media (max-width:680px)`) |
+
+O drawer é um mecanismo separado, estruturado em `index.html` por `#appDrawerOverlay` e `.app-drawer`.
 
 **Proposta (sem implementar estilos):**
-- Manter o bottom nav como mecanismo único em desktop e desktop (não criar sidebar paralela, a não ser que evidência exija).
-- Em desktop, o bottom nav pode permanecer fixo na parte inferior ou ser reposicionado (decisão visual posterior).
-- As cinco áreas seguem os mesmos identificadores lógicos.
-- Subáreas de Contas acessíveis via drawer (que já funciona em desktop como overlay lateral).
-- Estado ativo sincronizado entre mobile e desktop (mesmo `currentTab`, `dataset.tab`, `nav.dataset.active`).
+- Não afirmar que a bottom navigation é utilizada em desktop.
+- Não afirmar que já existe sidebar desktop.
+- Registrar que a navegação desktop ainda precisa de uma solução explícita.
+- Avaliar a reutilização do drawer como mecanismo de navegação desktop, ou uma sidebar própria, na especificação visual e de implementação posterior.
+- Preservar os mesmos cinco destinos lógicos entre mobile e desktop, mesmo que os mecanismos visuais sejam diferentes.
 
-**Comportamento responsivo:** o drawer é um overlay lateral (`app-drawer-overlay`) que funciona em qualquer breakpoint. O bottom nav é sempre visível (ou escondido por scroll, não por breakpoint).
+**Comportamento responsivo:** o drawer é um overlay lateral (`app-drawer-overlay`) que funciona em qualquer breakpoint. A bottom navigation é exibida apenas em telas estreitas (até 680px), controlada por media query, não por scroll.
 
 ### 8.4 Subáreas
 
@@ -2179,7 +2186,7 @@ O aplicativo atualmente **não tem sidebar desktop**; o bottom nav está present
 | Valores a Receber | Sim (`receivables`) | — | `panelReceivable` | Novo recebível | Sim (receivables) |
 | Cartões | Sim (`cards`) | — | `panelCard`, `panelPurchase` | Novo cartão, nova compra | Sim (cards) |
 | Metas | Sim (`goals`) | — | `panelGoalForm` | Nova meta, editar | Sim (goals, via patch) |
-| Análises (dashboard) | Sim (`dashboard`) | — | — | Alterar período/conta | Sim (dash) |
+| Análises (dash) | Sim (`dash`) | — | — | Alterar período/conta | Sim (dash) |
 | Visão Geral | Sim (`viewDashboard`, mas sem botão físico) | Dentro de `inicio` / `dashboard` | — | — | Não |
 | Perfil | Sim (`profile`) | — | — | Logout, tema, PIN, biometria, orçamento | Sim (profile) |
 | Orçamento | — | Dentro de `profile` | `panelOrcamento` | Gerenciar (btnOpenBudgetModal) | Não |
@@ -2196,16 +2203,18 @@ O aplicativo atualmente **não tem sidebar desktop**; o bottom nav está present
 
 ### 8.5 Contrato de navegação
 
-**Identificadores canônicos:** `inicio`, `caixa`, `contas` (composição lógica, não um único switchTab), `invest`, `pockets`, `bills`, `receivables`, `cards`, `goals`, `dashboard`, `profile`.
+**Identificadores canônicos:** `inicio`, `caixa`, `invest`, `pockets`, `bills`, `receivables`, `cards`, `goals`, `dash`, `dashboard`, `profile`.
 
-**Aliases legados necessários:**
-- `dash` → alias de `dashboard` (updateNavIndicator já mapeia; TAB_NAMES mantém ambos).
+**Identificadores legados / distintos:**
+- `dash` → identificador da view analítica `#viewDash` (não é alias de `dashboard`).
+- `dashboard` → identificador legado da view `#viewDashboard` (visão geral antiga, distinta de `dash`).
 - `caixa` → mantido como canônico (não renomear para "livro-caixa" para não quebrar TAB_NAMES e consumidores).
+- `contas` → **não é um identificador de navegação** (`switchTab('contas')` não existe, não está em `TAB_NAMES`). É uma área lógica composta pelas subáreas `invest`, `pockets`, `bills`, `receivables`, `cards`. O ponto de entrada de Contas ainda precisa ser definido.
 
 **Regras de transição:**
 - Qualquer `switchTab(id)` onde `id` ∈ TAB_NAMES ativa a view correspondente, atualiza `currentTab`, `dataset.tab`, `nav.dataset_active`, classes `.active` e `.is-active`, chama `persistLastTab`, e renderizadores condicionais.
-- `switchTab('goals)` é interceptado pelo patch de metas (comportamento especial preservado).
-- `switchTab('dash')` ativa `viewDash` mas o indicador do bottom nav cai no fallback (risco R1 documentado).
+- `switchTab('goals')` é interceptado pelo patch de metas (comportamento especial preservado).
+- `switchTab('dash')` ativa `viewDash`; `switchTab('dashboard')` ativa `viewDashboard`. O indicador do bottom nav via `updateNavIndicator` converte `'dash' → 'dashboard'` apenas para lookup do botão visual (risco R1 documentado).
 
 **Persistência:** `sessionStorage` (`livrocaixa_last_tab`), restauração síncrona no bootstrap, sobrevive a F5, não ao fechar app.
 
@@ -2228,36 +2237,38 @@ O aplicativo atualmente **não tem sidebar desktop**; o bottom nav está present
 | Mecanismo atual de navegação documentado | ✅ Concluído | Seções C.2.4 (4.1-4.4), C.2.5 |
 | Todas as views relevantes inventariadas | ✅ Concluído | Tabela 4.2 (11 views) |
 | Bottom nav mapeado | ✅ Concluído | Tabela 4.3 (5 botões) |
-| Drawer mapeado | ✅ Concluído | Tabela 4.4 (12 ações) |
+| Drawer mapeado | ⚠️ Concluído após correção | 11 botões visíveis (8 principais + 3 secundárias), não 12; Perfil aparece uma vez (secundária); ações `entries`, `reports`, `banks`, `categories`, `theme` são reconhecidas pelo listener JS mas não têm botão HTML |
 | Chamadas e consumidores de switchTab investigados | ✅ Concluído | Tabela C.2.5 (22 pontos) |
 | Funcionalidades relacionadas às cinco áreas | ✅ Concluído | Matriz C.2.6 |
 | Funcionalidades sem classificação adequada identificadas | ✅ Concluído | Banks, Categorias sem ação de drawer; Início sem botão UI |
-| Dependências e riscos de migração documentados | ✅ Concluído | Tabela C.2.7 (13 riscos) |
-| Especificação mobile definida | ✅ Concluído | Seção 8.2 |
-| Especificação desktop definida | ✅ Concluído | Seção 8.3 |
+| Dependências e riscos de migração documentados | ⚠️ Parcial | Tabela C.2.7 (13 riscos); R1, R6, R11 corrigidos após revisão C.2.11 |
+| Especificação mobile definida | ⚠️ Parcial | Seção 8.2; destino analítico usa `dash` (não `dashboard`); entrada de Contas ainda sem `switchTab` definido |
+| Especificação desktop definida | ⚠️ Parcial | Seção 8.3; bottom nav oculta em desktop; mecanismo desktop (sidebar ou drawer) ainda não definido |
 | Subáreas e acessos auxiliares definidos | ✅ Concluído | Seção 8.4 |
 | Compatibilidade com funcionalidades existentes considerada | ✅ Concluído | Matriz C.2.6, seção 8.5 |
 | Evidências, linhas e limitações registradas | ✅ Concluído | Todas as afirmações com arquivo:linha |
 
 **Limitações:**
 - Não houve renderização de navegador (device físico não testado).
-- Não foi verificado se `.mobile-bottom-nav` é `display:none` em desktop no CSS atual (anotado na C.1.1.1 mas não revalidado nesta execução).
+- `.mobile-bottom-nav` é `display:none` em desktop (acima de 680px) e `display:grid` em mobile (até 680px), confirmado em `style/layout.css`.
 - Hashes SHA-256 dos arquivos não coletados.
-- Ordem de execução entre wrapper FAB (99-init.js) e patch de metas (patches.js) não foi testada em runtime.
+- Ordem de execução entre wrapper FAB e patch de Metas: patches.js (clássico, sem `defer`) executa antes do callback `DOMContentLoaded` de 99-init.js (com `defer`); o wrapper FAB captura a função já modificada pelo patch. Não é um conflito comprovado de ordem de execução, mas ainda pode ser validado em runtime.
 
 ---
 
 ## C.2.10 Conclusão e pendências
 
-**Classificação: C.2 CONCLUÍDA**
+**Classificação: C.2 CONCLUÍDA COM RESSALVAS — NÃO APROVADA PARA LIBERAÇÃO DA IMPLEMENTAÇÃO.**
 
-A auditoria da navegação foi concluída com evidências verificáveis (arquivo:linha para cada afirmação). O mecanismo atual (`switchTabOriginal` → `window.switchTab`, com patch de metas e wrapper FAF) está totalmente mapeado, incluindo as 11 views, os 5 botões do bottom nav, as 12 ações do drawer e os 22 pontos de chamada de `switchTab()`.
+A auditoria da navegação foi concluída com evidências verificáveis (arquivo:linha para cada afirmação). O mecanismo atual (`switchTabOriginal` → `window.switchTab`, com patch de metas e wrapper FAF) está totalmente mapeado, incluindo as 11 views, os 5 botões do bottom nav, as 11 ações do drawer e os 22 pontos de chamada de `switchTab()`. A especificação ainda contém contradições corrigidas na subseção C.2.11 que precisam ser resolvidas antes da liberação para implementação.
 
-**Pendências (não bloqueiam a C.2):**
-1. View `inicio` existe no DOM mas não tem botão de navegação no bottom nav nem no drawer — decisão de arquitetura necessária (adicionar como 1º destino do bottom nav?).
-2. `banks` e `categories` têm funções de abertura (`openBankManagementPanel`, `btnCategoria`) mas não estão expostas como `data-drawer-action` — decidir se devem ser adicionadas ao drawer.
-3. Ordem de execução entre o wrapper FAB (js/99-init.js:3645) e o patch de metas (js/legacy/patches.js:19) — verificar se o `updateFabAriaLabel` sobrevive após o patch sobrescrever `window.switchTab`.
-4. `dash` vs `dashboard` — decidir identificador canônico.
+**Pendências para aprovação (bloqueiam a liberação da implementação):**
+
+1. Definir `dash` como destino analítico (`#viewDash`), preservando `dashboard` como destino legado distinto (`#viewDashboard`) — não declarar `dash` como alias de `dashboard`.
+2. Definir como o usuário entra em Contas — `contas` é uma área lógica sem `switchTab` próprio; decidir entre tela centralizadora ou destino inicial que abra uma subárea existente.
+3. Completar a especificação desktop — bottom nav é `display:none` acima de 680px; definir mecanismo (sidebar ou reutilização do drawer).
+4. Corrigir a matriz do drawer — 11 botões visíveis (8 principais + 3 secundárias); distinguir ações reconhecidas pelo listener JS (`entries`, `reports`, `banks`, `categories`, `theme`) de itens com botão HTML.
+5. Atualizar a matriz de rastreabilidade e os critérios de aceite para refletir essas decisões.
 
 **Não iniciar C.3. Não implementar nenhuma recomendação. Não fazer commit nem push.**
 
@@ -2267,4 +2278,4 @@ Ao finalizar, aguardar revisão e autorização explícita para a próxima etapa
 
 **Fase C — C.2: AUDITORIA E ESPECIFICAÇÃO DA NAVEGAÇÃO**
 
-*Etapa diagnóstica de navegação. Mapeou-se o mecanismo de switchTab, 11 views, bottom nav de 5 botões, drawer de 12 ações, 22 consumidores de switchTab, matriz de rastreabilidade das cinco áreas, 13 riscos de migração e especificação proposta (mobile, desktop, subáreas, contrato). Nenhum arquivo funcional alterado. Próximo passo: revisão e autorização para C.3.*
+*Etapa diagnóstica de navegação. Mapeou-se o mecanismo de switchTab, 11 views, bottom nav de 5 botões, drawer de 11 ações (8 principais + 3 secundárias), 22 consumidores de switchTab, matriz de rastreabilidade das cinco áreas, 13 riscos de migração (R1, R6, R11 corrigidos na revisão C.2.11) e especificação proposta (mobile, desktop, subáreas, contrato). Classificação: CONCLUÍDA COM RESSALVAS — NÃO APROVADA PARA LIBERAÇÃO DA IMPLEMENTAÇÃO. Nenhum arquivo funcional alterado.*
