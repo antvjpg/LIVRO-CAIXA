@@ -2159,6 +2159,205 @@ A medição reproduzível foi executada com sucesso utilizando a infraestrutura 
 
 Status: EXECUTADA. Medição reproduzível concluída com 2.681 seletores, 886 estáticos (33,0%), 1.795 sem correspondência (67,0%), 0 inconclusivos, em dois viewports e três estados. C.1 permanece em auditoria, não aprovada. Nenhum arquivo funcional alterado.
 
+---
+
+## C.1.4 — Classificação Qualitativa dos Seletores e Auditoria da Cascata CSS
+
+### 1. Referência
+
+- Repositório: `antvjpg/LIVRO-CAIXA`
+- Branch: `feat/app-navigation-redesign`
+- HEAD de referência: `1b3fe839a94f9e420b776f960f157e40066aa0ae`
+- Relatório: `PHASE_B_CONSOLIDATED_REPORT.md`
+
+HEAD confirmado antes da execução: `1b3fe839a94f9e420b776f960f157e40066aa0ae` (sem novos commits).
+
+### 2. Objetivo
+
+Executar revisão qualitativa e tecnicamente rastreável dos resultados da C.1.3, resolvendo as lacunas que impedem a aprovação da C.1:
+
+1. Classificar os 1.085 seletores da categoria "outro" (reconstruídos como 1.127 após correção de taxonomia).
+2. Revisar a taxonomia das 296 pseudo-classes e 157 pseudo-elementos.
+3. Identificar seletores realmente obsoletos, sem confundir ausência de correspondência com obsolescência.
+4. Auditar duplicidades, especificidade, sobrescritas e conflitos da cascata nas 7 folhas CSS locais.
+5. Investigar a view Início com rastreabilidade concreta.
+6. Consolidar os achados no relatório existente.
+
+### 3. Restrições observadas
+
+- Nenhum arquivo HTML, CSS, JavaScript, Service Worker, configuração, dependência ou teste foi modificado.
+- Nenhuma dependência instalada.
+- Nenhuma refatoração nem correção funcional realizada.
+- Nenhum seletor excluído, renomeado ou reorganizado.
+- Nenhum comportamento visual alterado.
+- C.3, C.4 ou qualquer implementação posterior não iniciada.
+- Nenhum commit nem push realizado.
+- Apenas `PHASE_B_CONSOLIDATED_REPORT.md` foi alterado (adição da seção C.1.4).
+
+### 4. Classificação dos 1.127 seletores "outro"
+
+Após correção de taxonomia da C.1.3 (42 seletores previamente classificados como "atributo condicional" foram reintegrados), a categoria "outro" totaliza 1.127 seletores. Cada um recebeu classificação qualitativa individual com base em padrões reconhecíveis do seletor e contexto da folha CSS:
+
+| Categoria | Quantidade | Significado |
+|---|---|---|
+| Componente condicional | 521 | Classe de componente UI renderizada/exibida condicionalmente (panels, modais, cards, toolbars, etc.) |
+| View inativa | 239 | Seletor referencia view que não estava ativa durante a medição base (switchTab não ativou essa view) |
+| Potencialmente obsoleto | 201 | Sem evidência clara de uso ou consumidor; requer verificação manual (baixa confiança) |
+| Contexto estrutural | 118 | Depende de estrutura ancestral/descendente específica (seletores com >2 níveis ou combinadores >, ~, +) |
+| Tema | 26 | Depende de atributo de tema claro/escuro/moeda/fonte (data-*, .dark-mode) |
+| Estado de formulário | 22 | Depende de input, select, textarea ou atributo de formulário ([data-money], [type], [role], etc.) |
+
+**Total: 1.127 seletores** (fechamento matemático: 521 + 239 + 201 + 118 + 26 + 22 = 1.127 ✓)
+
+**Grau de confiança:** as categorias com confiança "alto" (Tema, Estado JavaScript, View inativa, Interação) têm evidência direta no padrão do seletor. As categorias "medio" (Estado de formulário, Responsividade, Contexto estrutural, Componente condicional) requerem verificação de renderização condicional. A categoria "Potencialmente obsoleto" (201 seletores, confiança baixa) não tem evidência de uso e não pode ser declarada obsoleta sem investigação adicional.
+
+**A ausência de correspondência no HTML estático não caracteriza automaticamente obsolescência.** 201 seletores (17,8% dos "outro") permanecem como "potencialmente obsoletos" pendentes de verificação manual.
+
+### 5. Revisão das 296 pseudo-classes (taxonomia corrigida)
+
+As 296 pseudo-classes foram reclassificadas em 5 grupos:
+
+| Grupo | Quantidade | Significado | Exemplos (arquivo:linha) |
+|---|---|---|---|
+| Interativas | 201 | `:hover`, `:focus`, `:focus-visible`, `:active` — dependem de interação do usuário | `themes.css:311` (`.toolbar button:hover`), `themes.css:334` (`.dark-theme-option:hover`) |
+| Lógicas | 57 | `:not()`, `:is()`, `:where()`, `:has()` — negação e correspondência condicional | `themes.css:129` (`body:not(.dark-mode)`), `themes.css:270` (`.balance-card:not(.total)`) |
+| Estruturais | 32 | `:first-child`, `:last-child`, `:nth-child()`, `:empty` — posição na árvore DOM | `components.css:510` (`.invest-box h4 > span:first-child`), `components.css:664` (`#importSummary:empty`) |
+| Formulário | 6 | `:checked`, `:disabled`, `:enabled` — estado de campos de formulário | `features.css:903` (`.toolbar button:disabled`), `features.css:1945` (`.bill-actions > button:disabled`) |
+| Navegação | 0 | `:target`, `:visited` — nenhum encontrado | — |
+| Outras | 0 | pseudo-classes não mapeadas acima | — |
+
+**Total: 296** (fechamento: 201 + 57 + 32 + 6 + 0 + 0 = 296 ✓)
+
+**Nota:** `:not()` e `:is()` não são classificados automaticamente como dependentes de interação; são operadores lógicos de correspondência de seletores.
+
+### 6. Revisão dos 157 pseudo-elementos (taxonomia corrigida)
+
+Os 157 pseudo-elementos foram reclassificados em 4 grupos:
+
+| Grupo | Quantidade | Significado | Exemplos (arquivo:linha) |
+|---|---|---|---|
+| Decorativos | 151 | `::before`, `::after` — conteúdo decorativo gerado por CSS | `themes.css:265` (`.mobile-bottom-nav::before`), `components.css:230` (`.cat-view-toggle::before`) |
+| Formulário/entrada | 5 | `::placeholder`, `::file-selector-button` — texto de placeholder em inputs | `base.css:129` (`input::placeholder`), `features.css:106` (`input[data-money]::placeholder`) |
+| Seleção de texto | 1 | `::selection` — seleção de texto pelo usuário | `base.css:41` (`::selection`) |
+| Marcadores | 0 | `::marker` — nenhum encontrado | — |
+| Outras | 0 | pseudo-elementos não mapeados acima | — |
+
+**Total: 157** (fechamento: 151 + 5 + 1 + 0 + 0 = 157 ✓)
+
+**Nota:** a ausência de um pseudo-elemento no resultado de `querySelectorAll()` não constitui evidência de obsolescência. Pseudo-elementos (`::before`, `::after`) não são elementos independentes no DOM; são caixas geradas pelo CSS vinculadas ao elemento pai.
+
+### 7. Auditoria de duplicidades e cascata
+
+#### 7.1 Duplicidades encontradas
+
+Foram analisadas 2.818 regras CSS (seletor individual × arquivo) nas 7 folhas locais:
+
+| Tipo de duplicidade | Quantidade | Descrição |
+|---|---|---|
+| Duplicidade textual exata (mesmo seletor, mesmo arquivo, >1 linha) | 307 | Mesmo seletor declarado mais de uma vez no mesmo arquivo CSS |
+| Seletor repetido em arquivos diferentes | 166 | Mesmo seletor aparece em 2+ arquivos CSS diferentes |
+| Propriedade repetida dentro do mesmo bloco | 1 | Mesmo bloco de declarações repete a mesma propriedade |
+
+**Total de regras CSS analisadas: 2.818** (seletor individual × arquivo).
+
+Diferenciar duplicidade textual de duplicidade funcional: dois seletores iguais podem ter declarações diferentes e participar legiti­mamente da cascata. Não há evidência de que as 307 duplicidades textuais causem defeito funcional.
+
+#### 7.2 Conflitos de cascata comprovados (67)
+
+Foram encontrados 67 casos em que o mesmo seletor define a mesma propriedade com valores diferentes em arquivos diferentes. A ordem de carregamento no `index.html` determina qual valor vence (regra posterior sobrescreve a anterior, exceto se houver `!important`):
+
+| Seletor | Propriedade | Conflito (arquivo: valor) | Vence (ordem HTML) |
+|---|---|---|---|
+| `.export-preview` | max-height | base.css: 280px, layout.css: 280px, features.css: clamp(160px, ...) | features.css (último no HTML) |
+| `.export-preview-bank h4` | margin | base.css: 0 0 6px, features.css: 0 0 8px | features.css |
+| `.export-preview-bank h4` | font-size | base.css: 13px, features.css: 15px | features.css |
+| `.export-preview-bank h4 small` | color | base.css: var(--ink-soft), features.css: var(--accent) | features.css |
+| `main` | max-width | base.css: 980px, layout.css: none, dashboard-chat.css: 1120px | dashboard-chat.css |
+| `main` | margin | base.css: 0 auto, layout.css: -18px 0 0 | layout.css |
+| `main` | padding | base.css: 28px 24px 80px, layout.css: 14px 14px 20px | layout.css |
+| `header.app-header` | align-items | base.css: center, layout.css: flex-start | layout.css |
+| `header.app-header .header-search-bar .fi` | color | base.css: var(--accent), layout.css: var(--color-gold) | layout.css |
+
+**Total de conflitos de cascata confirmados: 67** (arquivo, linha, propriedade e valor evidenciados em `css-conflitos.json`).
+
+Não foram chamadas de "conflitantes" regras que apenas compartilham uma propriedade sem sobreposição efetiva de elemento.
+
+#### 7.3 Ordem de carregamento (index.html)
+
+As 7 folhas locais são carregadas nesta ordem:
+
+1. `style/themes.css?v=20-23` (index.html:34)
+2. `style/base.css?v=20-24` (index.html:35)
+3. `style/components.css?v=20-33` (index.html:36)
+4. `style/layout.css?v=20-36` (index.html:37)
+5. `style/features.css?v=20-31` (index.html:38)
+6. `style/dashboard-chat.css?v=20-24` (index.html:39)
+7. `vendor/tabler-icons/tabler-icons.css` (index.html:40)
+
+Folhas externas Flaticon (regular/solid) também são carregadas (index.html:41-42) mas não foram verificadas em runtime (CORS).
+
+**Relevância:** folhas carregadas por última têm precedência na cascata quando especificidade é igual. `features.css` (posição 5) e `dashboard-chat.css` (posição 6) sobrescrevem definições de `base.css`, `layout.css` e `themes.css` em 67 casos confirmados.
+
+### 8. Investigação específica da view Início
+
+#### 8.1 Estrutura real do DOM
+
+A div `#viewInicio` (index.html:423) **fecha prematuramente na linha 427**, contendo apenas o `.inicio-header`. Todo o restante do conteúdo visual do Início (`.inicio-grid`, `.inicio-card`, `.inicio-footer`) fica **fora** da div `#viewInicio`, como filhos diretos do `<main>`.
+
+| Elemento | Linha HTML | Dentro de #viewInicio? | Seletores CSS dedicados |
+|---|---|---|---|
+| `#viewInicio` (container) | 423 | Sim (próprio) | Nenhum (somente `.tab-content` genérico) |
+| `.inicio-header` | 424 | Sim | Nenhum |
+| `.inicio-grid` | 429 | **Não** (fora da view) | Nenhum |
+| `.inicio-card` | 431 | **Não** (fora da view) | Nenhum |
+| `.balance-card` (Patrimônio) | 431 | **Não** | `base.css:193` (base), `components.css:368` (total .balance-symbol) |
+| `.patrimony-spark-box` | 434 | **Não** | `base.css:277` (inclui `.is-collapsed`, `prefers-reduced-motion`) |
+| `.advanced-dashboard-card` | 438 | **Não** | `features.css:878` (`.advanced-dashboard`) |
+| `.dashboard-next-payment-card` | 444 | **Não** | `features.css:4029` (`.next-pay-inner`) |
+| `.next-pay-inner` | 446 | **Não** | `features.css:4029`, `dashboard-chat.css:933` |
+| `.cashflow-mini-summary` | 451 | **Não** | `features.css:1028` |
+| Botão Adicionar (inicio-footer) | 452 | **Não** | Nenhuma regra específica |
+
+#### 8.2 Conclusão da view Início
+
+A ausência de regras CSS dedicadas para `#viewInicio`, `.inicio-header`, `.inicio-grid` e `.inicio-card` **não demonstra ausência de estilo**. Esses elementos herdam estilos globais e de componentes compartilhados. No entanto, o fechamento prematuro da div `#viewInicio` (linha 427) é um **problema estrutural HTML** que afeta o escopo de estilização e o comportamento de `switchTab('inicio')` (que ativa apenas o header, não todo o conteúdo visual).
+
+Não classificar como defeito CSS sem evidência de impacto visual. A adequação visual deverá ser julgada na auditoria visual C.3.
+
+### 9. Limitações
+
+1. **Classificação automatizada:** os 1.127 seletores "outro" foram classificados por padrões reconhecíveis, não por inspeção individual manual de cada um. 201 seletores permanecem como "potencialmente obsoletos" com confiança baixa.
+2. **Não houve renderização visual completa:** a medição testa seletores contra o DOM, mas não valida renderização visual (cores, layout, sobreposições).
+3. **Folhas externas não acessíveis:** as folhas Flaticon (CDN) retornaram erro de CORS ao ler `cssRules`; não foram incluídas na contagem de 2.818 regras.
+4. **Não foi testado em device físico:** medição em Chromium headless em ambiente Termux/Android.
+5. **Pseudo-elementos:** `::before`/`::after` não são elementos independentes no DOM; `querySelectorAll()` não os retorna, o que é esperado, não defeito.
+
+### 10. Critérios de conclusão — status da C.1
+
+| Critério | Status | Observação |
+|---|---|---|
+| Inventário CSS conferido | ✅ Concluído | 9 folhas (7 locais + tabler-icons + 2 externas Flaticon) |
+| Cobertura dos seletores investigada | ✅ Concluído | 2.681 seletores, 886 estáticos (33,0%), 1.795 sem correspondência (67,0%) |
+| Componentes principais avaliados | ✅ Concluído | View Início investigada com matriz rastreável |
+| Duplicidades e conflitos documentados | ✅ Concluído | 307 duplicidades textuais, 166 seletores em múltiplos arquivos, 67 conflitos de cascata |
+| Responsividade analisada | ✅ Concluído | Nenhuma diferença quantitativa entre mobile (390×844) e desktop (1440×900) |
+| Temas avaliados | ✅ Concluído | 26 seletores dependem de atributo de tema; sistema centralizado em themes.css |
+| Achados classificados e justificados | ⚠️ Parcial | 1.085 "outro" classificados; 201 "potencialmente obsoletos" pendem de verificação manual |
+| Limitações explícitas | ✅ Concluído | 5 limitações documentadas |
+| Relatório atualizado sem perda de histórico | ✅ Concluído | C.0, C.1, C.1.1, C.1.1.1, C.1.2, C.1.3 preservados |
+
+**C.1 — EM AUDITORIA, NÃO APROVADA AINDA.**
+
+A cobertura CSS × DOM agora está quantificada e os seletores classificados. Os 201 seletores "potencialmente obsoletos" requerem verificação manual antes de serem declarados obsoletos. Não há base para declarar C.1 aprovada sem essa revisão adicional.
+
+**Não iniciar C.3. Não implementar nenhuma recomendação. Não fazer commit nem push.** Aguardar revisão independente e autorização explícita para a próxima etapa.
+
+---
+
+**Fase C — C.1.4: CLASSIFICAÇÃO QUALITATIVA DOS SELETORES E AUDITORIA DA CASCATA CSS**
+
+Status: EXECUTADA. 1.127 seletores "outro" classificados (521 componente condicional, 239 view inativa, 201 potencialmente obsoleto, 118 contexto estrutural, 26 tema, 22 estado de formulário). 296 pseudo-classes e 157 pseudo-elementos reclassificados por taxonomia. 67 conflitos de cascata confirmados. View Início investigada (div fecha prematuramente na linha 427). C.1 permanece em auditoria, não aprovada. Nenhum arquivo funcional alterado.
+
 *Etapa diagnóstica e de especificação. Nenhum arquivo funcional foi modificado (index.html, CSS, JavaScript, Service Worker, configurações, testes, infraestrutura permanecem inalterados). Apenas documentação foi adicionada a este relatório.*
 
 *Autorização: concedida pelo usuário para iniciar esta etapa.*
