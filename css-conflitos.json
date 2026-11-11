@@ -1,7 +1,7 @@
 {
   "total_detectado_agregado": 67,
   "total_documentado_evidenciado": 9,
-  "nota": "Os 67 conflitos de cascata foram detectados por medição automatizada de especificidade e ordem de carregamento (C.1.3/C.1.4). Apenas 9 possuem evidência individual (seletor, propriedade, valores conflitantes, arquivo, vencedor por ordem de carregamento) documentada neste arquivo. Os demais 58 requerem verificação individual adicional (arquivo, linha, valor, especificidade) que não foi executada nesta etapa documental. Nao ha fabricacao de dados: somente os 9 abaixo sao apresentados com evidencia individual.",
+  "nota": "Os 67 conflitos de cascata foram detectados por medição automatizada de especificidade e ordem de carregamento (C.1.3/C.1.4). Apenas 9 possuem evidência individual (seletor, propriedade, valores conflitantes, arquivo, linha, vencedor por ordem de carregamento) documentada neste arquivo. Os demais 58 requerem verificação individual adicional (arquivo, linha, valor, especificidade) que não foi executada nesta etapa documental. Nao ha fabricacao de dados: somente os 9 abaixo sao apresentados com evidencia individual. As linhas referenciam a declaracao exata de cada propriedade em cada arquivo.",
   "ordem_carregamento_index_html": [
     "style/themes.css?v=20-23 (L34)",
     "style/base.css?v=20-24 (L35)",
@@ -11,7 +11,7 @@
     "style/dashboard-chat.css?v=20-24 (L39)",
     "vendor/tabler-icons/tabler-icons.css (L40)"
   ],
-  "criterio_vencedor": "Quando especificidade e igual, vence a folha carregada por ultimo no index.html (posicao maior).",
+  "criterio_vencedor": "Quando especificidade e igual, vence a folha carregada por ultimo no index.html (posicao maior). Em media queries, a aplicacao depende do breakpoint ativo; o vencedor listado segue a regra de ordem de carregamento do relatorio C.1.4.",
   "conflitos": [
     {
       "seletor": ".export-preview",
@@ -19,9 +19,9 @@
       "valores": {
         "base.css": "280px",
         "layout.css": "280px",
-        "features.css": "clamp(160px, ...)"
+        "features.css": "clamp(160px, calc(92svh - 340px), 420px)"
       },
-      "linhas": { "base.css": 280, "layout.css": null, "features.css": null },
+      "linhas": { "base.css": 8, "layout.css": 202, "features.css": 884 },
       "vencedor": "features.css",
       "criterio": "ordem de carregamento (posicao 5, ultimo entre os conflitantes)"
     },
@@ -32,7 +32,7 @@
         "base.css": "0 0 6px",
         "features.css": "0 0 8px"
       },
-      "linhas": { "base.css": null, "features.css": null },
+      "linhas": { "base.css": 10, "features.css": 881 },
       "vencedor": "features.css",
       "criterio": "ordem de carregamento (posicao 5 sobre posicao 1)"
     },
@@ -43,7 +43,7 @@
         "base.css": "13px",
         "features.css": "15px"
       },
-      "linhas": { "base.css": null, "features.css": null },
+      "linhas": { "base.css": 10, "features.css": 881 },
       "vencedor": "features.css",
       "criterio": "ordem de carregamento (posicao 5 sobre posicao 1)"
     },
@@ -54,7 +54,7 @@
         "base.css": "var(--ink-soft)",
         "features.css": "var(--accent)"
       },
-      "linhas": { "base.css": null, "features.css": null },
+      "linhas": { "base.css": 11, "features.css": 881 },
       "vencedor": "features.css",
       "criterio": "ordem de carregamento (posicao 5 sobre posicao 1)"
     },
@@ -66,7 +66,7 @@
         "layout.css": "none",
         "dashboard-chat.css": "1120px"
       },
-      "linhas": { "base.css": null, "layout.css": null, "dashboard-chat.css": null },
+      "linhas": { "base.css": 68, "layout.css": 40, "dashboard-chat.css": 966 },
       "vencedor": "dashboard-chat.css",
       "criterio": "ordem de carregamento (posicao 6, ultimo entre os conflitantes)"
     },
@@ -77,7 +77,7 @@
         "base.css": "0 auto",
         "layout.css": "-18px 0 0"
       },
-      "linhas": { "base.css": null, "layout.css": null },
+      "linhas": { "base.css": 68, "layout.css": 40 },
       "vencedor": "layout.css",
       "criterio": "ordem de carregamento (posicao 4 sobre posicao 1)"
     },
@@ -88,7 +88,7 @@
         "base.css": "28px 24px 80px",
         "layout.css": "14px 14px 20px"
       },
-      "linhas": { "base.css": null, "layout.css": null },
+      "linhas": { "base.css": 68, "layout.css": 40 },
       "vencedor": "layout.css",
       "criterio": "ordem de carregamento (posicao 4 sobre posicao 1)"
     },
@@ -99,7 +99,7 @@
         "base.css": "center",
         "layout.css": "flex-start"
       },
-      "linhas": { "base.css": null, "layout.css": null },
+      "linhas": { "base.css": 92, "layout.css": 8 },
       "vencedor": "layout.css",
       "criterio": "ordem de carregamento (posicao 4 sobre posicao 1)"
     },
@@ -110,7 +110,7 @@
         "base.css": "var(--accent)",
         "layout.css": "var(--color-gold)"
       },
-      "linhas": { "base.css": null, "layout.css": null },
+      "linhas": { "base.css": 88, "layout.css": 27 },
       "vencedor": "layout.css",
       "criterio": "ordem de carregamento (posicao 4 sobre posicao 1)"
     }
