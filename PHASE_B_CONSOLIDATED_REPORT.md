@@ -2432,7 +2432,158 @@ A mudanca de 1.085 para 1.127 seletores se deve a reintegracao de 42 seletores p
 
 **C.1 permanece em auditoria, nao aprovada.** Esta e uma correcao documental pontual. Nao iniciar C.3. Aguardar revisao independente e autorizacao explicita para a proxima etapa.
 
-*Resultado esperado: C.2 CONCLUÍDA / CONCLUÍDA COM RESSALVAS / INCOMPLETA (definido na seção 13).*
+---
+
+## C.1.4.2 — Revisão final de evidências, conflitos CSS e rastreabilidade (etapa documental)
+
+### 1. Referência
+
+| Item | Valor |
+|---|---|
+| Repositório | `antvjpg/LIVRO-CAIXA` |
+| Branch | `feat/app-navigation-redesign` |
+| Commit-base auditado | `7b1bfc67fdbf00dac3f6417091a443956d7d375f` (Phase C.1.4.1b) |
+| HEAD inicial | `7b1bfc6` |
+| HEAD final | `7b1bfc6` (nenhum novo commit — etapa exclusivamente documental) |
+| Relatório | `PHASE_B_CONSOLIDATED_REPORT.md` |
+
+### 2. Arquivos efetivamente consultados
+
+| Arquivo | Uso nesta etapa |
+|---|---|
+| `css-conflitos.json` | Atualizado com os 9 registros revisados individualmente |
+| `PHASE_B_CONSOLIDATED_REPORT.md` | Acrescentada esta subseção C.1.4.2 |
+| `index.html` | Ordem de carregamento das 7 folhas CSS (L34-40); estrutura da view Início (L423-454) |
+| `style/base.css` | Declarações reais dos 9 conflitos (linhas 8, 10, 11, 68, 92, 88) |
+| `style/layout.css` | Declarações reais dos 9 conflitos (linhas 8, 27, 40, 202) |
+| `style/features.css` | Declarações reais dos 9 conflitos (linhas 881, 884, 889, 890, 908, 915, 938, 945, 948) |
+| `style/dashboard-chat.css` | Declarações reais de `main` (linhas 966, 987) |
+| `.tmp-c13/c13-outro.json` | 1.127 seletores brutos (selector, sheet, count, status) |
+| `.tmp-c13/outro-refinado.json` | 1.127 seletores com arquivo, linha, categoria, confiança, motivo |
+| `.tmp-c13/css-conflitos.json` | 67 registros agregados (seletor, prop, valores, arquivos — sem linha) |
+| `.tmp-c13/css-regras.json` | 2.818 regras CSS com arquivo e linha |
+| `.tmp-c13/css-dup-arquivos.json` | 166 seletores repetidos entre arquivos |
+| `.tmp-c13/medicao-css-dom-resultado.json` | Resultado da medição CSS × DOM (viewport, estado, seletores) |
+| `obsoles-201.txt` (gerado) | Lista dos 201 seletores "potencialmente obsoletos" extraída de outro-refinado.json |
+
+### 3. Correções dos nove registros de conflitos
+
+Cada registro foi revisado contra todas as declarações reais das sete folhas CSS, ordem de carregamento, media queries, especificidade e contexto de aplicação.
+
+| # | Seletor | Propriedade | Classificação | Vencedor efetivo |
+|---|---|---|---|---|
+| 1 | `.export-preview` | max-height | Diferença efetiva (clamp vs 280px) + redundancia (280px×2) | features.css:884 (geral); layout.css:202 (mobile ≤680px) |
+| 2 | `.export-preview-bank h4` | margin | Conflito efetivo (6px vs 8px vs 14px) | features.css:889 (0 0 14px) |
+| 3 | `.export-preview-bank h4` | font-size | Conflito efetivo geral + sobrescritas responsivas | features.css:948 (15px geral); 938 (14px @768px); 945 (13px @480px) |
+| 4 | `.export-preview-bank h4 small` | color | Repetição idêntica (var(--accent)×4) + 1 diferença vs base.css | features.css (var(--accent)) |
+| 5 | `main` | max-width | Variação responsiva (3 breakpoints mutuamente exclusivos) + repetição idêntica | base.css:68 (geral); layout.css:40 (mobile); dashboard-chat.css:966/987 (desktop ≥1024px) |
+| 6 | `main` | margin | Variação responsiva (geral vs mobile) | base.css:68 (geral); layout.css:40 (mobile) |
+| 7 | `main` | padding | Variação responsiva (geral vs mobile) | base.css:68 (geral); layout.css:40 (mobile) |
+| 8 | `header.app-header` | align-items | Variação responsiva (breakpoints opostos: 681px+ vs 680px-) | base.css:92 (desktop); layout.css:8 (mobile) — NUNCA simultâneos |
+| 9 | `header.app-header .header-search-bar .fi` | color | Conflito efetivo apenas em mobile ≤680px | base.css:88 (desktop/geral); layout.css:27 (mobile) |
+
+**Correções obrigatórias aplicadas:**
+
+A. **`header.app-header` / `align-items`**: Removido da categoria de conflito de cascata. `base.css:92` está em `@media (min-width:681px)` e `layout.css:8` em `@media (max-width:680px)`. Breakpoints opostos, nunca ativos simultaneamente. Classificado como **variação responsiva**.
+
+B. **`.export-preview-bank h4` / `margin`**: Consideradas todas as 3 declarações (base.css:10, features.css:881, features.css:889). Vencedor: features.css:889 (0 0 14px), última em escopo geral em features.css.
+
+C. **`.export-preview-bank h4` / `font-size`**: Consideradas todas as 8 declarações (incluindo media queries 768px e 480px). Vencedor geral: features.css:948 (15px). Sobrescritas responsivas documentadas por breakpoint.
+
+D. **`.export-preview-bank h4 small` / `color`**: `features.css:881/890/920/949` declaram o mesmo valor `var(--accent)` = repetição idêntica, não conflito entre si. Apenas diferença real é contra `base.css:11` (`var(--ink-soft)`).
+
+E. **`.export-preview` / `max-height`**: `base.css:8` e `layout.css:202` declaram o mesmo valor `280px` = redundância. Diferença efetiva introduzida apenas por `features.css:884` (`clamp()`).
+
+### 4. Resultado da investigação dos 67 casos agregados
+
+| Métrica | Valor |
+|---|---|
+| Contagem agregada original (C.1.3/C.1.4) | 67 |
+| Registros revisados individualmente (C.1.4.2) | 9 |
+| Conflitos efetivos comprovados | 4 |
+| Variações responsivas (não são conflitos) | 4 |
+| Repetições idênticas (não são conflitos) | 1 |
+| Redundâncias (mesmo valor, não são conflitos) | 1 |
+| Falsos positivos | 0 (nos 9 analisados) |
+| Casos pendentes dos 58 restantes | Não verificáveis — sem dados brutos |
+
+**Conclusão sobre os 67:** A contagem agregada de 67 não pode ser tratada como 67 conflitos individualmente comprovados. Dos 9 revisados, apenas 4 são conflitos efetivos de cascata. Os demais 58 registros da contagem agregada não possuem dados brutos (arquivo, linha, valor, media query, especificidade) que permitam reconstrução individual. Os dados originais da medição automatizada não estão disponíveis em formato que permita recuperar os 58 casos faltantes.
+
+Não foram criados 58 registros artificiais para completar a contagem.
+
+### 5. Rastreabilidade dos 1.127 seletores
+
+**Fonte disponível:** `.tmp-c13/outro-refinado.json` contém os 1.127 seletores individuais com:
+- Seletor completo
+- Folha CSS (arquivo)
+- Linha
+- Categoria atribuída
+- Grau de confiança
+- Motivo/classificação
+
+**Contagem por categoria (fechamento matemático verificado):**
+
+| Categoria | Quantidade |
+|---|---|
+| Componente condicional | 521 |
+| Potencialmente obsoleto | 201 |
+| Contexto estrutural | 118 |
+| Estado de formulário | 22 |
+| Tema | 26 |
+| View inativa | 239 |
+| **Total** | **1.127** |
+
+**Limitação de rastreabilidade:** 82 dos 1.127 seletores não possuem número de linha (`linha` ausente em `outro-refinado.json`). A classificação foi automatizada por padrões reconhecíveis, não por inspeção individual manual de cada um.
+
+**Categorias solicitadas originalmente não produzidas:** Estado JavaScript, interação e responsividade não têm recorte individual porque a medição C.1.3 testou correspondência de seletor contra DOM estático, sem avaliar estado de JS, interação do usuário ou breakpoints de responsividade. Essa lacuna permanece declarada.
+
+### 6. Investigação dos 201 potencialmente obsoletos
+
+**Metodologia:** Extraídos os 201 seletores de `outro-refinado.json` e verificados contra referências textuais em `index.html` (100.939 bytes) e 34 arquivos JavaScript (828.626 bytes totais).
+
+| Resultado | Quantidade |
+|---|---|
+| Com referência textual em HTML ou JS | 126 |
+| Sem referência textual direta | 75 |
+
+**Análise dos 75 sem referência textual:** Alguns podem ser classes construídas dinamicamente por JavaScript (concatenação de strings, template literais, classes condicionais). Exemplos: `.purchase-status.pendente`, `.balance-insight.is-positive strong`, `body.dark-mode[data-dark-theme="1"] .pocket-goal-track span:not(.over)`. A ausência de referência textual **não prova** obsolescência real.
+
+**Conclusão:** Nenhum dos 201 seletores foi declarado obsoleto. 126 têm referência textual confirmada; 75 requerem investigação adicional (busca por construção dinâmica) antes de qualquer classificação de obsolescência.
+
+### 7. Reconciliação dos 42 seletores
+
+**Situação:** A C.1.4 informa que 42 seletores foram reintegrados da categoria "atributo condicional" para "outro", passando de 1.085 para 1.127.
+
+**Verificação:** Não foi encontrada lista individual dos 42 seletores nos dados disponíveis (todos os arquivos JSON de `.tmp-c13/` contêm 1.127, não 1.085). Não existem dados brutos da etapa anterior (1.085) para comparação individual.
+
+**Conclusão:** A diferença de 42 seletores é matematicamente consistente (1.085 + 42 = 1.127), mas **não individualmente rastreável**. A identidade dos 42 seletores não pode ser comprovada sem apresentar a lista. Isso é registrado como limitação, não como erro.
+
+### 8. Limitações metodológicas remanescentes
+
+1. **58 conflitos não verificados:** Os 58 registros restantes da contagem agregada de 67 não possuem dados brutos para revisão individual.
+2. **82 seletores sem linha:** Dos 1.127 seletores classificados, 82 não têm número de linha associado.
+3. **Classificação automatizada:** Os 1.127 seletores foram classificados por padrões, não por inspeção manual individual.
+4. **75 seletores sem referência textual:** Dos 201 potencialmente obsoletos, 75 não têm referência em HTML/JS (podem ser construídos dinamicamente).
+5. **42 seletores não reconciliados individualmente:** A diferença de 42 seletores não tem lista individual disponível.
+6. **Categorias não produzidas:** Estado JavaScript, interação e responsividade não têm recorte individual.
+
+### 9. Conclusão objetiva — Veredito da C.1
+
+**C.1 — NÃO APROVADA.**
+
+Justificativa:
+
+| Critério de aceite | Status | Observação |
+|---|---|---|
+| Conflitos documentados com classificação tecnicamente correta | ⚠️ Parcial | 9 de 67 revisados; 4 são conflitos efetivos, 4 variações responsivas, 1 repetição, 1 redundância |
+| Contagem agregada não apresentada como evidência individual | ✅ Cumprido | Declarado explicitamente que 67 é contagem agregada, não 67 comprovados |
+| Rastreabilidade dos seletores demonstrada ou limitações delimitadas | ⚠️ Parcial | 1.127 seletores com arquivo/categoria (82 sem linha); limitações declaradas |
+| 201 seletores potencialmente obsoletos não declarados obsoletos | ✅ Cumprido | Nenhum declarado obsoleto; 126 com referência, 75 pendentes |
+| Diferença dos 42 seletores reconciliada ou registrada como limitação | ✅ Cumprido | Registrada como limitação (sem lista individual disponível) |
+| Nenhuma alteração funcional feita | ✅ Cumprido | Apenas documentação |
+| Histórico documental preservado | ✅ Cumprido | C.0, C.1, C.1.1, C.1.1.1, C.1.2, C.1.3, C.1.4, C.1.4.1 preservados |
+
+**Não iniciar C.3.** Não implementar nenhuma recomendação visual ou funcional. Aguardar revisão independente e autorização explícita do usuário.
 
 ---
 
