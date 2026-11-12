@@ -171,6 +171,29 @@ Não são propriedades injetadas por JavaScript.
 
 Não criar variáveis roll-out globais para estados transitórios; quando um elemento resolve dinamicamente, use um nome local/runtime como `--nav-indicator-x`, não um token de tema.
 
+#### 1.7.5 Tokens locais do formulário de conta/fatura (`.bill-form-sheet`)
+
+O bloco `.bill-form-sheet` (`style/features.css`) define um conjunto local de aliases para o formulário de nova conta/fatura. Eles não são tokens globais de tema e não devem ser sobrescritos fora desse componente.
+
+| Token local | Valor/origem | Finalidade |
+|---|---|---|
+| `--bill-bg` | `var(--paper)` | Fundo do formulário |
+| `--bill-surface` | `color-mix(in srgb, var(--surface) 92%, var(--paper))` | Superfície do formulário |
+| `--bill-surface-accent` | `var(--accent-subtle)` | Superfície com destaque |
+| `--bill-text` | `var(--ink)` | Texto principal |
+| `--bill-text-secondary` | `var(--ink-soft)` | Texto secundário |
+| `--bill-value` | `var(--ink)` | Valor monetário |
+| `--bill-placeholder` | `color-mix(in srgb, var(--ink) 35%, transparent)` | Placeholder |
+| `--bill-border` | `var(--line)` | Borda |
+| `--bill-accent` | `var(--accent)` | Destaque |
+| `--bill-accent-foreground` | `var(--accent-foreground)` | Texto sobre destaque |
+| `--bill-status-bg` | `var(--accent-subtle)` | Fundo de status |
+| `--bill-status-text` | `var(--accent)` | Texto de status |
+| `--bill-status-border` | `var(--action-border)` | Borda de status |
+| `--bill-shadow` | `var(--shadow-color)` | Cor da sombra |
+
+Escopo: local a `.bill-form-sheet`; consumido apenas dentro do próprio bloco em `style/features.css`.
+
 ---
 
 ## 2. Inventário completo (pós-migração)
@@ -293,7 +316,7 @@ Não criar variáveis roll-out globais para estados transitórios; quando um ele
 | `--shadow-sm` | `0 1px 3px var(--shadow-color)` | `:root` | Sombra pequena; `.balance-card` (`style/base.css`), `.feature-profile-switch:after` (`style/features.css`) |
 | `--shadow-md` | `0 4px 14px var(--shadow-color)` | `:root` | Sombra média; `.fab-add`, `.log-card` (`style/components.css`) |
 | `--shadow-lg` | `0 18px 42px var(--shadow-color)` | `:root` | Sombra grande; `.auth-box` (`style/components.css`) |
-| `--shadow-overlay` | `0 -18px 50px rgba(0,0,0,.28)` | `:root` | Sombra de overlay; sem consumidor |
+| `--shadow-overlay` | `0 -18px 50px rgba(0,0,0,.28)` | `:root` | Sombra de overlay; `#panelEntryHistory`, `#panelImport` (`style/features.css`) |
 | `--theme-swatch` | por opção de tema, definida nos seletores em `style/themes.css` | `style/themes.css` | Cor do swatch do seletor |
 | `--z-modal` | `1400` | `:root` | Camada modal |
 | `--z-fab` | `1300` | `:root` | Camada FAB |
@@ -310,7 +333,7 @@ Não são sobrescritos pelos temas.
 
 ### 2.9 Componentes e locais
 
-As propriedades dinâmicas de execução estão descritas na seção **1.7.2** (`--category-color`, `--dash-pill-i`, `--nav-indicator-x`, `--pill-left`, `--pill-width`, `--pill-height`, `--share`, `--pct`, `--bar-color`).
+As propriedades dinâmicas de execução estão descritas na seção **1.7.2** (`--category-color`, `--dash-pill-i`, `--nav-indicator-x`, `--pill-left`, `--pill-width`, `--pill-height`, `--share`, `--pct`, `--bar-color`). Os aliases locais do formulário de conta/fatura (`.bill-form-sheet`) estão descritos na seção **1.7.5**.
 
 | Token | Valor/função | Escopo | Uso |
 |---|---|---|---|

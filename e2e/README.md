@@ -27,10 +27,8 @@ nenhuma alteração em código de produção (`index.html`, dados persistidos ou
 package.json               scripts code:* + devDependency @playwright/test (só dev)
 playwright.config.cjs      setup → suítes; globalSetup/globalTeardown
 e2e/
-  AUDITORIA.md             FASE 0 — auditoria arquivo:linha (auth, persistência, seletores)
   visual/                  auditoria visual dos modais (harness local, sem CI)
     audit-modais.cjs       abre cada modal em Chromium, mede tamanho/overflow
-    AUDITORIA-VISUAL-MODAIS.md  achados, correções e revisões
     saida/                 RELATORIO.md + auditoria-modais.json (gerados)
   auth/qa.setup.js         provisiona sessão QA (signup + logout/login reais) e
                            grava storageState (só cookies/localStorage)
@@ -227,7 +225,7 @@ Execução de referência: **CI run `42397573276` (07/11/2026, commit `a44c74b`)
    página** (contagem de docs/sinal de token, sem token nem conteúdo) e detecta
    logo na 1ª página vazia com token ou token repetido.
 3. Nenhum `data-testid` novo foi criado: usamos os seletores já existentes
-   mapeados em `AUDITORIA.md` (zero mudança no app).
+   mapeados em `docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md` (zero mudança no app).
 4. Oracles de caixinhas (`pocket.js`), metas (`goal.js`) e investimentos
    (`investment.js`) já existem; os de cartões serão escritos **depois** de
    auditar a semântica real (nada de inventar regra financeira).
@@ -256,4 +254,4 @@ Execução de referência: **CI run `42397573276` (07/11/2026, commit `a44c74b`)
    receber, conciliação, notificações, spec E2E da Proteção local (PIN) e
    offline/PWA/responsividade no CI.
 5. Validações visuais pendentes dos modais: tema escuro e telas estreitas
-   (ver `e2e/visual/AUDITORIA-VISUAL-MODAIS.md` §10).
+   (ver `docs/AUDITORIA-VISUAL-MODAIS.md` §10).

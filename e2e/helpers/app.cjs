@@ -1,5 +1,5 @@
 /* C.O.D.E. — página-objeto do LIVRO-CAIXA.
-   Usa apenas seletores já existentes no aplicativo (auditoria: e2e/AUDITORIA.md).
+   Usa apenas seletores já existentes no aplicativo (auditoria: docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md).
    Sem sleeps: todas as esperas são por condição/elemento. */
 'use strict';
 

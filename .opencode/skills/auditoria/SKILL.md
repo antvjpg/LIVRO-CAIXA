@@ -756,7 +756,7 @@ O C.O.D.E. (Controle Operacional de Diagnóstico e Execução) é a infraestrutu
 Identificar todos os componentes que integram o C.O.D.E.:
 
 - `AGENTS.md` — regras de precedência, prioridade de fontes, regra de estado atual;
-- Documentação do C.O.D.E. — `AGENTS.md`, `e2e/AUDITORIA.md`, `e2e/README.md`;
+- Documentação do C.O.D.E. — `AGENTS.md`, `docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md`, `e2e/README.md`;
 - Oráculos — `e2e/oracles/*.js`, `e2e/oracles/*.test.mjs`, testes de sintaxe;
 - Fixtures — `e2e/fixtures/fixtures.js`, `e2e/fixtures/v20-01-fixtures.js`, `e2e/seeds/`;
 - Testes — `worker/test/*.test.mjs`, `e2e/oracles/*.test.mjs`, `e2e/security/*.test.mjs`;

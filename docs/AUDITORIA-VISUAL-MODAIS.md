@@ -30,7 +30,7 @@ em `js/24-automation-render.js:300` e por isso não aparece numa varredura está
 | `e2e/visual/audit-modais.cjs` | criado | **commitado** | harness de auditoria visual (417 linhas) |
 | `e2e/visual/saida/auditoria-modais.json` | gerado | **commitado** | métricas por modal |
 | `e2e/visual/saida/RELATORIO.md` | gerado | **commitado** | resumo tabular da execução |
-| `e2e/visual/AUDITORIA-VISUAL-MODAIS.md` | criado | **commitado** | este documento |
+| `docs/AUDITORIA-VISUAL-MODAIS.md` | criado | **commitado** | este documento (movido de `e2e/visual/` em 12/11/2026) |
 
 **Alterações de produção restritas a apresentação:** `index.html` + `style/features.css` +
 `style/components.css`. Nenhum ID, classe, listener, regra financeira ou fluxo de

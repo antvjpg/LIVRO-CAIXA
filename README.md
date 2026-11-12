@@ -183,9 +183,9 @@ Exigência de qualidade: sinal verde de CI não substitui cobertura de ponta a p
 | [`AGENTS.md`](AGENTS.md) | Regras de engenharia, segurança e manutenção do repositório |
 | [`e2e/README.md`](e2e/README.md) | C.O.D.E.: organização, comandos, identidade QA, classificação de resultados e matriz de cobertura |
 | [`docs/DOCUMENTACAO_VARIAVEIS_CSS.md`](docs/DOCUMENTACAO_VARIAVEIS_CSS.md) | Variáveis CSS e como criar temas |
-| [`e2e/AUDITORIA.md`](e2e/AUDITORIA.md) | Auditoria de arquitetura, auth e persistência |
-| [`e2e/visual/AUDITORIA-VISUAL-MODAIS.md`](e2e/visual/AUDITORIA-VISUAL-MODAIS.md) | Auditoria visual dos modais (achados e revisões; histórico de outubro/2026) |
-| [`docs/COBERTURA-MATRIZ.md`](docs/COBERTURA-MATRIZ.md) | Matriz de fluxos financeiros (histórico das fases do LOG; localidades desatualizadas) |
+| [`docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md`](docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md) | Auditoria de arquitetura, auth e persistência |
+| [`docs/AUDITORIA-VISUAL-MODAIS.md`](docs/AUDITORIA-VISUAL-MODAIS.md) | Auditoria visual dos modais (achados e revisões; histórico de outubro/2026) |
+| [`docs/COBERTURA-FLUXOS-FINANCEIROS.md`](docs/COBERTURA-FLUXOS-FINANCEIROS.md) | Matriz de fluxos financeiros (histórico das fases do LOG; localidades desatualizadas) |
 | [`docs/AUTHOVERLAY-EVOLUCAO-VISUAL.md`](docs/AUTHOVERLAY-EVOLUCAO-VISUAL.md) | Entrega visual do AuthOverlay (histórico, 03/11/2026) |
 | [`docs/REFATORACAO-AUTENTICACAO-RELATORIO.md`](docs/REFATORACAO-AUTENTICACAO-RELATORIO.md) | Relatório da refatoração de autenticação (histórico) |
 | [`docs/AUDITORIA-IA-RESUMO.md`, `AUDITORIA-GROQ-EXCLUSIVA.md`, `CORRECOES-GROQ-EXCLUSIVO.md`](docs/) | Auditorias do período da IA/Groq (histórico — removidos em nov/2026) |

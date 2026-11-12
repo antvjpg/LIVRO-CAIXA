@@ -42,7 +42,9 @@ BACKGROUND
   - `max-width: 420px`
   - `box-shadow: 0 18px 42px var(--shadow-color)`
 
-Observação: `--shadow-lg` não existe no Design System; foi usado `--shadow-color`.
+> **Correção documental (12/11/2026):** a observação original estava incorreta. `--shadow-lg` existe no Design System (`style/themes.css`: `0 18px 42px var(--shadow-color)`) e é o token usado atualmente por `.auth-box` (`style/components.css`: `box-shadow: var(--shadow-lg)`). O valor literal `0 18px 42px var(--shadow-color)` foi posteriormente tokenizado como `var(--shadow-lg)`. O registro original é preservado abaixo apenas para rastreabilidade histórica.
+>
+> ~~Observação: `--shadow-lg` não existe no Design System; foi usado `--shadow-color`.~~
 
 ### Campos e botão Google
 
