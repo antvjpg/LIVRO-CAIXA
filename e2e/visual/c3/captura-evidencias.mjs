@@ -233,7 +233,7 @@ async function validateCapture(Runtime, viewport, theme, screenKey) {
     if (navEsperada === 'oculta') {
       checks.navMobileValido = navCheck.estado === 'oculta-intencional' ? 'oculta-por-rolagem' : 'invalido';
     } else {
-      checks.navMobileValido = navCheck.estado === 'visivel' ? 'valido' : 'invalido';
+      checks.navMobileValido = (navCheck.estado === 'visivel' && navCheck.totalDestinos >= 5) ? 'valido' : 'invalido';
     }
   } else {
     checks.navMobileDetalhes = null;
@@ -333,6 +333,9 @@ async function captureScreen(client, Runtime, Page, viewport, theme, screens, sc
     }
     if (checks.navEsperada === 'visivel' && checks.navMobileEstado !== 'visivel') {
       falhas.push('nav-esperada-visivel:' + checks.navMobileEstado + ':' + JSON.stringify(checks.navMobileDetalhes && checks.navMobileDetalhes.geometria));
+    }
+    if (checks.navMobileValido === 'invalido') {
+      falhas.push('nav-mobile-invalido:' + checks.navMobileEstado + ':' + JSON.stringify(checks.navMobileDetalhes));
     }
   }
   if (screenKey !== 'drawer-aberto' && checks.viewActive !== 'ativa') falhas.push('view-nao-ativa:' + checks.viewActive);

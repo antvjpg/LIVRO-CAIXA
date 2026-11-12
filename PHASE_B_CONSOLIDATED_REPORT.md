@@ -3624,3 +3624,19 @@ As capturas continuam usando manipulação direta do DOM e não exercitam a nave
 8. 10 temas e 2 modos.
 9. 70 capturas mobile e 40 desktop.
 10. 30 capturas de rolagem (20 ocultas + 10 visíveis).
+
+#### Refinamento da validação da navegação inferior
+
+A validação automatizada da navegação inferior foi reforçada para exigir simultaneamente:
+
+- Visibilidade efetiva do elemento.
+- Interseção real com a área visível do viewport.
+- Presença de pelo menos cinco destinos de navegação.
+
+A verificação considera a geometria do elemento renderizado, evitando aprovar como visível uma navegação deslocada para fora da área útil da tela.
+
+Os estados de ocultação intencional durante a rolagem permanecem classificados separadamente, sem serem tratados como falhas.
+
+A inspeção visual das dez novas capturas `perfil-rolagem-nav-visivel` confirmou a presença dos cinco destinos e a navegação dentro do viewport.
+
+Os vinte registros anteriores de rolagem foram classificados retrospectivamente conforme o estado de ocultação registrado. Essa classificação não representa uma nova inspeção geométrica das capturas históricas.
