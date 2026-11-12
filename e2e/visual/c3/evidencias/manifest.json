@@ -8,14 +8,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:22:41.669Z",
+    "dataHora": "2026-11-12T15:38:34.598Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -23,17 +43,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "2-mobile-oliva-claro-view-inicio.png",
@@ -44,14 +56,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:22:55.044Z",
+    "dataHora": "2026-11-12T15:38:48.307Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -59,35 +91,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "3-mobile-oliva-claro-view-livro-caixa.png",
+    "arquivo": "3-mobile-oliva-claro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "oliva-claro",
     "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:23:08.222Z",
+    "dataHora": "2026-11-12T15:39:02.301Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -95,17 +139,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "4-mobile-oliva-claro-drawer-aberto.png",
@@ -116,14 +152,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:23:20.611Z",
+    "dataHora": "2026-11-12T15:39:15.375Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -131,17 +187,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "5-mobile-oliva-claro-perfil.png",
@@ -152,50 +200,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:23:33.990Z",
+    "dataHora": "2026-11-12T15:39:29.950Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "6-mobile-oliva-claro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "oliva-claro",
-    "modo": "claro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:23:47.246Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -205,15 +237,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "6-mobile-oliva-claro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:39:44.077Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "7-mobile-verde-claro-tela-inicial.png",
@@ -224,14 +296,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:24:00.422Z",
+    "dataHora": "2026-11-12T15:39:57.584Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -239,17 +331,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "8-mobile-verde-claro-view-inicio.png",
@@ -260,14 +344,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:24:13.607Z",
+    "dataHora": "2026-11-12T15:40:11.167Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -275,35 +379,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "9-mobile-verde-claro-view-livro-caixa.png",
+    "arquivo": "9-mobile-verde-claro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "verde-claro",
     "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:24:26.776Z",
+    "dataHora": "2026-11-12T15:40:25.429Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -311,17 +427,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "10-mobile-verde-claro-drawer-aberto.png",
@@ -332,14 +440,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:24:39.139Z",
+    "dataHora": "2026-11-12T15:40:38.185Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -347,17 +475,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "11-mobile-verde-claro-perfil.png",
@@ -368,50 +488,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:24:52.369Z",
+    "dataHora": "2026-11-12T15:40:51.715Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "12-mobile-verde-claro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "verde-claro",
-    "modo": "claro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:25:05.560Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -421,15 +525,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "12-mobile-verde-claro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:41:05.592Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "13-mobile-lima-claro-tela-inicial.png",
@@ -440,14 +584,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:25:18.770Z",
+    "dataHora": "2026-11-12T15:41:18.944Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -455,17 +619,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "14-mobile-lima-claro-view-inicio.png",
@@ -476,14 +632,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:25:31.968Z",
+    "dataHora": "2026-11-12T15:41:32.410Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -491,35 +667,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "15-mobile-lima-claro-view-livro-caixa.png",
+    "arquivo": "15-mobile-lima-claro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "lima-claro",
     "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:25:45.147Z",
+    "dataHora": "2026-11-12T15:41:46.343Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -527,17 +715,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "16-mobile-lima-claro-drawer-aberto.png",
@@ -548,14 +728,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:25:57.466Z",
+    "dataHora": "2026-11-12T15:41:58.805Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -563,17 +763,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "17-mobile-lima-claro-perfil.png",
@@ -584,50 +776,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:26:10.765Z",
+    "dataHora": "2026-11-12T15:42:12.234Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "18-mobile-lima-claro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "lima-claro",
-    "modo": "claro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:26:24.120Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -637,15 +813,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "18-mobile-lima-claro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:42:26.183Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "19-mobile-terracota-claro-tela-inicial.png",
@@ -656,14 +872,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:26:37.337Z",
+    "dataHora": "2026-11-12T15:42:39.605Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -671,17 +907,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "20-mobile-terracota-claro-view-inicio.png",
@@ -692,14 +920,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:26:50.568Z",
+    "dataHora": "2026-11-12T15:42:53.005Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -707,35 +955,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "21-mobile-terracota-claro-view-livro-caixa.png",
+    "arquivo": "21-mobile-terracota-claro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "terracota-claro",
     "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:27:03.835Z",
+    "dataHora": "2026-11-12T15:43:07.061Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -743,17 +1003,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "22-mobile-terracota-claro-drawer-aberto.png",
@@ -764,14 +1016,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:27:16.232Z",
+    "dataHora": "2026-11-12T15:43:19.584Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -779,17 +1051,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "23-mobile-terracota-claro-perfil.png",
@@ -800,50 +1064,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:27:29.515Z",
+    "dataHora": "2026-11-12T15:43:33.078Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "24-mobile-terracota-claro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "terracota-claro",
-    "modo": "claro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:27:42.895Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -853,15 +1101,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "24-mobile-terracota-claro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:43:47.308Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "25-mobile-laranja-claro-tela-inicial.png",
@@ -872,14 +1160,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:27:56.089Z",
+    "dataHora": "2026-11-12T15:44:00.894Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -887,17 +1195,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "26-mobile-laranja-claro-view-inicio.png",
@@ -908,14 +1208,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:28:09.287Z",
+    "dataHora": "2026-11-12T15:44:14.458Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -923,35 +1243,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "27-mobile-laranja-claro-view-livro-caixa.png",
+    "arquivo": "27-mobile-laranja-claro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "laranja-claro",
     "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:28:22.746Z",
+    "dataHora": "2026-11-12T15:44:28.684Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -959,17 +1291,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "28-mobile-laranja-claro-drawer-aberto.png",
@@ -980,14 +1304,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:28:35.322Z",
+    "dataHora": "2026-11-12T15:44:41.611Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -995,17 +1339,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "29-mobile-laranja-claro-perfil.png",
@@ -1016,50 +1352,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:28:48.747Z",
+    "dataHora": "2026-11-12T15:44:54.962Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "30-mobile-laranja-claro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "laranja-claro",
-    "modo": "claro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:29:02.190Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1069,15 +1389,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "30-mobile-laranja-claro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:45:09.273Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "31-mobile-oliva-escuro-tela-inicial.png",
@@ -1088,14 +1448,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:29:15.595Z",
+    "dataHora": "2026-11-12T15:45:23.321Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1103,17 +1483,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "32-mobile-oliva-escuro-view-inicio.png",
@@ -1124,14 +1496,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:29:28.756Z",
+    "dataHora": "2026-11-12T15:45:36.914Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1139,35 +1531,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "33-mobile-oliva-escuro-view-livro-caixa.png",
+    "arquivo": "33-mobile-oliva-escuro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "oliva-escuro",
     "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:29:42.369Z",
+    "dataHora": "2026-11-12T15:45:50.958Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1175,17 +1579,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "34-mobile-oliva-escuro-drawer-aberto.png",
@@ -1196,14 +1592,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:29:55.120Z",
+    "dataHora": "2026-11-12T15:46:03.604Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1211,17 +1627,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "35-mobile-oliva-escuro-perfil.png",
@@ -1232,50 +1640,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:30:08.603Z",
+    "dataHora": "2026-11-12T15:46:17.210Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "36-mobile-oliva-escuro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "oliva-escuro",
-    "modo": "escuro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:30:22.192Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1285,15 +1677,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "36-mobile-oliva-escuro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:46:31.344Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "37-mobile-verde-escuro-tela-inicial.png",
@@ -1304,14 +1736,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:30:35.805Z",
+    "dataHora": "2026-11-12T15:46:44.845Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1319,17 +1771,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "38-mobile-verde-escuro-view-inicio.png",
@@ -1340,14 +1784,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:30:49.748Z",
+    "dataHora": "2026-11-12T15:46:58.226Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1355,35 +1819,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "39-mobile-verde-escuro-view-livro-caixa.png",
+    "arquivo": "39-mobile-verde-escuro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "verde-escuro",
     "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:31:06.056Z",
+    "dataHora": "2026-11-12T15:47:12.110Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1391,17 +1867,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "40-mobile-verde-escuro-drawer-aberto.png",
@@ -1412,14 +1880,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:31:20.900Z",
+    "dataHora": "2026-11-12T15:47:24.665Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1427,17 +1915,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "41-mobile-verde-escuro-perfil.png",
@@ -1448,50 +1928,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:31:35.204Z",
+    "dataHora": "2026-11-12T15:47:38.022Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "42-mobile-verde-escuro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "verde-escuro",
-    "modo": "escuro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:31:48.637Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1501,15 +1965,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "42-mobile-verde-escuro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:47:51.914Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "43-mobile-bege-escuro-tela-inicial.png",
@@ -1520,14 +2024,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:32:02.141Z",
+    "dataHora": "2026-11-12T15:48:05.315Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1535,17 +2059,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "44-mobile-bege-escuro-view-inicio.png",
@@ -1556,14 +2072,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:32:15.410Z",
+    "dataHora": "2026-11-12T15:48:18.538Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1571,35 +2107,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "45-mobile-bege-escuro-view-livro-caixa.png",
+    "arquivo": "45-mobile-bege-escuro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "bege-escuro",
     "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:32:28.790Z",
+    "dataHora": "2026-11-12T15:48:32.395Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1607,17 +2155,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "46-mobile-bege-escuro-drawer-aberto.png",
@@ -1628,14 +2168,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:32:41.287Z",
+    "dataHora": "2026-11-12T15:48:45.002Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1643,17 +2203,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "47-mobile-bege-escuro-perfil.png",
@@ -1664,50 +2216,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:32:54.700Z",
+    "dataHora": "2026-11-12T15:48:58.510Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "48-mobile-bege-escuro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "bege-escuro",
-    "modo": "escuro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:33:07.980Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1717,15 +2253,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "48-mobile-bege-escuro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:49:12.311Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "49-mobile-terracota-escuro-tela-inicial.png",
@@ -1736,14 +2312,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:33:21.550Z",
+    "dataHora": "2026-11-12T15:49:25.914Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1751,17 +2347,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "50-mobile-terracota-escuro-view-inicio.png",
@@ -1772,14 +2360,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:33:35.309Z",
+    "dataHora": "2026-11-12T15:49:39.250Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1787,35 +2395,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "51-mobile-terracota-escuro-view-livro-caixa.png",
+    "arquivo": "51-mobile-terracota-escuro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "terracota-escuro",
     "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:33:49.102Z",
+    "dataHora": "2026-11-12T15:49:53.372Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1823,17 +2443,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "52-mobile-terracota-escuro-drawer-aberto.png",
@@ -1844,14 +2456,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:34:01.996Z",
+    "dataHora": "2026-11-12T15:50:06.163Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1859,17 +2491,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "53-mobile-terracota-escuro-perfil.png",
@@ -1880,50 +2504,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:34:15.803Z",
+    "dataHora": "2026-11-12T15:50:20.000Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "54-mobile-terracota-escuro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "terracota-escuro",
-    "modo": "escuro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:34:29.624Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1933,15 +2541,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "54-mobile-terracota-escuro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:50:34.123Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "55-mobile-laranja-escuro-tela-inicial.png",
@@ -1952,14 +2600,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:34:43.369Z",
+    "dataHora": "2026-11-12T15:50:47.561Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -1967,17 +2635,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "56-mobile-laranja-escuro-view-inicio.png",
@@ -1988,14 +2648,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:34:57.086Z",
+    "dataHora": "2026-11-12T15:51:01.009Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2003,35 +2683,47 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "57-mobile-laranja-escuro-view-livro-caixa.png",
+    "arquivo": "57-mobile-laranja-escuro-view-inicio-rolagem.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "laranja-escuro",
     "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
+    "tela": "view-inicio-rolagem",
+    "descricao": "View Início — conteúdo abaixo da primeira dobra",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:35:10.959Z",
+    "dataHora": "2026-11-12T15:51:14.946Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 481,
+      "max": 481
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2039,17 +2731,9 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "58-mobile-laranja-escuro-drawer-aberto.png",
@@ -2060,14 +2744,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:35:23.904Z",
+    "dataHora": "2026-11-12T15:51:27.308Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 271
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2075,17 +2779,9 @@
       "drawerVisivel": "visivel",
       "modoCorreto": "correto",
       "viewActive": "nao-aplica",
-      "navMobileValido": "nao-aplica"
+      "navMobileValido": "valido"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "59-mobile-laranja-escuro-perfil.png",
@@ -2096,50 +2792,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:35:37.616Z",
+    "dataHora": "2026-11-12T15:51:40.682Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 3009
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
     },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "60-mobile-laranja-escuro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "laranja-escuro",
-    "modo": "escuro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:35:50.989Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
-    },
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2149,15 +2829,55 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": [],
+    "falhas": []
+  },
+  {
+    "arquivo": "60-mobile-laranja-escuro-perfil-rolagem.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem",
+    "descricao": "Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T15:51:54.621Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "fundo",
+      "y": 3009,
+      "max": 3009
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
+    },
     "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
   },
   {
     "arquivo": "61-desktop-oliva-claro-tela-inicial.png",
@@ -2168,14 +2888,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:36:04.927Z",
+    "dataHora": "2026-11-12T15:52:08.752Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2185,15 +2925,7 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
     "arquivo": "62-desktop-oliva-claro-view-inicio.png",
@@ -2204,14 +2936,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:36:17.982Z",
+    "dataHora": "2026-11-12T15:52:22.535Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2221,54 +2973,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "63-desktop-oliva-claro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "oliva-claro",
-    "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:36:30.969Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "64-desktop-oliva-claro-drawer-aberto.png",
+    "arquivo": "63-desktop-oliva-claro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "oliva-claro",
@@ -2276,14 +2984,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:36:43.188Z",
+    "dataHora": "2026-11-12T15:52:35.578Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2293,18 +3021,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "65-desktop-oliva-claro-perfil.png",
+    "arquivo": "64-desktop-oliva-claro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "oliva-claro",
@@ -2312,14 +3032,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:36:56.193Z",
+    "dataHora": "2026-11-12T15:52:49.077Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2329,18 +3069,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#5f7a43",
-      "paper": "#f7f5ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "66-desktop-verde-claro-tela-inicial.png",
+    "arquivo": "65-desktop-verde-claro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "verde-claro",
@@ -2348,14 +3080,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:37:09.232Z",
+    "dataHora": "2026-11-12T15:53:02.572Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2365,18 +3117,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "67-desktop-verde-claro-view-inicio.png",
+    "arquivo": "66-desktop-verde-claro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "verde-claro",
@@ -2384,14 +3128,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:37:22.316Z",
+    "dataHora": "2026-11-12T15:53:15.993Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2401,54 +3165,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "68-desktop-verde-claro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "verde-claro",
-    "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:37:35.609Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "69-desktop-verde-claro-drawer-aberto.png",
+    "arquivo": "67-desktop-verde-claro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "verde-claro",
@@ -2456,14 +3176,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:37:48.610Z",
+    "dataHora": "2026-11-12T15:53:28.466Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2473,18 +3213,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "70-desktop-verde-claro-perfil.png",
+    "arquivo": "68-desktop-verde-claro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "verde-claro",
@@ -2492,14 +3224,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:38:02.138Z",
+    "dataHora": "2026-11-12T15:53:41.625Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2509,18 +3261,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#327957",
-      "paper": "#f8f7f2",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "71-desktop-lima-claro-tela-inicial.png",
+    "arquivo": "69-desktop-lima-claro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "lima-claro",
@@ -2528,14 +3272,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:38:15.535Z",
+    "dataHora": "2026-11-12T15:53:54.938Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2545,18 +3309,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "72-desktop-lima-claro-view-inicio.png",
+    "arquivo": "70-desktop-lima-claro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "lima-claro",
@@ -2564,14 +3320,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:38:28.787Z",
+    "dataHora": "2026-11-12T15:54:08.327Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2581,54 +3357,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "73-desktop-lima-claro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "lima-claro",
-    "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:38:42.127Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "74-desktop-lima-claro-drawer-aberto.png",
+    "arquivo": "71-desktop-lima-claro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "lima-claro",
@@ -2636,14 +3368,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:38:54.535Z",
+    "dataHora": "2026-11-12T15:54:20.830Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2653,18 +3405,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "75-desktop-lima-claro-perfil.png",
+    "arquivo": "72-desktop-lima-claro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "lima-claro",
@@ -2672,14 +3416,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:39:07.915Z",
+    "dataHora": "2026-11-12T15:54:34.138Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2689,18 +3453,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#40916c",
-      "paper": "#faf9f6",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "76-desktop-terracota-claro-tela-inicial.png",
+    "arquivo": "73-desktop-terracota-claro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "terracota-claro",
@@ -2708,14 +3464,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:39:21.484Z",
+    "dataHora": "2026-11-12T15:54:47.418Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2725,18 +3501,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "77-desktop-terracota-claro-view-inicio.png",
+    "arquivo": "74-desktop-terracota-claro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "terracota-claro",
@@ -2744,14 +3512,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:39:35.193Z",
+    "dataHora": "2026-11-12T15:55:00.626Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2761,54 +3549,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "78-desktop-terracota-claro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "terracota-claro",
-    "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:39:48.643Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "79-desktop-terracota-claro-drawer-aberto.png",
+    "arquivo": "75-desktop-terracota-claro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "terracota-claro",
@@ -2816,14 +3560,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:40:01.280Z",
+    "dataHora": "2026-11-12T15:55:13.115Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2833,18 +3597,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "80-desktop-terracota-claro-perfil.png",
+    "arquivo": "76-desktop-terracota-claro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "terracota-claro",
@@ -2852,14 +3608,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:40:14.793Z",
+    "dataHora": "2026-11-12T15:55:27.053Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2869,18 +3645,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#c66f50",
-      "paper": "#fbf6ef",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "81-desktop-laranja-claro-tela-inicial.png",
+    "arquivo": "77-desktop-laranja-claro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "laranja-claro",
@@ -2888,14 +3656,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:40:28.093Z",
+    "dataHora": "2026-11-12T15:55:40.457Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2905,18 +3693,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "82-desktop-laranja-claro-view-inicio.png",
+    "arquivo": "78-desktop-laranja-claro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "laranja-claro",
@@ -2924,14 +3704,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:40:41.448Z",
+    "dataHora": "2026-11-12T15:55:54.238Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -2941,54 +3741,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "83-desktop-laranja-claro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "laranja-claro",
-    "modo": "claro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:40:55.007Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "84-desktop-laranja-claro-drawer-aberto.png",
+    "arquivo": "79-desktop-laranja-claro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "laranja-claro",
@@ -2996,14 +3752,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:41:07.951Z",
+    "dataHora": "2026-11-12T15:56:06.780Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3013,18 +3789,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "85-desktop-laranja-claro-perfil.png",
+    "arquivo": "80-desktop-laranja-claro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "laranja-claro",
@@ -3032,14 +3800,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:41:21.312Z",
+    "dataHora": "2026-11-12T15:56:19.965Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "light-mode-set",
-      "apply": "applyLightTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3049,18 +3837,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#f9f9f9",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "86-desktop-oliva-escuro-tela-inicial.png",
+    "arquivo": "81-desktop-oliva-escuro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "oliva-escuro",
@@ -3068,14 +3848,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:41:34.579Z",
+    "dataHora": "2026-11-12T15:56:33.288Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3085,18 +3885,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "87-desktop-oliva-escuro-view-inicio.png",
+    "arquivo": "82-desktop-oliva-escuro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "oliva-escuro",
@@ -3104,14 +3896,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:41:47.770Z",
+    "dataHora": "2026-11-12T15:56:46.381Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3121,54 +3933,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "88-desktop-oliva-escuro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "oliva-escuro",
-    "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:42:01.163Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "89-desktop-oliva-escuro-drawer-aberto.png",
+    "arquivo": "83-desktop-oliva-escuro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "oliva-escuro",
@@ -3176,14 +3944,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:42:13.778Z",
+    "dataHora": "2026-11-12T15:56:58.806Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3193,18 +3981,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "90-desktop-oliva-escuro-perfil.png",
+    "arquivo": "84-desktop-oliva-escuro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "oliva-escuro",
@@ -3212,14 +3992,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:42:27.061Z",
+    "dataHora": "2026-11-12T15:57:11.948Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:1",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3229,18 +4029,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "1",
-      "accent": "#9dd08b",
-      "paper": "#1a1917",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "91-desktop-verde-escuro-tela-inicial.png",
+    "arquivo": "85-desktop-verde-escuro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "verde-escuro",
@@ -3248,14 +4040,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:42:40.278Z",
+    "dataHora": "2026-11-12T15:57:25.225Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3265,18 +4077,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "92-desktop-verde-escuro-view-inicio.png",
+    "arquivo": "86-desktop-verde-escuro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "verde-escuro",
@@ -3284,14 +4088,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:42:53.563Z",
+    "dataHora": "2026-11-12T15:57:38.427Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3301,54 +4125,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "93-desktop-verde-escuro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "verde-escuro",
-    "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:43:06.819Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "94-desktop-verde-escuro-drawer-aberto.png",
+    "arquivo": "87-desktop-verde-escuro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "verde-escuro",
@@ -3356,14 +4136,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:43:19.789Z",
+    "dataHora": "2026-11-12T15:57:50.839Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3373,18 +4173,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "95-desktop-verde-escuro-perfil.png",
+    "arquivo": "88-desktop-verde-escuro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "verde-escuro",
@@ -3392,14 +4184,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:43:33.939Z",
+    "dataHora": "2026-11-12T15:58:04.068Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:2",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3409,18 +4221,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "2",
-      "accent": "#22c55e",
-      "paper": "#121212",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "96-desktop-bege-escuro-tela-inicial.png",
+    "arquivo": "89-desktop-bege-escuro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "bege-escuro",
@@ -3428,14 +4232,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:43:49.124Z",
+    "dataHora": "2026-11-12T15:58:17.430Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3445,18 +4269,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "97-desktop-bege-escuro-view-inicio.png",
+    "arquivo": "90-desktop-bege-escuro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "bege-escuro",
@@ -3464,14 +4280,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:44:02.533Z",
+    "dataHora": "2026-11-12T15:58:30.728Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3481,54 +4317,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "98-desktop-bege-escuro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "bege-escuro",
-    "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:44:15.947Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "99-desktop-bege-escuro-drawer-aberto.png",
+    "arquivo": "91-desktop-bege-escuro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "bege-escuro",
@@ -3536,14 +4328,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:44:28.546Z",
+    "dataHora": "2026-11-12T15:58:43.095Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3553,18 +4365,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "100-desktop-bege-escuro-perfil.png",
+    "arquivo": "92-desktop-bege-escuro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "bege-escuro",
@@ -3572,14 +4376,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:44:41.906Z",
+    "dataHora": "2026-11-12T15:58:56.252Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:3",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3589,18 +4413,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "3",
-      "accent": "#c9a86a",
-      "paper": "#0f1712",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "101-desktop-terracota-escuro-tela-inicial.png",
+    "arquivo": "93-desktop-terracota-escuro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "terracota-escuro",
@@ -3608,14 +4424,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:44:55.460Z",
+    "dataHora": "2026-11-12T15:59:09.401Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3625,18 +4461,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "102-desktop-terracota-escuro-view-inicio.png",
+    "arquivo": "94-desktop-terracota-escuro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "terracota-escuro",
@@ -3644,14 +4472,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:45:08.908Z",
+    "dataHora": "2026-11-12T15:59:22.507Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3661,54 +4509,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "103-desktop-terracota-escuro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "terracota-escuro",
-    "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:45:22.148Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "104-desktop-terracota-escuro-drawer-aberto.png",
+    "arquivo": "95-desktop-terracota-escuro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "terracota-escuro",
@@ -3716,14 +4520,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:45:34.334Z",
+    "dataHora": "2026-11-12T15:59:34.988Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3733,18 +4557,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "105-desktop-terracota-escuro-perfil.png",
+    "arquivo": "96-desktop-terracota-escuro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "terracota-escuro",
@@ -3752,14 +4568,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:45:47.466Z",
+    "dataHora": "2026-11-12T15:59:49.213Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:4",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3769,18 +4605,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "4",
-      "accent": "#d08860",
-      "paper": "#141410",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "106-desktop-laranja-escuro-tela-inicial.png",
+    "arquivo": "97-desktop-laranja-escuro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "laranja-escuro",
@@ -3788,14 +4616,34 @@
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrão)",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:46:00.548Z",
+    "dataHora": "2026-11-12T16:00:02.705Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3805,18 +4653,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "107-desktop-laranja-escuro-view-inicio.png",
+    "arquivo": "98-desktop-laranja-escuro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "laranja-escuro",
@@ -3824,14 +4664,34 @@
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:46:13.705Z",
+    "dataHora": "2026-11-12T16:00:16.204Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 288
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3841,54 +4701,10 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "108-desktop-laranja-escuro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "laranja-escuro",
-    "modo": "escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-12T13:46:26.995Z",
-    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
-    "temaValidacao": {
-      "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
-    },
-    "overlaysVerificados": {
-      "authOculto": "oculto",
-      "temaPickerOculto": "oculto",
-      "drawerOculto": "oculto",
-      "drawerVisivel": "nao-aplica",
-      "modoCorreto": "correto",
-      "viewActive": "ativa",
-      "navMobileValido": "nao-aplica"
-    },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
-  },
-  {
-    "arquivo": "109-desktop-laranja-escuro-drawer-aberto.png",
+    "arquivo": "99-desktop-laranja-escuro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "laranja-escuro",
@@ -3896,14 +4712,34 @@
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:46:39.207Z",
+    "dataHora": "2026-11-12T16:00:29.229Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 31
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3913,18 +4749,10 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   },
   {
-    "arquivo": "110-desktop-laranja-escuro-perfil.png",
+    "arquivo": "100-desktop-laranja-escuro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "laranja-escuro",
@@ -3932,14 +4760,34 @@
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-12T13:46:52.347Z",
+    "dataHora": "2026-11-12T16:00:42.805Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
+    "shaPublicacao": "",
+    "rolagem": {
+      "posicao": "topo",
+      "y": 0,
+      "max": 2495
+    },
     "temaValidacao": {
       "mode": "dark-mode-set",
-      "apply": "applyDarkTheme-aplicado:5",
-      "verify": "correto"
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
     },
+    "paletaVerificada": "sim",
     "overlaysVerificados": {
       "authOculto": "oculto",
       "temaPickerOculto": "oculto",
@@ -3949,14 +4797,6 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": [],
-    "paletaVerificada": "sim",
-    "paletaComprovada": {
-      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
-      "dataset": "5",
-      "accent": "#e85002",
-      "paper": "#000000",
-      "verificadoEm": "2026-11-12T15:03:46.085Z"
-    }
+    "falhas": []
   }
 ]
