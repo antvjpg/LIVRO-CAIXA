@@ -1,5 +1,5 @@
 /* C.3.0.1 — Coleta de evidências visuais corrigida e validada (todos os temas).
-   Uso: node e2e/visual/c3/captura-evidencias.mjs
+   Uso: node e2e/visual/c3/captura-evidencias.mjs [tema]
    Requer: servidor local em :8000 e Chromium com --remote-debugging-port=9222
    NÃO modifica fonte do app. Apenas manipula DOM em runtime para capturas.
    Cada captura começa em estado limpo (recarrega index.html).
@@ -22,20 +22,19 @@ const VIEWPORTS = [
 
 const THEMES_ALL = [
   /* 5 temas claros */
-  { name: 'oliva-claro',    modo: 'claro', seletor: '.light-theme-option[data-theme="1"]' },
-  { name: 'verde-claro',    modo: 'claro', seletor: '.light-theme-option[data-theme="2"]' },
-  { name: 'lima-claro',     modo: 'claro', seletor: '.light-theme-option[data-theme="3"]' },
-  { name: 'terracota-claro',modo: 'claro', seletor: '.light-theme-option[data-theme="4"]' },
-  { name: 'laranja-claro',  modo: 'claro', seletor: '.light-theme-option[data-theme="5"]' },
+  { name: 'oliva-claro',    modo: 'claro', temaId: '1' },
+  { name: 'verde-claro',    modo: 'claro', temaId: '2' },
+  { name: 'lima-claro',     modo: 'claro', temaId: '3' },
+  { name: 'terracota-claro',modo: 'claro', temaId: '4' },
+  { name: 'laranja-claro',  modo: 'claro', temaId: '5' },
   /* 5 temas escuros */
-  { name: 'oliva-escuro',   modo: 'escuro',seletor: '.dark-theme-option[data-theme="1"]' },
-  { name: 'verde-escuro',   modo: 'escuro',seletor: '.dark-theme-option[data-theme="2"]' },
-  { name: 'bege-escuro',    modo: 'escuro',seletor: '.dark-theme-option[data-theme="3"]' },
-  { name: 'terracota-escuro',modo: 'escuro',seletor: '.dark-theme-option[data-theme="4"]' },
-  { name: 'laranja-escuro', modo: 'escuro',seletor: '.dark-theme-option[data-theme="5"]' },
+  { name: 'oliva-escuro',   modo: 'escuro',temaId: '1' },
+  { name: 'verde-escuro',   modo: 'escuro',temaId: '2' },
+  { name: 'bege-escuro',    modo: 'escuro',temaId: '3' },
+  { name: 'terracota-escuro',modo: 'escuro',temaId: '4' },
+  { name: 'laranja-escuro', modo: 'escuro',temaId: '5' },
 ];
 
-/* Tema específico via argumento de linha de comando, ou todos se omitido */
 const temaArg = process.argv[2];
 const THEMES = temaArg ? THEMES_ALL.filter(function(t) { return t.name === temaArg; }) : THEMES_ALL;
 
@@ -45,21 +44,31 @@ if (temaArg && THEMES.length === 0) {
 }
 
 const MOBILE_SCREENS = [
-  { key: 'tela-inicial',   desc: 'Tela inicial do app (viewCaixa por padrao)' },
-  { key: 'view-inicio',    desc: 'View Início' },
-  { key: 'view-livro-caixa', desc: 'View Livro-Caixa' },
-  { key: 'drawer-aberto',  desc: 'Drawer aberto' },
-  { key: 'perfil',         desc: 'Perfil' },
-  { key: 'nav-mobile',     desc: 'Navegação mobile inferior' },
+  { key: 'tela-inicial',   desc: 'Tela inicial do app (viewCaixa por padrão)', tab: 'caixa' },
+  { key: 'view-inicio',    desc: 'View Início', tab: 'inicio' },
+  { key: 'view-livro-caixa', desc: 'View Livro-Caixa', tab: 'caixa' },
+  { key: 'drawer-aberto',  desc: 'Drawer aberto', tab: 'caixa' },
+  { key: 'perfil',         desc: 'Perfil', tab: 'profile' },
+  { key: 'nav-mobile',     desc: 'Navegação mobile inferior', tab: 'caixa' },
 ];
 
 const DESKTOP_SCREENS = [
-  { key: 'tela-inicial',   desc: 'Tela inicial do app (viewCaixa por padrao)' },
-  { key: 'view-inicio',    desc: 'View Início' },
-  { key: 'view-livro-caixa', desc: 'View Livro-Caixa' },
-  { key: 'drawer-aberto',  desc: 'Drawer aberto' },
-  { key: 'perfil',         desc: 'Perfil' },
+  { key: 'tela-inicial',   desc: 'Tela inicial do app (viewCaixa por padrão)', tab: 'caixa' },
+  { key: 'view-inicio',    desc: 'View Início', tab: 'inicio' },
+  { key: 'view-livro-caixa', desc: 'View Livro-Caixa', tab: 'caixa' },
+  { key: 'drawer-aberto',  desc: 'Drawer aberto', tab: 'caixa' },
+  { key: 'perfil',         desc: 'Perfil', tab: 'profile' },
 ];
+
+const VIEW_ID_MAP = {
+  'caixa': 'viewCaixa',
+  'inicio': 'viewInicio',
+  'dashboard': 'viewDashboard',
+  'dash': 'viewDash',
+  'profile': 'viewProfile',
+  'invest': 'viewInvest',
+  'pockets': 'viewPockets',
+};
 
 const manifest = [];
 let shotIndex = 0;
@@ -87,14 +96,6 @@ async function checkOverlayHidden(Runtime, selector) {
   );
 }
 
-async function checkViewActive(Runtime, tabName) {
-  var cap = tabName.charAt(0).toUpperCase() + tabName.slice(1);
-  var viewId = 'view' + cap;
-  return await evalJS(Runtime,
-    '(() => { var el = document.getElementById("' + viewId + '"); if (!el) { var views = document.querySelectorAll(".tab-content"); var active = null; for (var i = 0; i < views.length; i++) { if (views[i].classList.contains("active")) { active = views[i]; break; } } return active ? active.id : "sem-view-ativa"; } return el.classList.contains("active") ? "ativa" : "inativa"; })()'
-  );
-}
-
 async function checkBodyMode(Runtime, modo) {
   return await evalJS(Runtime,
     '(() => { var isDark = document.body.classList.contains("dark-mode"); return ((isDark && "' + modo + '" === "escuro") || (!isDark && "' + modo + '" === "claro")) ? "correto" : "incorreto"; })()'
@@ -109,48 +110,50 @@ async function ensureAuthHidden(Runtime) {
   return res;
 }
 
-async function closeThemeModal(Runtime) {
+async function closeDrawerDirect(Runtime) {
   var res = await evalJS(Runtime,
-    '(() => { var modal = document.getElementById("panelThemePicker"); if (!modal) return "sem-modal-tema"; var close = document.querySelector("#panelThemePicker .modal-close"); if (!close) return "botao-fechar-tema-nao-encontrado"; close.click(); return "fechou-modal-tema"; })()'
+    '(() => { var overlay = document.getElementById("appDrawerOverlay"); if (!overlay) return "sem-overlay-drawer"; overlay.classList.add("hidden"); overlay.setAttribute("aria-hidden", "true"); return "fechou-drawer"; })()'
   );
-  await sleep(600);
-  var status = await checkOverlayHidden(Runtime, '#panelThemePicker');
-  return res + ' | modal-status:' + status;
-}
-
-async function closeDrawer(Runtime) {
-  var res = await evalJS(Runtime,
-    '(() => { var overlay = document.getElementById("appDrawerOverlay"); if (!overlay) return "sem-overlay-drawer"; var close = document.querySelector("[data-close-drawer]"); if (!close) return "botao-fechar-drawer-nao-encontrado"; close.click(); return "fechou-drawer"; })()'
-  );
-  await sleep(600);
+  await sleep(500);
   var status = await checkOverlayHidden(Runtime, '#appDrawerOverlay');
   return res + ' | drawer-status:' + status;
 }
 
-async function applyTheme(Runtime, theme) {
-  var navRes = await evalJS(Runtime,
-    '(() => { if (typeof window.switchTab !== "function") return "switchTab-nao-encontrado"; window.switchTab("profile"); return "nav-perfil"; })()'
-  );
-  await sleep(1000);
-
-  var openRes = await evalJS(Runtime,
-    '(() => { var btn = document.getElementById("btnAparencia"); if (!btn) return "btnAparencia-nao-encontrado"; btn.click(); return "aparencia-aberta"; })()'
-  );
-  await sleep(1000);
-
-  var setRes = await evalJS(Runtime,
-    '(() => { var btn = document.querySelector("' + theme.seletor + '"); if (!btn) return "paleta-nao-encontrada"; btn.click(); return "paleta-selecionada"; })()'
-  );
-  await sleep(800);
-
-  var closeRes = await closeThemeModal(Runtime);
-  /* Força o modo no body para garantir correspondência com o tema solicitado */
-  var forceRes = await evalJS(Runtime,
-    '(() => { var isDark = document.body.classList.contains("dark-mode"); var queroEscuro = "' + theme.modo + '" === "escuro"; if (queroEscuro && !isDark) { document.body.classList.add("dark-mode"); return "adicionou-dark-mode"; } if (!queroEscuro && isDark) { document.body.classList.remove("dark-mode"); return "removeu-dark-mode"; } return "ja-estava-correto"; })()'
+async function applyThemeDirect(Runtime, theme) {
+  /* Força classe dark-mode no body conforme o modo solicitado */
+  var modeRes = await evalJS(Runtime,
+    '(() => { var queroEscuro = "' + theme.modo + '" === "escuro"; if (queroEscuro) { document.body.classList.add("dark-mode"); } else { document.body.classList.remove("dark-mode"); } return queroEscuro ? "dark-mode-set" : "light-mode-set"; })()'
   );
   await sleep(500);
-  var modeStatus = await checkBodyMode(Runtime, theme.modo);
-  return { nav: navRes, open: openRes, set: setRes, close: closeRes, force: forceRes, modo: modeStatus };
+
+  /* Chama applyLightTheme / applyDarkTheme global com o temaId */
+  var applyFn = theme.modo === 'escuro' ? 'applyDarkTheme' : 'applyLightTheme';
+  var applyRes = await evalJS(Runtime,
+    '(() => { if (typeof window.' + applyFn + ' !== "function") return "' + applyFn + '-nao-encontrado"; window.' + applyFn + '("' + theme.temaId + '", false); return "' + applyFn + '-aplicado:' + theme.temaId + '"; })()'
+  );
+  await sleep(500);
+
+  /* Verifica se o modo ficou correto */
+  var verifyRes = await checkBodyMode(Runtime, theme.modo);
+  return { mode: modeRes, apply: applyRes, verify: verifyRes };
+}
+
+async function navigateDirect(Runtime, tabName) {
+  var viewId = VIEW_ID_MAP[tabName];
+  if (!viewId) return 'tab-nao-mapeado:' + tabName;
+  var navRes = await evalJS(Runtime,
+    '(() => { var views = document.querySelectorAll(".tab-content"); views.forEach(function(v) { v.classList.remove("active"); }); var targetView = document.getElementById("' + viewId + '"); if (!targetView) return "view-nao-encontrada:' + viewId + '"; targetView.classList.add("active"); var nav = document.querySelector(".mobile-bottom-nav"); if (nav) { nav.querySelectorAll("button").forEach(function(b) { b.classList.toggle("is-active", b.dataset.destination === "' + tabName + '"); }); } document.body.dataset.tab = "' + tabName + '"; return "navegou-para:' + tabName + '"; })()'
+  );
+  await sleep(500);
+  return navRes;
+}
+
+async function openDrawerDirect(Runtime) {
+  var res = await evalJS(Runtime,
+    '(() => { var btn = document.getElementById("btnOpenDrawer"); if (!btn) return "btnOpenDrawer-nao-encontrado"; btn.click(); return "drawer-aberto"; })()'
+  );
+  await sleep(800);
+  return res;
 }
 
 async function validateCapture(Runtime, viewport, theme, screenKey) {
@@ -166,7 +169,9 @@ async function validateCapture(Runtime, viewport, theme, screenKey) {
     var drawerRaw = await checkOverlayHidden(Runtime, '#appDrawerOverlay');
     checks.drawer = (drawerRaw === 'oculto' || drawerRaw === 'nao-existe') ? 'oculto' : 'visivel';
   } else {
-    checks.drawer = 'drawer-aberto-esperado';
+    var drawerRaw = await checkOverlayHidden(Runtime, '#appDrawerOverlay');
+    checks.drawerVisible = drawerRaw;
+    checks.drawer = drawerRaw === 'visivel' ? 'visivel' : 'nao-visivel';
   }
 
   checks.modoCorreto = await checkBodyMode(Runtime, theme.modo);
@@ -176,32 +181,32 @@ async function validateCapture(Runtime, viewport, theme, screenKey) {
     if (!viewport.mobile) {
       checks.navMobileValido = 'invalido-em-desktop';
     } else {
-      checks.navMobileValido = 'valido';
+      var navCheck = await evalJS(Runtime,
+        '(() => { var nav = document.querySelector(".mobile-bottom-nav"); if (!nav) return { encontrado: "nao", visivel: "nao", totalDestinos: 0 }; var cs = getComputedStyle(nav); var vis = cs.display !== "none" && cs.visibility !== "hidden"; var btns = nav.querySelectorAll("button, a"); return { encontrado: "sim", visivel: vis ? "sim" : "nao", totalDestinos: btns.length }; })()'
+      );
+      checks.navMobileDetalhes = navCheck;
+      checks.navMobileValido = (navCheck.encontrado === "sim" && navCheck.visivel === "sim" && navCheck.totalDestinos >= 5) ? "valido" : "invalido";
     }
   } else {
     checks.navMobileValido = 'nao-aplica';
   }
 
   if (screenKey !== 'drawer-aberto') {
-    var viewIdMap = {
-      'tela-inicial': 'Caixa',
-      'view-inicio': 'Inicio',
-      'view-livro-caixa': 'Caixa',
-      'perfil': 'Profile',
-      'nav-mobile': 'Caixa',
-    };
-    var viewId = viewIdMap[screenKey];
-    checks.viewActive = viewId ? await checkViewActive(Runtime, viewId) : 'nao-verificado';
-  } else {
-    checks.drawerVisible = await checkOverlayHidden(Runtime, '#appDrawerOverlay');
+    var tabName = null;
+    for (var i = 0; i < (viewport.mobile ? MOBILE_SCREENS : DESKTOP_SCREENS).length; i++) {
+      var s = (viewport.mobile ? MOBILE_SCREENS : DESKTOP_SCREENS)[i];
+      if (s.key === screenKey) { tabName = s.tab; break; }
+    }
+    var viewId = tabName ? VIEW_ID_MAP[tabName] : null;
+    checks.viewActive = viewId ? await checkViewActiveById(Runtime, viewId) : 'nao-verificado';
   }
 
   return checks;
 }
 
-function switchToTab(Runtime, tabName) {
-  return evalJS(Runtime,
-    '(() => { if (typeof window.switchTab === "function") window.switchTab("' + tabName + '"); return "' + tabName + '"; })()'
+async function checkViewActiveById(Runtime, viewId) {
+  return await evalJS(Runtime,
+    '(() => { var el = document.getElementById("' + viewId + '"); if (!el) return "view-nao-encontrada"; return el.classList.contains("active") ? "ativa" : "inativa"; })()'
   );
 }
 
@@ -210,32 +215,28 @@ async function captureScreen(client, Runtime, Page, viewport, theme, screens, sc
   var tag = viewport.name + '-' + theme.name + '-' + screenKey;
   var filepath = path.join(OUT, (++shotIndex) + '-' + tag + '.png');
 
-  /* Recarrega a página para isolar o estado */
-  await Runtime.evaluate({ expression: 'location.reload()', awaitPromise: true });
+  /* Navega para a URL do app e recarrega para isolar o estado */
+  await Page.navigate({ url: BASE });
   await Page.loadEventFired();
-  await sleep(3000);
+  await sleep(9000);
 
   /* Oculta auth overlay em runtime */
   var authRes = await ensureAuthHidden(Runtime);
 
-  /* Aplica o tema explicitamente */
-  var themeRes = await applyTheme(Runtime, theme);
+  /* Aplica o tema diretamente via funções globais + body class */
+  var themeRes = await applyThemeDirect(Runtime, theme);
 
-  /* Navega para a tela desejada */
+  /* Navega para a tela desejada via manipulação direta do DOM */
   if (screenKey === 'drawer-aberto') {
-    var drawerRes = await evalJS(Runtime,
-      '(() => { var btn = document.getElementById("btnOpenDrawer"); if (!btn) return "btnOpenDrawer-nao-encontrado"; btn.click(); return "drawer-aberto"; })()'
-    );
-    await sleep(1000);
-  } else if (screenKey === 'view-inicio') {
-    await switchToTab(Runtime, 'inicio');
-    await sleep(1000);
-  } else if (screenKey === 'view-livro-caixa' || screenKey === 'tela-inicial' || screenKey === 'nav-mobile') {
-    await switchToTab(Runtime, 'caixa');
-    await sleep(1000);
-  } else if (screenKey === 'perfil') {
-    await switchToTab(Runtime, 'profile');
-    await sleep(1000);
+    var drawerRes = await openDrawerDirect(Runtime);
+  } else {
+    await navigateDirect(Runtime, screens.find(function(s) { return s.key === screenKey; }).tab);
+    await sleep(800);
+  }
+
+  /* Fecha drawer se não for drawer-aberto */
+  if (screenKey !== 'drawer-aberto') {
+    await closeDrawerDirect(Runtime);
   }
 
   /* Valida antes de gravar */
@@ -246,8 +247,12 @@ async function captureScreen(client, Runtime, Page, viewport, theme, screens, sc
   if (checks.auth !== 'oculto') falhas.push('auth-visivel');
   if (checks.themePicker !== 'oculto') falhas.push('tema-picker-visivel');
   if (screenKey !== 'drawer-aberto' && checks.drawer !== 'oculto') falhas.push('drawer-visivel');
+  if (screenKey === 'drawer-aberto' && checks.drawer !== 'visivel') falhas.push('drawer-nao-visivel');
   if (checks.modoCorreto !== 'correto') falhas.push('modo-incorreto');
-  if (screenKey === 'nav-mobile' && checks.navMobileValido === 'invalido-em-desktop') falhas.push('nav-mobile-em-desktop');
+  if (screenKey === 'nav-mobile' && checks.navMobileValido !== 'valido') falhas.push('nav-mobile-invalido:' + checks.navMobileDetalhes);
+  if (screenKey !== 'drawer-aberto' && checks.viewActive !== 'ativa') falhas.push('view-nao-ativa:' + checks.viewActive);
+  if (themeRes.verify !== 'correto') falhas.push('tema-verificacao-falhou:' + themeRes.verify);
+  if (themeRes.apply.indexOf('nao-encontrado') !== -1) falhas.push('tema-apply-falhou:' + themeRes.apply);
 
   if (falhas.length > 0) {
     estado = 'capturado-com-falhas: ' + falhas.join(', ');
@@ -266,27 +271,30 @@ async function captureScreen(client, Runtime, Page, viewport, theme, screens, sc
     estado: estado,
     dataHora: new Date().toISOString(),
     shaHEAD: HEAD_SHA,
+    shaPublicacao: '',
+    temaValidacao: themeRes,
     overlaysVerificados: {
       authOculto: checks.auth,
       temaPickerOculto: checks.themePicker,
       drawerOculto: screenKey !== 'drawer-aberto' ? checks.drawer : 'nao-aplica',
+      drawerVisivel: screenKey === 'drawer-aberto' ? checks.drawerVisible : 'nao-aplica',
       modoCorreto: checks.modoCorreto,
+      viewActive: screenKey !== 'drawer-aberto' ? checks.viewActive : 'nao-aplica',
+      navMobileValido: screenKey === 'nav-mobile' ? checks.navMobileValido : 'nao-aplica',
     },
     falhas: falhas,
   });
 
   console.log('  [' + shotIndex + '] ' + screenKey + ' (' + theme.name + '): ' + estado);
-  console.log('    auth=' + checks.auth + ', picker=' + checks.themePicker + ', modo=' + checks.modoCorreto);
+  console.log('    auth=' + checks.auth + ', picker=' + checks.themePicker + ', modo=' + checks.modoCorreto + ', view=' + checks.viewActive + ', drawer=' + checks.drawer);
 }
 
 async function main() {
   fs.mkdirSync(OUT, { recursive: true });
 
-  /* Conta PNGs existentes para continuar a numeração sem sobrescrever */
   var arquivosExistentes = fs.readdirSync(OUT).filter(function(f) { return f.endsWith('.png'); });
   shotIndex = arquivosExistentes.length;
 
-  /* Carrega manifest existente se houver, para acumular entre execuções por tema */
   var manifestPath = path.join(OUT, 'manifest.json');
   var manifestExistente = [];
   try {
@@ -327,9 +335,7 @@ async function main() {
 
   await client.close();
 
-  /* Combina manifest existente com as novas capturas */
   var manifestFinal = manifestExistente.concat(manifestNovo);
-
   fs.writeFileSync(manifestPath, JSON.stringify(manifestFinal, null, 2));
   console.log('\nManifest gravado: ' + manifestPath);
   console.log('Capturas nesta execução: ' + total);
