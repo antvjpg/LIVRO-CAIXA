@@ -3483,6 +3483,7 @@ Cada captura foi validada antes da gravação:
 - `#panelThemePicker` oculto ou inexistente.
 - `#appDrawerOverlay` oculto (exceto na captura `drawer-aberto`).
 - Modo claro/escuro confirmado no `document.body` (`dark-mode`).
+- **Paleta confirmada**: `document.body.dataset.lightTheme`/`darkTheme` igual ao `temaId` solicitado **e** `--accent`/`--paper` computados iguais aos valores esperados do tema (não apenas a classe de modo).
 - Tela solicitada efetivamente ativa (`#viewCaixa`, `#viewInicio`, `#viewProfile` com classe `active`).
 - Nav-mobile válido (5+ destinos visíveis) apenas em mobile.
 
@@ -3491,20 +3492,22 @@ Cada captura foi validada antes da gravação:
 - **Autenticação Firebase:** não foram disponibilizadas credenciais QA para login real. O overlay de auth foi ocultado temporariamente via JavaScript (somente em runtime) para permitir a captura das telas do app. Isso não representa login autenticado nem dados reais do usuário.
 - **Nenhum arquivo de fonte foi modificado.** As capturas refletem o estado atual do código no HEAD `ab656b9e7a7d224b4269e598db649fcdce2d41a4`.
 - **Não foram realizadas correções**, testes funcionais, validação visual de sidebar futura ou regressão do dispatcher.
-- O script `window.switchTab` não está disponível como função global no contexto CDP; a navegação usa manipulação direta do DOM como alternativa de runtime.
+- **Navegação é simulada, não funcional.** As capturas trocam a tela por manipulação direta do DOM (remove `active` de todas as `.tab-content`, adiciona à view alvo, atualiza `is-active` da nav inferior e `body.dataset.tab`). Isso comprova a **aparência** de cada tela no estado solicitado, **não** comprova que a navegação real do app funciona: não exercita `switchTab`, dispatcher, patches, listeners, FAB, drawer real nem a atualização coerente dos controles. Nenhuma conclusão sobre o funcionamento da navegação deve ser extraída destas evidências.
+- `window.switchTab` não se mostrou disponível como função global no contexto CDP durante a captura; por isso a navegação foi simulada. A ausência observada no contexto CDP **não** é, por si só, prova de defeito no app.
 
 ### 6. Arquivos criados
 
 Diretório: `e2e/visual/c3/evidencias/`
 
 - **110 arquivos PNG**, nomeados no padrão `N-viewport-tema-tela.png` (de `1-` a `110-`).
-- **1 arquivo `manifest.json`**, contendo para cada captura: nome do arquivo, viewport, resolução, tema, modo, tela, descrição, estado, data/hora, SHA do HEAD, overlays verificados e falhas.
+- **1 arquivo `manifest.json`**, contendo para cada captura: nome do arquivo, viewport, resolução, tema, modo, tela, descrição, estado, data/hora, SHA do HEAD, SHA de publicação, overlays verificados, falhas, `paletaVerificada` e `paletaComprovada` (dataset/`--accent`/`--paper`).
 - **1 script de captura**: `e2e/visual/c3/captura-evidencias.mjs`.
+- **1 verificador de paletas**: `e2e/visual/c3/verificar-paletas.mjs` (comprova os 10 temas sem recapturar imagens).
 
 ### 7. Estado do Git
 
-- Commit `0eb99ac` criado e pushado para `origin feat/app-navigation-redesign`.
-- `e2e/visual/c3/` — versionado (110 PNGs + manifest.json + script).
+- Commit `0eb99ac` criado e pushado para `origin feat/app-navigation-redesign` (script + 110 evidências).
+- `e2e/visual/c3/` — versionado (110 PNGs + manifest.json + scripts).
 - Nenhum arquivo de fonte (HTML, CSS, JS, Worker) alterado.
 - `PHASE_C_CONSOLIDATED_REPORT.md` — exclusão pré-existente, não tocada.
 - `.tmp-c13/` — scripts temporários não versionados, intocados.
@@ -3535,7 +3538,22 @@ A nova matriz contém **110 capturas**, todas com `estado: "capturado"` (0 falha
 - Viewport desktop 1440×900: 5 telas em cada tema (nav-mobile não capturada em desktop).
 
 SHA-base do código capturado: `ab656b9e7a7d224b4269e598db649fcdce2d41a4` (HEAD da branch `feat/app-navigation-redesign` no momento da recaptura).
-SHA de publicação da recaptura: commit `0eb99ac` (contém o script corrigido, as 110 evidências e esta documentação), pushado para `origin feat/app-navigation-redesign`.
+SHA de publicação das imagens: commit `0eb99ac8c39b6e8633238718904391ee4b90d34e` (contém o script de captura e as 110 evidências), pushado para `origin feat/app-navigation-redesign`. Esse SHA foi propagado para `shaPublicacao` em **todas as 110 entradas** do `manifest.json`.
+
+#### C.3.0.1.1 — Correções solicitadas pela revisão independente
+
+A revisão independente apontou três pendências. Todas foram tratadas **sem recapturar as 110 imagens**:
+
+1. **Comprovação da paleta (antes insuficiente).** O script antigo retornava `aplicado` independentemente do resultado e verificava apenas a classe `dark-mode`. Correção:
+   - `applyThemeDirect()` agora lê de volta `document.body.dataset.lightTheme`/`darkTheme` e as variáveis CSS computadas `--accent` e `--paper`, comparando com os valores esperados de cada tema.
+   - A falha `paleta-incorreta` foi adicionada ao array `falhas` da captura.
+   - O verificador `e2e/visual/c3/verificar-paletas.mjs` comprova os 10 temas contra o app em execução. Resultado: **10/10 paletas comprovadas** (`dataset`, modo, `--accent`, `--paper`), **0 duplicados** dentro do mesmo modo.
+   - Cada entrada do `manifest.json` recebeu `paletaVerificada: "sim"` e `paletaComprovada` com `dataset`, `accent`, `paper` e método.
+   - Observação técnica: os temas `verde-claro` (id 2) e `bege-escuro` (id 3) não têm bloco próprio em `style/themes.css` e caem nos valores padrão (`:root` / `body.dark-mode`), que são distintos dos demais. Por isso a comprovação usa valores computados, não a mera presença de seletor.
+
+2. **Navegação simulada (limitação documentada).** As capturas não exercitam a navegação real do app; usam manipulação direta do DOM. Isso está agora explicitado na seção 5 e **não** deve ser interpretado como teste funcional de `switchTab`, dispatcher, patches, listeners ou FAB. As imagens comprovam apenas a aparência de cada tela no estado solicitado.
+
+3. **SHA de publicação ausente no manifesto.** As 110 entradas agora têm `shaPublicacao` preenchido com o commit `0eb99ac8c39b6e8633238718904391ee4b90d34e`, mantendo `shaHEAD = ab656b9e...` como SHA-base do código.
 
 Esta etapa produz evidências para auditoria independente. Não representa aprovação visual, correção funcional ou autorização para alterar o aplicativo.
 

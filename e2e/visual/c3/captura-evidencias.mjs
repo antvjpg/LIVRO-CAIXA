@@ -14,6 +14,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.resolve(__dirname, 'evidencias');
 const BASE = 'http://127.0.0.1:8000/index.html';
 const HEAD_SHA = 'ab656b9e7a7d224b4269e598db649fcdce2d41a4';
+/* Commit que publicou as 110 evidências (imagens + manifesto + script). */
+const SHA_PUBLICACAO = '0eb99ac8c39b6e8633238718904391ee4b90d34e';
 
 const VIEWPORTS = [
   { name: 'mobile', width: 390, height: 844, scale: 2, mobile: true },
@@ -21,18 +23,18 @@ const VIEWPORTS = [
 ];
 
 const THEMES_ALL = [
-  /* 5 temas claros */
-  { name: 'oliva-claro',    modo: 'claro', temaId: '1' },
-  { name: 'verde-claro',    modo: 'claro', temaId: '2' },
-  { name: 'lima-claro',     modo: 'claro', temaId: '3' },
-  { name: 'terracota-claro',modo: 'claro', temaId: '4' },
-  { name: 'laranja-claro',  modo: 'claro', temaId: '5' },
+  /* 5 temas claros — accent/paper = valores computados comprovados por verificar-paletas.mjs */
+  { name: 'oliva-claro',    modo: 'claro', temaId: '1', accent: '#5f7a43', paper: '#f7f5ef' },
+  { name: 'verde-claro',    modo: 'claro', temaId: '2', accent: '#327957', paper: '#f8f7f2' },
+  { name: 'lima-claro',     modo: 'claro', temaId: '3', accent: '#40916c', paper: '#faf9f6' },
+  { name: 'terracota-claro',modo: 'claro', temaId: '4', accent: '#c66f50', paper: '#fbf6ef' },
+  { name: 'laranja-claro',  modo: 'claro', temaId: '5', accent: '#e85002', paper: '#f9f9f9' },
   /* 5 temas escuros */
-  { name: 'oliva-escuro',   modo: 'escuro',temaId: '1' },
-  { name: 'verde-escuro',   modo: 'escuro',temaId: '2' },
-  { name: 'bege-escuro',    modo: 'escuro',temaId: '3' },
-  { name: 'terracota-escuro',modo: 'escuro',temaId: '4' },
-  { name: 'laranja-escuro', modo: 'escuro',temaId: '5' },
+  { name: 'oliva-escuro',   modo: 'escuro',temaId: '1', accent: '#9dd08b', paper: '#1a1917' },
+  { name: 'verde-escuro',   modo: 'escuro',temaId: '2', accent: '#22c55e', paper: '#121212' },
+  { name: 'bege-escuro',    modo: 'escuro',temaId: '3', accent: '#c9a86a', paper: '#0f1712' },
+  { name: 'terracota-escuro',modo: 'escuro',temaId: '4', accent: '#d08860', paper: '#141410' },
+  { name: 'laranja-escuro', modo: 'escuro',temaId: '5', accent: '#e85002', paper: '#000000' },
 ];
 
 const temaArg = process.argv[2];
@@ -126,16 +128,26 @@ async function applyThemeDirect(Runtime, theme) {
   );
   await sleep(500);
 
-  /* Chama applyLightTheme / applyDarkTheme global com o temaId */
+  /* Chama applyLightTheme / applyDarkTheme global com o temaId e lê de volta
+     o dataset e as variáveis CSS computadas (prova real da paleta). */
   var applyFn = theme.modo === 'escuro' ? 'applyDarkTheme' : 'applyLightTheme';
   var applyRes = await evalJS(Runtime,
-    '(() => { if (typeof window.' + applyFn + ' !== "function") return "' + applyFn + '-nao-encontrado"; window.' + applyFn + '("' + theme.temaId + '", false); return "' + applyFn + '-aplicado:' + theme.temaId + '"; })()'
+    '(() => { if (typeof window.' + applyFn + ' !== "function") return { erro: "' + applyFn + '-nao-encontrado" }; window.' + applyFn + '("' + theme.temaId + '", false); var cs = getComputedStyle(document.body); return { chamada: "' + applyFn + '-chamado:' + theme.temaId + '", dataset: "' + theme.modo + '" === "escuro" ? (document.body.dataset.darkTheme || "") : (document.body.dataset.lightTheme || ""), accent: (cs.getPropertyValue("--accent") || "").trim().toLowerCase(), paper: (cs.getPropertyValue("--paper") || "").trim().toLowerCase() }; })()'
   );
   await sleep(500);
 
   /* Verifica se o modo ficou correto */
   var verifyRes = await checkBodyMode(Runtime, theme.modo);
-  return { mode: modeRes, apply: applyRes, verify: verifyRes };
+
+  /* Paleta: dataset solicitado + accent/paper computados precisam bater */
+  var paletaDetalhes = { esperado: { dataset: theme.temaId, accent: theme.accent, paper: theme.paper }, obtido: applyRes };
+  var paletaOk = applyRes && !applyRes.erro &&
+    applyRes.dataset === theme.temaId &&
+    applyRes.accent === theme.accent &&
+    applyRes.paper === theme.paper;
+  var paleta = paletaOk ? 'correta' : ('incorreta:' + JSON.stringify(paletaDetalhes));
+
+  return { mode: modeRes, apply: applyRes.erro ? applyRes.erro : applyRes.chamada, verify: verifyRes, paleta: paleta, paletaDetalhes: paletaDetalhes };
 }
 
 async function navigateDirect(Runtime, tabName) {
@@ -252,7 +264,8 @@ async function captureScreen(client, Runtime, Page, viewport, theme, screens, sc
   if (screenKey === 'nav-mobile' && checks.navMobileValido !== 'valido') falhas.push('nav-mobile-invalido:' + checks.navMobileDetalhes);
   if (screenKey !== 'drawer-aberto' && checks.viewActive !== 'ativa') falhas.push('view-nao-ativa:' + checks.viewActive);
   if (themeRes.verify !== 'correto') falhas.push('tema-verificacao-falhou:' + themeRes.verify);
-  if (themeRes.apply.indexOf('nao-encontrado') !== -1) falhas.push('tema-apply-falhou:' + themeRes.apply);
+  if (themeRes.apply && themeRes.apply.indexOf('nao-encontrado') !== -1) falhas.push('tema-apply-falhou:' + themeRes.apply);
+  if (themeRes.paleta !== 'correta') falhas.push('paleta-incorreta:' + themeRes.paleta);
 
   if (falhas.length > 0) {
     estado = 'capturado-com-falhas: ' + falhas.join(', ');
@@ -271,8 +284,9 @@ async function captureScreen(client, Runtime, Page, viewport, theme, screens, sc
     estado: estado,
     dataHora: new Date().toISOString(),
     shaHEAD: HEAD_SHA,
-    shaPublicacao: '',
+    shaPublicacao: SHA_PUBLICACAO,
     temaValidacao: themeRes,
+    paletaVerificada: themeRes.paleta === 'correta' ? 'sim' : 'nao',
     overlaysVerificados: {
       authOculto: checks.auth,
       temaPickerOculto: checks.themePicker,

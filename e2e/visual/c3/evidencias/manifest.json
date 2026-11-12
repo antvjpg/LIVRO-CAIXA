@@ -10,7 +10,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:22:41.669Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -25,7 +25,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "2-mobile-oliva-claro-view-inicio.png",
@@ -38,7 +46,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:22:55.044Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -53,7 +61,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "3-mobile-oliva-claro-view-livro-caixa.png",
@@ -66,7 +82,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:23:08.222Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -81,7 +97,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "4-mobile-oliva-claro-drawer-aberto.png",
@@ -94,7 +118,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:23:20.611Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -109,7 +133,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "5-mobile-oliva-claro-perfil.png",
@@ -122,7 +154,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:23:33.990Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -137,7 +169,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "6-mobile-oliva-claro-nav-mobile.png",
@@ -150,7 +190,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:23:47.246Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -165,7 +205,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "7-mobile-verde-claro-tela-inicial.png",
@@ -178,7 +226,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:24:00.422Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -193,7 +241,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "8-mobile-verde-claro-view-inicio.png",
@@ -206,7 +262,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:24:13.607Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -221,7 +277,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "9-mobile-verde-claro-view-livro-caixa.png",
@@ -234,7 +298,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:24:26.776Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -249,7 +313,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "10-mobile-verde-claro-drawer-aberto.png",
@@ -262,7 +334,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:24:39.139Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -277,7 +349,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "11-mobile-verde-claro-perfil.png",
@@ -290,7 +370,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:24:52.369Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -305,7 +385,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "12-mobile-verde-claro-nav-mobile.png",
@@ -318,7 +406,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:25:05.560Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -333,7 +421,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "13-mobile-lima-claro-tela-inicial.png",
@@ -346,7 +442,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:25:18.770Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -361,7 +457,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "14-mobile-lima-claro-view-inicio.png",
@@ -374,7 +478,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:25:31.968Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -389,7 +493,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "15-mobile-lima-claro-view-livro-caixa.png",
@@ -402,7 +514,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:25:45.147Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -417,7 +529,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "16-mobile-lima-claro-drawer-aberto.png",
@@ -430,7 +550,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:25:57.466Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -445,7 +565,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "17-mobile-lima-claro-perfil.png",
@@ -458,7 +586,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:26:10.765Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -473,7 +601,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "18-mobile-lima-claro-nav-mobile.png",
@@ -486,7 +622,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:26:24.120Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -501,7 +637,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "19-mobile-terracota-claro-tela-inicial.png",
@@ -514,7 +658,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:26:37.337Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -529,7 +673,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "20-mobile-terracota-claro-view-inicio.png",
@@ -542,7 +694,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:26:50.568Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -557,7 +709,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "21-mobile-terracota-claro-view-livro-caixa.png",
@@ -570,7 +730,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:27:03.835Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -585,7 +745,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "22-mobile-terracota-claro-drawer-aberto.png",
@@ -598,7 +766,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:27:16.232Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -613,7 +781,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "23-mobile-terracota-claro-perfil.png",
@@ -626,7 +802,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:27:29.515Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -641,7 +817,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "24-mobile-terracota-claro-nav-mobile.png",
@@ -654,7 +838,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:27:42.895Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -669,7 +853,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "25-mobile-laranja-claro-tela-inicial.png",
@@ -682,7 +874,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:27:56.089Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -697,7 +889,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "26-mobile-laranja-claro-view-inicio.png",
@@ -710,7 +910,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:28:09.287Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -725,7 +925,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "27-mobile-laranja-claro-view-livro-caixa.png",
@@ -738,7 +946,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:28:22.746Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -753,7 +961,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "28-mobile-laranja-claro-drawer-aberto.png",
@@ -766,7 +982,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:28:35.322Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -781,7 +997,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "29-mobile-laranja-claro-perfil.png",
@@ -794,7 +1018,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:28:48.747Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -809,7 +1033,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "30-mobile-laranja-claro-nav-mobile.png",
@@ -822,7 +1054,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:29:02.190Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -837,7 +1069,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "31-mobile-oliva-escuro-tela-inicial.png",
@@ -850,7 +1090,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:29:15.595Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -865,7 +1105,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "32-mobile-oliva-escuro-view-inicio.png",
@@ -878,7 +1126,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:29:28.756Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -893,7 +1141,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "33-mobile-oliva-escuro-view-livro-caixa.png",
@@ -906,7 +1162,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:29:42.369Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -921,7 +1177,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "34-mobile-oliva-escuro-drawer-aberto.png",
@@ -934,7 +1198,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:29:55.120Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -949,7 +1213,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "35-mobile-oliva-escuro-perfil.png",
@@ -962,7 +1234,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:30:08.603Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -977,7 +1249,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "36-mobile-oliva-escuro-nav-mobile.png",
@@ -990,7 +1270,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:30:22.192Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -1005,7 +1285,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "37-mobile-verde-escuro-tela-inicial.png",
@@ -1018,7 +1306,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:30:35.805Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -1033,7 +1321,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "38-mobile-verde-escuro-view-inicio.png",
@@ -1046,7 +1342,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:30:49.748Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -1061,7 +1357,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "39-mobile-verde-escuro-view-livro-caixa.png",
@@ -1074,7 +1378,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:31:06.056Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -1089,7 +1393,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "40-mobile-verde-escuro-drawer-aberto.png",
@@ -1102,7 +1414,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:31:20.900Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -1117,7 +1429,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "41-mobile-verde-escuro-perfil.png",
@@ -1130,7 +1450,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:31:35.204Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -1145,7 +1465,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "42-mobile-verde-escuro-nav-mobile.png",
@@ -1158,7 +1486,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:31:48.637Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -1173,7 +1501,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "43-mobile-bege-escuro-tela-inicial.png",
@@ -1186,7 +1522,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:32:02.141Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -1201,7 +1537,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "44-mobile-bege-escuro-view-inicio.png",
@@ -1214,7 +1558,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:32:15.410Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -1229,7 +1573,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "45-mobile-bege-escuro-view-livro-caixa.png",
@@ -1242,7 +1594,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:32:28.790Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -1257,7 +1609,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "46-mobile-bege-escuro-drawer-aberto.png",
@@ -1270,7 +1630,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:32:41.287Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -1285,7 +1645,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "47-mobile-bege-escuro-perfil.png",
@@ -1298,7 +1666,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:32:54.700Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -1313,7 +1681,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "48-mobile-bege-escuro-nav-mobile.png",
@@ -1326,7 +1702,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:33:07.980Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -1341,7 +1717,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "49-mobile-terracota-escuro-tela-inicial.png",
@@ -1354,7 +1738,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:33:21.550Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -1369,7 +1753,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "50-mobile-terracota-escuro-view-inicio.png",
@@ -1382,7 +1774,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:33:35.309Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -1397,7 +1789,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "51-mobile-terracota-escuro-view-livro-caixa.png",
@@ -1410,7 +1810,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:33:49.102Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -1425,7 +1825,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "52-mobile-terracota-escuro-drawer-aberto.png",
@@ -1438,7 +1846,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:34:01.996Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -1453,7 +1861,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "53-mobile-terracota-escuro-perfil.png",
@@ -1466,7 +1882,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:34:15.803Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -1481,7 +1897,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "54-mobile-terracota-escuro-nav-mobile.png",
@@ -1494,7 +1918,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:34:29.624Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -1509,7 +1933,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "55-mobile-laranja-escuro-tela-inicial.png",
@@ -1522,7 +1954,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:34:43.369Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -1537,7 +1969,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "56-mobile-laranja-escuro-view-inicio.png",
@@ -1550,7 +1990,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:34:57.086Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -1565,7 +2005,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "57-mobile-laranja-escuro-view-livro-caixa.png",
@@ -1578,7 +2026,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:35:10.959Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -1593,7 +2041,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "58-mobile-laranja-escuro-drawer-aberto.png",
@@ -1606,7 +2062,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:35:23.904Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -1621,7 +2077,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "59-mobile-laranja-escuro-perfil.png",
@@ -1634,7 +2098,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:35:37.616Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -1649,7 +2113,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "60-mobile-laranja-escuro-nav-mobile.png",
@@ -1662,7 +2134,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:35:50.989Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -1677,7 +2149,15 @@
       "viewActive": "ativa",
       "navMobileValido": "valido"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "61-desktop-oliva-claro-tela-inicial.png",
@@ -1690,7 +2170,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:36:04.927Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -1705,7 +2185,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "62-desktop-oliva-claro-view-inicio.png",
@@ -1718,7 +2206,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:36:17.982Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -1733,7 +2221,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "63-desktop-oliva-claro-view-livro-caixa.png",
@@ -1746,7 +2242,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:36:30.969Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -1761,7 +2257,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "64-desktop-oliva-claro-drawer-aberto.png",
@@ -1774,7 +2278,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:36:43.188Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -1789,7 +2293,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "65-desktop-oliva-claro-perfil.png",
@@ -1802,7 +2314,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:36:56.193Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:1",
@@ -1817,7 +2329,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#5f7a43",
+      "paper": "#f7f5ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "66-desktop-verde-claro-tela-inicial.png",
@@ -1830,7 +2350,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:37:09.232Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -1845,7 +2365,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "67-desktop-verde-claro-view-inicio.png",
@@ -1858,7 +2386,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:37:22.316Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -1873,7 +2401,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "68-desktop-verde-claro-view-livro-caixa.png",
@@ -1886,7 +2422,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:37:35.609Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -1901,7 +2437,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "69-desktop-verde-claro-drawer-aberto.png",
@@ -1914,7 +2458,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:37:48.610Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -1929,7 +2473,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "70-desktop-verde-claro-perfil.png",
@@ -1942,7 +2494,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:38:02.138Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:2",
@@ -1957,7 +2509,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#327957",
+      "paper": "#f8f7f2",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "71-desktop-lima-claro-tela-inicial.png",
@@ -1970,7 +2530,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:38:15.535Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -1985,7 +2545,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "72-desktop-lima-claro-view-inicio.png",
@@ -1998,7 +2566,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:38:28.787Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -2013,7 +2581,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "73-desktop-lima-claro-view-livro-caixa.png",
@@ -2026,7 +2602,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:38:42.127Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -2041,7 +2617,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "74-desktop-lima-claro-drawer-aberto.png",
@@ -2054,7 +2638,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:38:54.535Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -2069,7 +2653,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "75-desktop-lima-claro-perfil.png",
@@ -2082,7 +2674,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:39:07.915Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:3",
@@ -2097,7 +2689,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#40916c",
+      "paper": "#faf9f6",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "76-desktop-terracota-claro-tela-inicial.png",
@@ -2110,7 +2710,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:39:21.484Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -2125,7 +2725,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "77-desktop-terracota-claro-view-inicio.png",
@@ -2138,7 +2746,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:39:35.193Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -2153,7 +2761,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "78-desktop-terracota-claro-view-livro-caixa.png",
@@ -2166,7 +2782,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:39:48.643Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -2181,7 +2797,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "79-desktop-terracota-claro-drawer-aberto.png",
@@ -2194,7 +2818,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:40:01.280Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -2209,7 +2833,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "80-desktop-terracota-claro-perfil.png",
@@ -2222,7 +2854,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:40:14.793Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:4",
@@ -2237,7 +2869,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#c66f50",
+      "paper": "#fbf6ef",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "81-desktop-laranja-claro-tela-inicial.png",
@@ -2250,7 +2890,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:40:28.093Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -2265,7 +2905,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "82-desktop-laranja-claro-view-inicio.png",
@@ -2278,7 +2926,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:40:41.448Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -2293,7 +2941,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "83-desktop-laranja-claro-view-livro-caixa.png",
@@ -2306,7 +2962,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:40:55.007Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -2321,7 +2977,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "84-desktop-laranja-claro-drawer-aberto.png",
@@ -2334,7 +2998,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:41:07.951Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -2349,7 +3013,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "85-desktop-laranja-claro-perfil.png",
@@ -2362,7 +3034,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:41:21.312Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "light-mode-set",
       "apply": "applyLightTheme-aplicado:5",
@@ -2377,7 +3049,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#f9f9f9",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "86-desktop-oliva-escuro-tela-inicial.png",
@@ -2390,7 +3070,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:41:34.579Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -2405,7 +3085,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "87-desktop-oliva-escuro-view-inicio.png",
@@ -2418,7 +3106,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:41:47.770Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -2433,7 +3121,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "88-desktop-oliva-escuro-view-livro-caixa.png",
@@ -2446,7 +3142,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:42:01.163Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -2461,7 +3157,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "89-desktop-oliva-escuro-drawer-aberto.png",
@@ -2474,7 +3178,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:42:13.778Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -2489,7 +3193,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "90-desktop-oliva-escuro-perfil.png",
@@ -2502,7 +3214,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:42:27.061Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:1",
@@ -2517,7 +3229,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "1",
+      "accent": "#9dd08b",
+      "paper": "#1a1917",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "91-desktop-verde-escuro-tela-inicial.png",
@@ -2530,7 +3250,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:42:40.278Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -2545,7 +3265,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "92-desktop-verde-escuro-view-inicio.png",
@@ -2558,7 +3286,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:42:53.563Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -2573,7 +3301,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "93-desktop-verde-escuro-view-livro-caixa.png",
@@ -2586,7 +3322,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:43:06.819Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -2601,7 +3337,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "94-desktop-verde-escuro-drawer-aberto.png",
@@ -2614,7 +3358,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:43:19.789Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -2629,7 +3373,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "95-desktop-verde-escuro-perfil.png",
@@ -2642,7 +3394,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:43:33.939Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:2",
@@ -2657,7 +3409,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "2",
+      "accent": "#22c55e",
+      "paper": "#121212",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "96-desktop-bege-escuro-tela-inicial.png",
@@ -2670,7 +3430,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:43:49.124Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -2685,7 +3445,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "97-desktop-bege-escuro-view-inicio.png",
@@ -2698,7 +3466,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:44:02.533Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -2713,7 +3481,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "98-desktop-bege-escuro-view-livro-caixa.png",
@@ -2726,7 +3502,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:44:15.947Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -2741,7 +3517,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "99-desktop-bege-escuro-drawer-aberto.png",
@@ -2754,7 +3538,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:44:28.546Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -2769,7 +3553,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "100-desktop-bege-escuro-perfil.png",
@@ -2782,7 +3574,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:44:41.906Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:3",
@@ -2797,7 +3589,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "3",
+      "accent": "#c9a86a",
+      "paper": "#0f1712",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "101-desktop-terracota-escuro-tela-inicial.png",
@@ -2810,7 +3610,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:44:55.460Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -2825,7 +3625,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "102-desktop-terracota-escuro-view-inicio.png",
@@ -2838,7 +3646,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:45:08.908Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -2853,7 +3661,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "103-desktop-terracota-escuro-view-livro-caixa.png",
@@ -2866,7 +3682,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:45:22.148Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -2881,7 +3697,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "104-desktop-terracota-escuro-drawer-aberto.png",
@@ -2894,7 +3718,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:45:34.334Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -2909,7 +3733,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "105-desktop-terracota-escuro-perfil.png",
@@ -2922,7 +3754,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:45:47.466Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:4",
@@ -2937,7 +3769,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "4",
+      "accent": "#d08860",
+      "paper": "#141410",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "106-desktop-laranja-escuro-tela-inicial.png",
@@ -2950,7 +3790,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:46:00.548Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -2965,7 +3805,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "107-desktop-laranja-escuro-view-inicio.png",
@@ -2978,7 +3826,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:46:13.705Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -2993,7 +3841,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "108-desktop-laranja-escuro-view-livro-caixa.png",
@@ -3006,7 +3862,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:46:26.995Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -3021,7 +3877,15 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "109-desktop-laranja-escuro-drawer-aberto.png",
@@ -3034,7 +3898,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:46:39.207Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -3049,7 +3913,15 @@
       "viewActive": "nao-aplica",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   },
   {
     "arquivo": "110-desktop-laranja-escuro-perfil.png",
@@ -3062,7 +3934,7 @@
     "estado": "capturado",
     "dataHora": "2026-11-12T13:46:52.347Z",
     "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
-    "shaPublicacao": "",
+    "shaPublicacao": "0eb99ac8c39b6e8633238718904391ee4b90d34e",
     "temaValidacao": {
       "mode": "dark-mode-set",
       "apply": "applyDarkTheme-aplicado:5",
@@ -3077,6 +3949,14 @@
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
     },
-    "falhas": []
+    "falhas": [],
+    "paletaVerificada": "sim",
+    "paletaComprovada": {
+      "metodo": "dataset + CSS computado (verificar-paletas.mjs)",
+      "dataset": "5",
+      "accent": "#e85002",
+      "paper": "#000000",
+      "verificadoEm": "2026-11-12T15:03:46.085Z"
+    }
   }
 ]
