@@ -4,263 +4,2089 @@
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "oliva-claro",
+    "modo": "claro",
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrao)",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:14.841Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:42:01.727Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
     "arquivo": "2-mobile-oliva-claro-view-inicio.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "oliva-claro",
+    "modo": "claro",
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:17.301Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:42:10.451Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
     "arquivo": "3-mobile-oliva-claro-view-livro-caixa.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "oliva-claro",
+    "modo": "claro",
     "tela": "view-livro-caixa",
     "descricao": "View Livro-Caixa",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:19.636Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:42:19.168Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
     "arquivo": "4-mobile-oliva-claro-drawer-aberto.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "oliva-claro",
+    "modo": "claro",
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:21.916Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:42:27.953Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
     "arquivo": "5-mobile-oliva-claro-perfil.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "oliva-claro",
+    "modo": "claro",
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:24.385Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:42:37.135Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
     "arquivo": "6-mobile-oliva-claro-nav-mobile.png",
     "viewport": "mobile",
     "resolucao": "390x844",
     "tema": "oliva-claro",
+    "modo": "claro",
     "tela": "nav-mobile",
     "descricao": "Navegação mobile inferior",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:26.852Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:42:46.392Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "7-mobile-oliva-escuro-tela-inicial.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "oliva-escuro",
+    "arquivo": "7-desktop-oliva-claro-tela-inicial.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "oliva-claro",
+    "modo": "claro",
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrao)",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:33.124Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:42:55.658Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "8-mobile-oliva-escuro-view-inicio.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "oliva-escuro",
-    "tela": "view-inicio",
-    "descricao": "View Início",
-    "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:35.482Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
-  },
-  {
-    "arquivo": "9-mobile-oliva-escuro-view-livro-caixa.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "oliva-escuro",
-    "tela": "view-livro-caixa",
-    "descricao": "View Livro-Caixa",
-    "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:37.791Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
-  },
-  {
-    "arquivo": "10-mobile-oliva-escuro-drawer-aberto.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "oliva-escuro",
-    "tela": "drawer-aberto",
-    "descricao": "Drawer aberto",
-    "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:40.003Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
-  },
-  {
-    "arquivo": "11-mobile-oliva-escuro-perfil.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "oliva-escuro",
-    "tela": "perfil",
-    "descricao": "Perfil",
-    "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:42.925Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
-  },
-  {
-    "arquivo": "12-mobile-oliva-escuro-nav-mobile.png",
-    "viewport": "mobile",
-    "resolucao": "390x844",
-    "tema": "oliva-escuro",
-    "tela": "nav-mobile",
-    "descricao": "Navegação mobile inferior",
-    "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:46.214Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
-  },
-  {
-    "arquivo": "13-desktop-oliva-claro-tela-inicial.png",
+    "arquivo": "8-desktop-oliva-claro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
     "tema": "oliva-claro",
+    "modo": "claro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:43:04.561Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "9-desktop-oliva-claro-view-livro-caixa.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "oliva-claro",
+    "modo": "claro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:43:13.332Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "10-desktop-oliva-claro-drawer-aberto.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "oliva-claro",
+    "modo": "claro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:43:22.208Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "11-desktop-oliva-claro-perfil.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "oliva-claro",
+    "modo": "claro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:43:31.029Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "12-mobile-verde-claro-tela-inicial.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrao)",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:54.672Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:43:49.700Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "14-desktop-oliva-claro-view-inicio.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "oliva-claro",
+    "arquivo": "13-mobile-verde-claro-view-inicio.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:56.997Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:43:58.457Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "15-desktop-oliva-claro-view-livro-caixa.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "oliva-claro",
+    "arquivo": "14-mobile-verde-claro-view-livro-caixa.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "view-livro-caixa",
     "descricao": "View Livro-Caixa",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:05:59.187Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:44:07.189Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "16-desktop-oliva-claro-drawer-aberto.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "oliva-claro",
+    "arquivo": "15-mobile-verde-claro-drawer-aberto.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:06:01.529Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:44:15.927Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "17-desktop-oliva-claro-perfil.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "oliva-claro",
+    "arquivo": "16-mobile-verde-claro-perfil.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:06:03.933Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:44:24.669Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "18-desktop-oliva-claro-nav-mobile.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "oliva-claro",
+    "arquivo": "17-mobile-verde-claro-nav-mobile.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "nav-mobile",
     "descricao": "Navegação mobile inferior",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:06:06.291Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:44:33.384Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "19-desktop-oliva-escuro-tela-inicial.png",
+    "arquivo": "18-desktop-verde-claro-tela-inicial.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
-    "tema": "oliva-escuro",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "tela-inicial",
     "descricao": "Tela inicial do app (viewCaixa por padrao)",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:06:12.405Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:44:42.577Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "20-desktop-oliva-escuro-view-inicio.png",
+    "arquivo": "19-desktop-verde-claro-view-inicio.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
-    "tema": "oliva-escuro",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "view-inicio",
     "descricao": "View Início",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:06:14.640Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:44:51.481Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "21-desktop-oliva-escuro-view-livro-caixa.png",
+    "arquivo": "20-desktop-verde-claro-view-livro-caixa.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
-    "tema": "oliva-escuro",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "view-livro-caixa",
     "descricao": "View Livro-Caixa",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:06:16.778Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:45:00.330Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "22-desktop-oliva-escuro-drawer-aberto.png",
+    "arquivo": "21-desktop-verde-claro-drawer-aberto.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
-    "tema": "oliva-escuro",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "drawer-aberto",
     "descricao": "Drawer aberto",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:06:18.872Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:45:09.046Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "23-desktop-oliva-escuro-perfil.png",
+    "arquivo": "22-desktop-verde-claro-perfil.png",
     "viewport": "desktop",
     "resolucao": "1440x900",
-    "tema": "oliva-escuro",
+    "tema": "verde-claro",
+    "modo": "claro",
     "tela": "perfil",
     "descricao": "Perfil",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:06:21.176Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:45:17.797Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   },
   {
-    "arquivo": "24-desktop-oliva-escuro-nav-mobile.png",
-    "viewport": "desktop",
-    "resolucao": "1440x900",
-    "tema": "oliva-escuro",
+    "arquivo": "23-mobile-lima-claro-tela-inicial.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:46:02.466Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "24-mobile-lima-claro-view-inicio.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:46:11.238Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "25-mobile-lima-claro-view-livro-caixa.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:46:20.056Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "26-mobile-lima-claro-drawer-aberto.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:46:28.802Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "27-mobile-lima-claro-perfil.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:46:37.608Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "28-mobile-lima-claro-nav-mobile.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "lima-claro",
+    "modo": "claro",
     "tela": "nav-mobile",
     "descricao": "Navegação mobile inferior",
     "estado": "capturado",
-    "dataHora": "2026-11-11T19:06:23.462Z",
-    "shaHEAD": "23b6c63a50e9ebb5aa1ee8837b4134bc2f536007"
+    "dataHora": "2026-11-12T00:46:46.337Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "29-desktop-lima-claro-tela-inicial.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:46:55.521Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "30-desktop-lima-claro-view-inicio.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:47:04.240Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "31-desktop-lima-claro-view-livro-caixa.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:47:12.929Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "32-desktop-lima-claro-drawer-aberto.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:47:21.613Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "33-desktop-lima-claro-perfil.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:47:30.289Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "34-mobile-terracota-claro-tela-inicial.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:47:44.747Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "35-mobile-terracota-claro-view-inicio.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:47:53.472Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "36-mobile-terracota-claro-view-livro-caixa.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:48:02.187Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "37-mobile-terracota-claro-drawer-aberto.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:48:10.903Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "38-mobile-terracota-claro-perfil.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:48:19.603Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "39-mobile-terracota-claro-nav-mobile.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "nav-mobile",
+    "descricao": "Navegação mobile inferior",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:48:28.303Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "40-desktop-terracota-claro-tela-inicial.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:48:40.777Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "41-desktop-terracota-claro-view-inicio.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:49:57.310Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "42-desktop-terracota-claro-view-livro-caixa.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:50:29.107Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "43-desktop-terracota-claro-drawer-aberto.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:50:37.970Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "44-desktop-terracota-claro-perfil.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:50:46.776Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "45-mobile-laranja-claro-tela-inicial.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:51:06.826Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "46-mobile-laranja-claro-view-inicio.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:51:15.586Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "47-mobile-laranja-claro-view-livro-caixa.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:51:24.338Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "48-mobile-laranja-claro-drawer-aberto.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:51:33.070Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "49-mobile-laranja-claro-perfil.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:51:41.800Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "50-mobile-laranja-claro-nav-mobile.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "nav-mobile",
+    "descricao": "Navegação mobile inferior",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:51:50.512Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "51-desktop-laranja-claro-tela-inicial.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:51:59.713Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "52-desktop-laranja-claro-view-inicio.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:52:08.360Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "53-desktop-laranja-claro-view-livro-caixa.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:52:17.011Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "54-desktop-laranja-claro-drawer-aberto.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:52:25.658Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "55-desktop-laranja-claro-perfil.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:52:34.372Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "56-mobile-oliva-escuro-tela-inicial.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:53:59.006Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "57-mobile-oliva-escuro-view-inicio.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:54:07.913Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "58-mobile-oliva-escuro-view-livro-caixa.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:54:16.722Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "59-mobile-oliva-escuro-drawer-aberto.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:54:25.659Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "60-mobile-oliva-escuro-perfil.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:54:34.456Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "61-mobile-oliva-escuro-nav-mobile.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "nav-mobile",
+    "descricao": "Navegação mobile inferior",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:54:43.401Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "62-desktop-oliva-escuro-tela-inicial.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:54:52.731Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "63-desktop-oliva-escuro-view-inicio.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:55:01.567Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "64-desktop-oliva-escuro-view-livro-caixa.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:55:10.521Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "65-desktop-oliva-escuro-drawer-aberto.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:55:19.408Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "66-desktop-oliva-escuro-perfil.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:55:28.275Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "67-mobile-verde-escuro-tela-inicial.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:55:56.348Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "68-mobile-verde-escuro-view-inicio.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:56:05.291Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "69-mobile-verde-escuro-view-livro-caixa.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:56:14.390Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "70-mobile-verde-escuro-drawer-aberto.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:56:24.351Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "71-mobile-verde-escuro-perfil.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:56:33.563Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "72-mobile-verde-escuro-nav-mobile.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "nav-mobile",
+    "descricao": "Navegação mobile inferior",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:56:42.750Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "73-desktop-verde-escuro-tela-inicial.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:56:52.179Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "74-desktop-verde-escuro-view-inicio.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:57:01.266Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "75-desktop-verde-escuro-view-livro-caixa.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:57:10.322Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "76-desktop-verde-escuro-drawer-aberto.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:57:19.174Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "77-desktop-verde-escuro-perfil.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:57:27.963Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "78-mobile-bege-escuro-tela-inicial.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:57:46.748Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "79-mobile-bege-escuro-view-inicio.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:57:55.889Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "80-mobile-bege-escuro-view-livro-caixa.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:58:04.752Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "81-mobile-bege-escuro-drawer-aberto.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:58:13.560Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "82-mobile-bege-escuro-perfil.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:58:22.333Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "83-mobile-bege-escuro-nav-mobile.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "nav-mobile",
+    "descricao": "Navegação mobile inferior",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:58:31.073Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "84-desktop-bege-escuro-tela-inicial.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:58:40.245Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "85-desktop-bege-escuro-view-inicio.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:58:48.913Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "86-desktop-bege-escuro-view-livro-caixa.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:58:57.595Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "87-desktop-bege-escuro-drawer-aberto.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:59:06.277Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "88-desktop-bege-escuro-perfil.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:59:14.927Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "89-mobile-terracota-escuro-tela-inicial.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:59:46.068Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "90-mobile-terracota-escuro-view-inicio.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T00:59:54.805Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "91-mobile-terracota-escuro-view-livro-caixa.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:00:03.555Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "92-mobile-terracota-escuro-drawer-aberto.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:00:12.302Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "93-mobile-terracota-escuro-perfil.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:00:20.998Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "94-mobile-terracota-escuro-nav-mobile.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "nav-mobile",
+    "descricao": "Navegação mobile inferior",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:00:29.683Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "95-desktop-terracota-escuro-tela-inicial.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:00:38.841Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "96-desktop-terracota-escuro-view-inicio.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:00:47.510Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "97-desktop-terracota-escuro-view-livro-caixa.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:00:56.194Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "98-desktop-terracota-escuro-drawer-aberto.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:01:04.882Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "99-desktop-terracota-escuro-perfil.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:01:13.579Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "100-mobile-laranja-escuro-tela-inicial.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:01:52.486Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "101-mobile-laranja-escuro-view-inicio.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:02:01.179Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "102-mobile-laranja-escuro-view-livro-caixa.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:02:09.862Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "103-mobile-laranja-escuro-drawer-aberto.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:02:18.594Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "104-mobile-laranja-escuro-perfil.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:02:27.317Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "105-mobile-laranja-escuro-nav-mobile.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "nav-mobile",
+    "descricao": "Navegação mobile inferior",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:02:36.011Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "106-desktop-laranja-escuro-tela-inicial.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "tela-inicial",
+    "descricao": "Tela inicial do app (viewCaixa por padrao)",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:02:45.185Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "107-desktop-laranja-escuro-view-inicio.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "view-inicio",
+    "descricao": "View Início",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:02:53.857Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "108-desktop-laranja-escuro-view-livro-caixa.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "view-livro-caixa",
+    "descricao": "View Livro-Caixa",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:03:02.518Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "109-desktop-laranja-escuro-drawer-aberto.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "drawer-aberto",
+    "descricao": "Drawer aberto",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:03:11.187Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "nao-aplica",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "110-desktop-laranja-escuro-perfil.png",
+    "viewport": "desktop",
+    "resolucao": "1440x900",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "perfil",
+    "descricao": "Perfil",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T01:03:19.851Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "modoCorreto": "correto"
+    },
+    "falhas": []
   }
 ]

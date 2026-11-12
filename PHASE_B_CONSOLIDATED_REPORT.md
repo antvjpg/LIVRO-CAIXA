@@ -3465,12 +3465,13 @@ Telas:
 
 Diretório: `e2e/visual/c3/evidencias/`
 
-- **24 arquivos PNG**, nomeados no padrão `N-viewport-tema-tela.png` (de `1-` a `24-`).
-- **1 arquivo `manifest.json`**, contendo para cada captura: nome do arquivo, viewport, resolução, tema, tela, descrição, estado, data/hora e SHA do HEAD utilizado.
+- **110 arquivos PNG**, nomeados no padrão `N-viewport-tema-tela.png` (de `1-` a `110-`).
+- **1 arquivo `manifest.json`**, contendo para cada captura: nome do arquivo, viewport, resolução, tema, modo, tela, descrição, estado, data/hora, SHA do HEAD, overlays verificados e falhas.
+- **1 script de captura**: `e2e/visual/c3/captura-evidencias.mjs`.
 
 ### 6. Estado do Git
 
-- `e2e/visual/c3/` — novo diretório não versionado (24 PNGs + manifest.json).
+- `e2e/visual/c3/` — novo diretório não versionado (110 PNGs + manifest.json + script).
 - Nenhum arquivo de fonte (HTML, CSS, JS, Worker) alterado.
 - `PHASE_C_CONSOLIDATED_REPORT.md` — exclusão pré-existente, não tocada.
 - `.tmp-c13/` — scripts temporários não versionados, intocados.
@@ -3481,4 +3482,31 @@ Diretório: `e2e/visual/c3/evidencias/`
 **Fase C — C.3.0: COLETA DE EVIDÊNCIAS VISUAIS**
 
 Status: CONCLUÍDA — 24 capturas realizadas e documentadas em `e2e/visual/c3/evidencias/`. Pronto para auditoria visual independente. Nenhum diagnóstico, classificação de defeitos ou aprovação da C.3 produzidos nesta etapa.
+
+---
+
+### C.3.0.1 — Recaptura e validação das evidências
+
+A primeira execução da C.3.0 foi preservada como registro histórico, mas suas imagens não foram consideradas uma matriz válida para auditoria visual independente. A revisão identificou contaminação de estado entre capturas, fechamento incorreto do modal de tema e inclusão indevida de navegação mobile no viewport desktop.
+
+O script foi corrigido para isolar cada captura (recarregando `index.html` antes de cada uma), aplicar e verificar explicitamente o tema, fechar os overlays por seus controles específicos (`[data-close-drawer]` para o drawer, `#panelThemePicker .modal-close` para o seletor de tema) e validar a tela solicitada antes de gravar cada imagem.
+
+A nova matriz contém **110 capturas**:
+- 10 temas (5 claros + 5 escuros): oliva-claro, verde-claro, lima-claro, terracota-claro, laranja-claro, oliva-escuro, verde-escuro, bege-escuro, terracota-escuro, laranja-escuro.
+- Viewport mobile 390×844: 6 telas em cada tema (tela-inicial, view-inicio, view-livro-caixa, drawer-aberto, perfil, nav-mobile).
+- Viewport desktop 1440×900: 5 telas em cada tema (tela-inicial, view-inicio, view-livro-caixa, drawer-aberto, perfil). A navegação inferior mobile não é capturada em desktop porque não é exibida nesse breakpoint (`display:none`).
+
+Cada captura foi validada antes da gravação:
+- `#authOverlay` oculto ou inexistente.
+- `#panelThemePicker` oculto ou inexistente.
+- `#appDrawerOverlay` oculto (exceto na captura `drawer-aberto`).
+- Modo claro/escuro confirmado no `document.body` (`dark-mode`).
+- Tela solicitada efetivamente ativa.
+
+A autenticação Firebase continua sendo uma limitação: o overlay de autenticação é ocultado apenas em runtime, sem representar uma sessão autenticada ou dados reais do usuário.
+
+Esta etapa produz evidências para auditoria independente. Não representa aprovação visual, correção funcional ou autorização para alterar o aplicativo.
+
+SHA-base do código capturado: `ab656b9e7a7d224b4269e598db649fcdce2d41a4` (HEAD da branch `feat/app-navigation-redesign` no momento da recaptura).
+SHA de publicação da recaptura: commit que contém o script corrigido, as 110 evidências e esta documentação.
 
