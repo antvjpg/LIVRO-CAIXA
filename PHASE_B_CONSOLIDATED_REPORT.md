@@ -3610,7 +3610,7 @@ As capturas continuam usando manipulação direta do DOM e não exercitam a nave
 - Nenhuma imagem existente foi apagada.
 - As 100 imagens anteriores foram preservadas; apenas 10 novas foram adicionadas.
 - `shaHEAD` permanece `ab656b9e7a7d224b4269e598db649fcdce2d41a4`.
-- O SHA de publicação é propagado após o commit que publica esta matriz.
+- O SHA de publicação é `e172cf40bce2e2eef2ba7db69acea341757747e7`, commit que publica esta matriz; ele foi propagado para `shaPublicacao` em todas as 110 entradas do `manifest.json`.
 
 #### Verificações obrigatórias
 
