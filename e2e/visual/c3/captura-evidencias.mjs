@@ -1,5 +1,7 @@
-/* C.3.0.1 — Coleta de evidências visuais corrigida e validada (todos os temas).
-   Uso: node e2e/visual/c3/captura-evidencias.mjs [tema]
+/* C.3.0.2 — Matriz normalizada: validação real da navegação inferior e
+   complementação da cobertura mobile com a nav reexibida.
+   Uso: node e2e/visual/c3/captura-evidencias.mjs [tema] [--theme=tema] [--screen=tela]
+   Ex.: node e2e/visual/c3/captura-evidencias.mjs --screen=perfil-rolagem-nav-visivel
    Requer: servidor local em :8000 e Chromium com --remote-debugging-port=9222
    NÃO modifica fonte do app. Apenas manipula DOM em runtime para capturas.
    Cada captura começa em estado limpo (recarrega index.html).
@@ -37,7 +39,15 @@ const THEMES_ALL = [
   { name: 'laranja-escuro', modo: 'escuro',temaId: '5', accent: '#e85002', paper: '#000000' },
 ];
 
-const temaArg = process.argv[2];
+var cliArgs = process.argv.slice(2);
+var temaArg = null;
+var screenArg = null;
+cliArgs.forEach(function(a) {
+  if (a.indexOf('--screen=') === 0) screenArg = a.slice(9);
+  else if (a.indexOf('--theme=') === 0) temaArg = a.slice(8);
+  else if (a.indexOf('--') !== 0) temaArg = a;
+});
+
 const THEMES = temaArg ? THEMES_ALL.filter(function(t) { return t.name === temaArg; }) : THEMES_ALL;
 
 if (temaArg && THEMES.length === 0) {
@@ -53,10 +63,11 @@ if (temaArg && THEMES.length === 0) {
 const MOBILE_SCREENS = [
   { key: 'tela-inicial',   desc: 'Tela inicial do app (viewCaixa por padrão)', tab: 'caixa' },
   { key: 'view-inicio',    desc: 'View Início', tab: 'inicio' },
-  { key: 'view-inicio-rolagem', desc: 'View Início — conteúdo abaixo da primeira dobra', tab: 'inicio', scroll: 'fundo' },
+  { key: 'view-inicio-rolagem', desc: 'View Início — conteúdo abaixo da primeira dobra', tab: 'inicio', scroll: 'fundo', navEsperada: 'oculta' },
   { key: 'drawer-aberto',  desc: 'Drawer aberto', tab: 'caixa' },
   { key: 'perfil',         desc: 'Perfil', tab: 'profile' },
-  { key: 'perfil-rolagem', desc: 'Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)', tab: 'profile', scroll: 'fundo' },
+  { key: 'perfil-rolagem', desc: 'Perfil — conteúdo abaixo da primeira dobra (relação com a navegação inferior fixa)', tab: 'profile', scroll: 'fundo', navEsperada: 'oculta' },
+  { key: 'perfil-rolagem-nav-visivel', desc: 'Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.', tab: 'profile', scroll: 'revelar-nav', navEsperada: 'visivel' },
 ];
 
 const DESKTOP_SCREENS = [
@@ -65,6 +76,16 @@ const DESKTOP_SCREENS = [
   { key: 'drawer-aberto',  desc: 'Drawer aberto', tab: 'caixa' },
   { key: 'perfil',         desc: 'Perfil', tab: 'profile' },
 ];
+
+if (screenArg) {
+  var allScreenKeys = MOBILE_SCREENS.map(function(s) { return s.key; })
+    .concat(DESKTOP_SCREENS.map(function(s) { return s.key; }));
+  if (allScreenKeys.indexOf(screenArg) === -1) {
+    console.error('Tela não encontrada: ' + screenArg);
+    console.error('Telas disponíveis: ' + allScreenKeys.join(', '));
+    process.exit(1);
+  }
+}
 
 const VIEW_ID_MAP = {
   'caixa': 'viewCaixa',
@@ -192,13 +213,32 @@ async function validateCapture(Runtime, viewport, theme, screenKey) {
 
   checks.modoCorreto = await checkBodyMode(Runtime, theme.modo);
 
+  var screenList = viewport.mobile ? MOBILE_SCREENS : DESKTOP_SCREENS;
+  var screenCfg = null;
+  for (var si = 0; si < screenList.length; si++) {
+    if (screenList[si].key === screenKey) { screenCfg = screenList[si]; break; }
+  }
+
   if (viewport.mobile) {
+    var navEsperada = 'visivel';
+    if (screenCfg && screenCfg.navEsperada) navEsperada = screenCfg.navEsperada;
+    else if (screenCfg && screenCfg.scroll === 'fundo') navEsperada = 'oculta';
+
     var navCheck = await evalJS(Runtime,
-      '(() => { var nav = document.querySelector(".mobile-bottom-nav"); if (!nav) return { encontrado: "nao", visivel: "nao", totalDestinos: 0 }; var cs = getComputedStyle(nav); var vis = cs.display !== "none" && cs.visibility !== "hidden"; var btns = nav.querySelectorAll("button, a"); return { encontrado: "sim", visivel: vis ? "sim" : "nao", totalDestinos: btns.length }; })()'
+      '(() => { var nav = document.querySelector(".mobile-bottom-nav"); if (!nav) return { encontrado: false, estado: "ausente", classeNavHidden: false, cssVisible: false, dentroDoViewport: false, totalDestinos: 0, geometria: null }; var cs = getComputedStyle(nav); var r = nav.getBoundingClientRect(); var vw = window.innerWidth, vh = window.innerHeight; var visW = Math.max(0, Math.min(r.right, vw) - Math.max(r.left, 0)); var visH = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0)); var area = r.width * r.height; var ratio = area > 0 ? (visW * visH) / area : 0; var hiddenClass = nav.classList.contains("nav-hidden") || document.body.classList.contains("nav-hidden"); var cssVisible = cs.display !== "none" && cs.visibility !== "hidden" && cs.opacity !== "0"; var dentro = visW > 0 && visH > 0 && ratio >= 0.9; var estado; if (!cssVisible || r.width === 0 || r.height === 0) estado = "ausente"; else if (hiddenClass && !dentro) estado = "oculta-intencional"; else if (!hiddenClass && dentro) estado = "visivel"; else estado = "inesperada"; return { encontrado: true, estado: estado, classeNavHidden: hiddenClass, cssVisible: cssVisible, dentroDoViewport: dentro, totalDestinos: nav.querySelectorAll("button, a").length, geometria: { left: Math.round(r.left), top: Math.round(r.top), right: Math.round(r.right), bottom: Math.round(r.bottom), width: Math.round(r.width), height: Math.round(r.height), visibleWidth: Math.round(visW), visibleHeight: Math.round(visH), areaRatio: Number(ratio.toFixed(3)) }, viewport: { width: vw, height: vh } }; })()'
     );
     checks.navMobileDetalhes = navCheck;
-    checks.navMobileValido = (navCheck.encontrado === "sim" && navCheck.visivel === "sim" && navCheck.totalDestinos >= 5) ? "valido" : "invalido";
+    checks.navMobileEstado = navCheck.estado;
+    checks.navEsperada = navEsperada;
+    if (navEsperada === 'oculta') {
+      checks.navMobileValido = navCheck.estado === 'oculta-intencional' ? 'oculta-por-rolagem' : 'invalido';
+    } else {
+      checks.navMobileValido = navCheck.estado === 'visivel' ? 'valido' : 'invalido';
+    }
   } else {
+    checks.navMobileDetalhes = null;
+    checks.navMobileEstado = 'nao-aplica';
+    checks.navEsperada = 'nao-aplica';
     checks.navMobileValido = 'nao-aplica';
   }
 
@@ -254,14 +294,27 @@ async function captureScreen(client, Runtime, Page, viewport, theme, screens, sc
     await closeDrawerDirect(Runtime);
   }
 
-  /* Posiciona a rolagem: 'fundo' para capturas complementares abaixo da dobra */
-  var rolagemEsperada = descObj && descObj.scroll === 'fundo' ? 'fundo' : 'topo';
+  /* Posiciona a rolagem:
+     - 'fundo': captura complementar abaixo da dobra (nav oculta pelo app);
+     - 'revelar-nav': fundo + pequeno movimento para cima para o app reexibir a nav. */
+  var rolagemEsperada = 'topo';
+  if (descObj && descObj.scroll === 'fundo') rolagemEsperada = 'fundo';
+  else if (descObj && descObj.scroll === 'revelar-nav') rolagemEsperada = 'revelar-nav';
   await evalJS(Runtime, '(() => { window.scrollTo(0, 0); return 1; })()');
   if (rolagemEsperada === 'fundo') {
     await evalJS(Runtime,
       '(() => { var se = document.scrollingElement || document.documentElement; window.scrollTo(0, se.scrollHeight); return 1; })()'
     );
     await sleep(700);
+  } else if (rolagemEsperada === 'revelar-nav') {
+    await evalJS(Runtime,
+      '(() => { var se = document.scrollingElement || document.documentElement; window.scrollTo(0, se.scrollHeight); return 1; })()'
+    );
+    await sleep(600);
+    await evalJS(Runtime,
+      '(() => { var se = document.scrollingElement || document.documentElement; window.scrollTo(0, Math.max(0, se.scrollHeight - se.clientHeight - 120)); return 1; })()'
+    );
+    await sleep(800);
   }
 
   /* Valida antes de gravar */
@@ -274,9 +327,16 @@ async function captureScreen(client, Runtime, Page, viewport, theme, screens, sc
   if (screenKey !== 'drawer-aberto' && checks.drawer !== 'oculto') falhas.push('drawer-visivel');
   if (screenKey === 'drawer-aberto' && checks.drawer !== 'visivel') falhas.push('drawer-nao-visivel');
   if (checks.modoCorreto !== 'correto') falhas.push('modo-incorreto');
-  if (viewport.mobile && checks.navMobileValido !== 'valido') falhas.push('nav-mobile-invalido:' + JSON.stringify(checks.navMobileDetalhes));
+  if (viewport.mobile) {
+    if (checks.navEsperada === 'oculta' && checks.navMobileEstado !== 'oculta-intencional') {
+      falhas.push('nav-esperada-oculta:' + checks.navMobileEstado);
+    }
+    if (checks.navEsperada === 'visivel' && checks.navMobileEstado !== 'visivel') {
+      falhas.push('nav-esperada-visivel:' + checks.navMobileEstado + ':' + JSON.stringify(checks.navMobileDetalhes && checks.navMobileDetalhes.geometria));
+    }
+  }
   if (screenKey !== 'drawer-aberto' && checks.viewActive !== 'ativa') falhas.push('view-nao-ativa:' + checks.viewActive);
-  if (rolagemEsperada === 'fundo' && checks.rolagem.y <= 0) falhas.push('rolagem-nao-efetuada');
+  if ((rolagemEsperada === 'fundo' || rolagemEsperada === 'revelar-nav') && checks.rolagem.y <= 0) falhas.push('rolagem-nao-efetuada');
   if (themeRes.verify !== 'correto') falhas.push('tema-verificacao-falhou:' + themeRes.verify);
   if (themeRes.apply && themeRes.apply.indexOf('nao-encontrado') !== -1) falhas.push('tema-apply-falhou:' + themeRes.apply);
   if (themeRes.paleta !== 'correta') falhas.push('paleta-incorreta:' + themeRes.paleta);
@@ -300,6 +360,13 @@ async function captureScreen(client, Runtime, Page, viewport, theme, screens, sc
     shaHEAD: HEAD_SHA,
     shaPublicacao: SHA_PUBLICACAO,
     rolagem: { posicao: rolagemEsperada, y: checks.rolagem.y, max: checks.rolagem.max },
+    navMobile: viewport.mobile ? {
+      esperado: checks.navEsperada,
+      estado: checks.navMobileEstado,
+      classeNavHidden: checks.navMobileDetalhes ? checks.navMobileDetalhes.classeNavHidden : null,
+      dentroDoViewport: checks.navMobileDetalhes ? checks.navMobileDetalhes.dentroDoViewport : null,
+      geometria: checks.navMobileDetalhes ? checks.navMobileDetalhes.geometria : null,
+    } : { esperado: 'nao-aplica', estado: 'nao-aplica' },
     temaValidacao: themeRes,
     paletaVerificada: themeRes.paleta === 'correta' ? 'sim' : 'nao',
     overlaysVerificados: {
@@ -351,6 +418,7 @@ async function main() {
     await sleep(500);
 
     var screens = vp.mobile ? MOBILE_SCREENS : DESKTOP_SCREENS;
+    if (screenArg) screens = screens.filter(function(s) { return s.key === screenArg; });
 
     for (var j = 0; j < THEMES.length; j++) {
       var theme = THEMES[j];

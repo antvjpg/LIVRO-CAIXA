@@ -3557,3 +3557,70 @@ A revisão independente apontou três pendências. Todas foram tratadas **sem re
 
 Esta etapa produz evidências para auditoria independente. Não representa aprovação visual, correção funcional ou autorização para alterar o aplicativo.
 
+
+---
+
+### C.3.0.2 — Normalização da matriz e complementação da cobertura mobile
+
+A revisão independente apontou que a validação da navegação inferior mobile era insuficiente: o script verificava apenas `display`/`visibility` e a contagem de destinos, sem considerar a ocultação intencional por rolagem (`.nav-hidden`) nem a geometria real do elemento. Também apontou a ausência de uma captura que comprovasse a navegação visível no mesmo contexto de rolagem em que ela é ocultada.
+
+#### Correções aplicadas
+
+1. **Validação real da navegação (C.3-V03).** `validateCapture()` passou a ler a classe `.nav-hidden` no elemento e no `body`, o `getBoundingClientRect()`, a interseção com o viewport e as dimensões efetivamente visíveis. A classificação passou a distinguir três estados:
+   - `visivel` — sem `.nav-hidden`, com geometria dentro do viewport e área visível ≥ 90%;
+   - `oculta-intencional` — com `.nav-hidden` e geometria fora do viewport (ocultação provocada pela própria rolagem);
+   - `ausente`/`inesperada` — elemento inexistente, sem dimensões ou em estado não previsto.
+   A ocultação intencional deixou de ser tratada como falha. Cada tela declara o estado esperado (`navEsperada`).
+2. **Nova captura `perfil-rolagem-nav-visivel`.** A tela navega para o Perfil, rola até o fim, aplica um pequeno movimento para cima (delta negativo) para o app reexibir a navegação, aguarda a transição e só então captura. A validação exige `navMobile.estado = "visivel"`, `classeNavHidden = false`, `dentroDoViewport = true` e `areaRatio ≥ 0.9`.
+3. **Filtro CLI `--screen=`.** O script passou a aceitar `--screen=<tela>` e `--theme=<tema>`, preservando o argumento posicional de tema. As dez novas capturas foram geradas sem recapturar as 100 imagens existentes.
+4. **Correção dos 20 registros de rolagem.** As entradas de `view-inicio-rolagem` e `perfil-rolagem` deixaram de declarar `navMobileValido: "valido"` e passaram a registrar `oculta-por-rolagem`, com `navMobile.estado = "oculta-intencional"`. A ocultação foi confirmada por probe de runtime e pelo comportamento existente em `js/99-init.js` (rolagem para baixo adiciona `.nav-hidden`; para cima ou perto do topo remove).
+
+#### Resultados finais da matriz
+
+| Verificação | Resultado |
+|---|---|
+| Arquivos PNG | 110 |
+| Entradas no manifesto | 110 |
+| Estados distintos | 110 |
+| Duplicatas binárias (SHA-256) | 0 |
+| Mobile | 70 |
+| Desktop | 40 |
+| Temas | 10 (5 claros + 5 escuros) |
+| Modos | 2 (claro/escuro) |
+| Capturas de rolagem | 30 |
+| `perfil-rolagem-nav-visivel` | 10 |
+| Navegação intencionalmente oculta | 20 |
+| Falhas reais | 0 |
+| Paletas verificadas | 110/110 |
+
+#### Registro de decisões
+
+- **C.3-V01 — FAB:** mantido como limitação visual conhecida (P2 — Médio), fora do escopo desta normalização.
+- **C.3-V02 — Duplicatas:** resolvido; a matriz não possui duplicatas binárias.
+- **C.3-V03 — Validação da navegação:** resolvido; três estados com geometria real e ocultação intencional não tratada como falha.
+- **C.3-V04 — Documentação:** resolvido; esta seção registra os números reais da matriz.
+
+#### Limitação metodológica preservada
+
+As capturas continuam usando manipulação direta do DOM e não exercitam a navegação real (`switchTab`, dispatcher, patches, listeners). A nova captura comprova que, no estado de rolagem, o app reexibe a navegação inferior; não comprova o fluxo funcional completo. Nenhuma aprovação da C.3 é declarada.
+
+#### Restrições respeitadas
+
+- Nenhum arquivo de fonte do app foi alterado.
+- Nenhuma imagem existente foi apagada.
+- As 100 imagens anteriores foram preservadas; apenas 10 novas foram adicionadas.
+- `shaHEAD` permanece `ab656b9e7a7d224b4269e598db649fcdce2d41a4`.
+- O SHA de publicação é propagado após o commit que publica esta matriz.
+
+#### Verificações obrigatórias
+
+1. 110 PNGs no diretório de evidências.
+2. 110 entradas no manifesto, sem arquivos órfãos.
+3. 0 duplicatas binárias (SHA-256).
+4. 10 registros novos com `navMobile.estado = "visivel"`, `dentroDoViewport = true` e `areaRatio ≥ 0.9`.
+5. 20 registros de rolagem corrigidos para `oculta-por-rolagem`.
+6. 110/110 com `paletaVerificada = "sim"`.
+7. 0 falhas reais.
+8. 10 temas e 2 modos.
+9. 70 capturas mobile e 40 desktop.
+10. 30 capturas de rolagem (20 ocultas + 10 visíveis).

@@ -139,9 +139,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "4-mobile-oliva-claro-drawer-aberto.png",
@@ -283,9 +291,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "7-mobile-verde-claro-tela-inicial.png",
@@ -427,9 +443,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "10-mobile-verde-claro-drawer-aberto.png",
@@ -571,9 +595,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "13-mobile-lima-claro-tela-inicial.png",
@@ -715,9 +747,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "16-mobile-lima-claro-drawer-aberto.png",
@@ -859,9 +899,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "19-mobile-terracota-claro-tela-inicial.png",
@@ -1003,9 +1051,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "22-mobile-terracota-claro-drawer-aberto.png",
@@ -1147,9 +1203,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "25-mobile-laranja-claro-tela-inicial.png",
@@ -1291,9 +1355,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "28-mobile-laranja-claro-drawer-aberto.png",
@@ -1435,9 +1507,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "31-mobile-oliva-escuro-tela-inicial.png",
@@ -1579,9 +1659,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "34-mobile-oliva-escuro-drawer-aberto.png",
@@ -1723,9 +1811,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "37-mobile-verde-escuro-tela-inicial.png",
@@ -1867,9 +1963,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "40-mobile-verde-escuro-drawer-aberto.png",
@@ -2011,9 +2115,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "43-mobile-bege-escuro-tela-inicial.png",
@@ -2155,9 +2267,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "46-mobile-bege-escuro-drawer-aberto.png",
@@ -2299,9 +2419,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "49-mobile-terracota-escuro-tela-inicial.png",
@@ -2443,9 +2571,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "52-mobile-terracota-escuro-drawer-aberto.png",
@@ -2587,9 +2723,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "55-mobile-laranja-escuro-tela-inicial.png",
@@ -2731,9 +2875,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "58-mobile-laranja-escuro-drawer-aberto.png",
@@ -2875,9 +3027,17 @@
       "drawerVisivel": "nao-aplica",
       "modoCorreto": "correto",
       "viewActive": "ativa",
-      "navMobileValido": "valido"
+      "navMobileValido": "oculta-por-rolagem"
     },
-    "falhas": []
+    "falhas": [],
+    "navMobile": {
+      "esperado": "oculta",
+      "estado": "oculta-intencional",
+      "classeNavHidden": true,
+      "dentroDoViewport": false,
+      "geometria": null,
+      "observacao": "Estado corrigido sem recaptura: a ocultação é intencional, causada por rolagem para baixo (js/99-init.js), confirmada por probe de runtime."
+    }
   },
   {
     "arquivo": "61-desktop-oliva-claro-tela-inicial.png",
@@ -4796,6 +4956,656 @@
       "modoCorreto": "correto",
       "viewActive": "ativa",
       "navMobileValido": "nao-aplica"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "101-mobile-oliva-claro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T18:59:26.326Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#5f7a43",
+          "paper": "#f7f5ef"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "102-mobile-verde-claro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T18:59:58.538Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#327957",
+          "paper": "#f8f7f2"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "103-mobile-lima-claro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "lima-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T19:00:15.710Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#40916c",
+          "paper": "#faf9f6"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "104-mobile-terracota-claro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T19:00:32.894Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#c66f50",
+          "paper": "#fbf6ef"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "105-mobile-laranja-claro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-claro",
+    "modo": "claro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T19:00:49.816Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "light-mode-set",
+      "apply": "applyLightTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        },
+        "obtido": {
+          "chamada": "applyLightTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#f9f9f9"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "106-mobile-oliva-escuro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "oliva-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T19:01:06.815Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:1",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:1",
+          "dataset": "1",
+          "accent": "#9dd08b",
+          "paper": "#1a1917"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "107-mobile-verde-escuro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "verde-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T19:01:23.918Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:2",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:2",
+          "dataset": "2",
+          "accent": "#22c55e",
+          "paper": "#121212"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "108-mobile-bege-escuro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "bege-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T19:01:41.122Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:3",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:3",
+          "dataset": "3",
+          "accent": "#c9a86a",
+          "paper": "#0f1712"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "109-mobile-terracota-escuro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "terracota-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T19:01:58.236Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:4",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:4",
+          "dataset": "4",
+          "accent": "#d08860",
+          "paper": "#141410"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
+    },
+    "falhas": []
+  },
+  {
+    "arquivo": "110-mobile-laranja-escuro-perfil-rolagem-nav-visivel.png",
+    "viewport": "mobile",
+    "resolucao": "390x844",
+    "tema": "laranja-escuro",
+    "modo": "escuro",
+    "tela": "perfil-rolagem-nav-visivel",
+    "descricao": "Perfil — conteúdo inferior com navegação inferior reexibida após pequeno movimento para cima.",
+    "estado": "capturado",
+    "dataHora": "2026-11-12T19:02:15.269Z",
+    "shaHEAD": "ab656b9e7a7d224b4269e598db649fcdce2d41a4",
+    "shaPublicacao": "0acf5c65253a49ebc206cef5bab860e9b1185013",
+    "rolagem": {
+      "posicao": "revelar-nav",
+      "y": 2889,
+      "max": 3009
+    },
+    "navMobile": {
+      "esperado": "visivel",
+      "estado": "visivel",
+      "classeNavHidden": false,
+      "dentroDoViewport": true,
+      "geometria": {
+        "left": 14,
+        "top": 762,
+        "right": 376,
+        "bottom": 830,
+        "width": 362,
+        "height": 68,
+        "visibleWidth": 362,
+        "visibleHeight": 68,
+        "areaRatio": 1
+      }
+    },
+    "temaValidacao": {
+      "mode": "dark-mode-set",
+      "apply": "applyDarkTheme-chamado:5",
+      "verify": "correto",
+      "paleta": "correta",
+      "paletaDetalhes": {
+        "esperado": {
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        },
+        "obtido": {
+          "chamada": "applyDarkTheme-chamado:5",
+          "dataset": "5",
+          "accent": "#e85002",
+          "paper": "#000000"
+        }
+      }
+    },
+    "paletaVerificada": "sim",
+    "overlaysVerificados": {
+      "authOculto": "oculto",
+      "temaPickerOculto": "oculto",
+      "drawerOculto": "oculto",
+      "drawerVisivel": "nao-aplica",
+      "modoCorreto": "correto",
+      "viewActive": "ativa",
+      "navMobileValido": "valido"
     },
     "falhas": []
   }
