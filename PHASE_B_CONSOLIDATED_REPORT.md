@@ -3617,7 +3617,7 @@ As capturas continuam usando manipulação direta do DOM e não exercitam a nave
 1. 110 PNGs no diretório de evidências.
 2. 110 entradas no manifesto, sem arquivos órfãos.
 3. 0 duplicatas binárias (SHA-256).
-4. 10 registros novos com `navMobile.estado = "visivel"`, `dentroDoViewport = true` e `areaRatio ≥ 0.9`.
+4. 10 registros novos com `navMobile.estado = "visivel"`, `dentroDoViewport = true`, `areaRatio ≥ 0.9` e `totalDestinos ≥ 5` (confirmado por probe de runtime).
 5. 20 registros de rolagem corrigidos para `oculta-por-rolagem`.
 6. 110/110 com `paletaVerificada = "sim"`.
 7. 0 falhas reais.
@@ -3640,3 +3640,9 @@ Os estados de ocultação intencional durante a rolagem permanecem classificados
 A inspeção visual das dez novas capturas `perfil-rolagem-nav-visivel` confirmou a presença dos cinco destinos e a navegação dentro do viewport.
 
 Os vinte registros anteriores de rolagem foram classificados retrospectivamente conforme o estado de ocultação registrado. Essa classificação não representa uma nova inspeção geométrica das capturas históricas.
+
+#### Estado do Git
+
+- `e172cf4` — commit que publicou as 110 evidências (script, 10 novas imagens, manifesto e relatório).
+- `6afaf63` — commit que propagou `shaPublicacao = e172cf40bce2e2eef2ba7db69acea341757747e7` para as 110 entradas do `manifest.json` e para o script.
+- `4fef802` — commit que reforçou a validação para exigir `totalDestinos >= 5` e acrescentou o texto de refinamento.
