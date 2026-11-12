@@ -15,7 +15,7 @@ const OUT = path.resolve(__dirname, 'evidencias');
 const BASE = 'http://127.0.0.1:8000/index.html';
 const HEAD_SHA = 'ab656b9e7a7d224b4269e598db649fcdce2d41a4';
 /* Commit que publicou as 110 evidências (imagens + manifesto + script). */
-const SHA_PUBLICACAO = '';
+const SHA_PUBLICACAO = '0acf5c65253a49ebc206cef5bab860e9b1185013';
 
 const VIEWPORTS = [
   { name: 'mobile', width: 390, height: 844, scale: 2, mobile: true },
