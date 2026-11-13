@@ -3755,3 +3755,178 @@ A especificação visual base está concluída quanto a temas, superfícies, tok
 A validação de estados preenchidos permanece pendente devido à ausência de dados de teste nas capturas.
 
 A C.4 poderá tratar exclusivamente inconsistências comprovadas e correções delimitadas, sem reconstruir o Design System.
+
+### C.3.2 — Auditoria independente de contraste e mapeamento dos consumidores de accent
+
+**Data:** 13/11/2026
+**Branch:** `feat/app-navigation-redesign`
+**HEAD auditado:** `3f0790a8f911bb68da70c8a4321e883f87020567`
+**Escopo:** contraste dos tokens de destaque nos dez temas, pareamento entre `--surface-accent` e `--accent-foreground` nos modais de lançamento/transferência, contraste de `--accent` sobre `--paper` nos temas claros e contraste do cabeçalho.
+
+#### Método e limite dos resultados
+
+A auditoria foi realizada por inspeção do CSS atual e dos valores hexadecimais dos tokens, com apoio das capturas da C.3.0. Não foram feitas novas capturas nem alterações em HTML, CSS ou JavaScript nesta etapa.
+
+Foram considerados:
+
+- as cinco paletas claras e as cinco escuras;
+- os tokens definidos em `style/themes.css`;
+- os consumidores em `style/base.css`, `style/components.css`, `style/layout.css`, `style/features.css` e `style/dashboard-chat.css`;
+- os estados normais, ativos, hover e foco quando o CSS os define.
+
+Os contrastes foram calculados a partir dos valores hexadecimais dos tokens. Para o cabeçalho, foi usado o menor contraste entre os extremos do gradiente. O cálculo é uma medição estática: não substitui a leitura do estilo computado no navegador, especialmente onde há `color-mix`, transparência, gradiente, opacidade ou sobreposição.
+
+`--accent` é um token compartilhado. Ele é usado como texto, ícone, indicador, estado ativo, fundo sólido, borda, foco e elemento decorativo. Por isso, um resultado de contraste sobre `--paper` é uma triagem de risco, não prova de falha em todos os consumidores. A validação deve ser feita por função e por componente.
+
+`--accent-foreground` foi definido para uso sobre `--accent`. Ele não é, por definição, o foreground de `--surface-accent`. A existência dos dois tokens não garante que formem um par contrastante.
+
+#### C.3-V05-A — Pareamento entre `--surface-accent` e `--accent-foreground`
+
+Classificação: P1 — Alto.
+
+Os seguintes componentes usam `--surface-accent` como fundo e `--accent-foreground` como texto, em `style/features.css`:
+
+- `#panelNovo .type-toggle button.active-in`
+- `#panelNovo .type-toggle button.active-out`
+- `#panelNovo #fSalvar`
+- `#panelTransferencia #tSalvar`
+
+São três componentes; o alternador de tipo possui dois seletores de estado (`active-in` e `active-out`).
+
+| Tema escuro | Contraste `--accent-foreground` / `--surface-accent` |
+| --- | ---: |
+| Oliva | 1,35:1 |
+| Verde | 1,29:1 |
+| Bege | 1,45:1 |
+| Terracota | 1,45:1 |
+| Laranja | 17,67:1 |
+
+O problema ocorre porque `--accent-foreground` é definido para contrastar com `--accent`, não com `--surface-accent`. Nas paletas escuras, o foreground pode ser escuro porque foi projetado para um accent claro, enquanto `--surface-accent` também é escuro. O resultado é um par de baixo contraste em Oliva, Verde, Bege e Terracota. Laranja é exceção porque seu `--accent-foreground` é claro sobre uma superfície escura.
+
+**Proposta C.3-V05-A:** avaliar a substituição de `--accent-foreground` por `--header-foreground` nos três componentes, mantendo `--surface-accent` como fundo e sem criar tokens novos. A avaliação deve comparar o par atual e o proposto nas cinco paletas escuras e nos temas claros, porque `--header-foreground` também é usado no cabeçalho e precisa preservar a identidade visual.
+
+Há precedente no CSS atual: `body:not(.dark-mode) .nav-tab.active` usa `--surface-accent` como fundo e `--header-foreground` como texto (`style/layout.css:546`). Isso não prova que o par resolve todos os casos, mas mostra que o padrão já existe no sistema.
+
+**Condição de implementação:** em `style/features.css:2820-2834`, `body.dark-mode` substitui o par de `#panelNovo .type-toggle button.active-in`, `#panelNovo #fSalvar` e `#panelTransferencia #tSalvar` por `--toggle-active-bg`/`--toggle-active-foreground`. O seletor `button.active-out` não é coberto por esse override. A tabela acima mede o par base definido nos seletores listados; a futura C.4-V05-A deve validar o par efetivo nos dois caminhos para não corrigir apenas uma parte do fluxo.
+
+#### C.3-V05-B — Contraste de `--accent` sobre `--paper` nos temas claros
+
+Classificação: P1 — Alto.
+
+| Tema claro | Contraste `--accent` / `--paper` | Leitura |
+| --- | ---: | --- |
+| Oliva | 4,43:1 | ligeiramente abaixo de 4,5:1 para texto normal |
+| Verde | 4,88:1 | atende texto normal |
+| Lima | 3,64:1 | abaixo de 4,5:1; acima de 3:1 |
+| Terracota | 3,37:1 | abaixo de 4,5:1; acima de 3:1 |
+| Laranja | 3,57:1 | abaixo de 4,5:1; acima de 3:1 |
+
+O critério para texto normal é 4,5:1; para texto grande, 3:1; para componentes não textuais e estados de foco, 3:1 (WCAG 1.4.11). Verde atende texto normal. Lima, Terracota e Laranja passam o critério de texto grande e de elementos não textuais, mas não o de texto normal. Oliva fica ligeiramente abaixo de 4,5:1.
+
+Esses números não provam falha em todos os consumidores de `--accent`. O token também é usado como fundo, borda, indicador, estado ativo e elemento decorativo. Em muitos desses usos, o critério aplicável não é 4,5:1, ou o foreground é outro token. A conclusão correta é que existe risco para texto e ícones pequenos sobre `--paper` e que cada consumidor precisa ser classificado pela função antes de qualquer alteração.
+
+Decisão: não alterar globalmente `--accent` nesta etapa. O mapeamento por função e a correção delimitada pertencem à C.4-V05-B.
+
+#### C.3-V05-C — Contraste dos gradientes do cabeçalho
+
+Classificação: P2 — Médio.
+
+| Tema claro | Header — menor contraste |
+| --- | ---: |
+| Oliva | 6,97:1 |
+| Verde | 11,48:1 |
+| Lima | 3,64:1 |
+| Terracota | 3,56:1 |
+| Laranja | 3,76:1 |
+
+A leitura depende do tipo de conteúdo:
+
+- títulos grandes do cabeçalho usam o critério de 3:1;
+- subtítulos pequenos usam 4,5:1;
+- ícones e controles usam os critérios não textuais aplicáveis, incluindo 3:1 para contraste com o fundo.
+
+Com os valores disponíveis, Oliva e Verde atendem também o critério de texto normal. Lima, Terracota e Laranja atendem o critério de texto grande, mas não o de texto normal; por isso a classificação é P2, e não P1. O cabeçalho também usa `color-mix` com transparência em subtítulos, saudação e ícones. O menor contraste entre os extremos do gradiente é um indicador; a validação final deve usar a cor computada no ponto do texto, não apenas os extremos do gradiente.
+
+Nenhuma alteração de gradiente ou de foreground do cabeçalho é feita nesta etapa. A revisão do cabeçalho permanece como pendência separada da correção imediata dos modais.
+
+#### Mapeamento dos consumidores de `--accent`
+
+A tabela abaixo é uma amostra representativa, não um inventário exaustivo. O objetivo é separar funções para a futura correção, não aprovar cada consumidor.
+
+| Função | Exemplos de consumidores | Arquivos |
+| --- | --- | --- |
+| Texto e ícones | `.period-eyebrow`, `.notification-heading .eyebrow`, `.feature-profile-kicker`, `.drawer-nav button span`, `.log-entry-details .log-detail-toggle` | `style/components.css`, `style/base.css`, `style/features.css` |
+| Indicadores e estados ativos | `.nav-tab.active`, `.card-hero-dots button.is-active`, `.feature-profile-toggle:has(input:checked)`, `.block-toggle input:checked + .block-toggle-slider`, `.bill-status.is-carried` | `style/layout.css`, `style/features.css` |
+| Fundos sólidos e ações | `button.primary`, `.fab-add`, `.toolbar button.primary`, `.bill-actions button:hover`, `.block-pin-actions .btn-pin.primary` | `style/components.css`, `style/layout.css`, `style/features.css` |
+| Bordas, foco e seleção | `outline:2px solid var(--accent)` em botões e controles; `border-color` em inputs e estados; `::selection` | `style/components.css`, `style/layout.css`, `style/features.css`, `style/base.css` |
+| Gráficos, barras e decoração | `--bar-color` em `.dash-part-mini-bar::before` e `.dash-goal-bar`; `accent-color` em inputs; gradientes e misturas com `color-mix` | `style/dashboard-chat.css`, `style/features.css`, `style/components.css` |
+
+`style/themes.css` define os valores; os demais arquivos consomem o token. A diversidade de funções impede tratar `--accent` como uma única cor de texto e reforça a necessidade de correção por papel.
+
+#### Acertos e decisões de preservação
+
+- A estrutura semântica dos tokens foi preservada; não há camada paralela de tokens.
+- Os tokens próprios de cabeçalho e foreground foram preservados.
+- Os contrastes gerais das paletas escuras são, em sua maioria, adequados; não há justificativa para escurecer todas as paletas. O pareamento documentado em C.3-V05-A é a falha delimitada desta etapa.
+- Oliva permanece como referência visual.
+- Os gradientes foram preservados; qualquer revisão futura deve ser pontual e comprovada.
+- Não reconstruir o Design System e não executar migração global de CSS.
+- Não alterar cores fixas dos gráficos, lógica financeira, persistência, autenticação ou navegação.
+- A proposta de usar `--header-foreground` reutiliza um token existente e não cria um novo papel semântico.
+
+## C.4 — Planejamento da correção de contraste (C.4-V05)
+
+**Status:** planejamento documental. Nenhuma correção de CSS foi implementada nesta etapa.
+
+### C.4-V05-A — Correção localizada do pareamento em modais
+
+**Objetivo:** corrigir o foreground dos três componentes de `style/features.css` que usam `--surface-accent` como fundo, sem alterar o fundo, a geometria ou a identidade das paletas.
+
+**Arquivo afetado:** `style/features.css`.
+
+**Procedimento:**
+
+1. Confirmar no CSS computado o par efetivo de cada componente, incluindo o override de `body.dark-mode` e o seletor `button.active-out`.
+2. Avaliar `--header-foreground` como foreground sobre `--surface-accent`, comparando com o par atual.
+3. Aplicar a substituição apenas nos seletores documentados em C.3-V05-A.
+4. Validar as cinco paletas escuras e os temas claros.
+5. Produzir evidência por tema e por estado.
+
+**Critérios de aceite:**
+
+- contraste mínimo de 4,5:1 para texto normal;
+- nenhuma regressão nos estados ativo, hover e foco;
+- fundo `--surface-accent`, bordas e sombras preservados;
+- nenhum token novo;
+- evidência visual e/ou computada para cada uma das cinco paletas escuras e para os temas claros afetados;
+- cobertura explícita da regra base e do override `body.dark-mode`.
+
+**Fora de escopo:** alterar `--surface-accent`, alterar a paleta, redesenhar os modais ou modificar lógica de formulário.
+
+### C.4-V05-B — Correção sistêmica de `--accent` sobre superfícies claras
+
+**Condição:** executar depois do mapeamento por função e da conclusão da C.4-V05-A. Não é uma substituição global de `--accent`.
+
+**Objetivo:** corrigir o contraste de `--accent` onde ele é usado como texto ou ícone sobre `--paper` e superfícies claras, preservando os usos que não dependem desse critério.
+
+**Procedimento:**
+
+1. Classificar os consumidores de `--accent` por função: texto, ícone, indicador, estado ativo, fundo sólido, borda/foco e decoração.
+2. Definir o valor corrigido por função, considerando o fundo real de cada consumidor.
+3. Ajustar gradientes somente onde o contraste do texto ou do ícone for comprovadamente insuficiente.
+4. Validar os dez temas e os estados normal, hover, ativo e foco.
+5. Produzir evidências em mobile e desktop.
+
+**Critérios de aceite:**
+
+- 4,5:1 para texto normal;
+- 3:1 para texto grande;
+- 3:1 para componentes não textuais e estados de foco, conforme WCAG 1.4.11;
+- preservar a identidade das dez paletas;
+- evidências mobile e desktop por tema afetado;
+- nenhuma alteração em cores fixas de gráficos, lógica financeira, persistência, autenticação ou navegação;
+- nenhuma migração global de CSS.
+
+### Pendência separada — cabeçalho (C.3-V05-C)
+
+A revisão do cabeçalho não faz parte do escopo imediato de C.4-V05-A/B. Ela permanece pendente e deve ser tratada com evidência do estilo computado, distinguindo títulos grandes, subtítulos pequenos, ícones e controles.

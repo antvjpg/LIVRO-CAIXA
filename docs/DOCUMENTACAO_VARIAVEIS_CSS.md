@@ -21,6 +21,7 @@ A referência é o CSS do repositório local. Se este documento e o código dive
   - [1.5 Geometria, foco e sombras](#15-geometria-foco-e-sombras)
   - [1.6 Tokens de ação/componentes](#16-tokens-de-acaocomponentes)
   - [1.7 Classificação de propriedades por origem](#17-classificação-de-propriedades-por-origem)
+  - [1.8 Pareamento entre foreground e superfície](#18-pareamento-entre-foreground-e-superfície)
 - [2. Inventário completo (pós-migração)](#2-inventário-completo-pós-migração)
   - [2.1 Tipografia](#21-tipografia)
   - [2.2 Superfície, papel e texto](#22-superfície-papel-e-texto)
@@ -52,8 +53,8 @@ A referência é o CSS do repositório local. Se este documento e o código dive
 Tokens que definem a aparência do produto, independentemente de estado:
 
 - `--color-*` — cor-base da identidade (Verde/Vermelho/Dourado e suas versões `-subtle`).
-- `--accent`, `--accent-to`, `--accent-rgb` — cor principal e escala de gradiente/mistura.
-- `--header-*` — chrome do cabeçalho.
+- `--accent`, `--accent-to`, `--accent-rgb` — cor principal e escala de gradiente/mistura. `--accent` pode ser usado como texto, ícone, indicador, estado ativo, fundo ou decoração; o contraste depende do consumidor.
+- `--header-*` — chrome do cabeçalho, incluindo `--header-foreground` para texto sobre o gradiente.
 
 Regra: tokens de identidade **não** devem ser usados como status semântico.
 
@@ -64,14 +65,14 @@ Descrevem significado, não cor fixa:
 - `--success`, `--danger`, `--warning`, `--info`;
 - `--success-subtle`, `--danger-subtle`, `--warning-subtle`, `--info-subtle` — fundos suaves;
 - `--success-foreground`, `--danger-foreground`, `--warning-foreground`, `--info-foreground` — texto/ícone sobre fundo sólido ou contraste forte;
-- `--accent-foreground` — texto apropriado à identidade accent;
+- `--accent-foreground` — texto/ícone apropriado ao `--accent`; não é foreground automático de `--surface-accent`;
 - `--on-solid` — texto sobre qualquer fundo sólido (accent, success, danger, warning ou ações coloridas).
 
 ### 1.3 Tokens de superfície
 
 - `--paper`, `--paper-2` — fundos de página/seções;
 - `--surface`, `--surface-raised` — superfícies principais/elevadas;
-- `--surface-accent` — superfície com tom de accent;
+- `--surface-accent` — superfície com tom de accent; não define foreground implícito, e o par precisa ser validado;
 - `--line` — contorno/divisória;
 - `--ink`, `--ink-soft` — texto principal/secundário;
 - `--hover-soft` — camada neutra de hover/seleção.
@@ -196,6 +197,21 @@ O bloco `.bill-form-sheet` (`style/features.css`) define um conjunto local de al
 
 Escopo: local a `.bill-form-sheet`; consumido apenas dentro do próprio bloco em `style/features.css`.
 
+### 1.8 Pareamento entre foreground e superfície
+
+A existência de um token de foreground e de um token de superfície não garante que eles formem um par contrastante. O pareamento precisa ser definido e validado no consumidor.
+
+| Token | Papel | Não presumir |
+| --- | --- | --- |
+| `--accent` | Cor de identidade usada em texto, ícone, indicador, estado ativo, fundo, borda e decoração | Que o contraste seja suficiente sobre qualquer superfície; o critério depende da função e do fundo real |
+| `--accent-foreground` | Texto/ícone projetado para uso sobre `--accent` | Que seja automaticamente o foreground de `--surface-accent` |
+| `--surface-accent` | Superfície com tom de accent | Que possua um foreground implícito; o par precisa ser escolhido e validado |
+| `--header-foreground` | Texto projetado para o gradiente do cabeçalho | Que seja um foreground universal para qualquer superfície escura; o uso como candidato exige validação |
+
+**Regra:** `--accent-foreground` sobre `--surface-accent` só é válido quando o par foi projetado e validado. Em temas escuros, `--accent-foreground` pode ser escuro porque foi definido para `--accent` claro, enquanto `--surface-accent` também é escuro; nesse caso, o par pode ter contraste insuficiente.
+
+O CSS atual já usa `--surface-accent` com `--header-foreground` em `body:not(.dark-mode) .nav-tab.active` (`style/layout.css:546`). Isso é um precedente de uso, não uma regra universal: cada componente deve ser validado no contexto em que aparece.
+
 ---
 
 ## 2. Inventário completo (pós-migração)
@@ -227,7 +243,7 @@ Escopo: local a `.bill-form-sheet`; consumido apenas dentro do próprio bloco em
 | `--paper-2` | Root `#F0F0EA`; tema sobrescreve | `:root` + temas/body.dark | Fundo terciário |
 | `--surface` | Root `#FFFEFA`; tema sobrescreve | `:root` + temas/body.dark | Superfície principal |
 | `--surface-raised` | Root `#FCFDF9`; tema sobrescreve | `:root` + temas/body.dark | Superfície elevada |
-| `--surface-accent` | Root `#18382C`; tema sobrescreve | `:root` + temas/body.dark | Superfície com accent |
+| `--surface-accent` | Root `#18382C`; tema sobrescreve | `:root` + temas/body.dark | Superfície com accent; requer foreground validado |
 | `--ink` | Root `#19352A`; tema sobrescreve | `:root` + temas/body.dark | Texto principal |
 | `--ink-soft` | Root `#66746B`; tema sobrescreve | `:root` + temas/body.dark | Texto secundário |
 | `--line` | Root `#E1E1D9`; tema sobrescreve | `:root` + temas/body.dark | Bordas/divisórias |
@@ -244,10 +260,10 @@ Escopo: local a `.bill-form-sheet`; consumido apenas dentro do próprio bloco em
 | `--color-gold` | Root `#B89034`; tema sobrescreve | `:root` + temas | Dourado |
 | `--color-gold-subtle` | Root `#F2E8D0`; tema sobrescreve | `:root` + temas | Dourado suave |
 | `--gold-rgb` | Root `184,144,52`; tema sobrescreve | `:root` + temas | RGB dourado para `color-mix` |
-| `--accent` | Root `#327957`; tema sobrescreve | `:root` + temas/body | Accent principal |
+| `--accent` | Root `#327957`; tema sobrescreve | `:root` + temas/body | Accent principal; uso textual/visual depende do consumidor |
 | `--accent-rgb` | Root `50,121,87`; tema sobrescreve | `:root` + temas/body.dark | RGB accent |
 | `--accent-to` | Root `#3A8A62`; tema sobrescreve | `:root` + temas/body.dark | Accent secundário (gradiente) |
-| `--accent-foreground` | Root `#FFFEF9`; tema sobrescreve | `:root` + temas/body.dark | Texto sobre accent |
+| `--accent-foreground` | Root `#FFFEF9`; tema sobrescreve | `:root` + temas/body.dark | Texto sobre `--accent`; não presumir sobre `--surface-accent` |
 | `--accent-subtle` | Root `#E8F2EB`; tema sobrescreve | `:root` + temas/body.dark | Fundo accent suave |
 
 ### 2.4 Estados semânticos
@@ -274,7 +290,7 @@ Escopo: local a `.bill-form-sheet`; consumido apenas dentro do próprio bloco em
 |---|---|---|---|
 | `--header-from` | Root `#153429`; tema sobrescreve | `:root` + temas | Início do gradiente |
 | `--header-to` | Root `#1D3B30`; tema sobrescreve | `:root` + temas | Fim do gradiente |
-| `--header-foreground` | Root `#F9F8F3`; tema sobrescreve | `:root` + temas | Texto do header |
+| `--header-foreground` | Root `#F9F8F3`; tema sobrescreve | `:root` + temas | Texto do header; candidato para superfícies escuras, não foreground universal; exige validação |
 | `--header-control-bg` | Root `rgba(9,30,21,.42)`; tema sobrescreve | `:root` + temas | Fundo de controle no header |
 
 ### 2.6 Ações e controles
