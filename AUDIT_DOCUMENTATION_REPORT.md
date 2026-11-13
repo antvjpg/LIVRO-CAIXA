@@ -4101,3 +4101,181 @@ body.dark-mode[data-dark-theme="5"] #panelTransferencia #tSalvar{
 ### Pendência separada — cabeçalho (C.3-V05-C)
 
 A revisão do cabeçalho não faz parte do escopo imediato de C.4-V05-A/B. Ela permanece pendente e deve ser tratada com evidência do estilo computado, distinguindo títulos grandes, subtítulos pequenos, ícones e controles.
+
+---
+
+## C.4-V05-B-R1 — Auditoria runtime de consumidores de `--accent` em superfícies claras
+
+### 1. Objetivo e escopo
+
+Auditoria runtime, **somente leitura**, dos consumidores do token CSS `--accent` sobre superfícies claras (`--paper` e fundos derivados), classificando contraste de texto (4,5:1 normal / 3:1 grande), superfícies e componentes gráficos (3:1) e foco WCAG 1.4.11 (3:1), sem arredondar para aprovar.
+
+**Não foi alterado nenhum arquivo do repositório.** `git status --short` permaneceu vazio antes e depois da execução. Evidências gravadas fora do repositório em `/data/data/com.termux/files/usr/tmp/opencode/`.
+
+### 2. Ambiente e método
+
+| Item | Valor |
+| --- | --- |
+| Aplicativo | `http://127.0.0.1:8000/index.html` |
+| Navegador | Chromium headless (`Chrome/156.0.8078.79`), CDP porta 9222 |
+| Engine | `chrome-remote-interface` (Node), `node --check` aprovado |
+| Viewports | 390×844 (mobile) e 1440×900 (desktop) |
+| Temas claros | 1 Oliva, 2 Verde, 3 Lima, 4 Terracota, 5 Laranja |
+| Temas escuros | apenas controle de regressão (não são alvo da correção) |
+| Abas/vistas auditadas | inicio, dash, caixa, invest, cards, pockets, bills, receivables, goals, dashboard, profile + drawer e painéis modais |
+| Sondas de estado | normal, hover, focus-visible, active, disabled (CDP `CSS.forcePseudoState`) |
+| Linhas amostradas | 10.161 |
+| Sondas de estado | 960 |
+| Erros de console / exceções | 0 |
+
+Medição: `getComputedStyle()` para cor de texto, fundo, borda, outline, pseudo-elementos `::before`/`::after`, imagem de fundo e gradientes. Composição alfa feita sobre o fundo efetivo da cascata (próprio elemento + ancestrais). Razão de contraste WCAG calculada a partir da luminância relativa, sem arredondamento.
+
+### 3. Critérios de aceite aplicados
+
+| Classe | Limiar | Aplica a |
+| --- | --- | --- |
+| Texto normal | 4,5:1 | texto com fs < 24px ou (fs < 18,66px e fw < 700) |
+| Texto grande | 3:1 | fs ≥ 24px ou (fs ≥ 18,66px e fw ≥ 700) |
+| Componente gráfico / superfície | 3:1 | fundo de botão, pill, toggle, ícone funcional |
+| Ícone decorativo | 3:1 | ícone com conteúdo funcional sobre fundo |
+| Foco / borda / outline | 3:1 | WCAG 1.4.11 |
+| Inconclusivo | — | fundo com gradiente/não compósito, ou composição incerta |
+
+### 4. Matriz consolidada por consumidor (seletores com `--accent` exato ou derivado)
+
+Total de consumidores distintos: **75 seletores únicos**, 3.010 linhas com falha em pelo menos um critério.
+
+| Seletor | Amostras | Aprovado | Falha | Inconclusivo | N.A. | Pior razão | Pior valor (limiar) | Exemplo de falha |
+| --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |
+| `.profile-item-icon` | 952 | 0 | 952 | 0 | 0 | superfície | 1.177 (3,0) | T1 mobile profile, fg `#5F7A43`, bg `#E4E6DA` |
+| `label` | 384 | 0 | 384 | 0 | 0 | texto | 3.373 (4,5) | T1 mobile panel:Novo, TIPO/DATA/DESCRIÇÃO |
+| `#btnOpenAvatarGrid` | 238 | 0 | 238 | 0 | 0 | superfície | 1.112 (3,0) | T1 mobile profile/drawer/panel:Novo |
+| `#btnRunReconciliation` | 190 | 0 | 190 | 0 | 0 | texto / superfície | 2.989 (4,5) / 1.128 (3,0) | T1 "Comparar saldos" |
+| `.balance-symbol` | 181 | 0 | 181 | 0 | 0 | superfície | 1.056 (3,0) | T1 mobile inicio |
+| `.quick-action-icon` | 108 | 0 | 108 | 0 | 0 | superfície | 1.011 (3,0) | T1 mobile caixa |
+| `.dash-section-meta` | 100 | 0 | 100 | 0 | 0 | texto / superfície | 1.746 (4,5) / 1.047 (3,0) | T1 mobile dash |
+| `.feature-profile-switch` | 100 | 0 | 100 | 0 | 0 | ícone | 1.517 (3,0) | T2 mobile profile/drawer/panel:Novo |
+| `small` | 100 | 0 | 100 | 0 | 0 | texto | 1.655 (4,5) | T1 mobile dash ENTRADAS/SAÍDAS/RESULTADO |
+| `.dash-section-index` | 48 | 0 | 48 | 0 | 0 | texto | 1.746 (4,5) | T1/T3 mobile dash "06"/"01"/"02" |
+| `span` | 44 | 0 | 44 | 0 | 0 | texto / superfície | 3.179 (4,5) / 1.004 (3,0) | T1 mobile dash "EXPANDIR", panel:Card |
+| `.fi.fi-rr-bell` | 23 | 0 | 23 | 0 | 0 | ícone | 2.970 (3,0) | T4 mobile profile/drawer/panel:Novo |
+| `.fi.fi-rr-calculator-money` | 23 | 0 | 23 | 0 | 0 | ícone | 2.970 (3,0) | T4 mobile profile/drawer/panel:Novo |
+| `.fi.fi-rr-calendar` | 23 | 0 | 23 | 0 | 0 | ícone | 2.970 (3,0) | T4 mobile profile/drawer/panel:Novo |
+| `.fi.fi-rr-credit-card` | 23 | 0 | 23 | 0 | 0 | ícone | 2.970 (3,0) | T4 mobile profile/drawer/panel:Novo |
+| `.fi.fi-rr-file-code` | 23 | 0 | 23 | 0 | 0 | ícone | 2.970 (3,0) | T4 mobile profile/drawer/panel:Novo |
+| `.fi.fi-rr-palette` | 23 | 0 | 23 | 0 | 0 | ícone | 2.970 (3,0) | T4 mobile profile/drawer/panel:Novo |
+| `.fi.fi-rr-tags` | 23 | 0 | 23 | 0 | 0 | ícone | 2.970 (3,0) | T4 mobile profile/drawer/panel:Novo |
+| `.fi.fi-rr-text-size` | 23 | 0 | 23 | 0 | 0 | ícone | 2.970 (3,0) | T4 mobile profile/drawer/panel:Novo |
+| `#dashRangeLabel` | 20 | 0 | 20 | 0 | 0 | texto / superfície | 3.179 (4,5) / 1.122 (3,0) | T1/T3/T4 mobile dash |
+| `.bill-choice-icon` | 20 | 0 | 20 | 0 | 0 | texto / superfície | 3.179 (4,5) / 1.117 (3,0) | T1/T3 mobile panel:Bill |
+| `.dash-expand-btn` | 20 | 0 | 20 | 0 | 0 | texto / superfície | 3.179 (4,5) / 1.047 (3,0) | T1/T3/T4 mobile dash "EXPANDIR" |
+| `.modal-close` | 20 | 0 | 20 | 0 | 0 | texto / superfície | 2.982 (4,5) / 1.112 (3,0) | T1 mobile panel:ThemePicker/GoalForm/Orcamento |
+| `.period-eyebrow` | 18 | 0 | 18 | 0 | 0 | texto | 3.567 (4,5) | T3 mobile caixa/invest/pockets "PERÍODO ATIVO" |
+| `.goals-v2-kicker` | 15 | 0 | 15 | 0 | 0 | texto | 3.373 (4,5) | T1/T3 mobile goals/panel:GoalForm "PLANEJAMENTO" |
+| `.emoji-trigger-chevron` | 14 | 0 | 14 | 0 | 0 | texto | 3.373 (4,5) | T3/T4 mobile panel:GoalForm/Categoria |
+| `#btnQuickCat` | 10 | 0 | 10 | 0 | 0 | superfície / texto | 1.053 (3,0) / 3.567 (4,5) | T1/T3/T4/T5 mobile panel:Novo "+" |
+| `#btnReadClipboard` | 10 | 0 | 10 | 0 | 0 | superfície / texto | 1.053 (3,0) / 3.567 (4,5) | T1/T3/T4/T5 mobile panel:Paste |
+| `#btnUpdateAllPrices` | 10 | 0 | 10 | 0 | 0 | texto / superfície | 2.982 (4,5) / 1.056 (3,0) | T1/T2/T3 mobile invest "Atualizar Cotações" |
+| `.bill-bank-mark` | 10 | 0 | 10 | 0 | 0 | texto / superfície | 3.179 (4,5) / 1.117 (3,0) | T1/T3/T4 mobile panel:Bill "P" |
+| `.bill-day.today` | 10 | 0 | 10 | 0 | 0 | superfície | 1.053 (3,0) | T1/T2/T3 mobile bills "13" |
+| `.dashboard-period` | 10 | 0 | 10 | 0 | 0 | texto / superfície | 3.015 (4,5) / 1.112 (3,0) | T1/T3/T4 mobile dashboard "Novembro / 2026" |
+| `.fi.fi-rr-wallet` | 9 | 0 | 9 | 0 | 0 | ícone | 1.493 (3,0) | T4 mobile inicio, T1 desktop inicio/caixa |
+| `#btnExpandInvestTotal` | 8 | 0 | 8 | 0 | 0 | texto | 3.373 (4,5) | T1/T3/T4 mobile invest "Expandir" |
+| `#cardSalvar` | 8 | 0 | 8 | 0 | 0 | texto | 1.000 (4,5) | T3/T4/T5 mobile panel:Card "SALVAR CARTÃO" |
+| `#crSaldoRealLabel` | 8 | 0 | 8 | 0 | 0 | texto | 3.373 (4,5) | T1/T3/T4 mobile panel:CryptoReconcile |
+| `#iCotacaoLabel` | 8 | 0 | 8 | 0 | 0 | texto | 3.373 (4,5) | T1/T3/T4 mobile panel:Invest "COTAÇÃO (R$ POR UNIDADE)" |
+| `#iUnidadesAtualLabel` | 8 | 0 | 8 | 0 | 0 | texto | 3.373 (4,5) | T1/T3/T4 mobile panel:Invest "SALDO FINAL" |
+| `#iUnidadesLabel` | 8 | 0 | 8 | 0 | 0 | texto | 3.373 (4,5) | T1/T3/T4 mobile panel:Invest "SALDO INICIAL" |
+| `#imDataLabel` | 8 | 0 | 8 | 0 | 0 | texto | 3.373 (4,5) | T1/T3/T4 mobile panel:InvestMovement "DATA" |
+| `#imQuantidadeLabel` | 8 | 0 | 8 | 0 | 0 | texto | 3.373 (4,5) | T1/T3/T4 mobile panel:InvestMovement "QUANTIDADE" |
+| `#pmDataLabel` | 8 | 0 | 8 | 0 | 0 | texto | 3.373 (4,5) | T1/T3/T4 mobile panel:PocketMovement "DATA" |
+| `.is-active` | 8 | 0 | 8 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile dash "30 DIAS" |
+| `#btnNewReceivable` | 6 | 0 | 6 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile receivables "NOVO VALOR A RECEBER" |
+| `#imAporte` | 6 | 0 | 6 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:InvestMovement "APORTE" |
+| `#pmAporte` | 6 | 0 | 6 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:PocketMovement "APORTE" |
+| `.next-pay-kicker` | 6 | 0 | 6 | 0 | 0 | texto | 3.567 (4,5) | T3/T4/T5 mobile dashboard "PRÓXIMO PAGAMENTO" |
+| `#btnOpenFilters` | 5 | 0 | 5 | 0 | 0 | superfície | 1.112 (3,0) | T1/T2/T3 mobile caixa |
+| `.quote-refresh-label` | 5 | 0 | 5 | 0 | 0 | texto | 2.982 (4,5) | T1/T2/T3 mobile invest "Atualizar Cotações" |
+| `#ledgerCount` | 4 | 0 | 4 | 0 | 0 | texto | 3.567 (4,5) | T3/T4/T5 mobile caixa "0" |
+| `.fi.fi-rr-chart-line-up` | 4 | 0 | 4 | 0 | 0 | ícone | 1.493 (3,0) | T1/T2/T3 desktop invest |
+| `#bSalvar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:Banco "ADICIONAR" |
+| `#billLaunchConfirm` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:BillLaunch "CONFIRMAR LANÇAMENTO" |
+| `#billSalvar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:Bill "SALVAR CONTA / FATURA" |
+| `#btnApplyFilters` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:Filtros "APLICAR FILTROS" |
+| `#btnExportFormatDocx` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:ExportFormat "WORD (.DOCX)" |
+| `#btnExportFormatPdf` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:ExportFormat "PDF" |
+| `#btnExportFormatXlsx` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:ExportFormat "EXCEL (.XLSX)" |
+| `#btnProcessPaste` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:Paste "GERAR PRÉVIA" |
+| `#btnSaveGoal` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:GoalForm "SALVAR META" |
+| `#cSalvar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:Categoria "ADICIONAR" |
+| `#crConfirmar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:CryptoReconcile "APLICAR AJUSTE" |
+| `#iSalvar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:Invest "SALVAR ATIVO" |
+| `#imSalvar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:InvestMovement "REGISTRAR LANÇAMENTO" |
+| `#pSalvar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:Pocket "SALVAR CAIXINHA" |
+| `#pmSalvar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:PocketMovement "REGISTRAR APORTE" |
+| `#purchaseSalvar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:Purchase "SALVAR COMPRA" |
+| `#recvSalvar` | 3 | 0 | 3 | 0 | 0 | texto | 3.626 (4,5) | T3/T4/T5 mobile panel:Receivable "SALVAR" |
+| `#tglIn` | 2 | 0 | 2 | 0 | 0 | superfície | 2.996 (3,0) | T4 mobile/desktop panel:Novo "ENTRADA" |
+| `.fi.fi-rr-bank` | 2 | 0 | 2 | 0 | 0 | ícone | 2.982 (3,0) | T4 mobile inicio/caixa |
+| `.fi.fi-rr-chat-arrow-grow` | 2 | 0 | 2 | 0 | 0 | ícone | 2.982 (3,0) | T4 mobile inicio/caixa |
+| `.fi.fi-rr-piggy-bank` | 2 | 0 | 2 | 0 | 0 | ícone | 2.982 (3,0) | T4 mobile inicio/caixa |
+| `.light-theme-option` | 2 | 0 | 2 | 0 | 0 | superfície | 2.996 (3,0) | T4 mobile/desktop panel:ThemePicker |
+| `.fi.fi-rr-filter-list` | 1 | 0 | 1 | 0 | 0 | ícone | 2.982 (3,0) | T4 mobile caixa |
+| `.fi.fi-rr-refresh` | 1 | 0 | 1 | 0 | 0 | ícone | 2.982 (3,0) | T4 mobile invest |
+
+Observação: todos os 75 seletores da tabela apresentam **100% de falha** em suas respectivas amostras (nenhuma amostra aprovada). Não houve consumidor com resultado misto (aprovado + falha) para o mesmo seletor nos mesmos temas/viewports.
+
+### 5. Estados forçados por CDP (temas claros 3, 4 e 5; mobile e desktop)
+
+Sondas: normal, hover, focus-visible, active, disabled. Cada linha abaixo é o pior valor observado entre as amostras do seletor/estado.
+
+| Seletor | Estado | Pior texto (limiar 4,5) | Pior foco/borda (limiar 3,0) | Exemplo de falha |
+| --- | --- | --- | --- | --- |
+| `.dash-expand-btn` | normal / active / disabled | 1.722 | 1.722 | T3 mobile dash/caixa "EXPANDIR", bg `#E7F3EA`, fg `#40916C` |
+| `.dash-expand-btn` | hover | 1.806 | 1.806 | T3 mobile dash/caixa "EXPANDIR", bg `#40916C`, fg `#FAF9F6` |
+| `.dash-expand-btn` | focus-visible | 1.722 | 1.722 | T3 mobile dash/caixa "EXPANDIR", outline `2px solid #40916C` |
+| `.profile-avatar` | normal / hover / active / disabled / focus-visible | 1.685 | 1.685 | T3 mobile dash/caixa, bg `color(srgb 0.895 0.940 0.919)`, fg `#40916C` |
+| `.ledger-filter-button` | normal / active / disabled | 1.677 | 1.677 | T3 mobile dash/caixa, bg `#F2F6C6`, fg `#40916C` |
+| `.ledger-filter-button` | hover | 1.806 | 1.806 | T3 mobile dash/caixa, bg `#40916C`, fg `#FAF9F6` |
+| `.ledger-filter-button` | focus-visible | 1.677 | 1.677 | T3 mobile dash/caixa, outline `2px solid #40916C` |
+| `.toolbar button.primary` | normal / hover / active / disabled | 1.806 | 1.806 | T3 mobile dash/caixa "PDF", bg `#40916C`, fg `#FAF9F6` |
+| `.toolbar button.primary` | focus-visible | 1.806 | 1.000 | T3 mobile dash/caixa "PDF", outline `2px solid #40916C` sobre bg `#64916C` |
+| `.toolbar button:not(.primary)` | normal / disabled | 2.620 | 2.620 | T3 mobile dash/caixa "Transferência", bg `#F3F6EF`, fg `#31572C` |
+| `.toolbar button:not(.primary)` | hover | 2.588 | 2.588 | T3 mobile dash/caixa "Transferência", bg `#F2F6C6`, fg `#31572C` |
+| `.toolbar button:not(.primary)` | focus-visible | 2.588 | 1.685 | T3 mobile dash/caixa "Transferência", outline `2px solid #40916C` |
+| `.drawer-nav button` | hover | 2.588 | 2.588 | T3 mobile dash/caixa "Livro-Caixa", bg `color(srgb 0.950 0.964 0.775)`, fg `#31572C` |
+| `.drawer-nav button` | normal / active / disabled (Tema 5 Laranja) | 3.761 | — | T5 mobile dash/caixa, bg `rgba(0,0,0,0)`, fg `#1A1A1A` (texto passa; sem outline colorido) |
+
+Interpreção: `.toolbar button.primary` em foco-visible tem outline `2px solid #40916C` (1.000:1 sobre o próprio bg `#64916C`) — indica que o outline de foco não contrasta contra o fundo do botão ativo. `.dash-expand-btn`, `.profile-avatar` e `.ledger-filter-button` falham texto e foco em todos os estados nos temas claros 3–5.
+
+### 6. Inconclusivos e ressalvas
+
+- `.dash-kpi.dash-kpi-main` (100 amostras): fundo composto com gradiente/camadas não determinísticas; marcado como inconclusivo, não conta como aprovação nem falha definitiva.
+- Botões primários com `linear-gradient(110deg, var(--accent), var(--accent-to))` (`.primary` em `style/features.css:1049`): o endpoint claro do gradiente sobre fundo claro pode falhar em T3/T4/T5; amostra real `#btnRunReconciliation` T5 obteve 3.76:1 (branco 12px/400 sobre `rgb(232,80,2)`).
+- Estados `disabled` reportados via CDP nem sempre refletem a interação real do usuário; validar interativamente antes de corrigir.
+- Ícones `.fi` (pseudo-elemento `::before`) amostrados sobre o fundo do elemento pai; se decorativos, podem ser N.A., mas foram mantidos para rastreamento.
+- Temas escuros usados apenas como controle de regressão; não há falha efetiva reportada para eles nesta execução.
+
+### 7. Evidências (fora do repositório)
+
+| Arquivo | Conteúdo | Hash |
+| --- | --- | --- |
+| `/data/data/com.termux/files/usr/tmp/opencode/c4-v05-b-r1.json` | 10.161 linhas amostradas + 960 estados + meta | `3f795f6014732465` |
+| `/data/data/com.termux/files/usr/tmp/opencode/c4-v05-b-r1.log` | log de execução por tema/viewport/aba | — |
+| `/data/data/com.termux/files/usr/tmp/opencode/c4-v05-b-r1-run.log` | log de execução do harness | — |
+| `/data/data/com.termux/files/usr/tmp/opencode/c4-v05-b-r1-relatorio.md` | relatório consolidado legível (117.051 bytes) | — |
+
+### 8. Repositório
+
+`git status --short`: vazio. Nenhum arquivo HTML, CSS, JavaScript, Service Worker, manifesto, captura ou teste foi alterado, criado, removido, commitado ou enviado. Nenhum token global (`--accent`, `--surface-accent`, `--toggle-active-bg`, `--action-delete-background`) foi substituído.
+
+### 9. Conclusão
+
+Houve **falha efetiva em 75 seletores únicos** (3.010 linhas) nos temas claros 3 (Lima), 4 (Terracota) e 5 (Laranja), principalmente:
+- texto de botões/paineis abaixo de 4,5:1 (piores: 1.000–3.76:1);
+- superfícies e ícones abaixo de 3:1 (piores: 1.004–2.996:1);
+- estados forçados de foco/hover/ativo abaixo dos limiares (pior foco/borda: 1.000:1 em `.toolbar button.primary` focus-visible).
+
+O tema 1 (Oliva) mantém 4,43:1 para `--accent` sobre `--paper` (ligeiramente abaixo de 4,5:1 para texto normal) e 4,78:1 no header, mas consumidores específicos ainda falham devido a fundos derivados (`color-mix`, superfícies sutis).
+
+Este relatório é o insumo para a correção delimitada (C.4-V05-C, se solicitada). Nenhuma correção de CSS foi implementada ou aprovada nesta etapa.
