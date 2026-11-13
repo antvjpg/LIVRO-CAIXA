@@ -3646,3 +3646,112 @@ Os vinte registros anteriores de rolagem foram classificados retrospectivamente 
 - `e172cf4` — commit que publicou as 110 evidências (script, 10 novas imagens, manifesto e relatório).
 - `6afaf63` — commit que propagou `shaPublicacao = e172cf40bce2e2eef2ba7db69acea341757747e7` para as 110 entradas do `manifest.json` e para o script.
 - `4fef802` — commit que reforçou a validação para exigir `totalDestinos >= 5` e acrescentou o texto de refinamento.
+
+---
+
+### C.3.1 — Auditoria visual independente e especificação base
+
+**Data:** 12/11/2026
+**Branch:** `feat/app-navigation-redesign`
+**HEAD auditado:** `4d6ef63150df182d45c9a60036fc5106699c608f`
+**SHA-base das capturas:** `ab656b9e7a7d224b4269e598db649fcdce2d41a4`
+
+#### Método e validade das evidências
+
+A auditoria independente inspecionou visualmente as dez paletas em mobile e desktop, além das telas Início e Perfil em oliva claro e escuro.
+
+Foram conferidos os 110 arquivos de evidência e a matriz de manifesto. Também foram comparados os hashes de `index.html` e das seis folhas CSS atuais com os arquivos do snapshot usado na captura. Todos os sete hashes são idênticos.
+
+Portanto, as evidências continuam representativas da estrutura HTML e do CSS atual.
+
+Limitação: as capturas foram realizadas sem autenticação real, com o overlay de autenticação ocultado em runtime e dados financeiros vazios. Elas comprovam a aparência da estrutura, das superfícies e das paletas, mas não comprovam todos os estados com dados preenchidos.
+
+#### C.3-V05 — Contraste dos tokens de destaque
+
+Classificação: P1 — Alto.
+
+Critério WCAG para texto normal: 4,5:1.
+
+| Tema | Accent sobre `--paper` | `--accent-foreground` sobre `--accent` | Header — menor contraste |
+| --- | ---: | ---: | ---: |
+| Oliva claro | 4,43 | 4,59 | 6,97 |
+| Verde claro | 4,88 | 5,19 | 11,48 |
+| Lima claro | 3,64 | 3,64 | 3,64 |
+| Terracota claro | 3,37 | 3,63 | 3,56 |
+| Laranja claro | 3,57 | 3,76 | 3,76 |
+| Oliva escuro | 9,90 | 10,10 | 10,37 |
+| Verde escuro | 8,22 | 7,22 | 15,83 |
+| Bege escuro | 8,07 | 7,34 | 13,52 |
+| Terracota escuro | 6,48 | 6,36 | 13,62 |
+| Laranja escuro | 5,58 | 3,76 | 6,36 |
+
+Os resultados foram calculados a partir dos valores hexadecimais dos tokens. Para o header, foi usado o menor contraste entre os extremos do gradiente.
+
+Decisão:
+
+- Preservar as dez paletas.
+- Preservar Oliva claro e escuro como referência visual.
+- Corrigir os papéis semânticos de accent, foreground e header nas paletas com contraste insuficiente.
+- Não escurecer indiscriminadamente todos os tokens.
+- Não substituir as variantes por uma única paleta.
+- Não executar migração global durante esta etapa.
+
+#### C.3-V06 — Uso inválido de `--bill-shadow`
+
+Classificação: P2 — Médio.
+
+Em `style/features.css`, `.bill-form-sheet` define `--bill-shadow: var(--shadow-color)` e aplica `box-shadow: var(--bill-shadow)`.
+
+`--shadow-color` contém somente a cor, não a geometria necessária para `box-shadow`. A declaração resultante é inválida.
+
+Já existem tokens globais de geometria, incluindo `--shadow-md` e `--shadow-lg`.
+
+Decisão: corrigir em etapa de implementação posterior, reutilizando o token existente adequado ao componente. Não criar novo token.
+
+#### C.3-V07 — Inventário incompleto de `--shadow-overlay`
+
+Classificação: P3 — Baixo.
+
+O inventário documenta `#panelEntryHistory` e `#panelImport`, mas o CSS também utiliza `--shadow-overlay` em:
+
+- `#panelExportFormat`
+- `#panelDiagnostico`
+
+Decisão: completar a lista de consumidores na documentação.
+
+#### C.3-V08 — Truncamento de rótulos mobile
+
+Classificação: P2 — Médio, investigação.
+
+Nas capturas mobile de 390 px, os cartões-resumo mostram o rótulo `CAIXINH...` e a abreviação `INVEST.`.
+
+Decisão: investigar uma melhoria de legibilidade sem modificar a estrutura dos cartões nesta etapa.
+
+#### C.3-V09 — Estados com dados preenchidos não comprovados
+
+Limitação metodológica.
+
+As capturas não utilizaram sessão autenticada real nem dados financeiros preenchidos. Portanto, não permitem concluir a auditoria de gráficos, listas, valores longos, estados biométricos ou densidade com conteúdo real.
+
+A validação desses estados deve ocorrer posteriormente com dados de teste determinísticos, sem expor dados pessoais.
+
+#### Matriz de decisões visuais
+
+- Fundo, superfícies e superfícies elevadas: PRESERVAR.
+- Tokens tipográficos e família Plus Jakarta Sans: PRESERVAR.
+- Raios e geometria: PRESERVAR.
+- Paletas Oliva: PRESERVAR como referência.
+- Paletas Verde, Lima, Terracota e Laranja: PRESERVAR, com correções de contraste quando comprovadas.
+- Laranja escuro: INVESTIGAR a intensidade visual, sem remover a paleta.
+- Gradientes: PRESERVAR, com revisão pontual.
+- Cores fixas dos gráficos: PRESERVAR provisoriamente; validar com dados reais.
+- Sombras: PRESERVAR os tokens existentes e corrigir o uso inválido de `--bill-shadow`.
+- Migração global de CSS: NÃO AUTORIZADA.
+
+#### Estado da C.3
+
+A especificação visual base está concluída quanto a temas, superfícies, tokens, tipografia, geometria e decisões de preservação/ajuste.
+
+A validação de estados preenchidos permanece pendente devido à ausência de dados de teste nas capturas.
+
+A C.4 poderá tratar exclusivamente inconsistências comprovadas e correções delimitadas, sem reconstruir o Design System.

@@ -192,6 +192,8 @@ O bloco `.bill-form-sheet` (`style/features.css`) define um conjunto local de al
 | `--bill-status-border` | `var(--action-border)` | Borda de status |
 | `--bill-shadow` | `var(--shadow-color)` | Cor da sombra |
 
+**Observação sobre `--bill-shadow`:** o token referencia `--shadow-color`, que contém apenas a cor. Seu uso atual em `box-shadow` dentro de `.bill-form-sheet` é inválido por não conter geometria. A correção deverá reutilizar um token global de sombra já existente.
+
 Escopo: local a `.bill-form-sheet`; consumido apenas dentro do próprio bloco em `style/features.css`.
 
 ---
@@ -316,7 +318,7 @@ Escopo: local a `.bill-form-sheet`; consumido apenas dentro do próprio bloco em
 | `--shadow-sm` | `0 1px 3px var(--shadow-color)` | `:root` | Sombra pequena; `.balance-card` (`style/base.css`), `.feature-profile-switch:after` (`style/features.css`) |
 | `--shadow-md` | `0 4px 14px var(--shadow-color)` | `:root` | Sombra média; `.fab-add`, `.log-card` (`style/components.css`) |
 | `--shadow-lg` | `0 18px 42px var(--shadow-color)` | `:root` | Sombra grande; `.auth-box` (`style/components.css`) |
-| `--shadow-overlay` | `0 -18px 50px rgba(0,0,0,.28)` | `:root` | Sombra de overlay; `#panelEntryHistory`, `#panelImport` (`style/features.css`) |
+| `--shadow-overlay` | `0 -18px 50px rgba(0,0,0,.28)` | `:root` | Sombra de overlay; `#panelExportFormat`, `#panelDiagnostico`, `#panelEntryHistory`, `#panelImport` (`style/features.css`) |
 | `--theme-swatch` | por opção de tema, definida nos seletores em `style/themes.css` | `style/themes.css` | Cor do swatch do seletor |
 | `--z-modal` | `1400` | `:root` | Camada modal |
 | `--z-fab` | `1300` | `:root` | Camada FAB |
