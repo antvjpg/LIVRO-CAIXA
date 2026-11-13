@@ -1,0 +1,22 @@
+Connecting and navigating http://127.0.0.1:8000/index.html
+LIGHT 1 Oliva mobile
+LIGHT 2 Verde mobile
+LIGHT 3 Lima mobile
+LIGHT 4 Terracota mobile
+LIGHT 5 Laranja mobile
+DARK 1 Escuro Oliva mobile
+DARK 2 Escuro Verde mobile
+DARK 3 Escuro Bege mobile
+DARK 4 Escuro Terracota mobile
+DARK 5 Escuro Laranja mobile
+LIGHT 1 Oliva desktop
+LIGHT 2 Verde desktop
+LIGHT 3 Lima desktop
+LIGHT 4 Terracota desktop
+LIGHT 5 Laranja desktop
+DARK 1 Escuro Oliva desktop
+DARK 2 Escuro Verde desktop
+DARK 3 Escuro Bege desktop
+DARK 4 Escuro Terracota desktop
+DARK 5 Escuro Laranja desktop
+WROTE /data/data/com.termux/files/usr/tmp/opencode/c4-v05-b-r2.json c25664ab60d80615 rows 6648 states 1200 consoleErrors 0 exceptions 0 skipped 0
