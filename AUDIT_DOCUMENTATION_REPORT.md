@@ -83,6 +83,11 @@
 - [8. Pendências Gerais da Phase B](#8-pendências-gerais-da-phase-b)
 - [9. Próximos Passos (Fase C)](#9-próximos-passos-fase-c)
 - [FASE C.1 — AUDITORIA DE CSS](#fase-c1--auditoria-de-css)
+- [C.4 — Planejamento da correção de contraste (C.4-V05)](#c4---planejamento-da-correção-de-contraste-c4-v05)
+  - [C.4-V05-A — Reavaliação e eventual correção localizada do pareamento em modais](#c4-v05-a---reavaliação-e-eventual-correção-localizada-do-pareamento-em-modais)
+  - [C.4-V05-A-R3 — Correção localizada executada em 13/11/2026](#c4-v05-a-r3---correção-localizada-executada-em-13112026)
+  - [C.4-V05-B — Correção sistêmica de `--accent` sobre superfícies claras](#c4-v05-b---correção-sistêmica-de--accent-sobre-superfícies-claras)
+  - [C.4-V05-B-R1 — Auditoria runtime de consumidores de `--accent` em superfícies claras](#c4-v05-b-r1---auditoria-runtime-de-consumidores-de--accent-em-superfícies-claras)
 
 ---
 

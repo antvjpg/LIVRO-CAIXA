@@ -1,0 +1,67 @@
+# ÍNDICE DE EVIDÊNCIAS — C.4-V05-B-R1
+
+Auditoria runtime somente leitura de consumidores do token CSS `--accent` em superfícies claras.
+Nenhum arquivo de produção foi alterado nesta etapa.
+
+## Sumário
+
+- [1. Resumo da execução (do JSON bruto)](#1-resumo-da-execução-do-json-bruto)
+- [2. Tabela de evidências](#2-tabela-de-evidências)
+- [3. Rastreabilidade por identificador de amostra](#3-rastreabilidade-por-identificador-de-amostra)
+- [4. Observações de integridade](#4-observações-de-integridade)
+
+---
+
+## 1. Resumo da execução (do JSON bruto)
+
+| Campo | Valor |
+| --- | --- |
+| Nome | C.4-V05-B-R1 |
+| URL auditada | `http://127.0.0.1:8000/index.html` |
+| Início (UTC) | 2026-11-13T11:40:10.032Z |
+| Término (UTC) | 2026-11-13T11:44:52.771Z |
+| Hash do JSON (`meta.hash`) | `3f795f6014732465` |
+| SHA-256 completo do JSON | `9d9cdcf05468364c8936a62f50d2dcdd3ffdfe6ed20c19c1997f456b3318afe8` |
+| Linhas de amostra (`rows`) | 10.161 |
+| Sondas de estado (`states`) | 960 |
+| Pulos (`skipped`) | 0 |
+| Erros de console | 0 |
+| Exceções | 0 |
+| Seletores injetados (`KEY_SELECTORS`) | 51 |
+| Temas claros (alvo) | 1 Oliva, 2 Verde, 3 Lima, 4 Terracota, 5 Laranja |
+| Temas escuros (controle) | 1 Escuro Oliva, 2 Escuro Verde, 3 Escuro Bege, 4 Escuro Terracota, 5 Escuro Laranja |
+| Viewports | Mobile 390×844 (6.155 amostras), Desktop 1440×900 (4.006 amostras) |
+| Amostras com `--accent` exato | 6.648 |
+| Amostras com `--accent` derivado (regex) | 0 |
+| Consumidores distintos na análise consolidada | 75 seletores (todos com 100% de falha nas amostras analisadas) |
+
+> A contagem de 75 seletores vem do relatório consolidado (`c4-v05-b-r1-relatorio.md`), que agrega as 10.161 amostras brutas do JSON. O JSON `meta.selectors` lista os 51 seletores injetados no `collectScript`; a varredura adicional `document.querySelectorAll('body *')` gerou os demais elementos amostrados.
+
+## 2. Tabela de evidências
+
+| # | Nome do arquivo | Descrição | Caminho | Tamanho (bytes) | Linhas | SHA-256 | Data de geração | Função na auditoria | Relação com a matriz de resultados |
+|---|---|---|---|---:|---:|---|---|---|---|
+| 1 | `c4-v05-b-r1.json` | Dados brutos da coleta runtime: 10.161 amostras (`rows`), 960 sondas de estado (`states`), meta de execução, seletores injetados, erros/vazios. | `docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.json` | 21.291.317 | 902.059 | `9d9cdcf05468364c8936a62f50d2dcdd3ffdfe6ed20c19c1997f456b3318afe8` | 2026-11-13T11:40–11:44 UTC | Fonte primária da auditoria. Cada linha é um elemento consumidor de `--accent` com cores computadas, fundo efetivo, razões de contraste e classificação. | Cada `key` (`c4-N`) rastreia um elemento concreto. Não agrupar ocorrências distintas por seletor genérico (`label`, `small`, `span`, `.is-active`) sem verificar as amostras individuais. |
+| 2 | `c4-v05-b-r1-relatorio.md` | Relatório consolidado legível da R1: matriz por consumidor, estados forçados por CDP, inconclusivos, conclusão. | `docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-relatorio.md` | 117.051 | 815 | `3c8b07aee867a8c3a29938e1398d1846d81302d1e3f1aba448d5d283e5739798` | 2026-11-13 | Leitura resumida dos resultados R1. | Agrega as 10.161 amostras em 75 seletores; contém os piores valores e exemplos de falha por seletor. |
+| 3 | `c4-v05-b-r1.cjs` | Harness de automação (Node + chrome-remote-interface CDP): injeção de `collectScript`, loops viewport/tema/tela/painel, sondas de estado por `CSS.forcePseudoState`, cálculo de contraste em Node, gravação do JSON. | `docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.cjs` | 23.360 | 300 | `3e882ed45d4663b4ddb82d94e0b7d2552c0fccfc4bb1badca5c11fa59ec013e5` | 2026-11-13 | Código que produziu o JSON. Permite reprodução técnica da coleta. | Define os 51 seletores injetados, os temas, viewports, telas e paineis avaliados, e a lógica de fundo efetivo / pseudo-elementos / estados. |
+| 4 | `c4-v05-b-r1.log` | Log de execução linha a linha (navegação, temas, viewports). | `docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.log` | 569 | 21 | `25264b07b2b8d17639f15d95715a3711c78ab4983d26478ee0ca1059a5b76976` | 2026-11-13 | Rastreamento da ordem de execução. | Confirma as 22 execuções (5 temas claros + 5 escuros × 2 viewports) e a ordem mobile → desktop. |
+| 5 | `c4-v05-b-r1-run.log` | Log de execução do harness com resultado final (hash, rows, states, erros). | `docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-run.log` | 715 | 22 | `1617862c7ca2e66b9ad5c6dddeadfd85b08c3d37bbebd57a40cd3f006fb4222a` | 2026-11-13 | Confirmação de conclusão da execução. | Registra `rows 10161 states 960 consoleErrors 0 exceptions 0 skipped 0` e hash `3f795f6014732465`. |
+| 6 | `probe-accent.log` | Log exploratório anterior (probe de acento) usado na preparação da R1. | `docs/auditorias/c4-v05-b/evidencias/probe-accent.log` | 106.330 | 408 | `4b0c72dc81ad17f425be9314925e4ae414c39f80bc601dbba015794a54643c74` | 2026-11-13 | Apoio exploratório à definição do consumidor de `--accent`. | Não é parte da matriz R1; serve como referência da investigação prévia. |
+| 7 | `METODOLOGIA-R1.md` | Documentação do método de coleta: identificação de consumidores, fundo efetivo, transparências, gradientes, pseudo-elementos, estados, cálculo WCAG, limitações. | `docs/auditorias/c4-v05-b/METODOLOGIA-R1.md` | 14.716 | 193 | `b214b5a6c91f572d2fe6d9d7fb954bf12fc180f0975dbc1e51322cd6daf8e128` | 2026-11-13 | Metodologia rastreável da R1. | Explica como cada coluna do JSON (`rows` e `states`) foi obtida; marca como "não documentado" o que não está demonstrado pelos artefatos. |
+
+## 3. Rastreabilidade por identificador de amostra
+
+- Cada amostra em `c4-v05-b-r1.json` (`rows[]`) possui o campo `key` no formato `c4-N` (ex.: `c4-0`), gravado também no DOM temporariamente via `data-c4-audit` e removido na limpeza final.
+- O campo `sel` indica o seletor usado para identificar o elemento (ID `#…`, classe `.…` ou nome da tag).
+- O campo `screen` indica a tela/painel (`inicio`, `dash`, `dashboard`, `caixa`, `invest`, `pockets`, `cards`, `bills`, `receivables`, `goals`, `profile`, `drawer`, ou `panel:…`).
+- O campo `theme` + `themeSet` (`light`/`dark`) indica o tema.
+- O campo `vp` indica o viewport (`mobile`/`desktop`).
+
+Não há identificador global único além de `(vp, themeSet, theme, screen, key)`. Para auditar uma ocorrência individual, filtrar o JSON por esses campos.
+
+## 4. Observações de integridade
+
+- Todos os arquivos em `evidencias/` são cópias byte-a-byte dos originais em `/data/data/com.termux/files/usr/tmp/opencode/`; os SHA-256 de cópia e original coincidem (verificado na Etapa 2).
+- Nenhum conteúdo interno dos arquivos brutos foi modificado.
+- O arquivo `probe-accent.log` é exploratório anterior à R1; não constitui resultado da matriz R1.
+- Não há arquivos órfãos nem duplicatas nesta estrutura.
