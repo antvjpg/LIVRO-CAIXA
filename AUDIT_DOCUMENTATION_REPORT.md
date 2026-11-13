@@ -4002,6 +4002,78 @@ A tabela abaixo é uma amostra representativa, não um inventário exaustivo. O 
 
 **Conclusão da R2:** C.4-V05-A está comprovada no runtime. A correção permanece pendente de autorização e deve cobrir, no mínimo, `active-in`, `active-out`, `#fSalvar` e `#tSalvar` nos temas e modos afetados, preservando fundos, geometria, bordas, sombras e a identidade das paletas.
 
+### C.4-V05-A-R3 — Correção localizada executada em 13/11/2026
+
+**Escopo executado:**
+
+- Correção limitada às 11 combinações reprovadas na R2.
+- Único arquivo de produção alterado: `style/features.css`.
+- Regra adicionada após os overrides de modo escuro, sem `!important`, em `style/features.css` (bloco a partir da linha 2837; regra efetiva na linha 2838).
+- A regra define apenas `color:#111111`; fundos, bordas, sombras, dimensões, animações e estados de hover/foco não foram alterados.
+- Nenhum token global foi substituído. `--accent`, `--surface-accent`, `--toggle-active-bg` e `--action-delete-background` permanecem inalterados.
+- Nenhum arquivo HTML, JavaScript, outro CSS, manifesto, captura, configuração ou teste foi alterado.
+- `docs/DOCUMENTACAO_VARIAVEIS_CSS.md` não foi atualizado porque a correção não cria token nem regra geral de pareamento; é uma exceção localizada por tema/componente.
+
+**Seletores e condições aplicados:**
+
+```css
+body:not(.dark-mode)[data-light-theme="1"] #panelNovo .type-toggle button.active-out,
+body:not(.dark-mode)[data-light-theme="3"] #panelNovo .type-toggle button.active-in,
+body:not(.dark-mode)[data-light-theme="3"] #panelNovo .type-toggle button.active-out,
+body:not(.dark-mode)[data-light-theme="4"] #panelNovo .type-toggle button.active-in,
+body:not(.dark-mode)[data-light-theme="5"] #panelNovo .type-toggle button.active-in,
+body:not(.dark-mode)[data-light-theme="5"] #panelNovo #fSalvar,
+body:not(.dark-mode)[data-light-theme="5"] #panelTransferencia #tSalvar,
+body.dark-mode[data-dark-theme="5"] #panelNovo .type-toggle button.active-in,
+body.dark-mode[data-dark-theme="5"] #panelNovo .type-toggle button.active-out,
+body.dark-mode[data-dark-theme="5"] #panelNovo #fSalvar,
+body.dark-mode[data-dark-theme="5"] #panelTransferencia #tSalvar{
+  color:#111111;
+}
+```
+
+**Ambiente e método da R3:**
+
+- Branch: `feat/app-navigation-redesign`; HEAD no início da correção: `bd9dbe126f2e279a758dd29a4fad8ad7ffa0b03d`.
+- Execução final: `2026-11-13T11:20:07.766Z` UTC = `2026-11-13 08:20:07 -0300`.
+- Chromium headless via CDP; `Chrome/156.0.8078.79`; viewport `1440x900`, `deviceScaleFactor: 1`.
+- O harness R2 foi reutilizado com o mesmo fluxo real: `applyLightTheme()`, `applyDarkTheme()`, `body.dark-mode`, `openModal('panelNovo')`, `openModal('panelTransferencia')` e clique em `#tglIn`/`#tglOut`.
+- A validação pós-correção usou perfil Chromium limpo para evitar cache HTTP da folha anterior; o CSS novo foi carregado e a regra vencedora foi confirmada via `CSS.getMatchedStylesForNode`.
+- Foram medidas as mesmas 40 combinações: 10 temas × 4 controles.
+- Resultado: `40` linhas, `0` erros de harness, `0` erros de console, `0` exceções, `40/40` aprovadas, `40` combinações únicas.
+- Todas as 40 linhas tiveram `panel.open === true`, `visibility: visible`, `display` diferente de `none`, `opacity: 1` e dimensões maiores que zero.
+- A regra nova venceu exatamente nos 11 casos corrigidos; as outras 29 combinações mantiveram a regra vencedora anterior e o mesmo texto. A especificidade é `1,4,2` para os toggles e `2,2,1` para `#fSalvar`/`#tSalvar`, suficiente para vencer os overrides anteriores sem `!important`.
+- Fundos efetivos: `0` alterações. Geometria: `0` alterações. `font-size`, `font-weight`, `border-width` e visibilidade: `0` alterações.
+- A menor razão pós-correção é `4,59:1` (Oliva claro, `active-in`, que já passava); as 11 corrigidas ficaram entre `4,93:1` e `7,19:1`.
+
+**Antes/depois das 11 falhas:**
+
+| Modo | Tema | Controle | Antes | Depois | Texto final | Fundo |
+| --- | --- | --- | ---: | ---: | --- | --- |
+| Claro | Oliva | `active-out` | **2,97:1** | **6,05:1** | `#111111` | `#B08D3E` |
+| Claro | Lima | `active-in` | **3,64:1** | **4,93:1** | `#111111` | `#40916C` |
+| Claro | Lima | `active-out` | **2,50:1** | **7,19:1** | `#111111` | `#90A955` |
+| Claro | Terracota | `active-in` | **3,63:1** | **5,21:1** | `#111111` | `#C66F50` |
+| Claro | Laranja | `active-in` | **3,76:1** | **5,02:1** | `#111111` | `#E85002` |
+| Claro | Laranja | `#fSalvar` | **3,76:1** | **5,02:1** | `#111111` | `#E85002` |
+| Claro | Laranja | `#tSalvar` | **3,76:1** | **5,02:1** | `#111111` | `#E85002` |
+| Escuro | Laranja | `active-in` | **3,76:1** | **5,02:1** | `#111111` | `#E85002` |
+| Escuro | Laranja | `active-out` | **3,10:1** | **6,09:1** | `#111111` | `#FF5A3A` |
+| Escuro | Laranja | `#fSalvar` | **3,76:1** | **5,02:1** | `#111111` | `#E85002` |
+| Escuro | Laranja | `#tSalvar` | **3,76:1** | **5,02:1** | `#111111` | `#E85002` |
+
+**Evidências:**
+
+- Baseline R3: `/data/data/com.termux/files/usr/tmp/opencode/c4-v05-r3-baseline.json`; SHA-256 `45e2b5a015cf867d600d46e2100eba5ff0e33bf9381d7cec8f8b0ab8b824a15a`.
+- Resultado final com captura de console: `/data/data/com.termux/files/usr/tmp/opencode/c4-v05-r3-console.json`; SHA-256 `1642b0ba9eaf88138d9630234d02fb6fbc594b6e51e2d6c4dc9135d47244d73c`.
+- JSON final: `27.599` linhas, `40` rows, `0` erros de harness, `0` erros de console.
+- Nenhum commit, push, merge ou deploy foi executado nesta correção.
+
+**Limitações:**
+
+- A medição cobre o estado ativo/renderizado dos quatro controles nos 10 temas. Hover e foco não foram medidos exaustivamente; não existem regras de `color` de hover/foco para esses controles, e a regra R3 altera somente `color`.
+- A aprovação independente da C.4-V05-A permanece pendente; esta seção registra a execução e a evidência, não uma aprovação externa.
+
 ### C.4-V05-B — Correção sistêmica de `--accent` sobre superfícies claras
 
 **Condição:** executar depois do mapeamento por função e da conclusão da C.4-V05-A. Não é uma substituição global de `--accent`.

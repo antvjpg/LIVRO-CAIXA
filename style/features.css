@@ -2834,6 +2834,21 @@ body.dark-mode #panelTransferencia #tSalvar{
   box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 22%,transparent);
 }
 
+/* C.4-V05-A-R3 — contraste localizado dos controles nas combinações reprovadas */
+body:not(.dark-mode)[data-light-theme="1"] #panelNovo .type-toggle button.active-out,
+body:not(.dark-mode)[data-light-theme="3"] #panelNovo .type-toggle button.active-in,
+body:not(.dark-mode)[data-light-theme="3"] #panelNovo .type-toggle button.active-out,
+body:not(.dark-mode)[data-light-theme="4"] #panelNovo .type-toggle button.active-in,
+body:not(.dark-mode)[data-light-theme="5"] #panelNovo .type-toggle button.active-in,
+body:not(.dark-mode)[data-light-theme="5"] #panelNovo #fSalvar,
+body:not(.dark-mode)[data-light-theme="5"] #panelTransferencia #tSalvar,
+body.dark-mode[data-dark-theme="5"] #panelNovo .type-toggle button.active-in,
+body.dark-mode[data-dark-theme="5"] #panelNovo .type-toggle button.active-out,
+body.dark-mode[data-dark-theme="5"] #panelNovo #fSalvar,
+body.dark-mode[data-dark-theme="5"] #panelTransferencia #tSalvar{
+  color:#111111;
+}
+
 /* V19-17 — Nova Conta / Fatura
    Acabamento visual específico; estrutura, IDs e lógica preservados. */
 
