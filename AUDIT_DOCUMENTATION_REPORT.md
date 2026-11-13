@@ -3758,7 +3758,7 @@ A C.4 poderá tratar exclusivamente inconsistências comprovadas e correções d
 
 ### C.3.2 — Auditoria independente de contraste e mapeamento dos consumidores de accent
 
-**Data:** 13/11/2026
+**Data:** 12/11/2026
 **Branch:** `feat/app-navigation-redesign`
 **HEAD auditado:** `3f0790a8f911bb68da70c8a4321e883f87020567`
 **Escopo:** contraste dos tokens de destaque nos dez temas, pareamento entre `--surface-accent` e `--accent-foreground` nos modais de lançamento/transferência, contraste de `--accent` sobre `--paper` nos temas claros e contraste do cabeçalho.
@@ -3782,9 +3782,11 @@ Os contrastes foram calculados a partir dos valores hexadecimais dos tokens. Par
 
 #### C.3-V05-A — Pareamento entre `--surface-accent` e `--accent-foreground`
 
-Classificação: P1 — Alto.
+**Classificação revisada:** inconsistência documental/potencial. Não é falha funcional P1 confirmada nos componentes.
 
-Os seguintes componentes usam `--surface-accent` como fundo e `--accent-foreground` como texto, em `style/features.css`:
+**Correção R1 (12/11/2026):** a primeira versão desta seção tratou o par declarado nas regras iniciais como se fosse o estilo efetivo nos cinco temas escuros. A revisão da cascata mostrou que regras posteriores substituem o par na entrada, na saída e nos botões de confirmação no modo escuro. Os valores de contraste abaixo permanecem apenas como medição do par de tokens isolado; não representam o contraste efetivo dos componentes.
+
+Os seletores abaixo declaram inicialmente `--surface-accent` como fundo e `--accent-foreground` como texto, em `style/features.css`:
 
 - `#panelNovo .type-toggle button.active-in`
 - `#panelNovo .type-toggle button.active-out`
@@ -3793,7 +3795,20 @@ Os seguintes componentes usam `--surface-accent` como fundo e `--accent-foregrou
 
 São três componentes; o alternador de tipo possui dois seletores de estado (`active-in` e `active-out`).
 
-| Tema escuro | Contraste `--accent-foreground` / `--surface-accent` |
+**Cascata efetiva:**
+
+| Componente | Modo claro | Modo escuro |
+| --- | --- | --- |
+| `button.active-in` | `--toggle-active-bg` / `--toggle-active-foreground` (regra posterior em `:2594-2597`) | O mesmo par; o override `:2820-2826` reafirma os tokens |
+| `button.active-out` | `--action-delete-background` / `--on-solid` (regra posterior em `:2586-2592`) | O mesmo par; não há override específico de modo escuro |
+| `#panelNovo #fSalvar` | `--surface-accent` / `--accent-foreground` (regra base em `:2430-2437`) | `--toggle-active-bg` / `--toggle-active-foreground` (`:2821-2823`) |
+| `#panelTransferencia #tSalvar` | `--surface-accent` / `--accent-foreground` (regra base em `:2782-2789`) | `--toggle-active-bg` / `--toggle-active-foreground` (`:2821-2823`) |
+
+Com isso, o par `--accent-foreground` / `--surface-accent` não é o par efetivo de `active-in` e `active-out` em nenhum modo, nem de `#fSalvar` e `#tSalvar` no modo escuro. O único consumidor efetivo restante do par original é `#fSalvar`/`#tSalvar` no modo claro.
+
+**Medição do par de tokens isolado** `--accent-foreground` / `--surface-accent` (não é o contraste efetivo dos componentes):
+
+| Tema escuro | Contraste do par isolado |
 | --- | ---: |
 | Oliva | 1,35:1 |
 | Verde | 1,29:1 |
@@ -3801,13 +3816,19 @@ São três componentes; o alternador de tipo possui dois seletores de estado (`a
 | Terracota | 1,45:1 |
 | Laranja | 17,67:1 |
 
-O problema ocorre porque `--accent-foreground` é definido para contrastar com `--accent`, não com `--surface-accent`. Nas paletas escuras, o foreground pode ser escuro porque foi projetado para um accent claro, enquanto `--surface-accent` também é escuro. O resultado é um par de baixo contraste em Oliva, Verde, Bege e Terracota. Laranja é exceção porque seu `--accent-foreground` é claro sobre uma superfície escura.
+Os valores mostram que o par de tokens, isoladamente, tem baixo contraste em Oliva, Verde, Bege e Terracota. Eles não demonstram falha nos componentes, porque a cascata não aplica esse par nesses estados e temas. Laranja é exceção do par isolado porque seu `--accent-foreground` é claro sobre uma superfície escura.
 
-**Proposta C.3-V05-A:** avaliar a substituição de `--accent-foreground` por `--header-foreground` nos três componentes, mantendo `--surface-accent` como fundo e sem criar tokens novos. A avaliação deve comparar o par atual e o proposto nas cinco paletas escuras e nos temas claros, porque `--header-foreground` também é usado no cabeçalho e precisa preservar a identidade visual.
+Não foram medidos nesta revisão:
 
-Há precedente no CSS atual: `body:not(.dark-mode) .nav-tab.active` usa `--surface-accent` como fundo e `--header-foreground` como texto (`style/layout.css:546`). Isso não prova que o par resolve todos os casos, mas mostra que o padrão já existe no sistema.
+- o contraste efetivo de `#fSalvar` e `#tSalvar` no modo claro;
+- o contraste efetivo de `--toggle-active-bg` / `--toggle-active-foreground`;
+- o contraste efetivo de `--action-delete-background` / `--on-solid`.
 
-**Condição de implementação:** em `style/features.css:2820-2834`, `body.dark-mode` substitui o par de `#panelNovo .type-toggle button.active-in`, `#panelNovo #fSalvar` e `#panelTransferencia #tSalvar` por `--toggle-active-bg`/`--toggle-active-foreground`. O seletor `button.active-out` não é coberto por esse override. A tabela acima mede o par base definido nos seletores listados; a futura C.4-V05-A deve validar o par efetivo nos dois caminhos para não corrigir apenas uma parte do fluxo.
+**Proposta C.3-V05-A revisada:** não recomendar `--header-foreground` nem qualquer substituição sem evidência do par efetivo. A próxima etapa deve confirmar no CSS computado quais pares são realmente aplicados, medir o contraste por componente e por tema e só então definir se existe correção necessária. A proposta anterior de usar `--header-foreground` fica retirada como recomendação.
+
+Há precedente no CSS atual: `body:not(.dark-mode) .nav-tab.active` usa `--surface-accent` como fundo e `--header-foreground` como texto (`style/layout.css:546`). Isso mostra que o padrão existe, mas não justifica reutilizá-lo nos modais sem medição.
+
+**Condição de implementação:** qualquer alteração futura deve cobrir a regra base e os overrides posteriores, inclusive `body.dark-mode`, e distinguir entrada, saída e botões de confirmação. Não corrigir apenas o par declarado inicialmente.
 
 #### C.3-V05-B — Contraste de `--accent` sobre `--paper` nos temas claros
 
@@ -3867,41 +3888,43 @@ A tabela abaixo é uma amostra representativa, não um inventário exaustivo. O 
 
 - A estrutura semântica dos tokens foi preservada; não há camada paralela de tokens.
 - Os tokens próprios de cabeçalho e foreground foram preservados.
-- Os contrastes gerais das paletas escuras são, em sua maioria, adequados; não há justificativa para escurecer todas as paletas. O pareamento documentado em C.3-V05-A é a falha delimitada desta etapa.
+- Os contrastes gerais das paletas escuras são, em sua maioria, adequados; não há justificativa para escurecer todas as paletas. O pareamento documentado em C.3-V05-A permanece como inconsistência potencial/documental; não há falha funcional confirmada nos componentes.
 - Oliva permanece como referência visual.
 - Os gradientes foram preservados; qualquer revisão futura deve ser pontual e comprovada.
 - Não reconstruir o Design System e não executar migração global de CSS.
 - Não alterar cores fixas dos gráficos, lógica financeira, persistência, autenticação ou navegação.
-- A proposta de usar `--header-foreground` reutiliza um token existente e não cria um novo papel semântico.
+- A proposta anterior de usar `--header-foreground` foi retirada como recomendação; qualquer substituição futura exige medição do par efetivo.
 
 ## C.4 — Planejamento da correção de contraste (C.4-V05)
 
-**Status:** planejamento documental. Nenhuma correção de CSS foi implementada nesta etapa.
+**Status:** planejamento condicionado. Nenhuma correção de CSS foi implementada ou aprovada nesta etapa.
 
-### C.4-V05-A — Correção localizada do pareamento em modais
+### C.4-V05-A — Reavaliação e eventual correção localizada do pareamento em modais
 
-**Objetivo:** corrigir o foreground dos três componentes de `style/features.css` que usam `--surface-accent` como fundo, sem alterar o fundo, a geometria ou a identidade das paletas.
+**Objetivo:** verificar se algum componente ainda usa o par problemático e, somente se houver falha efetiva comprovada, corrigir o foreground dos componentes afetados sem alterar o fundo, a geometria ou a identidade das paletas.
 
-**Arquivo afetado:** `style/features.css`.
+**Arquivo afetado, se houver correção:** `style/features.css`.
 
 **Procedimento:**
 
-1. Confirmar no CSS computado o par efetivo de cada componente, incluindo o override de `body.dark-mode` e o seletor `button.active-out`.
-2. Avaliar `--header-foreground` como foreground sobre `--surface-accent`, comparando com o par atual.
-3. Aplicar a substituição apenas nos seletores documentados em C.3-V05-A.
-4. Validar as cinco paletas escuras e os temas claros.
-5. Produzir evidência por tema e por estado.
+1. Medir no CSS computado os pares efetivos de `active-in`, `active-out`, `#fSalvar` e `#tSalvar` nos temas claro e escuro, cobrindo a regra base e os overrides posteriores.
+2. Verificar se o único consumidor efetivo restante do par original — `#fSalvar`/`#tSalvar` no modo claro — tem contraste insuficiente.
+3. Verificar se `--toggle-active-bg` / `--toggle-active-foreground` e `--action-delete-background` / `--on-solid` atendem aos critérios aplicáveis.
+4. Se não houver falha efetiva, encerrar C.3-V05-A como inconsistência documental/potencial, sem alteração de CSS.
+5. Se houver falha, definir a correção por componente, sem presumir `--header-foreground`, e validar os dez temas.
+6. Produzir evidência por tema, modo e estado.
 
-**Critérios de aceite:**
+**Critérios de aceite, se houver correção:**
 
 - contraste mínimo de 4,5:1 para texto normal;
 - nenhuma regressão nos estados ativo, hover e foco;
-- fundo `--surface-accent`, bordas e sombras preservados;
+- fundo, bordas e sombras preservados;
 - nenhum token novo;
-- evidência visual e/ou computada para cada uma das cinco paletas escuras e para os temas claros afetados;
-- cobertura explícita da regra base e do override `body.dark-mode`.
+- evidência visual e/ou computada por tema, modo e estado;
+- cobertura explícita da regra base e dos overrides posteriores;
+- nenhuma substituição por `--header-foreground` sem medição que a justifique.
 
-**Fora de escopo:** alterar `--surface-accent`, alterar a paleta, redesenhar os modais ou modificar lógica de formulário.
+**Fora de escopo:** alterar `--surface-accent`, alterar a paleta, redesenhar os modais, substituir pares sem evidência ou modificar lógica de formulário.
 
 ### C.4-V05-B — Correção sistêmica de `--accent` sobre superfícies claras
 

@@ -208,7 +208,7 @@ A existência de um token de foreground e de um token de superfície não garant
 | `--surface-accent` | Superfície com tom de accent | Que possua um foreground implícito; o par precisa ser escolhido e validado |
 | `--header-foreground` | Texto projetado para o gradiente do cabeçalho | Que seja um foreground universal para qualquer superfície escura; o uso como candidato exige validação |
 
-**Regra:** `--accent-foreground` sobre `--surface-accent` só é válido quando o par foi projetado e validado. Em temas escuros, `--accent-foreground` pode ser escuro porque foi definido para `--accent` claro, enquanto `--surface-accent` também é escuro; nesse caso, o par pode ter contraste insuficiente.
+**Regra:** `--accent-foreground` sobre `--surface-accent` só é válido quando o par foi projetado e validado. Em temas escuros, `--accent-foreground` pode ser escuro porque foi definido para `--accent` claro, enquanto `--surface-accent` também é escuro; nesse caso, o par pode ter contraste insuficiente. A cascata pode substituir o par declarado; a validação deve usar o estilo computado do componente, não apenas os tokens da regra inicial.
 
 O CSS atual já usa `--surface-accent` com `--header-foreground` em `body:not(.dark-mode) .nav-tab.active` (`style/layout.css:546`). Isso é um precedente de uso, não uma regra universal: cada componente deve ser validado no contexto em que aparece.
 
