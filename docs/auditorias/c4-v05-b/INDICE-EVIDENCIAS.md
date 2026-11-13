@@ -99,9 +99,16 @@ Não há identificador global único além de `(vp, themeSet, theme, screen, key
 
 ---
 
-## 4. Evidências da execução R2 (corrigida)
+## 4. Evidências da execução R2.1 (corrigida metodologicamente)
 
-A execução R2 preserva integralmente a R1 (nenhum artefato R1 alterado ou removido). Os artefatos R2 ficam em `evidencias-r2/`.
+A execução R2.1 preserva integralmente a R1 e a R2 (nenhum artefato alterado ou removido). Os artefatos R2.1 ficam em `evidencias-r2-1/`.
+
+| # | Nome do arquivo | Descrição | Caminho | Tamanho (bytes) | Linhas | SHA-256 | Data de geração | Função na auditoria | Relação com a matriz de resultados |
+|---|---|---|---|---:|---:|---|---|---|---|
+| 12 | `c4-v05-b-r2-1.json` | Dados brutos da coleta R2.1: 6.660 amostras de consumidores exatos de `--accent`, 1.200 sondas de estado (cada ocorrência individual), 330 candidatos derivados, meta com commit/branch/userAgent e hash SHA-256 reproduzível. | `docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.json` | 18.193.172 | 673.090 | `979d5bd36ab83bfc5ae6e7d0d756f659696a7a8be8c110811664eb63fed76ef0` | 2026-11-13 | Fonte primária da auditoria R2.1. Cada linha é um consumidor exato de `--accent` com classificação rigorosa (`APROVADO`/`FALHA`/`INCONCLUSIVO`/`N.A.`) e declaração CSS vencedora. | Cada `key` (`c4-N`) rastreia um elemento concreto. Classificação por amostra permite auditoria individual. Sondas de estado registram todas as ocorrências por seletor. |
+| 13 | `c4-v05-b-r2-1.cjs` | Harness R2.1 corrigido: população de consumidores exata, sondas de estado via `querySelectorAll`+visão individual, declaração CSS vencedora, detecção SVG fill/stroke/currentColor, hash SHA-256 reproduzível. | `docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.cjs` | 37.544 | 514 | `e0abff42b037645465cebec22c6e756618f2f8c0a8994b273b92f7658b5fcf2d` | 2026-11-13 | Código que produziu o JSON R2.1. Permite reprodução técnica da coleta corrigida. | Implementa as 7 correções da R2.1 (sondas, declaração vencedora, SVG, hash, texto, foco/borda, pseudo-elementos). |
+| 14 | `c4-v05-b-r2-1.log` | Log de execução linha a linha (navegação, temas, viewports). | `docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.log` | 590 | 0 | `21d36e3fc7a87974a7eb9109eb379e03e064046525c3f79c8acfbd851e7090f0` | 2026-11-13 | Rastreamento da ordem de execução R2.1. | Confirma as 22 execuções (5 temas claros + 5 escuros × 2 viewports). |
+| 15 | `c4-v05-b-r2-1-run.log` | Log de execução do harness com resultado final (hash, rows, states, erros, hashMatches). | `docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1-run.log` | 811 | 22 | `b07067eb9c3ebbc47ec8a36f6c2d97cf4341f28eaf9d0becc80b58faade27e11` | 2026-11-13 | Confirmação de conclusão da execução R2.1. | Registra `rows 6660 states 1200 consoleErrors 1 exceptions 0 skipped 0` e `hashMatches true`. |
 
 ---
 
@@ -111,13 +118,15 @@ A execução R2 preserva integralmente a R1 (nenhum artefato R1 alterado ou remo
 |---|---|---|---|---:|---:|---|
 | 1 | `METODOLOGIA-R1.md` | Metodologia da R1 (registra limitações e "não documentado"). | `docs/auditorias/c4-v05-b/METODOLOGIA-R1.md` | 14.716 | 193 | `b214b5a6c91f572d2fe6d9d7fb954bf12fc180f0975dbc1e51322cd6daf8e128` |
 | 2 | `METODOLOGIA-R2.md` | Metodologia da R2 (correções aplicadas, classificação rigorosa, rastreabilidade). | `docs/auditorias/c4-v05-b/METODOLOGIA-R2.md` | 14.837 | 216 | `5c22aa2ba3630b455d3e15e4507cc4b49700ca0d12e1f9180a6bdd74d03d3735` |
-| 3 | `COMPARACAO-R1-vs-R2.md` | Comparação direta entre R1 e R2: população, classificação, metodologia. | `docs/auditorias/c4-v05-b/COMPARACAO-R1-vs-R2.md` | 5.764 | 105 | `0c58215224143ef9512db31eb2b9a9de6674f731dd05b05e7f0c2a39890969d1` |
+| 3 | `METODOLOGIA-R2-1.md` | Metodologia da R2.1 (7 correções aplicadas, classificação incluindo foco/borda, hash reproduzível). | `docs/auditorias/c4-v05-b/METODOLOGIA-R2-1.md` | 15.351 | 231 | `e57a6449fac37d276ad57cdde140511a937a5ef440a43b6e994344c4decc6e8e` |
+| 4 | `COMPARACAO-R1-R2-R2-1.md` | Comparação trifásica R1 × R2 × R2.1: população, classificação, metodologia. | `docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1.md` | 6.780 | 118 | `270bc402c3bea69a103c43e3ab5777ce2ffb533e9e80f423ddca1bb12efea7a7` |
 
 ---
 
 ## 6. Observações de integridade
 
-- Todos os arquivos em `evidencias/` e `evidencias-r2/` são cópias byte-a-byte dos originais em `/data/data/com.termux/files/usr/tmp/opencode/`; os SHA-256 de cópia e original coincidem.
+- Todos os arquivos em `evidencias/`, `evidencias-r2/` e `evidencias-r2-1/` são cópias byte-a-byte dos originais em `/data/data/com.termux/files/usr/tmp/opencode/`; os SHA-256 de cópia e original coincidem.
 - Nenhum conteúdo interno dos arquivos brutos foi modificado.
-- A R1 permanece preservada integralmente; a R2 é uma execução separada e corrigida.
+- A R1 permanece preservada integralmente; a R2 e a R2.1 são execuções separadas e corrigidas.
 - Não há arquivos órfãos nem duplicatas nesta estrutura.
+- O hash SHA-256 do JSON R2.1 foi verificado independentemente (`hashMatches: true`): ler o arquivo, remover `meta.hash`/`meta.hash16`, recalcular SHA-256, comparar com o valor registrado.
