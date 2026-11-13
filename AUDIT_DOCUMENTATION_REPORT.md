@@ -3897,7 +3897,7 @@ A tabela abaixo é uma amostra representativa, não um inventário exaustivo. O 
 
 ## C.4 — Planejamento da correção de contraste (C.4-V05)
 
-**Status:** planejamento condicionado. Nenhuma correção de CSS foi implementada ou aprovada nesta etapa.
+**Status:** reavaliação executada em 13/11/2026; 11 falhas efetivas confirmadas no CSS computado. Nenhuma correção de CSS foi implementada ou aprovada nesta etapa.
 
 ### C.4-V05-A — Reavaliação e eventual correção localizada do pareamento em modais
 
@@ -3925,6 +3925,82 @@ A tabela abaixo é uma amostra representativa, não um inventário exaustivo. O 
 - nenhuma substituição por `--header-foreground` sem medição que a justifique.
 
 **Fora de escopo:** alterar `--surface-accent`, alterar a paleta, redesenhar os modais, substituir pares sem evidência ou modificar lógica de formulário.
+
+#### Resultado da execução R2 — 13/11/2026
+
+**Ambiente e método:**
+
+- Branch: `feat/app-navigation-redesign`; HEAD: `0d0d3477c3cf0b953393b6e639f6f132d2bf8a10`.
+- Chromium headless via CDP; `Chrome/156.0.8078.79`; viewport `1440x900`, `deviceScaleFactor: 1`.
+- Aplicação local em `http://127.0.0.1:8000/index.html`, resposta `200`.
+- Foram usados os fluxos reais da aplicação: `applyLightTheme()`, `applyDarkTheme()`, `body.dark-mode`, `openModal('panelNovo')`, `openModal('panelTransferencia')` e clique real em `#tglIn`/`#tglOut`.
+- O estado foi aguardado por `700ms` após a troca de tema/estado para evitar leitura de cor intermediária durante as transições CSS.
+- Foram coletados `getComputedStyle()`, variáveis CSS computadas, geometria, fundo efetivo e a cascata vencedora via `CSS.getMatchedStylesForNode`.
+- Estado do navegador confirmado: `document.readyState === "complete"`, overlay de autenticação oculto, `openModal`, `openNewEntryModal`, `applyLightTheme` e `applyDarkTheme` disponíveis.
+- Foram medidas 40 combinações: 10 temas × 4 controles. Todas as linhas tiveram `panel.open === true`, classe de estado correta, `opacity: 1`, `visibility: visible` e `display: flex`.
+- Não houve fundo branco de fallback, imagem no backdrop nem erro de CDP. O arquivo de evidência contém `40` linhas e `0` erros.
+- Os ratios foram recalculados independentemente a partir dos hexadecimais efetivos; houve `0` divergências em relação ao resultado registrado.
+- Folhas locais carregadas: `style/base.css`, `style/components.css`, `style/dashboard-chat.css`, `style/features.css`, `style/layout.css` e `style/themes.css`; também foram carregadas fontes e bibliotecas externas de ícones.
+- Critério aplicado: os controles medidos usam `11px/800` ou `12px/800`, portanto são tratados como texto normal e exigem `4,5:1`. Não foi aplicada a exceção de texto grande.
+- Todos os 40 casos apresentaram `border-width: 0px`; o critério de contraste de borda não textual não se aplica nesse estado. Estados de foco não foram medidos nesta execução.
+
+**Matriz de contraste efetivo:**
+
+| Modo | Tema | `active-in` | `active-out` | `#fSalvar` | `#tSalvar` |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Claro | Oliva | 4,59 OK | **2,97 FALHA** | 13,69 OK | 13,69 OK |
+| Claro | Verde | 5,19 OK | 5,59 OK | 12,67 OK | 12,67 OK |
+| Claro | Lima | **3,64 FALHA** | **2,50 FALHA** | 7,88 OK | 7,88 OK |
+| Claro | Terracota | **3,63 FALHA** | 5,59 OK | 6,27 OK | 6,27 OK |
+| Claro | Laranja | **3,76 FALHA** | 6,36 OK | **3,76 FALHA** | **3,76 FALHA** |
+| Escuro | Oliva | 10,10 OK | 5,46 OK | 10,10 OK | 10,10 OK |
+| Escuro | Verde | 7,22 OK | 7,22 OK | 7,22 OK | 7,22 OK |
+| Escuro | Bege | 7,34 OK | 5,05 OK | 7,34 OK | 7,34 OK |
+| Escuro | Terracota | 6,36 OK | 6,36 OK | 6,36 OK | 6,36 OK |
+| Escuro | Laranja | **3,76 FALHA** | **3,10 FALHA** | **3,76 FALHA** | **3,76 FALHA** |
+
+**Falhas efetivas confirmadas:**
+
+| Modo/tema | Controle | Contraste | Texto | Fundo | Regra vencedora |
+| --- | --- | ---: | --- | --- | --- |
+| Claro Oliva | `active-out` | **2,97:1** | `#F7FAF6` | `#B08D3E` | `style/features.css:2586` |
+| Claro Lima | `active-in` | **3,64:1** | `#FAF9F6` | `#40916C` | `style/features.css:2594` |
+| Claro Lima | `active-out` | **2,50:1** | `#FAF9F6` | `#90A955` | `style/features.css:2586` |
+| Claro Terracota | `active-in` | **3,63:1** | `#FFFFFF` | `#C66F50` | `style/features.css:2594` |
+| Claro Laranja | `active-in` | **3,76:1** | `#FFFFFF` | `#E85002` | `style/features.css:2594` |
+| Claro Laranja | `#fSalvar` | **3,76:1** | `#FFFFFF` | `#E85002` | `style/features.css:2430` |
+| Claro Laranja | `#tSalvar` | **3,76:1** | `#FFFFFF` | `#E85002` | `style/features.css:2782` |
+| Escuro Laranja | `active-in` | **3,76:1** | `#FFFFFF` | `#E85002` | `style/features.css:2820` |
+| Escuro Laranja | `active-out` | **3,10:1** | `#FFFFFF` | `#FF5A3A` | `style/features.css:2586` |
+| Escuro Laranja | `#fSalvar` | **3,76:1** | `#FFFFFF` | `#E85002` | `style/features.css:2820` |
+| Escuro Laranja | `#tSalvar` | **3,76:1** | `#FFFFFF` | `#E85002` | `style/features.css:2820` |
+
+**Cascata vencedora observada:**
+
+- `active-in`: `#panelNovo .type-toggle button.active-in` em `style/features.css:2594`, `--toggle-active-bg` / `--toggle-active-foreground`; especificidade `1,2,1`.
+- `active-out`: `#panelNovo .type-toggle button.active-out, #panelNovo .type-toggle button[class*="active-out"]` em `style/features.css:2586`, `--action-delete-background` / `--on-solid`; especificidade `1,2,1`.
+- `#fSalvar` no claro: `#panelNovo #fSalvar` em `style/features.css:2430`, `--surface-accent` / `--accent-foreground`; especificidade `2,0,0`.
+- `#tSalvar` no claro: `#panelTransferencia #tSalvar` em `style/features.css:2782`, `--surface-accent` / `--accent-foreground`; especificidade `2,0,0`.
+- `active-in`, `#fSalvar` e `#tSalvar` no escuro: `body.dark-mode` com os mesmos seletores, em `style/features.css:2820`, `--toggle-active-bg` / `--toggle-active-foreground`; especificidade `2,1,1`.
+- Nenhuma regra vencedora usa `!important`; todas são de origem regular.
+
+**Leitura dos resultados:**
+
+- 29 das 40 combinações passam; 11 falham.
+- As falhas não se limitam ao par original `--surface-accent` / `--accent-foreground`. Elas também atingem `--toggle-active-bg` / `--toggle-active-foreground` e `--action-delete-background` / `--on-solid`.
+- O par original continua efetivo em `#fSalvar`/`#tSalvar` no modo claro e falha no tema Laranja claro (`3,76:1`). C.3-V05-A permanece como inconsistência documental/potencial no modo escuro, mas C.4-V05-A comprova falha real de componente no modo claro.
+- O tema Bege escuro não estava detalhado na tabela preliminar; foi medido nesta execução e passou nos quatro controles.
+- `#fSalvar` e `#tSalvar` no claro usam `--surface-accent` como fundo. Em Oliva, o fundo efetivo é `#1E2E16`, não `#5F7A43`; o resultado de `13,69:1` confirma o par efetivo.
+- A conclusão de C.4-V05-A é que existe falha efetiva comprovada e que a correção é necessária, mas deve ser localizada por tema/componente. Não é autorizada uma substituição global de `--accent` nem o uso de `--header-foreground` sem medição.
+
+**Evidências e validação:**
+
+- JSON completo: `/data/data/com.termux/files/usr/tmp/opencode/c4-v05-r2.json`.
+- Harness CDP: `/data/data/com.termux/files/usr/tmp/opencode/c4-v05-r2.mjs`.
+- Nenhum arquivo de CSS, HTML ou JavaScript foi alterado nesta execução.
+- Durante a coleta, `git status --short` mostrava apenas `?? .tmp-c13/`; nenhum arquivo rastreado foi modificado pela coleta. Este relatório foi atualizado depois, apenas para registrar a evidência.
+
+**Conclusão da R2:** C.4-V05-A está comprovada no runtime. A correção permanece pendente de autorização e deve cobrir, no mínimo, `active-in`, `active-out`, `#fSalvar` e `#tSalvar` nos temas e modos afetados, preservando fundos, geometria, bordas, sombras e a identidade das paletas.
 
 ### C.4-V05-B — Correção sistêmica de `--accent` sobre superfícies claras
 
