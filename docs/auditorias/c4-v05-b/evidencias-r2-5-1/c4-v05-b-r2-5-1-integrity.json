@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "version": "R2.5.1",
+    "branch": "feat/app-navigation-redesign",
+    "baseCommit": "8ac6434309d25ac241ebf65bc6ac8f753a4199d0",
+    "generatedAt": "2026-11-14T17:02:25.002Z",
+    "nodeVersion": "v26.12.1",
+    "platform": "android",
+    "browser": "Chromium 156 headless (CDP porta 9222)",
+    "hashAlgorithm": "SHA-256",
+    "hashEncoding": "hex"
+  },
+  "artifacts": [
+    {
+      "name": "c4-v05-b-r2-5-1-core.cjs",
+      "path": "c4-v05-b-r2-5-1-core.cjs",
+      "sizeBytes": 32904,
+      "lines": 963,
+      "sha256": "f36e22a589b98abd6fc368091a588633fe0d82e8425fc8f991395e475d8b6e92"
+    },
+    {
+      "name": "c4-v05-b-r2-5-1.cjs",
+      "path": "c4-v05-b-r2-5-1.cjs",
+      "sizeBytes": 33406,
+      "lines": 831,
+      "sha256": "12d8c8024b15b3aea8041123e6e3bc2c29632cccd0554727fad8d41beb7efd1d"
+    },
+    {
+      "name": "c4-v05-b-r2-5-1-test.cjs",
+      "path": "c4-v05-b-r2-5-1-test.cjs",
+      "sizeBytes": 30196,
+      "lines": 741,
+      "sha256": "d67b9c4e8ff5301ff629e0b0739541a49cfd697e106dfc0b1ec967c8e86be9f2"
+    },
+    {
+      "name": "c4-v05-b-r2-5-1-test-fixtures.html",
+      "path": "c4-v05-b-r2-5-1-test-fixtures.html",
+      "sizeBytes": 11176,
+      "lines": 437,
+      "sha256": "4375e26d02c2b646ae0c39e74e1da9891c630a4205d16c2ad45f134bee971238"
+    },
+    {
+      "name": "c4-v05-b-r2-5-1-test.log",
+      "path": "c4-v05-b-r2-5-1-test.log",
+      "sizeBytes": 5320,
+      "lines": 106,
+      "sha256": "331bde6cc1a44d59fc1d182b35dbb414c78f4f14153de2f9f9a1111cfa1e919e"
+    },
+    {
+      "name": "c4-v05-b-r2-5-1-test-results.json",
+      "path": "c4-v05-b-r2-5-1-test-results.json",
+      "sizeBytes": 14129,
+      "lines": 189,
+      "sha256": "dd7466fd803d24751c27fab6510176cf043895b24c9aa7d1470ac4b1eb93ab12"
+    }
+  ],
+  "testSummary": {
+    "total": 84,
+    "passed": 84,
+    "failed": 0,
+    "blocked": 0
+  },
+  "correctionsValidated": [
+    "R25-01: sampleId incorpora screen efetivamente",
+    "R25-02: associacao key->nodeId com contrato de cardinalidade",
+    "R25-03: limpeza de pseudoestado em try/finally real",
+    "R25-04: visibilidade efetiva considerando ancestrais",
+    "R25-05: validacao geometrica completa",
+    "R25-06: atributos DOM lidos com estrutura confirmada",
+    "R25-07: classificacao estruturada de erros CDP",
+    "R25-08: caminhos relativos",
+    "R25-09: limpeza de mutacoes temporarias no DOM",
+    "R25-10: nenhum fallback a branco presumido"
+  ],
+  "integrityVerification": {
+    "method": "Ler cada arquivo, calcular SHA-256 sobre o conteudo completo, comparar com o valor registrado",
+    "allHashesMatch": true
+  }
+}
