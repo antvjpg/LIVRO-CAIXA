@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixture de Teste C.4-V05-B-R2.3</title>
+<style>
+  /* Múltiplas ocorrências do mesmo seletor .r23-btn */
+  .r23-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #5F7A43;
+    color: #FFF;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 4px;
+  }
+  .r23-btn:hover {
+    background: #7A9A57;
+    color: #FFF;
+  }
+  .r23-btn:focus-visible {
+    outline: 3px solid #5F7A43;
+    outline-offset: 2px;
+  }
+  .r23-btn.hidden {
+    display: none;
+  }
+  .r23-btn.no-geom {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+  /* Elemento de controle sem relação com --accent */
+  .r23-other {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #CCC;
+    color: #333;
+    border: 1px solid #999;
+    margin: 4px;
+  }
+</style>
+</head>
+<body>
+  <!-- Múltiplas ocorrências do mesmo seletor .r23-btn -->
+  <button class="r23-btn" id="r23-btn-1">Botão 1 (visível)</button>
+  <button class="r23-btn" id="r23-btn-2">Botão 2 (visível)</button>
+  <button class="r23-btn hidden" id="r23-btn-3">Botão 3 (oculto)</button>
+  <!-- Botão sem geometria -->
+  <button class="r23-btn no-geom" id="r23-btn-4">Botão 4 (sem geometria)</button>
+  <!-- Elemento de controle -->
+  <button class="r23-other" id="r23-btn-5">Botão outro</button>
+
+  <script>
+    window.__r23Fixtures = {
+      buttonIds: ['r23-btn-1', 'r23-btn-2', 'r23-btn-3', 'r23-btn-4', 'r23-btn-5'],
+      testSelector: '.r23-btn'
+    };
+  </script>
+</body>
+</html>
