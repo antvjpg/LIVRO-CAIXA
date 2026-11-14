@@ -1,4 +1,4 @@
-# ÍNDICE DE EVIDÊNCIAS — C.4-V05-B (R1, R2, R2.1, R2.2 e R2.3)
+# ÍNDICE DE EVIDÊNCIAS — C.4-V05-B (R1, R2, R2.1, R2.2, R2.3 e R2.4)
 
 Auditoria runtime somente leitura de consumidores do token CSS `--accent` em superfícies claras.
 Nenhum arquivo de produção foi alterado nesta etapa.
@@ -8,7 +8,7 @@ Nenhum arquivo de produção foi alterado nesta etapa.
 - [1. Resumo da execução (do JSON bruto)](#1-resumo-da-execução-do-json-bruto)
 - [2. Tabela de evidências](#2-tabela-de-evidências)
 - [3. Rastreabilidade por identificador de amostra](#3-rastreabilidade-por-identificador-de-amostra)
-- [4. Evidências das execuções R2, R2.1, R2.2 e R2.3](#4-evidências-das-execuções-r2-r21-r22-e-r23)
+- [4. Evidências das execuções R2, R2.1, R2.2, R2.3 e R2.4](#4-evidências-das-execuções-r2-r21-r22-r23-e-r24)
 - [5. Documentação de suporte](#5-documentação-de-suporte)
 - [6. Observações de integridade](#6-observações-de-integridade)
 
@@ -158,6 +158,26 @@ Nenhum arquivo de produção foi alterado nesta etapa.
 
 ---
 
+### R2.4 (validação controlada de correções do harness R2.3 — nenhuma coleta completa executada)
+
+| Campo | Valor |
+| --- | --- |
+| Nome | C.4-V05-B-R2.4 |
+| Natureza | Validação controlada / somente leitura. Nenhuma coleta completa do aplicativo. |
+| Commit-base (aplicação) | `cb6abc60a6bbdd665879e2649d84b4683ef526c5` (HEAD da R2.3) |
+| Branch | `feat/app-navigation-redesign` |
+| Ferramenta de automação | Node.js + `chrome-remote-interface` (CDP), porta 9222 |
+| Navegador | Chromium 156 headless |
+| Plataforma | Linux x86_64 (Termux/Android) |
+| Versão do Node | 26.12.1 |
+| Testes controlados | 61/61 PASS, 0 FAIL, 0 BLOCKED |
+| Grupos de testes | A (10), B (8), C (5), D (10), E (10), F (5) |
+| Correções validadas | R24-01 a R24-08 (8/8 implementadas e comprovadas) |
+| Nenhuma coleta completa executada | Confirmado |
+| Nenhum arquivo de produção alterado | Confirmado |
+
+---
+
 ## 2. Tabela de evidências
 | # | Nome do arquivo | Descrição | Caminho | Tamanho (bytes) | Linhas | SHA-256 | Data de geração | Função na auditoria | Relação com a matriz de resultados |
 |---|---|---|---|---:|---:|---|---|---|---|
@@ -186,6 +206,11 @@ Nenhum arquivo de produção foi alterado nesta etapa.
 | 23 | `c4-v05-b-r2-3.cjs` | Harness R2.3 corrigido: população de consumidores exata, sondas de estado via `DOM.querySelectorAll`+`CSS.forcePseudoState` por `nodeId` individual, declaração CSS vencedora via `captureWinningRules()`+`getWinningRule()`, detecção SVG fill/stroke/currentColor, hash SHA-256 reproduzível, erros CDP rastreados com `sampleId` único, geometria com 4 vértices do quadrilátero, foco/borda contra superfície adjacente. | `docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.cjs` | 38.424 | 707 | `32ddc6cd38403fb4f23790c9af6473f0df3649a3d1e5f142f515c791bf68f68b` | 2026-11-13 | Código que produziu o JSON R2.3. Permite reprodução técnica da coleta corrigida. | Implementa as 6 correções R23-01 a R23-06 (declaração vencedora, sampleId único, geometria 4 vértices, foco/borda adjacente, erros CDP rastreados, testes executam código real). |
 | 24 | `c4-v05-b-r2-3-test.cjs` | Script de teste controlado R2.3: valida `getWinningRule` capturado, `sampleId` único com contexto vp/theme/screen, execução de código real do harness, geometria 4 vértices, foco/borda contra superfície adjacente, erros CDP capturados, integridade de hash. | `docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test.cjs` | 8.521 | 153 | `e15887aadae071dded868ab006d01d3712fad3288626c86f8b4c5e628bbfc679` | 2026-11-13 | Teste controlado versão 3. Valida que `getWinningRule` é chamado, que `sampleId` é único por contexto, que o código real do harness é exercitado, que a geometria usa 4 vértices, que o foco/borda compara contra superfície adjacente, e que erros CDP são capturados. | 16/16 testes PASS. Valida as correções R23-01 a R23-06. |
 | 25 | `c4-v05-b-r2-3-test-fixtures.html` | Fixture HTML para o teste controlado R2.3: 4 botões `.r23-btn` (3 visíveis + 1 oculto + 1 sem geometria) + 1 botão `.r23-other` (sem relação com --accent). | `docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test-fixtures.html` | 1.671 | 65 | `b0fa861e2230ac8d01673115fc968e6516c4a7bee3b81bea7b137fe9207c1ef0` | 2026-11-13 | Fixture HTML para o teste controlado R2.3. Fornece 4 ocorrências do seletor `.r23-btn` com estados variados para validação das sondas individuais. | Usado pelo `c4-v05-b-r2-3-test.cjs` para validar a aplicação individual de pseudoclasses. |
+| 26 | `c4-v05-b-r2-4-core.cjs` | Núcleo compartilhado e testável do harness R2.4: funções puras (hash, parseColor, comp, lum, ratio, makeSampleId, rectFromBorder, measure) e factory createCDPAuditCore (getWinningRule, captureWinningRules, probeState) com dependências CDP injetadas. | `docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-core.cjs` | 21.877 | 729 | `21151110f9561501d9f81d581f4048755a7294c519bc8c936a509a1679709004` | 2026-11-13 | Núcleo importado tanto pelo harness quanto pelos testes; nenhuma função duplicada. | Permite que testes exercitem as mesmas funções usadas pelo harness em produção. |
+| 27 | `c4-v05-b-r2-4.cjs` | Harness principal R2.4: importa o núcleo, executa fluxo completo de coleta (viewport/tema/tela/painel), associa key→nodeId via data-c4-audit, chama captureWinningRules com nodeId resolvido, calcula hash SHA-256 reproduzível. | `docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4.cjs` | 28.571 | 740 | `a92a50d3a55e1bee5bd8762f627054ab083702d1cecfffef3458cc7a3d06835d` | 2026-11-13 | Harness R2.4 com as 8 correções (R24-01 a R24-08). Não executa coleta completa nesta validação controlada. | Demonstra que o harness é tecnicamente testável e usa o núcleo compartilhado. |
+| 28 | `c4-v05-b-r2-4-test.cjs` | Script de teste controlado R2.4: importa o núcleo real e executa 61 testes em 6 grupos (A-F) cobrindo associação CSS, identificadores, geometria, medição WCAG, estados/visibilidade e erros CDP. | `docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test.cjs` | 24.230 | 715 | `2950371024689a5054dd90c2e5bb4e15d99e84a1d32c929c4389c0ecad578be6` | 2026-11-13 | Teste controlado versão 4. Executa funções reais do núcleo, não réplicas. | 61/61 testes PASS. Valida as correções R24-01 a R24-08. |
+| 29 | `c4-v05-b-r2-4-test-fixtures.html` | Fixture HTML para o teste controlado R2.4: 21 elementos incluindo botão normal, oculto, visibility hidden, opacity:0, sem dimensões, borda alta/baixa/decorativa, outline de foco, :hover, :focus, :active, !important, declaração inline, especificidade, herança, SVG fill/stroke, currentColor, elemento rotacionado. | `docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test-fixtures.html` | 8.034 | 329 | `11a90bae623bbc8a79ac1d010591f690d4357087adc9c574411c883d752dfaab` | 2026-11-13 | Fixture HTML determinística para validação controlada do harness R2.4. | Usado pelo `c4-v05-b-r2-4-test.cjs` para validar todas as correções R24-01 a R24-08. |
+| 30 | `c4-v05-b-r2-4-test.log` | Saída integral da execução dos testes controlados R2.4 (gerada durante a execução). | `docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test.log` | — | — | — | 2026-11-13 | Log de execução dos 61 testes controlados. | Confirma 61/61 PASS, 0 FAIL, 0 BLOCKED. |
 
 ---
 
@@ -207,13 +232,15 @@ Não há identificador global único além de `(vp, themeSet, theme, screen, key
 
 ---
 
-## 4. Evidências das execuções R2, R2.1, R2.2 e R2.3
+## 4. Evidências das execuções R2, R2.1, R2.2, R2.3 e R2.4
 
 A execução R2.1 preserva integralmente a R1 e a R2 (nenhum artefato alterado ou removido). Os artefatos R2.1 ficam em `evidencias-r2-1/`.
 
 A execução R2.2 preserva integralmente a R1, a R2 e a R2.1 (nenhum artefato alterado ou removido). Os artefatos R2.2 ficam em `evidencias-r2-2/`.
 
 A execução R2.3 preserva integralmente a R1, a R2, a R2.1 e a R2.2 (nenhum artefato alterado ou removido). Os artefatos R2.3 ficam em `evidencias-r2-3/`.
+
+A execução R2.4 preserva integralmente a R1, a R2, a R2.1, a R2.2 e a R2.3 (nenhum artefato alterado ou removido). Os artefatos R2.4 ficam em `evidencias-r2-4/`. A R2.4 é uma validação controlada e não executa coleta completa do aplicativo.
 
 ---
 
@@ -235,13 +262,18 @@ A execução R2.3 preserva integralmente a R1, a R2, a R2.1 e a R2.2 (nenhum art
 | 12 | `METODOLOGIA-R2-3.md` | Metodologia da R2.3 (6 correções aplicadas: declaração vencedora, sampleId único, testes executam código real, geometria 4 vértices, foco/borda adjacente, erros CDP rastreados). | `docs/auditorias/c4-v05-b/METODOLOGIA-R2-3.md` | 14.316 | 193 | `e57a6a5009b101585903196cc02cd4d63e6008952f5c70b5bd02ec037a8795ad` |
 | 13 | `RELATORIO-FINAL-R2-3.md` | Relatório final da auditoria R2.3: estrutura obrigatória (A a L), diagnóstico, alterações, testes, evidências, comparação, pendências, integridade do escopo. | `docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md` | — | — | — |
 | 14 | `COMPARACAO-R1-R2-R2-1-R2-2-R2-3.md` | Comparação penta-fásica R1 × R2 × R2.1 × R2.2 × R2.3: população, classificação, metodologia, correções R23-01 a R23-06. | `docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2-R2-3.md` | 10.980 | 122 | `3b31989ad0fb3b6c45cef382252dfcdf7510f4500c6a346a11446847da267e71` |
+| 15 | `DIAGNOSTICO-R2-4.md` | Diagnóstico dos problemas encontrados na auditoria R2.3 (8 problemas identificados: R24-01 a R24-08). | `docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-4.md` | — | — | — |
+| 16 | `METODOLOGIA-R2-4.md` | Metodologia da R2.4 (8 correções aplicadas: associação key→nodeId, sampleId único, núcleo compartilhado, geometria 4 vértices, fundo vs superfície adjacente, limpeza de pseudoestados, API CDP dupla, validação de visibilidade). | `docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md` | — | — | — |
+| 17 | `RELATORIO-VALIDACAO-CONTROLADA-R2-4.md` | Relatório de validação controlada R2.4: resumo executivo, ambiente, arquivos criados, correções implementadas, matriz de testes, resultados reais, falhas, bloqueios, limitações. | `docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md` | — | — | — |
+| 18 | `COMPARACAO-R1-R2-R2-1-R2-2-R2-3-R2-4.md` | Comparação hexa-fásica R1 × R2 × R2.1 × R2.2 × R2.3 × R2.4: população, classificação, metodologia, correções R24-01 a R24-08, status de comprovação por teste. | `docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2-R2-3-R2-4.md` | — | — | — |
 
 ---
 
 ## 6. Observações de integridade
 
-- Todos os arquivos em `evidencias/`, `evidencias-r2/`, `evidencias-r2-1/`, `evidencias-r2-2/` e `evidencias-r2-3/` são cópias byte-a-byte dos originais em `/data/data/com.termux/files/usr/tmp/opencode/`; os SHA-256 de cópia e original coincidem.
+- Todos os arquivos em `evidencias/`, `evidencias-r2/`, `evidencias-r2-1/`, `evidencias-r2-2/`, `evidencias-r2-3/` e `evidencias-r2-4/` são cópias byte-a-byte dos originais em `/data/data/com.termux/files/usr/tmp/opencode/`; os SHA-256 de cópia e original coincidem.
 - Nenhum conteúdo interno dos arquivos brutos foi modificado.
-- A R1 permanece preservada integralmente; a R2, R2.1, R2.2 e R2.3 são execuções separadas e corrigidas.
+- A R1 permanece preservada integralmente; a R2, R2.1, R2.2, R2.3 e R2.4 são execuções separadas e corrigidas.
 - Não há arquivos órfãos nem duplicatas nesta estrutura.
 - O hash SHA-256 do JSON R2.3 foi verificado independentemente (`hashMatches: true`): ler o arquivo, remover `meta.hash`/`meta.hash16`, recalcular SHA-256, comparar com o valor registrado (`08d898ce6b2b1d2d4defa7e58ceecdd20c93a30e54de0d06d73eddc224d8d92f`).
+- A R2.4 é uma validação controlada e não gera JSON de coleta completa; os hashes dos arquivos R2.4 estão registrados na tabela de evidências.
