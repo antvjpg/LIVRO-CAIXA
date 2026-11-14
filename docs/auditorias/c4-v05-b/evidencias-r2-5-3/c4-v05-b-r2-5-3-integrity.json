@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "version": "R2.5.3",
+    "branch": "feat/app-navigation-redesign",
+    "baseCommit": "bef9f71edbe80c1515f8f3105f9592d56f2868e8",
+    "generatedAt": "2026-11-14T00:00:00.000Z",
+    "nodeVersion": "v26.12.1",
+    "platform": "android",
+    "browser": "Chromium 156 headless (CDP porta 9222)",
+    "hashAlgorithm": "SHA-256",
+    "hashEncoding": "hex",
+    "testExecution": {
+      "total": 159,
+      "passed": 159,
+      "failed": 0,
+      "blocked": 0,
+      "exitCode": 0,
+      "cdpUrl": "http://127.0.0.1:9222",
+      "fixtureUrl": "http://127.0.0.1:8000/docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test-fixtures.html"
+    }
+  },
+  "artifacts": [
+    {
+      "name": "c4-v05-b-r2-5-3-core.cjs",
+      "path": "c4-v05-b-r2-5-3-core.cjs",
+      "sizeBytes": 41289,
+      "lines": 1141,
+      "sha256": "6ac07ac3715db15ad2689eb310b50d93a5528f111a9abc64a07e2a7ad0a4a4c2"
+    },
+    {
+      "name": "c4-v05-b-r2-5-3.cjs",
+      "path": "c4-v05-b-r2-5-3.cjs",
+      "sizeBytes": 33483,
+      "lines": 830,
+      "sha256": "eeb07441786dd96ade887b00db139518441e7762ec4dc3b2294e6ca52d66c0e6"
+    },
+    {
+      "name": "c4-v05-b-r2-5-3-test.cjs",
+      "path": "c4-v05-b-r2-5-3-test.cjs",
+      "sizeBytes": 62618,
+      "lines": 1819,
+      "sha256": "ce1b3c26e9a2d908f49323598de76e6ea173151a06be57785ce8441657ebf78e"
+    },
+    {
+      "name": "c4-v05-b-r2-5-3-test-fixtures.html",
+      "path": "c4-v05-b-r2-5-3-test-fixtures.html",
+      "sizeBytes": 15831,
+      "lines": 586,
+      "sha256": "0b5f1b4467e87e43b011ef20a1a56dec643516bb8b1229467547c07d47374172"
+    },
+    {
+      "name": "c4-v05-b-r2-5-3-test.log",
+      "path": "c4-v05-b-r2-5-3-test.log",
+      "sizeBytes": 10066,
+      "lines": 185,
+      "sha256": "3031937d7103b18fa8000ab9072ada9f57ce00faf4d8374bffcaf292597d2a1c"
+    },
+    {
+      "name": "c4-v05-b-r2-5-3-test-results.json",
+      "path": "c4-v05-b-r2-5-3-test-results.json",
+      "sizeBytes": 31743,
+      "lines": 1052,
+      "sha256": "bd5f01b4773aad2fb0b5ec34749a07b25707ca898cb1fc4757d9c24c80ee9d9b"
+    },
+    {
+      "name": "DIAGNOSTICO-R2-5-3.md",
+      "path": "DIAGNOSTICO-R2-5-3.md",
+      "sizeBytes": 11555,
+      "lines": 179,
+      "sha256": "4eeed2ef16de29cc6894daf8e9416e8280d0bb138470cfa0071f390d1fc8543c"
+    },
+    {
+      "name": "INDICE-EVIDENCIAS-R2-5-3.md",
+      "path": "INDICE-EVIDENCIAS-R2-5-3.md",
+      "sizeBytes": 5265,
+      "lines": 99,
+      "sha256": "e682d8a7bcdea280cc803138402acfa739294b9eb8bf3ab8ca65a3b6077dc9ba"
+    },
+    {
+      "name": "RELATORIO-FINAL-R2-5-3.md",
+      "path": "RELATORIO-FINAL-R2-5-3.md",
+      "sizeBytes": 19417,
+      "lines": 346,
+      "sha256": "bd81bb2d859415bd1ed7ad603af33fafc39b7f1cc633f600b4116db58209716d"
+    }
+  ],
+  "testSummary": {
+    "total": 159,
+    "passed": 159,
+    "failed": 0,
+    "blocked": 0
+  },
+  "correctionsValidated": [
+    "R25-01: sampleId incorpora 'screen' efetivamente (formato r25-{viewport}-{themeSet}-{theme}-{screen}-{selectorHash}-{state}-{index})",
+    "R25-02: associacao key->nodeId com contrato de cardinalidade (0->node-not-found, 1->resolved, >1->ambiguous-node-association, erro->cdp-error)",
+    "R25-03: limpeza de pseudoestado em try/finally real envolvendo aplicacao + coleta",
+    "R25-04: visibilidade efetiva considerando ancestrais (heranca/sobrescrita de visibility, display:none absoluto, raiz do documento)",
+    "R25-05: validacao geometrica completa (box model recebido vs geometria utilizavel, dimensoes degeneradas)",
+    "R25-06: atributos DOM lidos com estrutura confirmada (tabindex, role, aria-label, disabled)",
+    "R25-07: classificacao estruturada de erros CDP com justificanca e grau de confianca",
+    "R25-08: caminhos relativos (sem caminhos absolutos do Termux)",
+    "R25-09: limpeza de mutacoes temporarias no DOM apos falha (try/finally)",
+    "R25-10: nenhum fallback a branco presumido para fundo ausente"
+  ],
+  "integrityVerification": {
+    "method": "Ler cada arquivo (exceto este proprio manifesto), calcular SHA-256 sobre o conteudo completo, comparar com o valor registrado neste manifesto. Verificacao independente da rotina que gerou os hashes. Este manifesto nao contem seu proprio hash para evitar referencia circular.",
+    "allHashesMatch": true,
+    "filesVerified": 9,
+    "filesMissing": 0,
+    "filesAltered": 0
+  }
+}
