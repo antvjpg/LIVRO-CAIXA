@@ -1,0 +1,132 @@
+=== GRUPO A — sampleId com screen (R25-01) ===
+  PASS: A1: sampleId difere por tela (dash vs caixa)
+  PASS: A1: screen dash presente no sampleId
+  PASS: A1: screen caixa presente no sampleId
+  PASS: A2: sampleId difere por viewport (mobile vs desktop)
+  PASS: A2: prefixo mobile presente
+  PASS: A2: prefixo desktop presente
+  PASS: A3: sampleId difere por tema (3 vs 4)
+  PASS: A4: sampleId difere por estado (hover vs focus-visible)
+  PASS: A5: sampleId difere por índice (0 vs 1)
+  PASS: A6: sampleId difere por tela mesmo sem elementos correspondentes
+  PASS: A7: 50 chamadas sucessivas geram 50 sampleIds únicos
+  PASS: A7: registro real contém 50 sampleIds
+  PASS: A7b: registro real detecta sampleId duplicado
+  PASS: A8: prefixo r25- presente
+  PASS: A9: screen não resulta em segmento vazio
+  PASS: A9: screen dash está na posição correta
+
+=== GRUPO B — Associação key → nodeId (cardinalidade) (R25-02) ===
+  PASS: B1: 0 IDs resulta em node-not-found
+  PASS: B1: nodeId é null quando não há IDs
+  PASS: B1: idCount é 0
+  PASS: B2: 1 ID resulta em resolved
+  PASS: B2: nodeId é o ID resolvido
+  PASS: B2: idCount é 1
+  PASS: B3: mais de 1 ID resulta em ambiguous-node-association
+  PASS: B3: nodeId é null quando ambíguo (não escolhe primeiro)
+  PASS: B3: idCount registra a quantidade real de IDs
+  PASS: B4a: resolveNodeIdResult com 0 IDs retorna node-not-found
+  PASS: B4b: probeState retorna array mesmo com erro CDP
+  PASS: B4b: nenhuma ocorrência quando CDP falha na consulta
+  PASS: B5: múltiplos IDs não resultam em escolha arbitrária do primeiro
+  PASS: B5: nodeId é null quando há múltiplos IDs
+  PASS: B6: chave registrada
+  PASS: B6: seletor registrado
+  PASS: B6: quantidade de IDs registrada
+
+=== GRUPO C — Limpeza de pseudoestado (try/finally real) (R25-03) ===
+  PASS: C1: sampleId gerado com prefixo r25
+  PASS: C1: nodeId presente na ocorrência
+  PASS: C1: cleanupStatus é success quando limpeza bem-sucedida
+  PASS: C2: sem estado residual de :focus após probeState
+  PASS: C3: múltiplas chamadas de probeState executam sem falha em cadeia
+  PASS: C4: limpeza tentada após falha de computed style (cleanupStatus=success)
+  PASS: C4: amostra descartada quando computed style falha
+  PASS: C4: motivo é computed-style-error
+  PASS: C4: falha de computed style foi efetivamente injetada
+  PASS: C4b: limpeza tentada mesmo com falha na aplicação
+  PASS: C5: cleanupStatus é failed quando limpeza falha
+  PASS: C5: amostra descartada quando limpeza falha
+  PASS: C5: motivo é cleanup-failed
+  PASS: C5: falha de limpeza foi efetivamente injetada
+  PASS: C6: primeira chamada produz ocorrências
+  PASS: C6: primeira chamada limpeza success
+  PASS: C6: segunda chamada produz ocorrências mesmo com falha na limpeza
+  PASS: C6: segunda chamada limpeza failed
+  PASS: C6: segunda chamada amostra descartada
+  PASS: C6: terceira chamada produz ocorrências após recuperação
+  PASS: C6: terceira chamada limpeza success após recuperação
+
+=== GRUPO D — Visibilidade efetiva e ancestrais (R25-04) ===
+  PASS: D1: elemento visível tem visibilityStatus visible
+  PASS: D1: elemento visível tem geometryStatus available
+  PASS: D1: rect disponível para elemento visível
+  PASS: D2: display:none resulta em visibilityStatus hidden
+  PASS: D3: visibility:hidden resulta em visibilityStatus hidden
+  PASS: D4: opacity:0 resulta em visibilityStatus not-visible (não visível)
+  PASS: D4: valor original de opacity preservado (não convertido para 1)
+  PASS: D5: dimensões zero resulta em visibilityStatus not-visible
+  PASS: D5: geometria degenerada (dimensões zero) tem geometryStatus unavailable
+  PASS: D5: retângulo é null para geometria degenerada
+  PASS: D6: ancestral com opacity:0 resulta em visibilityStatus not-visible
+  PASS: D6: ancestorOpacity acumulado é 0
+  PASS: D7: ancestral com display:none resulta em visibilityStatus hidden
+  PASS: D7: ancestorHidden é true
+  PASS: D8: ancestral sem alteração de opacidade tem ancestorOpacity=1
+  PASS: D8: ancestral sem display:none tem ancestorHidden=false
+  PASS: D9: ancestral com visibility:hidden resulta em visibilityStatus hidden
+  PASS: D9: ancestorHidden é true para ancestral visibility:hidden
+  PASS: D9: travessia de ancestral concluída com sucesso
+  PASS: D10: ancestral com visibility:collapse resulta em visibilityStatus hidden
+  PASS: D10: ancestorHidden é true para ancestral visibility:collapse
+  PASS: D11: falha na leitura de ancestral resulta em visibilityStatus unknown
+  PASS: D11: ancestorVisibility não é completed quando leitura falha
+  PASS: D11: ancestorFailureReason preenchido quando leitura falha
+  PASS: D12: ocorrência com ancestral opacity:0 tem visibilityStatus not-visible
+  PASS: D12: ocorrência com ancestral visível tem visibilityStatus visible
+  PASS: D12: cada ocorrência tem nodeId individual (identidade preservada)
+
+=== GRUPO E — Atributos DOM com expectativas exatas (R25-05) ===
+  PASS: E1: tabindex="0" lido corretamente (valor="0")
+  PASS: E2: tabindex="-1" lido corretamente (valor="-1")
+  PASS: E3: tabindex ausente retorna null
+  PASS: E4: role="button" lido corretamente (valor="button")
+  PASS: E5: aria-label lido corretamente (valor="Rótulo de acessibilidade")
+  PASS: E6: disabled=true lido corretamente
+  PASS: E7: disabled=false lido corretamente
+
+=== GRUPO F — Validação geométrica (R25-05) ===
+  PASS: F1: retângulo válido retorna objeto
+  PASS: F1: geometria correta (x=10, y=10, w=40, h=40)
+  PASS: F2: quadrilátero rotacionado válido retorna objeto
+  PASS: F2: geometria rotacionada correta
+  PASS: F3: lista ausente retorna null
+  PASS: F4: lista com menos de 8 coordenadas retorna null
+  PASS: F5: coordenada NaN retorna null
+  PASS: F6: coordenada infinita retorna null
+  PASS: F7: valor textual inválido retorna null
+  PASS: F8: largura degenerada (zero) retorna null
+  PASS: F9: altura degenerada (zero) retorna null
+
+=== GRUPO G — Classificação de erros CDP (R25-07) ===
+  PASS: G1: nó removido classificado como node-detached
+  PASS: G1: confiança alta para node-detached
+  PASS: G2: seletor sem nós classificado como node-not-found
+  PASS: G3: box model não computável classificado como geometry-unavailable
+  PASS: G4: parâmetros inválidos classificado como protocol-error
+  PASS: G5: erro não mapeado classificado como unknown
+  PASS: G5: confiança baixa para erro desconhecido
+  PASS: G6: mensagem ambígua não classificada como node-detached sem evidência de remoção
+  PASS: G7: sampleId preservado no registro de erro
+  PASS: G7: nodeId preservado no registro de erro
+  PASS: G8: sampleId string vazia preservada (não nullificada)
+
+=== GRUPO H — Visibilidade de ancestrais com Chromium real ===
+  PASS: H1: elemento dentro de ancestral opacity:0 tem visibilityStatus not-visible via probeState real
+  PASS: H1: ancestorOpacity=0 detectado via probeState real
+  PASS: H2: elemento dentro de ancestral display:none tem visibilityStatus hidden via probeState real
+  PASS: H2: ancestorHidden=true detectado via probeState real
+
+=== RESUMO DOS TESTES CONTROLADOS R2.5.2 ===
+PASS: 114 FAIL: 0 BLOCKED: 0

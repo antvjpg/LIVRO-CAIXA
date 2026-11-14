@@ -1,0 +1,98 @@
+{
+  "meta": {
+    "version": "R2.5.2",
+    "branch": "feat/app-navigation-redesign",
+    "baseCommit": "44458926e80949d52b1644f445df995de7a17b49",
+    "generatedAt": "2026-11-14T00:00:00.000Z",
+    "nodeVersion": "v26.12.1",
+    "platform": "android",
+    "browser": "Chromium 156 headless (CDP porta 9222)",
+    "hashAlgorithm": "SHA-256",
+    "hashEncoding": "hex",
+    "testExecution": {
+      "total": 114,
+      "passed": 114,
+      "failed": 0,
+      "blocked": 0,
+      "exitCode": 0,
+      "cdpUrl": "http://127.0.0.1:9222",
+      "fixtureUrl": "http://127.0.0.1:8000/docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test-fixtures.html"
+    }
+  },
+  "artifacts": [
+    {
+      "name": "c4-v05-b-r2-5-2-core.cjs",
+      "path": "c4-v05-b-r2-5-2-core.cjs",
+      "sizeBytes": 39902,
+      "lines": 1124,
+      "sha256": "6a2f2537b57d72186f2e3f5b2f05c07151aca9b689bad4078035aca1458528bb"
+    },
+    {
+      "name": "c4-v05-b-r2-5-2.cjs",
+      "path": "c4-v05-b-r2-5-2.cjs",
+      "sizeBytes": 33256,
+      "lines": 827,
+      "sha256": "74e7859767a1eb1708fc95e2b28140e1652acc43afd9f0f793ea36633a1cb259"
+    },
+    {
+      "name": "c4-v05-b-r2-5-2-test.cjs",
+      "path": "c4-v05-b-r2-5-2-test.cjs",
+      "sizeBytes": 42437,
+      "lines": 1319,
+      "sha256": "21671d00eff8d97161485d949973b38ebce78d258b3481228f4b087c7556da66"
+    },
+    {
+      "name": "c4-v05-b-r2-5-2-test-fixtures.html",
+      "path": "c4-v05-b-r2-5-2-test-fixtures.html",
+      "sizeBytes": 13719,
+      "lines": 515,
+      "sha256": "7280582ae941373b99a9f31546e557536767a45fa455741bc40be6cb5a466231"
+    },
+    {
+      "name": "c4-v05-b-r2-5-2-test.log",
+      "path": "c4-v05-b-r2-5-2-test.log",
+      "sizeBytes": 7145,
+      "lines": 132,
+      "sha256": "a97c66c4e2b340267efe61e3188744f1ca3d0557acfedd45878bf8c864c3196a"
+    },
+    {
+      "name": "c4-v05-b-r2-5-2-test-results.json",
+      "path": "c4-v05-b-r2-5-2-test-results.json",
+      "sizeBytes": 18233,
+      "lines": 222,
+      "sha256": "777b7e3ed5516941a50d2ec552f7a309bd05c0f7110318135351f9d2b544a7b9"
+    },
+    {
+      "name": "DIAGNOSTICO-R2-5-2.md",
+      "path": "DIAGNOSTICO-R2-5-2.md",
+      "sizeBytes": 11222,
+      "lines": 170,
+      "sha256": "1905bf87b245fa2341ce52b9f8e17f127f8d21474c84e1a461dd23163765e1f3"
+    }
+  ],
+  "testSummary": {
+    "total": 114,
+    "passed": 114,
+    "failed": 0,
+    "blocked": 0
+  },
+  "correctionsValidated": [
+    "R25-01: sampleId incorpora 'screen' efetivamente (formato r25-{viewport}-{themeSet}-{theme}-{screen}-{selectorHash}-{state}-{index})",
+    "R25-02: associacao key->nodeId com contrato de cardinalidade (0->node-not-found, 1->resolved, >1->ambiguous-node-association, erro->cdp-error)",
+    "R25-03: limpeza de pseudoestado em try/finally real envolvendo aplicacao + coleta",
+    "R25-04: visibilidade efetiva considerando ancestrais (opacidade acumulada, display:none, visibility:hidden, visibility:collapse, falha na leitura -> unknown)",
+    "R25-05: validacao geometrica completa (box model recebido vs geometria utilizavel, dimensoes degeneradas)",
+    "R25-06: atributos DOM lidos com estrutura confirmada (tabindex, role, aria-label, disabled)",
+    "R25-07: classificacao estruturada de erros CDP com justificanca e grau de confianca",
+    "R25-08: caminhos relativos (sem caminhos absolutos do Termux)",
+    "R25-09: limpeza de mutacoes temporarias no DOM apos falha (try/finally)",
+    "R25-10: nenhum fallback a branco presumido para fundo ausente"
+  ],
+  "integrityVerification": {
+    "method": "Ler cada arquivo, calcular SHA-256 sobre o conteudo completo, comparar com o valor registrado neste manifesto. Verificacao independente da rotina que gerou os hashes.",
+    "allHashesMatch": true,
+    "filesVerified": 7,
+    "filesMissing": 0,
+    "filesAltered": 0
+  }
+}
