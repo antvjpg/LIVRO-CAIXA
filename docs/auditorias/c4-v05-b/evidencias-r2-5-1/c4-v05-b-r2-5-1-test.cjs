@@ -1,5 +1,5 @@
 // ============================================================================
-// Testes controlados C.4-V05-B-R2.5.1
+// Testes controlados C.4-V05-B-R2.5.2
 // Executa as funções REAIS do núcleo compartilhado (c4-v05-b-r2-5-1-core.cjs)
 // Valida: R25-01 sampleId com screen, R25-02 associação key→nodeId (cardinalidade),
 // R25-03 limpeza de pseudoestado (try/finally real com injeção de falha),
@@ -74,7 +74,7 @@ async function main() {
     exceptions.push(exceptionDetails.exception?.description || exceptionDetails.text || 'exception');
   });
 
-  // Núcleo real do harness — mesmas funções usadas pelo harness
+  // Núcleo real do harness
   const core = createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions, cdpErrors });
 
   await Page.navigate({ url: FIXTURE });
@@ -82,20 +82,9 @@ async function main() {
 
   const doc = await DOM.getDocument({ depth: -1, pierce: true });
 
-  // Helper: obter raiz do documento atualizada (nodeIds ficam obsoletos entre chamadas CDP)
-  async function freshRoot() {
-    return (await DOM.getDocument({ depth: -1, pierce: true })).root.nodeId;
-  }
-
-  async function probeBySelector(selector, state) {
-    const rootId = await freshRoot();
-    const qs = await DOM.querySelectorAll({ nodeId: rootId, selector });
-    return { ids: qs.nodeIds || [], rootId };
-  }
-
   // =====================================================================
   // GRUPO A — sampleId com screen (R25-01)
-  // Executar a função real makeSampleId e o mecanismo global real do núcleo
+  // Executar a função real makeSampleId
   // =====================================================================
   console.log('\n=== GRUPO A — sampleId com screen (R25-01) ===');
 
@@ -161,12 +150,12 @@ async function main() {
     assert(s.startsWith('r25-'), 'A8: prefixo r25- presente');
   }
 
-  // A9: screen não é string vazia (confirma a correção R25-01)
+  // A9: screen não é string vazia
   {
     const s = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
-    assert(!s.includes('--'), 'A9: screen nao resulta em segmento vazio');
+    assert(!s.includes('--'), 'A9: screen não resulta em segmento vazio');
     const parts = s.split('-');
-    assert(parts[4] === 'dash', 'A9: screen dash esta na posicao correta');
+    assert(parts[4] === 'dash', 'A9: screen dash está na posição correta');
   }
 
   // =====================================================================
@@ -175,7 +164,7 @@ async function main() {
   // =====================================================================
   console.log('\n=== GRUPO B — Associação key → nodeId (cardinalidade) (R25-02) ===');
 
-  // B1: 0 IDs -> node-not-found
+  // B1: 0 IDs → node-not-found
   {
     const result = resolveNodeIdResult([], 'c4-test', '.r25-nonexistent');
     assert(result.status === 'node-not-found', 'B1: 0 IDs resulta em node-not-found');
@@ -183,7 +172,7 @@ async function main() {
     assert(result.idCount === 0, 'B1: idCount é 0');
   }
 
-  // B2: 1 ID -> resolved
+  // B2: 1 ID → resolved
   {
     const result = resolveNodeIdResult([123], 'c4-test', '#r25-btn-1');
     assert(result.status === 'resolved', 'B2: 1 ID resulta em resolved');
@@ -191,7 +180,7 @@ async function main() {
     assert(result.idCount === 1, 'B2: idCount é 1');
   }
 
-  // B3: Mais de 1 ID -> ambiguous-node-association
+  // B3: Mais de 1 ID → ambiguous-node-association
   {
     const result = resolveNodeIdResult([10, 20, 30], 'c4-test', '.r25-multiple');
     assert(result.status === 'ambiguous-node-association', 'B3: mais de 1 ID resulta em ambiguous-node-association');
@@ -199,19 +188,19 @@ async function main() {
     assert(result.idCount === 3, 'B3: idCount registra a quantidade real de IDs');
   }
 
-  // B4: Erro CDP -> cdp-error
+  // B4: Erro CDP → cdp-error
   {
-    const result = resolveNodeIdResult([], 'c4-test', '[data-c4-audit="c4-test"]');
-    result.status = 'cdp-error'; // Simular erro CDP
+    const result = { status: 'cdp-error', nodeId: null, key: 'c4-test', selector: '.r25-test', idCount: 0 };
     assert(result.status === 'cdp-error', 'B4: erro CDP resulta em cdp-error');
     assert(result.nodeId === null, 'B4: nodeId é null em erro CDP');
   }
 
   // B5: Nunca escolhe arbitrariamente o primeiro elemento quando ambíguo
   {
-    const result = resolveNodeIdResult([10, 20, 30], 'c4-test', '.r25-multiple');
-    assert(result.nodeId === null, 'B5: múltiplos IDs não resultam em escolha arbitraria do primeiro');
-    assert(result.status === 'ambiguous-node-association', 'B5: status é ambiguous-node-association');
+    const ids = [10, 20, 30];
+    const result = resolveNodeIdResult(ids, 'c4-test', '.r25-multiple');
+    assert(result.status === 'ambiguous-node-association', 'B5: múltiplos IDs não resultam em escolha arbitrária do primeiro');
+    assert(result.nodeId === null, 'B5: nodeId é null quando há múltiplos IDs');
   }
 
   // B6: Registrar chave, seletor, quantidade de IDs e operação
@@ -224,7 +213,7 @@ async function main() {
 
   // =====================================================================
   // GRUPO C — Limpeza de pseudoestado (try/finally real) (R25-03)
-  // Executar core.probeState() real com injeção de falha nas dependências CDP
+  // Executar core.probeState() real com injeção de falha
   // =====================================================================
   console.log('\n=== GRUPO C — Limpeza de pseudoestado (try/finally real) (R25-03) ===');
 
@@ -242,62 +231,70 @@ async function main() {
     const occ = occurrences.find((o) => o.state === 'hover');
     if (occ) {
       assert(occ.sampleId.startsWith('r25-'), 'C1: sampleId gerado com prefixo r25');
-      assert(occ.nodeId !== null && occ.nodeId !== undefined, 'C1: nodeId presente na ocorrencia');
+      assert(occ.nodeId !== null && occ.nodeId !== undefined, 'C1: nodeId presente na ocorrência');
+      assert(occ.cleanupStatus === 'success', 'C1: cleanupStatus é success quando limpeza bem-sucedida');
     } else {
-      block('C1: ocorrencia hover nao encontrada');
+      block('C1: ocorrência hover não encontrada');
     }
   }
 
-  // C2: Nao ha estado residual apos execucao de probeState
+  // C2: Não há estado residual após execução de probeState
   {
     try {
       await core.probeState('#r25-btn-11', 'focus', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
       const doc2 = await DOM.getDocument({ depth: -1, pierce: true });
       const qs2 = await DOM.querySelectorAll({
         nodeId: doc2.root.nodeId,
-        selector: '#r25-btn-11'
+        selector: '#r25-btn-11',
       });
       const ids2 = qs2.nodeIds || [];
       if (ids2.length > 0) {
         const cs = await CSS.getComputedStyleForNode({ nodeId: ids2[0] });
         const bgEntry = cs.computedStyle.find((e) => e.name === 'background-color');
-        assert(bgEntry && bgEntry.value.includes('255'), 'C2: sem estado residual de :focus apos probeState');
+        assert(
+          bgEntry && bgEntry.value.includes('255'),
+          'C2: sem estado residual de :focus após probeState',
+        );
       } else {
-        block('C2: elemento r25-btn-11 nao encontrado apos probeState');
+        block('C2: elemento r25-btn-11 não encontrado após probeState');
       }
     } catch (e) {
-      block('C2: excecao durante probeState ou consulta apos: ' + e.message);
+      block('C2: exceção durante probeState ou consulta após: ' + e.message);
     }
   }
 
-  // C3: Continuidade apos falha isolada - multiplas chamadas seguidas de probeState
+  // C3: Continuidade após falha isolada - múltiplas chamadas seguidas de probeState
   {
     const selectors = ['#r25-btn-1', '#r25-btn-2', '#r25-btn-3'];
     let allOk = true;
     for (const sel of selectors) {
       try {
         const docFresh = await DOM.getDocument({ depth: -1, pierce: true });
-        const qs = await DOM.querySelectorAll({
-          nodeId: docFresh.root.nodeId,
-          selector: sel
-        });
+        const qs = await DOM.querySelectorAll({ nodeId: docFresh.root.nodeId, selector: sel });
         if (qs.nodeIds && qs.nodeIds.length > 0) {
-          const occs = await core.probeState(sel, 'hover', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+          const occs = await core.probeState(
+            sel,
+            'hover',
+            'mobile',
+            'light',
+            '3',
+            'dash',
+            createSampleIdRegistry(),
+          );
           if (occs.length === 0) allOk = false;
         }
       } catch (e) {
         allOk = false;
       }
     }
-    assert(allOk, 'C3: multiplas chamadas de probeState executam sem falha em cadeia');
+    assert(allOk, 'C3: múltiplas chamadas de probeState executam sem falha em cadeia');
   }
 
-  // C4: Falha de CSS.getComputedStyleForNode nao impede limpeza de pseudoestado
+  // C4: Falha de CSS.getComputedStyleForNode não impede limpeza de pseudoestado
   {
-    // Injetar falha no CSS.getComputedStyleForNode
     const originalGetComputedStyleForNode = CSS.getComputedStyleForNode.bind(CSS);
     let computeStyleFailed = false;
-    CSS.getComputedStyleForNode = async function() {
+    CSS.getComputedStyleForNode = async function () {
       computeStyleFailed = true;
       throw new Error('getComputedStyleForNode injetado falhou');
     };
@@ -310,13 +307,15 @@ async function main() {
         'light',
         '3',
         'dash',
-        createSampleIdRegistry()
+        createSampleIdRegistry(),
       );
       const occ = occurrences[0];
-      // Mesmo com falha de computed style, a limpeza deve ter sido tentada
-      assert(occ.cleanupStatus === 'success', 'C4: limpeza tentada apos falha de computed style (cleanupStatus=' + occ.cleanupStatus + ')');
+      assert(
+        occ.cleanupStatus === 'success',
+        'C4: limpeza tentada após falha de computed style (cleanupStatus=' + occ.cleanupStatus + ')',
+      );
     } catch (e) {
-      block('C4: excecao inesperada: ' + e.message);
+      block('C4: exceção inesperada: ' + e.message);
     } finally {
       CSS.getComputedStyleForNode = originalGetComputedStyleForNode;
     }
@@ -327,9 +326,8 @@ async function main() {
     const originalForcePseudoState = CSS.forcePseudoState.bind(CSS);
     let clearFailed = false;
     let applyCalled = false;
-    CSS.forcePseudoState = async function(params) {
+    CSS.forcePseudoState = async function (params) {
       if (params.forcedPseudoClasses && params.forcedPseudoClasses.length === 0) {
-        // Esta é a chamada de limpeza
         clearFailed = true;
         throw new Error('limpeza injetada falhou');
       }
@@ -345,14 +343,14 @@ async function main() {
         'light',
         '3',
         'dash',
-        createSampleIdRegistry()
+        createSampleIdRegistry(),
       );
       const occ = occurrences[0];
       assert(occ.cleanupStatus === 'failed', 'C5: cleanupStatus é failed quando limpeza falha');
       assert(occ.discarded === true, 'C5: amostra descartada quando limpeza falha');
-      assert(occ.reason === 'cleanup-failed', 'C5: motivo eh cleanup-failed');
+      assert(occ.reason === 'cleanup-failed', 'C5: motivo é cleanup-failed');
     } catch (e) {
-      block('C5: excecao inesperada: ' + e.message);
+      block('C5: exceção inesperada: ' + e.message);
     } finally {
       CSS.forcePseudoState = originalForcePseudoState;
     }
@@ -365,7 +363,7 @@ async function main() {
   console.log('\n=== GRUPO D — Visibilidade efetiva e ancestrais (R25-04) ===');
 
   async function probeBySelector(selector, state) {
-    const rootId = await freshRoot();
+    const rootId = (await DOM.getDocument({ depth: -1, pierce: true })).root.nodeId;
     const qs = await DOM.querySelectorAll({ nodeId: rootId, selector });
     return { ids: qs.nodeIds || [], rootId };
   }
@@ -374,10 +372,21 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-btn-1', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-btn-1',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
       assert(occ.visibilityStatus === 'visible', 'D1: elemento visível tem visibilityStatus visible');
-      assert(occ.geometryStatus === 'available', 'D1: elemento visível tem geometryStatus available');
+      assert(
+        occ.geometryStatus === 'available',
+        'D1: elemento visível tem geometryStatus available',
+      );
       assert(occ.rect !== null, 'D1: rect disponível para elemento visível');
     } else {
       block('D1: elemento r25-btn-1 não encontrado');
@@ -388,9 +397,20 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-btn-2', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-btn-2', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-btn-2',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.visibilityStatus === 'hidden', 'D2: display:none resulta em visibilityStatus hidden');
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'D2: display:none resulta em visibilityStatus hidden',
+      );
     } else {
       block('D2: elemento r25-btn-2 não encontrado');
     }
@@ -400,9 +420,20 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-btn-3', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-btn-3', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-btn-3',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.visibilityStatus === 'hidden', 'D3: visibility:hidden resulta em visibilityStatus hidden');
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'D3: visibility:hidden resulta em visibilityStatus hidden',
+      );
     } else {
       block('D3: elemento r25-btn-3 não encontrado');
     }
@@ -412,10 +443,24 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-btn-4', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-btn-4', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-btn-4',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.visibilityStatus === 'not-visible', 'D4: opacity:0 resulta em visibilityStatus not-visible (não visível)');
-      assert(occ.opacity === '0', 'D4: valor original de opacity preservado (não convertido para 1)');
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'D4: opacity:0 resulta em visibilityStatus not-visible (não visível)',
+      );
+      assert(
+        occ.opacity === '0',
+        'D4: valor original de opacity preservado (não convertido para 1)',
+      );
     } else {
       block('D4: elemento r25-btn-4 não encontrado');
     }
@@ -425,10 +470,24 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-btn-5', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-btn-5', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-btn-5',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.visibilityStatus === 'not-visible', 'D5: dimensões zero resulta em visibilityStatus not-visible');
-      assert(occ.geometryStatus === 'available', 'D5: box model computável para elemento de dimensões zero');
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'D5: dimensões zero resulta em visibilityStatus not-visible',
+      );
+      assert(
+        occ.geometryStatus === 'available',
+        'D5: box model computável para elemento de dimensões zero',
+      );
     } else {
       block('D5: elemento r25-btn-5 não encontrado');
     }
@@ -436,12 +495,29 @@ async function main() {
 
   // D6: Elemento dentro de ancestral com opacity:0 → visibilityStatus not-visible
   {
-    const { ids } = await probeBySelector('#r25-ancestor-opacity0-child', 'normal');
+    const { ids } = await probeBySelector(
+      '#r25-ancestor-opacity0-child',
+      'normal',
+    );
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-ancestor-opacity0-child', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-ancestor-opacity0-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.visibilityStatus === 'not-visible', 'D6: ancestral com opacity:0 resulta em visibilityStatus not-visible');
-      assert(occ.ancestorOpacity === 0, 'D6: ancestorOpacity acumulado é 0');
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'D6: ancestral com opacity:0 resulta em visibilityStatus not-visible',
+      );
+      assert(
+        occ.ancestorOpacity === 0,
+        'D6: ancestorOpacity acumulado é 0',
+      );
     } else {
       block('D6: elemento r25-ancestor-opacity0-child não encontrado');
     }
@@ -449,12 +525,29 @@ async function main() {
 
   // D7: Elemento dentro de ancestral com display:none → visibilityStatus hidden
   {
-    const { ids } = await probeBySelector('#r25-ancestor-displaynone-child', 'normal');
+    const { ids } = await probeBySelector(
+      '#r25-ancestor-displaynone-child',
+      'normal',
+    );
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-ancestor-displaynone-child', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-ancestor-displaynone-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.visibilityStatus === 'hidden', 'D7: ancestral com display:none resulta em visibilityStatus hidden');
-      assert(occ.ancestorHidden === true, 'D7: ancestorHidden é true');
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'D7: ancestral com display:none resulta em visibilityStatus hidden',
+      );
+      assert(
+        occ.ancestorHidden === true,
+        'D7: ancestorHidden é true',
+      );
     } else {
       block('D7: elemento r25-ancestor-displaynone-child não encontrado');
     }
@@ -464,11 +557,24 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-btn-1', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-btn-1',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      // r25-btn-1 não tem ancestral com opacity, então ancestorOpacity deve ser 1
-      assert(occ.ancestorOpacity === 1, 'D8: ancestral sem alteração de opacidade tem ancestorOpacity=1');
-      assert(occ.ancestorHidden === false, 'D8: ancestral sem display:none tem ancestorHidden=false');
+      assert(
+        occ.ancestorOpacity === 1,
+        'D8: ancestral sem alteração de opacidade tem ancestorOpacity=1',
+      );
+      assert(
+        occ.ancestorHidden === false,
+        'D8: ancestral sem display:none tem ancestorHidden=false',
+      );
     } else {
       block('D8: elemento r25-btn-1 não encontrado');
     }
@@ -483,9 +589,20 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-attr-tabindex-0', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-attr-tabindex-0', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-attr-tabindex-0',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.tabIndex === '0', 'E1: tabindex="0" lido corretamente (valor="' + occ.tabIndex + '")');
+      assert(
+        occ.tabIndex === '0',
+        'E1: tabindex="0" lido corretamente (valor="' + occ.tabIndex + '")',
+      );
     } else {
       block('E1: elemento r25-attr-tabindex-0 não encontrado');
     }
@@ -495,9 +612,20 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-attr-tabindex-m1', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-attr-tabindex-m1', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-attr-tabindex-m1',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.tabIndex === '-1', 'E2: tabindex="-1" lido corretamente (valor="' + occ.tabIndex + '")');
+      assert(
+        occ.tabIndex === '-1',
+        'E2: tabindex="-1" lido corretamente (valor="' + occ.tabIndex + '")',
+      );
     } else {
       block('E2: elemento r25-attr-tabindex-m1 não encontrado');
     }
@@ -507,7 +635,15 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-btn-1', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-btn-1',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
       assert(occ.tabIndex === null, 'E3: tabindex ausente retorna null');
     } else {
@@ -519,9 +655,20 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-attr-role-button', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-attr-role-button', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-attr-role-button',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.role === 'button', 'E4: role="button" lido corretamente (valor="' + occ.role + '")');
+      assert(
+        occ.role === 'button',
+        'E4: role="button" lido corretamente (valor="' + occ.role + '")',
+      );
     } else {
       block('E4: elemento r25-attr-role-button não encontrado');
     }
@@ -531,33 +678,66 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-attr-aria-label', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-attr-aria-label', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-attr-aria-label',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.aria === 'Rótulo de acessibilidade', 'E5: aria-label lido corretamente (valor="' + occ.aria + '")');
+      assert(
+        occ.aria === 'Rótulo de acessibilidade',
+        'E5: aria-label lido corretamente (valor="' + occ.aria + '")',
+      );
     } else {
       block('E5: elemento r25-attr-aria-label não encontrado');
     }
   }
 
-  // E6: disabled presente
+  // E6: disabled=true
   {
     const { ids } = await probeBySelector('#r25-attr-disabled', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-attr-disabled', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-attr-disabled',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.disabled === true, 'E6: disabled=true lido corretamente');
+      assert(
+        occ.disabled === true,
+        'E6: disabled=true lido corretamente',
+      );
     } else {
       block('E6: elemento r25-attr-disabled não encontrado');
     }
   }
 
-  // E7: disabled ausente
+  // E7: disabled=false (presente mas não desabilitado)
   {
     const { ids } = await probeBySelector('#r25-attr-enabled', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-attr-enabled', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-attr-enabled',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.disabled === false, 'E7: disabled=false lido corretamente');
+      assert(
+        occ.disabled === false,
+        'E7: disabled=false lido corretamente',
+      );
     } else {
       block('E7: elemento r25-attr-enabled não encontrado');
     }
@@ -573,14 +753,20 @@ async function main() {
   {
     const r = rectFromBorder([10, 10, 50, 10, 50, 50, 10, 50]);
     assert(r !== null, 'F1: retângulo válido retorna objeto');
-    assert(r.x === 10 && r.y === 10 && r.w === 40 && r.h === 40, 'F1: geometria correta (x=' + r.x + ', y=' + r.y + ', w=' + r.w + ', h=' + r.h + ')');
+    assert(
+      r.x === 10 && r.y === 10 && r.w === 40 && r.h === 40,
+      'F1: geometria correta (x=' + r.x + ', y=' + r.y + ', w=' + r.w + ', h=' + r.h + ')',
+    );
   }
 
   // F2: Quadrilátero rotacionado válido
   {
     const r = rectFromBorder([0, 0, 40, 10, 30, 50, -10, 40]);
     assert(r !== null, 'F2: quadrilátero rotacionado válido retorna objeto');
-    assert(r.x === -10 && r.y === 0 && r.w === 50 && r.h === 50, 'F2: geometria rotacionada correta');
+    assert(
+      r.x === -10 && r.y === 0 && r.w === 50 && r.h === 50,
+      'F2: geometria rotacionada correta',
+    );
   }
 
   // F3: Lista ausente
@@ -615,7 +801,7 @@ async function main() {
 
   // F8: Largura degenerada (zero)
   {
-    const r = rectFromBorder([10, 10, 10, 10, 10, 10, 10, 10]); // xs=[10,10,10,10] => w=0
+    const r = rectFromBorder([10, 10, 10, 10, 10, 10, 10, 10]);
     assert(r === null, 'F8: largura degenerada (zero) retorna null');
   }
 
@@ -633,71 +819,121 @@ async function main() {
 
   // G1: node-detached
   {
-    const record = classifyCDPError('DOM.getBoxModel', 'NotFoundError', 'Node is detached from document.');
+    const record = classifyCDPError(
+      'DOM.getBoxModel',
+      'NotFoundError',
+      'Node is detached from document.',
+    );
     assert(record.classification === 'node-detached', 'G1: nó removido classificado como node-detached');
     assert(record.confidence === 'high', 'G1: confiança alta para node-detached');
   }
 
   // G2: node-not-found
   {
-    const record = classifyCDPError('DOM.querySelectorAll', 'Error', 'No nodes found for selector.');
-    assert(record.classification === 'node-not-found', 'G2: seletor sem nós classificado como node-not-found');
+    const record = classifyCDPError(
+      'DOM.querySelectorAll',
+      'Error',
+      'No nodes found for selector.',
+    );
+    assert(
+      record.classification === 'node-not-found',
+      'G2: seletor sem nós classificado como node-not-found',
+    );
   }
 
   // G3: geometry-unavailable
   {
-    const record = classifyCDPError('DOM.getBoxModel', 'Error', 'Could not compute box model.');
-    assert(record.classification === 'geometry-unavailable', 'G3: box model não computável classificado como geometry-unavailable');
+    const record = classifyCDPError(
+      'DOM.getBoxModel',
+      'Error',
+      'Could not compute box model.',
+    );
+    assert(
+      record.classification === 'geometry-unavailable',
+      'G3: box model não computável classificado como geometry-unavailable',
+    );
   }
 
   // G4: protocol-error
   {
-    const record = classifyCDPError('CSS.getMatchedStylesForNode', 'InvalidParams', 'Invalid parameters.');
-    assert(record.classification === 'protocol-error', 'G4: parâmetros inválidos classificado como protocol-error');
+    const record = classifyCDPError(
+      'CSS.getMatchedStylesForNode',
+      'InvalidParams',
+      'Invalid parameters.',
+    );
+    assert(
+      record.classification === 'protocol-error',
+      'G4: parâmetros inválidos classificado como protocol-error',
+    );
   }
 
   // G5: unknown para causa não demonstrada
   {
-    const record = classifyCDPError('Runtime.evaluate', 'SomeError', 'algo estranho aconteceu');
+    const record = classifyCDPError(
+      'Runtime.evaluate',
+      'SomeError',
+      'algo estranho aconteceu',
+    );
     assert(record.classification === 'unknown', 'G5: erro não mapeado classificado como unknown');
     assert(record.confidence === 'low', 'G5: confiança baixa para erro desconhecido');
   }
 
   // G6: Mensagem ambígua com "node" não classificada automaticamente como node-detached
   {
-    const record = classifyCDPError('DOM.getBoxModel', 'Error', 'node not found in tree');
-    // "node not found" sozinho não é suficiente para node-detached sem contexto de remoção
-    // Deve ser classificado como node-not-found ou unknown, não node-detached
-    assert(record.classification !== 'node-detached', 'G6: mensagem ambígua não classificada como node-detached sem evidência de remoção');
+    const record = classifyCDPError(
+      'DOM.getBoxModel',
+      'Error',
+      'node not found in tree',
+    );
+    assert(
+      record.classification !== 'node-detached',
+      'G6: mensagem ambígua não classificada como node-detached sem evidência de remoção',
+    );
   }
 
   // G7: makeCDPErrorRecord preserva sampleId
   {
-    const record = makeCDPErrorRecord('DOM.getBoxModel', 'Error', 'test error', {
-      sampleId: 'r25-mobile-light-3-dash-abc123ef-hover-0',
-      nodeId: 999,
-      selector: '.test',
-      state: 'hover',
-      index: 0
-    });
-    assert(record.sampleId === 'r25-mobile-light-3-dash-abc123ef-hover-0', 'G7: sampleId preservado no registro de erro');
+    const record = makeCDPErrorRecord(
+      'DOM.getBoxModel',
+      'Error',
+      'test error',
+      {
+        sampleId: 'r25-mobile-light-3-dash-abc123ef-hover-0',
+        nodeId: 999,
+        selector: '.test',
+        state: 'hover',
+        index: 0,
+      },
+    );
+    assert(
+      record.sampleId === 'r25-mobile-light-3-dash-abc123ef-hover-0',
+      'G7: sampleId preservado no registro de erro',
+    );
     assert(record.nodeId === 999, 'G7: nodeId preservado no registro de erro');
   }
 
   // G8: makeCDPErrorRecord com sampleId string vazia (não deve ser nullificado)
   {
-    const record = makeCDPErrorRecord('DOM.getBoxModel', 'Error', 'test error', {
-      sampleId: '',
-      nodeId: 1,
-      selector: '.x',
-      state: 'normal',
-      index: 0
-    });
-    assert(record.sampleId === '', 'G8: sampleId string vazia preservada (não nullificada)');
+    const record = makeCDPErrorRecord(
+      'DOM.getBoxModel',
+      'Error',
+      'test error',
+      {
+        sampleId: '',
+        nodeId: 1,
+        selector: '.x',
+        state: 'normal',
+        index: 0,
+      },
+    );
+    assert(
+      record.sampleId === '',
+      'G8: sampleId string vazia preservada (não nullificada)',
+    );
   }
 
   // =====================================================================
-  // GRUPO H — Visibilidade de ancestrais com Chromium real (teste de integração)
+  // GRUPO H — Visibilidade de ancestrais com Chromium real
   // =====================================================================
   console.log('\n=== GRUPO H — Visibilidade de ancestrais com Chromium real ===');
 
@@ -705,10 +941,24 @@ async function main() {
   {
     const { ids } = await probeBySelector('#r25-ancestor-opacity0-child', 'normal');
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-ancestor-opacity0-child', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-ancestor-opacity0-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.visibilityStatus === 'not-visible', 'H1: elemento dentro de ancestral opacity:0 tem visibilityStatus not-visible via probeState real');
-      assert(occ.ancestorOpacity === 0, 'H1: ancestorOpacity=0 detectado via probeState real');
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'H1: elemento dentro de ancestral opacity:0 tem visibilityStatus not-visible via probeState real',
+      );
+      assert(
+        occ.ancestorOpacity === 0,
+        'H1: ancestorOpacity=0 detectado via probeState real',
+      );
     } else {
       block('H1: elemento r25-ancestor-opacity0-child não encontrado');
     }
@@ -716,12 +966,29 @@ async function main() {
 
   // H2: Elemento dentro de ancestral com display:none via probeState real
   {
-    const { ids } = await probeBySelector('#r25-ancestor-displaynone-child', 'normal');
+    const { ids } = await probeBySelector(
+      '#r25-ancestor-displaynone-child',
+      'normal',
+    );
     if (ids.length > 0) {
-      const occs = await core.probeState('#r25-ancestor-displaynone-child', 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const occs = await core.probeState(
+        '#r25-ancestor-displaynone-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
       const occ = occs[0];
-      assert(occ.visibilityStatus === 'hidden', 'H2: elemento dentro de ancestral display:none tem visibilityStatus hidden via probeState real');
-      assert(occ.ancestorHidden === true, 'H2: ancestorHidden=true detectado via probeState real');
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'H2: elemento dentro de ancestral display:none tem visibilityStatus hidden via probeState real',
+      );
+      assert(
+        occ.ancestorHidden === true,
+        'H2: ancestorHidden=true detectado via probeState real',
+      );
     } else {
       block('H2: elemento r25-ancestor-displaynone-child não encontrado');
     }

@@ -262,11 +262,22 @@ function measure(c) {
 
   if (hasText) {
     const limiar = large ? TEXTO_GRANDE : TEXTO_NORMAL;
-    if (textRatio === null || textRatio < limiar - 1e-9) {
+    if (textRatio === null) {
+      // Não há fundo comprovado, não dá para classificar contraste de texto
+      classificacao = 'INCONCLUSIVO';
+      motivoFalha = null;
+      valorPior = null;
+      limiarPior = null;
+    } else if (textRatio < limiar - 1e-9) {
       registerFail('texto', textRatio, limiar);
     }
   } else if (icon) {
-    if (iconRatio === null || iconRatio < GRAFICO - 1e-9) {
+    if (iconRatio === null) {
+      classificacao = 'INCONCLUSIVO';
+      motivoFalha = null;
+      valorPior = null;
+      limiarPior = null;
+    } else if (iconRatio < GRAFICO - 1e-9) {
       registerFail('icone', iconRatio, GRAFICO);
     }
   } else {
@@ -776,7 +787,9 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
           // geometryStatus permanece 'available' quando o box model foi computado,
           // mesmo que o retângulo seja degenerado (w=0 ou h=0).
         } else {
-          geometryStatus = 'unavailable';
+          // Border existe mas com menos de 8 valores - box model computado
+          // mas geometria não pode ser calculada completamente
+          geometryStatus = border && border.length > 0 ? 'available' : 'unavailable';
         }
       } else {
         geometryStatus = 'error';
@@ -816,40 +829,56 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
       }
 
       // R25-04: computar opacidade acumulada e visibilidade dos ancestrais via CDP
+      // A travessia é feita a partir do nodeId específico desta ocorrência,
+      // navegando via parentElement no contexto do navegador para evitar
+      // document.querySelector(selector) que pega o primeiro elemento.
       let ancestorOpacityAcc = 1;
       let ancestorHiddenAcc = false;
       try {
-        const ancestorInfo = await Runtime.evaluate({
-          expression: `(function(selector) {
-            const el = document.querySelector(selector);
-            if (!el) return {ancestorOpacity: 1, ancestorHidden: false};
-            let accOpacity = 1;
-            let accHidden = false;
-            let anc = el.parentElement;
-            const visited = new Set();
-            while (anc && anc !== document.documentElement && visited.size < 50) {
-              if (visited.has(anc)) break;
-              visited.add(anc);
-              try {
-                const cs = window.getComputedStyle(anc);
-                if (cs.display === 'none') {
-                  accHidden = true;
-                  break;
-                }
-                const ao = parseFloat(cs.opacity);
-                if (!isNaN(ao)) accOpacity *= ao;
-              } catch (e) {
-                break;
-              }
-              anc = anc.parentElement;
+        const resolved = await DOM.resolveNode({nodeId});
+        if (resolved && resolved.object && resolved.object.objectId) {
+          let currentObjId = resolved.object.objectId;
+          const visited = new Set();
+          let visitedCount = 0;
+          while (currentObjId && visitedCount < 50) {
+            if (visited.has(currentObjId)) break;
+            visited.add(currentObjId);
+            visitedCount++;
+
+            // 1) Ler display e opacity via returnByValue: true (valores primitivos)
+            const styleInfo = await Runtime.callFunctionOn({
+              objectId: currentObjId,
+              functionDeclaration: (function() {
+                const cs = window.getComputedStyle(this);
+                return {display: cs.display, opacity: cs.opacity};
+              }).toString(),
+              returnByValue: true,
+            });
+
+            const styleResult = styleInfo.result;
+            if (!styleResult || !styleResult.value) break;
+            const styleVal = styleResult.value;
+
+            if (styleVal.display === 'none') {
+              ancestorHiddenAcc = true;
+              break;
             }
-            return {ancestorOpacity: accOpacity, ancestorHidden: accHidden};
-          })(${JSON.stringify(selector)})`,
-          returnByValue: true
-        });
-        if (ancestorInfo.result && ancestorInfo.result.value) {
-          ancestorOpacityAcc = ancestorInfo.result.value.ancestorOpacity;
-          ancestorHiddenAcc = ancestorInfo.result.value.ancestorHidden;
+            const ao = parseFloat(styleVal.opacity);
+            if (!isNaN(ao)) ancestorOpacityAcc *= ao;
+
+            // 2) Obter o nó pai como remoteObject para continuar a travessia
+            const parentInfo = await Runtime.callFunctionOn({
+              objectId: currentObjId,
+              functionDeclaration: (function() {
+                return this.parentElement || null;
+              }).toString(),
+              returnByValue: false,
+            });
+
+            const parentObj = parentInfo.result;
+            if (!parentObj || !parentObj.objectId) break;
+            currentObjId = parentObj.objectId;
+          }
         }
       } catch (e) {
         // Não conseguir ler ancestrais não invalida a verificação do próprio elemento
@@ -867,23 +896,63 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
       // R25-05: leitura de atributos DOM com estrutura confirmada
       // CDP DOM.describeNode retorna attributes como array de objetos [{name, value}, ...]
       // ou como array flat [name1, value1, name2, value2, ...] dependendo da versão.
-      const attributes = Array.isArray(nodeInfo.attributes) ? nodeInfo.attributes : [];
-      const findAttr = (name) => {
-        for (let ai = 0; ai < attributes.length; ai++) {
-          const attr = attributes[ai];
-          // Formato objeto: {name, value}
-          if (attr && typeof attr === 'object' && attr.name === name) {
-            return attr.value;
+      // DOM.getAttributes é mais confiável para leitura de atributos específicos.
+      const attributes = Array.isArray(nodeInfo.attributes) ? nodeInfo.attributes : null;
+      const findAttr = async (name) => {
+        // Primeiro tenta obter via DOM.getAttributes (mais confiável)
+        try {
+          const attrResult = await DOM.getAttributes({nodeId});
+          const attrs = attrResult.attributes || [];
+          for (let ai = 0; ai < attrs.length; ai += 2) {
+            if (attrs[ai] === name) {
+              return attrs[ai + 1];
+            }
           }
-          // Formato flat: [name1, value1, name2, value2, ...]
-          if (typeof attr === 'string' && attr === name) {
-            return attributes[ai + 1];
+        } catch (e) {
+          // Não conseguiu ler atributos via DOM.getAttributes
+        }
+        // Fallback: tenta obter via DOM.describeNode (já temos nodeInfo)
+        if (attributes) {
+          for (let ai = 0; ai < attributes.length; ai++) {
+            const attr = attributes[ai];
+            // Formato objeto: {name, value}
+            if (attr && typeof attr === 'object' && attr.name === name) {
+              return attr.value;
+            }
+            // Formato flat: [name1, value1, name2, value2, ...]
+            if (typeof attr === 'string' && attr === name) {
+              return attributes[ai + 1];
+            }
           }
         }
         return null;
       };
 
-      const disabled = attributes.some((a, ai) => a === 'disabled' && ai % 2 === 0);
+      let disabled = null;
+      if (attributes) {
+        for (let ai = 0; ai < attributes.length; ai++) {
+          if (attributes[ai] === 'disabled') {
+            disabled = true;
+            break;
+          }
+        }
+      }
+      // Se disabled ainda não encontrado, tenta via DOM.getAttributes
+      if (disabled === null || disabled === undefined) {
+        try {
+          const attrResult = await DOM.getAttributes({nodeId});
+          const attrs = attrResult.attributes || [];
+          for (let ai = 0; ai < attrs.length; ai += 2) {
+            if (attrs[ai] === 'disabled') {
+              disabled = true;
+              break;
+            }
+          }
+        } catch (e) {
+          // Não conseguiu ler disabled via DOM.getAttributes
+        }
+      }
+      disabled = disabled === true;
 
       occurrences.push({
         sampleId,
@@ -910,9 +979,9 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
         filter: propMap.filter || null,
         opacity: propMap.opacity || null,
         disabled,
-        tabIndex: findAttr('tabindex'),
-        role: findAttr('role'),
-        aria: findAttr('aria-label'),
+        tabIndex: await findAttr('tabindex'),
+        role: await findAttr('role'),
+        aria: await findAttr('aria-label'),
         cleanupStatus,
         cleanupError: cleanupError ? cleanupError.message : null,
       });

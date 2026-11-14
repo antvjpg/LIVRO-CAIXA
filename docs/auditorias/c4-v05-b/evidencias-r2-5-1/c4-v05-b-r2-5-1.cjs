@@ -718,10 +718,7 @@ const REPO_ROOT = path.resolve(SCRIPT_DIR, '../../../..');
                 tab,
                 sampleIdRegistry
               );
-              // R25-02: registrar sampleIds para detecção de duplicidade global via registro do núcleo
-              for (const occ of occurrences) {
-                if (occ.sampleId) sampleIdRegistry.register(occ.sampleId);
-              }
+              // R25-02: sampleIds já registrados via sampleIdRegistry dentro de probeState()
               result.states.push({
                 vp: vp.name,
                 theme: th.id,
