@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "version": "R2.5",
+    "branch": "feat/app-navigation-redesign",
+    "baseCommit": "cb6abc60a6bbdd665879e2649d84b4683ef526c5",
+    "generatedAt": "2026-11-13T00:00:00.000Z",
+    "nodeVersion": "26.12.1",
+    "platform": "Linux x86_64",
+    "browser": "Chromium 156 headless (CDP porta 9222)",
+    "hashAlgorithm": "SHA-256",
+    "hashEncoding": "hex"
+  },
+  "artifacts": [
+    {
+      "name": "c4-v05-b-r2-5-core.cjs",
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-core.cjs",
+      "description": "Núcleo compartilhado e testável do harness R2.5 (funções puras + factory CDP)",
+      "sizeBytes": 25739,
+      "lines": 804,
+      "sha256": "73ca81810995db8e9dfe1e161e36c5835fbc9d37cf30568a182cb5d3a40b766c"
+    },
+    {
+      "name": "c4-v05-b-r2-5.cjs",
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5.cjs",
+      "description": "Harness principal R2.5 (importa o núcleo, executa fluxo completo de coleta)",
+      "sizeBytes": 31214,
+      "lines": 799,
+      "sha256": "f2c7f696e5c8a5642c94989e21da997c8c2505cafe51cc6cb706f97ca90a4e41"
+    },
+    {
+      "name": "c4-v05-b-r2-5-test.cjs",
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.cjs",
+      "description": "Testes controlados R2.5 (72 testes em 7 grupos, executa funções reais do núcleo)",
+      "sizeBytes": 26181,
+      "lines": 652,
+      "sha256": "d71d9c69a091cab31c86b535233ebb8b5183b130908f08595ec9e2ff9155e570"
+    },
+    {
+      "name": "c4-v05-b-r2-5-test-fixtures.html",
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test-fixtures.html",
+      "description": "Fixture HTML determinística R2.5 (21 elementos de teste)",
+      "sizeBytes": 7929,
+      "lines": 323,
+      "sha256": "d243b0ac8b058b48f0bab2170f64717e48eee2ce70f574911312cafa690b2b01"
+    },
+    {
+      "name": "c4-v05-b-r2-5-test.log",
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.log",
+      "description": "Log de execução dos testes controlados R2.5",
+      "sizeBytes": 4218,
+      "lines": 89,
+      "sha256": "c9332f2a30ea815f222940a2e10a355864a3182e7aba43047946ec8a4393cba3"
+    },
+    {
+      "name": "c4-v05-b-r2-5-test-results.json",
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test-results.json",
+      "description": "Resultado estruturado dos testes controlados R2.5",
+      "sizeBytes": 11560,
+      "lines": 116,
+      "sha256": "705edcc37b201e17565aa9f41550261a370260394f402e6e4abad4daa22834de"
+    }
+  ],
+  "testSummary": {
+    "total": 72,
+    "passed": 72,
+    "failed": 0,
+    "blocked": 0
+  },
+  "correctionsValidated": [
+    "R25-01: sampleId incorpora 'screen' efetivamente (prefixo r25-{viewport}-{themeSet}-{theme}-{screen}-{selectorHash}-{state}-{index})",
+    "R25-02: Associação key→nodeId com contrato de cardinalidade (0→node-not-found, 1→resolved, >1→ambiguous-node-association, erro→cdp-error)",
+    "R25-03: Limpeza de pseudoestado em try/finally real envolvendo aplicação + coleta",
+    "R25-04: Opacity zero não convertido em 1; separação visibilityStatus/geometryStatus",
+    "R25-05: Atributos DOM (tabindex, role, aria-label) lidos com estrutura confirmada",
+    "R25-06: Classificação estruturada de erros CDP com justificativa e grau de confiança"
+  ],
+  "preservedFromR24": [
+    "Geometria com 4 vértices (rectFromBorder)",
+    "Cálculo de contraste WCAG (measure)",
+    "Captura de declarações CSS (getWinningRule, captureWinningRules)",
+    "Detecção SVG fill/stroke/currentColor",
+    "Hash SHA-256 reproduzível do artefato"
+  ],
+  "integrityVerification": {
+    "method": "Ler cada arquivo, calcular SHA-256 sobre o conteúdo completo, comparar com o valor registrado acima",
+    "allHashesMatch": true
+  }
+}

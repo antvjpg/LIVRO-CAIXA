@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixture de Teste C.4-V05-B-R2.5</title>
+<style>
+  :root {
+    --accent: #5F7A43;
+  }
+
+  /* 1. Elemento único visível */
+  .r25-unique {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    margin: 4px;
+  }
+
+  /* 2. Elemento oculto com display:none */
+  .r25-hidden {
+    display: none;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    margin: 4px;
+  }
+
+  /* 3. Elemento com visibility:hidden */
+  .r25-vishidden {
+    visibility: hidden;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    margin: 4px;
+  }
+
+  /* 4. Elemento com opacity:0 */
+  .r25-opacity0 {
+    opacity: 0;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    margin: 4px;
+  }
+
+  /* 5. Elemento sem dimensões */
+  .r25-no-dim {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    margin: 4px;
+  }
+
+  /* 6. Elemento com borda de alto contraste */
+  .r25-border-high {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 4px solid #000000;
+    margin: 4px;
+  }
+
+  /* 7. Elemento com borda de baixo contraste */
+  .r25-border-low {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 1px solid #EEEEEE;
+    margin: 4px;
+  }
+
+  /* 8. Elemento com borda decorativa */
+  .r25-border-decorative {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 1px dotted #CCCCCC;
+    margin: 4px;
+  }
+
+  /* 9. Elemento com outline de foco */
+  .r25-focus-outline {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 1px solid #999999;
+    margin: 4px;
+  }
+  .r25-focus-outline:focus-visible {
+    outline: 3px solid #5F7A43;
+    outline-offset: 2px;
+  }
+
+  /* 10. Elemento com :hover */
+  .r25-hover {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-hover:hover {
+    background: #5F7A43;
+    color: #FFFFFF;
+  }
+
+  /* 11. Elemento com :focus */
+  .r25-focus {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-focus:focus {
+    background: #5F7A43;
+    color: #FFFFFF;
+  }
+
+  /* 12. Elemento com :active */
+  .r25-active {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-active:active {
+    background: #406030;
+    color: #FFFFFF;
+  }
+
+  /* 13. Elemento com !important */
+  .r25-important {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000 !important;
+    margin: 4px;
+  }
+
+  /* 14. Elemento com declaração inline */
+  .r25-inline {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+
+  /* 15. Elemento com seletor de maior especificidade */
+  .r25-specificity {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  button.r25-specificity {
+    color: var(--accent);
+  }
+
+  /* 16. Elemento com propriedade herdada */
+  .r25-inherit {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: inherit;
+    margin: 4px;
+  }
+  .r25-inherit-parent {
+    color: var(--accent);
+  }
+
+  /* 17. SVG com fill */
+  .r25-svg-fill {
+    display: inline-block;
+    margin: 4px;
+  }
+  .r25-svg-fill svg {
+    fill: var(--accent);
+    width: 24px;
+    height: 24px;
+  }
+
+  /* 18. SVG com stroke */
+  .r25-svg-stroke {
+    display: inline-block;
+    margin: 4px;
+  }
+  .r25-svg-stroke svg {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    width: 24px;
+    height: 24px;
+  }
+
+  /* 19. Elemento com currentColor */
+  .r25-currentcolor {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    border: 1px solid currentColor;
+    margin: 4px;
+  }
+
+  /* 20. Elemento rotacionado para testar geometria */
+  .r25-rotated {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 2px solid #000000;
+    margin: 4px;
+    transform: rotate(15deg);
+  }
+
+  /* Elemento de controle sem relação com --accent */
+  .r25-other {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #CCCCCC;
+    color: #333333;
+    border: 1px solid #999999;
+    margin: 4px;
+  }
+</style>
+</head>
+<body>
+  <div class="r25-inherit-parent">
+    <!-- 16. Elemento com propriedade herdada -->
+    <span class="r25-inherit" id="r25-btn-16">Texto herdado</span>
+  </div>
+
+  <!-- 1. Elemento único visível -->
+  <button class="r25-unique" id="r25-btn-1">Elemento único</button>
+
+  <!-- 2. Elemento oculto com display:none -->
+  <button class="r25-hidden" id="r25-btn-2">Oculto display:none</button>
+
+  <!-- 3. Elemento com visibility:hidden -->
+  <button class="r25-vishidden" id="r25-btn-3">Visibility hidden</button>
+
+  <!-- 4. Elemento com opacity:0 -->
+  <button class="r25-opacity0" id="r25-btn-4">Opacity zero</button>
+
+  <!-- 5. Elemento sem dimensões -->
+  <button class="r25-no-dim" id="r25-btn-5" style="width: 0 !important; height: 0 !important; padding: 0 !important; border: 0 !important; margin: 0 !important;">Sem dimensões</button>
+
+  <!-- 6. Elemento com borda de alto contraste -->
+  <button class="r25-border-high" id="r25-btn-6">Borda alto contraste</button>
+
+  <!-- 7. Elemento com borda de baixo contraste -->
+  <button class="r25-border-low" id="r25-btn-7">Borda baixo contraste</button>
+
+  <!-- 8. Elemento com borda decorativa -->
+  <button class="r25-border-decorative" id="r25-btn-8">Borda decorativa</button>
+
+  <!-- 9. Elemento com outline de foco -->
+  <button class="r25-focus-outline" id="r25-btn-9">Outline foco</button>
+
+  <!-- 10. Elemento com :hover -->
+  <button class="r25-hover" id="r25-btn-10">Hover</button>
+
+  <!-- 11. Elemento com :focus -->
+  <button class="r25-focus" id="r25-btn-11">Focus</button>
+
+  <!-- 12. Elemento com :active -->
+  <button class="r25-active" id="r25-btn-12">Active</button>
+
+  <!-- 13. Elemento com !important -->
+  <button class="r25-important" id="r25-btn-13">Important</button>
+
+  <!-- 14. Elemento com declaração inline -->
+  <button class="r25-inline" id="r25-btn-14" style="color: #FF0000;">Inline cor</button>
+
+  <!-- 15. Elemento com seletor de maior especificidade -->
+  <button class="r25-specificity" id="r25-btn-15">Specificity</button>
+
+  <!-- 17. SVG com fill -->
+  <div class="r25-svg-fill" id="r25-btn-17">
+    <svg viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" /></svg>
+  </div>
+
+  <!-- 18. SVG com stroke -->
+  <div class="r25-svg-stroke" id="r25-btn-18">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
+  </div>
+
+  <!-- 19. Elemento com currentColor -->
+  <button class="r25-currentcolor" id="r25-btn-19">CurrentColor</button>
+
+  <!-- 20. Elemento rotacionado para testar geometria -->
+  <button class="r25-rotated" id="r25-btn-20">Rotacionado</button>
+
+  <!-- Elemento de controle sem relação com --accent -->
+  <button class="r25-other" id="r25-btn-21">Outro</button>
+
+  <script>
+    window.__r25Fixtures = {
+      buttonIds: [
+        'r25-btn-1', 'r25-btn-2', 'r25-btn-3', 'r25-btn-4', 'r25-btn-5',
+        'r25-btn-6', 'r25-btn-7', 'r25-btn-8', 'r25-btn-9', 'r25-btn-10',
+        'r25-btn-11', 'r25-btn-12', 'r25-btn-13', 'r25-btn-14', 'r25-btn-15',
+        'r25-btn-16', 'r25-btn-17', 'r25-btn-18', 'r25-btn-19', 'r25-btn-20', 'r25-btn-21'
+      ],
+      testSelector: '.r25-unique'
+    };
+  </script>
+</body>
+</html>

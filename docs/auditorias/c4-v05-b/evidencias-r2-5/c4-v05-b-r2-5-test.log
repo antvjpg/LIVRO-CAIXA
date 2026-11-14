@@ -1,0 +1,89 @@
+
+=== GRUPO A — sampleId com screen (R25-01) ===
+  PASS: A1: sampleId difere por tela (dash vs caixa)
+  PASS: A1: screen dash presente no sampleId
+  PASS: A1: screen caixa presente no sampleId
+  PASS: A2: sampleId difere por viewport (mobile vs desktop)
+  PASS: A2: prefixo mobile presente
+  PASS: A2: prefixo desktop presente
+  PASS: A3: sampleId difere por tema (3 vs 4)
+  PASS: A4: sampleId difere por estado (hover vs focus-visible)
+  PASS: A5: sampleId difere por índice (0 vs 1)
+  PASS: A6: sampleId difere por tela mesmo sem elementos correspondentes
+  PASS: A7: 50 chamadas sucessivas geram 50 sampleIds únicos
+  PASS: A8: prefixo r25- presente
+  PASS: A9: screen nao resulta em segmento vazio
+  PASS: A9: screen dash esta na posicao correta
+
+=== GRUPO B — Associação key → nodeId (cardinalidade) (R25-02) ===
+  PASS: B1: 0 IDs resulta em node-not-found
+  PASS: B1: nodeId é null quando não há IDs
+  PASS: B1: idCount é 0
+  PASS: B2: 1 ID resulta em resolved
+  PASS: B2: nodeId é o ID resolvido
+  PASS: B2: idCount é 1
+  PASS: B3: mais de 1 ID resulta em ambiguous-node-association
+  PASS: B3: nodeId é null quando ambíguo (não escolhe primeiro)
+  PASS: B3: idCount registra a quantidade real de IDs
+  PASS: B4: erro CDP resulta em cdp-error
+  PASS: B4: nodeId é null em erro CDP
+  PASS: B5: múltiplos IDs não resultam em escolha arbitrária do primeiro
+  PASS: B6: chave registrada
+  PASS: B6: seletor registrado
+  PASS: B6: quantidade de IDs registrada
+  PASS: B6: operação registrada
+
+=== GRUPO C — Limpeza de pseudoestado (try/finally real) (R25-03) ===
+  PASS: C1: sampleId gerado com prefixo r25
+  PASS: C1: nodeId presente na ocorrencia
+  PASS: C2: sem estado residual de :focus apos probeState
+  PASS: C3: multiplas chamadas de probeState executam sem falha em cadeia
+
+=== GRUPO D — Visibilidade e geometria (R25-04, R25-05) ===
+  PASS: D1: elemento visível tem visibilityStatus visible
+  PASS: D1: elemento visível tem geometryStatus available
+  PASS: D1: rect disponível para elemento visível
+  PASS: D2: display:none resulta em visibilityStatus hidden
+  PASS: D3: visibility:hidden resulta em visibilityStatus hidden
+  PASS: D4: opacity:0 resulta em visibilityStatus not-visible (não visível)
+  PASS: D4: valor original de opacity preservado (não convertido para 1)
+  PASS: D5: dimensões zero resulta em visibilityStatus not-visible
+  PASS: D5: box model computável para elemento de dimensões zero
+  PASS: D6: tabindex lido sem erro
+  PASS: D7: role lido sem erro
+  PASS: D8: aria-label lido sem erro
+  PASS: D9: disabled é booleano
+  PASS: D10: seletor inexistente não encontra elementos
+
+=== GRUPO E — Orquestração real do harness ===
+  PASS: E1: registro global detecta sampleId duplicado
+  PASS: E2: sampleId diferente entre telas dash e caixa
+  PASS: E2: sampleId diferente entre telas dash e invest
+  PASS: E2: sampleId diferente entre telas caixa e invest
+  PASS: E3: operação registrada
+  PASS: E3: sampleId registrado
+  PASS: E3: erro de box model classificado como geometry-unavailable
+  PASS: E3: justificativa presente
+  PASS: E3: grau de confiança presente
+  PASS: E4: erro não demonstrado classificado como unknown
+  PASS: E4: confiança baixa para erro desconhecido
+  PASS: E5a: getBoxModel com "Could not compute" é geometry-unavailable
+  PASS: E5b: getBoxModel com "Node not found" é node-detached (não assumido como esperado)
+  PASS: E6: uma ocorrência gerada para um elemento
+  PASS: E6: ocorrência tem sampleId
+  PASS: E6: sampleId com prefixo r25
+
+=== GRUPO F — Classificação de erros CDP (R25-06) ===
+  PASS: F1: nó removido classificado como node-detached
+  PASS: F2: seletor sem nós classificado como node-not-found
+  PASS: F3: box model não computável classificado como geometry-unavailable
+  PASS: F4: parâmetros inválidos classificado como protocol-error
+  PASS: F5: erro não mapeado classificado como unknown
+
+=== GRUPO G — Mediçăo WCAG (preservado) ===
+  PASS: G1: texto normal com contraste suficiente (ratio=4.83)
+  PASS: G2: texto grande com contraste suficiente (ratio=4.83)
+  PASS: G3: cores incertas resultam em INCONCLUSIVO
+
+=== RESUMO DOS TESTES CONTROLADOS R2.5 ===
+PASS: 72 FAIL: 0 BLOCKED: 0
