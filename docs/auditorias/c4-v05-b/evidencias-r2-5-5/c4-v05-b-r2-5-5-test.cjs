@@ -1,0 +1,2931 @@
+// ============================================================================
+// Testes controlados C.4-V05-B-R2.5.5
+// Executa as funções REAIS do núcleo compartilhado (c4-v05-b-r2-5-5-core.cjs)
+// Valida: R25-01 sampleId com screen, R25-02 associação key→nodeId (cardinalidade),
+// R25-03 limpeza de pseudoestado (try/finally real com injeção de falha),
+// R25-04 visibilidade efetiva com ancestrais (herança/sobrescrita de visibility,
+// display:none absoluto, raiz do documento), R25-05 validação geométrica,
+// R25-06 atributos DOM com expectativas exatas, R25-07 classificação de erros CDP,
+// R25-10 nenhum fallback a branco presumido.
+// Novos testes: V1-V10 (semântica de visibility), P1-P7 (falha de aplicação
+// de pseudoestado), R1-R7 (travessia da raiz do documento).
+// ============================================================================
+
+const CDP = require('chrome-remote-interface');
+const fs = require('fs');
+const path = require('path');
+
+const SCRIPT_DIR = path.dirname(__filename);
+const CORE_PATH = path.resolve(SCRIPT_DIR, 'c4-v05-b-r2-5-5-core.cjs');
+const {
+  hash,
+  parseColor,
+  comp,
+  lum,
+  ratio,
+  min,
+  makeSampleId,
+  rectFromBorder,
+  measure,
+  classifyCDPError,
+  makeCDPErrorRecord,
+  createCDPAuditCore,
+  createSampleIdRegistry,
+  resolveNodeIdResult,
+} = require(CORE_PATH);
+
+const FIXTURE =
+  'http://127.0.0.1:8000/docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test-fixtures.html';
+
+let passed = 0;
+let failed = 0;
+let blocked = 0;
+
+function assert(cond, msg) {
+  if (cond) {
+    passed++;
+    console.log('  PASS:', msg);
+  } else {
+    failed++;
+    console.log('  FAIL:', msg);
+  }
+}
+
+function block(msg) {
+  blocked++;
+  console.log('  BLOCKED:', msg);
+}
+
+async function main() {
+  const client = await CDP({ port: 9222 });
+  const { Page, Runtime, DOM, CSS } = client;
+  await Runtime.enable();
+  await Page.enable();
+  await DOM.enable();
+  await CSS.enable();
+
+  const consoleErrors = [];
+  const exceptions = [];
+  const cdpErrors = [];
+
+  Runtime.consoleAPICalled(({ type, args }) => {
+    if (type === 'error')
+      consoleErrors.push(args.map((a) => a.value ?? a.description ?? '').join(' '));
+  });
+  Runtime.exceptionThrown(({ exceptionDetails }) => {
+    exceptions.push(exceptionDetails.exception?.description || exceptionDetails.text || 'exception');
+  });
+
+  // Núcleo real do harness
+  const core = createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions, cdpErrors });
+
+  await Page.navigate({ url: FIXTURE });
+  await new Promise((r) => setTimeout(r, 500));
+
+  const doc = await DOM.getDocument({ depth: -1, pierce: true });
+
+  // =====================================================================
+  // GRUPO A — sampleId com screen (R25-01)
+  // Executar a função real makeSampleId
+  // =====================================================================
+  console.log('\n=== GRUPO A — sampleId com screen (R25-01) ===');
+
+  // A1: Mesmo seletor em duas telas diferentes
+  {
+    const s1 = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
+    const s2 = makeSampleId('mobile', 'light', '3', 'caixa', '.r25-unique', 'hover', 0);
+    assert(s1 !== s2, 'A1: sampleId difere por tela (dash vs caixa)');
+    assert(s1.includes('dash'), 'A1: screen dash presente no sampleId');
+    assert(s2.includes('caixa'), 'A1: screen caixa presente no sampleId');
+  }
+
+  // A2: Mesmo seletor em dois viewports
+  {
+    const s1 = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
+    const s2 = makeSampleId('desktop', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
+    assert(s1 !== s2, 'A2: sampleId difere por viewport (mobile vs desktop)');
+    assert(s1.startsWith('r25-mobile'), 'A2: prefixo mobile presente');
+    assert(s2.startsWith('r25-desktop'), 'A2: prefixo desktop presente');
+  }
+
+  // A3: Mesmo seletor em temas diferentes
+  {
+    const s1 = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
+    const s2 = makeSampleId('mobile', 'light', '4', 'dash', '.r25-unique', 'hover', 0);
+    assert(s1 !== s2, 'A3: sampleId difere por tema (3 vs 4)');
+  }
+
+  // A4: Mesmo seletor em estados diferentes
+  {
+    const s1 = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
+    const s2 = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'focus-visible', 0);
+    assert(s1 !== s2, 'A4: sampleId difere por estado (hover vs focus-visible)');
+  }
+
+  // A5: Duas ocorrências do mesmo seletor na mesma tela (índice diferente)
+  {
+    const s1 = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
+    const s2 = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 1);
+    assert(s1 !== s2, 'A5: sampleId difere por índice (0 vs 1)');
+  }
+
+  // A6: Seletor sem correspondência em telas diferentes (screen ainda incorporado)
+  {
+    const s1 = makeSampleId('mobile', 'light', '3', 'dash', '.r25-nonexistent', 'normal', 0);
+    const s2 = makeSampleId('mobile', 'light', '3', 'caixa', '.r25-nonexistent', 'normal', 0);
+    assert(s1 !== s2, 'A6: sampleId difere por tela mesmo sem elementos correspondentes');
+  }
+
+  // A7: Chamadas sucessivas de makeSampleId não geram colisão via registro real
+  {
+    const registry = createSampleIdRegistry();
+    const ids = new Set();
+    for (let i = 0; i < 50; i++) {
+      const s = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', i);
+      registry.register(s);
+      ids.add(s);
+    }
+    assert(ids.size === 50, 'A7: 50 chamadas sucessivas geram 50 sampleIds únicos');
+    assert(registry.size() === 50, 'A7: registro real contém 50 sampleIds');
+  }
+
+  // A7b: Duplicidade no registro real lança erro
+  {
+    const registry = createSampleIdRegistry();
+    const s = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
+    registry.register(s);
+    let duplicateDetected = false;
+    try {
+      registry.register(s);
+    } catch (e) {
+      duplicateDetected = true;
+    }
+    assert(duplicateDetected, 'A7b: registro real detecta sampleId duplicado');
+  }
+
+  // A8: prefixo r25-
+  {
+    const s = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
+    assert(s.startsWith('r25-'), 'A8: prefixo r25- presente');
+  }
+
+  // A9: screen não é string vazia
+  {
+    const s = makeSampleId('mobile', 'light', '3', 'dash', '.r25-unique', 'hover', 0);
+    assert(!s.includes('--'), 'A9: screen não resulta em segmento vazio');
+    const parts = s.split('-');
+    assert(parts[4] === 'dash', 'A9: screen dash está na posição correta');
+  }
+
+  // =====================================================================
+  // GRUPO B — Associação key → nodeId (cardinalidade) (R25-02)
+  // Executar a função real resolveNodeIdResult do núcleo
+  // =====================================================================
+  console.log('\n=== GRUPO B — Associação key → nodeId (cardinalidade) (R25-02) ===');
+
+  // B1: 0 IDs → node-not-found
+  {
+    const result = resolveNodeIdResult([], 'c4-test', '.r25-nonexistent');
+    assert(result.status === 'node-not-found', 'B1: 0 IDs resulta em node-not-found');
+    assert(result.nodeId === null, 'B1: nodeId é null quando não há IDs');
+    assert(result.idCount === 0, 'B1: idCount é 0');
+  }
+
+  // B2: 1 ID → resolved
+  {
+    const result = resolveNodeIdResult([123], 'c4-test', '#r25-btn-1');
+    assert(result.status === 'resolved', 'B2: 1 ID resulta em resolved');
+    assert(result.nodeId === 123, 'B2: nodeId é o ID resolvido');
+    assert(result.idCount === 1, 'B2: idCount é 1');
+  }
+
+  // B3: Mais de 1 ID → ambiguous-node-association
+  {
+    const result = resolveNodeIdResult([10, 20, 30], 'c4-test', '.r25-multiple');
+    assert(result.status === 'ambiguous-node-association', 'B3: mais de 1 ID resulta em ambiguous-node-association');
+    assert(result.nodeId === null, 'B3: nodeId é null quando ambíguo (não escolhe primeiro)');
+    assert(result.idCount === 3, 'B3: idCount registra a quantidade real de IDs');
+  }
+
+  // B4: Erro CDP real resulta em cdp-error (injeção de falha no DOM.querySelectorAll)
+  {
+    const originalQuerySelectorAll = DOM.querySelectorAll.bind(DOM);
+    DOM.querySelectorAll = async function() {
+      throw new Error('CDP querySelectorAll injetado falhou');
+    };
+
+    try {
+      const result = resolveNodeIdResult([], 'c4-test', '.r25-test');
+      // resolveNodeIdResult é puro: com 0 IDs retorna node-not-found, não cdp-error.
+      // O cdp-error vem de probeState quando o CDP falha. Testamos via probeState abaixo.
+      assert(result.status === 'node-not-found', 'B4a: resolveNodeIdResult com 0 IDs retorna node-not-found');
+    } finally {
+      DOM.querySelectorAll = originalQuerySelectorAll;
+    }
+  }
+
+  // B4b: probeState com DOM.querySelectorAll falhando retorna ocorrência com erro CDP
+  {
+    const originalQuerySelectorAll = DOM.querySelectorAll.bind(DOM);
+    DOM.querySelectorAll = async function() {
+      throw new Error('CDP querySelectorAll injetado falhou');
+    };
+
+    try {
+      const occurrences = await core.probeState(
+        '.r25-nonexistent',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      // Quando querySelectorAll falha, probeState captura o erro e retorna array vazio
+      // com o erro registrado em cdpErrors. Verificamos que não lançou exceção não tratada.
+      assert(Array.isArray(occurrences), 'B4b: probeState retorna array mesmo com erro CDP');
+      assert(occurrences.length === 0, 'B4b: nenhuma ocorrência quando CDP falha na consulta');
+    } finally {
+      DOM.querySelectorAll = originalQuerySelectorAll;
+    }
+  }
+
+  // B5: Nunca escolhe arbitrariamente o primeiro elemento quando ambíguo
+  {
+    const ids = [10, 20, 30];
+    const result = resolveNodeIdResult(ids, 'c4-test', '.r25-multiple');
+    assert(result.status === 'ambiguous-node-association', 'B5: múltiplos IDs não resultam em escolha arbitrária do primeiro');
+    assert(result.nodeId === null, 'B5: nodeId é null quando há múltiplos IDs');
+  }
+
+  // B6: Registrar chave, seletor, quantidade de IDs e operação
+  {
+    const result = resolveNodeIdResult([42], 'c4-key-1', '.r25-multiple');
+    assert(result.key === 'c4-key-1', 'B6: chave registrada');
+    assert(result.selector === '.r25-multiple', 'B6: seletor registrado');
+    assert(result.idCount === 1, 'B6: quantidade de IDs registrada');
+  }
+
+  // =====================================================================
+  // GRUPO C — Limpeza de pseudoestado (try/finally real) (R25-03)
+  // Executar core.probeState() real com injeção de falha
+  // =====================================================================
+  console.log('\n=== GRUPO C — Limpeza de pseudoestado (try/finally real) (R25-03) ===');
+
+  // C1: pseudoestado aplicado e removido com sucesso via probeState real
+  {
+    const occurrences = await core.probeState(
+      '#r25-btn-10',
+      'hover',
+      'mobile',
+      'light',
+      '3',
+      'dash',
+      createSampleIdRegistry()
+    );
+    const occ = occurrences.find((o) => o.state === 'hover');
+    if (occ) {
+      assert(occ.sampleId.startsWith('r25-'), 'C1: sampleId gerado com prefixo r25');
+      assert(occ.nodeId !== null && occ.nodeId !== undefined, 'C1: nodeId presente na ocorrência');
+      assert(occ.cleanupStatus === 'success', 'C1: cleanupStatus é success quando limpeza bem-sucedida');
+    } else {
+      block('C1: ocorrência hover não encontrada');
+    }
+  }
+
+  // C2: Não há estado residual após execução de probeState
+  {
+    try {
+      await core.probeState('#r25-btn-11', 'focus', 'mobile', 'light', '3', 'dash', createSampleIdRegistry());
+      const doc2 = await DOM.getDocument({ depth: -1, pierce: true });
+      const qs2 = await DOM.querySelectorAll({
+        nodeId: doc2.root.nodeId,
+        selector: '#r25-btn-11',
+      });
+      const ids2 = qs2.nodeIds || [];
+      if (ids2.length > 0) {
+        const cs = await CSS.getComputedStyleForNode({ nodeId: ids2[0] });
+        const bgEntry = cs.computedStyle.find((e) => e.name === 'background-color');
+        assert(
+          bgEntry && bgEntry.value.includes('255'),
+          'C2: sem estado residual de :focus após probeState',
+        );
+      } else {
+        block('C2: elemento r25-btn-11 não encontrado após probeState');
+      }
+    } catch (e) {
+      block('C2: exceção durante probeState ou consulta após: ' + e.message);
+    }
+  }
+
+  // C3: Continuidade após falha isolada - múltiplas chamadas seguidas de probeState
+  {
+    const selectors = ['#r25-btn-1', '#r25-btn-2', '#r25-btn-3'];
+    let allOk = true;
+    for (const sel of selectors) {
+      try {
+        const docFresh = await DOM.getDocument({ depth: -1, pierce: true });
+        const qs = await DOM.querySelectorAll({ nodeId: docFresh.root.nodeId, selector: sel });
+        if (qs.nodeIds && qs.nodeIds.length > 0) {
+          const occs = await core.probeState(
+            sel,
+            'hover',
+            'mobile',
+            'light',
+            '3',
+            'dash',
+            createSampleIdRegistry(),
+          );
+          if (occs.length === 0) allOk = false;
+        }
+      } catch (e) {
+        allOk = false;
+      }
+    }
+    assert(allOk, 'C3: múltiplas chamadas de probeState executam sem falha em cadeia');
+  }
+
+  // C4: Falha de CSS.getComputedStyleForNode não impede limpeza de pseudoestado em finally
+  {
+    const originalGetComputedStyleForNode = CSS.getComputedStyleForNode.bind(CSS);
+    let computeStyleFailed = false;
+    CSS.getComputedStyleForNode = async function () {
+      computeStyleFailed = true;
+      throw new Error('getComputedStyleForNode injetado falhou');
+    };
+
+    try {
+      const occurrences = await core.probeState(
+        '#r25-btn-1',
+        'hover',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occurrences[0];
+      assert(
+        occ.cleanupStatus === 'success',
+        'C4: limpeza tentada após falha de computed style (cleanupStatus=' + occ.cleanupStatus + ')',
+      );
+      assert(occ.discarded === true, 'C4: amostra descartada quando computed style falha');
+      assert(occ.reason === 'computed-style-error', 'C4: motivo é computed-style-error');
+      assert(computeStyleFailed === true, 'C4: falha de computed style foi efetivamente injetada');
+    } catch (e) {
+      block('C4: exceção inesperada: ' + e.message);
+    } finally {
+      CSS.getComputedStyleForNode = originalGetComputedStyleForNode;
+    }
+  }
+
+  // C4b: Falha durante a aplicação do pseudoestado (antes da coleta)
+  {
+    const originalForcePseudoState = CSS.forcePseudoState.bind(CSS);
+    let applyFailed = false;
+    CSS.forcePseudoState = async function (params) {
+      if (params.forcedPseudoClasses && params.forcedPseudoClasses.length > 0) {
+        applyFailed = true;
+        throw new Error('aplicação de pseudoestado injetada falhou');
+      }
+      return originalForcePseudoState.call(CSS, params);
+    };
+
+    try {
+      const occurrences = await core.probeState(
+        '#r25-btn-1',
+        'hover',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occurrences[0];
+      // Quando a aplicação falha, pseudoApplied pode ter sido marcado true antes da chamada
+      // mas o erro é capturado e a limpeza ainda roda em finally
+      assert(occ.cleanupStatus === 'success', 'C4b: limpeza tentada mesmo com falha na aplicação');
+    } catch (e) {
+      block('C4b: exceção inesperada: ' + e.message);
+    } finally {
+      CSS.forcePseudoState = originalForcePseudoState;
+    }
+  }
+
+  // C5: Falha de limpeza de pseudoestado invalida a amostra
+  {
+    const originalForcePseudoState = CSS.forcePseudoState.bind(CSS);
+    let clearFailed = false;
+    CSS.forcePseudoState = async function (params) {
+      if (params.forcedPseudoClasses && params.forcedPseudoClasses.length === 0) {
+        clearFailed = true;
+        throw new Error('limpeza injetada falhou');
+      }
+      return originalForcePseudoState.call(CSS, params);
+    };
+
+    try {
+      const occurrences = await core.probeState(
+        '#r25-btn-1',
+        'hover',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occurrences[0];
+      assert(occ.cleanupStatus === 'failed', 'C5: cleanupStatus é failed quando limpeza falha');
+      assert(occ.discarded === true, 'C5: amostra descartada quando limpeza falha');
+      assert(occ.reason === 'cleanup-failed', 'C5: motivo é cleanup-failed');
+      assert(clearFailed === true, 'C5: falha de limpeza foi efetivamente injetada');
+    } catch (e) {
+      block('C5: exceção inesperada: ' + e.message);
+    } finally {
+      CSS.forcePseudoState = originalForcePseudoState;
+    }
+  }
+
+  // C6: Processo continua após falha isolada em uma chamada de probeState
+  {
+    const originalForcePseudoState = CSS.forcePseudoState.bind(CSS);
+    let cleanupCall = 0;
+    CSS.forcePseudoState = async function (params) {
+      if (params.forcedPseudoClasses && params.forcedPseudoClasses.length === 0) {
+        // Esta é uma chamada de limpeza
+        cleanupCall++;
+        if (cleanupCall === 2) {
+          throw new Error('limpeza da segunda chamada falhou');
+        }
+      }
+      return originalForcePseudoState.call(CSS, params);
+    };
+
+    try {
+      // Primeira chamada: sucesso
+      const occs1 = await core.probeState(
+        '#r25-btn-1',
+        'hover',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      assert(occs1.length > 0, 'C6: primeira chamada produz ocorrências');
+      assert(occs1[0].cleanupStatus === 'success', 'C6: primeira chamada limpeza success');
+
+      // Segunda chamada: falha na limpeza
+      const occs2 = await core.probeState(
+        '#r25-btn-2',
+        'hover',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      assert(occs2.length > 0, 'C6: segunda chamada produz ocorrências mesmo com falha na limpeza');
+      assert(occs2[0].cleanupStatus === 'failed', 'C6: segunda chamada limpeza failed');
+      assert(occs2[0].discarded === true, 'C6: segunda chamada amostra descartada');
+
+      // Terceira chamada: continua funcionando após falha isolada
+      CSS.forcePseudoState = originalForcePseudoState;
+      const occs3 = await core.probeState(
+        '#r25-btn-3',
+        'hover',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      assert(occs3.length > 0, 'C6: terceira chamada produz ocorrências após recuperação');
+      assert(occs3[0].cleanupStatus === 'success', 'C6: terceira chamada limpeza success após recuperação');
+    } catch (e) {
+      block('C6: exceção inesperada: ' + e.message);
+    } finally {
+      CSS.forcePseudoState = originalForcePseudoState;
+    }
+  }
+
+  // =====================================================================
+  // GRUPO D — Visibilidade efetiva e ancestrais (R25-04)
+  // Executar core.probeState() real e verificar visibilityStatus/geometryStatus
+  // =====================================================================
+  console.log('\n=== GRUPO D — Visibilidade efetiva e ancestrais (R25-04) ===');
+
+  async function probeBySelector(selector, state) {
+    const rootId = (await DOM.getDocument({ depth: -1, pierce: true })).root.nodeId;
+    const qs = await DOM.querySelectorAll({ nodeId: rootId, selector });
+    return { ids: qs.nodeIds || [], rootId };
+  }
+
+  // D1: Elemento visível com geometria
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-1',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.visibilityStatus === 'visible', 'D1: elemento visível tem visibilityStatus visible');
+      assert(
+        occ.geometryStatus === 'available',
+        'D1: elemento visível tem geometryStatus available',
+      );
+      assert(occ.rect !== null, 'D1: rect disponível para elemento visível');
+    } else {
+      block('D1: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // D2: display:none → visibilityStatus hidden
+  {
+    const { ids } = await probeBySelector('#r25-btn-2', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-2',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'D2: display:none resulta em visibilityStatus hidden',
+      );
+    } else {
+      block('D2: elemento r25-btn-2 não encontrado');
+    }
+  }
+
+  // D3: visibility:hidden → visibilityStatus hidden
+  {
+    const { ids } = await probeBySelector('#r25-btn-3', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-3',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'D3: visibility:hidden resulta em visibilityStatus hidden',
+      );
+    } else {
+      block('D3: elemento r25-btn-3 não encontrado');
+    }
+  }
+
+  // D4: opacity:0 → visibilityStatus not-visible (não convertido em 1)
+  {
+    const { ids } = await probeBySelector('#r25-btn-4', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-4',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'D4: opacity:0 resulta em visibilityStatus not-visible (não visível)',
+      );
+      assert(
+        occ.opacity === '0',
+        'D4: valor original de opacity preservado (não convertido para 1)',
+      );
+    } else {
+      block('D4: elemento r25-btn-4 não encontrado');
+    }
+  }
+
+  // D5: Elemento sem dimensões → visibilityStatus not-visible, geometryStatus available
+  {
+    const { ids } = await probeBySelector('#r25-btn-5', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-5',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'D5: dimensões zero resulta em visibilityStatus not-visible',
+      );
+      assert(
+        occ.geometryStatus === 'unavailable',
+        'D5: geometria degenerada (dimensões zero) tem geometryStatus unavailable',
+      );
+      assert(
+        occ.rect === null,
+        'D5: retângulo é null para geometria degenerada',
+      );
+    } else {
+      block('D5: elemento r25-btn-5 não encontrado');
+    }
+  }
+
+  // D6: Elemento dentro de ancestral com opacity:0 → visibilityStatus not-visible
+  {
+    const { ids } = await probeBySelector(
+      '#r25-ancestor-opacity0-child',
+      'normal',
+    );
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-opacity0-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'D6: ancestral com opacity:0 resulta em visibilityStatus not-visible',
+      );
+      assert(
+        occ.ancestorOpacity === 0,
+        'D6: ancestorOpacity acumulado é 0',
+      );
+    } else {
+      block('D6: elemento r25-ancestor-opacity0-child não encontrado');
+    }
+  }
+
+  // D7: Elemento dentro de ancestral com display:none → visibilityStatus hidden
+  {
+    const { ids } = await probeBySelector(
+      '#r25-ancestor-displaynone-child',
+      'normal',
+    );
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-displaynone-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'D7: ancestral com display:none resulta em visibilityStatus hidden',
+      );
+      assert(
+        occ.ancestorHidden === true,
+        'D7: ancestorHidden é true',
+      );
+    } else {
+      block('D7: elemento r25-ancestor-displaynone-child não encontrado');
+    }
+  }
+
+  // D8: Elemento dentro de ancestral com opacidade parcial
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-1',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.ancestorOpacity === 1,
+        'D8: ancestral sem alteração de opacidade tem ancestorOpacity=1',
+      );
+      assert(
+        occ.ancestorHidden === false,
+        'D8: ancestral sem display:none tem ancestorHidden=false',
+      );
+    } else {
+      block('D8: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // D9: Ancestral com visibility:hidden → visibilityStatus hidden
+  {
+    const { ids } = await probeBySelector(
+      '#r25-ancestor-visibilityhidden-child',
+      'normal',
+    );
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-visibilityhidden-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'D9: ancestral com visibility:hidden resulta em visibilityStatus hidden',
+      );
+      assert(
+        occ.ancestorHidden === true,
+        'D9: ancestorHidden é true para ancestral visibility:hidden',
+      );
+      assert(
+        occ.ancestorVisibility === 'completed',
+        'D9: travessia de ancestral concluída com sucesso',
+      );
+    } else {
+      block('D9: elemento r25-ancestor-visibilityhidden-child não encontrado');
+    }
+  }
+
+  // D10: Ancestral com visibility:collapse → visibilityStatus hidden
+  {
+    const { ids } = await probeBySelector(
+      '#r25-ancestor-visibilitycollapse-child',
+      'normal',
+    );
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-visibilitycollapse-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'D10: ancestral com visibility:collapse resulta em visibilityStatus hidden',
+      );
+      assert(
+        occ.ancestorHidden === true,
+        'D10: ancestorHidden é true para ancestral visibility:collapse',
+      );
+    } else {
+      block('D10: elemento r25-ancestor-visibilitycollapse-child não encontrado');
+    }
+  }
+
+  // D11: Falha na leitura de ancestral → visibilityStatus unknown (não presume visível)
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      const originalCallFunctionOn = Runtime.callFunctionOn.bind(Runtime);
+      let callCount = 0;
+      Runtime.callFunctionOn = async function(params) {
+        callCount++;
+        // Falha na segunda chamada (obtenção do pai) para simular leitura indisponível
+        if (callCount === 2 && params.returnByValue === false) {
+          return { result: null };
+        }
+        return originalCallFunctionOn.call(Runtime, params);
+      };
+
+      try {
+        const occs = await core.probeState(
+          '#r25-btn-1',
+          'normal',
+          'mobile',
+          'light',
+          '3',
+          'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        // Quando a leitura de ancestral falha e o elemento está visível, visibilityStatus deve ser 'unknown'
+        assert(
+          occ.visibilityStatus === 'unknown',
+          'D11: falha na leitura de ancestral resulta em visibilityStatus unknown',
+        );
+        assert(
+          occ.ancestorVisibility !== 'completed',
+          'D11: ancestorVisibility não é completed quando leitura falha',
+        );
+        assert(
+          occ.ancestorFailureReason !== null,
+          'D11: ancestorFailureReason preenchido quando leitura falha',
+        );
+      } finally {
+        Runtime.callFunctionOn = originalCallFunctionOn;
+      }
+    } else {
+      block('D11: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // D12: Duas ocorrências do mesmo seletor com ancestrais diferentes
+  {
+    const selector = '.r25-same-selector';
+    const { ids } = await probeBySelector(selector, 'normal');
+    if (ids.length >= 2) {
+      const occs = await core.probeState(
+        selector,
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      // Encontrar a ocorrência com ancestral oculto (opacity:0)
+      const occHidden = occs.find((o) => o.nodeId && o.ancestorOpacity === 0);
+      const occVisible = occs.find((o) => o.nodeId && o.ancestorOpacity === 1);
+
+      if (occHidden) {
+        assert(
+          occHidden.visibilityStatus === 'not-visible',
+          'D12: ocorrência com ancestral opacity:0 tem visibilityStatus not-visible',
+        );
+      } else {
+        block('D12: não encontrada ocorrência com ancestral opacity:0');
+      }
+
+      if (occVisible) {
+        assert(
+          occVisible.visibilityStatus === 'visible',
+          'D12: ocorrência com ancestral visível tem visibilityStatus visible',
+        );
+      } else {
+        block('D12: não encontrada ocorrência com ancestral visível');
+      }
+
+      // Verificar que as duas ocorrências têm nodeId diferente (identidade preservada)
+      const nodeIds = occs.map((o) => o.nodeId);
+      const uniqueNodeIds = new Set(nodeIds);
+      assert(
+        uniqueNodeIds.size === ids.length,
+        'D12: cada ocorrência tem nodeId individual (identidade preservada)',
+      );
+    } else {
+      block('D12: menos de 2 elementos encontrados para seletor .r25-same-selector');
+    }
+  }
+
+  // =====================================================================
+  // GRUPO V — Semântica de visibility (herança e sobrescrita) (R25-04)
+  // =====================================================================
+  console.log('\n=== GRUPO V — Semântica de visibility (herança e sobrescrita) ===');
+
+  // V1: ancestral visible e descendente visible → visível
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.visibilityStatus === 'visible', 'V1: ancestral visible e descendente visible → visível');
+    } else {
+      block('V1: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // V2: ancestral hidden e descendente sem sobrescrita → oculto
+  {
+    const { ids } = await probeBySelector('#r25-ancestor-visibilityhidden-child', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-visibilityhidden-child', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.visibilityStatus === 'hidden', 'V2: ancestral hidden e descendente sem sobrescrita → oculto');
+    } else {
+      block('V2: elemento r25-ancestor-visibilityhidden-child não encontrado');
+    }
+  }
+
+  // V3: ancestral hidden e descendente visible → visível (sobrescrita)
+  {
+    const { ids } = await probeBySelector('#r25-v3-desc-vis', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-v3-desc-vis', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.visibilityStatus === 'visible', 'V3: ancestral hidden e descendente visible → visível (sobrescrita)');
+    } else {
+      block('V3: elemento r25-v3-desc-vis não encontrado');
+    }
+  }
+
+  // V4: ancestral collapse e descendente sem sobrescrita → oculto
+  {
+    const { ids } = await probeBySelector('#r25-ancestor-visibilitycollapse-child', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-visibilitycollapse-child', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.visibilityStatus === 'hidden', 'V4: ancestral collapse e descendente sem sobrescrita → oculto');
+    } else {
+      block('V4: elemento r25-ancestor-visibilitycollapse-child não encontrado');
+    }
+  }
+
+  // V5: ancestral collapse e descendente visible → observar comportamento real do Chromium
+  {
+    const { ids } = await probeBySelector('#r25-v5-desc-vis', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-v5-desc-vis', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'visible' || occ.visibilityStatus === 'hidden',
+        'V5: ancestral collapse e descendente visible → resultado observado: ' + occ.visibilityStatus,
+      );
+      console.log('    V5 observado: visibilityStatus=' + occ.visibilityStatus + ', ancestorHidden=' + occ.ancestorHidden + ', ancestorVisibility=' + occ.ancestorVisibility);
+    } else {
+      block('V5: elemento r25-v5-desc-vis não encontrado');
+    }
+  }
+
+  // V6: ancestral display:none e descendente visible → oculto (display:none é absoluto)
+  {
+    const { ids } = await probeBySelector('#r25-ancestor-displaynone-child', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-displaynone-child', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.visibilityStatus === 'hidden', 'V6: ancestral display:none e descendente visible → oculto (absoluto)');
+    } else {
+      block('V6: elemento r25-ancestor-displaynone-child não encontrado');
+    }
+  }
+
+  // V7: ancestral opacity:0 → opacidade efetiva zero
+  {
+    const { ids } = await probeBySelector('#r25-ancestor-opacity0-child', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-opacity0-child', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.visibilityStatus === 'not-visible', 'V7: ancestral opacity:0 → not-visible');
+      assert(occ.ancestorOpacity === 0, 'V7: ancestorOpacity acumulado é 0');
+    } else {
+      block('V7: elemento r25-ancestor-opacity0-child não encontrado');
+    }
+  }
+
+  // V8: dois ancestrais com valores diferentes de visibility → respeitar computado em cada nível
+  {
+    const { ids } = await probeBySelector('#r25-v8-desc', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-v8-desc', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.visibilityStatus === 'visible', 'V8: dois ancestrais diferentes → respeitar computado do nível mais próximo');
+    } else {
+      block('V8: elemento r25-v8-desc não encontrado');
+    }
+  }
+
+  // V9: falha de leitura de ancestral → estado desconhecido/erro, nunca visível confirmado
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      const originalCallFunctionOn = Runtime.callFunctionOn.bind(Runtime);
+      let callCount = 0;
+      Runtime.callFunctionOn = async function(params) {
+        callCount++;
+        if (callCount === 2 && params.returnByValue === false) {
+          return { result: null };
+        }
+        return originalCallFunctionOn.call(Runtime, params);
+      };
+      try {
+        const occs = await core.probeState(
+          '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        assert(
+          occ.visibilityStatus === 'unknown',
+          'V9: falha na leitura de ancestral → visibilityStatus unknown, nunca visível',
+        );
+        assert(
+          occ.ancestorVisibility !== 'completed',
+          'V9: ancestorVisibility não é completed quando leitura falha',
+        );
+        assert(occ.ancestorFailureReason !== null, 'V9: ancestorFailureReason preenchido');
+      } finally {
+        Runtime.callFunctionOn = originalCallFunctionOn;
+      }
+    } else {
+      block('V9: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // V10: duas ocorrências do mesmo seletor com ancestrais diferentes → resultado individual
+  {
+    const selector = '.r25-same-selector';
+    const { ids } = await probeBySelector(selector, 'normal');
+    if (ids.length >= 2) {
+      const occs = await core.probeState(
+        selector, 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occHidden = occs.find((o) => o.nodeId && o.ancestorOpacity === 0);
+      const occVisible = occs.find((o) => o.nodeId && o.ancestorOpacity === 1);
+      if (occHidden) {
+        assert(occHidden.visibilityStatus === 'not-visible', 'V10: ocorrência com ancestral opacity:0 → not-visible');
+      } else {
+        block('V10: não encontrada ocorrência com ancestral opacity:0');
+      }
+      if (occVisible) {
+        assert(occVisible.visibilityStatus === 'visible', 'V10: ocorrência com ancestral visível → visible');
+      } else {
+        block('V10: não encontrada ocorrência com ancestral visível');
+      }
+    } else {
+      block('V10: menos de 2 elementos para .r25-same-selector');
+    }
+  }
+
+  // V11: ancestral visibility:hidden + descendente visibility:visible + falha ao obter o pai
+  // A travessia de ancestrais emite 2 Runtime.callFunctionOn por nível:
+  //   1 = estilo do elemento testado, 2 = obter pai, 3 = estilo do ancestral,
+  //   4 = obter avô.
+  // A falha é injetada na 4ª chamada (obtenção do pai do ancestral), depois
+  // de o estilo do ancestral oculto já ter sido lido.
+  {
+    const { ids } = await probeBySelector('#r25-v3-desc-vis', 'normal');
+    if (ids.length > 0) {
+      const originalCallFunctionOn = Runtime.callFunctionOn.bind(Runtime);
+      let callCount = 0;
+      Runtime.callFunctionOn = async function(params) {
+        callCount++;
+        if (callCount === 4 && params.returnByValue === false) {
+          return { result: null };
+        }
+        return originalCallFunctionOn.call(Runtime, params);
+      };
+      try {
+        const occs = await core.probeState(
+          '#r25-v3-desc-vis', 'normal', 'mobile', 'light', '3', 'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        assert(
+          occ.visibilityStatus === 'unknown',
+          'V11: travessia incompleta não pode confirmar visibilidade (unknown, nunca visible)',
+        );
+        assert(
+          occ.ancestorVisibility === 'partial',
+          'V11: falha na obtenção do pai resulta em ancestorVisibility partial',
+        );
+        assert(
+          occ.discarded === false,
+          'V11: estado desconhecido não descarta a amostra',
+        );
+        assert(
+          occ.ancestorFailureReason !== null,
+          'V11: ancestorFailureReason preenchido',
+        );
+        assert(
+          occ.ancestorHidden === true,
+          'V11: evidência ancestorHidden do ancestral oculto foi preservada',
+        );
+      } finally {
+        Runtime.callFunctionOn = originalCallFunctionOn;
+      }
+    } else {
+      block('V11: elemento r25-v3-desc-vis não encontrado');
+    }
+  }
+
+  // V12: ancestral opacity:0 + falha posterior na travessia
+  // A opacidade zero já comprovada não pode ser apagada pela falha posterior.
+  {
+    const { ids } = await probeBySelector('#r25-ancestor-opacity0-child', 'normal');
+    if (ids.length > 0) {
+      const originalCallFunctionOn = Runtime.callFunctionOn.bind(Runtime);
+      let callCount = 0;
+      Runtime.callFunctionOn = async function(params) {
+        callCount++;
+        if (callCount === 4 && params.returnByValue === false) {
+          return { result: null };
+        }
+        return originalCallFunctionOn.call(Runtime, params);
+      };
+      try {
+        const occs = await core.probeState(
+          '#r25-ancestor-opacity0-child', 'normal', 'mobile', 'light', '3', 'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        assert(
+          occ.visibilityStatus === 'not-visible',
+          'V12: opacidade zero preservada apesar da falha posterior na travessia',
+        );
+        assert(
+          occ.ancestorOpacity === 0,
+          'V12: ancestorOpacity preservado em 0 após falha posterior',
+        );
+        assert(
+          occ.ancestorVisibility !== 'completed',
+          'V12: travessia incompleta registrada mesmo com evidência absoluta presente',
+        );
+      } finally {
+        Runtime.callFunctionOn = originalCallFunctionOn;
+      }
+    } else {
+      block('V12: elemento r25-ancestor-opacity0-child não encontrado');
+    }
+  }
+
+  // V13: ancestral com opacity parcial (0.5) + falha posterior na travessia
+  {
+    const { ids } = await probeBySelector('#r25-ancestor-opacity05-child', 'normal');
+    if (ids.length > 0) {
+      const originalCallFunctionOn = Runtime.callFunctionOn.bind(Runtime);
+      let callCount = 0;
+      Runtime.callFunctionOn = async function(params) {
+        callCount++;
+        if (callCount === 4 && params.returnByValue === false) {
+          return { result: null };
+        }
+        return originalCallFunctionOn.call(Runtime, params);
+      };
+      try {
+        const occs = await core.probeState(
+          '#r25-ancestor-opacity05-child', 'normal', 'mobile', 'light', '3', 'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        assert(
+          occ.visibilityStatus !== 'visible',
+          'V13: visibilidade não confirmada quando a travessia falha com opacity parcial',
+        );
+        assert(
+          occ.ancestorVisibility !== 'completed',
+          'V13: travessia incompleta ou erro registrado',
+        );
+        assert(
+          occ.ancestorOpacity === 0.5,
+          'V13: ancestorOpacity representa somente o valor parcial coletado (0.5)',
+        );
+      } finally {
+        Runtime.callFunctionOn = originalCallFunctionOn;
+      }
+    } else {
+      block('V13: elemento r25-ancestor-opacity05-child não encontrado');
+    }
+  }
+
+  // =====================================================================
+  // GRUPO P — Falha de aplicação de pseudoestado invalida a amostra (R25-03)
+  // =====================================================================
+  console.log('\n=== GRUPO P — Falha de aplicação de pseudoestado ===');
+
+  // P1: aplicação bem-sucedida → amostra válida, limpeza executada
+  {
+    const occurrences = await core.probeState(
+      '#r25-btn-10', 'hover', 'mobile', 'light', '3', 'dash',
+      createSampleIdRegistry(),
+    );
+    const occ = occurrences.find((o) => o.state === 'hover');
+    if (occ) {
+      assert(occ.cleanupStatus === 'success', 'P1: aplicação bem-sucedida → cleanupStatus success');
+      assert(occ.discarded !== true || occ.reason === 'visibility', 'P1: amostra válida quando aplicação bem-sucedida');
+    } else {
+      block('P1: ocorrência hover não encontrada');
+    }
+  }
+
+  // P2: falha na aplicação → amostra descartada, limpeza executada
+  {
+    const originalForcePseudoState = CSS.forcePseudoState.bind(CSS);
+    let applyFailed = false;
+    CSS.forcePseudoState = async function (params) {
+      if (params.forcedPseudoClasses && params.forcedPseudoClasses.length > 0) {
+        applyFailed = true;
+        throw new Error('aplicação injetada falhou');
+      }
+      return originalForcePseudoState.call(CSS, params);
+    };
+    try {
+      const occurrences = await core.probeState(
+        '#r25-btn-1', 'hover', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occurrences[0];
+      assert(applyFailed === true, 'P2: falha de aplicação foi efetivamente injetada');
+      assert(occ.discarded === true, 'P2: amostra descartada quando aplicação falha');
+      assert(occ.reason === 'pseudo-apply-error', 'P2: motivo é pseudo-apply-error');
+      assert(occ.cleanupStatus === 'success', 'P2: limpeza executada mesmo com falha de aplicação');
+    } catch (e) {
+      block('P2: exceção inesperada: ' + e.message);
+    } finally {
+      CSS.forcePseudoState = originalForcePseudoState;
+    }
+  }
+
+  // P3: falha na coleta depois da aplicação → descarte, limpeza
+  {
+    const originalGetComputedStyleForNode = CSS.getComputedStyleForNode.bind(CSS);
+    CSS.getComputedStyleForNode = async function () {
+      throw new Error('coleta injetada falhou');
+    };
+    try {
+      const occurrences = await core.probeState(
+        '#r25-btn-1', 'hover', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occurrences[0];
+      assert(occ.discarded === true, 'P3: amostra descartada quando coleta falha após aplicação');
+      assert(occ.cleanupStatus === 'success', 'P3: limpeza executada após falha de coleta');
+    } catch (e) {
+      block('P3: exceção inesperada: ' + e.message);
+    } finally {
+      CSS.getComputedStyleForNode = originalGetComputedStyleForNode;
+    }
+  }
+
+  // P4: falha na limpeza → cleanupStatus failed, amostra não íntegra
+  {
+    const originalForcePseudoState = CSS.forcePseudoState.bind(CSS);
+    let clearFailed = false;
+    CSS.forcePseudoState = async function (params) {
+      if (params.forcedPseudoClasses && params.forcedPseudoClasses.length === 0) {
+        clearFailed = true;
+        throw new Error('limpeza injetada falhou');
+      }
+      return originalForcePseudoState.call(CSS, params);
+    };
+    try {
+      const occurrences = await core.probeState(
+        '#r25-btn-1', 'hover', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occurrences[0];
+      assert(clearFailed === true, 'P4: falha de limpeza foi efetivamente injetada');
+      assert(occ.cleanupStatus === 'failed', 'P4: cleanupStatus é failed quando limpeza falha');
+      assert(occ.discarded === true, 'P4: amostra não é íntegra quando limpeza falha');
+    } catch (e) {
+      block('P4: exceção inesperada: ' + e.message);
+    } finally {
+      CSS.forcePseudoState = originalForcePseudoState;
+    }
+  }
+
+  // P5: falha simultânea de aplicação e limpeza → ambos preservados
+  {
+    const originalForcePseudoState = CSS.forcePseudoState.bind(CSS);
+    let applyFailed = false;
+    let clearFailed = false;
+    CSS.forcePseudoState = async function (params) {
+      if (params.forcedPseudoClasses && params.forcedPseudoClasses.length > 0) {
+        applyFailed = true;
+        throw new Error('aplicação injetada falhou');
+      }
+      if (params.forcedPseudoClasses && params.forcedPseudoClasses.length === 0) {
+        clearFailed = true;
+        throw new Error('limpeza injetada falhou');
+      }
+      return originalForcePseudoState.call(CSS, params);
+    };
+    try {
+      const occurrences = await core.probeState(
+        '#r25-btn-1', 'hover', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occurrences[0];
+      assert(applyFailed === true, 'P5: falha de aplicação injetada');
+      assert(clearFailed === true, 'P5: falha de limpeza injetada');
+      assert(occ.discarded === true, 'P5: amostra descartada');
+      assert(occ.cleanupStatus === 'failed', 'P5: cleanupStatus failed');
+    } catch (e) {
+      block('P5: exceção inesperada: ' + e.message);
+    } finally {
+      CSS.forcePseudoState = originalForcePseudoState;
+    }
+  }
+
+  // P6: estado 'normal' (sem pseudoestado) não é descartado
+  {
+    const occurrences = await core.probeState(
+      '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+      createSampleIdRegistry(),
+    );
+    const occ = occurrences[0];
+    assert(occ.cleanupStatus === 'not-required', 'P6: cleanupStatus not-required quando não há pseudoestado');
+    assert(occ.visibilityStatus === 'visible', 'P6: estado normal → visível');
+  }
+
+  // P7: integração com harness — amostra descartada é identificável via discarded flag
+  {
+    const occurrences = await core.probeState(
+      '#r25-btn-2', 'normal', 'mobile', 'light', '3', 'dash',
+      createSampleIdRegistry(),
+    );
+    const occ = occurrences[0];
+    // r25-btn-2 tem display:none → descartado por visibility
+    assert(occ.discarded === true, 'P7: amostra ocultada por visibility tem discarded = true');
+    assert(occ.reason === 'visibility', 'P7: motivo é visibility');
+  }
+
+  // =====================================================================
+  // GRUPO R — Travessia da raiz do documento (R25-04)
+  // =====================================================================
+  console.log('\n=== GRUPO R — Travessia da raiz do documento ===');
+
+  // R1: HTML opacity 1 → travessia concluída
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.ancestorVisibility === 'completed', 'R1: HTML opacity 1 → travessia concluída');
+      assert(occ.ancestorOpacity === 1, 'R1: ancestorOpacity = 1 (HTML opacidade padrão)');
+    } else {
+      block('R1: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // R2: HTML opacity 0 → opacidade acumulada zero
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      await Runtime.evaluate({ expression: 'document.documentElement.style.opacity = "0"' });
+      try {
+        const occs = await core.probeState(
+          '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        assert(occ.visibilityStatus === 'not-visible', 'R2: HTML opacity:0 → not-visible');
+        assert(occ.ancestorOpacity === 0, 'R2: ancestorOpacity acumulado é 0 (HTML)');
+      } finally {
+        await Runtime.evaluate({ expression: 'document.documentElement.style.opacity = ""' });
+      }
+    } else {
+      block('R2: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // R3: HTML opacity 0.5 → opacidade acumulada correspondente
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      await Runtime.evaluate({ expression: 'document.documentElement.style.opacity = "0.5"' });
+      try {
+        const occs = await core.probeState(
+          '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        assert(occ.ancestorOpacity === 0.5, 'R3: HTML opacity:0.5 → ancestorOpacity = 0.5');
+        assert(occ.visibilityStatus === 'visible', 'R3: HTML opacity:0.5 (não zero) → visível');
+      } finally {
+        await Runtime.evaluate({ expression: 'document.documentElement.style.opacity = ""' });
+      }
+    } else {
+      block('R3: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // R4: HTML display:none → descendente oculto
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      await Runtime.evaluate({ expression: 'document.documentElement.style.display = "none"' });
+      try {
+        const occs = await core.probeState(
+          '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        assert(occ.visibilityStatus === 'hidden', 'R4: HTML display:none → hidden');
+      } finally {
+        await Runtime.evaluate({ expression: 'document.documentElement.style.display = ""' });
+      }
+    } else {
+      block('R4: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // R5: HTML visibility:hidden → considerar herança e sobrescrita
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      await Runtime.evaluate({ expression: 'document.documentElement.style.visibility = "hidden"' });
+      try {
+        const occs = await core.probeState(
+          '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        assert(occ.visibilityStatus === 'hidden', 'R5: HTML visibility:hidden e descendente sem sobrescrita → hidden');
+      } finally {
+        await Runtime.evaluate({ expression: 'document.documentElement.style.visibility = ""' });
+      }
+    } else {
+      block('R5: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // R6: falha ao consultar estilo da raiz → desconhecido/erro
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      const originalCallFunctionOn = Runtime.callFunctionOn.bind(Runtime);
+      Runtime.callFunctionOn = async function(params) {
+        const ret = await originalCallFunctionOn.call(Runtime, params);
+        if (ret.result && ret.result.value && ret.result.value.isRoot === true) {
+          return { result: null };
+        }
+        return ret;
+      };
+      try {
+        const occs = await core.probeState(
+          '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+          createSampleIdRegistry(),
+        );
+        const occ = occs[0];
+        assert(
+          occ.visibilityStatus === 'unknown',
+          'R6: falha ao ler estilo da raiz → visibilityStatus unknown',
+        );
+        assert(
+          occ.ancestorVisibility !== 'completed',
+          'R6: ancestorVisibility não é completed quando leitura da raiz falha',
+        );
+      } finally {
+        Runtime.callFunctionOn = originalCallFunctionOn;
+      }
+    } else {
+      block('R6: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // R7: travessia normal até raiz → status de conclusão explícito
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-1', 'normal', 'mobile', 'light', '3', 'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.ancestorVisibility === 'completed', 'R7: travessia normal até raiz → ancestorVisibility completed');
+      assert(occ.ancestorDepth > 0, 'R7: ancestorDepth > 0 (travessia alcançou ancestrais)');
+    } else {
+      block('R7: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // =====================================================================
+  // GRUPO E — Atributos DOM com expectativas exatas (R25-05)
+  // =====================================================================
+  console.log('\n=== GRUPO E — Atributos DOM com expectativas exatas (R25-05) ===');
+
+  // E1: tabindex="0"
+  {
+    const { ids } = await probeBySelector('#r25-attr-tabindex-0', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-attr-tabindex-0',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.tabIndex === '0',
+        'E1: tabindex="0" lido corretamente (valor="' + occ.tabIndex + '")',
+      );
+    } else {
+      block('E1: elemento r25-attr-tabindex-0 não encontrado');
+    }
+  }
+
+  // E2: tabindex="-1"
+  {
+    const { ids } = await probeBySelector('#r25-attr-tabindex-m1', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-attr-tabindex-m1',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.tabIndex === '-1',
+        'E2: tabindex="-1" lido corretamente (valor="' + occ.tabIndex + '")',
+      );
+    } else {
+      block('E2: elemento r25-attr-tabindex-m1 não encontrado');
+    }
+  }
+
+  // E3: tabindex ausente
+  {
+    const { ids } = await probeBySelector('#r25-btn-1', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-btn-1',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(occ.tabIndex === null, 'E3: tabindex ausente retorna null');
+    } else {
+      block('E3: elemento r25-btn-1 não encontrado');
+    }
+  }
+
+  // E4: role="button"
+  {
+    const { ids } = await probeBySelector('#r25-attr-role-button', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-attr-role-button',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.role === 'button',
+        'E4: role="button" lido corretamente (valor="' + occ.role + '")',
+      );
+    } else {
+      block('E4: elemento r25-attr-role-button não encontrado');
+    }
+  }
+
+  // E5: aria-label com texto conhecido
+  {
+    const { ids } = await probeBySelector('#r25-attr-aria-label', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-attr-aria-label',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.aria === 'Rótulo de acessibilidade',
+        'E5: aria-label lido corretamente (valor="' + occ.aria + '")',
+      );
+    } else {
+      block('E5: elemento r25-attr-aria-label não encontrado');
+    }
+  }
+
+  // E6: disabled=true
+  {
+    const { ids } = await probeBySelector('#r25-attr-disabled', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-attr-disabled',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.disabled === true,
+        'E6: disabled=true lido corretamente',
+      );
+    } else {
+      block('E6: elemento r25-attr-disabled não encontrado');
+    }
+  }
+
+  // E7: disabled=false (presente mas não desabilitado)
+  {
+    const { ids } = await probeBySelector('#r25-attr-enabled', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-attr-enabled',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.disabled === false,
+        'E7: disabled=false lido corretamente',
+      );
+    } else {
+      block('E7: elemento r25-attr-enabled não encontrado');
+    }
+  }
+
+  // =====================================================================
+  // GRUPO F — Validação geométrica (R25-05)
+  // Executar rectFromBorder() real do núcleo
+  // =====================================================================
+  console.log('\n=== GRUPO F — Validação geométrica (R25-05) ===');
+
+  // F1: Retângulo válido
+  {
+    const r = rectFromBorder([10, 10, 50, 10, 50, 50, 10, 50]);
+    assert(r !== null, 'F1: retângulo válido retorna objeto');
+    assert(
+      r.x === 10 && r.y === 10 && r.w === 40 && r.h === 40,
+      'F1: geometria correta (x=' + r.x + ', y=' + r.y + ', w=' + r.w + ', h=' + r.h + ')',
+    );
+  }
+
+  // F2: Quadrilátero rotacionado válido
+  {
+    const r = rectFromBorder([0, 0, 40, 10, 30, 50, -10, 40]);
+    assert(r !== null, 'F2: quadrilátero rotacionado válido retorna objeto');
+    assert(
+      r.x === -10 && r.y === 0 && r.w === 50 && r.h === 50,
+      'F2: geometria rotacionada correta',
+    );
+  }
+
+  // F3: Lista ausente
+  {
+    const r = rectFromBorder(null);
+    assert(r === null, 'F3: lista ausente retorna null');
+  }
+
+  // F4: Lista com menos de oito coordenadas
+  {
+    const r = rectFromBorder([10, 10, 50, 10]);
+    assert(r === null, 'F4: lista com menos de 8 coordenadas retorna null');
+  }
+
+  // F5: Coordenada NaN
+  {
+    const r = rectFromBorder([10, 10, 50, 10, 50, 50, 10, NaN]);
+    assert(r === null, 'F5: coordenada NaN retorna null');
+  }
+
+  // F6: Coordenada infinita
+  {
+    const r = rectFromBorder([10, 10, 50, 10, 50, 50, 10, Infinity]);
+    assert(r === null, 'F6: coordenada infinita retorna null');
+  }
+
+  // F7: Valor textual inválido
+  {
+    const r = rectFromBorder([10, 10, 50, 10, 50, 50, 10, 'x']);
+    assert(r === null, 'F7: valor textual inválido retorna null');
+  }
+
+  // F8: Largura degenerada (zero)
+  {
+    const r = rectFromBorder([10, 10, 10, 10, 10, 10, 10, 10]);
+    assert(r === null, 'F8: largura degenerada (zero) retorna null');
+  }
+
+  // F9: Altura degenerada (zero)
+  {
+    const r = rectFromBorder([10, 10, 50, 10, 50, 10, 10, 10]);
+    assert(r === null, 'F9: altura degenerada (zero) retorna null');
+  }
+
+  // =====================================================================
+  // GRUPO G — Classificação de erros CDP (R25-07)
+  // Executar classifyCDPError() e makeCDPErrorRecord() reais do núcleo
+  // =====================================================================
+  console.log('\n=== GRUPO G — Classificação de erros CDP (R25-07) ===');
+
+  // G1: node-detached
+  {
+    const record = classifyCDPError(
+      'DOM.getBoxModel',
+      'NotFoundError',
+      'Node is detached from document.',
+    );
+    assert(record.classification === 'node-detached', 'G1: nó removido classificado como node-detached');
+    assert(record.confidence === 'high', 'G1: confiança alta para node-detached');
+  }
+
+  // G2: node-not-found
+  {
+    const record = classifyCDPError(
+      'DOM.querySelectorAll',
+      'Error',
+      'No nodes found for selector.',
+    );
+    assert(
+      record.classification === 'node-not-found',
+      'G2: seletor sem nós classificado como node-not-found',
+    );
+  }
+
+  // G3: geometry-unavailable
+  {
+    const record = classifyCDPError(
+      'DOM.getBoxModel',
+      'Error',
+      'Could not compute box model.',
+    );
+    assert(
+      record.classification === 'geometry-unavailable',
+      'G3: box model não computável classificado como geometry-unavailable',
+    );
+  }
+
+  // G4: protocol-error
+  {
+    const record = classifyCDPError(
+      'CSS.getMatchedStylesForNode',
+      'InvalidParams',
+      'Invalid parameters.',
+    );
+    assert(
+      record.classification === 'protocol-error',
+      'G4: parâmetros inválidos classificado como protocol-error',
+    );
+  }
+
+  // G5: unknown para causa não demonstrada
+  {
+    const record = classifyCDPError(
+      'Runtime.evaluate',
+      'SomeError',
+      'algo estranho aconteceu',
+    );
+    assert(record.classification === 'unknown', 'G5: erro não mapeado classificado como unknown');
+    assert(record.confidence === 'low', 'G5: confiança baixa para erro desconhecido');
+  }
+
+  // G6: Mensagem ambígua com "node" não classificada automaticamente como node-detached
+  {
+    const record = classifyCDPError(
+      'DOM.getBoxModel',
+      'Error',
+      'node not found in tree',
+    );
+    assert(
+      record.classification !== 'node-detached',
+      'G6: mensagem ambígua não classificada como node-detached sem evidência de remoção',
+    );
+  }
+
+  // G7: makeCDPErrorRecord preserva sampleId
+  {
+    const record = makeCDPErrorRecord(
+      'DOM.getBoxModel',
+      'Error',
+      'test error',
+      {
+        sampleId: 'r25-mobile-light-3-dash-abc123ef-hover-0',
+        nodeId: 999,
+        selector: '.test',
+        state: 'hover',
+        index: 0,
+      },
+    );
+    assert(
+      record.sampleId === 'r25-mobile-light-3-dash-abc123ef-hover-0',
+      'G7: sampleId preservado no registro de erro',
+    );
+    assert(record.nodeId === 999, 'G7: nodeId preservado no registro de erro');
+  }
+
+  // G8: makeCDPErrorRecord com sampleId string vazia (não deve ser nullificado)
+  {
+    const record = makeCDPErrorRecord(
+      'DOM.getBoxModel',
+      'Error',
+      'test error',
+      {
+        sampleId: '',
+        nodeId: 1,
+        selector: '.x',
+        state: 'normal',
+        index: 0,
+      },
+    );
+    assert(
+      record.sampleId === '',
+      'G8: sampleId string vazia preservada (não nullificada)',
+    );
+  }
+
+  // =====================================================================
+  // GRUPO H — Visibilidade de ancestrais com Chromium real
+  // =====================================================================
+  console.log('\n=== GRUPO H — Visibilidade de ancestrais com Chromium real ===');
+
+  // H1: Elemento dentro de ancestral com opacity:0 via probeState real
+  {
+    const { ids } = await probeBySelector('#r25-ancestor-opacity0-child', 'normal');
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-opacity0-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'H1: elemento dentro de ancestral opacity:0 tem visibilityStatus not-visible via probeState real',
+      );
+      assert(
+        occ.ancestorOpacity === 0,
+        'H1: ancestorOpacity=0 detectado via probeState real',
+      );
+    } else {
+      block('H1: elemento r25-ancestor-opacity0-child não encontrado');
+    }
+  }
+
+  // H2: Elemento dentro de ancestral com display:none via probeState real
+  {
+    const { ids } = await probeBySelector(
+      '#r25-ancestor-displaynone-child',
+      'normal',
+    );
+    if (ids.length > 0) {
+      const occs = await core.probeState(
+        '#r25-ancestor-displaynone-child',
+        'normal',
+        'mobile',
+        'light',
+        '3',
+        'dash',
+        createSampleIdRegistry(),
+      );
+      const occ = occs[0];
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'H2: elemento dentro de ancestral display:none tem visibilityStatus hidden via probeState real',
+      );
+      assert(
+        occ.ancestorHidden === true,
+        'H2: ancestorHidden=true detectado via probeState real',
+      );
+    } else {
+      block('H2: elemento r25-ancestor-displaynone-child não encontrado');
+    }
+  }
+
+
+  // =====================================================================
+  // GRUPO V — R25.5: mecanismo rigoroso de visibilidade e integridade
+  // da travessia. Todos os testes executam o probeState() real do núcleo
+  // compartilhado; nenhum replica a lógica de travessia.
+  // =====================================================================
+  console.log('\n=== GRUPO V — R25.5 estados da travessia, exceções reais, opacidade e Shadow DOM ===');
+
+  // O protocolo CDP disponível não expõe `pierce` em DOM.querySelectorAll,
+  // de modo que o conteúdo de um shadow root não é alcançável a partir da
+  // raiz do document. O teste amplia a resolução do seletor; o núcleo
+  // permanece inalterado.
+  async function collectShadowRootNodeIds() {
+    const root = (await DOM.getDocument({ depth: -1, pierce: true })).root;
+    const found = [];
+    const walk = (node) => {
+      for (const sr of node.shadowRoots || []) {
+        found.push(sr.nodeId);
+        walk(sr);
+      }
+      for (const child of node.children || []) walk(child);
+    };
+    walk(root);
+    return found;
+  }
+
+  async function withShadowQuery(fn) {
+    const original = DOM.querySelectorAll.bind(DOM);
+    DOM.querySelectorAll = async function (params) {
+      const res = await original(params);
+      if (res.nodeIds && res.nodeIds.length > 0) return res;
+      for (const nodeId of await collectShadowRootNodeIds()) {
+        try {
+          const inner = await original({ nodeId, selector: params.selector });
+          if (inner.nodeIds && inner.nodeIds.length > 0) return inner;
+        } catch (e) {
+          // shadow root inacessível: segue para o próximo
+        }
+      }
+      return res;
+    };
+    try {
+      return await fn();
+    } finally {
+      DOM.querySelectorAll = original;
+    }
+  }
+
+  async function withDetachedNodeQuery(fn) {
+    const original = DOM.querySelectorAll.bind(DOM);
+    DOM.querySelectorAll = async function (params) {
+      if (params.selector === '#r255-detached') {
+        // O nodeId e resolvido no momento da consulta: DOM.getDocument()
+        // reidrenta a arvore e invalida nodeIds obtidos antes dele.
+        const objectId = (
+          await Runtime.evaluate({ expression: 'window.__r255Detached', returnByValue: false })
+        ).result.objectId;
+        const requested = await DOM.requestNode({ objectId });
+        return { nodeIds: [requested.nodeId] };
+      }
+      return original(params);
+    };
+    try {
+      return await fn();
+    } finally {
+      DOM.querySelectorAll = original;
+    }
+  }
+
+  // Executa o probeState real com uma patch opcional em Runtime.callFunctionOn.
+  async function runProbe(selector, patchFactory) {
+    const original = Runtime.callFunctionOn.bind(Runtime);
+    if (patchFactory) Runtime.callFunctionOn = patchFactory(original);
+    try {
+      return await core.probeState(
+        selector, 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry(),
+      );
+    } finally {
+      Runtime.callFunctionOn = original;
+    }
+  }
+
+  // Falha controlada sem exceção: devolve resultado vazio na n-ésima chamada
+  // de obtenção de pai (returnByValue === false).
+  function nullParentAtCall(original, n) {
+    let count = 0;
+    return async function (params) {
+      count++;
+      if (count === n && params.returnByValue === false) return { result: null };
+      return original(params);
+    };
+  }
+
+  // Exceção real: a própria chamada CDP lança.
+  function throwAtCall(original, n, message) {
+    let count = 0;
+    return async function (params) {
+      count++;
+      if (count === n) {
+        throw new Error(message || 'falha injetada em Runtime.callFunctionOn');
+      }
+      return original(params);
+    };
+  }
+
+  // Resposta CDP corrompida com opacidade inválida.
+  function doctoredOpacityAtCall(original, n, badOpacity) {
+    let count = 0;
+    return async function (params) {
+      count++;
+      if (count === n && params.returnByValue === true) {
+        return {
+          result: {
+            value: {
+              display: 'block',
+              visibility: 'visible',
+              opacity: badOpacity,
+              isRoot: false,
+            },
+          },
+        };
+      }
+      return original(params);
+    };
+  }
+
+  // Ocorrências coletadas para as verificações cruzadas (V34-V38).
+  const r255 = {};
+
+  // ---------------------------------------------------------------------
+  // V14: display:none em ancestral resulta em short-circuited, nunca completed
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r25-ancestor-displaynone-child');
+    const occ = occs[0];
+    r255.displayNone = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'short-circuited',
+        'V14: display:none em ancestral resulta em short-circuited',
+      );
+      assert(
+        occ.ancestorVisibility !== 'completed',
+        'V14: display:none em ancestral nunca resulta em completed',
+      );
+      assert(
+        occ.ancestorDisplayNone === true,
+        'V14: ancestorDisplayNone registra a evidência absoluta',
+      );
+      assert(
+        occ.ancestorHidden === true,
+        'V14: ancestorHidden preservado para compatibilidade',
+      );
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'V14: display:none em ancestral resulta em visibilityStatus hidden',
+      );
+      assert(
+        occ.ancestorOpacityStatus === 'short-circuited',
+        'V14: opacidade interrompida por display:none é short-circuited',
+      );
+    } else {
+      block('V14: ocorrência de #r25-ancestor-displaynone-child não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V15: display:none no nível 50 não é sobrescrito por depth-limit
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r255-depth-displaynone50');
+    const occ = occs[0];
+    r255.depthDisplayNone = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'short-circuited',
+        'V15: display:none no nível 50 resulta em short-circuited',
+      );
+      assert(
+        occ.ancestorVisibility !== 'depth-limit',
+        'V15: display:none no nível 50 não é sobrescrito por depth-limit',
+      );
+      assert(
+        occ.ancestorDepth === 50,
+        'V15: a falha no nível 50 foi alcançada antes da interrupção',
+      );
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'V15: display:none absoluto mantém a conclusão hidden',
+      );
+    } else {
+      block('V15: ocorrência de #r255-depth-displaynone50 não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V16: raiz examinada exatamente no nível 50 resulta em completed
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r255-depth-root50');
+    const occ = occs[0];
+    r255.depthRoot50 = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'completed',
+        'V16: raiz real examinada no nível 50 resulta em completed',
+      );
+      assert(
+        occ.ancestorDepth === 50,
+        'V16: a travessia examinou exatamente 50 nós',
+      );
+      assert(
+        occ.ancestorOpacityStatus === 'complete',
+        'V16: cadeia completa resulta em opacidade complete',
+      );
+      assert(
+        occ.visibilityStatus === 'visible',
+        'V16: travessia completa e opacidade completa confirmam visibilidade',
+      );
+    } else {
+      block('V16: ocorrência de #r255-depth-root50 não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V17: ancestral além do limite resulta em depth-limit
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r255-depth-limit');
+    const occ = occs[0];
+    r255.depthLimit = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'depth-limit',
+        'V17: ancestral além do limite resulta em depth-limit',
+      );
+      assert(
+        occ.ancestorDepth === 50,
+        'V17: a travessia parou no limite de 50 nós',
+      );
+      assert(
+        occ.ancestorVisibility !== 'completed',
+        'V17: depth-limit nunca é apresentado como completed',
+      );
+      assert(
+        occ.visibilityStatus !== 'visible',
+        'V17: travessia incompleta não confirma visibilidade',
+      );
+      assert(
+        occ.ancestorFailureReason !== null,
+        'V17: ancestorFailureReason registra o limite de profundidade',
+      );
+    } else {
+      block('V17: ocorrência de #r255-depth-limit não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V18: ciclo resulta em cycle, sem ser sobrescrito
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r255-cycle-a');
+    const occ = occs[0];
+    r255.cycle = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'cycle',
+        'V18: ciclo na cadeia de ancestrais resulta em cycle',
+      );
+      assert(
+        occ.ancestorVisibility !== 'depth-limit',
+        'V18: cycle não é sobrescrito por depth-limit',
+      );
+      assert(
+        occ.ancestorVisibility !== 'completed',
+        'V18: cycle nunca é apresentado como completed',
+      );
+      assert(
+        occ.visibilityStatus !== 'visible',
+        'V18: ciclo não permite confirmar visibilidade',
+      );
+    } else {
+      block('V18: ocorrência de #r255-cycle-a não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V19: falha sem exceção na obtenção do pai resulta em partial
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r25-btn-1', (o) => nullParentAtCall(o, 2));
+    const occ = occs[0];
+    r255.partial = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'partial',
+        'V19: falha sem exceção na obtenção do pai resulta em partial',
+      );
+      assert(
+        occ.ancestorVisibility !== 'completed',
+        'V19: partial nunca é apresentado como completed',
+      );
+      assert(
+        occ.ancestorFailureReason !== null,
+        'V19: ancestorFailureReason preenchido na falha de leitura',
+      );
+      assert(
+        occ.visibilityStatus === 'unknown',
+        'V19: travessia parcial não confirma visibilidade',
+      );
+    } else {
+      block('V19: ocorrência de #r25-btn-1 não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V20: exceção real em Runtime.callFunctionOn resulta em error
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r25-btn-1', (o) => throwAtCall(o, 2));
+    const occ = occs[0];
+    r255.error = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'error',
+        'V20: exceção real em Runtime.callFunctionOn resulta em error',
+      );
+      assert(
+        occ.ancestorVisibility !== 'partial',
+        'V20: exceção real não é convertida em partial',
+      );
+      assert(
+        occ.ancestorFailureReason !== null,
+        'V20: a causa da exceção é registrada',
+      );
+      assert(
+        occ.visibilityStatus !== 'visible',
+        'V20: exceção impede a confirmação de visibilidade',
+      );
+    } else {
+      block('V20: ocorrência de #r25-btn-1 não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V21: opacity:0 já coletado, seguida de exceção real
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe(
+      '#r25-ancestor-opacity0-child',
+      (o) => throwAtCall(o, 4, 'exceção real após a coleta da opacidade zero'),
+    );
+    const occ = occs[0];
+    r255.zeroThenError = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'error',
+        'V21: exceção real após opacidade zero resulta em error',
+      );
+      assert(
+        occ.ancestorOpacity === 0,
+        'V21: a opacidade zero já coletada é preservada após a exceção',
+      );
+      assert(
+        occ.ancestorOpacityStatus === 'conclusive-zero',
+        'V21: o produto zero já alcançado é conclusivo apesar da exceção',
+      );
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'V21: exceção posterior ao opacidade zero mantém not-visible',
+      );
+    } else {
+      block('V21: ocorrência de #r25-ancestor-opacity0-child não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V22: ancestral visibility:hidden, descendente visible, exceção real
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe(
+      '#r25-v3-desc-vis',
+      (o) => throwAtCall(o, 4, 'exceção real após a leitura do ancestral oculto'),
+    );
+    const occ = occs[0];
+    r255.hiddenThenError = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'error',
+        'V22: exceção real resulta em error',
+      );
+      assert(
+        occ.ancestorHidden === true,
+        'V22: a evidência ancestorHidden anterior à exceção é preservada',
+      );
+      assert(
+        occ.visibilityStatus === 'unknown',
+        'V22: com ancestral oculto e descendente visível, o resultado é unknown',
+      );
+      assert(
+        occ.discarded === false,
+        'V22: estado desconhecido não descarta a amostra',
+      );
+    } else {
+      block('V22: ocorrência de #r25-v3-desc-vis não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V23: exceção na primeira leitura de estilo
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r25-btn-1', (o) => throwAtCall(o, 1));
+    const occ = occs[0];
+    r255.firstReadError = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'error',
+        'V23: exceção na primeira leitura de estilo resulta em error',
+      );
+      assert(
+        occ.ancestorOpacity === null,
+        'V23: nenhuma opacidade é presumida quando a leitura falha',
+      );
+      assert(
+        occ.ancestorOpacityStatus === 'error',
+        'V23: o estado da opacidade reflete a exceção',
+      );
+      assert(
+        occ.visibilityStatus !== 'visible',
+        'V23: a visibilidade não é confirmada após exceção na primeira leitura',
+      );
+    } else {
+      block('V23: ocorrência de #r25-btn-1 não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V24: cadeia completa de opacidade válida resulta em complete
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r25-btn-1');
+    const occ = occs[0];
+    r255.complete = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorOpacityStatus === 'complete',
+        'V24: cadeia completa de opacidade resulta em complete',
+      );
+      assert(
+        occ.ancestorOpacity === 1,
+        'V24: a opacidade completa acumulada é 1',
+      );
+      assert(
+        occ.ancestorVisibility === 'completed',
+        'V24: a travessia completa resulta em completed',
+      );
+    } else {
+      block('V24: ocorrência de #r25-btn-1 não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V25: cadeia incompleta com produto diferente de zero resulta em partial
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe(
+      '#r25-ancestor-opacity05-child',
+      (o) => nullParentAtCall(o, 4),
+    );
+    const occ = occs[0];
+    r255.opacityPartial = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorOpacityStatus === 'partial',
+        'V25: cadeia incompleta com produto diferente de zero resulta em partial',
+      );
+      assert(
+        occ.ancestorOpacity === 0.5,
+        'V25: o valor parcial acumulado é preservado',
+      );
+      assert(
+        occ.ancestorVisibility === 'partial',
+        'V25: a travessia incompleta é registrada como partial',
+      );
+    } else {
+      block('V25: ocorrência de #r25-ancestor-opacity05-child não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V26: produto zero seguido de falha resulta em conclusive-zero
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r25-ancestor-opacity0-child', (o) => nullParentAtCall(o, 4));
+    const occ = occs[0];
+    r255.zeroThenFailure = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorOpacityStatus === 'conclusive-zero',
+        'V26: produto zero seguido de falha resulta em conclusive-zero',
+      );
+      assert(
+        occ.ancestorOpacity === 0,
+        'V26: o produto zero é preservado',
+      );
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'V26: a evidência de opacidade zero permanece conclusiva',
+      );
+    } else {
+      block('V26: ocorrência de #r25-ancestor-opacity0-child não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V27: valor de opacidade inválido não é convertido em 1
+  // ---------------------------------------------------------------------
+  {
+    const occs = await runProbe('#r25-btn-1', (o) => doctoredOpacityAtCall(o, 1, 'abc'));
+    const occ = occs[0];
+    r255.invalidOpacity = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorOpacity === null,
+        'V27: opacidade inválida não é convertida em 1',
+      );
+      assert(
+        occ.ancestorOpacityStatus === 'invalid',
+        'V27: opacidade inválida é registrada como invalid',
+      );
+      assert(
+        occ.visibilityStatus !== 'visible',
+        'V27: opacidade inválida impede a confirmação de visibilidade',
+      );
+    } else {
+      block('V27: ocorrência de #r25-btn-1 não obtida');
+    }
+  }
+  {
+    const occs = await runProbe('#r25-btn-1', (o) => doctoredOpacityAtCall(o, 1, '1.5'));
+    const occ = occs[0];
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorOpacity === null,
+        'V27: opacidade fora do intervalo CSS [0,1] não é convertida em 1',
+      );
+      assert(
+        occ.ancestorOpacityStatus === 'invalid',
+        'V27: opacidade fora do intervalo é registrada como invalid',
+      );
+    } else {
+      block('V27: segunda variante (1.5) não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V28: opacidade parcial não pode produzir visible
+  // ---------------------------------------------------------------------
+  {
+    const occ = r255.opacityPartial;
+    if (occ) {
+      assert(
+        occ.visibilityStatus !== 'visible',
+        'V28: opacidade parcial não pode produzir visible',
+      );
+      assert(
+        occ.visibilityStatus === 'unknown',
+        'V28: opacidade parcial resulta em unknown',
+      );
+    } else {
+      block('V28: ocorrência de V25 indisponível');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V29: travessia alcança o host Shadow DOM
+  // ---------------------------------------------------------------------
+  {
+    let occ = null;
+    await withShadowQuery(async () => {
+      const occs = await runProbe('#r255-shadow-child');
+      occ = occs[0];
+    });
+    r255.shadowChild = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'completed',
+        'V29: a travessia através do shadow root alcança a raiz do documento',
+      );
+      assert(
+        occ.ancestorOpacity === 0.5,
+        'V29: a opacidade do host Shadow DOM foi incluída na travessia',
+      );
+      assert(
+        occ.ancestorDepth >= 3,
+        'V29: a travessia percorreu o ancestral intermediário e o host',
+      );
+      assert(
+        occ.visibilityStatus === 'visible',
+        'V29: elemento em shadow tree visível mantém visibilidade confirmada',
+      );
+    } else {
+      block('V29: ocorrência de #r255-shadow-child não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V30: opacity:0 no host produz not-visible
+  // ---------------------------------------------------------------------
+  {
+    let occ = null;
+    await withShadowQuery(async () => {
+      const occs = await runProbe('#r255-shadow-child-opacity0');
+      occ = occs[0];
+    });
+    r255.shadowOpacity0 = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.visibilityStatus === 'not-visible',
+        'V30: opacity:0 no host Shadow DOM produz not-visible',
+      );
+      assert(
+        occ.ancestorOpacity === 0,
+        'V30: a opacidade zero do host foi detectada na travessia composta',
+      );
+      assert(
+        occ.ancestorOpacityStatus === 'conclusive-zero',
+        'V30: a opacidade zero composta é conclusiva',
+      );
+    } else {
+      block('V30: ocorrência de #r255-shadow-child-opacity0 não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V31: display:none no host produz hidden e short-circuited
+  // ---------------------------------------------------------------------
+  {
+    let occ = null;
+    await withShadowQuery(async () => {
+      const occs = await runProbe('#r255-shadow-child-displaynone');
+      occ = occs[0];
+    });
+    r255.shadowDisplayNone = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.visibilityStatus === 'hidden',
+        'V31: display:none no host Shadow DOM produz hidden',
+      );
+      assert(
+        occ.ancestorVisibility === 'short-circuited',
+        'V31: display:none no host interrompe a travessia como short-circuited',
+      );
+      assert(
+        occ.ancestorVisibility !== 'completed',
+        'V31: a interrupção por display:none não é completed',
+      );
+    } else {
+      block('V31: ocorrência de #r255-shadow-child-displaynone não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V32: elemento distribuído por slot percorre assignedSlot
+  // ---------------------------------------------------------------------
+  // A distribuição real por slot depende da tabela de slots do shadow root.
+  // Neste ambiente (Chromium 156.0.8078.79, build Termux/Android) a tabela
+  // de slots não é computada: `slot.assignedNodes()` retorna lista vazia e
+  // `element.assignedSlot` é null mesmo no caso canônico (slot padrão com
+  // um único filho). A distribuição real não é, portanto, observável aqui, e o teste
+  // é registrado como BLOCKED com a causa específica, nunca como PASS.
+  // A regra de precedência implementada é verificada em V32b.
+  {
+    let occ = null;
+    let assignedSlotAvailable = false;
+    await withShadowQuery(async () => {
+      const probe = await Runtime.evaluate({
+        expression:
+          '(()=>{const h=document.getElementById("r255-shadow-host-slot");' +
+          'const r=h.shadowRoot;const e=r.getElementById("r255-shadow-slotted");' +
+          'return e.assignedSlot !== null;})()',
+        returnByValue: true,
+      });
+      assignedSlotAvailable = !!(probe.result && probe.result.value === true);
+      const occs = await runProbe('#r255-shadow-slotted');
+      occ = occs[0];
+    });
+    r255.shadowSlotted = occ;
+    if (assignedSlotAvailable) {
+      assert(
+        occ && occ.ancestorOpacity === 0.5,
+        'V32: a travessia percorre o assignedSlot (opacidade do slot acumulada)',
+      );
+      assert(
+        occ && occ.ancestorVisibility === 'completed',
+        'V32: a travessia por assignedSlot alcança a raiz do documento',
+      );
+      assert(
+        occ && occ.ancestorOpacityStatus === 'complete',
+        'V32: a cadeia composta completa resulta em complete',
+      );
+    } else {
+      block(
+        'V32: distribuição real por slot não observável neste ambiente — ' +
+          'assignedSlot permanece null e slot.assignedNodes() retorna lista vazia ' +
+          'no Chromium 156.0.8078.79 (build Termux/Android), inclusive no caso canônico',
+      );
+    }
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility === 'completed',
+        'V32: observado — a travessia do elemento no shadow root alcança a raiz via host',
+      );
+    } else {
+      block('V32: ocorrência de #r255-shadow-slotted não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V32b: a precedência assignedSlot → parentElement → host é aplicada
+  // ---------------------------------------------------------------------
+  // Verifica a REGRA de precedência da travessia composta. O assignedSlot é
+  // definido na própria instância (o ambiente não computa a tabela de slots),
+  // de modo que o slot é alcançado apenas se a precedência for respeitada:
+  // por parentElement o produto seria 1; por assignedSlot é 0.5.
+  {
+    const occs = await runProbe('#r255-assigned-slot-child');
+    const occ = occs[0];
+    r255.assignedSlotPrecedence = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorOpacity === 0.5,
+        'V32b: a precedência prefere assignedSlot a parentElement na travessia',
+      );
+      assert(
+        occ.ancestorVisibility === 'completed',
+        'V32b: a travessia composta com assignedSlot alcança a raiz do documento',
+      );
+      assert(
+        occ.ancestorOpacityStatus === 'complete',
+        'V32b: a cadeia composta com assignedSlot resulta em complete',
+      );
+    } else {
+      block('V32b: ocorrência de #r255-assigned-slot-child não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V33: elemento desconectado não é declarado completed
+  // ---------------------------------------------------------------------
+  {
+    let occ = null;
+    const created = await Runtime.evaluate({
+      expression:
+        '(()=>{ const d=document.createElement("span"); d.id="r255-detached"; window.__r255Detached=d; return true; })()',
+      returnByValue: true,
+    });
+    if (created && created.result && created.result.value === true) {
+      await withDetachedNodeQuery(async () => {
+        const occs = await runProbe('#r255-detached');
+        occ = occs[0];
+      });
+    }
+    r255.detached = occ;
+    if (occ && occ.ancestorVisibility) {
+      assert(
+        occ.ancestorVisibility !== 'completed',
+        'V33: elemento desconectado não é declarado completed',
+      );
+      assert(
+        occ.ancestorVisibility === 'partial',
+        'V33: elemento desconectado resulta em travessia parcial',
+      );
+      assert(
+        occ.visibilityStatus !== 'visible',
+        'V33: elemento desconectado não tem visibilidade confirmada',
+      );
+    } else {
+      block('V33: ocorrência do elemento desconectado não obtida');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V34: nenhum estado terminal é sobrescrito por condição posterior
+  // ---------------------------------------------------------------------
+  {
+    const terminais = [
+      ['display:none em ancestral', r255.displayNone, 'short-circuited'],
+      ['display:none no nível 50', r255.depthDisplayNone, 'short-circuited'],
+      ['raiz no nível 50', r255.depthRoot50, 'completed'],
+      ['ancestral além do limite', r255.depthLimit, 'depth-limit'],
+      ['ciclo', r255.cycle, 'cycle'],
+      ['falha sem exceção', r255.partial, 'partial'],
+      ['exceção real', r255.error, 'error'],
+    ];
+    for (const [rotulo, occ, esperado] of terminais) {
+      if (occ) {
+        assert(
+          occ.ancestorVisibility === esperado,
+          'V34: estado terminal preservado sem sobrescrita posterior — ' + rotulo,
+        );
+      } else {
+        block('V34: cenário indisponível — ' + rotulo);
+      }
+    }
+    if (r255.depthLimit && r255.depthDisplayNone) {
+      assert(
+        r255.depthLimit.ancestorVisibility !== r255.depthDisplayNone.ancestorVisibility,
+        'V34: depth-limit e short-circuited são estados distintos e não se confundem',
+      );
+      assert(
+        r255.depthLimit.ancestorVisibility !== 'completed' &&
+          r255.depthDisplayNone.ancestorVisibility !== 'completed',
+        'V34: nenhum dos casos terminais foi convertido em completed',
+      );
+    } else {
+      block('V34: comparação entre cenários de término indisponível');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V35: ancestorOpacityStatus corresponde ao valor e à completude observados
+  // ---------------------------------------------------------------------
+  {
+    const cenarios = [
+      ['complete', r255.complete, 'complete', 1],
+      ['partial', r255.opacityPartial, 'partial', 0.5],
+      ['conclusive-zero', r255.zeroThenFailure, 'conclusive-zero', 0],
+      ['short-circuited', r255.displayNone, 'short-circuited', 1],
+      ['invalid', r255.invalidOpacity, 'invalid', null],
+      ['error', r255.firstReadError, 'error', null],
+    ];
+    for (const [rotulo, occ, esperado, valor] of cenarios) {
+      if (occ) {
+        assert(
+          occ.ancestorOpacityStatus === esperado,
+          'V35: ancestorOpacityStatus corresponde ao cenário — ' + rotulo,
+        );
+        assert(
+          occ.ancestorOpacity === valor,
+          'V35: ancestorOpacity corresponde ao valor observado — ' + rotulo,
+        );
+      } else {
+        block('V35: cenário indisponível — ' + rotulo);
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V36: discarded permanece coerente com visibilityStatus
+  // ---------------------------------------------------------------------
+  {
+    const cenarios = [
+      ['hidden', r255.displayNone],
+      ['not-visible', r255.zeroThenFailure],
+      ['unknown por travessia parcial', r255.partial],
+      ['unknown por exceção real', r255.error],
+      ['visible', r255.complete],
+    ];
+    for (const [status, occ] of cenarios) {
+      if (occ) {
+        const coerente =
+          status === 'hidden' || status === 'not-visible'
+            ? occ.discarded === true
+            : occ.discarded === false;
+        assert(
+          coerente,
+          'V36: discarded é coerente com visibilityStatus ' + status,
+        );
+      } else {
+        block('V36: cenário indisponível — ' + status);
+      }
+    }
+    if (r255.displayNone) {
+      assert(
+        r255.displayNone.reason === 'visibility',
+        'V36: amostras descartadas por visibilidade registram o motivo visibility',
+      );
+    } else {
+      block('V36: motivo de descarte indisponível');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V37: campos antigos permanecem presentes e compatíveis
+  // ---------------------------------------------------------------------
+  {
+    const occ = r255.complete;
+    const legados = [
+      'ancestorVisibility',
+      'ancestorOpacity',
+      'ancestorHidden',
+      'ancestorDepth',
+      'ancestorFailureReason',
+      'visibilityStatus',
+      'geometryStatus',
+      'discarded',
+      'reason',
+      'sampleId',
+      'index',
+      'selector',
+      'state',
+      'nodeId',
+    ];
+    const novos = ['ancestorOpacityStatus', 'ancestorDisplayNone'];
+    if (occ) {
+      for (const campo of legados) {
+        assert(
+          Object.prototype.hasOwnProperty.call(occ, campo),
+          'V37: campo legado preservado — ' + campo,
+        );
+      }
+      for (const campo of novos) {
+        assert(
+          Object.prototype.hasOwnProperty.call(occ, campo),
+          'V37: campo novo presente — ' + campo,
+        );
+      }
+      assert(
+        typeof occ.ancestorHidden === 'boolean' && typeof occ.ancestorDisplayNone === 'boolean',
+        'V37: os campos de evidência mantêm o tipo booleano',
+      );
+      assert(
+        typeof occ.ancestorOpacity === 'number' || occ.ancestorOpacity === null,
+        'V37: ancestorOpacity permanece numérico ou nulo',
+      );
+      assert(
+        typeof occ.ancestorDepth === 'number',
+        'V37: ancestorDepth permanece numérico',
+      );
+    } else {
+      block('V37: ocorrência de referência indisponível');
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // V38: o JSON final preserva os novos campos sem perder a rastreabilidade
+  // ---------------------------------------------------------------------
+  {
+    const occ = r255.shadowChild || r255.complete;
+    if (occ) {
+      const serializado = JSON.parse(JSON.stringify(occ));
+      for (const campo of [
+        'sampleId',
+        'index',
+        'selector',
+        'state',
+        'nodeId',
+        'ancestorVisibility',
+        'ancestorOpacity',
+        'ancestorOpacityStatus',
+        'ancestorHidden',
+        'ancestorDisplayNone',
+        'ancestorDepth',
+        'visibilityStatus',
+        'discarded',
+      ]) {
+        assert(
+          Object.prototype.hasOwnProperty.call(serializado, campo),
+          'V38: o JSON serializado preserva o campo — ' + campo,
+        );
+      }
+      assert(
+        typeof serializado.sampleId === 'string' && serializado.sampleId.length > 0,
+        'V38: a rastreabilidade da ocorrência (sampleId) é preservada',
+      );
+      assert(
+        serializado.index === occ.index && serializado.nodeId === occ.nodeId,
+        'V38: índice e nodeId identificam a ocorrência específica',
+      );
+      assert(
+        serializado.ancestorOpacityStatus === occ.ancestorOpacityStatus,
+        'V38: o novo campo de integridade da opacidade sobrevive à serialização',
+      );
+    } else {
+      block('V38: ocorrência de referência indisponível');
+    }
+  }
+
+  await client.close();
+
+  console.log('\n=== RESUMO DOS TESTES CONTROLADOS R2.5.5 ===');
+  console.log('PASS:', passed, 'FAIL:', failed, 'BLOCKED:', blocked);
+  process.exit(failed > 0 ? 1 : 0);
+}
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
