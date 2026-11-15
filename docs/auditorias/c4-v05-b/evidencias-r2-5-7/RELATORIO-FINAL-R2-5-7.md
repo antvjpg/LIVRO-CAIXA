@@ -247,7 +247,7 @@ A auditoria independente confirmou diretamente no GitHub:
 
 1. O commit `ad9188964b5c5a68e380c77af95c8f688fd1dec2` existe no repositório.
 2. Seu commit-pai é `a790d61612566185d42d24a9d1678faa7f466cf9`.
-3. A branch `feat/app-navigation-redesign` aponta para `ad9188964b5c5a68e380c77af95c8f688fd1dec2`.
+3. Na conferência independente realizada após a publicação do commit `ad9188964b5c5a68e380c77af95c8f688fd1dec2`, a branch `feat/app-navigation-redesign` apontava para esse commit. Posteriormente, recebeu as retificações documentais `6c27c94f34420b9ed2b45da174ed73930ee19589` e `241f4079b909d5d772c8d28c0171072d3d0608d3`.
 4. O commit contém 12 arquivos, todos restritos a `docs/auditorias/c4-v05-b/evidencias-r2-5-7/`.
 5. Não foram identificadas alterações em arquivos de produção ou no núcleo compartilhado da R2.5.6.
 
