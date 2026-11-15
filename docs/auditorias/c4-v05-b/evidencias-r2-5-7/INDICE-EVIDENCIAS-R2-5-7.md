@@ -11,7 +11,7 @@
 | Deriva de | `docs/auditorias/c4-v05-b/evidencias-r2-5-6/` |
 | Núcleo compartilhado | **Não alterado** — consome o núcleo publicado na R2.5.6 |
 | Data | 2026-11-15 |
-| Commit / push | **Não executados** |
+| Commit / push | Concluídos — `ad9188964b5c5a68e380c77af95c8f688fd1dec2` |
 
 ---
 
@@ -118,7 +118,7 @@ O verificador sai com código 0 quando todos os artefatos declarados conferem no
 - **Nenhum arquivo de produção alterado** — `index.html`, `js/`, `style/`, CSS, HTML funcional e regras financeiras intactos.
 - **Núcleo compartilhado não alterado** — a R2.5.7 consome o núcleo publicado na R2.5.6, sem cópia.
 - **R2.5.3, R2.5.4, R2.5.5 e R2.5.6 preservadas intactas** — verificado por `git diff HEAD -- evidencias-r2-5-3/ evidencias-r2-5-4/ evidencias-r2-5-5/ evidencias-r2-5-6/`, sem diferenças.
-- **Nenhum commit e nenhum push** executados para a R2.5.7.
+- **Commit e push concluídos** — `ad9188964b5c5a68e380c77af95c8f688fd1dec2`; ver a retificação pós-publicação em `RELATORIO-FINAL-R2-5-7.md`, seção 10.
 - **Coleta completa de consumidores `--accent` não executada** — fora do escopo.
 - **Mecanismo de travessia, F-03 e `backendNodeId` não foram tocados.**
 - **R2.6 e R2.7 não iniciadas.**

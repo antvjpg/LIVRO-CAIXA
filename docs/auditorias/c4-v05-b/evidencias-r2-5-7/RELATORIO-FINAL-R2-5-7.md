@@ -15,10 +15,11 @@
 - **Repositório:** `antvjpg/LIVRO-CAIXA`
 - **Branch:** `feat/app-navigation-redesign`
 - **Commit-base:** `a790d61612566185d42d24a9d1678faa7f466cf9` (HEAD confirmado com `git rev-parse HEAD` antes de qualquer edição)
-- **Commit examinado:** `a790d61612566185d42d24a9d1678faa7f466cf9` — a R2.5.7 **não** foi commitada
+- **Commit examinado:** `a790d61612566185d42d24a9d1678faa7f466cf9`
+- **Commit publicado:** `ad9188964b5c5a68e380c77af95c8f688fd1dec2` — ver a retificação pós-publicação na seção 10
 - **Responsável pela execução:** agente de implementação (OpenCode)
 - **Estado do working tree ao iniciar:** limpa (`git status --short` vazio)
-- **Estado do working tree ao encerrar:** apenas `?? docs/auditorias/c4-v05-b/evidencias-r2-5-7/`
+- **Estado do working tree ao encerrar a rodada de implementação:** apenas `?? docs/auditorias/c4-v05-b/evidencias-r2-5-7/`; **após a publicação**, a branch está sincronizada com o remoto e a working tree está limpa
 - **Núcleo compartilhado:** **não alterado** nesta rodada — a R2.5.7 consome o núcleo publicado na R2.5.6
 
 ---
@@ -27,7 +28,7 @@
 
 - **Objetivo:** corrigir a identidade das amostras entre execuções do `collectScript`, para que uma execução não interfira nas associações de outra, mesmo com as telas anteriores ainda montadas; e demonstrar, por teste de integração, que a navegação entre telas não produz associações ambíguas.
 - **Escopo:** `docs/auditorias/c4-v05-b/evidencias-r2-5-7/` — harness, suíte de testes, fixture, log, JSON, manifesto, scripts e documentos. **O núcleo não foi copiado nem alterado.**
-- **Fora do escopo (não executado):** `index.html`; qualquer arquivo de `js/`, `style/`; CSS, HTML funcional, regras financeiras; coleta completa de consumidores `--accent`; R2.6; R2.7; alteração do mecanismo de travessia de ancestrais; alteração de F-03; migração para `backendNodeId`; expansão para Shadow DOM; alteração das evidências da R2.5.3, R2.5.4, R2.5.5 ou R2.5.6; commit; push.
+- **Fora do escopo (não executado):** `index.html`; qualquer arquivo de `js/`, `style/`; CSS, HTML funcional, regras financeiras; coleta completa de consumidores `--accent`; R2.6; R2.7; alteração do mecanismo de travessia de ancestrais; alteração de F-03; migração para `backendNodeId`; expansão para Shadow DOM; alteração das evidências da R2.5.3, R2.5.4, R2.5.5 ou R2.5.6. A publicação da rodada (commit e push) ocorreu **após** a implementação e está registrada na seção 10.
 - **Critérios de aprovação:** os critérios de aceite da seção 4 da especificação, verificados item a item na seção 9.
 
 ---
@@ -224,11 +225,62 @@ aprovadas. A adaptação é mecânica e corresponde à integração exigida por 
 
 ---
 
-## 10. Próximos passos
+---
+
+## 10. Retificação pós-publicação — estado definitivo da R2.5.7
+
+Esta seção retifica as informações de estado do repositório registradas durante a execução inicial da auditoria.
+
+### 10.1. Identificação definitiva
+
+- **Commit-base:** `a790d61612566185d42d24a9d1678faa7f466cf9`
+- **Commit publicado:** `ad9188964b5c5a68e380c77af95c8f688fd1dec2`
+- **Mensagem:** `docs(audit): C.4-V05-B-R2.5.7 identidade de execucao da coleta (F-04)`
+- **Branch:** `feat/app-navigation-redesign`
+- **Push:** concluído para `origin/feat/app-navigation-redesign`.
+- **Estado da branch:** sincronizada com o remoto.
+- **Working tree após publicação:** limpa, conforme registro da execução.
+
+### 10.2. Confirmação independente
+
+A auditoria independente confirmou diretamente no GitHub:
+
+1. O commit `ad9188964b5c5a68e380c77af95c8f688fd1dec2` existe no repositório.
+2. Seu commit-pai é `a790d61612566185d42d24a9d1678faa7f466cf9`.
+3. A branch `feat/app-navigation-redesign` aponta para `ad9188964b5c5a68e380c77af95c8f688fd1dec2`.
+4. O commit contém 12 arquivos, todos restritos a `docs/auditorias/c4-v05-b/evidencias-r2-5-7/`.
+5. Não foram identificadas alterações em arquivos de produção ou no núcleo compartilhado da R2.5.6.
+
+### 10.3. Resultado técnico preservado
+
+A publicação não alterou os resultados técnicos registrados nesta rodada:
+
+- 393 registros de teste.
+- 392 PASS.
+- 0 FAIL.
+- 1 BLOCKED.
+- 360 verificações históricas preservadas.
+- 33 verificações novas do grupo Z.
+- Nenhuma duplicidade de pares `(id, nome)`.
+- Nenhum registro não parseado.
+
+A limitação relativa à ausência de teste de execuções simultâneas permanece explicitamente não verificada. A limitação L-02, relativa à sobrescrita do atributo `data-c4-audit`, também permanece registrada.
+
+### 10.4. Retificação do estado documental
+
+As afirmações anteriores de que a R2.5.7 não havia sido commitada, de que os arquivos permaneciam não rastreados e de que commit/push não foram executados descrevem exclusivamente o estado anterior à publicação.
+
+Para fins de rastreabilidade, prevalecem os dados definitivos desta seção e a confirmação independente do commit remoto.
+
+Esta retificação é documental. Não altera código, testes, fixtures, resultados ou evidências técnicas da R2.5.7.
+
+---
+
+## 11. Próximos passos
 
 - **Correções necessárias:** nenhuma dentro do escopo da R2.5.7. Permanecem para decisão do auditor: (a) se a semântica de `data-c4-audit` — que guarda apenas a chave da última execução — deve ser explicitada no contrato do harness; (b) se a proteção deve cobrir interleaving de execuções simultâneas; (c) se a limpeza final dos atributos, hoje no `finally`, deve ser mantida.
 - **Evidências adicionais:** execução do harness contra a aplicação em etapa posterior autorizada, para validar a identidade de execução em escala real; reexecução de V32 em ambiente cujo Chromium compute a tabela de slots.
-- **Próxima etapa autorizada:** nenhuma. Nenhum commit e nenhum push foram executados.
+- **Próxima etapa autorizada:** nenhuma. A publicação da rodada (commit e push) foi concluída — ver a seção 10.
 
 ---
 
