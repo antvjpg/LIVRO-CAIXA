@@ -9,9 +9,64 @@ const app = require('../../e2e/helpers/app');
 const { resolveCredentials } = require('../../e2e/helpers/env');
 
 test.describe('R2 — quinta retificação técnica', () => {
-  /* ── Helper runWithCdpSession (mantido das correções anteriores) ─────
-     Estrutura preservada: return após finally, operationError/cleanupError
-     separados, detach único em finally. Nenhuma alteração no helper. */
+  /* ── Helper runWithCdpSession ────────────────────────────────────────
+     Contrato obrigatório:
+     Entrada: { context, page, testInfo, operation }
+       - context: BrowserContext do Playwright.
+       - page: Page do Playwright.
+       - testInfo: TestInfo do teste (passado pelo chamador).
+       - operation: async ({ session }) => any.
+     Comportamento:
+       1. Criar a sessão com: const session = await context.newCDPSession(page);
+       2. Executar: result = await operation({ session }); capturando qualquer erro em operationError.
+         - NÃO relançar operationError dentro do helper.
+       3. No bloco finally, executar: await session.detach(); capturando erro em cleanupError.
+         - Se session.detach() lançar, registrar em cleanupError e NÃO relançar.
+       4. Retornar: { session, result, operationError, cleanupError }.
+         - session deve ser devolvido já desconectado (detached) para as checagens pós-detach.
+         - operationError e cleanupError: null quando não houver erro, senão o objeto de erro.
+       5. Não usar try/catch que engula erro sem registrar em operationError ou cleanupError.
+     Nenhuma alteração na lógica das operações (cenários A, B e C). Apenas garantir
+     que o helper exista e cumpra o contrato.
+     Lançamento: this function throws if context or page is missing. */
+
+  async function runWithCdpSession({ context, page, testInfo, operation }) {
+    if (!context) {
+      throw new Error('runWithCdpSession: context é obrigatório');
+    }
+    if (!page) {
+      throw new Error('runWithCdpSession: page é obrigatório');
+    }
+
+    const session = await context.newCDPSession(page);
+    let operationError = null;
+    let cleanupError = null;
+    let result = null;
+
+    try {
+      result = await operation({ session });
+    } catch (err) {
+      operationError = err;
+      // NÃO relançar o erro — deixar o finally executar o cleanup.
+    } finally {
+      // Única chamada a detach em todos os caminhos.
+      // Capturamos o erro, mas NÃO o engolimos para que o teste saiba.
+      // Se detach falhar, cleanupError será definido; NÃO relançar.
+      try {
+        await session.detach();
+      } catch (detachErr) {
+        cleanupError = detachErr;
+      }
+    }
+
+    // Resultado construido APENAS DEPOIS que finally terminou.
+    return {
+      session,
+      result,
+      operationError,
+      cleanupError,
+    };
+  }
 
   /* ── Convenção testInfo ────────────────────────────────────────────
      async ({ page, context }, testInfo) — Playwright v1.39+ */
@@ -216,7 +271,7 @@ test.describe('R2 — quinta retificação técnica', () => {
           postDetachError = err;
         }
       } catch (e) {
-        test.log('⚠️ Cenário A: erro ao tentar comando pós-detach: ' + e.message);
+        testInfo.annotations.push({ type: 'log', description: '⚠️ Cenário A: erro ao tentar comando pós-detach: ' + e.message });
       }
 
       // 2. A assertion de rejeição DEVE estar FORA do bloco try/capture acima.
@@ -270,7 +325,7 @@ test.describe('R2 — quinta retificação técnica', () => {
         throw new Error('Cenário A: falha ao anexar evidência: ' + e.message);
       }
 
-      test.log('Cenário A: sucesso verificado, assertions e evidência JSON');
+      testInfo.annotations.push({ type: 'log', description: 'Cenário A: sucesso verificado, assertions e evidência JSON' });
       return;
     }
   );
@@ -324,7 +379,7 @@ test.describe('R2 — quinta retificação técnica', () => {
           'Cenário B: operationError não é o sentinel esperado: ' + operationError.message
         );
       }
-      test.log('Cenário B: operaçãoError capturado e é o sentinel esperado');
+      testInfo.annotations.push({ type: 'log', description: 'Cenário B: operaçãoError capturado e é o sentinel esperado' });
 
       // 2. Afirmar que cleanupError é nulo (regra: erro de cleanup reprova ainda que
       //    operationError também exista). Essa assertion está separada da try/catch
@@ -334,7 +389,7 @@ test.describe('R2 — quinta retificação técnica', () => {
           'Cenário B: cleanupError não é nulo: ' + cleanupError.message
         );
       }
-      test.log('Cenário B: cleanupError é nulo (limpeza bem-sucedida)');
+      testInfo.annotations.push({ type: 'log', description: 'Cenário B: cleanupError é nulo (limpeza bem-sucedida)' });
 
       // 3. Tentativa de comando pós-detach: observar o resultado, não suppor.
       //    O resultado será asserted separadamente abaixo.
@@ -350,7 +405,7 @@ test.describe('R2 — quinta retificação técnica', () => {
           postDetachError = err;
         }
       } catch (e) {
-        test.log('⚠️ Cenário B: erro ao tentar comando pós-detach: ' + e.message);
+        testInfo.annotations.push({ type: 'log', description: '⚠️ Cenário B: erro ao tentar comando pós-detach: ' + e.message });
       }
 
       // 4. A assertion de rejeição DEVE ser FORA do bloco try/capture.
@@ -378,7 +433,7 @@ test.describe('R2 — quinta retificação técnica', () => {
         throw new Error('Cenário B: falha ao anexar evidência: ' + e.message);
       }
 
-      test.log('Cenário B: exceção provocada, cleanup verificado, evidencia JSON');
+      testInfo.annotations.push({ type: 'log', description: 'Cenário B: exceção provocada, cleanup verificado, evidencia JSON' });
       return;
     }
   );
@@ -486,7 +541,7 @@ test.describe('R2 — quinta retificação técnica', () => {
             (operationError ? operationError.message : 'null')
         );
       }
-      test.log('Cenário C: operationError capturado com sentinel de timeout');
+      testInfo.annotations.push({ type: 'log', description: 'Cenário C: operationError capturado com sentinel de timeout' });
 
       // 3. Afirmar que cleanupError é nulo
       if (cleanupError) {
@@ -494,7 +549,7 @@ test.describe('R2 — quinta retificação técnica', () => {
           'Cenário C: cleanupError não é nulo: ' + cleanupError.message
         );
       }
-      test.log('Cenário C: cleanupError é nulo (limpeza bem-sucedida)');
+      testInfo.annotations.push({ type: 'log', description: 'Cenário C: cleanupError é nulo (limpeza bem-sucedida)' });
 
       // 4. Tentativa de comando pós-detach: observar o resultado.
       //    O resultado será asserted separadamente abaixo, fora do try.
@@ -510,7 +565,7 @@ test.describe('R2 — quinta retificação técnica', () => {
           postDetachError = err;
         }
       } catch (e) {
-        test.log('⚠️ Cenário C: erro ao tentar comando pós-detach: ' + e.message);
+        testInfo.annotations.push({ type: 'log', description: '⚠️ Cenário C: erro ao tentar comando pós-detach: ' + e.message });
       }
 
       // 5. A assertion de rejeição DEVE estar FORA do bloco try/capture.
@@ -540,7 +595,7 @@ test.describe('R2 — quinta retificação técnica', () => {
         throw new Error('Cenário C: falha ao anexar evidência: ' + e.message);
       }
 
-      test.log('Cenário C: timeout controlado verificado, evidencia JSON');
+      testInfo.annotations.push({ type: 'log', description: 'Cenário C: timeout controlado verificado, evidencia JSON' });
       return;
     }
   );

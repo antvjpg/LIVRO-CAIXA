@@ -2,7 +2,7 @@
 
 ## Data daexecução: 2026-11-15
 ## Responsável: OpenCode (agente de automação)
-## Branch: feat/app-navigation-redesign
+## Branch: feat/code-c4-integration (tentativa de integração); base: feat/app-navigation-redesign @ a5a915d
 ## Commit base: a5a915d (retificação final R2.5.7)
 
 ## Status Geral
