@@ -8,6 +8,7 @@
   "scripts": {
     "code:test": "playwright test && node e2e/reports/generate-report.cjs --strict",
     "code:test:headed": "playwright test --headed",
+    "code:c4-cdp": "playwright test --project=c4-cdp",
     "code:smoke": "playwright test --project=smoke",
     "code:movimentacoes": "playwright test --project=movimentacoes",
     "code:orcamento": "playwright test --project=orcamento",
