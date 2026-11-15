@@ -1474,20 +1474,25 @@ git diff --stat
 git diff
 ```
 
-### Fase 6 — Relatório
+### Fase 6 — Relatório (Padrão A — Relatório de implementação)
 
-Informar:
+O relatório de implementação é obrigatório para tarefas de desenvolvimento e deve conter, no mínimo:
 
-- **Arquivos alterados:**
-- **Arquivos criados:**
-- **Arquivos removidos:**
+- **Identificação da tarefa e da versão-base:**
+- **Objetivo, escopo e exclusões:**
+- **Inspeção inicial e dependências:**
+- **Diagnóstico dos problemas:**
+- **Implementação e justificativas:**
+- **Arquivos alterados, criados e removidos:**
+- **Validações executadas e respectivos resultados:**
+- **Revisão do diff:**
+- **Limitações e riscos:**
+- **Resultado da implementação:**
+- **Pendências e próximos passos:**
 
-- **O que foi feito:**
-- **O que não foi alterado:**
-- **Validações:**
-- **Resultado:**
-- **Riscos conhecidos:**
-- **Próximos passos, se houver:**
+Quando houver substituição ou remoção de conteúdo, o relatório deve apresentar o trecho anterior e o novo trecho.
+
+Para auditorias de arquitetura, segurança, testes, integridade, harnesses e validações especializadas, usar o Padrão B — Relatório técnico de auditoria, cujo modelo está em `docs/padroes/MODELO-RELATORIO-AUDITORIA.md`.
 
 ---
 
@@ -1618,6 +1623,78 @@ Portanto:
 E, principalmente:
 
 > **o estado atual do repositório é a fonte de verdade sobre a implementação atual. Este arquivo define como trabalhar no projeto, não uma fotografia permanente de como o projeto deve ser.**
+
+---
+
+## 60. Confiabilidade dos relatórios
+
+Todo relatório técnico deve distinguir claramente:
+
+- **fato observado:** o que foi realmente visto, medido ou executado;
+- **interpretação:** a análise feita sobre o fato observado;
+- **hipótese:** suposição não ainda confirmada por evidência;
+- **resultado esperado:** o que se previa que acontecesse;
+- **resultado efetivamente observado:** o que realmente aconteceu;
+- **item não verificado:** algo que deveria ser checado e ainda não foi.
+
+### Estados válidos de teste
+
+| Estado | Significado |
+|---|---|
+| PASS | Teste executado e todas as condições verificadas foram atendidas |
+| FAIL | Teste executado e pelo menos uma condição não foi atendida |
+| BLOCKED | Teste não pôde ser concluído por impedimento identificado |
+| NOT RUN | Teste não foi executado |
+
+### Regras obrigatórias
+
+1. Testes não executados nunca podem ser contabilizados como aprovados (`NOT RUN` nunca vira `PASS`).
+2. Testes bloqueados não podem ser apresentados como sucesso (`BLOCKED` nunca vira `PASS`).
+3. Resultados esperados não podem ser apresentados como resultados observados.
+4. Afirmações técnicas relevantes devem possuir evidências verificáveis.
+5. Divergências entre logs, JSON, manifestos, índices e relatórios devem ser explicitadas, não omitidas.
+6. Não escolher arbitrariamente a contagem mais favorável.
+7. Não omitir falhas para produzir um relatório aparentemente positivo.
+8. Quando não houver evidência suficiente, declarar a conclusão como inconclusiva.
+9. Não afirmar que um comportamento foi testado quando apenas sua implementação foi inspecionada.
+10. Toda limitação relevante deve ser registrada.
+
+---
+
+## 61. Implementação, validação e auditoria independente
+
+Existem três responsabilidades distintas que não devem ser confundidas.
+
+### Implementação
+
+O agente responsável pela implementação deve:
+
+- executar o escopo autorizado;
+- realizar testes internos proporcionais;
+- registrar os resultados;
+- documentar falhas e limitações;
+- entregar evidências suficientes para revisão.
+
+### Validação interna
+
+A validação interna demonstra que os testes executados pelo próprio agente apresentaram determinados resultados.
+
+Ela **não equivale automaticamente** a uma auditoria independente.
+
+### Auditoria independente
+
+A auditoria independente deve:
+
+- examinar diretamente o estado real do código ou dos artefatos;
+- verificar os resultados apresentados;
+- questionar a metodologia;
+- reproduzir testes relevantes quando possível;
+- identificar lacunas e inconsistências;
+- emitir seu próprio veredito.
+
+**Regra fundamental:** o agente que implementa não pode declarar que uma auditoria independente foi aprovada apenas porque seus próprios testes passaram.
+
+A aprovação independente depende de verificação efetiva por terceiro.
 
 ---
 
