@@ -1,0 +1,221 @@
+{
+  "meta": {
+    "version": "R2.5.4",
+    "branch": "feat/app-navigation-redesign",
+    "baseCommit": "6a2052cce184d3d3fd841580f4f34aad70b5b17d",
+    "generatedAt": "2026-11-15T14:03:06.787Z",
+    "nodeVersion": "v26.12.1",
+    "platform": "android (Termux/Android)",
+    "browser": "Chromium 156 headless (CDP porta 9222)",
+    "hashAlgorithm": "SHA-256",
+    "hashEncoding": "hex",
+    "lineCountConvention": "wc -l (quebra de linhaLF)",
+    "testExecution": {
+      "total": 170,
+      "passed": 170,
+      "failed": 0,
+      "blocked": 0,
+      "notRun": 0,
+      "exitCode": 0,
+      "cdpUrl": "http://127.0.0.1:9222",
+      "fixtureUrl": "http://127.0.0.1:8000/docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test-fixtures.html"
+    }
+  },
+  "artifacts": [
+    {
+      "name": "c4-v05-b-r2-5-4-core.cjs",
+      "path": "c4-v05-b-r2-5-4-core.cjs",
+      "sizeBytes": 41424,
+      "lines": 1148,
+      "sha256": "b4c66405ca6b4f8e4f5448f357a12033529e8668cf213e8a451e5d2db1f1bdf0"
+    },
+    {
+      "name": "c4-v05-b-r2-5-4.cjs",
+      "path": "c4-v05-b-r2-5-4.cjs",
+      "sizeBytes": 33483,
+      "lines": 830,
+      "sha256": "38ce6e5305d513f95caa2bc431fe1f7788815a87edf79ae420285bfcc4a16cc3"
+    },
+    {
+      "name": "c4-v05-b-r2-5-4-test.cjs",
+      "path": "c4-v05-b-r2-5-4-test.cjs",
+      "sizeBytes": 67451,
+      "lines": 1950,
+      "sha256": "d70d6fb454bb0e3dcc96384448aa564d24684af732075e3d39e8b2cbda3e93aa"
+    },
+    {
+      "name": "c4-v05-b-r2-5-4-test-fixtures.html",
+      "path": "c4-v05-b-r2-5-4-test-fixtures.html",
+      "sizeBytes": 16472,
+      "lines": 607,
+      "sha256": "90e9049b64138650a607db9abf5f2c9b3120011bd387ebe694954daacf690d81"
+    },
+    {
+      "name": "c4-v05-b-r2-5-4-test.log",
+      "path": "c4-v05-b-r2-5-4-test.log",
+      "sizeBytes": 10861,
+      "lines": 196,
+      "sha256": "282f1e0a6edb7f16e6889710d1236c92d472def50b7dae73588af096865dcafd"
+    },
+    {
+      "name": "c4-v05-b-r2-5-4-test-results.json",
+      "path": "c4-v05-b-r2-5-4-test-results.json",
+      "sizeBytes": 42848,
+      "lines": 1498,
+      "sha256": "5f25802e507bfdfb5b43954637c447e87b190062d460ceecfc2db924f2f1fe50"
+    },
+    {
+      "name": "gerar-resultados-r2-5-4.cjs",
+      "path": "gerar-resultados-r2-5-4.cjs",
+      "sizeBytes": 7459,
+      "lines": 206,
+      "sha256": "fa697affbabdaf188bf1508d2184f74fab882d294bbef4c4c6eec9d17fa10b0e"
+    },
+    {
+      "name": "gerar-manifesto-r2-5-4.cjs",
+      "path": "gerar-manifesto-r2-5-4.cjs",
+      "sizeBytes": 4476,
+      "lines": 132,
+      "sha256": "a8e86a01af3d1ece9fcc4a1873526d7c16fcf0adbbbcb819d11aa34b9d5679d0"
+    },
+    {
+      "name": "verificar-manifesto-r2-5-4.cjs",
+      "path": "verificar-manifesto-r2-5-4.cjs",
+      "sizeBytes": 3159,
+      "lines": 76,
+      "sha256": "888574f662db34fd4f185fb90a10900787fdc34139701fad1907846f24c1bf48"
+    },
+    {
+      "name": "INDICE-EVIDENCIAS-R2-5-4.md",
+      "path": "INDICE-EVIDENCIAS-R2-5-4.md",
+      "sizeBytes": 7407,
+      "lines": 127,
+      "sha256": "8e45ca4322f4478d064ffca84ec7d0081f09c6169037a13fa422e8525db3f8c9"
+    },
+    {
+      "name": "RELATORIO-FINAL-R2-5-4.md",
+      "path": "RELATORIO-FINAL-R2-5-4.md",
+      "sizeBytes": 31585,
+      "lines": 373,
+      "sha256": "cf1a7428fdcf0c8886eb6cf7a1754357476ec601734f9c224a08d49bfa3251da"
+    }
+  ],
+  "testSummary": {
+    "total": 170,
+    "passed": 170,
+    "failed": 0,
+    "blocked": 0,
+    "notRun": 0
+  },
+  "groups": [
+    {
+      "id": "A",
+      "name": "sampleId com screen",
+      "total": 16,
+      "passed": 16,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "B",
+      "name": "Associação key → nodeId (cardinalidade)",
+      "total": 17,
+      "passed": 17,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "C",
+      "name": "Limpeza de pseudoestado (try/finally real)",
+      "total": 21,
+      "passed": 21,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "D",
+      "name": "Visibilidade efetiva e ancestrais",
+      "total": 27,
+      "passed": 27,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "V",
+      "name": "Semântica de visibility (herança e sobrescrita)",
+      "total": 25,
+      "passed": 25,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "P",
+      "name": "Falha de aplicação de pseudoestado",
+      "total": 19,
+      "passed": 19,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "R",
+      "name": "Travessia da raiz do documento",
+      "total": 12,
+      "passed": 12,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "E",
+      "name": "Atributos DOM com expectativas exatas",
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "F",
+      "name": "Validação geométrica",
+      "total": 11,
+      "passed": 11,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "G",
+      "name": "Classificação de erros CDP",
+      "total": 11,
+      "passed": 11,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "H",
+      "name": "Visibilidade de ancestrais com Chromium real",
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "blocked": 0
+    }
+  ],
+  "correctionsValidated": [
+    "R25.4-01: falha ao obter o elemento pai sempre resulta em ancestorVisibility partial (ancestorHiddenAcc não comprova completude da travessia)",
+    "R25.4-02: bloco catch preserva as evidências já coletadas (ancestorOpacityAcc e ancestorHiddenAcc não são redefinidos)",
+    "R25.4-03: precedência da decisão final — display:none e opacidade acumulada zero como evidência absoluta, antes da incerteza por travessia incompleta"
+  ],
+  "preservedFromR253": [
+    "Todas as correções R25-01 a R25-12 da R2.5.3",
+    "159 testes de regressão da R2.5.3 preservados e executados",
+    "Evidências históricas da R2.5.3 preservadas intactas em evidencias-r2-5-3/"
+  ],
+  "integrityVerification": {
+    "method": "Ler cada arquivo (exceto este proprio manifesto), calcular SHA-256 sobre o conteudo completo, comparar com o valor registrado neste manifesto. Verificacao independente da rotina que gerou os hashes, executada por script separado apos a geracao. Este manifesto nao contem seu proprio hash para evitar referencia circular.",
+    "verifiedBy": "verificar-manifesto-r2-5-4.cjs (rotina separada)",
+    "filesDeclared": 11,
+    "allHashesMatch": true,
+    "filesVerified": 11,
+    "filesAltered": 0,
+    "filesMissing": 0,
+    "note": "allHashesMatch e os demais contadores sao preenchidos pela rotina de verificacao independente, apos o recalculo real sobre os arquivos do disco. Enquanto forem null, a integridade deste manifesto nao esta declarada.",
+    "verifiedAt": "2026-11-15T14:03:07.305Z"
+  }
+}
