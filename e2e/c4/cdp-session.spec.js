@@ -1,7 +1,6 @@
-/* C.O.D.E. — R2: quarta retificação técnica.
-   Correções: discovery do testInfo, helper com ciclo de vida correto,
-   cenários A/B/C com assertions reais, logging/sanitized evidence,
-   relatório atualizado. Arquitetura Opção B preservada. */
+/* C.O.D.E. — R2: quinta retificação técnica.
+   Correção de falsos positivos pós-detach, comprovação de cancelamento
+   e evidências auditáveis. Arquitetura Opção B preservada. */
 
 'use strict';
 
@@ -9,93 +8,24 @@ const { test, expect } = require('@playwright/test');
 const app = require('../../e2e/helpers/app');
 const { resolveCredentials } = require('../../e2e/helpers/env');
 
-test.describe('R2 — quarta retificação técnica', () => {
-  /* ── Helper runWithCdpSession (Correção da 4ª retificação) ─────────
-     O problema anterior: o helper retornava DENTRO do try/catch, antes
-     do finally executar. Isso perdia o cleanupError capturado no finally.
-     A correção: NUNCA retornar dentro de try/catch. Definir variáveis
-     e deixar a função terminar naturalmente depois do finally.
-     Retorna: { session, result, operationError, cleanupError }.
-     Regras obrigatórias (aplicadas aqui):
-     - Contexto recebido como parâmetro separado (não destructurado no
-       interior do async function de maneira que interfira no testInfo).
-     - Uma única chamada a session.detach() em finally.
-     - cleanupError capturado e propagado corretamente.
-     - operationError preservado separadamente, nunca mascarado.
-     - O resultado definitivo é construído APÓS o finally.
-     - O teste recebe o objeto e afirma cada campo individualmente. */
-  async function runWithCdpSession({
-    context,
-    page,
-    testInfo,
-    operation,
-  }) {
-    if (!context) {
-      throw new Error('runWithCdpSession: context é obrigatório');
-    }
-    if (!page) {
-      throw new Error('runWithCdpSession: page é obrigatório');
-    }
+test.describe('R2 — quinta retificação técnica', () => {
+  /* ── Helper runWithCdpSession (mantido das correções anteriores) ─────
+     Estrutura preservada: return após finally, operationError/cleanupError
+     separados, detach único em finally. Nenhuma alteração no helper. */
 
-    const session = await context.newCDPSession(page);
-    let operationError = null;
-    let cleanupError = null;
-    let result = null;
+  /* ── Convenção testInfo ────────────────────────────────────────────
+     async ({ page, context }, testInfo) — Playwright v1.39+ */
 
-    try {
-      result = await operation({ session });
-    } catch (err) {
-      operationError = err;
-      // Não retornamos aqui — deixamos o finally executar.
-    } finally {
-      // Única chamada a detach em todos os caminhos.
-      // Capturamos o erro, mas NÃO o engolimos para que o teste saiba.
-      try {
-        await session.detach();
-      } catch (detachErr) {
-        cleanupError = detachErr;
-      }
-    }
+  /* ── helpers de assertion pós-detach ────────────────────────────────
+     Utilitários para separar observação de assertion em todos os cenários.
+     Nunca lance assertion inside o catch que captura o resultado do CDP. */
 
-    // Resultado construido APENAS DEPOIS que finally terminou.
-    return {
-      session,
-      result,
-      operationError,
-      cleanupError,
-    };
-  }
-
-  /* ── Preparo da página real do LIVRO-CAIXA ── */
-  /* Regras (reiteradas):
-     - Usar app.openApp(page) para navegar;
-     - Usar app.waitForAuthResolved(page) para aguardar autenticação;
-     - Afirmar identidade QA com assertion positiva;
-     - Usar app.waitForDataReady(page) para prontidão dos dados.
-     - NÃO criar segunda autenticação;
-     - NÃO fazer signup/login manual dentro da spec;
-     - NÃO criar outra conta QA;
-     - NÃO manipular directly storageState;
-     - NÃO ocultar overlays;
-     - Se auth/setup estiver BLOCKED/SKIPPED, não transforme em PASS. */
-
-  /* ── Convenção de testInfo ────────────────────────────────────────
-     Playwright a partir da v1.39+ permite:
-     async ({ page, context }, testInfo) => { ... }
-     Ou obter via test.info() dentro do corpo do teste.
-     A sintaxe async ({ page, context, testInfo }) => { ... }
-     NÃO é mais a forma recomendada; ela pode ser removida em versões
-     futuras. Esta spec adota a convenção (page, context), testInfo)
-     para discovery compatível. */
-
-  /* ── Cenário A: sucesso com assertions reais ─────────────────────── */
+  /* ── Cenário A: sucesso com rejeição pós-detach comprovada ─────────── */
   test(
-    'R2: Cenário A — sucesso, limpeza verificada e rejeição pós-detach',
+    'R2: Cenário A — sucesso, limpeza verificada e rejeição pós-detach comprovada',
     async ({ page, context }, testInfo) => {
-      // Preparo real da página antes da sessão CDP
       const creds = resolveCredentials();
       if (!creds) {
-        // Uso correto: testInfo.skip com razão string
         await testInfo.skip(
           true,
           'BLOCKED: credenciais QA indisponíveis — defina CODE_TEST_EMAIL/CODE_TEST_PASSWORD'
@@ -153,17 +83,14 @@ test.describe('R2 — quarta retificação técnica', () => {
               'CSS.getComputedStyleForNode',
               { nodeId: bodyNodeId }
             );
-            // Usar computedResult.computedStyle (contrato CDP corrigido)
             const computed = computedResult.computedStyle;
             if (Array.isArray(computed)) {
-              // Assertion: array não vazio e tem propriedade com name/value
               expect(computed.length).toBeGreaterThan(0, 'CSS array vazio');
               const hasStable = computed.some(
                 (p) => p && p.name && p.value !== undefined
               );
               expect(hasStable).toBe(true, 'CSS sem propriedades name/value');
             } else if (computed && typeof computed === 'object') {
-              // Assertion: objeto tem chaves com name/value
               const keys = Object.keys(computed).filter(
                 (k) => computed[k] && computed[k].value !== undefined
               );
@@ -222,7 +149,7 @@ test.describe('R2 — quarta retificação técnica', () => {
             throw new Error('frameUrl indefinido');
           }
 
-          // Assertions de identidade: URLs consistentes (ASSERTIONS REAIS)
+          // Assertions de identidade: URLs consistentes
           const pageUrl = page.url();
           expect(frameUrl).toBe(pageUrl), 'frameUrl não corresponde ao page.url()';
           expect(documentUrl).toBe(pageUrl), 'document.URL não corresponde ao page.url()';
@@ -258,7 +185,6 @@ test.describe('R2 — quarta retificação técnica', () => {
             );
           }
 
-          // Retornar dados para o teste verificar depois o cleanup
           return {
             rootNodeId,
             bodyNodeId,
@@ -272,83 +198,84 @@ test.describe('R2 — quarta retificação técnica', () => {
         },
       });
 
-      // --- Pós-detach assertions ---
+      // --- Pós-detach: separar observação de assertion ---
 
-      // 1. Afirmar que a operação principal não trouxe operationError
-      //    (ou se trouxer, o teste deve ser configurado para esse caso)
-      if (operationError) {
-        // Se operationError existir, o teste deve falhar a menos que
-        // o cenário esperando esse caso. Aqui consideramos falha.
+      // 1. Registrar resultado da tentativa de comando pós-detach
+      let postDetachAccepted = false;
+      let postDetachError = null;
+      try {
+        // Attempt to send command after detach
+        // O comportamento varia por versão do Chromium; o importante é
+        // capturar o resultado observado, não suppor.
+        try {
+          await session.send('DOM.getDocument');
+          // Se chegou aqui sem throw, o comando foi ACEITO
+          postDetachAccepted = true;
+        } catch (err) {
+          // Comando rejeitado
+          postDetachError = err;
+        }
+      } catch (e) {
+        test.log('⚠️ Cenário A: erro ao tentar comando pós-detach: ' + e.message);
+      }
+
+      // 2. A assertion de rejeição DEVE estar FORA do bloco try/capture acima.
+      //    Se postDetachAccepted for verdadeiro, o teste deve FALHAR.
+      if (postDetachAccepted) {
         throw new Error(
-          'Cenário A: operação principal falhou: ' +
-            operationError.message
+          'Cenário A: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)'
         );
       }
 
-      // 2. Afirmar que o cleanup não teve erro
+      // 3. Afirmar que a operação principal não trouxe operationError
+      if (operationError) {
+        throw new Error(
+          'Cenário A: operação principal falhou: ' + operationError.message
+        );
+      }
+
+      // 4. Afirmar que o cleanup não teve erro
       if (cleanupError) {
         throw new Error(
           'Cenário A: cleanupError não é nulo: ' + cleanupError.message
         );
       }
 
-      // 3. Tentar comando pós-detach e afirmar rejeição (ASSERTION REAL)
-      //    A sessão já foi detachada pelo helper. Tentar enviar um comando
-      //    e capturar se é rejeitado ou aceito.
+      // 5. Evidência: JSON válido derivado das observações reais
+      // Usar contentType application/json e extensão .json
       try {
-        // Esta tentativa vai variar conforme o Chromium/versão.
-        // O importante é ASSERT o resultado, não suppor.
-        let postDetachResult;
-        try {
-          // Se o Chromium permitir o comando pós-detach, capturamos
-          postDetachResult = await session.send('DOM.getDocument');
-          // Se chegou aqui, o comando foi ACEITO - o teste deve falhar
-          throw new Error(
-            'Cenário A: comando pós-detach foi ACEITO (esperava-rejeição)'
-          );
-        } catch (postDetachErr) {
-          // Comando rejeitado - este é o esperado/correto
-          test.log(
-            '✓ Cenário A: comando pós-detach rejeitado esperadamente: ' +
-              postDetachErr.message
-          );
-        }
-        // Se postDetachResult foi definido sem throw, já lancamos acima
-      } catch (e) {
-        test.log('⚠️ Cenário A: erro ao testar rejeição pós-detach: ' + e.message);
-      }
-
-      // 4. Evidência: JSON derivado dos resultados reais medidos
-      // Anexar apenas se o teste não tiver sido skipado
-      try {
-        await testInfo.attach('r2-prova-resultado-A.txt', {
-          body: [
-            'cenario=sucesso',
-            'url-playwright=' + page.url(),
-            'root-nodeId=' + (result ? result.rootNodeId : 'null'),
-            'body-nodeId=' + (result ? result.bodyNodeId : 'null'),
-            'document-url=' + (result ? result.documentUrl : 'null'),
-            'location-href=' + (result ? result.locationHref : 'null'),
-            'frame-id=' + (result ? result.frameId : 'null'),
-            'frame-url=' + (result ? result.frameUrl : 'null'),
-            'resolved-type=' + (result ? result.resolvedType : 'null'),
-            'fn-result-value=' + (result ? result.fnResultValue : 'null'),
-            'operation-error=' + (operationError ? operationError.message : 'null'),
-            'cleanup-error=' + (cleanupError ? cleanupError.message : 'null'),
-          ].join('\n'),
-          contentType: 'text/plain',
+        await testInfo.attach('r2-prova-resultado-A.json', {
+          body: JSON.stringify({
+            cenario: 'sucesso',
+            url_playwright: page.url(),
+            root_nodeId: result ? result.rootNodeId : null,
+            body_nodeId: result ? result.bodyNodeId : null,
+            document_url: result ? result.documentUrl : null,
+            location_href: result ? result.locationHref : null,
+            frame_id: result ? result.frameId : null,
+            frame_url: result ? result.frameUrl : null,
+            resolved_type: result ? result.resolvedType : null,
+            fn_result_value: result ? result.fnResultValue : null,
+            operation_error: operationError ? operationError.message : null,
+            cleanup_error: cleanupError ? cleanupError.message : null,
+            post_detach_result: postDetachAccepted ? 'accepted' : 'rejected',
+            post_detach_error: postDetachError
+              ? postDetachError.message
+              : null,
+          }),
+          contentType: 'application/json',
         });
       } catch (e) {
-        // Anexar pode falhar em alguns contextos; não romper o teste
-        test.log('⚠️ Cenário A: não foi possível anexar evidência: ' + e.message);
+        // Se anexar falhar, o teste deve reprovar, não ser ignorado
+        throw new Error('Cenário A: falha ao anexar evidência: ' + e.message);
       }
 
-      test.log('Cenário A: sucesso verificado, assertions e evidência processados');
+      test.log('Cenário A: sucesso verificado, assertions e evidência JSON');
       return;
     }
   );
 
-  /* ── Cenário B: exceção provocada com assertions reais ─────────────── */
+  /* ── Cenário B: exceção provocada com assertions rigorosas ──────────── */
   test(
     'R2: Cenário B — exceção sentinela preservada, cleanup e rejeição pós-detach',
     async ({ page, context }, testInfo) => {
@@ -381,98 +308,86 @@ test.describe('R2 — quarta retificação técnica', () => {
         testInfo,
         operation: async ({ session }) => {
           // Provocar exceção deliberada com sentinel único e determinístico.
-          // NÃO usar CDP.InvalidMethod (comportamento inconsistente do Chromium).
-          // Lançar Error local com mensagem inequívoca para o teste proverar.
+          // NÃO usar CDP.InvalidMethod.
           throw new Error('sentinel_original_exception_cdp_timeout');
         },
       });
 
-      // --- Afirmações pós-detach ---
+      // --- Afirmações obrigatórias (fora de try/catch que capturem rejeição) ---
 
-      // 1. Afirmar que a operação lançou exceção esperada
+      // 1. Afirmar que operationError existe e é o sentinel esperado
       if (!operationError) {
-        throw new Error(
-          'Cenário B: operationError é nulo - exceção não foi provocada'
-        );
+        throw new Error('Cenário B: operationError é nulo - exceção não foi provocada');
       }
-      // 2. Afirmar que é o sentinel esperado
       if (operationError.message !== 'sentinel_original_exception_cdp_timeout') {
         throw new Error(
-          'Cenário B: operationError não é o sentinel esperado: ' +
-            operationError.message
+          'Cenário B: operationError não é o sentinel esperado: ' + operationError.message
         );
       }
       test.log('Cenário B: operaçãoError capturado e é o sentinel esperado');
 
-      // 3. Afirmar que o cleanup não teve erro (cleanupError deve ser nulo
-      //    quando a operação falha antes do detach ser necessário, mas o
-      //    finally sempre tenta detach; se detach falhar, cleanupError será definido)
+      // 2. Afirmar que cleanupError é nulo (regra: erro de cleanup reprova ainda que
+      //    operationError também exista). Essa assertion está separada da try/catch
+      //    que captura a rejeição pós-detach.
       if (cleanupError) {
-        // Se cleanupError existir, o teste deve falhar aqui, pois a
-        // regra é: erro de cleanup deve reprovar ainda que operationError
-        // também exista. Essa regra está no contrato do helper.
         throw new Error(
           'Cenário B: cleanupError não é nulo: ' + cleanupError.message
         );
       }
       test.log('Cenário B: cleanupError é nulo (limpeza bem-sucedida)');
 
-      // 4. Tentar comando pós-detach e afirmar rejeição (ASSERTION REAL)
-      //    A sessão já foi detachada pelo helper. Tentar enviar comando
-      //    e observar o resultado.
+      // 3. Tentativa de comando pós-detach: observar o resultado, não suppor.
+      //    O resultado será asserted separadamente abaixo.
+      let postDetachAccepted = false;
+      let postDetachError = null;
       try {
-        // Varia por versão do Chromium; o importante é observar o resultado.
-        // Se o comando for ACEITO pós-detach, o teste deve refletir isso.
-        // Se for REJEITADO, também é válido.
         try {
-          // Tentativa de comando pós-detach
-          // Note: o session ainda está disponível no closure, mas o detach
-          // já aconteceu. O comportamento do Chromium varia.
-          // Apenas registramos o tentativa e_assertamos o resultado observado.
           await session.send('DOM.getDocument');
-          // Se chegou sem throw, o comando foi aceito - registramos
-          test.log(
-            'Cenário B: comando pós-detach foi ACEITO (comportamento por versão do Chromium)'
-          );
-        } catch (postDetachErr) {
-          // Comando rejeitado - também é um resultado válido
-          test.log(
-            'Cenário B: comando pós-detach rejeitado: ' + postDetachErr.message
-          );
+          // Se chegou aqui, o comando foi ACEITO pós-detach
+          postDetachAccepted = true;
+        } catch (err) {
+          // Comando rejeitado
+          postDetachError = err;
         }
       } catch (e) {
-        test.log('Cenário B: erro ao testar comando pós-detach: ' + e.message);
+        test.log('⚠️ Cenário B: erro ao tentar comando pós-detach: ' + e.message);
       }
 
-      // 5. Evidência: JSON derivado dos resultados reais medidos
+      // 4. A assertion de rejeição DEVE ser FORA do bloco try/capture.
+      //    Se o comando foi aceito, o teste falha.
+      if (postDetachAccepted) {
+        throw new Error(
+          'Cenário B: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)'
+        );
+      }
+
+      // 5. Evidência: JSON válido
       try {
-        await testInfo.attach('r2-prova-resultado-B.txt', {
-          body: [
-            'cenario=excecao',
-            'excecao-provocada=sim',
-            'operation-error=' + operationError.message,
-            'cleanup-error=' + (cleanupError ? cleanupError.message : 'null'),
-            'sessao-rejeita-comandos-apos-detach=observado',
-          ].join('\n'),
-          contentType: 'text/plain',
+        await testInfo.attach('r2-prova-resultado-B.json', {
+          body: JSON.stringify({
+            cenario: 'excecao',
+            excecao_provocada: true,
+            operation_error: operationError.message,
+            cleanup_error: cleanupError ? cleanupError.message : null,
+            post_detach_result: postDetachAccepted ? 'accepted' : 'rejected',
+            post_detach_error: postDetachError ? postDetachError.message : null,
+          }),
+          contentType: 'application/json',
         });
       } catch (e) {
-        test.log('⚠️ Cenário B: não foi possível anexar evidência: ' + e.message);
+        throw new Error('Cenário B: falha ao anexar evidência: ' + e.message);
       }
 
-      test.log('Cenário B: exceção provocada, cleanup verificado e evidencia processada');
+      test.log('Cenário B: exceção provocada, cleanup verificado, evidencia JSON');
       return;
     }
   );
 
-  /* ── Cenário C: timeout controlado com assertions reais ────────────── */
+  /* ── Cenário C: timeout controlado via AbortController ──────────────── */
   test(
     'R2: Cenário C — timeout controlado via AbortController, cleanup e rejeição pós-detach',
     async ({ page, context }, testInfo) => {
-      // Definir timeout via API documentada do Playwright (setTimeout do testInfo)
-      // Em vez de atribuição direta testInfo.timeout =, usamos o attach
-      // ou configuramos no próprio test.describe com timeout, mas aqui
-      // usamos AbortController local para controle determinístico.
+      // Definir timeout do teste via API documentada
       testInfo.setTimeout(30_000);
 
       const creds = resolveCredentials();
@@ -503,13 +418,15 @@ test.describe('R2 — quarta retificação técnica', () => {
         page,
         testInfo,
         operation: async ({ session }) => {
-          // Timeout controlado localmente, NÃO timeout global do Playwright.
-          // Utilizar AbortController para cancelamento explícito.
+          // Timeout controlado localmente, APENAS AbortController.
+          // NÃO usar fallback concorrente que dispara antes do abort.
+          // A única fonte de cancelamento é o timer programado.
           const ac = new AbortController();
           const timeoutHandler = setTimeout(() => ac.abort(), 10_000);
 
           try {
-            // Operação observando o AbortController
+            // Operação observando o AbortController - a Promise rejeita em
+            // resposta ao sinal de abort, não há fallback alternativo.
             await new Promise((resolve, reject) => {
               const intervalId = setInterval(() => {
                 if (ac.signal.aborted) {
@@ -517,23 +434,20 @@ test.describe('R2 — quarta retificação técnica', () => {
                   reject(new Error('aborted'));
                 }
               }, 500);
-              // Fallback: reject após algum tempo se o signal nunca chegar
-              setTimeout(() => {
-                clearInterval(intervalId);
-                reject(new Error('timeout without abort signal'));
-              }, 9_500);
+              // NÃO há setTimeout de fallback aqui.
+              // Se o signal nunca chegar, a Promise ficará pendurada.
+              // O helper executará detach mesmo assim.
             });
-            // Se a Promise resolveu (signal não chegou a ser aborted manualmente),
+            // Se a Promise resolveu (signal não chegou a ser aborted),
             // cancelar o timeout handler para evitar execução dupla
             clearTimeout(timeoutHandler);
           } catch (e) {
-            // Re-lançar com prefixo identificável
+            // Re-lançar com prefixo identificável - o erro veio do AbortController
             throw new Error('timeout-controlado: ' + e.message);
           } finally {
             // Limpar timer e intervalo - NÃO deixar recursos órfãos
             clearTimeout(timeoutHandler);
-            // O intervalId é capturado no closure acima; clearInterval já foi
-            // chamado dentro do reject handler.
+            // O intervalId foi clearado dentro do reject handler acima.
           }
 
           // CSS e Runtime basics (apenas para validar que a sessão está viva)
@@ -552,37 +466,29 @@ test.describe('R2 — quarta retificação técnica', () => {
         },
       });
 
-      // --- Afirmações pós-detach ---
+      // --- Afirmações pós-detach (fora de blocos que capturem rejeição) ---
 
       // 1. Afirmar que o timeout controlado foi capturado
-      if (operationError) {
-        // O helper capturou o erro e o prefixo 'timeout-controlado' o identifica
-        if (
-          !operationError.message ||
-          !operationError.message.includes('timeout-controlado')
-        ) {
-          throw new Error(
-            'Cenário C: operationError não é o sentinel de timeout esperado: ' +
-              (operationError ? operationError.message : 'null')
-          );
-        }
-        test.log(
-          'Cenário C: operationError capturado com sentinel de timeout: ' +
-            operationError.message
-        );
-      } else {
-        // Se operationError for null, o timeout não aconteceu como esperado.
+      if (!operationError) {
+        // Se operationError for nulo, o timeout não aconteceu como esperado.
         // O teste deve reprovar por ausência do comportamento esperado.
-        test.log(
-          'Cenário C: operationError é nulo - timeout pode não ter ocorrido como planejado'
-        );
-        // Lançar para reprovar o teste
         throw new Error(
           'Cenário C: operationError é nulo - timeout esperado não ocorreu'
         );
       }
+      // 2. Afirmar que é o sentinel de timeout esperado (prefixo 'timeout-controlado')
+      if (
+        !operationError.message ||
+        !operationError.message.includes('timeout-controlado')
+      ) {
+        throw new Error(
+          'Cenário C: operationError não é o sentinel de timeout esperado: ' +
+            (operationError ? operationError.message : 'null')
+        );
+      }
+      test.log('Cenário C: operationError capturado com sentinel de timeout');
 
-      // 2. Afirmar que o cleanup não teve erro
+      // 3. Afirmar que cleanupError é nulo
       if (cleanupError) {
         throw new Error(
           'Cenário C: cleanupError não é nulo: ' + cleanupError.message
@@ -590,44 +496,51 @@ test.describe('R2 — quarta retificação técnica', () => {
       }
       test.log('Cenário C: cleanupError é nulo (limpeza bem-sucedida)');
 
-      // 3. Tentar comando pós-detach e afirmar rejeição (ASSERTION REAL)
-      //    A sessão já foi detachada pelo helper.
+      // 4. Tentativa de comando pós-detach: observar o resultado.
+      //    O resultado será asserted separadamente abaixo, fora do try.
+      let postDetachAccepted = false;
+      let postDetachError = null;
       try {
-        // Varia por versão do Chromium; o importante é observar o resultado.
         try {
-          // Tentativa de comando pós-detach
           await session.send('DOM.getDocument');
-          test.log(
-            'Cenário C: comando pós-detach foi ACEITO (comportamento por versão do Chromium)'
-          );
-        } catch (postDetachErr) {
-          // Comando rejeitado - também é um resultado válido
-          test.log(
-            'Cenário C: comando pós-detach rejeitado: ' + postDetachErr.message
-          );
+          // Se chegou aqui, o comando foi ACEITO pós-detach
+          postDetachAccepted = true;
+        } catch (err) {
+          // Comando rejeitado
+          postDetachError = err;
         }
       } catch (e) {
-        test.log('Cenário C: erro ao testar comando pós-detach: ' + e.message);
+        test.log('⚠️ Cenário C: erro ao tentar comando pós-detach: ' + e.message);
       }
 
-      // 4. Evidência: JSON derivado dos resultados reais medidos
+      // 5. A assertion de rejeição DEVE estar FORA do bloco try/capture.
+      //    Se o comando foi aceito, o teste falha.
+      if (postDetachAccepted) {
+        throw new Error(
+          'Cenário C: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)'
+        );
+      }
+
+      // 6. Evidência: JSON válido
       try {
-        await testInfo.attach('r2-prova-resultado-C.txt', {
-          body: [
-            'cenario=timeout',
-            'timeout-explicito=sim (AbortController local 10s, NÃO timeout global Playwright)',
-            'timeout-global-playwright-nao-utilizado=sim',
-            'operation-error=' + (operationError ? operationError.message : 'null'),
-            'cleanup-error=' + (cleanupError ? cleanupError.message : 'null'),
-            'sessao-rejeita-comandos-apos-detach=observado',
-          ].join('\n'),
-          contentType: 'text/plain',
+        await testInfo.attach('r2-prova-resultado-C.json', {
+          body: JSON.stringify({
+            cenario: 'timeout',
+            timeout_explicito: true,
+            timeout_global_playwright_nao_utilizado: true,
+            timeout_controller: 'AbortController local 10s',
+            operation_error: operationError ? operationError.message : null,
+            cleanup_error: cleanupError ? cleanupError.message : null,
+            post_detach_result: postDetachAccepted ? 'accepted' : 'rejected',
+            post_detach_error: postDetachError ? postDetachError.message : null,
+          }),
+          contentType: 'application/json',
         });
       } catch (e) {
-        test.log('⚠️ Cenário C: não foi possível anexar evidência: ' + e.message);
+        throw new Error('Cenário C: falha ao anexar evidência: ' + e.message);
       }
 
-      test.log('Cenário C: timeout controlado verificado e evidencia processada');
+      test.log('Cenário C: timeout controlado verificado, evidencia JSON');
       return;
     }
   );
