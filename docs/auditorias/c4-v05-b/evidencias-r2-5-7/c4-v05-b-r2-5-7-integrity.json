@@ -2,8 +2,9 @@
   "meta": {
     "version": "R2.5.7",
     "branch": "feat/app-navigation-redesign",
-    "baseCommit": "ad9188964b5c5a68e380c77af95c8f688fd1dec2",
-    "generatedAt": "2026-11-15T16:28:53.335Z",
+    "baseCommit": "a790d61612566185d42d24a9d1678faa7f466cf9",
+    "publicationCommit": "ad9188964b5c5a68e380c77af95c8f688fd1dec2",
+    "generatedAt": "2026-11-15T16:41:23.089Z",
     "nodeVersion": "v26.12.1",
     "platform": "android (Termux/Android)",
     "browser": "Chromium 156 headless (CDP porta 9222)",
@@ -95,9 +96,9 @@
     {
       "name": "RELATORIO-FINAL-R2-5-7.md",
       "path": "RELATORIO-FINAL-R2-5-7.md",
-      "sizeBytes": 22372,
+      "sizeBytes": 22660,
       "lines": 291,
-      "sha256": "697a464f1d22e941da0934d15ff33ccc5281e729b5dda392dd346f9e1c4ceb04"
+      "sha256": "9f3fa7b1d49700c5fcce1b6aa6ea24d7275bce76ad13f27572583dcff0bbb3ae"
     }
   ],
   "testSummary": {
@@ -247,6 +248,6 @@
     "filesAltered": 0,
     "filesMissing": 0,
     "note": "allHashesMatch e os demais contadores sao preenchidos pela rotina de verificacao independente, apos o recalculo real sobre os arquivos do disco. Enquanto forem null, a integridade deste manifesto nao esta declarada.",
-    "verifiedAt": "2026-11-15T16:28:55.006Z"
+    "verifiedAt": "2026-11-15T16:41:29.717Z"
   }
 }

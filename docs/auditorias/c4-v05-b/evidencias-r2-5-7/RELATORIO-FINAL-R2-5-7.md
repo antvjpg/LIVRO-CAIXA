@@ -180,7 +180,7 @@ aprovadas. A adaptação é mecânica e corresponde à integração exigida por 
 - **Hashes:** SHA-256 sobre o conteúdo completo de cada artefato, recalculado por rotina independente que não reutiliza a rotina geradora.
 - **Manifestos:** `c4-v05-b-r2-5-7-integrity.json`, 11 artefatos, gerado por último, sem auto-referência. `integrityVerification.allHashesMatch` permanece `null` na geração e é preenchido pela verificação com o resultado real do recálculo.
 - **Logs:** `c4-v05-b-r2-5-7-test.log` é a saída integral da execução; o parser consumiu 393 linhas de resultado, com 0 linha não parseada e 0 duplicidade de par `(id, nome)`.
-- **Identificação do ambiente:** commit-base `a790d61612566185d42d24a9d1678faa7f466cf9`, branch `feat/app-navigation-redesign`, Node `v26.12.1`, Chromium `156.0.8078.79` headless, plataforma `linux (Termux/Android)`, data/hora de execução registradas no manifesto e no JSON.
+- **Identificação do ambiente:** commit-base `a790d61612566185d42d24a9d1678faa7f466cf9`, branch `feat/app-navigation-redesign`, Node `v26.12.1`, Chromium `156.0.8078.79` headless, plataforma `android (Termux/Android)`, data/hora de execução registradas no manifesto e no JSON.
 - **Verificações independentes:** o manifesto foi conferido por rotina separada, com o resultado registrado no próprio manifesto. A auditoria independente da R2.5.7 **não** foi realizada por este agente e permanece pendente.
 
 ---
@@ -236,7 +236,7 @@ Esta seção retifica as informações de estado do repositório registradas dur
 - **Commit-base:** `a790d61612566185d42d24a9d1678faa7f466cf9`
 - **Commit publicado:** `ad9188964b5c5a68e380c77af95c8f688fd1dec2`
 - **Mensagem:** `docs(audit): C.4-V05-B-R2.5.7 identidade de execucao da coleta (F-04)`
-- **Branch:** `feat/app-navigation-redesign`
+- **Branch:** `feat/app-navigation-redesign`. Na conferência independente realizada após a publicação do commit `ad9188964b5c5a68e380c77af95c8f688fd1dec2`, a branch `feat/app-navigation-redesign` apontava para esse commit. Posteriormente, a branch recebeu a retificação documental `6c27c94f34420b9ed2b45da174ed73930ee19589`.
 - **Push:** concluído para `origin/feat/app-navigation-redesign`.
 - **Estado da branch:** sincronizada com o remoto.
 - **Working tree após publicação:** limpa, conforme registro da execução.
