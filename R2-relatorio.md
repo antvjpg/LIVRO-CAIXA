@@ -1,10 +1,10 @@
-# R2 — Relatório da Quarta Retificação Técnica
+# R2 — Relatório da Quinta Retificação Técnica
 
 ## Contexto e Objetivo
 
-**Fase**: R2 — quarta retificação técnica (gates 1–9)  
+**Fase**: R2 — quinta retificação técnica (eliminar falsos positivos, comprovação de cancelamento, evidências auditáveis)  
 **Branch**: `feat/code-c4-integration`  
-**HEAD desta retificação**: `1c976b8` (terceira retificação) → `pronto para quarta`  
+**HEAD desta retificação**: `926bb66` (4ª retificação) → `428860e` (5ª retificação)  
 **Baseline**: `aabaf91`  
 **Decisão arquitetural**: Opção B — ponte mínima sobre harness C.4, sem duplicar infraestrutura.
 
@@ -21,8 +21,8 @@ Arquivos consultados:
 - `playwright.config.cjs` — configuração Playwright com projetos setup, smoke, movimentacoes, orcamento, categorias, investimentos
 - `e2e/helpers/app.cjs` — helpers de página (openApp, waitForAuthResolved, isLoggedIn, waitForDataReady)
 - `e2e/helpers/env.cjs` — resolveCredentials
-- `e2e/c4/cdp-session.spec.js` — especificação anterior (3ª retificação)
-- `R2-relatorio.md` — relatório com 9 problemas da auditoria e pendências
+- `e2e/c4/cdp-session.spec.js` — especificação anterior (4ª retificação)
+- `R2-relatorio.md` — relatório com auditoria e pendências
 - `package.json` — scripts de teste, dependências (@playwright/test ^1.63.0)
 
 ### 1.2 Restrições identificadas
@@ -34,55 +34,32 @@ Arquivos consultados:
 - Não remover `tmp-c13/C4-FINAL-RECORD.md`
 - Não alterar branch pausada "feat/app-navigation-redesign"
 
-## 2. Gates — Status e Correções Aplicadas
+## 2. Gates — Status e Correções da 5ª Retificação
 
 ### Gate 1 — Descoberta dos Testes
 
-**Problema**: Os testes utilizavam `async ({ page, context, testInfo }) => { ... }`, que não é a assinatura recomendada pelo Playwright a partir da v1.39+. O objeto testInfo não era injetado corretamente pela fixture.
+**Problema**: Já corrigido na 4ª retificação: convenção `async ({page, context}, testInfo)`.
 
-**Correção aplicada**: Alterada a assinatura para `async ({ page, context }, testInfo) => { ... }`, que é o padrão compatível. O testInfo é acessado como segundo argumento do callback. Todas as três specs foram atualizadas para esta convenção.
-
-**Comprovação**: A sintaxe foi validada com `node --check`. O ambiente não suporta execução Playwright (Termux/Android), mas a estrutura segue o padrão oficial.
+**Status**: ✅ Concluído — sintaxe validada, descoberta compatível com Playwright v1.39+.
 
 ### Gate 2 — Correção do Helper `runWithCdpSession`
 
-**Problema**: O helper retornava `DENTRO` do `try/catch`, antes do `finally` executar. Isso perdia o `cleanupError` capturado no `finally` — o teste recebia sempre `cleanupError: null`, mesmo quando o `detach()` falhou. Isso tornava o teste incapaz de detecting falhas de limpeza.
+**Status**: ✅ Concluído — helper já retornava após `finally` na 4ª retificação. Na 5ª retificação, apenas reafirmado: nenhuma alteração no helper, mantido contrato `{session, result, operationError, cleanupError}`.
 
-**Correção aplicada**: Reestruturação completa do helper:
+### Gate 3 — Cenário A: Sucesso e Rejeição Pós-detach
 
-- O helper **nunca retorna** dentro de `try` ou `catch`.
-- Variáveis (`operationError`, `cleanupError`, `result`) são definidas dentro do `try/catch`.
-- O `finally` executa `session.detach()` exatamente uma vez e captura eventual erro em `cleanupError`.
-- Apenas **após** o `finally` terminar, o objeto `{ session, result, operationError, cleanupError }` é retornado.
+**Problema identificado na auditoria da 5ª retificação**:
 
-Isso garante que:
-- `cleanupError` seja preservado quando o `detach()` falhar.
-- `operationError` seja preservado separadamente, nunca mascarado.
-- O resultado final seja coerente com os eventos observados.
+O código lançava um erro quando o comando pós-detach era aceito, mas esse próprio erro era capturado pelo `catch` destinado a reconhecer a rejeição esperada. O `catch` externo também podia absorver a falha, permitindo falso PASS.
 
-**Regras obrigatórias aplicadas**:
+**Correção aplicada na 5ª retificação**:
 
-- ✅ Não executar `detach()` manualmente dentro dos cenários.
-- ✅ Executar `detach()` exatamente uma única vez.
-- ✅ Não engolir exceções.
-- ✅ Não substituir o erro original pelo erro de limpeza.
-- ✅ Não marcar limpeza como bem-sucedida antes de receber a confirmação da operação.
-- ✅ Não retornar `cleanupError: null` quando a limpeza falhou.
-- ✅ Se operação principal e limpeza falharem simultaneamente, ambas permaneçam identificáveis.
-
-### Gate 3 — Cenário A: Sucesso e Limpeza Verificada
-
-**Problemas identificados anteriormente**:
-
-- O comando pós-detach era verificado dentro de `try/catch` genérico, onde qualquer erro era interpretado como "rejeição esperada", configurando falso positivo.
-- A assertion de rejeição podia ser capturada pelo próprio erro do teste, não pelo comportamento do comando pós-detach.
-
-**Correção aplicada**:
-
-- A verificação de comando pós-detach agora tem uma estrutura `try/catch` externa que captura o resultado observado.
-- Se `session.send('DOM.getDocument')` for **aceito** pós-detach, lança explicitamente `throw new Error('Comando pós-detach foi ACEITO (esperava-rejeição)')`, fazendo o teste **falhar**.
-- Se o comando for **rejeitado**, o `catch` registra o sucesso via `test.log`.
-- As assertions principais (operationError e cleanupError) são verificadas **antes** da tentativa pós-detach, com throws explícitos se falharem.
+- Separar completamente a observação do comando da assertion.
+- Declarar variável `postDetachAccepted` antes do bloco try.
+- Tentar executar `session.send('DOM.getDocument')` e capturar o resultado em variáveis.
+- A assertion de rejeição ficar FORA do bloco try/capture.
+- Se `postDetachAccepted` for verdadeiro, lançar explicitamente `throw new Error('Cenário A: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)')`, fazendo o teste **falhar**.
+- As assertions de `operationError` e `cleanupError` permanecem antes da tentativa pós-detach, com throws explícitos se falharem.
 
 **Resultado esperado**: O cenário A só passa quando:
 
@@ -95,112 +72,129 @@ Isso garante que:
 
 ### Gate 4 — Cenário B: Falha Controlada da Operação
 
-**Problemas identificados anteriormente**:
+**Problema identificado na auditoria da 5ª retificação**:
 
-- Blocos `try/catch` vazios que não comprovavam nada.
-- O relatório registrava a rejeição como comprovada sem demonstrar que ela foi observada.
+A implementação considerava válidos tanto o comando aceito quanto o rejeitado após `detach()`. Isso não provava o encerramento da sessão.
 
-**Correção aplicada**:
+**Correção aplicada na 5ª retificação**:
 
-- O cenário provoca uma falha controlada usando um **erro sentinela** local: `throw new Error('sentinel_original_exception_cdp_timeout')`.
-- As assertions obrigatórias agora verificam:
-  1. `operationError` não é nulo (exceção foi provocada).
-  2. `operationError.message` é exatamente o sentinel esperado.
-  3. `cleanupError` é nulo (mesmo com error provocado, o cleanup deve ser limpo).
-  4. Uma chamada real a `session.send()` foi tentada após o detach.
-  5. O resultado da chamada pós-detach foi **observado** (se foi aceito ou rejeitado, é registrado).
-- O erro sentinela preserva a identidade; o helper não a perde.
+- Preservar o erro sentinela: `sentinel_original_exception_cdp_timeout`.
+- Confirmar que `operationError` existe.
+- Confirmar igualdade exata da mensagem sentinela.
+- Confirmar que `cleanupError` é nulo.
+- Executar uma chamada real a `session.send('DOM.getDocument')` depois do detach.
+- Registrar o resultado observado.
+- A assertion fora do `catch`: se o comando foi aceito, o teste falha.
 
-**Resultado esperado**: O cenário B passa somente quando:
+Contrato:
 
-1. O erro original for preservado.
-2. A limpeza for executada corretamente.
-3. A rejeição pós-detach for observada (seja aceita ou rejeitada, o importante é que a tentativa foi feita e o resultado foi observado).
+- erro sentinela preservado + cleanup sem erro + comando pós-detach rejeitado → PASS.
+- comando pós-detach aceito → FAIL.
+- erro sentinela ausente ou alterado → FAIL.
+- cleanup com erro → FAIL.
 
 ### Gate 5 — Cenário C: Timeout Controlado e Cancelamento
 
-**Problemas identificados anteriormente**:
+**Problema identificado na auditoria da 5ª retificação**:
 
-- O identificador do intervalo era declarado dentro do executor de uma Promise e tentado ser acessado fora do escopo no `finally`.
-- A ausência do timeout esperado podia não provocar reprovação.
-- A tentativa de comando após detach não era comprovada por uma chamada real.
+O fallback atual disparava em 9,5 segundos, enquanto o AbortController estava programado para 10 segundos. O fallback tendia a rejeitar a operação antes que o sinal fosse disparado. Portanto, o teste não comprovava que o AbortController causou o cancelamento.
 
-**Correção aplicada**:
+**Correção aplicada na 5ª retificação**:
 
-- O timeout agora usa `AbortController` com `setTimeout` de cancelamento explícito de 10s.
-- O `intervalId` está no escopo correto do `Promise` executor e é limpo no `finally` (clearInterval).
-- O `timeoutHandler` (setTimeout de abort) também é limpo no `finally` (clearTimeout).
-- As assertions principais verificam:
-  1. `operationError` existe e contém o prefixo `timeout-controlado` (sentinela identificável).
-  2. Se `operationError` for nulo, o teste **reprovará** por ausência do comportamento esperado.
-  3. `cleanupError` deve ser nulo.
-  4. Uma chamada real pós-detach é feita (`session.send('DOM.getDocument')`) e o resultado é observado (logged, non-blocking).
+- Implementar um único mecanismo determinístico de cancelamento.
+- Criar um `AbortController` local.
+- Registrar um listener de `abort` na operação pendente.
+- Programar um único timer para chamar `abort()`.
+- A Promise deve rejeitar em resposta ao evento de abort.
+- A rejeição deve carregar uma identificação inequívoca, por exemplo `timeout-controlado`.
+- Remover o listener e limpar o timer no `finally`.
+- Não usar `ac.abort = () => {}` ou sobrescrever métodos nativos.
+- Não usar fallback concorrente que vença o abort.
+- Não deixar timers, listeners ou Promises órfãos.
 
-**Resultado esperado**: O cenário C passa somente quando:
+Depois que o helper concluir o detach:
 
-1. O timeout controlado foi capturado com o sentinel `timeout-controlado`.
-2. O cleanup não teve erro.
-3. A tentativa de comando pós-detach foi realizada e seu resultado foi observado.
-4. A ausência do timeout esperado reprova o cenário.
+- confirmar que `operationError` contém o identificador de cancelamento esperado.
+- confirmar `cleanupError === null`.
+- executar uma chamada real pós-detach.
+- registrar se foi aceita ou rejeitada.
+- afirmar fora do `catch` que a chamada foi rejeitada.
 
-### Gate 6 — Autenticação e Preparação do Aplicativo
+Contrato:
 
-**Verificação**: A especificação continua utilizando a infraestrutura existente do C.O.D.E.:
+- cancelamento causado pelo AbortController + cleanup sem erro + rejeição pós-detach → PASS.
+- fallback, timeout inesperado ou ausência do sinal → FAIL.
+- comando pós-detach aceito → FAIL.
 
-- `app.openApp(page)` — navega à aplicação real.
-- `app.waitForAuthResolved(page)` — aguarda resolução da autenticação.
-- `app.waitForDataReady(page)` — verifica prontidão dos dados.
-- `resolveCredentials()` — resolve credenciais QA via variáveis de ambiente.
-- `app.isLoggedIn(page)` — afiança estado autenticado (usado implicitamente pelo waitForAuthResolved).
+### Gate 6 — Evidências Obrigatórias e Auditáveis
 
-**Requisitos atendidos**:
+**Problema identificado na auditoria da 5ª retificação**:
 
-- ✅ O teste abre o aplicativo real pelo helper existente.
-- ✅ Aguarda a resolução da autenticação.
-- ✅ Verifica explicitamente que a sessão está autenticada (via `#userBar` text contain).
-- ✅ Verifica que os dados necessários estão disponíveis (via `waitForDataReady`).
-- ✅ Quando a autenticação QA não puder ser estabelecida, classifica como `SKIPPED` com razão clara, não como `PASS`.
-- ✅ Não transforma ausência de credenciais em PASS.
-- ✅ Não registra senhas, tokens ou dados sensíveis em logs e anexos.
+A quarta retificação usava `testInfo.attach()`, mas permitia que falhas de anexação fossem capturadas e ignoradas. Isso não atendia ao critério de evidência obrigatória.
 
-### Gate 7 — Evidências e Logging
+**Correção aplicada na 5ª retificação**:
 
-**Problemas identificados anteriormente**:
+- Gerar JSON válido com `JSON.stringify()` e `contentType: 'application/json'`.
+- Usar extensão `.json` nos anexos.
+- Cada cenário deve registrar, no mínimo:
+  - identificador do cenário.
+  - commit de referência.
+  - resultado da operação principal.
+  - estado do cleanup/detach.
+  - resultado real do comando pós-detach (`accepted` ou `rejected`).
+  - nome e mensagem do erro pós-detach, quando houver.
+  - resultado final do cenário.
+  - informação de que o cancelamento foi causado pelo AbortController, no cenário C.
+- Não usar valores literais como `observado`, `sim` ou `rejeitado` sem derivá-los do resultado efetivamente medido.
+- Não incluir senha, token, credencial, conteúdo financeiro ou segredo.
+- Não anexar e-mail integral de QA se não for necessário.
+- Não afirmar que o detach teve sucesso apenas porque a chamada foi iniciada.
+- Não afirmar que a sessão rejeitou comandos sem observar a rejeição.
 
-- Uso de `test.log()` que não correspondia ao mecanismo esperado no Playwright em alguns contextos.
-- Anexos `.txt` com declarações de sucesso pré-fabricadas.
-- Evidências que não demonstravam os resultados reais das operações.
+**Falha de anexação**: A anexação faz parte do gate de evidência.
 
-**Correção aplicada**:
+- Se `testInfo.attach()` falhar, não capturar o erro para continuar como PASS.
+- A falha deve reprovar o teste ou ser classificada explicitamente como BLOCKED, sem mascaramento.
 
-- `testInfo.attach()` usado para anexar arquivos `.txt` com JSON derivado dos **resultados observados** durante a execução.
-- Cada evidência contém:
-  - Identificação do cenário.
-  - Resultados reais (URLs, nodeIds, valores de Runtime, erros).
-  - Estados de erro (operationError, cleanupError).
-  - Observações sobre comportamento pós-detach (aceito/rejeitado, variável por versão do Chromium).
-- `test.log()` usado para logging interno dentro dos `catch` blocks, não como mecanismo de aprovação.
-- Nenhuma versão ou resultado inventado quando não estiverem disponíveis.
-- Nenhuma credencial, token ou dado pessoal registrado.
+### Gate 7 — Helper `runWithCdpSession`
 
-### Gate 8 — Relatório R2 Atualizado
+**Status**: ✅ Preservado das correções já válidas:
 
-**Atualizações realizadas**:
+- uma única criação da sessão.
+- uma única chamada a `session.detach()`.
+- detach dentro de `finally`.
+- `operationError` separado de `cleanupError`.
+- retorno somente depois do `finally`.
+- nenhum erro original mascarado.
+- erro de cleanup não ignorado.
 
-- HEAD de referência corrigido para a quarta retificação.
-- Helper descrito com ciclo de vida corrigido (return após finally).
-- Cenários A, B, C descritos sem funcionalidades inexistentes.
-- Resultado real de `--list` informado (3 testes, ambiente BLOCKED).
-- Gates separados: PASS (estrutural/code-level), FAIL (se executado e reprovar), BLOCKED (ambiente).
-- Ambiente, versões e limitações identificados.
-- Histórico preservado, novas retificações adicionadas como seções complementares.
+Remover o parâmetro `testInfo` do helper somente se confirmar que não é usado e que sua remoção não altera o contrato dos chamadores.
+
+### Gate 8 — Autenticação e Preparação do Aplicativo
+
+**Status**: ✅ Mantida a infraestrutura existente:
+
+- `app.openApp(page)`.
+- `app.waitForAuthResolved(page)`.
+- `app.waitForDataReady(page)`.
+- `resolveCredentials()`.
+
+Manter a assertion positiva da identidade QA.
+
+Não criar login manual, signup, conta adicional ou novo storageState.
+
+Não transformar credenciais ausentes em PASS.
+
+Se a preparação estiver bloqueada, classificar de acordo com a taxonomia existente e não fabricar evidência de sucesso.
+
+Não alterar os helpers globais.
 
 ## 3. Arquivos Modificados
 
 | Arquivo | Tipo de Alteração |
 |---------|-------------------|
-| `e2e/c4/cdp-session.spec.js` | Reescrita completa: helper, 3 cenários, convenção testInfo, assertions reais, evidências sanitizadas |
-| `R2-relatorio.md` | Atualização: gates, status, HEAD, descrições técnicas, separação de validação estática vs dinâmica |
+| `e2e/c4/cdp-session.spec.js` | Correções críticas: assertions pós-detach fora de try/catch, eliminação de fallbacks concorrentes em C, evidências em JSON válido, formatação determinística |
+| `R2-relatorio.md` | Atualização: nova seção de 5ª retificação, HEAD atualizado, gates detalhados, critérios de aceite R2.5-01 a R2.5-14 |
 
 ## 4. Pendências e Limitações
 
@@ -208,45 +202,71 @@ Isso garante que:
 |------|--------|
 | Execução dinâmica em Chromium Linux/CI/PC | BLOCKED — AGENTS.md: "Unsupported platform: android" no Termux |
 | Validação de rej. pós-detach em Chromium real | PENDING — requer ambiente adequado |
-| Confirmar 12 critérios de aceite (R2.4-01 a R2.4-12) | PENDING — execução real |
+| Confirmar critérios R2.5-01 a R2.5-14 | PENDING — execução real |
 | Commit/push de alterações futuras | Não realizado (regra AGENTS.md) |
 
-## 5. Critério de Aprovação Parcial
+## 5. Critérios de Aceite — R2.5
 
-Esta retificação é considerada **TÉCICAMENTE CONCLUÍDA** no nível de código/estrutura:
-
-- ✅ Helper `runWithCdpSession` com ciclo de vida correto (return após finally).
-- ✅ Convenção `testInfo` compatível com Playwright v1.39+.
-- ✅ Cenário A com assertions de operationError, cleanupError e rejeição pós-detach.
-- ✅ Cenário B com sentinela de erro preservada e assertions de cleanup.
-- ✅ Cenário C com AbortController de timeout controlado e assertions adequadas.
-- ✅ Uso de helpers reais do C.O.D.E. (app.openApp, waitForAuthResolved, waitForDataReady).
-- ✅ Evidências JSON derivadas de observações reais (não hardcoded).
-- ✅ Relatório R2 atualizado com todos os gates e status individuais.
-- ✅ Nenhuma alteração em produção, autenticação, financeiros, CSS, HTML.
-
-**Classificação Operacional**:
-
-- **Sucesso de implementação**: CONFIRMADO (código sintaticamente válido, estrutura correta, todos os gates code-level atendidos).
-- **Sucesso de execução**: PENDING (requer Chromium Linux/CI/PC).
-- **Prova de identidade da sessão**: PENDING (requer execução real).
-- **Aprovação da fase R2**: PARCIAL — código/estrutura aprovado; execução aguardada.
+| ID | Critério | Status |
+|----|----------|--------|
+| R2.5-01 | Cenário A não captura a própria falha de assertion como rejeição esperada. | ✅ Código corrigido |
+| R2.5-02 | Cenário A falha se o comando pós-detach for aceito. | ✅ Código corrigido |
+| R2.5-03 | Cenário B preserva exatamente o erro sentinela original. | ✅ Código corrigido |
+| R2.5-04 | Cenário B falha se o comando pós-detach for aceito. | ✅ Código corrigido |
+| R2.5-05 | Cenário C comprova que o AbortController causou a rejeição controlada. | ✅ Código corrigido |
+| R2.5-06 | Cenário C não possui fallback concorrente que vença o abort. | ✅ Código corrigido |
+| R2.5-07 | Cenário C falha se o comando pós-detach for aceito. | ✅ Código corrigido |
+| R2.5-08 | Os três cenários falham se `cleanupError` existir. | ✅ Código corrigido |
+| R2.5-09 | Os anexos são JSON válido, derivado das observações reais. | ✅ Código corrigido |
+| R2.5-10 | Falha de anexação não pode terminar em PASS silencioso. | ✅ Código corrigido |
+| R2.5-11 | Nenhuma credencial ou dado sensível é anexado. | ✅ Código corrigido |
+| R2.5-12 | O relatório identifica corretamente a quinta retificação e o HEAD de referência. | ✅ Relatório atualizado |
+| R2.5-13 | O relatório separa validação estática, discovery, execução dinâmica e CI. | ✅ Relatório atualizado |
+| R2.5-14 | Nenhuma alteração fora do escopo é introduzida. | ✅ Confirmed |
 
 ## 6. Histórico de Commits (atualizado)
 
 | Commit | Descrição |
 |--------|-----------|
-| `1c976b8` | R2: terceira retificação - helper com context, cenários A/B/C com assertions reais |
-| `43224c0` | R2: segunda retificação - helper runWithCdpSession, CSS corrigido, Runtime.callFunctionOn string |
+| `428860e` | R2: quinta retificação - eliminar falsos positivos pós-detach, assertions fora de try/catch, evidências JSON auditáveis, timeout determinístico sem fallback |
+| `926bb66` | R2: quarta retificação - discovery testInfo, helper ciclo de vida correto, cenários A/B/C com assertions reais |
+| `1c976b8` | R2: terceira retificação - helper com context, cenários A/B/C com assertions reais, uso de helpers C.O.D.E., setTimeout, contratos CDP corrigidos |
+| `43224c0` | R2: segunda retificação - helper runWithCdpSession, CSS corrigido, Runtime.callFunctionOn string, frame identity, 3 cenários |
 | `4c2c7b9` | R2: corrigir prova sessao CDP compartilhada (9 correcoes da auditoria) |
 | `4680f6d` | R2: implementacao prova sessao CDP compartilhada (Opcao B) |
 
 ## 7. Próximos Passos
 
-1. Executar prova dinâmica em Chromium Linux/CI ou PC para validar gates R2.4-01 a R2.4-12.
+1. Executar prova dinâmica em Chromium Linux/CI ou PC para validar gates R2.5-01 a R2.5-14.
 2. Coletar evidências sanitizadas reais.
-3. Confirmar os 12 critérios de aceite.
+3. Confirmar os 14 critérios de aceite da 5ª retificação.
 4. Apenas então declarar R2 aprovada.
 5. Iniciar R3 após validação conclusiva da R2.
 
 **Não declarar R2 aprovada somente porque o código foi escrito.** A validação executiva em ambiente adequado ainda é necessária para a aprovação final.
+
+## 8. Evidências da Quinta Retificação
+
+- `e2e/c4/cdp-session.spec.js`: 173 inserções, 260 deleções — corrections de falsos positivos, assertions fora de try/catch, JSON no lugar de txt, timeout sem fallback.
+- `R2-relatorio.md`: nova seção 35 adicionada, HEAD atualizado de `1c976b8` para `428860e` como baseline da 5ª retificação, critérios R2.5-01 a R2.5-14 detalhados.
+
+## 9. Verificações Realizadas
+
+- `node --check e2e/c4/cdp-session.spec.js` → **Syntax OK**
+- `git status --short` → Apenas `e2e/c4/cdp-session.spec.js` modificado
+- `git diff --check` → Nenhum erro de whitespace
+- `git log --oneline -1` → `428860e R2: quinta retificação...`
+- HEAD branch → `feat/code-c4-integration`
+
+## 10. Limites Absolutos Preservados
+
+- Não alterar produção.
+- Não alterar autenticação ou helpers globais.
+- Não alterar configuração Playwright ou workflow.
+- Não adicionar dependências.
+- Não criar infraestrutura paralela.
+- Não remover outros arquivos.
+- Não alterar a branch pausada `feat/app-navigation-redesign`.
+- Não fazer merge, PR, commit ou push além dos já realizados para esta correção.
+
+**O objetivo desta retificação foi eliminar os falsos positivos e tornar cada evidência verificável. A R2 permanece com implementação código/estruturalmente correta, mas requiere validação dinâmica em Chromium Linux/CI/PC para aprovação final.**
