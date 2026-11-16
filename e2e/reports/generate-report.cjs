@@ -447,7 +447,7 @@ console.log(`Duração da execução: ${formatDuration(execDurationMs)} (${forma
 const metaPath = path.join(config.root, 'e2e', '.artifacts', 'last-run-meta.json');
 const meta = {
   schemaVersion: 'coded-e2e/last-run-meta/1.0',
-  mode: counts.BLOCKED > 0 || counts.FLAKY > 0 ? 'FULL' : 'LAST-FAILED',
+  mode: executionMode,
   branch: process.env.GITHUB_REF || 'unknown',
   sha: process.env.GITHUB_SHA || 'unknown',
   runId: process.env.GITHUB_RUN_ID || 'unknown',

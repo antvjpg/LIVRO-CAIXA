@@ -146,6 +146,8 @@ jobs:
 
       - name: Relatório C.O.D.E.
         if: always()
+        env:
+          CODE_E2E_MODE: ${{ steps.playwright-flags.outputs.mode || 'UNKNOWN' }}
         run: node e2e/reports/generate-report.cjs
 
       - name: Confirmação de limpeza da run efêmera
@@ -172,6 +174,8 @@ jobs:
 
       - name: Bloqueio não pode passar em silêncio
         if: always()
+        env:
+          CODE_E2E_MODE: ${{ steps.playwright-flags.outputs.mode || 'UNKNOWN' }}
         run: node e2e/reports/generate-report.cjs --strict
 
       - name: Salvar estado atual no cache
@@ -179,8 +183,9 @@ jobs:
         run: |
           # Garantir que os arquivos existem antes de salvar
           mkdir -p e2e/.artifacts
+          MODE="${{ steps.playwright-flags.outputs.mode || 'UNKNOWN' }}"
           if [ ! -s e2e/.artifacts/last-run-meta.json ]; then
-            echo '{"schemaVersion":"coded-e2e/last-run-meta/2.0","mode":"FULL","branch":"${{ github.ref }}","sha":"${{ github.sha }}","runId":"${{ github.run_id }}","timestamp": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"}' > e2e/.artifacts/last-run-meta.json
+            echo "{\"schemaVersion\":\"coded-e2e/last-run-meta/2.0\",\"mode\":\"${MODE}\",\"branch\":\"${{ github.ref }}\",\"sha\":\"${{ github.sha }}\",\"runId\":\"${{ github.run_id }}\",\"timestamp\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}" > e2e/.artifacts/last-run-meta.json
           fi
       - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         if: always() && github.event_name != 'pull_request'
