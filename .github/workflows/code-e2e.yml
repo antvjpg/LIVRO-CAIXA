@@ -9,6 +9,12 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Rodar modo "full" (toda suíte) ou "auto" (last-failed seleção)'
+        default: 'auto'
+        required: false
+        enum: [auto, full]
 
 permissions:
   contents: read
@@ -21,6 +27,14 @@ jobs:
     env:
       CODE_BASE_URL: http://127.0.0.1:8000
       CI: "true"
+
+    # Cache de persistência entre runs na mesma branch com mesmos deps.
+    # Chave: branch + hash do package-lock.json + hash do playwright test dir.
+    strategy:
+      cache:
+        key: ${{ runner.os }}-coded-e2e-${{ hashFiles('package-lock.json') }}-${{ hashFiles('e2e/helpers/app.cjs', 'e2e/helpers/env.cjs') }}-${{ github.ref }}-${{ github.run_attempt }}
+        restore-keys: |
+          ${{ runner.os }}-coded-e2e-${{ hashFiles('package-lock.json') }}-${{ hashFiles('e2e/helpers/app.cjs', 'e2e/helpers/env.cjs') }}-${{ github.ref }}-
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
@@ -47,8 +61,87 @@ jobs:
       - name: Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Verificar modo de execução
+        id: modo
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "mode=full" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.workflow_dispatch.inputs.mode }}" = "full" ]; then
+            echo "mode=full" >> $GITHUB_OUTPUT
+          else
+            echo "mode=auto" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Restaurar cache de estado anterior
+        if: steps.modo.outputs.mode == 'auto' && cache.cache-hit
+        run: |
+          mkdir -p e2e/.artifacts
+          LATEST=$(actions/cache restore \
+            --path e2e/.artifacts/last-run-meta.json \
+            --key ${{ runner.os }}-coded-e2e-${{ hashFiles('package-lock.json') }}-${{ hashFiles('e2e/helpers/app.cjs', 'e2e/helpers/env.cjs') }}-${{ github.ref }}-${{ github.run_attempt }} \
+            || echo "{}")
+          if [ "$LATEST" != "{" ]; then
+            echo "Estado anterior restaurado"
+            cp e2e/.artifacts/last-run-meta.json last-run-meta-restored.json
+          else
+            echo "Sem estado anterior — execução completa"
+            echo '{}' > last-run-meta-restored.json
+          fi
+
+      - name: Decidir modo de execução
+        id: decisao
+        run: |
+          MODE="${{ steps.modo.outputs.mode }}"
+          CACHE_HIT="false"
+          # Verificar se cache foi restaurado
+          if [ -s e2e/.artifacts/last-run-meta.json ]; then
+            CACHE_HIT="true"
+          fi
+
+          # Carregar metadado anterior se existir
+          if [ -s last-run-meta-restored.json ]; then
+            PREV_STATUS=$(python3 -c "import json; d=json.load(open('last-run-meta-restored.json')); print(d.get('status','passed') or 'passed')" 2>/dev/null || echo "passed")
+            PREV_BLOCKED=$(python3 -c "import json; d=json.load(open('last-run-meta-restored.json')); print(d.get('blocked',0))" 2>/dev/null || echo "0")
+            PREV_FLAKY=$(python3 -c "import json; d=json.load(open('last-run-meta-restored.json')); print(d.get('flaky',0)" 2>/dev/null || echo "0")
+          else
+            PREV_STATUS="passed"
+            PREV_BLOCKED="0"
+            PREV_FLAKY="0"
+          fi
+
+          echo "mode_selected=$MODE" >> $GITHUB_OUTPUT
+          echo "cache_hit=$CACHE_HIT" >> $GITHUB_OUTPUT
+          echo "prev_blocked=$PREV_BLOCKED" >> $GITHUB_OUTPUT
+          echo "prev_flaky=$PREV_FLAKY" >> $GITHUB_OUTPUT
+
+          # Regra: se blocked>0 ou flaky>0 da run anterior, forçar FULL
+          if [ "$PREV_BLOCKED" -gt 0 ] || [ "$PREV_FLAKY" -gt 0 ]; then
+            echo "mode_final=full" >> $GITHUB_OUTPUT
+          else
+            echo "mode_final=$MODE" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Preparar flags do Playwright
+        run: |
+          MODE_FINAL="${{ steps.decisao.outputs.mode_final }}"
+          if [ "$MODE_FINAL" = "full" ]; then
+            echo "Modo FULL: executando toda a suíte"
+            PLAYWRIGHT_FLAGS="--config playwright.config.cjs"
+          else
+            echo "Modo LAST-FAILED: repetindo apenas testes com falha anterior"
+            # Garantir que o arquivo existe e tem conteúdo válido
+            if [ -s e2e/.artifacts/last-run-meta.json ]; then
+              echo "Arquivo last-run-meta.json encontrado, aplicando --last-failed"
+              PLAYWRIGHT_FLAGS="--config playwright.config.cjs --last-failed --last-failed-file=e2e/.artifacts/last-run-meta.json"
+            else
+              echo "Arquivo inválido — forçando FULL"
+              PLAYWRIGHT_FLAGS="--config playwright.config.cjs"
+            fi
+          fi
+          echo "playwright_flags=$PLAYWRIGHT_FLAGS" >> $GITHUB_OUTPUT
+
       - name: Suítes E2E (identidade efêmera gerada pelo global-setup)
-        run: npx playwright test
+        run: npx playwright test $playwright_flags
 
       - name: Relatório C.O.D.E.
         if: always()
@@ -92,3 +185,16 @@ jobs:
             test-results/
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Salvar cache de estado atual
+        if: always()
+        run: |
+          mkdir -p e2e/.artifacts
+          LATEST=$(cat e2e/.artifacts/last-run-meta.json 2>/dev/null || echo '{}')
+          # Salvar apenas se o último passo não falhou completamente
+          echo "$LATEST" > e2e/.artifacts/last-run-meta.json
+          # Salvar no cache do GitHub Actions com chave única
+          actions/cache save \
+            --path e2e/.artifacts/last-run-meta.json \
+            --key ${{ runner.os }}-coded-e2e-${{ hashFiles('package-lock.json') }}-${{ hashFiles('e2e/helpers/app.cjs', 'e2e/helpers/env.cjs') }}-${{ github.ref }}-${{ github.run_attempt }} \
+            || echo "Aviso: não foi possível salvar o cache de estado"

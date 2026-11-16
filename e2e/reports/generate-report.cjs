@@ -412,6 +412,25 @@ console.log(`Relatório: ${outPath}`);
 console.log(`PASS=${counts.PASS} FAIL=${counts.FAIL} BLOCKED=${counts.BLOCKED} SKIPPED=${counts.SKIPPED} FLAKY=${counts.FLAKY}`);
 console.log(`Duração da execução: ${formatDuration(execDurationMs)} (${formatInstant(execStartIso)} → ${formatInstant(execEndIso)})`);
 
+/* ----- Metadado de pers Last-run (para --last-failed na execução seguinte) ----- */
+const metaPath = path.join(config.root, 'e2e', '.artifacts', 'last-run-meta.json');
+const meta = {
+  schemaVersion: 'coded-e2e/last-run-meta/1.0',
+  mode: counts.BLOCKED > 0 || counts.FLAKY > 0 ? 'FULL' : 'LAST-FAILED',
+  branch: process.env.GITHUB_REF || 'unknown',
+  sha: process.env.GITHUB_SHA || 'unknown',
+  runId: process.env.GITHUB_RUN_ID || 'unknown',
+  date: new Date().toISOString().slice(0, 10),
+  pass: counts.PASS,
+  fail: counts.FAIL,
+  blocked: counts.BLOCKED,
+  skipped: counts.SKIPPED,
+  flaky: counts.FLAKY,
+};
+fs.mkdirSync(path.dirname(metaPath), { recursive: true });
+fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2) + '\n');
+console.log(`Metadado last-run: ${metaPath} (mode=${meta.mode})`);
+
 /* --strict (usado no CI): nenhuma falha pode passar em silêncio.
    Reprova: FAIL, BLOCKED, FLAKY (falhou e passou na repetição), relatório sem
    nenhum spec, cleanup BLOCKED e identidade efêmera que sobrou na run. */
