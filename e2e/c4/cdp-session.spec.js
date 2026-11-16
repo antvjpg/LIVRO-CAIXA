@@ -265,42 +265,6 @@ test.describe('R2 — quinta retificação técnica', () => {
         },
       });
 
--- Pós-detach: instrumentação diagnóstica (antes das asserções)
-
-// Dados diagnósticos para registrar imediatamente após o pós-detach.
-const diag = {
-  cenario: 'A',
-  teste: 'R2: Cenário A — sucesso, limpeza verificada e rejeição pós-detach comprovada',
-  resultado_operacao_principal: result
-    ? { rootNodeId: result.rootNodeId, bodyNodeId: result.bodyNodeId }
-    : null,
-  resultado_cleanup: cleanupError
-    ? { message: cleanupError.message, type: cleanupError.constructor.name }
-    : null,
-  estado_detach: 'pending_observation',
-  resultado_comando_posto_detach: 'pending_classification',
-  error_detalhe: postDetachError
-    ? { message: postDetachError.message, name: postDetachError.name }
-    : null,
-  duracao_operacao_ms: operationDuration ? operationDuration : null,
-  detach_duracao_ms: detachDuration ? detachDuration : null,
-  sucesso_detach: diag.sucesso_detach,
-  node_version: process.version,
-};
-
-// Anexo de evidência via testInfo.attach (JSON diagnóstico).
-try {
-  await testInfo.attach('r2-prova-resultado-A-diagnostic.json', {
-    body: JSON.stringify(diag, null, 2),
-    contentType: 'application/json',
-  });
-} catch (attachErr) {
-  console.error('[C4_DIAGNOSTIC] falha ao anexar evidência:', attachErr.message);
-}
-
-// Log direto para GitHub Actions / runner.
-console.log('[C4_DIAGNOSTIC]', JSON.stringify(diag, null, 2));
-
 // -----------------------------------------------------------
   // Classificador de estado pós-detach.
   // Estados possíveis: 'accepted', 'rejected_expected', 'rejected_unexpected', 'not_observed'.
@@ -323,6 +287,107 @@ console.log('[C4_DIAGNOSTIC]', JSON.stringify(diag, null, 2));
         postDetachError = err;
         postDetachStatus = 'rejected_unexpected';
       }
+
+      // Pós-detach: instrumentação diagnóstica do cenário B.
+      // A declaração ocorre após a tentativa do comando pós-detach,
+      // quando postDetachStatus e postDetachError já possuem valores observados.
+      const diagB = {
+        cenario: 'B',
+        teste: testInfo.title,
+        resultado_operacao_principal: operationError
+          ? {
+              name: operationError.name,
+              message: operationError.message,
+            }
+          : null,
+        resultado_cleanup: cleanupError
+          ? {
+              name: cleanupError.name,
+              message: cleanupError.message,
+            }
+          : null,
+        estado_detach: cleanupError === null ? 'resolved' : 'rejected',
+        resultado_comando_posto_detach: postDetachStatus,
+        error_detalhe: postDetachError
+          ? {
+              name: postDetachError.name,
+              message: postDetachError.message,
+              stack: postDetachError.stack || null,
+              cause: postDetachError.cause
+                ? String(postDetachError.cause.message || postDetachError.cause)
+                : null,
+            }
+          : null,
+        duracao_operacao_ms: operationDuration,
+        detach_duracao_ms: detachDuration,
+        sucesso_detach: cleanupError === null,
+        node_version: process.version,
+      };
+
+      try {
+        await testInfo.attach('r2-prova-resultado-B-diagnostic.json', {
+          body: JSON.stringify(diagB, null, 2),
+          contentType: 'application/json',
+        });
+      } catch (attachErr) {
+        console.error(
+          '[C4_DIAGNOSTIC] falha ao anexar evidência B:',
+          attachErr.message
+        );
+      }
+
+      console.log('[C4_DIAGNOSTIC]', JSON.stringify(diagB));
+
+      // Pós-detach: instrumentação diagnóstica do cenário A.
+      // A declaração ocorre após a tentativa do comando pós-detach,
+      // quando postDetachStatus e postDetachError já possuem valores observados.
+      const diag = {
+        cenario: 'A',
+        teste: testInfo.title,
+        resultado_operacao_principal: result
+          ? {
+              rootNodeId: result.rootNodeId,
+              bodyNodeId: result.bodyNodeId,
+            }
+          : null,
+        resultado_cleanup: cleanupError
+          ? {
+              name: cleanupError.name,
+              message: cleanupError.message,
+            }
+          : null,
+        estado_detach: cleanupError === null ? 'resolved' : 'rejected',
+        resultado_comando_posto_detach: postDetachStatus,
+        error_detalhe: postDetachError
+          ? {
+              name: postDetachError.name,
+              message: postDetachError.message,
+              stack: postDetachError.stack || null,
+              cause: postDetachError.cause
+                ? String(postDetachError.cause.message || postDetachError.cause)
+                : null,
+            }
+          : null,
+        duracao_operacao_ms: operationDuration,
+        detach_duracao_ms: detachDuration,
+        sucesso_detach: cleanupError === null,
+        node_version: process.version,
+      };
+
+      try {
+        await testInfo.attach('r2-prova-resultado-A-diagnostic.json', {
+          body: JSON.stringify(diag, null, 2),
+          contentType: 'application/json',
+        });
+      } catch (attachErr) {
+        console.error(
+          '[C4_DIAGNOSTIC] falha ao anexar evidência A:',
+          attachErr.message
+        );
+      }
+
+      console.log('[C4_DIAGNOSTIC]', JSON.stringify(diag));
+
       // Note: não há catch externo que absorva a falha.
       // Qualquer erro de infraestrutura propaga naturalmente.
 
@@ -437,39 +502,6 @@ console.log('[C4_DIAGNOSTIC]', JSON.stringify(diag, null, 2));
         );
       }
       testInfo.annotations.push({ type: 'log', description: 'Cenário B: operaçãoError capturado e é o sentinel esperado' });
-
--- Pós-detach: instrumentação diagnóstica (B)
-  cenario: 'B',
-  teste: 'R2: Cenário B — exceção sentinela preservada, cleanup e rejeição pós-detach',
-  resultado_operacao_principal: operationError
-    ? { message: operationError.message, name: operationError.constructor.name }
-    : null,
-  resultado_cleanup: cleanupError
-    ? { message: cleanupError.message, type: cleanupError.constructor.name }
-    : null,
-  estado_detach: 'pending_observation',
-  resultado_comando_posto_detach: 'pending_classification',
-  error_detalhe: postDetachError
-    ? { message: postDetachError.message, name: postDetachError.name }
-    : null,
-  duracao_operacao_ms: operationDuration ? operationDuration : null,
-  detach_duracao_ms: detachDuration ? detachDuration : null,
-  sucesso_detach: cleanupError === null,
-  node_version: process.version,
-});
-
-// Anexo de evidência via testInfo.attach (JSON diagnóstico).
-try {
-  await testInfo.attach('r2-prova-resultado-B-diagnostic.json', {
-    body: JSON.stringify(diagB, null, 2),
-    contentType: 'application/json',
-  });
-} catch (attachErr) {
-  console.error('[C4_DIAGNOSTIC] falha ao anexar evidência:', attachErr.message);
-}
-
-// Log direto para GitHub Actions / runner.
-console.log('[C4_DIAGNOSTIC]', JSON.stringify(diagB, null, 2));
 
 // -----------------------------------------------------------
   // 2. Classificar o status pós-detach rigorosamente.
@@ -675,39 +707,6 @@ console.log('[C4_DIAGNOSTIC]', JSON.stringify(diagB, null, 2));
 
 testInfo.annotations.push({ type: 'log', description: 'Cenário C: timeout controlado verificado, evidencia JSON' });
 
--- Pós-detach: instrumentação diagnóstica (C)
-  cenario: 'C',
-  teste: 'R2: Cenário C — timeout controlado via AbortController, cleanup e rejeição pós-detach',
-  resultado_operacao_principal: operationError
-    ? { message: operationError.message, name: operationError.constructor.name }
-    : null,
-  resultado_cleanup: cleanupError
-    ? { message: cleanupError.message, type: cleanupError.constructor.name }
-    : null,
-  estado_detach: 'pending_observation',
-  resultado_comando_posto_detach: 'pending_classification',
-  error_detalhe: postDetachError
-    ? { message: postDetachError.message, name: postDetachError.name }
-    : null,
-  duracao_operacao_ms: operationDuration ? operationDuration : null,
-  detach_duracao_ms: detachDuration ? detachDuration : null,
-  sucesso_detach: cleanupError === null,
-  node_version: process.version,
-});
-
-// Anexo de evidência via testInfo.attach (JSON diagnóstico).
-try {
-  await testInfo.attach('r2-prova-resultado-C-diagnostic.json', {
-    body: JSON.stringify(diagC, null, 2),
-    contentType: 'application/json',
-  });
-} catch (attachErr) {
-  console.error('[C4_DIAGNOSTIC] falha ao anexar evidência:', attachErr.message);
-}
-
-// Log direto para GitHub Actions / runner.
-console.log('[C4_DIAGNOSTIC]', JSON.stringify(diagC, null, 2));
-
 // -----------------------------------------------------------
   // 4. Classificar o status pós-detach rigorosamente.
       //    Estados: 'accepted', 'rejected_expected', 'rejected_unexpected', 'not_observed'.
@@ -737,6 +736,56 @@ console.log('[C4_DIAGNOSTIC]', JSON.stringify(diagC, null, 2));
         postDetachError = new Error('erro ao tentar comando pós-detach: ' + e.message);
         postDetachStatus = 'not_observed';
       }
+
+      // Pós-detach: instrumentação diagnóstica do cenário C.
+      // A declaração ocorre após a tentativa do comando pós-detach,
+      // quando postDetachStatus e postDetachError já possuem valores observados.
+      const diagC = {
+        cenario: 'C',
+        teste: testInfo.title,
+        resultado_operacao_principal: operationError
+          ? {
+              name: operationError.name,
+              message: operationError.message,
+            }
+          : null,
+        resultado_cleanup: cleanupError
+          ? {
+              name: cleanupError.name,
+              message: cleanupError.message,
+            }
+          : null,
+        estado_detach: cleanupError === null ? 'resolved' : 'rejected',
+        resultado_comando_posto_detach: postDetachStatus,
+        error_detalhe: postDetachError
+          ? {
+              name: postDetachError.name,
+              message: postDetachError.message,
+              stack: postDetachError.stack || null,
+              cause: postDetachError.cause
+                ? String(postDetachError.cause.message || postDetachError.cause)
+                : null,
+            }
+          : null,
+        duracao_operacao_ms: operationDuration,
+        detach_duracao_ms: detachDuration,
+        sucesso_detach: cleanupError === null,
+        node_version: process.version,
+      };
+
+      try {
+        await testInfo.attach('r2-prova-resultado-C-diagnostic.json', {
+          body: JSON.stringify(diagC, null, 2),
+          contentType: 'application/json',
+        });
+      } catch (attachErr) {
+        console.error(
+          '[C4_DIAGNOSTIC] falha ao anexar evidência C:',
+          attachErr.message
+        );
+      }
+
+      console.log('[C4_DIAGNOSTIC]', JSON.stringify(diagC));
 
       // 6. A classificação FORA do bloco try/capture.
       //    Apenas 'rejected_expected' satisfaz o gate.
