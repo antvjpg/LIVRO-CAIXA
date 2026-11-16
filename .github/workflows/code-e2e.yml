@@ -75,7 +75,7 @@ jobs:
       - name: Restaurar estado anterior do Playwright
         if: github.event_name != 'pull_request'
         id: playwright-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: |
             e2e/.artifacts/last-run.json
@@ -188,19 +188,17 @@ jobs:
           retention-days: 14
 
       - name: Salvar estado atual no cache
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         run: |
           # Garantir que os arquivos existem antes de salvar
           mkdir -p e2e/.artifacts
-          # Salvar apenas se a execução não for pull_request (já tratado acima)
-          if [ "${GITHUB_EVENT_NAME}" != "pull_request" ]; then
-            # Criar metadado mínimo se não existir
-            if [ ! -s e2e/.artifacts/last-run-meta.json ]; then
-              echo '{"schemaVersion":"coded-e2e/last-run-meta/2.0","mode":"FULL","branch":"${{ github.ref }}","sha":"${{ github.sha }}","runId":"${{ github.run_id }}","timestamp": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"}' > e2e/.artifacts/last-run-meta.json
-            fi
-            # Salvar no cache do GitHub Actions com chave única por run/tentativa
-            actions/cache save@v4 \
-              --path e2e/.artifacts/last-run.json \
-              --path e2e/.artifacts/last-run-meta.json \
-              --key coded-e2e-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.ref }}-${{ github.run_id }}-${{ github.run_attempt }} \
-              || echo "Aviso: não foi possível salvar o cache de estado"
+          if [ ! -s e2e/.artifacts/last-run-meta.json ]; then
+            echo '{"schemaVersion":"coded-e2e/last-run-meta/2.0","mode":"FULL","branch":"${{ github.ref }}","sha":"${{ github.sha }}","runId":"${{ github.run_id }}","timestamp": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"}' > e2e/.artifacts/last-run-meta.json
+          fi
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        if: always() && github.event_name != 'pull_request'
+        with:
+          path: |
+            e2e/.artifacts/last-run.json
+            e2e/.artifacts/last-run-meta.json
+          key: coded-e2e-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.ref }}-${{ github.run_id }}-${{ github.run_attempt }}
