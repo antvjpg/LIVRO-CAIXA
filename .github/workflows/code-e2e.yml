@@ -159,33 +159,20 @@ jobs:
             node -e "const s=require('./e2e/.state/qa-summary.json');console.log('cleanup | created='+(s.createdByCode?'SIM':'NAO')+' | firestore='+s.firestoreCleanup+' | auth='+s.authCleanup+(s.severity?(' | '+s.severity):''))"
           fi
 
-      - name: Publicar resumo
+      - name: Status de publicação das evidências
         if: always()
         run: |
           {
-            echo "## C.O.D.E. — resultado"
-            echo '```'
-            cat e2e/reports/CODE-relatorio-*.md 2>/dev/null | sed -n '1,220p' || echo "sem relatório"
-            echo '```'
+            echo "## C.O.D.E. — evidências"
+            echo ""
+            echo "A publicação de artefatos e relatórios detalhados está temporariamente suspensa por contenção de segurança."
+            echo "Os arquivos de diagnóstico permanecem restritos ao runner desta execução."
+            echo "A publicação será reavaliada após a implementação e validação da sanitização fail-closed."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Bloqueio não pode passar em silêncio
         if: always()
         run: node e2e/reports/generate-report.cjs --strict
-
-      # Evidências: somente relatórios (sanitizados). Nunca e2e/.state/ nem
-      # credenciais — ver testes em e2e/security/security.test.mjs.
-      - name: Evidências
-        if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: code-e2e-evidencias
-          path: |
-            e2e/reports/
-            playwright-report/
-            test-results/
-          if-no-files-found: ignore
-          retention-days: 14
 
       - name: Salvar estado atual no cache
         if: always() && github.event_name != 'pull_request'
@@ -195,10 +182,12 @@ jobs:
           if [ ! -s e2e/.artifacts/last-run-meta.json ]; then
             echo '{"schemaVersion":"coded-e2e/last-run-meta/2.0","mode":"FULL","branch":"${{ github.ref }}","sha":"${{ github.sha }}","runId":"${{ github.run_id }}","timestamp": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"}' > e2e/.artifacts/last-run-meta.json
           fi
-      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        if: always() && github.event_name != 'pull_request'
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
         with:
+          name: coded-e2e-artifacts-backup
           path: |
-            e2e/.artifacts/last-run.json
-            e2e/.artifacts/last-run-meta.json
-          key: coded-e2e-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.ref }}-${{ github.run_id }}-${{ github.run_attempt }}
+            package-lock.json
+            .github/workflows/code-e2e.yml
+          if-no-files-found: ignore
+      - name: Salvar estado atual no cache
