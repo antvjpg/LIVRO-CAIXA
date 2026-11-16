@@ -203,14 +203,16 @@ const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
 const lines = [];
 const w = (s = '') => lines.push(s);
 
-/* ----- Modo de execução ----- */
-const executionMode = process.env.CODE_E2E_MODE;
+const requestedExecutionMode = process.env.CODE_E2E_MODE;
 
-/* Validar modo: o workflow deve ter definido esse valor; o relatório não pode
-   inferir a partir das contagens. Se estiver ausente ou inválido, UNKNOWN. */
-if (!['FULL', 'LAST-FAILED', 'UNKNOWN'].includes(executionMode)) {
-  console.error(`CODE_E2E_MODE inválido ou ausente: ${executionMode || 'undefined'}. Não é permitido inferir o modo a partir das contagens.`);
-  executionMode = 'UNKNOWN';
+const executionMode = ['FULL', 'LAST-FAILED', 'UNKNOWN'].includes(requestedExecutionMode)
+  ? requestedExecutionMode
+  : 'UNKNOWN';
+
+if (executionMode === 'UNKNOWN') {
+  console.warn(
+    `CODE_E2E_MODE ausente ou inválido (${requestedExecutionMode || 'undefined'}). Relatório identificado como UNKNOWN.`
+  );
 }
 
 w('# C.O.D.E. — RELATÓRIO');
@@ -417,23 +419,29 @@ w('Classificação: PASS (ok) · FAIL (divergência/erro) · BLOCKED (não execu
 w('condição de ambiente/credenciais) · SKIPPED (pulado intencionalmente) · FLAKY');
 w('(falhou e passou na repetição — investigar estabilidade).');
 
+/* Apresentação do escopo */
+w('## Escopo da execução');
+w('');
+
+if (executionMode === 'LAST-FAILED') {
+  w('Modo: LAST-FAILED');
+  w('Escopo: somente testes selecionados pelo estado nativo de falhas anterior (última run).');
+  w('Atenção: estes totais não equivalem aos totais de uma execução FULL.');
+} else if (executionMode === 'FULL') {
+  w('Modo: FULL');
+  w('Escopo: suíte completo.');
+} else {
+  w('Modo: UNKNOWN');
+  w('Escopo: não foi possível confirmar o modo efetivo de execução.');
+}
+
+w('');
+
 const outPath = path.join(config.reportsDir, `CODE-relatorio-${new Date().toISOString().slice(0, 10)}.md`);
 fs.writeFileSync(outPath, sanitizeText(lines.join('\n')) + '\n');
 console.log(`Relatório: ${outPath}`);
 console.log(`PASS=${counts.PASS} FAIL=${counts.FAIL} BLOCKED=${counts.BLOCKED} SKIPPED=${counts.SKIPPED} FLAKY=${counts.FLAKY}`);
 console.log(`Duração da execução: ${formatDuration(execDurationMs)} (${formatInstant(execStartIso)} → ${formatInstant(execEndIso)})`);
-/* Apresentação do escopo */
-if executionMode === 'LAST-FAILED':
-  w('## Escopo da execução');
-  w('');
-  w('Modo: LAST-FAILED');
-  w(`Escopo: somente testes selecionados pelo estado nativo de falhas anterior (última run).`);
-  w('Atenção: estes totais não equivalem aos totais de uma execução FULL.');
-} else if executionMode === 'FULL':
-  w('## Escopo da execução');
-  w('');
-  w('Modo: FULL');
-  w(`Escopo: suíte completo.`);
 
 /* ----- Metadado de pers Last-run (para --last-failed na execução seguinte) ----- */
 const metaPath = path.join(config.root, 'e2e', '.artifacts', 'last-run-meta.json');
