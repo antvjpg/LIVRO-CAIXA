@@ -210,7 +210,7 @@ const executionMode = process.env.CODE_E2E_MODE;
    inferir a partir das contagens. Se estiver ausente ou inválido, UNKNOWN. */
 if (!['FULL', 'LAST-FAILED', 'UNKNOWN'].includes(executionMode)) {
   console.error(`CODE_E2E_MODE inválido ou ausente: ${executionMode || 'undefined'}. Não é permitido inferir o modo a partir das contagens.`);
-  process.exit(1);
+  executionMode = 'UNKNOWN';
 }
 
 w('# C.O.D.E. — RELATÓRIO');
