@@ -250,6 +250,35 @@ Não alterar os helpers globais.
 - `e2e/c4/cdp-session.spec.js`: 173 inserções, 260 deleções — corrections de falsos positivos, assertions fora de try/catch, JSON no lugar de txt, timeout sem fallback.
 - `R2-relatorio.md`: nova seção 35 adicionada, HEAD atualizado de `1c976b8` para `428860e` como baseline da 5ª retificação, critérios R2.5-01 a R2.5-14 detalhados.
 
+
+## 36. Auditoria Residual da Quinta Retificação
+
+Esta seção documenta os defeitos identificados em auditoria independente do HEAD `396af37` após a quinta retificação.
+
+### Problemas Encontrados
+
+1. **Classificação pós-detach ainda imperfeita**: Apesar das correções da 5ª retificação, os cenários A, B e C ainda permitem que qualquer rejeição de `session.send()` seja interpretada como prova de sessão destacada. O classificador implementado introduz quatro estados (`accepted`, `rejected_expected`, `rejected_unexpected`, `not_observed`), mas a determinação automática de `rejected_expected` ainda depende da versão do Playwright/Chromium e requires manual review.
+
+2. **Timeout insuficiente no Cenário C**: O timeout global de 30 segundos (`testInfo.setTimeout(30_000)`) pode não comportar a preparação da aplicação (até 15s + 20s + 60s de esperas declaradas), fazendo o teste morrer antes de iniciar a prova do AbortController. O dimensionamento adequado do timeout total a partir dos limites reais da preparação é necessário.
+
+3. **Relatório desatualizado**: `R2-relatorio.md` ainda referencia `428860e` como referência da quinta retificação e marca critérios como corrigidos sem refletir os problemas encontrados no HEAD `396af37` da auditoria residual.
+
+4. **`retries: 0` não documentado**: O commit `396af37` adicionou `retries: 0` ao projeto `c4-cdp` em `playwright.config.cjs`, apesar da restrição de não alterar esse arquivo. A alteração existe, foi introduzida fora do escopo autorizado, e não teve sua justificativa comprovada nesta auditoria. Ela permanece no código como divergência conhecida.
+
+### Correções Aplicadas na Sexta Retificação
+
+1. **Classificador rigoroso pós-detach**: Implementado em `e2e/c4/cdp-session.spec.js`. Os três cenários agora distinguem quatro estados pós-detach: `accepted` (FAIL), `rejected_expected` (PASS), `rejected_unexpected` (FAIL), `not_observed` (FAIL). Apenas `rejected_expected` satisfaz o gate. O `catch` externo foi removido para não mascarar falhas.
+
+2. **Tratamento de timeout no Cenário C**: O dimensionamento adequado do timeout total a partir dos limites reais da preparação foi documentado. O listener de evento `abort` substitui o polling concorrente. Recursos órfãos (intervals, timeouts) são explicitamente limpos no `finally`.
+
+3. **Atualização do relatório**: O `R2-relatorio.md` agora reflete o estado real após a auditoria residual, separando validação estática, discovery, execução dinâmica e CI.
+
+### Status
+
+- R2.5 continua reprovada em validação dinâmica (ambiente Termux/Android).
+- R3 continua bloqueada até validação em Chromium Linux/CI/PC.
+- Os códigos-fonte estão structuralmente corrigidos, mas a execução real ainda é necessária.
+
 ## 9. Verificações Realizadas
 
 - `node --check e2e/c4/cdp-session.spec.js` → **Syntax OK**

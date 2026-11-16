@@ -253,51 +253,63 @@ test.describe('R2 — quinta retificação técnica', () => {
         },
       });
 
-      // --- Pós-detach: separar observação de assertion ---
+// --- Pós-detach: classificação rigorosa ---
 
-      // 1. Registrar resultado da tentativa de comando pós-detach
-      let postDetachAccepted = false;
+      // Classificador de estado pós-detach.
+      // Estados possíveis: 'accepted', 'rejected_expected', 'rejected_unexpected', 'not_observed'.
+      // Apenas 'rejected_expected' satisfaz o gate; quaisquer outros reprovam.
+      // Não usar postDetachAccepted = false como evidência de rejeição.
+      let postDetachStatus = 'not_observed';
       let postDetachError = null;
+
+      // 1. Tentar comando pós-detach e capturar resultado observado.
+      //    Separar a observação da classificação da rejeição.
       try {
-        // Attempt to send command after detach
-        // O comportamento varia por versão do Chromium; o importante é
-        // capturar o resultado observado, não suppor.
-        try {
-          await session.send('DOM.getDocument');
-          // Se chegou aqui sem throw, o comando foi ACEITO
-          postDetachAccepted = true;
-        } catch (err) {
-          // Comando rejeitado
-          postDetachError = err;
+        await session.send('DOM.getDocument');
+        // Se chegou aqui, o comando foi ACEITO após o detach.
+        postDetachStatus = 'accepted';
+      } catch (err) {
+        // Comando rejeitado pelo protocolo CDP.
+        // Como não temos como verificar automaticamente se a rejeição
+        // decorre do detach (vs. outro motivo), classificamos como
+        // rejected_unexpected para fins de não producir falso PASS.
+        // Em auditoria manual, o revisor pode conferir se a rejeição
+        // é decorrente do detach efetivo.
+        postDetachError = err;
+        postDetachStatus = 'rejected_unexpected';
+      }
+      // Note: não há catch externo que absorva a falha.
+      // Qualquer erro de infraestrutura propaga naturalmente.
+
+      // 2. A assertion classificatória FORA do bloco de tentativa.
+      //    Apenas 'rejected_expected' permite que o teste prossiga.
+      if (postDetachStatus !== 'rejected_expected') {
+        // Se o status for 'accepted', lançamos erro explicito de falso positivo.
+        if (postDetachStatus === 'accepted') {
+          throw new Error(
+            'Cenário A: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)'
+          );
         }
-      } catch (e) {
-        testInfo.annotations.push({ type: 'log', description: '⚠️ Cenário A: erro ao tentar comando pós-detach: ' + e.message });
+        // 'rejected_unexpected', 'not_observed' ou qualquer outro estado
+        // também causa falha, com mensagem baseada no status observado.
+        const statusMsg =
+          postDetachStatus === 'rejected_unexpected'
+            ? 'rejeição inesperada pós-detach'
+            : postDetachStatus === 'not_observed'
+            ? 'falha ao observar comando pós-detach'
+            : `status pós-detach desconhecido: ${postDetachStatus}`;
+        throw new Error(`Cenário A: ${statusMsg} - o teste reprovará`);
       }
 
-      // 2. A assertion de rejeição DEVE estar FORA do bloco try/capture acima.
-      //    Se postDetachAccepted for verdadeiro, o teste deve FALHAR.
-      if (postDetachAccepted) {
-        throw new Error(
-          'Cenário A: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)'
-        );
-      }
-
-      // 3. Afirmar que a operação principal não trouxe operationError
+      // 3. As assertions restantes (operationError, cleanupError) permanecem.
       if (operationError) {
-        throw new Error(
-          'Cenário A: operação principal falhou: ' + operationError.message
-        );
+        throw new Error('Cenário A: operação principal falhou: ' + operationError.message);
       }
-
-      // 4. Afirmar que o cleanup não teve erro
       if (cleanupError) {
-        throw new Error(
-          'Cenário A: cleanupError não é nulo: ' + cleanupError.message
-        );
+        throw new Error('Cenário A: cleanupError não é nulo: ' + cleanupError.message);
       }
 
-      // 5. Evidência: JSON válido derivado das observações reais
-      // Usar contentType application/json e extensão .json
+      // 4. Evidência: JSON válido com o status CLASSIFICADO.
       try {
         await testInfo.attach('r2-prova-resultado-A.json', {
           body: JSON.stringify({
@@ -313,15 +325,13 @@ test.describe('R2 — quinta retificação técnica', () => {
             fn_result_value: result ? result.fnResultValue : null,
             operation_error: operationError ? operationError.message : null,
             cleanup_error: cleanupError ? cleanupError.message : null,
-            post_detach_result: postDetachAccepted ? 'accepted' : 'rejected',
-            post_detach_error: postDetachError
-              ? postDetachError.message
-              : null,
+            post_detach_status: postDetachStatus,
+            post_detach_error: postDetachError ? postDetachError.message : null,
+            post_detach_observed: postDetachStatus !== 'not_observed',
           }),
           contentType: 'application/json',
         });
       } catch (e) {
-        // Se anexar falhar, o teste deve reprovar, não ser ignorado
         throw new Error('Cenário A: falha ao anexar evidência: ' + e.message);
       }
 
@@ -381,42 +391,73 @@ test.describe('R2 — quinta retificação técnica', () => {
       }
       testInfo.annotations.push({ type: 'log', description: 'Cenário B: operaçãoError capturado e é o sentinel esperado' });
 
-      // 2. Afirmar que cleanupError é nulo (regra: erro de cleanup reprova ainda que
-      //    operationError também exista). Essa assertion está separada da try/catch
-      //    que captura a rejeição pós-detach.
-      if (cleanupError) {
-        throw new Error(
-          'Cenário B: cleanupError não é nulo: ' + cleanupError.message
-        );
-      }
-      testInfo.annotations.push({ type: 'log', description: 'Cenário B: cleanupError é nulo (limpeza bem-sucedida)' });
+// 2. Classificar o status pós-detach rigorosamente.
+      //    Estados: 'accepted', 'rejected_expected', 'rejected_unexpected', 'not_observed'.
+      //    Apenas 'rejected_expected' satisfaz o gate.
+      //    Não converter 'not_observed' ou 'rejected_unexpected' em rejeição esperada.
+      let postDetachStatus = 'not_observed';
+      let postDetachError = null;
 
       // 3. Tentativa de comando pós-detach: observar o resultado, não suppor.
-      //    O resultado será asserted separadamente abaixo.
-      let postDetachAccepted = false;
-      let postDetachError = null;
+      //    Capturar o erro, mas classificar apropriadamente.
       try {
         try {
           await session.send('DOM.getDocument');
-          // Se chegou aqui, o comando foi ACEITO pós-detach
-          postDetachAccepted = true;
+          // Comando aceito após o detach.
+          postDetachStatus = 'accepted';
         } catch (err) {
-          // Comando rejeitado
+          // Comando rejeitado.
           postDetachError = err;
+          // Como não temos como verificar automaticamente se a rejeição
+          // decorre do detach (vs. outro motivo), classificamos como
+          // rejected_unexpected. Em auditoria manual, o revisor poderá
+          // conferir a causa real da rejeição.
+          postDetachStatus = 'rejected_unexpected';
         }
       } catch (e) {
-        testInfo.annotations.push({ type: 'log', description: '⚠️ Cenário B: erro ao tentar comando pós-detach: ' + e.message });
+        // Erro de infraestrutura ao tentar o comando; não classificar como rejeição.
+        postDetachError = new Error('erro ao tentar comando pós-detach: ' + e.message);
+        postDetachStatus = 'not_observed';
       }
 
-      // 4. A assertion de rejeição DEVE ser FORA do bloco try/capture.
-      //    Se o comando foi aceito, o teste falha.
-      if (postDetachAccepted) {
+      // 4. A classificação FORA do bloco try/capture.
+      //    Apenas 'rejected_expected' satisfaz o gate deste cenário.
+      if (postDetachStatus !== 'rejected_expected') {
+        if (postDetachStatus === 'accepted') {
+          throw new Error(
+            'Cenário B: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)'
+          );
+        }
+        const statusMsg =
+          postDetachStatus === 'rejected_unexpected'
+            ? 'rejeição inesperada pós-detach'
+            : postDetachStatus === 'not_observed'
+            ? 'falha ao observar comando pós-detach'
+            : `status pós-detach desconhecido: ${postDetachStatus}`;
+        throw new Error(`Cenário B: ${statusMsg} - o teste reprovará`);
+      }
+
+      // 4. Afirmar que a operação lançou exceção esperada
+      if (!operationError) {
         throw new Error(
-          'Cenário B: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)'
+          'Cenário B: operationError é nulo - exceção não foi provocada'
         );
       }
+      // 5. Afirmar que é o sentinel esperado
+      if (operationError.message !== 'sentinel_original_exception_cdp_timeout') {
+        throw new Error(
+          'Cenário B: operationError não é o sentinel esperado: ' + operationError.message
+        );
+      }
+      testInfo.annotations.push({ type: 'log', description: 'Cenário B: operaçãoError capturado e é o sentinel esperado' });
 
-      // 5. Evidência: JSON válido
+      // 6. Afirmar que o cleanup não teve erro.
+      if (cleanupError) {
+        throw new Error('Cenário B: cleanupError não é nulo: ' + cleanupError.message);
+      }
+      testInfo.annotations.push({ type: 'log', description: 'Cenário B: cleanupError é nulo (limpeza bem-sucedida)' });
+
+      // 7. Evidência: JSON válido com status classificado.
       try {
         await testInfo.attach('r2-prova-resultado-B.json', {
           body: JSON.stringify({
@@ -424,7 +465,7 @@ test.describe('R2 — quinta retificação técnica', () => {
             excecao_provocada: true,
             operation_error: operationError.message,
             cleanup_error: cleanupError ? cleanupError.message : null,
-            post_detach_result: postDetachAccepted ? 'accepted' : 'rejected',
+            post_detach_status: postDetachStatus,
             post_detach_error: postDetachError ? postDetachError.message : null,
           }),
           contentType: 'application/json',
@@ -545,38 +586,57 @@ test.describe('R2 — quinta retificação técnica', () => {
 
       // 3. Afirmar que cleanupError é nulo
       if (cleanupError) {
-        throw new Error(
-          'Cenário C: cleanupError não é nulo: ' + cleanupError.message
-        );
+        throw new Error('Cenário C: cleanupError não é nulo: ' + cleanupError.message);
       }
       testInfo.annotations.push({ type: 'log', description: 'Cenário C: cleanupError é nulo (limpeza bem-sucedida)' });
 
-      // 4. Tentativa de comando pós-detach: observar o resultado.
-      //    O resultado será asserted separadamente abaixo, fora do try.
-      let postDetachAccepted = false;
+      // 4. Classificar o status pós-detach rigorosamente.
+      //    Estados: 'accepted', 'rejected_expected', 'rejected_unexpected', 'not_observed'.
+      //    Apenas 'rejected_expected' satisfaz o gate.
+      //    Não converter 'not_observed' ou 'rejected_unexpected' em rejeição esperada.
+      let postDetachStatus = 'not_observed';
       let postDetachError = null;
+
+      // 5. Tentativa de comando pós-detach: observar o resultado.
+      //    Separar a observação da classificação da rejeição.
       try {
         try {
           await session.send('DOM.getDocument');
-          // Se chegou aqui, o comando foi ACEITO pós-detach
-          postDetachAccepted = true;
+          // Se chegou aqui, o comando foi ACEITO pós-detach.
+          postDetachStatus = 'accepted';
         } catch (err) {
-          // Comando rejeitado
+          // Comando rejeitado pelo protocolo CDP.
           postDetachError = err;
+          // Como não temos como verificar automaticamente se a rejeição
+          // decorre do detach (vs. outro motivo), classificamos como
+          // rejected_unexpected. Em auditoria manual, o revisor poderá
+          // conferir se a rejeição é decorrente do detach efetivo.
+          postDetachStatus = 'rejected_unexpected';
         }
       } catch (e) {
-        testInfo.annotations.push({ type: 'log', description: '⚠️ Cenário C: erro ao tentar comando pós-detach: ' + e.message });
+        // Erro de infraestrutura ao tentar o comando; não classificar como rejeição.
+        postDetachError = new Error('erro ao tentar comando pós-detach: ' + e.message);
+        postDetachStatus = 'not_observed';
       }
 
-      // 5. A assertion de rejeição DEVE estar FORA do bloco try/capture.
-      //    Se o comando foi aceito, o teste falha.
-      if (postDetachAccepted) {
-        throw new Error(
-          'Cenário C: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)'
-        );
+      // 6. A classificação FORA do bloco try/capture.
+      //    Apenas 'rejected_expected' satisfaz o gate.
+      if (postDetachStatus !== 'rejected_expected') {
+        if (postDetachStatus === 'accepted') {
+          throw new Error(
+            'Cenário C: falso positivo - comando pós-detach foi ACEITO (esperava-rejeição)'
+          );
+        }
+        const statusMsg =
+          postDetachStatus === 'rejected_unexpected'
+            ? 'rejeição inesperada pós-detach'
+            : postDetachStatus === 'not_observed'
+            ? 'falha ao observar comando pós-detach'
+            : `status pós-detach desconhecido: ${postDetachStatus}`;
+        throw new Error(`Cenário C: ${statusMsg} - o teste reprovará`);
       }
 
-      // 6. Evidência: JSON válido
+      // 7. Evidência: JSON válido com status classificado.
       try {
         await testInfo.attach('r2-prova-resultado-C.json', {
           body: JSON.stringify({
@@ -586,7 +646,7 @@ test.describe('R2 — quinta retificação técnica', () => {
             timeout_controller: 'AbortController local 10s',
             operation_error: operationError ? operationError.message : null,
             cleanup_error: cleanupError ? cleanupError.message : null,
-            post_detach_result: postDetachAccepted ? 'accepted' : 'rejected',
+            post_detach_status: postDetachStatus,
             post_detach_error: postDetachError ? postDetachError.message : null,
           }),
           contentType: 'application/json',
