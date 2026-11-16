@@ -203,7 +203,18 @@ const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
 const lines = [];
 const w = (s = '') => lines.push(s);
 
+/* ----- Modo de execução ----- */
+const executionMode = process.env.CODE_E2E_MODE;
+
+/* Validar modo: o workflow deve ter definido esse valor; o relatório não pode
+   inferir a partir das contagens. Se estiver ausente ou inválido, UNKNOWN. */
+if (!['FULL', 'LAST-FAILED', 'UNKNOWN'].includes(executionMode)) {
+  console.error(`CODE_E2E_MODE inválido ou ausente: ${executionMode || 'undefined'}. Não é permitido inferir o modo a partir das contagens.`);
+  process.exit(1);
+}
+
 w('# C.O.D.E. — RELATÓRIO');
+w("Modo de execução: " + executionMode);
 w('');
 w(`Gerado: ${now} · Specs: ${tests.length}`);
 w('');
@@ -411,6 +422,18 @@ fs.writeFileSync(outPath, sanitizeText(lines.join('\n')) + '\n');
 console.log(`Relatório: ${outPath}`);
 console.log(`PASS=${counts.PASS} FAIL=${counts.FAIL} BLOCKED=${counts.BLOCKED} SKIPPED=${counts.SKIPPED} FLAKY=${counts.FLAKY}`);
 console.log(`Duração da execução: ${formatDuration(execDurationMs)} (${formatInstant(execStartIso)} → ${formatInstant(execEndIso)})`);
+/* Apresentação do escopo */
+if executionMode === 'LAST-FAILED':
+  w('## Escopo da execução');
+  w('');
+  w('Modo: LAST-FAILED');
+  w(`Escopo: somente testes selecionados pelo estado nativo de falhas anterior (última run).`);
+  w('Atenção: estes totais não equivalem aos totais de uma execução FULL.');
+} else if executionMode === 'FULL':
+  w('## Escopo da execução');
+  w('');
+  w('Modo: FULL');
+  w(`Escopo: suíte completo.`);
 
 /* ----- Metadado de pers Last-run (para --last-failed na execução seguinte) ----- */
 const metaPath = path.join(config.root, 'e2e', '.artifacts', 'last-run-meta.json');
