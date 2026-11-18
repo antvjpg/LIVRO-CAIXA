@@ -41,6 +41,7 @@ module.exports = async () => {
   if (explicit) {
     identity.save({
       runId: identity.newRunId(),
+      runAttempt: identity.newRunAttempt(),
       mode: 'explicit',
       email: env('CODE_TEST_EMAIL'),
       createdByCode: false,
@@ -56,6 +57,7 @@ module.exports = async () => {
     process.env.CODE_TEST_MODE = 'ephemeral';
     identity.save({
       runId: id.runId,
+      runAttempt: identity.newRunAttempt(),
       mode: 'ephemeral',
       email: id.email,
       uid: null,
@@ -68,6 +70,7 @@ module.exports = async () => {
   } else {
     identity.save({
       runId: identity.newRunId(),
+      runAttempt: identity.newRunAttempt(),
       mode: 'disabled',
       email: null,
       createdByCode: false,

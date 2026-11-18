@@ -135,20 +135,20 @@ jobs:
           CODE_E2E_MODE: ${{ steps.playwright-flags.outputs.mode }}
         run: |
           if [ "$CODE_E2E_MODE" = "LAST-FAILED" ]; then
-            npx playwright test \
+            node e2e/scripts/run-code.cjs \
+              --code-report \
+              --code-report-strict \
+              --code-report-on-failure \
               --config playwright.config.cjs \
               --last-failed \
               --last-failed-file=e2e/.artifacts/last-run.json
           else
-            npx playwright test \
+            node e2e/scripts/run-code.cjs \
+              --code-report \
+              --code-report-strict \
+              --code-report-on-failure \
               --config playwright.config.cjs
           fi
-
-      - name: Relatório C.O.D.E.
-        if: always()
-        env:
-          CODE_E2E_MODE: ${{ steps.playwright-flags.outputs.mode || 'UNKNOWN' }}
-        run: node e2e/reports/generate-report.cjs
 
       - name: Confirmação de limpeza da run efêmera
         if: always()
@@ -171,12 +171,6 @@ jobs:
             echo "Os arquivos de diagnóstico permanecem restritos ao runner desta execução."
             echo "A publicação será reavaliada após a implementação e validação da sanitização fail-closed."
           } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Bloqueio não pode passar em silêncio
-        if: always()
-        env:
-          CODE_E2E_MODE: ${{ steps.playwright-flags.outputs.mode || 'UNKNOWN' }}
-        run: node e2e/reports/generate-report.cjs --strict
 
       - name: Salvar estado atual no cache
         if: always() && github.event_name != 'pull_request'
