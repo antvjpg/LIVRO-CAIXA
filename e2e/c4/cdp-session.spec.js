@@ -205,9 +205,11 @@ test.describe('R2 — quinta retificação técnica', () => {
 
           /* --- Frame principal --- */
           await session.send('Page.enable');
-          const frameTree = await session.send('Page.getFrameTree');
-          const mainFrame = frameTree.frame;
-          const frameId = mainFrame ? mainFrame.frameId : null;
+          // Page.getFrameTree retorna { frameTree }; Frame expõe .id (não .frameId).
+          const frameTreeResult = await session.send('Page.getFrameTree');
+          const rootFrameTree = frameTreeResult ? frameTreeResult.frameTree : null;
+          const mainFrame = rootFrameTree ? rootFrameTree.frame : null;
+          const frameId = mainFrame ? mainFrame.id : null;
           const frameUrl = mainFrame ? mainFrame.url : null;
           if (!frameId) {
             throw new Error('frameId indefinido');
