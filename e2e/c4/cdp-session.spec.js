@@ -281,13 +281,19 @@ test.describe('R2 — quinta retificação técnica', () => {
         postDetachStatus = 'accepted';
       } catch (err) {
         // Comando rejeitado pelo protocolo CDP.
-        // Como não temos como verificar automaticamente se a rejeição
-        // decorre do detach (vs. outro motivo), classificamos como
-        // rejected_unexpected para fins de não producir falso PASS.
-        // Em auditoria manual, o revisor pode conferir se a rejeição
-        // é decorrente do detach efetivo.
+        // Classificação automática: 'rejected_expected' somente quando a
+        // mensagem indica alvo/sessão fechado (reatribuição ao detach)
+        // e o detach anterior foi bem-sucedido (cleanupError === null).
+        // Qualquer outro caso permanece 'rejected_unexpected' (fail-closed,
+        // não produz falso PASS).
         postDetachError = err;
-        postDetachStatus = 'rejected_unexpected';
+        const msg = String((err && err.message) || '');
+        const closedTarget =
+          /target page, context or browser has been closed|target closed|session closed|target doesn't exist/i.test(msg);
+        postDetachStatus =
+          closedTarget && cleanupError === null
+            ? 'rejected_expected'
+            : 'rejected_unexpected';
       }
 
       // Pós-detach: instrumentação diagnóstica do cenário A.
@@ -474,13 +480,19 @@ test.describe('R2 — quinta retificação técnica', () => {
           // Comando aceito após o detach.
           postDetachStatus = 'accepted';
         } catch (err) {
-          // Comando rejeitado.
+          // Comando rejeitado pelo protocolo CDP.
+          // Classificação automática: 'rejected_expected' somente quando a
+          // mensagem indica alvo/sessão fechado (reatribuição ao detach)
+          // e o detach anterior foi bem-sucedido (cleanupError === null).
+          // Qualquer outro caso permanece 'rejected_unexpected' (fail-closed).
           postDetachError = err;
-          // Como não temos como verificar automaticamente se a rejeição
-          // decorre do detach (vs. outro motivo), classificamos como
-          // rejected_unexpected. Em auditoria manual, o revisor poderá
-          // conferir a causa real da rejeição.
-          postDetachStatus = 'rejected_unexpected';
+          const msg = String((err && err.message) || '');
+          const closedTarget =
+            /target page, context or browser has been closed|target closed|session closed|target doesn't exist/i.test(msg);
+          postDetachStatus =
+            closedTarget && cleanupError === null
+              ? 'rejected_expected'
+              : 'rejected_unexpected';
         }
       } catch (e) {
         // Erro de infraestrutura ao tentar o comando; não classificar como rejeição.
@@ -682,12 +694,18 @@ testInfo.annotations.push({ type: 'log', description: 'Cenário C: timeout contr
           postDetachStatus = 'accepted';
         } catch (err) {
           // Comando rejeitado pelo protocolo CDP.
+          // Classificação automática: 'rejected_expected' somente quando a
+          // mensagem indica alvo/sessão fechado (reatribuição ao detach)
+          // e o detach anterior foi bem-sucedido (cleanupError === null).
+          // Qualquer outro caso permanece 'rejected_unexpected' (fail-closed).
           postDetachError = err;
-          // Como não temos como verificar automaticamente se a rejeição
-          // decorre do detach (vs. outro motivo), classificamos como
-          // rejected_unexpected. Em auditoria manual, o revisor poderá
-          // conferir se a rejeição é decorrente do detach efetivo.
-          postDetachStatus = 'rejected_unexpected';
+          const msg = String((err && err.message) || '');
+          const closedTarget =
+            /target page, context or browser has been closed|target closed|session closed|target doesn't exist/i.test(msg);
+          postDetachStatus =
+            closedTarget && cleanupError === null
+              ? 'rejected_expected'
+              : 'rejected_unexpected';
         }
       } catch (e) {
         // Erro de infraestrutura ao tentar o comando; não classificar como rejeição.
