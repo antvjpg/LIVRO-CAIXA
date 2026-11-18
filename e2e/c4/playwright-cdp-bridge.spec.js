@@ -136,7 +136,7 @@ test.describe('C.4 — prova vertical: probeState via CDPSession do Playwright',
     expect(occurrences.length, 'associação do nodeId — ocorrência encontrada').toBeGreaterThan(0);
 
     const first = occurrences[0];
-    expect(first.nodeId, 'associação do nodeId').toBeTypeOf('number');
+    expect(typeof first.nodeId, 'associação do nodeId é number').toBe('number');
     expect(first.discarded, 'ocorrência não descartada').toBe(false);
     expect(first.color, 'estilo computado (color)').toBeTruthy();
     expect(first.bg, 'estilo computado (background-color)').toBeTruthy();
