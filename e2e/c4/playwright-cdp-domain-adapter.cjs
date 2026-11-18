@@ -1,7 +1,7 @@
 'use strict';
 
 /* C.O.D.E. — FASE 2: adaptador de domínios CDP para a prova vertical C.4.
-   Proxies finos para os domínios DOM, CSS e Runtime.
+   Proxies finos para os domínios DOM, CSS, Runtime, Page e Emulation.
 
    Contrato:
      - Cada método encaminha os parâmetros para session.send('Domain.method', params);
@@ -52,7 +52,17 @@ function createDomainAdapters(session) {
     callFunctionOn: forward('Runtime', 'callFunctionOn'),
   };
 
-  return { DOM, CSS, Runtime };
+  const Page = {
+    enable: forward('Page', 'enable'),
+    navigate: forward('Page', 'navigate'),
+  };
+
+  const Emulation = {
+    setDeviceMetricsOverride: forward('Emulation', 'setDeviceMetricsOverride'),
+    setTouchEmulationEnabled: forward('Emulation', 'setTouchEmulationEnabled'),
+  };
+
+  return { DOM, CSS, Runtime, Page, Emulation };
 }
 
 module.exports = { createDomainAdapters };
