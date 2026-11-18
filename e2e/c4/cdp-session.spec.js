@@ -268,6 +268,11 @@ test.describe('R2 — quinta retificação técnica', () => {
 // -----------------------------------------------------------
   // Classificador de estado pós-detach.
 
+      // Estados locais para o cenário A - declaro aqui para estar disponível
+      // durante toda a sequência de diagnóstico e classificação.
+      let postDetachStatus = 'not_observed';
+      let postDetachError = null;
+
       // 1. Tentar comando pós-detach e capturar resultado observado.
       //    Separar a observação da classificação da rejeição.
       try {
@@ -285,9 +290,41 @@ test.describe('R2 — quinta retificação técnica', () => {
         postDetachStatus = 'rejected_unexpected';
       }
 
-      // -----------------------------------------------------------
-  // Classificador de estado pós-detach.
-
+      // Pós-detach: instrumentação diagnóstica do cenário A.
+      // A declaração ocorre após a tentativa do comando pós-detach,
+      // quando postDetachStatus e postDetachError já possuem valores observados.
+      const diag = {
+        cenario: 'A',
+        teste: testInfo.title,
+        resultado_operacao_principal: result
+          ? {
+              rootNodeId: result.rootNodeId,
+              bodyNodeId: result.bodyNodeId,
+            }
+          : null,
+        resultado_cleanup: cleanupError
+          ? {
+              name: cleanupError.name,
+              message: cleanupError.message,
+            }
+          : null,
+        estado_detach: cleanupError === null ? 'resolved' : 'rejected',
+        resultado_comando_posto_detach: postDetachStatus,
+        error_detalhe: postDetachError
+          ? {
+              name: postDetachError.name,
+              message: postDetachError.message,
+              stack: postDetachError.stack || null,
+              cause: postDetachError.cause
+                ? String(postDetachError.cause.message || postDetachError.cause)
+                : null,
+            }
+          : null,
+        duracao_operacao_ms: operationDuration,
+        detach_duracao_ms: detachDuration,
+        sucesso_detach: cleanupError === null,
+        node_version: process.version,
+      };
 
       try {
         await testInfo.attach('r2-prova-resultado-A-diagnostic.json', {
@@ -600,20 +637,6 @@ test.describe('R2 — quinta retificação técnica', () => {
       let postDetachStatus = 'not_observed';
       let postDetachError = null;
 
-      try {
-        await testInfo.attach('r2-prova-resultado-C-diagnostic.json', {
-          body: JSON.stringify(diagC, null, 2),
-          contentType: 'application/json',
-        });
-      } catch (attachErr) {
-        console.error(
-          '[C4_DIAGNOSTIC] falha ao anexar evidência C:',
-          attachErr.message
-        );
-      }
-
-      console.log('[C4_DIAGNOSTIC]', JSON.stringify(diagC));
-
       // --- Afirmações pós-detach (fora de blocos que capturem rejeição) ---
 
       // 1. Afirmar que o timeout controlado foi capturado
@@ -672,9 +695,13 @@ testInfo.annotations.push({ type: 'log', description: 'Cenário C: timeout contr
         postDetachStatus = 'not_observed';
       }
 
+      // Pós-detach: instrumentação diagnóstica do cenário C.
       // A declaração ocorre após a tentativa do comando pós-detach,
       // quando postDetachStatus e postDetachError já possuem valores observados.
-      teste: testInfo.title,
+      const diagC = {
+        cenario: 'C',
+        teste: testInfo.title,
+        resultado_operacao_principal: operationError
           ? {
               name: operationError.name,
               message: operationError.message,

@@ -278,6 +278,11 @@ test('modo A: falha do Playwright com --code-report-on-failure executa diagnóst
   assert.equal(res.status, 3, res.stderr);
   assert.ok(fs.existsSync(npxMarker), 'Playwright deve ter rodado');
   assert.ok(fs.existsSync(nodeMarker), 'diagnósticos devem rodar com onFailure');
+  const onFailureLines = fs
+    .readFileSync(nodeMarker, 'utf8')
+    .split('\n')
+    .filter((line) => line.startsWith('ARGS:'));
+  assert.deepEqual(onFailureLines, ['ARGS: e2e/reports/generate-report.cjs --strict']);
   assert.ok(!fs.existsSync(LOCK_PATH));
 });
 
@@ -300,7 +305,37 @@ test('modo A: sucesso sem flags de relatório não executa o gerador', () => {
   assert.ok(!fs.existsSync(nodeMarker));
 });
 
-test('modo A: --code-report e --code-report-strict geram duas invocações na ordem', () => {
+test('modo A: --code-report sozinho gera uma invocação sem --strict', () => {
+  const fake = makeFakeBin();
+  const nodeMarker = path.join(fake, 'node.marker');
+  const res = runWrapper(
+    ['--code-report'],
+    wrapperEnv(fake, { FAKE_NODE_MARKER: nodeMarker })
+  );
+  assert.equal(res.status, 0, res.stderr);
+  const lines = fs
+    .readFileSync(nodeMarker, 'utf8')
+    .split('\n')
+    .filter((line) => line.startsWith('ARGS:'));
+  assert.deepEqual(lines, ['ARGS: e2e/reports/generate-report.cjs']);
+});
+
+test('modo A: --code-report-strict sozinho gera uma invocação com --strict', () => {
+  const fake = makeFakeBin();
+  const nodeMarker = path.join(fake, 'node.marker');
+  const res = runWrapper(
+    ['--code-report-strict'],
+    wrapperEnv(fake, { FAKE_NODE_MARKER: nodeMarker })
+  );
+  assert.equal(res.status, 0, res.stderr);
+  const lines = fs
+    .readFileSync(nodeMarker, 'utf8')
+    .split('\n')
+    .filter((line) => line.startsWith('ARGS:'));
+  assert.deepEqual(lines, ['ARGS: e2e/reports/generate-report.cjs --strict']);
+});
+
+test('modo A: --code-report e --code-report-strict juntos geram uma única invocação estrita', () => {
   const fake = makeFakeBin();
   const nodeMarker = path.join(fake, 'node.marker');
   const res = runWrapper(
@@ -312,10 +347,7 @@ test('modo A: --code-report e --code-report-strict geram duas invocações na or
     .readFileSync(nodeMarker, 'utf8')
     .split('\n')
     .filter((line) => line.startsWith('ARGS:'));
-  assert.deepEqual(lines, [
-    'ARGS: e2e/reports/generate-report.cjs',
-    'ARGS: e2e/reports/generate-report.cjs --strict',
-  ]);
+  assert.deepEqual(lines, ['ARGS: e2e/reports/generate-report.cjs --strict']);
 });
 
 test('modo A: exit do diagnóstico propaga quando o Playwright passou', () => {

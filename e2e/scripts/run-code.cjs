@@ -118,8 +118,8 @@ function main(argv) {
       const gate = opts.onFailure || runExit === 0;
       if (gate && (opts.report || opts.strict)) {
         const diagnostics = [];
-        if (opts.report) diagnostics.push([REPORT_REL]);
         if (opts.strict) diagnostics.push([REPORT_REL, '--strict']);
+        else if (opts.report) diagnostics.push([REPORT_REL]);
         let diagExit = 0;
         for (const args of diagnostics) {
           const code = exitFrom(runNodeScript(args, childEnv));
