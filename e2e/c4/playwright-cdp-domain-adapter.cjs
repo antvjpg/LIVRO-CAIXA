@@ -27,6 +27,28 @@ function createDomainAdapters(session) {
     return (params) => session.send(fullMethod, params);
   };
 
+  const subscribe = (eventName, listener) => {
+    if (typeof session.on !== 'function') {
+      throw new Error(`createDomainAdapters: sessão CDP do Playwright não oferece API de eventos (session.on) para "${eventName}"`);
+    }
+    if (typeof listener !== 'function') {
+      throw new TypeError(`createDomainAdapters: listener de "${eventName}" deve ser uma função`);
+    }
+    session.on(eventName, listener);
+    let removido = false;
+    return () => {
+      if (removido) return;
+      removido = true;
+      if (typeof session.off === 'function') {
+        session.off(eventName, listener);
+      } else if (typeof session.removeListener === 'function') {
+        session.removeListener(eventName, listener);
+      } else {
+        throw new Error(`createDomainAdapters: sessão CDP do Playwright não oferece API de remoção de eventos (session.off/session.removeListener) para "${eventName}"`);
+      }
+    };
+  };
+
   const DOM = {
     enable: forward('DOM', 'enable'),
     getDocument: forward('DOM', 'getDocument'),
@@ -50,6 +72,8 @@ function createDomainAdapters(session) {
     enable: forward('Runtime', 'enable'),
     evaluate: forward('Runtime', 'evaluate'),
     callFunctionOn: forward('Runtime', 'callFunctionOn'),
+    consoleAPICalled: (listener) => subscribe('Runtime.consoleAPICalled', listener),
+    exceptionThrown: (listener) => subscribe('Runtime.exceptionThrown', listener),
   };
 
   const Page = {

@@ -16,6 +16,7 @@
    package.json e workflow GitHub Actions permanecem inalterados. */
 
 const { test, expect } = require('@playwright/test');
+const { EventEmitter } = require('node:events');
 const app = require('../helpers/app');
 const { resolveCredentials, guardReasonText } = require('../helpers/env');
 const { createDomainAdapters } = require('./playwright-cdp-domain-adapter.cjs');
@@ -179,5 +180,88 @@ test.describe('C.4 — prova vertical: probeState via CDPSession do Playwright',
       console.error('[C4_DIAGNOSTIC] falha ao anexar evidência:', attachErr.message);
     }
     console.log('[C4_DIAGNOSTIC]', JSON.stringify(diag));
+  });
+});
+
+test.describe('C.4 — G3.1-B: eventos CDP no adaptador Playwright', () => {
+  test('inscreve consoleAPICalled e exceptionThrown em session.on com payload íntegro e remoção idempotente', () => {
+    const emitter = new EventEmitter();
+    const session = {
+      send: () => Promise.resolve({}),
+      on: (eventName, listener) => emitter.on(eventName, listener),
+      off: (eventName, listener) => emitter.off(eventName, listener),
+      removeListener: (eventName, listener) => emitter.removeListener(eventName, listener),
+    };
+    const { Runtime } = createDomainAdapters(session);
+
+    const calls = [];
+    const consoleListener = ({ type, args }) => { calls.push(['console', type, args]); };
+    const exceptionListener = ({ exceptionDetails }) => { calls.push(['exception', exceptionDetails]); };
+
+    /* 1. inscrição nos dois eventos */
+    const offConsole = Runtime.consoleAPICalled(consoleListener);
+    const offException = Runtime.exceptionThrown(exceptionListener);
+    expect(emitter.listenerCount('Runtime.consoleAPICalled')).toBe(1);
+    expect(emitter.listenerCount('Runtime.exceptionThrown')).toBe(1);
+
+    /* 3. preservação da identidade do listener */
+    expect(emitter.listeners('Runtime.consoleAPICalled')[0]).toBe(consoleListener);
+    expect(emitter.listeners('Runtime.exceptionThrown')[0]).toBe(exceptionListener);
+
+    /* 2. encaminhamento do payload original sem alteração (mesma referência) */
+    const argsRef = [{ type: 'string', value: 'fixture' }];
+    const detailsRef = { text: 'exceção sintética' };
+    emitter.emit('Runtime.consoleAPICalled', { type: 'log', args: argsRef });
+    emitter.emit('Runtime.exceptionThrown', { exceptionDetails: detailsRef });
+    expect(calls).toHaveLength(2);
+    expect(calls[0][0]).toBe('console');
+    expect(calls[0][1]).toBe('log');
+    expect(calls[0][2]).toBe(argsRef);
+    expect(calls[1][0]).toBe('exception');
+    expect(calls[1][1]).toBe(detailsRef);
+
+    /* 4 e 5. remoção individual: sem novas chamadas após a remoção */
+    offConsole();
+    emitter.emit('Runtime.consoleAPICalled', { type: 'warn', args: [] });
+    expect(calls).toHaveLength(2);
+    emitter.emit('Runtime.exceptionThrown', { exceptionDetails: { text: 'ainda ativo' } });
+    expect(calls).toHaveLength(3);
+
+    /* 6. remoção idempotente */
+    offConsole();
+    offConsole();
+    expect(emitter.listenerCount('Runtime.consoleAPICalled')).toBe(0);
+    offException();
+    expect(emitter.listenerCount('Runtime.exceptionThrown')).toBe(0);
+    emitter.emit('Runtime.exceptionThrown', { exceptionDetails: { text: 'removido' } });
+    expect(calls).toHaveLength(3);
+
+    /* 7. rejeição de listener inválido */
+    expect(() => Runtime.consoleAPICalled('nao-e-funcao')).toThrow(TypeError);
+    expect(() => Runtime.exceptionThrown(null)).toThrow(TypeError);
+  });
+
+  test('rejeita sessão sem API de eventos e usa removeListener() quando off() estiver ausente', () => {
+    /* 8. erro claro quando a sessão não oferece API de eventos */
+    const semEventos = { send: () => Promise.resolve({}) };
+    const adaptersSemEventos = createDomainAdapters(semEventos);
+    expect(() => adaptersSemEventos.Runtime.consoleAPICalled(() => {})).toThrow(/session\.on|API de eventos/);
+
+    /* fallback de remoção: sessão expõe apenas removeListener */
+    const emitter = new EventEmitter();
+    const session = {
+      send: () => Promise.resolve({}),
+      on: (eventName, listener) => emitter.on(eventName, listener),
+      removeListener: (eventName, listener) => emitter.removeListener(eventName, listener),
+    };
+    const { Runtime } = createDomainAdapters(session);
+    const calls = [];
+    const offException = Runtime.exceptionThrown(({ exceptionDetails }) => { calls.push(exceptionDetails); });
+    emitter.emit('Runtime.exceptionThrown', { exceptionDetails: { a: 1 } });
+    expect(calls).toEqual([{ a: 1 }]);
+    offException();
+    expect(emitter.listenerCount('Runtime.exceptionThrown')).toBe(0);
+    offException();
+    expect(emitter.listenerCount('Runtime.exceptionThrown')).toBe(0);
   });
 });
