@@ -23,7 +23,7 @@ const app = require('../helpers/app');
 const { resolveCredentials, guardReasonText } = require('../helpers/env');
 const { createDomainAdapters, createPlaywrightBootstrap } = require('./playwright-cdp-domain-adapter.cjs');
 const { runWithCdpSession } = require('./playwright-cdp-session-lifecycle.cjs');
-const { createCDPAuditCore, createSampleIdRegistry } = require('./original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs');
+const { createCDPAuditCore, createSampleIdRegistry, parseColor } = require('./original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs');
 
 const SELECTOR_SINTETICO = '#code-cdp-bridge-fixture';
 
@@ -898,6 +898,19 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
 
   /* IDs da fixture com expectativa documentada no teste histórico R2.5.7. */
   const IDS_REFERENCIA = new Set(['r256-accent-consumer', 'r256-accent-opacity0-child', 'r25-btn-1']);
+  const ALVO_V24 = '#r25-btn-1';
+
+  /* Tolerância geométrica: getBoundingClientRect (collectScript) e
+     DOM.getBoxModel (CDP) retornam DIP, mas serializam por caminhos distintos
+     com granularidade LayoutUnit de 1/64 px. 1 CSS px cobre subpixel/jitter
+     de layout em CI headless sem mascarar divergência real de geometria. */
+  const TOLERANCIA_GEOMETRIA_PX = 1;
+
+  /* Propriedades determinísticas da fixture: background-color vem de
+     background:#FFFFFF (declarado no autor e rgb(255,255,255) no CDP);
+     color usa var(--accent), resolvido pelo computedStyle do mesmo nó.
+     Ambas são capturadas por captureWinningRules (núcleo). */
+  const PROPRIEDADES_CSS = ['background-color', 'color'];
 
   /* Expectativas CONCRETAS extraídas de c4-v05-b-r2-5-7-test.cjs.
      Voláteis (runId, key, nodeId, sampleId, rect.x/y) são excluídos. */
@@ -930,6 +943,18 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
       campos: {
         visibilityStatus: 'visible',
         rect: '__PRESENTE__',
+      },
+    },
+    {
+      /* G4.2-A — mesmos três campos exigidos por V24, no alvo histórico
+         correto (#r25-btn-1), nunca transferidos de Y1. */
+      caso: 'V24',
+      id: 'r25-btn-1',
+      campos: {
+        'nodeAssociation.status': 'resolved',
+        ancestorOpacityStatus: 'complete',
+        ancestorOpacity: 1,
+        ancestorVisibility: 'completed',
       },
     },
   ];
@@ -993,6 +1018,8 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
 
         try {
           const rounds = [];
+          const geometria = [];
+          const css = [];
 
           /* Duas execuções na mesma página: grupos Y e Z. */
           for (let i = 0; i < 2; i++) {
@@ -1056,18 +1083,111 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
                   screenLabel: 'Painel',
                 },
               });
+
+              /* G4.2-C/D — apenas no alvo histórico das frentes de geometria
+                 e CSS. Mesmo nodeId, mesma iteração, mesma execução. */
+              if (row.id === 'r25-btn-1') {
+                /* Geometria: rect do collectScript vs. box model CDP. */
+                const boxModel = await adapters.DOM.getBoxModel({ nodeId: association.nodeId });
+                expect(boxModel && boxModel.model, 'box model CDP recebido').toBeTruthy();
+                const rectCdp = core.rectFromBorder(boxModel.model.border);
+                expect(rectCdp, 'border box convertido por rectFromBorder').not.toBeNull();
+                expect(auditRow.rect, 'rect da evidência').toBeTruthy();
+                const deltas = {};
+                for (const campo of ['x', 'y', 'w', 'h']) {
+                  deltas[campo] = Math.abs(auditRow.rect[campo] - rectCdp[campo]);
+                  expect(Number.isFinite(deltas[campo]), `delta ${campo} finito`).toBe(true);
+                  expect(deltas[campo], `delta ${campo} dentro da tolerância`).toBeLessThanOrEqual(TOLERANCIA_GEOMETRIA_PX);
+                }
+                geometria.push({
+                  runId: collected.runId,
+                  nodeId: association.nodeId,
+                  rectEvidencia: auditRow.rect,
+                  rectCdp,
+                  deltas,
+                  toleranciaPx: TOLERANCIA_GEOMETRIA_PX,
+                });
+
+                /* CSS: computedStyle CDP no mesmo nó cruzado com winningRules
+                   capturadas pelo núcleo. */
+                const respostaCss = await adapters.CSS.getComputedStyleForNode({ nodeId: association.nodeId });
+                const computedStyle = respostaCss.computedStyle || [];
+                expect(auditRow.winningRules.error, 'captura de regras sem erro').toBeNull();
+                for (const prop of PROPRIEDADES_CSS) {
+                  const regra = auditRow.winningRules.properties[prop];
+                  expect(regra, `regra ${prop} capturada`).toBeTruthy();
+                  expect(regra.property, `nome da propriedade ${prop}`).toBe(prop);
+                  expect(regra.captureStatus, `captureStatus ${prop}`).toBe('captured');
+                  expect(regra.winningDeclaration, `declaração vencedora ${prop}`).toBeTruthy();
+                  expect(regra.winningDeclaration.captureStatus, `captureStatus da declaração ${prop}`).toBe('captured');
+                  expect(Array.isArray(regra.candidates) && regra.candidates.length > 0, `candidatos ${prop}`).toBe(true);
+                  const direto = computedStyle.find((p) => p.name === prop);
+                  expect(direto, `propriedade ${prop} no computedStyle CDP`).toBeTruthy();
+                  const corCdp = parseColor(direto.value);
+                  expect(corCdp, `valor CDP ${prop} parseável`).not.toBeNull();
+                  let corRegra = parseColor(regra.computedValue);
+                  if (!corRegra && regra.computedValue && regra.computedValue.includes('var(--accent)')) {
+                    const variavel = computedStyle.find((p) => p.name === '--accent');
+                    corRegra = parseColor(variavel && variavel.value);
+                  }
+                  expect(corRegra, `computedValue ${prop} parseável`).not.toBeNull();
+                  expect(corRegra, `coerência núcleo/CDP ${prop}`).toEqual(corCdp);
+                  css.push({
+                    runId: collected.runId,
+                    nodeId: association.nodeId,
+                    prop,
+                    computedValue: regra.computedValue,
+                    cdpValue: direto.value,
+                    selector: regra.winningDeclaration.selectorText,
+                    captureStatus: regra.captureStatus,
+                  });
+                }
+              }
+
               evidencias.push(auditRow);
             }
 
             rounds.push({
               runId: collected.runId,
               keys: collected.rows.map((r) => r.key),
+              rows: collected.rows,
               nodeIds: Array.from(associationMap.values()).map((a) => a.nodeId),
               status: Array.from(associationMap.values()).map((a) => a.status),
               coletados: collected.rows.length,
               evidencias,
             });
           }
+
+          /* G4.2-B — Z8: resolução cruzada real. Chave preservada da execução
+             Y submetida à resolveNodeIds ORIGINAL com as linhas e o runId da
+             execução Z, antes do cleanup que remove data-c4-audit. */
+          const chaveAntigaY = rounds[0].rows[0].key;
+          const linhaAntigaY = rounds[0].rows[0];
+          const linhaZ = rounds[1].rows[0];
+          const mapaZ8 = await historical.resolveNodeIds(
+            adapters.DOM,
+            [{ ...linhaZ, key: chaveAntigaY, sel: linhaAntigaY.sel }],
+            cdpErrors,
+            rounds[1].runId
+          );
+          const resZ8 = mapaZ8.get(chaveAntigaY);
+          expect(resZ8, 'resultado da resolução cruzada').toBeTruthy();
+          expect(resZ8.status, 'Z8 node-not-found').toBe('node-not-found');
+          expect(resZ8.nodeId, 'Z8 nodeId null').toBeNull();
+          expect(typeof resZ8.reason, 'Z8 reason string').toBe('string');
+          expect(resZ8.reason.includes('outra execucao'), 'Z8 reason outra execucao').toBe(true);
+
+          /* G4.2-A — V24: ocorrência de #r25-btn-1 via probeState do núcleo,
+             exatamente como runProbe() no teste histórico R2.5.7. */
+          const ocorrenciasV24 = await core.probeState(
+            ALVO_V24, 'normal', 'mobile', 'light', '3', 'dash', createSampleIdRegistry()
+          );
+          expect(ocorrenciasV24.length, 'ocorrência V24 obtida').toBeGreaterThan(0);
+          const occV24 = ocorrenciasV24[0];
+          expect(occV24.ancestorOpacityStatus, 'V24 cadeia completa').toBe('complete');
+          expect(occV24.ancestorOpacity, 'V24 opacidade acumulada 1').toBe(1);
+          expect(occV24.ancestorVisibility, 'V24 travessia completa').toBe('completed');
+          expect(occV24.geometryStatus, 'V24 geometria disponível').toBe('available');
 
           /* Erros CDP são registrados com estrutura; nenhum erro de DOM
              nos comandos usados por resolveNodeIds. */
@@ -1078,7 +1198,28 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
           expect(cdpErrors.filter((e) => /^DOM\.(getDocument|querySelectorAll)$/.test(e.method || '')).map((e) => e.method), 'DOM.getDocument/querySelectorAll sem erro')
             .toEqual([]);
 
-          return { rounds, eventos: eventos.length };
+          return {
+            rounds,
+            eventos: eventos.length,
+            geometria,
+            css,
+            z8: {
+              chaveAntiga: chaveAntigaY,
+              runIdOrigem: rounds[0].runId,
+              runIdDestino: rounds[1].runId,
+              status: resZ8.status,
+              nodeId: resZ8.nodeId,
+              reason: resZ8.reason,
+            },
+            v24: {
+              alvo: ALVO_V24,
+              ancestorOpacityStatus: occV24.ancestorOpacityStatus,
+              ancestorOpacity: occV24.ancestorOpacity,
+              ancestorVisibility: occV24.ancestorVisibility,
+              geometryStatus: occV24.geometryStatus,
+              rect: occV24.rect,
+            },
+          };
         } finally {
           offConsole();
           offException();
@@ -1129,9 +1270,35 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
     expect(first.rect, 'geometria preservada').toBeTruthy();
 
     /* Comparação semântica com expectativas documentadas em
-       c4-v05-b-r2-5-7-test.cjs (Y1, Y2, D1/V1). */
+       c4-v05-b-r2-5-7-test.cjs (Y1, Y2, D1/V1, V24). */
     const semantica = compararSemantica(z.evidencias);
-    expect(semantica.filter((r) => r.situacao === 'comparado').length, 'casos históricos comparados').toBe(3);
+    expect(semantica.filter((r) => r.situacao === 'comparado').length, 'casos históricos comparados').toBe(4);
+    expect(semantica.find((r) => r.caso === 'V24').situacao, 'V24 comparado no alvo #r25-btn-1').toBe('comparado');
+
+    /* G4.2-A — V24 via probeState no alvo histórico. */
+    expect(out.v24.alvo, 'alvo V24').toBe('#r25-btn-1');
+    expect(out.v24.ancestorOpacityStatus, 'V24 complete').toBe('complete');
+    expect(out.v24.ancestorOpacity, 'V24 opacidade 1').toBe(1);
+    expect(out.v24.ancestorVisibility, 'V24 completed').toBe('completed');
+    expect(out.v24.geometryStatus, 'V24 geometria available').toBe('available');
+
+    /* G4.2-B — Z8: resolução cruzada efetiva, não mera distinção de chaves. */
+    expect(out.z8.chaveAntiga.startsWith(`c4-${out.z8.runIdOrigem}-`), 'chave antiga pertence a Y').toBe(true);
+    expect(out.z8.runIdDestino, 'runId destino é o de Z').toBe(z.runId);
+    expect(out.z8.status, 'Z8 node-not-found').toBe('node-not-found');
+    expect(out.z8.nodeId, 'Z8 nodeId null').toBeNull();
+    expect(out.z8.reason.includes('outra execucao'), 'Z8 reason outra execucao').toBe(true);
+
+    /* G4.2-C — geometria numérica nas duas execuções, mesmo elemento. */
+    expect(out.geometria.length, 'comparações de geometria').toBe(out.rounds.length);
+    expect(out.geometria.every((g) => g.nodeId > 0), 'nodeIds de geometria válidos').toBe(true);
+    expect(out.geometria.every((g) => ['x', 'y', 'w', 'h'].every((k) => Number.isFinite(g.deltas[k]) && g.deltas[k] <= g.toleranciaPx)), 'deltas dentro da tolerância').toBe(true);
+
+    /* G4.2-D — CSS semântico: valores e declarações, não mera existência. */
+    expect(out.css.length, 'comparações CSS').toBe(out.rounds.length * PROPRIEDADES_CSS.length);
+    expect(out.css.every((c) => c.captureStatus === 'captured'), 'todas as capturas com sucesso').toBe(true);
+    expect(out.css.every((c) => typeof c.cdpValue === 'string' && c.cdpValue.length > 0), 'valores CDP não vazios').toBe(true);
+    expect(out.css.every((c) => typeof c.selector === 'string' && c.selector.length > 0), 'declarações vencedoras com seletor').toBe(true);
 
     /* Estado após encerramento. */
     const residuo = await page.evaluate(() =>
@@ -1141,19 +1308,30 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
     await expect(page.locator('body'), 'página funcional após detach').toBeVisible();
 
     const diag = {
-      prova: 'C.4-G4.1-paridade-r257-playwright',
-      funcoes_originais: ['collectScript', 'resolveNodeIds', 'buildAuditRow'],
-      comandos_cdp_reais: ['Runtime.evaluate', 'DOM.getDocument', 'DOM.querySelectorAll', 'CSS.getMatchedStylesForNode'],
+      prova: 'C.4-G4.2-paridade-r257-playwright',
+      funcoes_originais: ['collectScript', 'resolveNodeIds', 'buildAuditRow', 'probeState', 'rectFromBorder'],
+      comandos_cdp_reais: [
+        'Runtime.evaluate',
+        'DOM.getDocument',
+        'DOM.querySelectorAll',
+        'DOM.getBoxModel',
+        'CSS.getMatchedStylesForNode',
+        'CSS.getComputedStyleForNode',
+      ],
       execucoes: out.rounds.length,
       run_ids: out.rounds.map((r) => r.runId),
       coletados_por_execucao: out.rounds.map((r) => r.coletados),
       evidencias_por_execucao: out.rounds.map((r) => r.evidencias.length),
       comparacao_semantica: semantica,
+      v24: out.v24,
+      z8: out.z8,
+      geometria: out.geometria,
+      css: out.css,
       detach_attempts: lifecycle.detachAttempts,
       detach_success: lifecycle.detachSuccess,
       node_version: process.version,
     };
-    await testInfo.attach('c4-g41-paridade.json', {
+    await testInfo.attach('c4-g42-paridade.json', {
       body: JSON.stringify(diag, null, 2),
       contentType: 'application/json',
     }).catch(() => {});
@@ -1189,12 +1367,14 @@ test.describe('C.4 — G4.1-R1: rastreabilidade individual das 393 asserções R
 
     /* D1 — alvo histórico #r25-btn-1. */
     ['D1::elemento visível tem visibilityStatus visible', { situacao: 'covered', criterio: "occ.visibilityStatus === 'visible'", evidencia: "comparação semântica visibilityStatus === 'visible' no alvo #r25-btn-1" }],
-    ['D1::elemento visível tem geometryStatus available', { situacao: 'partial', criterio: "occ.geometryStatus === 'available'", evidencia: 'geometryStatus não comparado; visibilidade e rect presentes no alvo' }],
+    ['D1::elemento visível tem geometryStatus available', { situacao: 'covered', criterio: "occ.geometryStatus === 'available'", evidencia: 'G4.2: probeState em #r25-btn-1 retornou geometryStatus available' }],
     ['D1::rect disponível para elemento visível', { situacao: 'covered', criterio: 'occ.rect !== null', evidencia: 'rect truthy via buildAuditRow/collectScript no alvo #r25-btn-1 (não probeState)' }],
 
-    /* V24 — alvo histórico #r25-btn-1, distinto do alvo Y1. */
-    ['V24::a opacidade completa acumulada é 1', { situacao: 'partial', criterio: 'occ.ancestorOpacity === 1 no alvo #r25-btn-1', evidencia: 'sem comparação de ancestorOpacity nesse alvo; evidência de Y1 não transferida' }],
-    ['V24::a travessia completa resulta em completed', { situacao: 'partial', criterio: "occ.ancestorVisibility === 'completed' no alvo #r25-btn-1", evidencia: 'sem comparação de ancestorVisibility nesse alvo; evidência de Y1 não transferida' }],
+    /* V24 — alvo histórico #r25-btn-1, comprovado em G4.2 via probeState
+       e via evidência integrada buildAuditRow; nada transferido de Y1. */
+    ['V24::cadeia completa de opacidade resulta em complete', { situacao: 'covered', criterio: "occ.ancestorOpacityStatus === 'complete'", evidencia: 'G4.2: probeState em #r25-btn-1 + comparação no alvo' }],
+    ['V24::a opacidade completa acumulada é 1', { situacao: 'covered', criterio: 'occ.ancestorOpacity === 1 no alvo #r25-btn-1', evidencia: 'G4.2: probeState em #r25-btn-1 + comparação no alvo' }],
+    ['V24::a travessia completa resulta em completed', { situacao: 'covered', criterio: "occ.ancestorVisibility === 'completed' no alvo #r25-btn-1", evidencia: 'G4.2: probeState em #r25-btn-1 + comparação no alvo' }],
 
     /* B2 — resolução de ID. */
     ['B2::1 ID resulta em resolved', { situacao: 'covered', criterio: "result.status === 'resolved'", evidencia: 'nodeAssociation.status === resolved demonstrado na resolução com uma chave' }],
@@ -1202,7 +1382,7 @@ test.describe('C.4 — G4.1-R1: rastreabilidade individual das 393 asserções R
 
     /* Regras de composição e isolamento. */
     ['V1::ancestral visible e descendente visible → visível', { situacao: 'partial', criterio: 'composição ancestral/descendente', evidencia: 'resultado final visível observado; regra de composição não exercitada diretamente' }],
-    ['Z8::chave antiga de outra execucao nao e resolvida na execucao atual', { situacao: 'preserved-not-ported', criterio: "resolveNodeIds(chave antiga, runId novo).status === 'node-not-found'", evidencia: 'chaves Y/Z apenas comparadas como distintas; sem resolução cruzada' }],
+    ['Z8::chave antiga de outra execucao nao e resolvida na execucao atual', { situacao: 'covered', criterio: "resolveNodeIds(chave antiga, runId novo).status === 'node-not-found'", evidencia: 'G4.2: resolução cruzada real com node-not-found, nodeId null e reason "outra execucao"' }],
   ]);
 
   function classificar(teste) {
@@ -1246,16 +1426,19 @@ test.describe('C.4 — G4.1-R1: rastreabilidade individual das 393 asserções R
     /* Correções G4.1-R2 — classificações excessivamente otimistas. */
     expect(situacaoDe('B2', 'idCount é 1'), 'B2 idCount não pode ser covered sem validar idCount').not.toBe('covered');
     expect(situacaoDe('B2', 'idCount é 1'), 'B2 idCount reclassificada como partial').toBe('partial');
-    expect(situacaoDe('V24', 'a opacidade completa acumulada é 1'), 'V24 opacidade no alvo #r25-btn-1').toBe('partial');
-    expect(situacaoDe('V24', 'a travessia completa resulta em completed'), 'V24 travessia no alvo #r25-btn-1').toBe('partial');
-    expect(situacaoDe('Z8', 'chave antiga de outra execucao nao e resolvida na execucao atual'), 'Z8 sem prova de resolução cruzada').toBe('preserved-not-ported');
-    expect(DECISOES.get('Z8::chave antiga de outra execucao nao e resolvida na execucao atual').evidencia.includes('sem resolução cruzada'), 'Z8 sem evidência transferida').toBe(true);
+    /* G4.2 — reclassificações sustentadas por nova prova executada. */
+    expect(situacaoDe('V24', 'cadeia completa de opacidade resulta em complete'), 'V24 cadeia no alvo #r25-btn-1').toBe('covered');
+    expect(situacaoDe('V24', 'a opacidade completa acumulada é 1'), 'V24 opacidade no alvo #r25-btn-1').toBe('covered');
+    expect(situacaoDe('V24', 'a travessia completa resulta em completed'), 'V24 travessia no alvo #r25-btn-1').toBe('covered');
+    expect(situacaoDe('Z8', 'chave antiga de outra execucao nao e resolvida na execucao atual'), 'Z8 com resolução cruzada real').toBe('covered');
+    expect(DECISOES.get('Z8::chave antiga de outra execucao nao e resolvida na execucao atual').evidencia.includes('resolução cruzada real'), 'Z8 com evidência de resolução cruzada').toBe(true);
 
     /* Falsos negativos corrigidos na revisão completa da lógica: critério
        histórico demonstrado no MESMO alvo da asserção. */
     expect(situacaoDe('Y1', 'a opacidade da linha real foi acumulada de forma completa'), 'Y1 opacidade comparada no alvo correto').toBe('covered');
     expect(situacaoDe('Y2', 'a opacidade zero do ancestral chegou a linha final pelo mecanismo'), 'Y2 opacidade zero comparada no alvo correto').toBe('covered');
     expect(situacaoDe('D1', 'rect disponível para elemento visível'), 'D1 rect comparado no alvo correto').toBe('covered');
+    expect(situacaoDe('D1', 'elemento visível tem geometryStatus available'), 'D1 geometryStatus via probeState').toBe('covered');
 
     /* V32 permanece bloqueado individualmente. */
     const v32 = testes.find((t) => t.id === 'V32' && t.status === 'BLOCKED');
@@ -1263,10 +1446,10 @@ test.describe('C.4 — G4.1-R1: rastreabilidade individual das 393 asserções R
     expect(classificar(v32), 'V32 classificado como blocked').toBe('blocked');
 
     expect(Object.values(situacoes).reduce((a, b) => a + b, 0), 'todas as asserções classificadas').toBe(393);
-    expect(situacoes, 'contagens finais G4.1-R2').toEqual({
-      covered: 12,
-      partial: 10,
-      'preserved-not-ported': 370,
+    expect(situacoes, 'contagens finais G4.2').toEqual({
+      covered: 17,
+      partial: 7,
+      'preserved-not-ported': 368,
       blocked: 1,
     });
 
@@ -1277,7 +1460,7 @@ test.describe('C.4 — G4.1-R1: rastreabilidade individual das 393 asserções R
     }
 
     console.log('[C4_DIAGNOSTIC]', JSON.stringify({
-      prova: 'C.4-G4.1-R2-rastreabilidade',
+      prova: 'C.4-G4.2-rastreabilidade',
       registros: testes.length,
       ids_distintos: new Set(testes.map((t) => t.id)).size,
       situacoes,
