@@ -1164,49 +1164,51 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
 test.describe('C.4 — G4.1-R1: rastreabilidade individual das 393 asserções R2.5.7', () => {
   const RESULTADOS = require('./original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
 
-  /* Classificação por ASSERÇÃO INDIVIDUAL (id + trecho do nome), nunca por
-     grupo inteiro. Derivada dos casos realmente exercitados na prova G4.1. */
-  const COBERTAS = [
-    { id: 'Y1', termos: [
-      'a associacao key->nodeId foi resolvida',
-      'a travessia da linha real foi concluida ate a raiz',
-      'travessia completa e opacidade completa produzem visible',
-      'a linha final preserva a associacao resolvida',
-    ] },
-    { id: 'Y2', termos: [
-      'a opacidade zero e conclusiva',
-      'a opacidade zero comprovada produz not-visible',
-      'a linha com opacidade zero nunca e declarada visible',
-    ] },
-    { id: 'D1', termos: ['elemento visível tem visibilityStatus visible'] },
-    { id: 'V24', termos: ['a opacidade completa acumulada é 1', 'a travessia completa resulta em completed'] },
-    { id: 'B2', termos: ['1 ID resulta em resolved', 'idCount é 1'] },
-  ];
+  /* Decisões EXPLÍCITAS por asserção, chaveadas por id + nome exato do JSON
+     histórico. Nenhuma classificação é inferida por similaridade de texto.
+     Cada entrada registra o critério histórico e a evidência real da prova
+     integrada G4.1 (comparação semântica do describe anterior). */
+  const DECISOES = new Map([
+    /* Y1 — alvo histórico r256-accent-consumer. */
+    ['Y1::a associacao key->nodeId foi resolvida pelo fluxo real', { situacao: 'covered', criterio: 'assoc.nodeId !== null', evidencia: 'nodeId numérico > 0 na associação resolvida' }],
+    ['Y1::a travessia da linha real foi concluida ate a raiz', { situacao: 'covered', criterio: "finalRow.ancestorVisibility === 'completed'", evidencia: "comparação semântica ancestorVisibility === 'completed'" }],
+    ['Y1::travessia completa e opacidade completa produzem visible na linha da coleta', { situacao: 'covered', criterio: "finalRow.visibilityStatus === 'visible'", evidencia: "comparação semântica visibilityStatus === 'visible'" }],
+    ['Y1::a linha final preserva a associacao resolvida', { situacao: 'covered', criterio: "finalRow.nodeAssociation.status === 'resolved'", evidencia: "comparação semântica nodeAssociation.status === 'resolved'" }],
+    ['Y1::a travessia foi executada pelo mecanismo do nucleo compartilhado', { situacao: 'partial', criterio: 'traverseCalls === 1', evidencia: 'valor final comparado; espionagem de core.traverseAncestorChain não executada' }],
+    ['Y1::o campo ancestorOpacity da linha final vem do resultado do nucleo', { situacao: 'partial', criterio: 'finalRow.ancestorOpacity === lastTraversal.ancestorOpacity', evidencia: 'valor comparado; origem lastTraversal não demonstrada' }],
+    ['Y1::o campo ancestorHidden da linha final vem do resultado do nucleo', { situacao: 'partial', criterio: 'finalRow.ancestorHidden === lastTraversal.ancestorHidden', evidencia: 'valor comparado; origem lastTraversal não demonstrada' }],
+    ['Y1::o campo ancestorDisplayNone da linha final vem do resultado do nucleo', { situacao: 'partial', criterio: 'finalRow.ancestorDisplayNone === lastTraversal.ancestorDisplayNone', evidencia: 'campo não comparado na prova integrada' }],
+    ['Y1::o campo ancestorDepth da linha final vem do resultado do nucleo', { situacao: 'partial', criterio: 'finalRow.ancestorDepth === lastTraversal.ancestorDepth', evidencia: 'campo não comparado na prova integrada' }],
+    ['Y1::a opacidade da linha real foi acumulada de forma completa', { situacao: 'covered', criterio: "finalRow.ancestorOpacityStatus === 'complete'", evidencia: "comparação semântica ancestorOpacityStatus === 'complete' no mesmo alvo Y1" }],
 
-  const PARCIAIS = [
-    { id: 'Y1', termos: [
-      'a travessia foi executada pelo mecanismo',
-      'ancestorOpacity da linha final',
-      'ancestorHidden da linha final',
-      'ancestorDisplayNone da linha final',
-      'ancestorDepth da linha final',
-      'a opacidade da linha real foi acumulada de forma completa',
-    ] },
-    { id: 'Y2', termos: ['a opacidade zero do ancestral chegou'] },
-    { id: 'D1', termos: ['geometryStatus available', 'rect disponível'] },
-    { id: 'V1', termos: ['ancestral visible e descendente visible'] },
-    { id: 'Z8', termos: ['chave antiga de outra execucao nao e resolvida'] },
-  ];
+    /* Y2 — alvo histórico r256-accent-opacity0-child. */
+    ['Y2::a opacidade zero do ancestral chegou a linha final pelo mecanismo', { situacao: 'covered', criterio: 'finalRow.ancestorOpacity === 0', evidencia: 'comparação semântica ancestorOpacity === 0 no mesmo alvo Y2' }],
+    ['Y2::a opacidade zero e conclusiva na linha final', { situacao: 'covered', criterio: "finalRow.ancestorOpacityStatus === 'conclusive-zero'", evidencia: "comparação semântica ancestorOpacityStatus === 'conclusive-zero'" }],
+    ['Y2::a opacidade zero comprovada produz not-visible na linha da coleta', { situacao: 'covered', criterio: "finalRow.visibilityStatus === 'not-visible'", evidencia: "comparação semântica visibilityStatus === 'not-visible'" }],
+    ['Y2::a linha com opacidade zero nunca e declarada visible', { situacao: 'covered', criterio: "finalRow.visibilityStatus !== 'visible'", evidencia: "comparação semântica visibilityStatus === 'not-visible' exclui 'visible'" }],
+
+    /* D1 — alvo histórico #r25-btn-1. */
+    ['D1::elemento visível tem visibilityStatus visible', { situacao: 'covered', criterio: "occ.visibilityStatus === 'visible'", evidencia: "comparação semântica visibilityStatus === 'visible' no alvo #r25-btn-1" }],
+    ['D1::elemento visível tem geometryStatus available', { situacao: 'partial', criterio: "occ.geometryStatus === 'available'", evidencia: 'geometryStatus não comparado; visibilidade e rect presentes no alvo' }],
+    ['D1::rect disponível para elemento visível', { situacao: 'covered', criterio: 'occ.rect !== null', evidencia: 'rect truthy via buildAuditRow/collectScript no alvo #r25-btn-1 (não probeState)' }],
+
+    /* V24 — alvo histórico #r25-btn-1, distinto do alvo Y1. */
+    ['V24::a opacidade completa acumulada é 1', { situacao: 'partial', criterio: 'occ.ancestorOpacity === 1 no alvo #r25-btn-1', evidencia: 'sem comparação de ancestorOpacity nesse alvo; evidência de Y1 não transferida' }],
+    ['V24::a travessia completa resulta em completed', { situacao: 'partial', criterio: "occ.ancestorVisibility === 'completed' no alvo #r25-btn-1", evidencia: 'sem comparação de ancestorVisibility nesse alvo; evidência de Y1 não transferida' }],
+
+    /* B2 — resolução de ID. */
+    ['B2::1 ID resulta em resolved', { situacao: 'covered', criterio: "result.status === 'resolved'", evidencia: 'nodeAssociation.status === resolved demonstrado na resolução com uma chave' }],
+    ['B2::idCount é 1', { situacao: 'partial', criterio: 'result.idCount === 1', evidencia: 'cardinalidade do mapa de associações verificada; campo idCount não lido' }],
+
+    /* Regras de composição e isolamento. */
+    ['V1::ancestral visible e descendente visible → visível', { situacao: 'partial', criterio: 'composição ancestral/descendente', evidencia: 'resultado final visível observado; regra de composição não exercitada diretamente' }],
+    ['Z8::chave antiga de outra execucao nao e resolvida na execucao atual', { situacao: 'preserved-not-ported', criterio: "resolveNodeIds(chave antiga, runId novo).status === 'node-not-found'", evidencia: 'chaves Y/Z apenas comparadas como distintas; sem resolução cruzada' }],
+  ]);
 
   function classificar(teste) {
     if (teste.status === 'BLOCKED') return 'blocked';
-    for (const regra of COBERTAS) {
-      if (regra.id === teste.id && regra.termos.some((termo) => teste.name.includes(termo))) return 'covered';
-    }
-    for (const regra of PARCIAIS) {
-      if (regra.id === teste.id && regra.termos.some((termo) => teste.name.includes(termo))) return 'partial';
-    }
-    return 'preserved-not-ported';
+    const decisao = DECISOES.get(`${teste.id}::${teste.name}`);
+    return decisao ? decisao.situacao : 'preserved-not-ported';
   }
 
   test('deriva 393 asserções, 134 IDs e classifica cada asserção individualmente', () => {
@@ -1232,11 +1234,41 @@ test.describe('C.4 — G4.1-R1: rastreabilidade individual das 393 asserções R
       detalhePorGrupo[teste.group][situacao] = (detalhePorGrupo[teste.group][situacao] || 0) + 1;
     }
 
+    /* Toda decisão explícita aponta para uma asserção existente no JSON;
+       nomes trocados não podem passar despercebidos. */
+    const chavesHistoricas = new Set(testes.map((t) => `${t.id}::${t.name}`));
+    for (const chave of DECISOES.keys()) {
+      expect(chavesHistoricas.has(chave), `decisão histórica existe: ${chave}`).toBe(true);
+    }
+
+    const situacaoDe = (id, nome) => classificar(testes.find((t) => t.id === id && t.name === nome));
+
+    /* Correções G4.1-R2 — classificações excessivamente otimistas. */
+    expect(situacaoDe('B2', 'idCount é 1'), 'B2 idCount não pode ser covered sem validar idCount').not.toBe('covered');
+    expect(situacaoDe('B2', 'idCount é 1'), 'B2 idCount reclassificada como partial').toBe('partial');
+    expect(situacaoDe('V24', 'a opacidade completa acumulada é 1'), 'V24 opacidade no alvo #r25-btn-1').toBe('partial');
+    expect(situacaoDe('V24', 'a travessia completa resulta em completed'), 'V24 travessia no alvo #r25-btn-1').toBe('partial');
+    expect(situacaoDe('Z8', 'chave antiga de outra execucao nao e resolvida na execucao atual'), 'Z8 sem prova de resolução cruzada').toBe('preserved-not-ported');
+    expect(DECISOES.get('Z8::chave antiga de outra execucao nao e resolvida na execucao atual').evidencia.includes('sem resolução cruzada'), 'Z8 sem evidência transferida').toBe(true);
+
+    /* Falsos negativos corrigidos na revisão completa da lógica: critério
+       histórico demonstrado no MESMO alvo da asserção. */
+    expect(situacaoDe('Y1', 'a opacidade da linha real foi acumulada de forma completa'), 'Y1 opacidade comparada no alvo correto').toBe('covered');
+    expect(situacaoDe('Y2', 'a opacidade zero do ancestral chegou a linha final pelo mecanismo'), 'Y2 opacidade zero comparada no alvo correto').toBe('covered');
+    expect(situacaoDe('D1', 'rect disponível para elemento visível'), 'D1 rect comparado no alvo correto').toBe('covered');
+
+    /* V32 permanece bloqueado individualmente. */
+    const v32 = testes.find((t) => t.id === 'V32' && t.status === 'BLOCKED');
+    expect(v32, 'V32 bloqueado presente').toBeTruthy();
+    expect(classificar(v32), 'V32 classificado como blocked').toBe('blocked');
+
     expect(Object.values(situacoes).reduce((a, b) => a + b, 0), 'todas as asserções classificadas').toBe(393);
-    expect(situacoes.covered, 'cobertas diretamente').toBeGreaterThan(0);
-    expect(situacoes.partial, 'parciais').toBeGreaterThan(0);
-    expect(situacoes['preserved-not-ported'], 'preservadas sem portar').toBeGreaterThan(0);
-    expect(situacoes.blocked, 'bloqueadas').toBe(1);
+    expect(situacoes, 'contagens finais G4.1-R2').toEqual({
+      covered: 12,
+      partial: 10,
+      'preserved-not-ported': 370,
+      blocked: 1,
+    });
 
     /* Nenhum grupo pode ser integralmente "covered": a prova é representativa. */
     for (const [grupo, dist] of Object.entries(detalhePorGrupo)) {
@@ -1245,7 +1277,7 @@ test.describe('C.4 — G4.1-R1: rastreabilidade individual das 393 asserções R
     }
 
     console.log('[C4_DIAGNOSTIC]', JSON.stringify({
-      prova: 'C.4-G4.1-R1-rastreabilidade',
+      prova: 'C.4-G4.1-R2-rastreabilidade',
       registros: testes.length,
       ids_distintos: new Set(testes.map((t) => t.id)).size,
       situacoes,
