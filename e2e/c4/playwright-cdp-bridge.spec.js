@@ -616,3 +616,278 @@ test.describe('C.4 — G3.1-D: ciclo de vida centralizado da CDPSession (runWith
     expect(typeof out.session.detach, 'sessão devolvida ainda expõe detach (ownership Playwright)').toBe('function');
   });
 });
+
+test.describe('C.4 — G3.1-E: integração real CDP ↔ adaptador ↔ bootstrap ↔ núcleo', () => {
+  /* Marcadores determinísticos e sem dados sensíveis. */
+  const CONSOLE_MARKER = 'G3E_CONSOLE_MARKER_7F3A';
+  const EXCEPTION_MARKER = 'G3E_EXCEPTION_MARKER_9C2B';
+  const SENTINEL_MSG = 'G3E_SENTINEL_OPERATION_FAILURE';
+
+  let dialogos = null;
+
+  test.afterEach(async ({}, testInfo) => {
+    if (dialogos && testInfo.status !== testInfo.expectedStatus) {
+      const corpo = dialogos.map((d) => `${d.type}: ${d.message}`).join('\n') || 'nenhum';
+      await testInfo.attach('dialogos.txt', { body: corpo, contentType: 'text/plain' }).catch(() => {});
+    }
+    dialogos = null;
+  });
+
+  function skipSemCredencial() {
+    const creds = resolveCredentials();
+    if (!creds) {
+      test.skip(true, `BLOCKED: credenciais QA indisponíveis — ${guardReasonText() || 'sem credencial'}`);
+    }
+    return creds;
+  }
+
+  async function startPage(page, creds) {
+    dialogos = app.attachDialogHandler(page);
+    await app.openApp(page);
+    await app.waitForAuthResolved(page, 15_000);
+    await expect(page.locator('#userBar')).toContainText(creds.email, { timeout: 20_000 });
+    await app.waitForDataReady(page, 60_000);
+  }
+
+  async function prepareFixture(page) {
+    await page.evaluate((sel) => {
+      let el = document.querySelector(sel);
+      if (!el) {
+        el = document.createElement('div');
+        el.id = sel.slice(1);
+        el.setAttribute('data-code-cdp-e2e', 'fixture');
+        el.textContent = 'fixture-g31e';
+        el.style.position = 'fixed';
+        el.style.top = '10px';
+        el.style.left = '10px';
+        el.style.width = '120px';
+        el.style.height = '40px';
+        el.style.color = 'rgb(10, 20, 30)';
+        el.style.backgroundColor = 'rgb(200, 210, 220)';
+        el.style.opacity = '1';
+        el.style.zIndex = '9998';
+        document.body.appendChild(el);
+      }
+      return true;
+    }, SELECTOR_SINTETICO);
+  }
+
+  /* Espera controlada por condição: a resolução vem do evento recebido;
+     o timeout é apenas limite de falha, não mecanismo de sincronização. */
+  function withTimeout(promise, ms, label) {
+    let timer;
+    const limite = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label}: marcador não recebido em ${ms}ms`)), ms);
+    });
+    return Promise.race([promise, limite]).finally(() => clearTimeout(timer));
+  }
+
+  /* E1–E4 + E6: integração real de transporte, bootstrap, núcleo, eventos,
+     lifecycle e estado pós-detach em uma única operação. */
+  test('integra sessão CDP real, bootstrap, núcleo R2.5.6 e eventos com detach único', async ({ page, context }, testInfo) => {
+    testInfo.setTimeout(120_000);
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+    await prepareFixture(page);
+
+    const lifecycle = await runWithCdpSession({
+      context,
+      page,
+      testInfo,
+      operation: async ({ session }) => {
+        const cdpErrors = [];
+        const consoleErrors = [];
+        const exceptions = [];
+        const bootstrap = createPlaywrightBootstrap(session, {
+          createCore: createCDPAuditCore,
+          consoleErrors,
+          exceptions,
+          cdpErrors,
+        });
+        const { adapters, core } = bootstrap;
+
+        expect(bootstrap.session, 'bootstrap mantém a sessão do Playwright').toBe(session);
+        expect(bootstrap.consoleErrors, 'array de consoleErrors injetado').toBe(consoleErrors);
+        expect(bootstrap.exceptions, 'array de exceptions injetado').toBe(exceptions);
+        expect(bootstrap.cdpErrors, 'array de cdpErrors injetado').toBe(cdpErrors);
+
+        /* E1 — comandos reais de DOM, CSS e Runtime pelo adaptador */
+        await adapters.DOM.enable();
+        await adapters.CSS.enable();
+        await adapters.Runtime.enable();
+
+        const document = await adapters.DOM.getDocument({ depth: -1, pierce: true });
+        expect(document.root.nodeId, 'DOM.getDocument real').toBeGreaterThan(0);
+
+        const found = await adapters.DOM.querySelectorAll({
+          nodeId: document.root.nodeId,
+          selector: SELECTOR_SINTETICO,
+        });
+        expect(found.nodeIds.length, 'fixture encontrada via CDP real').toBeGreaterThan(0);
+
+        const computed = await adapters.CSS.getComputedStyleForNode({ nodeId: found.nodeIds[0] });
+        expect(Array.isArray(computed.computedStyle) && computed.computedStyle.length > 0, 'CSS.getComputedStyleForNode real').toBe(true);
+
+        const runtime = await adapters.Runtime.evaluate({
+          expression: 'window.location.href',
+          returnByValue: true,
+        });
+        expect(typeof runtime.result.value, 'Runtime.evaluate real').toBe('string');
+
+        /* E3 — eventos reais na CDPSession do Playwright */
+        const consoleEvents = [];
+        const exceptionEvents = [];
+        let resolveConsole;
+        let resolveException;
+        const consoleSeen = new Promise((resolve) => { resolveConsole = resolve; });
+        const exceptionSeen = new Promise((resolve) => { resolveException = resolve; });
+
+        const offConsole = adapters.Runtime.consoleAPICalled((payload) => {
+          consoleEvents.push(payload);
+          if (JSON.stringify(payload).includes(CONSOLE_MARKER)) resolveConsole(payload);
+        });
+        const offException = adapters.Runtime.exceptionThrown((payload) => {
+          exceptionEvents.push(payload);
+          if (JSON.stringify(payload).includes(EXCEPTION_MARKER)) resolveException(payload);
+        });
+
+        let consolePayload = null;
+        let exceptionPayload = null;
+        try {
+          await page.evaluate((marker) => { console.log(marker); }, CONSOLE_MARKER);
+          await page.evaluate((marker) => {
+            const script = document.createElement('script');
+            script.textContent = `throw new Error("${marker}")`;
+            document.head.appendChild(script);
+          }, EXCEPTION_MARKER);
+          consolePayload = await withTimeout(consoleSeen, 10_000, 'Runtime.consoleAPICalled');
+          exceptionPayload = await withTimeout(exceptionSeen, 10_000, 'Runtime.exceptionThrown');
+        } finally {
+          /* Remoção dos listeners antes do detach executado pelo helper. */
+          offConsole();
+          offException();
+        }
+
+        const totalAposRemocao = consoleEvents.length;
+        await page.evaluate((marker) => { console.log(marker); }, `${CONSOLE_MARKER}_POS_REMOCAO`);
+        /* Janela curta de observação negativa; a sincronização positiva acima
+           foi feita por condição, não por tempo. */
+        await page.waitForTimeout(300);
+        expect(consoleEvents.length, 'nenhum evento encaminhado após remoção').toBe(totalAposRemocao);
+
+        /* E2 — probeState real pelo núcleo histórico R2.5.6 */
+        const sampleIdRegistry = createSampleIdRegistry();
+        const occurrences = await core.probeState(
+          SELECTOR_SINTETICO,
+          'normal',
+          'desktop',
+          'light',
+          '1',
+          'dash',
+          sampleIdRegistry
+        );
+
+        expect(cdpErrors, 'ausência de erros CDP inesperados').toHaveLength(0);
+        return {
+          occurrences,
+          consolePayload,
+          exceptionPayload,
+          consoleCount: consoleEvents.length,
+          exceptionCount: exceptionEvents.length,
+          domNodeId: document.root.nodeId,
+          runtimeHref: runtime.result.value,
+          computedProps: computed.computedStyle.length,
+          listenersAposRemocao: typeof session.listenerCount === 'function'
+            ? session.listenerCount('Runtime.consoleAPICalled')
+            : null,
+        };
+      },
+    });
+
+    /* E4 — lifecycle integrado */
+    expect(lifecycle.operationError, 'operação integrada sem erro').toBeNull();
+    expect(lifecycle.cleanupError, 'cleanup sem erro').toBeNull();
+    expect(lifecycle.detachAttempts, 'detach exatamente uma vez').toBe(1);
+    expect(lifecycle.detachSuccess, 'detach bem-sucedido').toBe(true);
+
+    const out = lifecycle.result;
+    expect(out.consolePayload, 'evento de console real recebido').toBeTruthy();
+    expect(JSON.stringify(out.consolePayload), 'marcador de console presente').toContain(CONSOLE_MARKER);
+    expect(out.exceptionPayload, 'evento de exceção real recebido').toBeTruthy();
+    expect(JSON.stringify(out.exceptionPayload), 'marcador de exceção presente').toContain(EXCEPTION_MARKER);
+    expect(out.consoleCount, 'eventos de console capturados').toBeGreaterThan(0);
+    expect(out.exceptionCount, 'eventos de exceção capturados').toBeGreaterThan(0);
+    expect(out.listenersAposRemocao === null || out.listenersAposRemocao === 0, 'sem listeners residuais').toBe(true);
+
+    expect(Array.isArray(out.occurrences), 'probeState retorna array').toBe(true);
+    expect(out.occurrences.length, 'ocorrência encontrada').toBeGreaterThan(0);
+    const first = out.occurrences[0];
+    expect(typeof first.nodeId, 'nodeId válido').toBe('number');
+    expect(first.discarded, 'ocorrência não descartada').toBe(false);
+    expect(first.color, 'estilo computado color').toBeTruthy();
+    expect(first.bg, 'estilo computado background-color').toBeTruthy();
+    expect(first.rect, 'geometria disponível').toBeTruthy();
+    expect(first.geometryStatus, 'geometria confirmada').toBe('available');
+    expect(first.visibilityStatus, 'visibilidade confirmada').toBe('visible');
+    expect(first.cleanupStatus, 'limpeza aplicável').toBe('not-required');
+
+    /* E6 — estado após encerramento */
+    await expect(lifecycle.session.send('DOM.getDocument'), 'sessão não ativa após detach')
+      .rejects.toThrow(/closed|detached|Target/i);
+    const removido = await page.evaluate((sel) => {
+      const el = document.querySelector(sel);
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+      return !document.querySelector(sel);
+    }, SELECTOR_SINTETICO);
+    expect(removido, 'elemento sintético removido').toBe(true);
+    await expect(page.locator('#userBar'), 'página funcional após detach').toBeVisible({ timeout: 10_000 });
+    await app.waitForDataReady(page, 30_000);
+
+    const diag = {
+      prova: 'C.4-G3.1-E-integrada',
+      comandos_reais: ['DOM.getDocument', 'DOM.querySelectorAll', 'CSS.getComputedStyleForNode', 'Runtime.evaluate'],
+      eventos_reais: ['Runtime.consoleAPICalled', 'Runtime.exceptionThrown'],
+      ocorrencias: out.occurrences.length,
+      console_capturados: out.consoleCount,
+      excecoes_capturadas: out.exceptionCount,
+      detach_attempts: lifecycle.detachAttempts,
+      detach_success: lifecycle.detachSuccess,
+      node_version: process.version,
+    };
+    await testInfo.attach('c4-g31e-integracao.json', {
+      body: JSON.stringify(diag, null, 2),
+      contentType: 'application/json',
+    }).catch(() => {});
+    console.log('[C4_DIAGNOSTIC]', JSON.stringify(diag));
+  });
+
+  /* E5 — falha integrada com CDPSession real. */
+  test('falha integrada com sessão real preserva erro sentinela e executa detach único', async ({ page, context }, testInfo) => {
+    testInfo.setTimeout(90_000);
+    const creds = skipSemCredencial();
+    await startPage(page, creds);
+
+    const sentinel = new Error(SENTINEL_MSG);
+    const lifecycle = await runWithCdpSession({
+      context,
+      page,
+      testInfo,
+      operation: async ({ session }) => {
+        const adapters = createDomainAdapters(session);
+        await adapters.Runtime.enable();
+        const valido = await adapters.Runtime.evaluate({ expression: '1 + 1', returnByValue: true });
+        expect(valido.result.value, 'comando CDP real válido antes da falha').toBe(2);
+        throw sentinel;
+      },
+    });
+
+    expect(lifecycle.operationError, 'referência original do erro preservada').toBe(sentinel);
+    expect(lifecycle.cleanupError, 'cleanup não mascara o erro da operação').toBeNull();
+    expect(lifecycle.result, 'resultado nulo na falha').toBeNull();
+    expect(lifecycle.detachAttempts, 'detach exatamente uma vez').toBe(1);
+    expect(lifecycle.detachSuccess, 'detach bem-sucedido').toBe(true);
+
+    await expect(page.locator('#userBar'), 'página funcional após falha e detach').toBeVisible({ timeout: 10_000 });
+    await app.waitForDataReady(page, 30_000);
+  });
+});
