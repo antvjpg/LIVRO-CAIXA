@@ -896,6 +896,67 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
   const FIXTURA = 'e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-fixtures.html';
   const historical = require('./original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7.cjs');
 
+  /* IDs da fixture com expectativa documentada no teste histórico R2.5.7. */
+  const IDS_REFERENCIA = new Set(['r256-accent-consumer', 'r256-accent-opacity0-child', 'r25-btn-1']);
+
+  /* Expectativas CONCRETAS extraídas de c4-v05-b-r2-5-7-test.cjs.
+     Voláteis (runId, key, nodeId, sampleId, rect.x/y) são excluídos. */
+  const EXPECTATIVAS_HISTORICAS = [
+    {
+      caso: 'Y1',
+      id: 'r256-accent-consumer',
+      campos: {
+        'nodeAssociation.status': 'resolved',
+        visibilityStatus: 'visible',
+        ancestorVisibility: 'completed',
+        ancestorOpacityStatus: 'complete',
+        ancestorOpacity: 1,
+        ancestorHidden: false,
+      },
+    },
+    {
+      caso: 'Y2',
+      id: 'r256-accent-opacity0-child',
+      campos: {
+        'nodeAssociation.status': 'resolved',
+        visibilityStatus: 'not-visible',
+        ancestorOpacity: 0,
+        ancestorOpacityStatus: 'conclusive-zero',
+      },
+    },
+    {
+      caso: 'D1/V1',
+      id: 'r25-btn-1',
+      campos: {
+        visibilityStatus: 'visible',
+        rect: '__PRESENTE__',
+      },
+    },
+  ];
+
+  function getPath(obj, caminho) {
+    return caminho.split('.').reduce((atual, chave) => (atual == null ? atual : atual[chave]), obj);
+  }
+
+  function compararSemantica(evidencias) {
+    const porId = new Map(evidencias.map((r) => [r.id, r]));
+    return EXPECTATIVAS_HISTORICAS.map((caso) => {
+      const linha = porId.get(caso.id);
+      if (!linha) {
+        return { caso: caso.caso, id: caso.id, situacao: 'nao-comparavel', motivo: 'elemento ausente da coleta' };
+      }
+      for (const [campo, esperado] of Object.entries(caso.campos)) {
+        const obtido = getPath(linha, campo);
+        if (esperado === '__PRESENTE__') {
+          expect(obtido, `${caso.caso}: ${campo} presente`).toBeTruthy();
+        } else {
+          expect(obtido, `${caso.caso}: ${campo} conforme referência histórica`).toEqual(esperado);
+        }
+      }
+      return { caso: caso.caso, id: caso.id, situacao: 'comparado', campos: Object.keys(caso.campos) };
+    });
+  }
+
   test('reexecuta collectScript, resolveNodeIds e buildAuditRow em CDPSession real com isolamento Y/Z', async ({ page, context }, testInfo) => {
     testInfo.setTimeout(180_000);
     await page.goto(FIXTURA, { waitUntil: 'load' });
@@ -906,12 +967,7 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
       page,
       testInfo,
       operation: async ({ session }) => {
-        const adapters = createDomainAdapters(session);
-        await adapters.DOM.enable();
-        await adapters.CSS.enable();
-        await adapters.Runtime.enable();
-
-        /* Núcleo R2.5.6 real, injetado pelo bootstrap existente. */
+        /* G4.1-R1: um único conjunto de adapters, criado pelo bootstrap. */
         const cdpErrors = [];
         const consoleErrors = [];
         const exceptions = [];
@@ -921,6 +977,10 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
           exceptions,
           cdpErrors,
         });
+        const { adapters, core } = bootstrap;
+        await adapters.DOM.enable();
+        await adapters.CSS.enable();
+        await adapters.Runtime.enable();
 
         /* Listeners monitorados e removidos em finally, antes do detach. */
         const eventos = [];
@@ -967,10 +1027,15 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
 
             const prefix = `c4-${collected.runId}-`;
             const evidencias = [];
-            /* buildAuditRow ORIGINAL para um subconjunto representativo.
+            /* buildAuditRow ORIGINAL para um subconjunto representativo,
+               priorizando os elementos com expectativa histórica documentada.
                O fluxo histórico completo cobre 393 asserções; esta prova é
                representativa e não integral. */
-            for (const row of collected.rows.slice(0, 3)) {
+            const selecionadas = [
+              ...collected.rows.filter((r) => IDS_REFERENCIA.has(r.id)),
+              ...collected.rows.filter((r) => !IDS_REFERENCIA.has(r.id)),
+            ].slice(0, 5);
+            for (const row of selecionadas) {
               expect(row.key.startsWith(prefix), 'chave pertence à execução corrente').toBe(true);
               const association = associationMap.get(row.key);
               expect(association, 'associação presente no mapa').toBeTruthy();
@@ -979,7 +1044,7 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
               expect(association.nodeId, 'nodeId positivo').toBeGreaterThan(0);
 
               const auditRow = await historical.buildAuditRow({
-                core: bootstrap.core,
+                core,
                 row,
                 association,
                 context: {
@@ -1063,6 +1128,11 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
     expect(first.visibilityStatus, 'visibilidade classificada').toBeTruthy();
     expect(first.rect, 'geometria preservada').toBeTruthy();
 
+    /* Comparação semântica com expectativas documentadas em
+       c4-v05-b-r2-5-7-test.cjs (Y1, Y2, D1/V1). */
+    const semantica = compararSemantica(z.evidencias);
+    expect(semantica.filter((r) => r.situacao === 'comparado').length, 'casos históricos comparados').toBe(3);
+
     /* Estado após encerramento. */
     const residuo = await page.evaluate(() =>
       document.querySelectorAll('[data-c4-audit],[data-c4-state]').length
@@ -1078,6 +1148,7 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
       run_ids: out.rounds.map((r) => r.runId),
       coletados_por_execucao: out.rounds.map((r) => r.coletados),
       evidencias_por_execucao: out.rounds.map((r) => r.evidencias.length),
+      comparacao_semantica: semantica,
       detach_attempts: lifecycle.detachAttempts,
       detach_success: lifecycle.detachSuccess,
       node_version: process.version,
@@ -1087,5 +1158,99 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
       contentType: 'application/json',
     }).catch(() => {});
     console.log('[C4_DIAGNOSTIC]', JSON.stringify(diag));
+  });
+});
+
+test.describe('C.4 — G4.1-R1: rastreabilidade individual das 393 asserções R2.5.7', () => {
+  const RESULTADOS = require('./original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
+
+  /* Classificação por ASSERÇÃO INDIVIDUAL (id + trecho do nome), nunca por
+     grupo inteiro. Derivada dos casos realmente exercitados na prova G4.1. */
+  const COBERTAS = [
+    { id: 'Y1', termos: [
+      'a associacao key->nodeId foi resolvida',
+      'a travessia da linha real foi concluida ate a raiz',
+      'travessia completa e opacidade completa produzem visible',
+      'a linha final preserva a associacao resolvida',
+    ] },
+    { id: 'Y2', termos: [
+      'a opacidade zero e conclusiva',
+      'a opacidade zero comprovada produz not-visible',
+      'a linha com opacidade zero nunca e declarada visible',
+    ] },
+    { id: 'D1', termos: ['elemento visível tem visibilityStatus visible'] },
+    { id: 'V24', termos: ['a opacidade completa acumulada é 1', 'a travessia completa resulta em completed'] },
+    { id: 'B2', termos: ['1 ID resulta em resolved', 'idCount é 1'] },
+  ];
+
+  const PARCIAIS = [
+    { id: 'Y1', termos: [
+      'a travessia foi executada pelo mecanismo',
+      'ancestorOpacity da linha final',
+      'ancestorHidden da linha final',
+      'ancestorDisplayNone da linha final',
+      'ancestorDepth da linha final',
+      'a opacidade da linha real foi acumulada de forma completa',
+    ] },
+    { id: 'Y2', termos: ['a opacidade zero do ancestral chegou'] },
+    { id: 'D1', termos: ['geometryStatus available', 'rect disponível'] },
+    { id: 'V1', termos: ['ancestral visible e descendente visible'] },
+    { id: 'Z8', termos: ['chave antiga de outra execucao nao e resolvida'] },
+  ];
+
+  function classificar(teste) {
+    if (teste.status === 'BLOCKED') return 'blocked';
+    for (const regra of COBERTAS) {
+      if (regra.id === teste.id && regra.termos.some((termo) => teste.name.includes(termo))) return 'covered';
+    }
+    for (const regra of PARCIAIS) {
+      if (regra.id === teste.id && regra.termos.some((termo) => teste.name.includes(termo))) return 'partial';
+    }
+    return 'preserved-not-ported';
+  }
+
+  test('deriva 393 asserções, 134 IDs e classifica cada asserção individualmente', () => {
+    const testes = RESULTADOS.tests;
+    expect(testes.length, '393 registros históricos').toBe(393);
+    expect(new Set(testes.map((t) => t.id)).size, '134 IDs distintos').toBe(134);
+    expect(RESULTADOS.summary, 'resumo histórico').toEqual({ total: 393, passed: 392, failed: 0, blocked: 1 });
+    expect(testes.filter((t) => t.status === 'PASS').length, '392 PASS').toBe(392);
+    expect(testes.filter((t) => t.status === 'FAIL').length, '0 FAIL').toBe(0);
+    expect(testes.filter((t) => t.status === 'BLOCKED').map((t) => t.id), 'único bloqueio V32').toEqual(['V32']);
+
+    const DISTRIBUICAO = { A: 16, B: 17, C: 21, D: 27, V: 164, P: 19, R: 12, E: 7, F: 11, G: 11, H: 4, X: 21, Y: 30, Z: 33 };
+    const porGrupo = {};
+    for (const t of testes) porGrupo[t.group] = (porGrupo[t.group] || 0) + 1;
+    expect(porGrupo, 'distribuição original por grupo preservada').toEqual(DISTRIBUICAO);
+
+    const situacoes = {};
+    const detalhePorGrupo = {};
+    for (const teste of testes) {
+      const situacao = classificar(teste);
+      situacoes[situacao] = (situacoes[situacao] || 0) + 1;
+      detalhePorGrupo[teste.group] = detalhePorGrupo[teste.group] || {};
+      detalhePorGrupo[teste.group][situacao] = (detalhePorGrupo[teste.group][situacao] || 0) + 1;
+    }
+
+    expect(Object.values(situacoes).reduce((a, b) => a + b, 0), 'todas as asserções classificadas').toBe(393);
+    expect(situacoes.covered, 'cobertas diretamente').toBeGreaterThan(0);
+    expect(situacoes.partial, 'parciais').toBeGreaterThan(0);
+    expect(situacoes['preserved-not-ported'], 'preservadas sem portar').toBeGreaterThan(0);
+    expect(situacoes.blocked, 'bloqueadas').toBe(1);
+
+    /* Nenhum grupo pode ser integralmente "covered": a prova é representativa. */
+    for (const [grupo, dist] of Object.entries(detalhePorGrupo)) {
+      const total = Object.values(dist).reduce((a, b) => a + b, 0);
+      expect((dist.covered || 0) < total, `grupo ${grupo} não integralmente coberto`).toBe(true);
+    }
+
+    console.log('[C4_DIAGNOSTIC]', JSON.stringify({
+      prova: 'C.4-G4.1-R1-rastreabilidade',
+      registros: testes.length,
+      ids_distintos: new Set(testes.map((t) => t.id)).size,
+      situacoes,
+      grupos: Object.keys(detalhePorGrupo).length,
+      bloqueio: 'V32',
+    }));
   });
 });
