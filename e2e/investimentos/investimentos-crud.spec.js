@@ -357,6 +357,17 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await openNewAsset(page);
     await saveAsset(page, { name: NAME_BTC, type: 'Bitcoin', units: UNITS_BTC, price: PRICE_BTC });
 
+    /* Barreira de ACK do servidor: o app grava com batch().commit() sobre
+       persistência IndexedDB (js/00-bootstrap.js), cuja promise resolve no
+       commit LOCAL, antes do ACK remoto. O REST enxerga apenas o servidor;
+       sem esta barreira o BTC pode estar na fila de mutações do SDK enquanto
+       o card já aparece na UI. waitForPendingWrites drena a fila sem espera
+       fixa; o race apenas evita travar indefinidamente se o stream cair. */
+    await page.evaluate(() => Promise.race([
+      window.db.waitForPendingWrites(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('waitForPendingWrites excedeu 60s')), 60_000)),
+    ]));
+
     /* Consistência de leitura do último gravado: o BTC é criado por último e
        foi o ativo ausente nas falhas intermitentes. Poll isolado antecedente
        melhora a observabilidade e reduz a janela antes da checagem conjunta,
