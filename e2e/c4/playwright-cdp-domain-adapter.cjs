@@ -15,7 +15,14 @@
      const session = await context.newCDPSession(page);
      const adapters = createDomainAdapters(session);
      await adapters.DOM.enable();
-     const doc = await adapters.DOM.getDocument({ depth: -1, pierce: true }); */
+     const doc = await adapters.DOM.getDocument({ depth: -1, pierce: true });
+
+     Bootstrap do contrato G3.1-C (harness R2.5.7 ↔ Playwright), com injeção
+     explícita de domínios e sem conexão CRI própria:
+     const { adapters, core } = createPlaywrightBootstrap(session, { createCore });
+     // createCore = createCDPAuditCore do núcleo R2.5.6; CDP vem null
+     // porque o núcleo não consome o parâmetro (assinatura legada
+     // preservada por compatibilidade). */
 
 function createDomainAdapters(session) {
   if (!session || typeof session.send !== 'function') {
@@ -89,4 +96,31 @@ function createDomainAdapters(session) {
   return { DOM, CSS, Runtime, Page, Emulation };
 }
 
-module.exports = { createDomainAdapters };
+function createPlaywrightBootstrap(session, options) {
+  const opts = options || {};
+  if (typeof opts.createCore !== 'function') {
+    throw new Error('createPlaywrightBootstrap: createCore (createCDPAuditCore do núcleo R2.5.6) é obrigatória');
+  }
+
+  const adapters = createDomainAdapters(session);
+  const consoleErrors = opts.consoleErrors || [];
+  const exceptions = opts.exceptions || [];
+  const cdpErrors = opts.cdpErrors || [];
+
+  /* CDP: null — o núcleo R2.5.6 não consome o parâmetro CDP; ele existe
+     apenas por compatibilidade com a assinatura do bootstrap legado
+     (chrome-remote-interface, porta 9222). */
+  const core = opts.createCore({
+    CDP: null,
+    DOM: adapters.DOM,
+    CSS: adapters.CSS,
+    Runtime: adapters.Runtime,
+    consoleErrors,
+    exceptions,
+    cdpErrors,
+  });
+
+  return { session, adapters, core, consoleErrors, exceptions, cdpErrors };
+}
+
+module.exports = { createDomainAdapters, createPlaywrightBootstrap };

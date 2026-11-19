@@ -17,9 +17,11 @@
 
 const { test, expect } = require('@playwright/test');
 const { EventEmitter } = require('node:events');
+const fs = require('fs');
+const path = require('path');
 const app = require('../helpers/app');
 const { resolveCredentials, guardReasonText } = require('../helpers/env');
-const { createDomainAdapters } = require('./playwright-cdp-domain-adapter.cjs');
+const { createDomainAdapters, createPlaywrightBootstrap } = require('./playwright-cdp-domain-adapter.cjs');
 const { createCDPAuditCore, createSampleIdRegistry } = require('./original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs');
 
 const SELECTOR_SINTETICO = '#code-cdp-bridge-fixture';
@@ -263,5 +265,180 @@ test.describe('C.4 — G3.1-B: eventos CDP no adaptador Playwright', () => {
     expect(emitter.listenerCount('Runtime.exceptionThrown')).toBe(0);
     offException();
     expect(emitter.listenerCount('Runtime.exceptionThrown')).toBe(0);
+  });
+});
+
+test.describe('C.4 — G3.1-C: contrato do harness R2.5.7 ↔ adaptador Playwright', () => {
+  /* Superfície efetivamente consumida pelo harness R2.5.7 e pelo núcleo R2.5.6,
+     levantada na inspeção obrigatória do G3.1-C. */
+  const CONSUMED_SURFACE = {
+    DOM: ['enable', 'getDocument', 'querySelectorAll', 'describeNode', 'resolveNode', 'requestNode', 'getBoxModel', 'getAttributes'],
+    CSS: ['enable', 'getMatchedStylesForNode', 'getComputedStyleForNode', 'forcePseudoState'],
+    Runtime: ['enable', 'evaluate', 'callFunctionOn', 'consoleAPICalled', 'exceptionThrown'],
+    Page: ['enable', 'navigate'],
+    Emulation: ['setDeviceMetricsOverride', 'setTouchEmulationEnabled'],
+  };
+
+  function fakeSession(emitter, sendImpl) {
+    return {
+      send: sendImpl || (() => Promise.resolve({})),
+      on: (eventName, listener) => emitter.on(eventName, listener),
+      off: (eventName, listener) => emitter.off(eventName, listener),
+      removeListener: (eventName, listener) => emitter.removeListener(eventName, listener),
+    };
+  }
+
+  test('expõe os cinco domínios com os métodos exigidos pelo harness R2.5.7 e pelo núcleo R2.5.6', () => {
+    const adapters = createDomainAdapters(fakeSession(new EventEmitter()));
+
+    expect(Object.keys(adapters).sort(), 'cinco domínios').toEqual(['CSS', 'DOM', 'Emulation', 'Page', 'Runtime']);
+    for (const [domain, methods] of Object.entries(CONSUMED_SURFACE)) {
+      expect(adapters[domain], `domínio ${domain}`).toBeTruthy();
+      for (const method of methods) {
+        expect(typeof adapters[domain][method], `${domain}.${method}`).toBe('function');
+      }
+    }
+    /* Método adicional preservado do G3.1-A (não exigido pelo harness,
+       mas não removido). */
+    expect(typeof adapters.DOM.querySelector, 'DOM.querySelector preservado').toBe('function');
+  });
+
+  test('encaminha comandos e parâmetros e preserva retornos e erros', async () => {
+    const sentinel = { marker: 'retorno-integro' };
+    const calls = [];
+    const adapters = createDomainAdapters(fakeSession(new EventEmitter(), (method, params) => {
+      calls.push([method, params]);
+      return Promise.resolve(sentinel);
+    }));
+
+    const retorno = await adapters.Page.navigate({ url: 'https://exemplo.invalido' });
+    expect(retorno, 'retorno é a mesma referência do session.send').toBe(sentinel);
+    expect(calls, 'método e parâmetros exatos').toContainEqual(['Page.navigate', { url: 'https://exemplo.invalido' }]);
+
+    const boom = new Error('erro CDP sintetico');
+    const adaptersErro = createDomainAdapters(fakeSession(new EventEmitter(), () => Promise.reject(boom)));
+    await expect(adaptersErro.Runtime.evaluate({ expression: '1' }), 'erro propaga com a mesma referência').rejects.toBe(boom);
+  });
+
+  test('assinaturas de listeners no formato R2.5.7: ({ type, args }) e ({ exceptionDetails })', () => {
+    const emitter = new EventEmitter();
+    const { Runtime } = createDomainAdapters(fakeSession(emitter));
+    const consoleCalls = [];
+    const exceptionCalls = [];
+
+    Runtime.consoleAPICalled(({ type, args }) => { consoleCalls.push({ type, args }); });
+    Runtime.exceptionThrown(({ exceptionDetails }) => { exceptionCalls.push(exceptionDetails); });
+
+    const consolePayload = { type: 'error', args: [{ type: 'string', value: 'x' }] };
+    const exceptionPayload = { exceptionDetails: { text: 'boom' } };
+    emitter.emit('Runtime.consoleAPICalled', consolePayload);
+    emitter.emit('Runtime.exceptionThrown', exceptionPayload);
+
+    expect(consoleCalls, 'consoleAPICalled no formato R2.5.7').toHaveLength(1);
+    expect(consoleCalls[0].type).toBe('error');
+    expect(consoleCalls[0].args, 'args preservado por referência').toBe(consolePayload.args);
+    expect(exceptionCalls, 'exceptionThrown no formato R2.5.7').toHaveLength(1);
+    expect(exceptionCalls[0], 'exceptionDetails preservado por referência').toBe(exceptionPayload.exceptionDetails);
+  });
+
+  test('contrato Playwright: sem transporte CRI, sem conexão própria e sem encerramento implícito', async () => {
+    /* 6 e 7: análise estática do adaptador (comentários removidos para não
+       confundir menção contratual com uso). Literais montados em partes
+       para que este próprio teste não seja confundido com uso real. */
+    const src = fs
+      .readFileSync(path.join(__dirname, 'playwright-cdp-domain-adapter.cjs'), 'utf8')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/^\s*\/\/.*$/gm, '');
+    const CRI = ['chrome', 'remote', 'interface'].join('-');
+    const PORTA = ['92', '22'].join('');
+    const CONECTA = ['.con', 'nect('].join('');
+    const ABRE_CDP = ['CDP', '('].join('');
+    expect(src.includes(`require('${CRI}')`) || src.includes(`require("${CRI}")`), 'sem require do transporte legado').toBe(false);
+    expect(src.includes(CONECTA), 'sem conexao propria').toBe(false);
+    expect(src.includes('new WebSocket'), 'sem WebSocket proprio').toBe(false);
+    expect(src.includes(ABRE_CDP), 'sem abertura de CDP alternativo').toBe(false);
+    expect(src.includes(PORTA), 'sem porta legada').toBe(false);
+
+    /* 8: o adaptador nunca encerra a sessão (detach/close/disconnect). */
+    const lifecycle = [];
+    const emitter = new EventEmitter();
+    const session = {
+      ...fakeSession(emitter),
+      detach: () => { lifecycle.push('detach'); return Promise.resolve(); },
+      close: () => { lifecycle.push('close'); return Promise.resolve(); },
+      disconnect: () => { lifecycle.push('disconnect'); return Promise.resolve(); },
+    };
+    const adapters = createDomainAdapters(session);
+    await adapters.DOM.enable();
+    await adapters.CSS.enable();
+    await adapters.Runtime.enable();
+    await adapters.Page.enable();
+    const offConsole = adapters.Runtime.consoleAPICalled(() => {});
+    const offException = adapters.Runtime.exceptionThrown(() => {});
+    offConsole();
+    offException();
+    expect(lifecycle, 'nenhum encerramento implícito da sessão').toEqual([]);
+    expect(emitter.listenerCount('Runtime.consoleAPICalled')).toBe(0);
+    expect(emitter.listenerCount('Runtime.exceptionThrown')).toBe(0);
+  });
+
+  test('bootstrap Playwright injeta domínios explicitamente no núcleo e mantém a sessão com o Playwright', () => {
+    const sentinelCore = { probeState: () => {} };
+    let injected = null;
+    const createCoreFake = (deps) => { injected = deps; return sentinelCore; };
+    const session = fakeSession(new EventEmitter());
+    const consoleErrors = [];
+    const exceptions = [];
+    const cdpErrors = [];
+    const result = createPlaywrightBootstrap(session, { createCore: createCoreFake, consoleErrors, exceptions, cdpErrors });
+
+    expect(result.core, 'core retornado').toBe(sentinelCore);
+    expect(result.adapters, 'adapters retornados').toBeTruthy();
+    expect(result.session, 'sessão permanece a do Playwright').toBe(session);
+    expect(injected, 'createCore recebe injeção explícita').toBeTruthy();
+    expect(injected.CDP, 'CDP nulo no caminho Playwright').toBeNull();
+    expect(injected.DOM).toBe(result.adapters.DOM);
+    expect(injected.CSS).toBe(result.adapters.CSS);
+    expect(injected.Runtime).toBe(result.adapters.Runtime);
+    expect(injected.consoleErrors).toBe(consoleErrors);
+    expect(injected.exceptions).toBe(exceptions);
+    expect(injected.cdpErrors).toBe(cdpErrors);
+
+    expect(() => createPlaywrightBootstrap(session, {}), 'createCore obrigatória').toThrow(/createCore/);
+  });
+
+  test('reusa resolveNodeIds() do harness R2.5.7 real contra o adaptador (sem copiar o harness)', async () => {
+    let harness = null;
+    try {
+      harness = require('./original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7.cjs');
+    } catch (err) {
+      test.skip(true, `harness histórico indisponível no ambiente: ${err.message}`);
+      return;
+    }
+    expect(typeof harness.resolveNodeIds, 'harness exporta resolveNodeIds').toBe('function');
+
+    const emitter = new EventEmitter();
+    const sendCalls = [];
+    const adapters = createDomainAdapters(fakeSession(emitter, (method, params) => {
+      sendCalls.push([method, params]);
+      if (method === 'DOM.getDocument') return Promise.resolve({ root: { nodeId: 1 } });
+      if (method === 'DOM.querySelectorAll') return Promise.resolve({ nodeIds: [7] });
+      return Promise.resolve({});
+    }));
+    const cdpErrors = [];
+    const rows = [
+      { key: 'c4-999-0', sel: '.a' },
+      { key: 'c4-998-0', sel: '.b' },
+    ];
+
+    const map = await harness.resolveNodeIds(adapters.DOM, rows, cdpErrors, 999);
+
+    expect(map.get('c4-999-0'), 'associação resolvida pelo harness real').toEqual({
+      status: 'resolved', nodeId: 7, key: 'c4-999-0', selector: '[data-c4-audit="c4-999-0"]', idCount: 1,
+    });
+    expect(map.get('c4-998-0').status, 'chave de outra execução não resolvida').toBe('node-not-found');
+    expect(sendCalls.filter(([m]) => m === 'DOM.getDocument'), 'getDocument uma vez por lote').toEqual([['DOM.getDocument', { depth: -1, pierce: true }]]);
+    expect(sendCalls, 'querySelectorAll com seletor da chave').toContainEqual(['DOM.querySelectorAll', { nodeId: 1, selector: '[data-c4-audit="c4-999-0"]' }]);
+    expect(cdpErrors, 'sem erros CDP').toHaveLength(0);
   });
 });
