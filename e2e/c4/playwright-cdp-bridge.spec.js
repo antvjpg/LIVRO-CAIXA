@@ -891,3 +891,201 @@ test.describe('C.4 — G3.1-E: integração real CDP ↔ adaptador ↔ bootstrap
     await app.waitForDataReady(page, 30_000);
   });
 });
+
+test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwright', () => {
+  const FIXTURA = 'e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-fixtures.html';
+  const historical = require('./original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7.cjs');
+
+  test('reexecuta collectScript, resolveNodeIds e buildAuditRow em CDPSession real com isolamento Y/Z', async ({ page, context }, testInfo) => {
+    testInfo.setTimeout(180_000);
+    await page.goto(FIXTURA, { waitUntil: 'load' });
+    await expect(page.locator('body'), 'fixture histórica carregada').toBeVisible();
+
+    const lifecycle = await runWithCdpSession({
+      context,
+      page,
+      testInfo,
+      operation: async ({ session }) => {
+        const adapters = createDomainAdapters(session);
+        await adapters.DOM.enable();
+        await adapters.CSS.enable();
+        await adapters.Runtime.enable();
+
+        /* Núcleo R2.5.6 real, injetado pelo bootstrap existente. */
+        const cdpErrors = [];
+        const consoleErrors = [];
+        const exceptions = [];
+        const bootstrap = createPlaywrightBootstrap(session, {
+          createCore: createCDPAuditCore,
+          consoleErrors,
+          exceptions,
+          cdpErrors,
+        });
+
+        /* Listeners monitorados e removidos em finally, antes do detach. */
+        const eventos = [];
+        const offConsole = adapters.Runtime.consoleAPICalled((payload) => {
+          eventos.push(['consoleAPICalled', payload]);
+        });
+        const offException = adapters.Runtime.exceptionThrown((payload) => {
+          eventos.push(['exceptionThrown', payload]);
+        });
+
+        try {
+          const rounds = [];
+
+          /* Duas execuções na mesma página: grupos Y e Z. */
+          for (let i = 0; i < 2; i++) {
+            /* collectScript ORIGINAL via Runtime.evaluate da sessão real. */
+            const evaluation = await adapters.Runtime.evaluate({
+              expression: historical.collectScript,
+              returnByValue: true,
+              awaitPromise: false,
+              userGesture: true,
+            });
+            if (evaluation.exceptionDetails) {
+              throw new Error(
+                'collectScript falhou: ' +
+                  (evaluation.exceptionDetails.exception ? evaluation.exceptionDetails.exception.description : evaluation.exceptionDetails.text)
+              );
+            }
+
+            const collected = evaluation.result.value;
+            expect(collected, 'collectScript retornou dados').toBeTruthy();
+            expect(Array.isArray(collected.rows), 'rows é array').toBe(true);
+            expect(collected.rows.length, 'consumidores coletados na página real').toBeGreaterThan(0);
+            expect(typeof collected.runId, 'runId da execução').toBe('number');
+
+            /* resolveNodeIds ORIGINAL com respostas CDP reais. */
+            const associationMap = await historical.resolveNodeIds(
+              adapters.DOM,
+              collected.rows,
+              cdpErrors,
+              collected.runId
+            );
+            expect(associationMap.size, 'cardinalidade do mapa de associações').toBe(collected.rows.length);
+
+            const prefix = `c4-${collected.runId}-`;
+            const evidencias = [];
+            /* buildAuditRow ORIGINAL para um subconjunto representativo.
+               O fluxo histórico completo cobre 393 asserções; esta prova é
+               representativa e não integral. */
+            for (const row of collected.rows.slice(0, 3)) {
+              expect(row.key.startsWith(prefix), 'chave pertence à execução corrente').toBe(true);
+              const association = associationMap.get(row.key);
+              expect(association, 'associação presente no mapa').toBeTruthy();
+              expect(association.status, 'associação resolvida').toBe('resolved');
+              expect(typeof association.nodeId, 'nodeId real').toBe('number');
+              expect(association.nodeId, 'nodeId positivo').toBeGreaterThan(0);
+
+              const auditRow = await historical.buildAuditRow({
+                core: bootstrap.core,
+                row,
+                association,
+                context: {
+                  vp: 'desktop',
+                  themeSet: 'light',
+                  theme: '1',
+                  themeName: 'Tema 1',
+                  screen: 'dash',
+                  screenLabel: 'Painel',
+                },
+              });
+              evidencias.push(auditRow);
+            }
+
+            rounds.push({
+              runId: collected.runId,
+              keys: collected.rows.map((r) => r.key),
+              nodeIds: Array.from(associationMap.values()).map((a) => a.nodeId),
+              status: Array.from(associationMap.values()).map((a) => a.status),
+              coletados: collected.rows.length,
+              evidencias,
+            });
+          }
+
+          /* Erros CDP são registrados com estrutura; nenhum erro de DOM
+             nos comandos usados por resolveNodeIds. */
+          for (const erro of cdpErrors) {
+            expect(erro && typeof erro === 'object', 'registro de erro estruturado').toBe(true);
+            expect(erro.method, 'método do erro registrado').toBeTruthy();
+          }
+          expect(cdpErrors.filter((e) => /^DOM\.(getDocument|querySelectorAll)$/.test(e.method || '')).map((e) => e.method), 'DOM.getDocument/querySelectorAll sem erro')
+            .toEqual([]);
+
+          return { rounds, eventos: eventos.length };
+        } finally {
+          offConsole();
+          offException();
+          /* Limpeza das mutações temporárias do collectScript, ainda dentro
+             da operação e antes do detach executado pelo helper. */
+          await adapters.Runtime.evaluate({
+            expression: `(()=>{document.querySelectorAll('[data-c4-audit]').forEach(e=>e.removeAttribute('data-c4-audit'));document.querySelectorAll('[data-c4-state]').forEach(e=>e.removeAttribute('data-c4-state'));document.getElementById('c4-audit-style')?.remove();return true})()`,
+            returnByValue: true,
+          });
+        }
+      },
+    });
+
+    /* Lifecycle integrado e ownership do Playwright. */
+    expect(lifecycle.operationError, 'operação sem erro').toBeNull();
+    expect(lifecycle.cleanupError, 'cleanup sem erro').toBeNull();
+    expect(lifecycle.detachAttempts, 'detach exatamente uma vez').toBe(1);
+    expect(lifecycle.detachSuccess, 'detach bem-sucedido').toBe(true);
+
+    const out = lifecycle.result;
+    const [y, z] = out.rounds;
+
+    /* Isolamento entre execuções (grupos Y/Z). */
+    expect(y.runId, 'runId da execução Y').toBeGreaterThan(0);
+    expect(z.runId, 'runId da execução Z').toBe(y.runId + 1);
+    const chavesY = new Set(y.keys);
+    const chavesZ = new Set(z.keys);
+    expect(chavesY.size, 'chaves únicas em Y').toBe(y.coletados);
+    expect(chavesZ.size, 'chaves únicas em Z').toBe(z.coletados);
+    expect(y.keys.some((k) => chavesZ.has(k)), 'nenhuma chave de Y reaparece em Z').toBe(false);
+    expect(y.nodeIds.some((id) => typeof id !== 'number'), 'nodeIds de Y válidos').toBe(false);
+    expect(z.nodeIds.some((id) => typeof id !== 'number'), 'nodeIds de Z válidos').toBe(false);
+    expect(z.status.every((s) => s === 'resolved'), 'todas as associações de Z resolvidas').toBe(true);
+    expect(z.evidencias.every((r) => r.nodeAssociation.key.startsWith(`c4-${z.runId}-`)), 'evidências pertencem à execução corrente').toBe(true);
+
+    /* Campos semânticos da evidência construída pela função original. */
+    expect(z.evidencias.length, 'evidências completas construídas').toBeGreaterThan(0);
+    const first = z.evidencias[0];
+    expect(first.screen, 'contexto screen preservado').toBe('dash');
+    expect(first.vp, 'contexto viewport preservado').toBe('desktop');
+    expect(first.nodeAssociation.status, 'associação na linha final').toBe('resolved');
+    expect(typeof first.nodeAssociation.nodeId, 'nodeId na linha final').toBe('number');
+    expect(first.winningRules, 'regras vencedoras capturadas').toBeTruthy();
+    expect(first.winningRules.error, 'captura de regras sem erro').toBeNull();
+    expect(first.winningRules.properties.color, 'propriedade color capturada').toBeTruthy();
+    expect(first.winningRules.properties.color.captureStatus, 'status de captura real').toBeTruthy();
+    expect(first.visibilityStatus, 'visibilidade classificada').toBeTruthy();
+    expect(first.rect, 'geometria preservada').toBeTruthy();
+
+    /* Estado após encerramento. */
+    const residuo = await page.evaluate(() =>
+      document.querySelectorAll('[data-c4-audit],[data-c4-state]').length
+    );
+    expect(residuo, 'nenhuma mutação temporária residual').toBe(0);
+    await expect(page.locator('body'), 'página funcional após detach').toBeVisible();
+
+    const diag = {
+      prova: 'C.4-G4.1-paridade-r257-playwright',
+      funcoes_originais: ['collectScript', 'resolveNodeIds', 'buildAuditRow'],
+      comandos_cdp_reais: ['Runtime.evaluate', 'DOM.getDocument', 'DOM.querySelectorAll', 'CSS.getMatchedStylesForNode'],
+      execucoes: out.rounds.length,
+      run_ids: out.rounds.map((r) => r.runId),
+      coletados_por_execucao: out.rounds.map((r) => r.coletados),
+      evidencias_por_execucao: out.rounds.map((r) => r.evidencias.length),
+      detach_attempts: lifecycle.detachAttempts,
+      detach_success: lifecycle.detachSuccess,
+      node_version: process.version,
+    };
+    await testInfo.attach('c4-g41-paridade.json', {
+      body: JSON.stringify(diag, null, 2),
+      contentType: 'application/json',
+    }).catch(() => {});
+    console.log('[C4_DIAGNOSTIC]', JSON.stringify(diag));
+  });
+});
