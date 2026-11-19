@@ -1021,6 +1021,27 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
           const geometria = [];
           const css = [];
 
+          /* G4.2-R1 — Z8: cenário histórico de "navegação que mantém a view
+             montada". A view antiga é criada e, após a primeira coleta,
+             apenas OCULTADA — nunca removida — para que seu elemento keep
+             o atributo data-c4-audit original enquanto a execução Z roda. */
+          const criacaoViewAntiga = await adapters.Runtime.evaluate({
+            expression: `(()=>{
+              const v=document.createElement('div');
+              v.id='r257-old-view';
+              const c=document.createElement('span');
+              c.className='r256-accent-consumer';
+              c.id='r257-old-c1';
+              c.textContent='r257-old-c1';
+              v.appendChild(c);
+              document.body.appendChild(v);
+              return true;
+            })()`,
+            returnByValue: true,
+          });
+          expect(criacaoViewAntiga.result.value, 'view antiga criada no DOM').toBe(true);
+          let chaveAntigaY = null;
+
           /* Duas execuções na mesma página: grupos Y e Z. */
           for (let i = 0; i < 2; i++) {
             /* collectScript ORIGINAL via Runtime.evaluate da sessão real. */
@@ -1051,6 +1072,19 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
               collected.runId
             );
             expect(associationMap.size, 'cardinalidade do mapa de associações').toBe(collected.rows.length);
+
+            if (i === 0) {
+              /* Preserva a chave da execução Y e esconde a view antiga ANTES
+                 da coleta Z, exatamente como hideView() no teste histórico. */
+              const linhaAntiga = collected.rows.find((r) => r.id === 'r257-old-c1');
+              expect(linhaAntiga, 'consumidor antigo descoberto em Y').toBeTruthy();
+              chaveAntigaY = linhaAntiga.key;
+              const ocultacao = await adapters.Runtime.evaluate({
+                expression: `(()=>{const v=document.getElementById('r257-old-view');if(v)v.style.display='none';return true})()`,
+                returnByValue: true,
+              });
+              expect(ocultacao.result.value, 'view antiga oculta sem remoção').toBe(true);
+            }
 
             const prefix = `c4-${collected.runId}-`;
             const evidencias = [];
@@ -1108,10 +1142,12 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
                   toleranciaPx: TOLERANCIA_GEOMETRIA_PX,
                 });
 
-                /* CSS: computedStyle CDP no mesmo nó cruzado com winningRules
-                   capturadas pelo núcleo. */
+                /* CSS: computedStyle e matchedStyles CDP no MESMO nodeId,
+                   cruzados com a declaração vencedora capturada pelo núcleo. */
                 const respostaCss = await adapters.CSS.getComputedStyleForNode({ nodeId: association.nodeId });
                 const computedStyle = respostaCss.computedStyle || [];
+                const matchedCss = await adapters.CSS.getMatchedStylesForNode({ nodeId: association.nodeId });
+                expect(matchedCss && Array.isArray(matchedCss.matchedCSSRules), 'matchedCSSRules recebidas').toBe(true);
                 expect(auditRow.winningRules.error, 'captura de regras sem erro').toBeNull();
                 for (const prop of PROPRIEDADES_CSS) {
                   const regra = auditRow.winningRules.properties[prop];
@@ -1120,7 +1156,36 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
                   expect(regra.captureStatus, `captureStatus ${prop}`).toBe('captured');
                   expect(regra.winningDeclaration, `declaração vencedora ${prop}`).toBeTruthy();
                   expect(regra.winningDeclaration.captureStatus, `captureStatus da declaração ${prop}`).toBe('captured');
+                  expect(regra.winningDeclaration.property, `propriedade da declaração vencedora ${prop}`).toBe(prop);
+                  expect(regra.winningDeclaration.disabled, `declaração vencedora habilitada ${prop}`).toBe(false);
+                  expect(regra.winningDeclaration.parsedOk, `declaração vencedora válida ${prop}`).toBe(true);
                   expect(Array.isArray(regra.candidates) && regra.candidates.length > 0, `candidatos ${prop}`).toBe(true);
+
+                  /* Identificar a regra real do CDP que originou a declaração
+                     vencedora: mesmo seletor, propriedade e valor declarado. */
+                  const regraCdp = matchedCss.matchedCSSRules.find((entrada) => {
+                    const r = entrada.rule;
+                    if (!r || !r.style || !Array.isArray(r.style.cssProperties)) return false;
+                    const seletor = r.selectorList
+                      ? (r.selectorList.selectorText || r.selectorList.text)
+                      : r.selectorText;
+                    return seletor === regra.winningDeclaration.selectorText &&
+                      r.style.cssProperties.some((p) => p.name === prop && p.value === regra.winningDeclaration.value);
+                  });
+                  expect(regraCdp, `regra CDP correspondente a ${prop}`).toBeTruthy();
+                  const seletorCdp = regraCdp.rule.selectorList
+                    ? (regraCdp.rule.selectorList.selectorText || regraCdp.rule.selectorList.text)
+                    : regraCdp.rule.selectorText;
+                  const declaracaoCdp = regraCdp.rule.style.cssProperties.find(
+                    (p) => p.name === prop && p.value === regra.winningDeclaration.value
+                  );
+                  expect(seletorCdp, `seletor da regra CDP ${prop}`).toBe(regra.winningDeclaration.selectorText);
+                  expect(declaracaoCdp.name, `propriedade da regra CDP ${prop}`).toBe(prop);
+                  expect(declaracaoCdp.value, `valor declarado da regra CDP ${prop}`).toBe(regra.winningDeclaration.value);
+                  expect(declaracaoCdp.disabled !== true, `regra CDP habilitada ${prop}`).toBe(true);
+                  expect(declaracaoCdp.parsedOk !== false, `regra CDP válida ${prop}`).toBe(true);
+                  expect(regra.computedValue, `computedValue do núcleo ${prop}`).toBe(regra.winningDeclaration.value);
+
                   const direto = computedStyle.find((p) => p.name === prop);
                   expect(direto, `propriedade ${prop} no computedStyle CDP`).toBeTruthy();
                   const corCdp = parseColor(direto.value);
@@ -1140,6 +1205,14 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
                     cdpValue: direto.value,
                     selector: regra.winningDeclaration.selectorText,
                     captureStatus: regra.captureStatus,
+                    declaredValue: regra.winningDeclaration.value,
+                    ruleSelector: seletorCdp,
+                    ruleProperty: declaracaoCdp.name,
+                    ruleValue: declaracaoCdp.value,
+                    styleSheetId: regra.winningDeclaration.styleSheetId,
+                    important: regra.winningDeclaration.important,
+                    parsedOk: regra.winningDeclaration.parsedOk,
+                    disabled: regra.winningDeclaration.disabled,
                   });
                 }
               }
@@ -1158,11 +1231,23 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
             });
           }
 
-          /* G4.2-B — Z8: resolução cruzada real. Chave preservada da execução
-             Y submetida à resolveNodeIds ORIGINAL com as linhas e o runId da
-             execução Z, antes do cleanup que remove data-c4-audit. */
-          const chaveAntigaY = rounds[0].rows[0].key;
-          const linhaAntigaY = rounds[0].rows[0];
+          /* G4.2-R1 — Z8: leitura DIRETA do DOM imediatamente antes da
+             resolução cruzada. O elemento antigo segue montado e com seu
+             atributo original, como no cenário histórico de view oculta. */
+          const leituraDomZ8 = await adapters.Runtime.evaluate({
+            expression: `(()=>{const e=document.getElementById('r257-old-c1');const v=document.getElementById('r257-old-view');return {presente:!!e,atributo:e?e.getAttribute('data-c4-audit'):null,viewPresente:!!v,viewOculta:v?v.style.display==='none':false}})()`,
+            returnByValue: true,
+          });
+          const evidenciaDomZ8 = leituraDomZ8.result.value;
+          expect(evidenciaDomZ8.presente, 'elemento antigo ainda no DOM').toBe(true);
+          expect(evidenciaDomZ8.viewPresente, 'view antiga ainda montada').toBe(true);
+          expect(evidenciaDomZ8.viewOculta, 'view antiga oculta na execução Z').toBe(true);
+          expect(evidenciaDomZ8.atributo, 'atributo antigo íntegro no DOM').toBe(chaveAntigaY);
+          expect(rounds[1].rows.some((r) => r.id === 'r257-old-c1'), 'elemento antigo não coletado em Z').toBe(false);
+          expect(chaveAntigaY.startsWith(`c4-${rounds[0].runId}-`), 'chave antiga pertence a Y').toBe(true);
+
+          /* Resolução cruzada efetiva com a chave antiga preservada no DOM. */
+          const linhaAntigaY = rounds[0].rows.find((r) => r.key === chaveAntigaY);
           const linhaZ = rounds[1].rows[0];
           const mapaZ8 = await historical.resolveNodeIds(
             adapters.DOM,
@@ -1210,6 +1295,8 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
               status: resZ8.status,
               nodeId: resZ8.nodeId,
               reason: resZ8.reason,
+              evidenciaDom: evidenciaDomZ8,
+              coletadoEmZ: rounds[1].rows.some((r) => r.id === 'r257-old-c1'),
             },
             v24: {
               alvo: ALVO_V24,
@@ -1226,7 +1313,7 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
           /* Limpeza das mutações temporárias do collectScript, ainda dentro
              da operação e antes do detach executado pelo helper. */
           await adapters.Runtime.evaluate({
-            expression: `(()=>{document.querySelectorAll('[data-c4-audit]').forEach(e=>e.removeAttribute('data-c4-audit'));document.querySelectorAll('[data-c4-state]').forEach(e=>e.removeAttribute('data-c4-state'));document.getElementById('c4-audit-style')?.remove();return true})()`,
+            expression: `(()=>{document.querySelectorAll('[data-c4-audit]').forEach(e=>e.removeAttribute('data-c4-audit'));document.querySelectorAll('[data-c4-state]').forEach(e=>e.removeAttribute('data-c4-state'));document.getElementById('c4-audit-style')?.remove();document.getElementById('r257-old-view')?.remove();return true})()`,
             returnByValue: true,
           });
         }
@@ -1282,8 +1369,14 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
     expect(out.v24.ancestorVisibility, 'V24 completed').toBe('completed');
     expect(out.v24.geometryStatus, 'V24 geometria available').toBe('available');
 
-    /* G4.2-B — Z8: resolução cruzada efetiva, não mera distinção de chaves. */
+    /* G4.2-R1 — Z8: elemento e chave antiga preservados no DOM no instante
+       da resolução cruzada, não apenas strings diferentes. */
     expect(out.z8.chaveAntiga.startsWith(`c4-${out.z8.runIdOrigem}-`), 'chave antiga pertence a Y').toBe(true);
+    expect(out.z8.evidenciaDom.presente, 'elemento antigo no DOM antes da resolução').toBe(true);
+    expect(out.z8.evidenciaDom.viewPresente, 'view antiga ainda montada').toBe(true);
+    expect(out.z8.evidenciaDom.viewOculta, 'view antiga oculta na execução Z').toBe(true);
+    expect(out.z8.evidenciaDom.atributo, 'chave antiga lida do atributo no DOM').toBe(out.z8.chaveAntiga);
+    expect(out.z8.coletadoEmZ, 'elemento antigo não coletado em Z').toBe(false);
     expect(out.z8.runIdDestino, 'runId destino é o de Z').toBe(z.runId);
     expect(out.z8.status, 'Z8 node-not-found').toBe('node-not-found');
     expect(out.z8.nodeId, 'Z8 nodeId null').toBeNull();
@@ -1294,11 +1387,16 @@ test.describe('C.4 — G4.1: paridade representativa do fluxo R2.5.7 via Playwri
     expect(out.geometria.every((g) => g.nodeId > 0), 'nodeIds de geometria válidos').toBe(true);
     expect(out.geometria.every((g) => ['x', 'y', 'w', 'h'].every((k) => Number.isFinite(g.deltas[k]) && g.deltas[k] <= g.toleranciaPx)), 'deltas dentro da tolerância').toBe(true);
 
-    /* G4.2-D — CSS semântico: valores e declarações, não mera existência. */
+    /* G4.2-R1 — CSS: identidade da declaração vencedora confrontada com a
+       regra real do CDP, não mera existência de objeto. */
     expect(out.css.length, 'comparações CSS').toBe(out.rounds.length * PROPRIEDADES_CSS.length);
     expect(out.css.every((c) => c.captureStatus === 'captured'), 'todas as capturas com sucesso').toBe(true);
     expect(out.css.every((c) => typeof c.cdpValue === 'string' && c.cdpValue.length > 0), 'valores CDP não vazios').toBe(true);
     expect(out.css.every((c) => typeof c.selector === 'string' && c.selector.length > 0), 'declarações vencedoras com seletor').toBe(true);
+    expect(out.css.every((c) => c.ruleSelector === c.selector), 'seletor da regra CDP igual ao da declaração vencedora').toBe(true);
+    expect(out.css.every((c) => c.ruleProperty === c.prop), 'propriedade da regra CDP confere').toBe(true);
+    expect(out.css.every((c) => c.ruleValue === c.declaredValue), 'valor declarado da regra CDP confere').toBe(true);
+    expect(out.css.every((c) => c.parsedOk === true && c.disabled === false), 'declaração vencedora válida e habilitada').toBe(true);
 
     /* Estado após encerramento. */
     const residuo = await page.evaluate(() =>
