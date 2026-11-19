@@ -7,76 +7,16 @@
 const { test, expect } = require('@playwright/test');
 const app = require('../../e2e/helpers/app');
 const { resolveCredentials } = require('../../e2e/helpers/env');
+const { runWithCdpSession } = require('./playwright-cdp-session-lifecycle.cjs');
 
 test.describe('R2 — quinta retificação técnica', () => {
-  /* ── Helper runWithCdpSession ────────────────────────────────────────
-     Contrato obrigatório:
-     Entrada: { context, page, testInfo, operation }
-       - context: BrowserContext do Playwright.
-       - page: Page do Playwright.
-       - testInfo: TestInfo do teste (passado pelo chamador).
-       - operation: async ({ session }) => any.
-     Comportamento:
-       1. Criar a sessão com: const session = await context.newCDPSession(page);
-       2. Executar: result = await operation({ session }); capturando qualquer erro em operationError.
-         - NÃO relançar operationError dentro do helper.
-       3. No bloco finally, executar: await session.detach(); capturando erro em cleanupError.
-         - Se session.detach() lançar, registrar em cleanupError e NÃO relançar.
-       4. Retornar: { session, result, operationError, cleanupError }.
-         - session deve ser devolvido já desconectado (detached) para as checagens pós-detach.
-         - operationError e cleanupError: null quando não houver erro, senão o objeto de erro.
-       5. Não usar try/catch que engula erro sem registrar em operationError ou cleanupError.
-     Nenhuma alteração na lógica das operações (cenários A, B e C). Apenas garantir
-     que o helper exista e cumpra o contrato.
-     Lançamento: this function throws if context or page is missing. */
-
-  async function runWithCdpSession({ context, page, testInfo, operation }) {
-    if (!context) {
-      throw new Error('runWithCdpSession: context é obrigatório');
-    }
-    if (!page) {
-      throw new Error('runWithCdpSession: page é obrigatório');
-    }
-
-    const session = await context.newCDPSession(page);
-    let operationError = null;
-    let cleanupError = null;
-    let result = null;
-
-    const opStart = Date.now();
-    try {
-      result = await operation({ session });
-    } catch (err) {
-      operationError = err;
-      // NÃO relançar o erro — deixar o finally executar o cleanup.
-    } finally {
-      // Única chamada a detach em todos os caminhos.
-      // Capturamos o erro, mas NÃO o engolimos para que o teste saiba.
-      // Se detach falhar, cleanupError será definido; NÃO relançar.
-      const detachStart = Date.now();
-      try {
-        await session.detach();
-      } catch (detachErr) {
-        cleanupError = detachErr;
-      }
-      const detachEnd = Date.now();
-
-      // Resultado construido APENAS DEPOIS que finally terminou.
-      return {
-        session,
-        result,
-        operationError,
-        cleanupError,
-        operationStart: opStart,
-        operationEnd: detachEnd,
-        operationDuration: detachEnd - opStart,
-        detachStart,
-        detachEnd,
-        detachDuration: detachEnd - detachStart,
-        detachSuccess: cleanupError === null,
-      };
-    }
-  }
+/* ── Helper runWithCdpSession ────────────────────────────────────────
+     G3.1-D: definição extraída para ./playwright-cdp-session-lifecycle.cjs
+     (helper compartilhado com playwright-cdp-bridge.spec.js). O contrato
+     original é preservado integralmente: criação única via
+     context.newCDPSession(page), detach único no bloco finally,
+     operationError e cleanupError independentes, e retorno após o cleanup.
+     Lançamento: throws if context or page is missing. */
 
   /* ── Convenção testInfo ────────────────────────────────────────────
      async ({ page, context }, testInfo) — Playwright v1.39+ */

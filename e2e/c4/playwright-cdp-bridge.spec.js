@@ -22,6 +22,7 @@ const path = require('path');
 const app = require('../helpers/app');
 const { resolveCredentials, guardReasonText } = require('../helpers/env');
 const { createDomainAdapters, createPlaywrightBootstrap } = require('./playwright-cdp-domain-adapter.cjs');
+const { runWithCdpSession } = require('./playwright-cdp-session-lifecycle.cjs');
 const { createCDPAuditCore, createSampleIdRegistry } = require('./original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs');
 
 const SELECTOR_SINTETICO = '#code-cdp-bridge-fixture';
@@ -81,59 +82,55 @@ test.describe('C.4 — prova vertical: probeState via CDPSession do Playwright',
       return true;
     }, SELECTOR_SINTETICO);
 
-    /* Sessão CDP criada exclusivamente pelo Playwright */
-    const session = await context.newCDPSession(page);
-    const adapters = createDomainAdapters(session);
+    /* G3.1-D: ciclo de vida centralizado no helper compartilhado.
+       Criação única via context.newCDPSession; detach único pelo helper;
+       adaptador e núcleo não encerram a sessão (ownership Playwright). */
+    const lifecycle = await runWithCdpSession({
+      context,
+      page,
+      testInfo,
+      operation: async ({ session }) => {
+        const adapters = createDomainAdapters(session);
 
-    /* Núcleo histórico R2.5.6 — instanciado com os proxies do adaptador */
-    const cdpErrors = [];
-    const consoleErrors = [];
-    const exceptions = [];
-    const core = createCDPAuditCore({
-      CDP: null,
-      DOM: adapters.DOM,
-      CSS: adapters.CSS,
-      Runtime: adapters.Runtime,
-      consoleErrors,
-      exceptions,
-      cdpErrors,
+        /* Núcleo histórico R2.5.6 — instanciado com os proxies do adaptador */
+        const cdpErrors = [];
+        const consoleErrors = [];
+        const exceptions = [];
+        const core = createCDPAuditCore({
+          CDP: null,
+          DOM: adapters.DOM,
+          CSS: adapters.CSS,
+          Runtime: adapters.Runtime,
+          consoleErrors,
+          exceptions,
+          cdpErrors,
+        });
+        const sampleIdRegistry = createSampleIdRegistry();
+
+        await adapters.DOM.enable();
+        await adapters.CSS.enable();
+        await adapters.Runtime.enable();
+
+        const occurrences = await core.probeState(
+          SELECTOR_SINTETICO,
+          'normal',
+          'desktop',
+          'light',
+          '1',
+          'dash',
+          sampleIdRegistry
+        );
+        return { occurrences, cdpErrors, consoleErrors, exceptions };
+      },
     });
-    const sampleIdRegistry = createSampleIdRegistry();
 
-    let detachCount = 0;
-    let operationError = null;
-    let cleanupError = null;
-    let occurrences = null;
-
-    try {
-      await adapters.DOM.enable();
-      await adapters.CSS.enable();
-      await adapters.Runtime.enable();
-
-      occurrences = await core.probeState(
-        SELECTOR_SINTETICO,
-        'normal',
-        'desktop',
-        'light',
-        '1',
-        'dash',
-        sampleIdRegistry
-      );
-    } catch (err) {
-      operationError = err;
-    } finally {
-      try {
-        await session.detach();
-        detachCount += 1;
-      } catch (detachErr) {
-        cleanupError = detachErr;
-      }
-    }
+    const { result, operationError, cleanupError, detachAttempts } = lifecycle;
+    const { occurrences, cdpErrors, consoleErrors, exceptions } = result || {};
 
     /* Validações da prova vertical */
     expect(operationError, 'operação principal sem erro').toBeNull();
     expect(cleanupError, 'detach sem erro').toBeNull();
-    expect(detachCount, 'detach exatamente uma vez').toBe(1);
+    expect(detachAttempts, 'detach exatamente uma vez').toBe(1);
     expect(cdpErrors, 'ausência de erros CDP inesperados').toHaveLength(0);
     expect(Array.isArray(occurrences), 'probeState retorna array').toBe(true);
     expect(occurrences.length, 'associação do nodeId — ocorrência encontrada').toBeGreaterThan(0);
@@ -167,7 +164,7 @@ test.describe('C.4 — prova vertical: probeState via CDPSession do Playwright',
       node_id: first.nodeId,
       visibility_status: first.visibilityStatus,
       geometry_status: first.geometryStatus,
-      detach_count: detachCount,
+      detach_count: detachAttempts,
       cdp_errors: cdpErrors.length,
       console_errors: consoleErrors.length,
       exceptions: exceptions.length,
@@ -440,5 +437,182 @@ test.describe('C.4 — G3.1-C: contrato do harness R2.5.7 ↔ adaptador Playwrig
     expect(sendCalls.filter(([m]) => m === 'DOM.getDocument'), 'getDocument uma vez por lote').toEqual([['DOM.getDocument', { depth: -1, pierce: true }]]);
     expect(sendCalls, 'querySelectorAll com seletor da chave').toContainEqual(['DOM.querySelectorAll', { nodeId: 1, selector: '[data-c4-audit="c4-999-0"]' }]);
     expect(cdpErrors, 'sem erros CDP').toHaveLength(0);
+  });
+});
+
+test.describe('C.4 — G3.1-D: ciclo de vida centralizado da CDPSession (runWithCdpSession)', () => {
+  /* Sessão falsa controlada: nunca abre Chromium nem conexão CDP real.
+     Conta criações e detaches para comprovar unicidade. */
+  function fakeSession({ detachImpl } = {}) {
+    let detachCalls = 0;
+    let createCalls = 0;
+    const session = {
+      send: () => Promise.resolve({}),
+      on: () => {},
+      off: () => {},
+      removeListener: () => {},
+      detach: () => {
+        detachCalls += 1;
+        if (detachImpl) return detachImpl();
+        return Promise.resolve();
+      },
+    };
+    Object.defineProperty(session, 'detachCalls', { get: () => detachCalls });
+    Object.defineProperty(session, 'createCalls', { get: () => createCalls });
+    session.recordCreate = () => { createCalls += 1; };
+    return session;
+  }
+
+  function fakeContext(session) {
+    return {
+      newCDPSession: async () => {
+        session.recordCreate();
+        return session;
+      },
+    };
+  }
+
+  /* 1. Sucesso: uma criação, operação concluída e um detach. */
+  test('1. sucesso: uma criação, operação concluída e um detach', async () => {
+    const session = fakeSession();
+    const context = fakeContext(session);
+    let operationCalls = 0;
+
+    const out = await runWithCdpSession({
+      context,
+      page: {},
+      testInfo: {},
+      operation: async ({ session: s }) => {
+        operationCalls += 1;
+        expect(s, 'operação recebe a mesma sessão criada').toBe(session);
+        return { ok: true };
+      },
+    });
+
+    expect(out.session, 'sessão devolvida').toBe(session);
+    expect(out.result, 'resultado da operação').toEqual({ ok: true });
+    expect(out.operationError, 'sem erro de operação').toBeNull();
+    expect(out.cleanupError, 'sem erro de cleanup').toBeNull();
+    expect(out.detachAttempts, 'detach tentado uma vez').toBe(1);
+    expect(session.createCalls, 'criação única').toBe(1);
+    expect(session.detachCalls, 'detach executado uma vez').toBe(1);
+    expect(operationCalls, 'operação executada uma vez').toBe(1);
+    expect(out.detachSuccess, 'detach bem-sucedido').toBe(true);
+    expect(out.operationDuration, 'duração registrada').toBeGreaterThanOrEqual(0);
+    expect(out.detachDuration, 'duração do detach registrada').toBeGreaterThanOrEqual(0);
+  });
+
+  /* 2. Erro na operação: preserva a mesma referência de operationError
+        e executa detach uma vez. */
+  test('2. erro na operação: preserva a referência do operationError e executa detach uma vez', async () => {
+    const sentinel = new Error('boom-operacao');
+    const session = fakeSession();
+    const context = fakeContext(session);
+
+    const out = await runWithCdpSession({
+      context,
+      page: {},
+      testInfo: {},
+      operation: async () => { throw sentinel; },
+    });
+
+    expect(out.operationError, 'operationError preservado por referência').toBe(sentinel);
+    expect(out.cleanupError, 'cleanup sem erro').toBeNull();
+    expect(out.result, 'resultado nulo quando a operação falha').toBeNull();
+    expect(out.detachAttempts, 'detach tentado uma vez').toBe(1);
+    expect(session.createCalls, 'criação única').toBe(1);
+    expect(session.detachCalls, 'detach executado uma vez').toBe(1);
+    expect(out.detachSuccess, 'detach bem-sucedido').toBe(true);
+  });
+
+  /* 3. Erro no cleanup: preserva cleanupError sem apagar operationError. */
+  test('3. erro no cleanup: preserva cleanupError sem apagar operationError', async () => {
+    const opErr = new Error('erro-operacao');
+    const cleanupErr = new Error('erro-detach');
+    const session = fakeSession({ detachImpl: () => { throw cleanupErr; } });
+    const context = fakeContext(session);
+
+    const out = await runWithCdpSession({
+      context,
+      page: {},
+      testInfo: {},
+      operation: async () => { throw opErr; },
+    });
+
+    expect(out.operationError, 'operationError preservado').toBe(opErr);
+    expect(out.cleanupError, 'cleanupError preservado por referência').toBe(cleanupErr);
+    expect(out.detachAttempts, 'detach tentado uma vez').toBe(1);
+    expect(session.detachCalls, 'detach executado uma vez').toBe(1);
+    expect(out.detachSuccess, 'detach marcado como falha').toBe(false);
+  });
+
+  /* 4. Context ausente: rejeita antes da criação. */
+  test('4. context ausente: rejeita antes da criação', async () => {
+    let created = 0;
+    const context = { newCDPSession: async () => { created += 1; return {}; } };
+    await expect(runWithCdpSession({ context: null, page: {}, testInfo: {}, operation: async () => {} }))
+      .rejects.toThrow(/context é obrigatório/);
+    expect(created, 'nenhuma sessão criada').toBe(0);
+  });
+
+  /* 5. Page ausente: rejeita antes da criação. */
+  test('5. page ausente: rejeita antes da criação', async () => {
+    let created = 0;
+    const context = { newCDPSession: async () => { created += 1; return {}; } };
+    await expect(runWithCdpSession({ context, page: null, testInfo: {}, operation: async () => {} }))
+      .rejects.toThrow(/page é obrigatório/);
+    expect(created, 'nenhuma sessão criada').toBe(0);
+  });
+
+  /* 6. Operation inválida: rejeita com TypeError antes da criação. */
+  test('6. operation inválida: rejeita com TypeError antes da criação', async () => {
+    let created = 0;
+    const context = { newCDPSession: async () => { created += 1; return {}; } };
+    await expect(runWithCdpSession({ context, page: {}, testInfo: {}, operation: 'nao-e-funcao' }))
+      .rejects.toThrow(TypeError);
+    expect(created, 'nenhuma sessão criada').toBe(0);
+  });
+
+  /* 7. Ownership: o adaptador não encerra a sessão. */
+  test('7. ownership: o adaptador não encerra a sessão', async () => {
+    const lifecycle = [];
+    const session = {
+      send: () => Promise.resolve({}),
+      on: () => {},
+      off: () => {},
+      removeListener: () => {},
+      detach: () => { lifecycle.push('detach'); return Promise.resolve(); },
+      close: () => { lifecycle.push('close'); return Promise.resolve(); },
+      disconnect: () => { lifecycle.push('disconnect'); return Promise.resolve(); },
+    };
+    const adapters = createDomainAdapters(session);
+    await adapters.DOM.enable();
+    await adapters.CSS.enable();
+    await adapters.Runtime.enable();
+    await adapters.Page.enable();
+    expect(lifecycle, 'adaptador não encerra a sessão').toEqual([]);
+    expect(typeof adapters.DOM.detach, 'adaptador não expõe detach').toBe('undefined');
+    expect(typeof adapters.close, 'adaptador não expõe close').toBe('undefined');
+  });
+
+  /* 8. Sem duplicidade: nenhuma segunda tentativa de detach pelo chamador
+        após o helper concluir. */
+  test('8. sem duplicidade: nenhuma segunda tentativa de detach pelo chamador', async () => {
+    const session = fakeSession();
+    const context = fakeContext(session);
+
+    const out = await runWithCdpSession({
+      context,
+      page: {},
+      testInfo: {},
+      operation: async () => ({ ok: true }),
+    });
+
+    expect(out.detachAttempts, 'helper tentou detach uma vez').toBe(1);
+    expect(session.detachCalls, 'detach executado exatamente uma vez').toBe(1);
+    /* O chamador não chama session.detach() novamente após o helper:
+       session.detachCalls permanece 1, provando ausência de duplicidade. */
+    expect(session.detachCalls, 'nenhuma segunda tentativa após o helper').toBe(1);
+    expect(typeof out.session.detach, 'sessão devolvida ainda expõe detach (ownership Playwright)').toBe('function');
   });
 });
