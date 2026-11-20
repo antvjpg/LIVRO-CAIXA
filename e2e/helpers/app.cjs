@@ -287,6 +287,7 @@ module.exports = {
   attachDialogHandler,
   openApp,
   authOverlayHidden,
+  waitForAuthResolved,
   isLoggedIn,
   waitForDataReady,
   openTab,

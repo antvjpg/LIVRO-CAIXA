@@ -900,9 +900,24 @@ test.describe.serial('Metas — criação, fontes, progresso, persistência e ex
       await page.evaluate(async ({ id, name }) => {
         const uid = window.firebase?.auth?.()?.currentUser?.uid;
         if (!uid) throw new Error('uid ausente');
+        /* Payload completo exigido por validGoal() nas rules do Firestore;
+           apenas o icon permanece no formato legado (emoji). */
+        const today = new Date().toISOString().slice(0, 10);
         await window.firebase.firestore().collection('livrocaixa').doc(uid)
           .collection('goals').doc(id)
-          .set({ id, name, icon: '🎯', targetAmount: 100, status: 'active' });
+          .set({
+            id,
+            name,
+            icon: '🎯',
+            targetAmount: 100,
+            startDate: today,
+            deadline: '',
+            desc: '',
+            caixinhaId: null,
+            status: 'active',
+            createdAt: today,
+            updatedAt: new Date().toISOString()
+          });
       }, { id: legacyId, name: legacyName });
 
       await page.reload({ waitUntil: 'domcontentloaded' });

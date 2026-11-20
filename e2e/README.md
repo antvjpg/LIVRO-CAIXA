@@ -89,27 +89,64 @@ nenhum segredo no Git nem em artefato; bloqueio aparece como `BLOCKED`, nunca so
 |---|---|---|
 | `npm run code:oracles` | testes unitários dos oracles (sem browser) | sim |
 | `npm run code:list` | descobre/lista os testes (shim de plataforma) | sim |
-| `npm run code:security` | 52 garantias do próprio C.O.D.E. (offline) | sim |
+| `npm run code:security` | 89 garantias do próprio C.O.D.E. (offline) | sim |
 | `npm run code:syntax` | valida sintaxe dos módulos `js/`, `js/data/emoji-catalog.js`, `sw.js` | sim |
-| `npm run code:test` | suítes + relatório `--strict` (sai 1 se FAIL/BLOCKED/FLAKY) | **não** |
+| `npm run code:test` | suítes + relatório `--strict` via wrapper (sai 1 se FAIL/BLOCKED/FLAKY) | **não** |
 | `npm run code:smoke` / `code:movimentacoes` / `code:orcamento` / `code:metas` / `code:investimentos` | suíte individual (projeto Playwright) | **não** |
-| `npx playwright test --project=<nome>` | qualquer suíte (caixinhas, cartoes, categorias, integracao, seguranca…) | **não** |
+| `npx playwright test --project=<nome>` | qualquer suíte (caixinhas, cartoes, categorias, integracao, seguranca…) — **bypassa o lock**: para execução exclusiva use os scripts `code:*` | **não** |
 | `npm run code:test:headed` | idem com navegador visível | não |
-| `npm run code:report` | gera `e2e/reports/CODE-relatorio-<data>.md` | sim |
-| `npm run code:report:strict` | idem + exit 1 se houver `FAIL`/`BLOCKED` | sim |
+| `npm run code:report` | gera `e2e/reports/CODE-relatorio-<data>.md` (via wrapper) | sim |
+| `npm run code:report:strict` | idem + exit 1 se houver `FAIL`/`BLOCKED` (via wrapper) | sim |
 | `npm run code:reset` | apaga dados sob `livrocaixa/{uid-qa}` (idempotente) | sim (rede) |
 | `npm run code:cleanup` | Firestore + exclusão da conta efêmera (se for da run) | sim (rede) |
 | `npm run code:serve` | servidor estático `:8000` | sim |
 
 No PC/CI: `npm ci && npx playwright install --with-deps chromium && npm run code:test`.
 
+### Wrapper de execução e lock exclusivo
+
+Os comandos de suíte Playwright e de relatório passam pelo wrapper
+`e2e/scripts/run-code.cjs`, que resolve a identidade da run, adquire o lock
+exclusivo de execução e injeta `CODE_EXECUTION_RUN_ID`,
+`CODE_EXECUTION_RUN_ATTEMPT` e `CODE_EXECUTION_WORKFLOW_ID` no ambiente dos
+processos filhos (o wrapper nunca escreve em `GITHUB_ENV`).
+
+- **Modo A** (padrão): executa `npx playwright test <args>`; com `--code-report`
+  / `--code-report-strict` roda `e2e/reports/generate-report.cjs` (com
+  `--strict`) **após** o gate — e com `--code-report-on-failure` também quando o
+  Playwright falha. Precedência de exit: falha do Playwright > falha do
+  diagnóstico > 0.
+- **Modo B** (`--code-lock-only -- <comando>`): só identidade + lock + execução
+  do comando arbitrário com pass-through do exit; não toca no Playwright.
+  Exige comando depois de `--`; não aceita argumentos antes de `--` nem
+  combinação com flags de relatório.
+- **Identidade da run** (precedência): `CODE_EXECUTION_RUN_ID` /
+  `CODE_EXECUTION_RUN_ATTEMPT` > `GITHUB_RUN_ID` / `GITHUB_RUN_ATTEMPT` no CI >
+  local `local-<uuid v4>` com tentativa `1`. No CI o `runAttempt` é obrigatório;
+  workflow = `.github/workflows/code-e2e.yml` no CI, `local` fora dele.
+- **Lock exclusivo:** `e2e/.state/checkout.lock` (arquivo 0600 com token, pid,
+  runId, runAttempt, workflowId e horário). Execução concorrente (ou lock
+  órfão de run abortada) é recusada **sem** alterar o arquivo — a recuperação é
+  manual. `e2e/.state` como symlink é recusado. Liberação somente pelo
+  detentor; reentrância recusada.
+- **Exit codes do wrapper:** `0` sucesso · `3` lock (ativo, órfão, symlink,
+  reentrância, liberação recusada) · `4` identidade/uso (runId ou tentativa
+  malformados, flag `--code-*` desconhecida, modo B malformado) · `127`
+  execução indisponível (ex.: `npx` ausente) · demais valores = código do
+  Playwright, do comando ou do diagnóstico.
+- **Testes:** `e2e/security/run-code-wrapper.test.mjs` (37 casos) roda junto em
+  `npm run code:security`.
+
 ## 3. Identidade QA efêmera (autonomia do ambiente)
 
 - **Geração (FASE 3):** o `global-setup` roda uma vez por run e injeta em
   `process.env`: `CODE_TEST_EMAIL=code-qa-<run-id>-<sufixo>@livrocaixa.test`
   + senha forte aleatória. A senha existe **só na memória** (nunca em arquivo,
-  nunca em log, nunca em artefato, nunca no Git). `run-id` = `gh<run>[-a<n>]`
-  no Actions, `loc<timestamp>` local.
+  nunca em log, nunca em artefato, nunca no Git). `run-id`/tentativa seguem a
+  precedência do wrapper (ver §2): variáveis `CODE_EXECUTION_*` >
+  `GITHUB_RUN_*` no Actions (`gh<run>[-a<n>]`) > local `local-<uuid v4>`; a
+  invocação direta do `generate()` sem wrapper mantém o legado
+  `loc<timestamp>`.
 - **Criação real (FASE 4):** o projeto `setup` cria/entra na conta pela
   **interface do aplicativo** (o mesmo `createUserWithEmailAndPassword` do
   app) e grava `createdByCode = true` **somente** quando o signup teve
@@ -201,7 +238,7 @@ Execução de referência: **CI run `42397573276` (07/11/2026, commit `a44c74b`)
 | Criar banco + entrada + saída + saldo | `movimentacoes` | `balance`, `movement`, `money` | **sim (CI)** |
 | Persistência (reload + Firestore REST) | `movimentacoes` | idem | **sim (CI)** |
 | Regras do Firestore em produção | `seguranca/regras-firestore` | — | **sim (CI)** |
-| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (52, offline) | — | não precisa |
+| Segurança do C.O.D.E. (escopo, propriedade, cleanup, sanitização) | `security` (89, offline) | — | não precisa |
 | Oráculos unitários | `code:oracles` (116) | — | não precisa |
 | Cartões/faturas (estado da fatura, limite, pagamento) | `integracao/cartao-fatura` | `cartao-fatura`, `card` | **sim (CI)** |
 | Movimentações no dashboard | `integracao/movimentacao-dashboard` | `dashboard-movimento` | **sim (CI)** |

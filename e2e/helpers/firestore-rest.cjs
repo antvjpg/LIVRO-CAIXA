@@ -120,6 +120,55 @@ async function fetchWithQuotaRetry(url, init) {
   return res;
 }
 
+/* Retry de rede somente para LISTAGEM (GET). Erros permanentes (400/401/403,
+   regras Firestore, 404 = coleção vazia) e 429 (já tratado acima, com janela
+   de carência) NÃO são repetidos. Nenhuma operação de escrita/exclusão passa
+   por aqui — o retry não pode duplicar mutações. */
+const TRANSIENT_RETRY_DELAYS_MS = [1000, 3000];
+const TRANSIENT_NETWORK_CODES = new Set(['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'EPIPE', 'EAI_AGAIN']);
+
+function isTransientNetworkError(err) {
+  if (!err) return false;
+  if (err.name === 'TypeError' && /fetch failed/i.test(String(err.message || ''))) return true;
+  return TRANSIENT_NETWORK_CODES.has(err.code);
+}
+
+async function fetchCollectionPage(url, init) {
+  let tentativas = 0;
+  for (;;) {
+    let res;
+    try {
+      res = await fetchWithQuotaRetry(url, init);
+    } catch (err) {
+      if (isTransientNetworkError(err) && tentativas < TRANSIENT_RETRY_DELAYS_MS.length) {
+        await new Promise((r) => setTimeout(r, TRANSIENT_RETRY_DELAYS_MS[tentativas]));
+        tentativas += 1;
+        continue;
+      }
+      const finalErr = new Error(
+        `Falha de rede ao listar coleção após ${tentativas + 1} tentativa(s): ${String(err && err.message || err)}`
+      );
+      finalErr.code = 'CODE_LIST_NETWORK_FAILED';
+      finalErr.cause = err;
+      throw finalErr;
+    }
+    if (res.status >= 500 && res.status <= 599) {
+      await res.arrayBuffer().catch(() => {});
+      if (tentativas < TRANSIENT_RETRY_DELAYS_MS.length) {
+        await new Promise((r) => setTimeout(r, TRANSIENT_RETRY_DELAYS_MS[tentativas]));
+        tentativas += 1;
+        continue;
+      }
+      const finalErr = new Error(
+        `Falha transitória ao listar coleção após ${tentativas + 1} tentativa(s): HTTP ${res.status}`
+      );
+      finalErr.code = 'CODE_LIST_NETWORK_FAILED';
+      throw finalErr;
+    }
+    return res;
+  }
+}
+
 /* Sonda de cota para o setup E2E abortar a run ANTES de criar conta e
    queimar 9 minutos falhando em cascata. Sem autenticação: 429 = cota
    esgotada; 401/403/200 = projeto atendendo. Não lê dado algum (pageSize 1
@@ -191,7 +240,7 @@ async function listCollection(uid, idToken, projectId, collection) {
   const trilha = [];
   for (let guard = 0; guard < 20; guard++) {
     const url = `${base}?pageSize=300${pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : ''}`;
-    const res = await fetchWithQuotaRetry(url, { headers: { Authorization: `Bearer ${idToken}` } });
+    const res = await fetchCollectionPage(url, { headers: { Authorization: `Bearer ${idToken}` } });
     if (res.status === 404) return out; /* coleção inexistente = vazia */
     if (!res.ok) {
       const corpo = await res.text().catch(() => '');
@@ -382,6 +431,8 @@ module.exports = {
   signUpOrCreate,
   probeCrossAccount,
   listCollection,
+  fetchCollectionPage,
+  isTransientNetworkError,
   deleteDoc,
   resetUser,
   resetWithSession,

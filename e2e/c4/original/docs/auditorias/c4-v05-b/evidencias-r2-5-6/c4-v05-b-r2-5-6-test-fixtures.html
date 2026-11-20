@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixture de Teste C.4-V05-B-R2.5.1</title>
+<style>
+  :root {
+    --accent: #5F7A43;
+  }
+
+  /* 1. Elemento único visível */
+  .r25-unique {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    margin: 4px;
+  }
+
+  /* 2. Elemento oculto com display:none */
+  .r25-hidden {
+    display: none;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    margin: 4px;
+  }
+
+  /* 3. Elemento com visibility:hidden */
+  .r25-vishidden {
+    visibility: hidden;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    margin: 4px;
+  }
+
+  /* 4. Elemento com opacity:0 */
+  .r25-opacity0 {
+    opacity: 0;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    margin: 4px;
+  }
+
+  /* 5. Elemento sem dimensões (forçado via inline) */
+  .r25-no-dim {
+    width: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    margin: 0 !important;
+    overflow: hidden;
+  }
+
+  /* 6. Elemento com borda de alto contraste */
+  .r25-border-high {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 4px solid #000000;
+    margin: 4px;
+  }
+
+  /* 7. Elemento com borda de baixo contraste */
+  .r25-border-low {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 1px solid #EEEEEE;
+    margin: 4px;
+  }
+
+  /* 8. Elemento com borda decorativa */
+  .r25-border-decorative {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 1px dotted #CCCCCC;
+    margin: 4px;
+  }
+
+  /* 9. Elemento com outline de foco */
+  .r25-focus-outline {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 1px solid #999999;
+    margin: 4px;
+  }
+  .r25-focus-outline:focus-visible {
+    outline: 3px solid #5F7A43;
+    outline-offset: 2px;
+  }
+
+  /* 10. Elemento com :hover */
+  .r25-hover {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-hover:hover {
+    background: #5F7A43;
+    color: #FFFFFF;
+  }
+
+  /* 11. Elemento com :focus */
+  .r25-focus {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-focus:focus {
+    background: #5F7A43;
+    color: #FFFFFF;
+  }
+
+  /* 12. Elemento com :active */
+  .r25-active {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-active:active {
+    background: #406030;
+    color: #FFFFFF;
+  }
+
+  /* 13. Elemento com !important */
+  .r25-important {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000 !important;
+    margin: 4px;
+  }
+
+  /* 14. Elemento com declaração inline */
+  .r25-inline {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+
+  /* 15. Elemento com seletor de maior especificidade */
+  .r25-specificity {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  button.r25-specificity {
+    color: var(--accent);
+  }
+
+  /* 16. Elemento com propriedade herdada */
+  .r25-inherit {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: inherit;
+    margin: 4px;
+  }
+  .r25-inherit-parent {
+    color: var(--accent);
+  }
+
+  /* 17. SVG com fill */
+  .r25-svg-fill {
+    display: inline-block;
+    margin: 4px;
+  }
+  .r25-svg-fill svg {
+    fill: var(--accent);
+    width: 24px;
+    height: 24px;
+  }
+
+  /* 18. SVG com stroke */
+  .r25-svg-stroke {
+    display: inline-block;
+    margin: 4px;
+  }
+  .r25-svg-stroke svg {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    width: 24px;
+    height: 24px;
+  }
+
+  /* 19. Elemento com currentColor */
+  .r25-currentcolor {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: var(--accent);
+    border: 1px solid currentColor;
+    margin: 4px;
+  }
+
+  /* 20. Elemento rotacionado para testar geometria */
+  .r25-rotated {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    border: 2px solid #000000;
+    margin: 4px;
+    transform: rotate(15deg);
+  }
+
+  /* Elemento de controle sem relação com --accent */
+  .r25-other {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #CCCCCC;
+    color: #333333;
+    border: 1px solid #999999;
+    margin: 4px;
+  }
+
+  /* 22. Elemento com tabindex="0" */
+  .r25-attr-tabindex-0 {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+
+  /* 23. Elemento com tabindex="-1" */
+  .r25-attr-tabindex-m1 {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+
+  /* 24. Elemento com role="button" */
+  .r25-attr-role-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+
+  /* 25. Elemento com aria-label */
+  .r25-attr-aria-label {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+
+  /* 26. Elemento desabilitado */
+  .r25-attr-disabled {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+
+  /* 27. Elemento habilitado (sem disabled) */
+  .r25-attr-enabled {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+
+  /* 28. Elemento dentro de ancestral com opacity:0 (para teste de visibilidade de ancestral) */
+  .r25-ancestor-opacity0-child {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-ancestor-opacity0 {
+    opacity: 0;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+
+  /* 28b. R2.5.6 V13: ancestral com opacity parcial (0.5) */
+  .r25-ancestor-opacity05-child {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-ancestor-opacity05 {
+    opacity: 0.5;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+
+  /* 29. Elemento dentro de ancestral com display:none */
+  .r25-ancestor-displaynone-child {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-ancestor-displaynone {
+    display: none;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+
+  /* 30. Elemento dentro de ancestral com visibility:hidden */
+  .r25-ancestor-visibilityhidden-child {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-ancestor-visibilityhidden {
+    visibility: hidden;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+
+  /* 31. Elemento dentro de ancestral com visibility:collapse */
+  .r25-ancestor-visibilitycollapse-child {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-ancestor-visibilitycollapse {
+    visibility: collapse;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+
+  /* 32. Duas ocorrências do mesmo seletor com ancestrais diferentes */
+  .r25-same-selector-a {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-same-selector-b {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+  .r25-same-selector-ancestor-hidden {
+    opacity: 0;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+  .r25-same-selector-ancestor-visible {
+    opacity: 1;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+
+  /* 33. V3: ancestral visibility:hidden, descendente visibility:visible (sobrescrita) */
+  .r25-v3-ancestor-hidden {
+    visibility: hidden;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+  .r25-v3-desc-vis {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    visibility: visible;
+    margin: 4px;
+  }
+
+  /* 34. V5: ancestral visibility:collapse, descendente visibility:visible */
+  .r25-v5-ancestor-collapse {
+    visibility: collapse;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+  .r25-v5-desc-vis {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    visibility: visible;
+    margin: 4px;
+  }
+
+  /* 35. V8: dois ancestrais com visibility diferentes */
+  .r25-v8-ancestor-1 {
+    visibility: hidden;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+  .r25-v8-ancestor-2 {
+    visibility: visible;
+    padding: 4px;
+    background: #FFFFFF;
+    margin: 4px;
+  }
+  .r25-v8-desc {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #FFFFFF;
+    color: #000000;
+    margin: 4px;
+  }
+
+  /* ============================================================
+     R25.6 — Fixtures do contrato de excecoes CDP e da integracao
+     da coleta principal
+     ============================================================ */
+
+  /* Consumidor de --accent: detectado pelo collectScript real, que
+     exige que o elemento consuma a variavel de cor do documento. */
+  .r256-accent-consumer {
+    display: inline-block;
+    padding: 4px 8px;
+    color: var(--accent);
+    background: #FFFFFF;
+  }
+
+  /* Ancestral com opacidade zero: a evidencia e absoluta e deve
+     chegar a linha final da coleta como 'not-visible'. */
+  .r256-accent-opacity0-ancestor {
+    opacity: 0;
+  }
+
+  /* Alvo da excecao real: a instrumentacao (getter que lanca) e
+     instalada pelo teste em tempo de execucao e removida em finally. */
+  .r256-exception-target {
+    display: inline-block;
+    padding: 4px 8px;
+  }
+</style>
+</head>
+<body>
+  <div class="r25-inherit-parent">
+    <!-- 16. Elemento com propriedade herdada -->
+    <span class="r25-inherit" id="r25-btn-16">Texto herdado</span>
+  </div>
+
+  <!-- 1. Elemento único visível -->
+  <button class="r25-unique" id="r25-btn-1">Elemento único</button>
+
+  <!-- 2. Elemento oculto com display:none -->
+  <button class="r25-hidden" id="r25-btn-2">Oculto display:none</button>
+
+  <!-- 3. Elemento com visibility:hidden -->
+  <button class="r25-vishidden" id="r25-btn-3">Visibility hidden</button>
+
+  <!-- 4. Elemento com opacity:0 -->
+  <button class="r25-opacity0" id="r25-btn-4">Opacity zero</button>
+
+  <!-- 5. Elemento sem dimensões (forçado via inline) -->
+  <button class="r25-no-dim" id="r25-btn-5">Sem dimensões</button>
+
+  <!-- 6. Elemento com borda de alto contraste -->
+  <button class="r25-border-high" id="r25-btn-6">Borda alto contraste</button>
+
+  <!-- 7. Elemento com borda de baixo contraste -->
+  <button class="r25-border-low" id="r25-btn-7">Borda baixo contraste</button>
+
+  <!-- 8. Elemento com borda decorativa -->
+  <button class="r25-border-decorative" id="r25-btn-8">Borda decorativa</button>
+
+  <!-- 9. Elemento com outline de foco -->
+  <button class="r25-focus-outline" id="r25-btn-9">Outline foco</button>
+
+  <!-- 10. Elemento com :hover -->
+  <button class="r25-hover" id="r25-btn-10">Hover</button>
+
+  <!-- 11. Elemento com :focus -->
+  <button class="r25-focus" id="r25-btn-11">Focus</button>
+
+  <!-- 12. Elemento com :active -->
+  <button class="r25-active" id="r25-btn-12">Active</button>
+
+  <!-- 13. Elemento com !important -->
+  <button class="r25-important" id="r25-btn-13">Important</button>
+
+  <!-- 14. Elemento com declaração inline -->
+  <button class="r25-inline" id="r25-btn-14" style="color: #FF0000;">Inline cor</button>
+
+  <!-- 15. Elemento com seletor de maior especificidade -->
+  <button class="r25-specificity" id="r25-btn-15">Specificity</button>
+
+  <!-- 17. SVG com fill -->
+  <div class="r25-svg-fill" id="r25-btn-17">
+    <svg viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" /></svg>
+  </div>
+
+  <!-- 18. SVG com stroke -->
+  <div class="r25-svg-stroke" id="r25-btn-18">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
+  </div>
+
+  <!-- 19. Elemento com currentColor -->
+  <button class="r25-currentcolor" id="r25-btn-19">CurrentColor</button>
+
+  <!-- 20. Elemento rotacionado para testar geometria -->
+  <button class="r25-rotated" id="r25-btn-20">Rotacionado</button>
+
+  <!-- Elemento de controle sem relação com --accent -->
+  <button class="r25-other" id="r25-btn-21">Outro</button>
+
+  <!-- 22. Elemento com tabindex="0" -->
+  <button class="r25-attr-tabindex-0" id="r25-attr-tabindex-0" tabindex="0">Tabindex 0</button>
+
+  <!-- 23. Elemento com tabindex="-1" -->
+  <button class="r25-attr-tabindex-m1" id="r25-attr-tabindex-m1" tabindex="-1">Tabindex -1</button>
+
+  <!-- 24. Elemento com role="button" -->
+  <span class="r25-attr-role-button" id="r25-attr-role-button" role="button">Role button</span>
+
+  <!-- 25. Elemento com aria-label -->
+  <button class="r25-attr-aria-label" id="r25-attr-aria-label" aria-label="Rótulo de acessibilidade">Aria label</button>
+
+  <!-- 26. Elemento desabilitado -->
+  <button class="r25-attr-disabled" id="r25-attr-disabled" disabled>Desabilitado</button>
+
+  <!-- 27. Elemento habilitado (sem disabled) -->
+  <button class="r25-attr-enabled" id="r25-attr-enabled">Habilitado</button>
+
+  <!-- 28. Elemento dentro de ancestral com opacity:0 -->
+  <div class="r25-ancestor-opacity0" id="r25-ancestor-opacity0">
+    <span class="r25-ancestor-opacity0-child" id="r25-ancestor-opacity0-child">Filho de ancestral opacity:0</span>
+  </div>
+
+  <!-- 28b. R2.5.6 V13: elemento dentro de ancestral com opacity parcial (0.5) -->
+  <div class="r25-ancestor-opacity05" id="r25-ancestor-opacity05">
+    <span class="r25-ancestor-opacity05-child" id="r25-ancestor-opacity05-child">Filho de ancestral opacity:0.5</span>
+  </div>
+
+  <!-- 29. Elemento dentro de ancestral com display:none -->
+  <div class="r25-ancestor-displaynone" id="r25-ancestor-displaynone">
+    <span class="r25-ancestor-displaynone-child" id="r25-ancestor-displaynone-child">Filho de ancestral display:none</span>
+  </div>
+
+  <!-- 30. Elemento dentro de ancestral com visibility:hidden -->
+  <div class="r25-ancestor-visibilityhidden" id="r25-ancestor-visibilityhidden">
+    <span class="r25-ancestor-visibilityhidden-child" id="r25-ancestor-visibilityhidden-child">Filho de ancestral visibility:hidden</span>
+  </div>
+
+  <!-- 31. Elemento dentro de ancestral com visibility:collapse -->
+  <div class="r25-ancestor-visibilitycollapse" id="r25-ancestor-visibilitycollapse">
+    <span class="r25-ancestor-visibilitycollapse-child" id="r25-ancestor-visibilitycollapse-child">Filho de ancestral visibility:collapse</span>
+  </div>
+
+  <!-- 32. Duas ocorrências do mesmo seletor com ancestrais diferentes -->
+  <div class="r25-same-selector-ancestor-hidden" id="r25-same-selector-ancestor-hidden">
+    <span class="r25-same-selector" id="r25-same-selector-1">Oculto por ancestral opacity:0</span>
+  </div>
+  <div class="r25-same-selector-ancestor-visible" id="r25-same-selector-ancestor-visible">
+    <span class="r25-same-selector" id="r25-same-selector-2">Visível (ancestral com opacidade 1)</span>
+  </div>
+
+  <!-- 33. V3: ancestral visibility:hidden, descendente visibility:visible (sobrescrita) -->
+  <div class="r25-v3-ancestor-hidden" id="r25-v3-ancestor-hidden">
+    <span class="r25-v3-desc-vis" id="r25-v3-desc-vis">Descendente visível sobrescrevendo ancestral oculto</span>
+  </div>
+
+  <!-- 34. V5: ancestral visibility:collapse, descendente visibility:visible -->
+  <div class="r25-v5-ancestor-collapse" id="r25-v5-ancestor-collapse">
+    <span class="r25-v5-desc-vis" id="r25-v5-desc-vis">Descendente visível sobre ancestral collapse</span>
+  </div>
+
+  <!-- 35. V8: dois ancestrais com visibility diferentes (hidden > visible > desc sem sobrescrita) -->
+  <div class="r25-v8-ancestor-1" id="r25-v8-ancestor-1">
+    <div class="r25-v8-ancestor-2" id="r25-v8-ancestor-2">
+      <span class="r25-v8-desc" id="r25-v8-desc">Descendente entre ancestral hidden e ancestral visible</span>
+    </div>
+  </div>
+
+  <script>
+    window.__r25Fixtures = {
+      buttonIds: [
+        'r25-btn-1', 'r25-btn-2', 'r25-btn-3', 'r25-btn-4', 'r25-btn-5',
+        'r25-btn-6', 'r25-btn-7', 'r25-btn-8', 'r25-btn-9', 'r25-btn-10',
+        'r25-btn-11', 'r25-btn-12', 'r25-btn-13', 'r25-btn-14', 'r25-btn-15',
+        'r25-btn-16', 'r25-btn-17', 'r25-btn-18', 'r25-btn-19', 'r25-btn-20', 'r25-btn-21',
+        'r25-attr-tabindex-0', 'r25-attr-tabindex-m1', 'r25-attr-role-button',
+        'r25-attr-aria-label', 'r25-attr-disabled', 'r25-attr-enabled',
+        'r25-ancestor-opacity0-child', 'r25-ancestor-displaynone-child',
+        'r25-ancestor-opacity05-child',
+        'r25-ancestor-visibilityhidden-child', 'r25-ancestor-visibilitycollapse-child',
+        'r25-same-selector-1', 'r25-same-selector-2',
+        'r25-v3-desc-vis', 'r25-v5-desc-vis', 'r25-v8-desc'
+      ],
+      testSelector: '.r25-unique'
+    };
+  </script>
+
+  <!-- ============================================================
+       R25.5 — Fixtures do mecanismo rigoroso de visibilidade
+       ============================================================ -->
+
+  <!-- Hosts com Shadow DOM. O conteúdo interno é construído por script,
+       pois shadow roots não podem ser declarados em HTML. -->
+  <div id="r255-shadow-host"></div>
+  <div id="r255-shadow-host-opacity0"></div>
+  <div id="r255-shadow-host-displaynone"></div>
+  <div id="r255-shadow-host-slot"></div>
+
+  <!-- Elementos com ciclo na cadeia de ancestrais.
+       O getter de parentElement é redefinido por script, de modo que
+       A.parentElement === B e B.parentElement === A. -->
+  <div id="r255-cycle-a">A</div>
+  <div id="r255-cycle-b">B</div>
+
+  <script>
+    // R25.5: construção das fixtures que exigem script.
+    (function () {
+      function attachShadow(hostId, build) {
+        var host = document.getElementById(hostId);
+        var root = host.attachShadow({ mode: 'open' });
+        build(root, host);
+        return root;
+      }
+
+      // Host simples: ancestral intermediário dentro da árvore Shadow e
+      // opacidade 0.5 no host, para provar que o host foi percorrido.
+      attachShadow('r255-shadow-host', function (root, host) {
+        host.style.opacity = '0.5';
+        var wrap = document.createElement('div');
+        wrap.id = 'r255-shadow-wrap';
+        var child = document.createElement('span');
+        child.id = 'r255-shadow-child';
+        child.style.display = 'inline-block';
+        child.style.padding = '2px';
+        child.textContent = 'sombra';
+        wrap.appendChild(child);
+        root.appendChild(wrap);
+      });
+
+      // Host com opacidade zero.
+      attachShadow('r255-shadow-host-opacity0', function (root, host) {
+        host.style.opacity = '0';
+        var child = document.createElement('span');
+        child.id = 'r255-shadow-child-opacity0';
+        child.style.display = 'inline-block';
+        child.style.padding = '2px';
+        child.textContent = 'sombra0';
+        root.appendChild(child);
+      });
+
+      // Host com display:none.
+      attachShadow('r255-shadow-host-displaynone', function (root, host) {
+        host.style.display = 'none';
+        var child = document.createElement('span');
+        child.id = 'r255-shadow-child-displaynone';
+        child.style.display = 'inline-block';
+        child.style.padding = '2px';
+        child.textContent = 'sombraNone';
+        root.appendChild(child);
+      });
+
+      // Elemento distribuído por slot: o slot tem opacidade 0.5, de modo que
+      // a travessia por assignedSlot (0.5) é distinguível da travessia por
+      // parentElement (1).
+      attachShadow('r255-shadow-host-slot', function (root) {
+        var slot = document.createElement('slot');
+        slot.name = 'r255slot';
+        slot.style.opacity = '0.5';
+        var slotted = document.createElement('span');
+        slotted.id = 'r255-shadow-slotted';
+        slotted.style.display = 'inline-block';
+        slotted.style.padding = '2px';
+        slotted.textContent = 'slot';
+        slotted.setAttribute('slot', 'r255slot');
+        root.appendChild(slot);
+        root.appendChild(slotted);
+      });
+
+      // Cadeias profundas para os testes de limite de profundidade.
+      // N wrappers entre o alvo e o body:
+      //   nível 1 = alvo, nível 2..N+1 = wrappers, nível N+2 = body,
+      //   nível N+3 = documentElement (raiz real).
+      function buildDeep(targetId, wrappers, outerStyle) {
+        var inner = document.createElement('span');
+        inner.id = targetId;
+        inner.style.display = 'inline-block';
+        inner.style.padding = '2px';
+        inner.textContent = 'profundo';
+        var el = inner;
+        for (var i = 0; i < wrappers; i++) {
+          var d = document.createElement('div');
+          d.appendChild(el);
+          el = d;
+        }
+        if (outerStyle) el.style.cssText = outerStyle;
+        document.body.appendChild(el);
+        return inner;
+      }
+
+      // raiz real (documentElement) exatamente no nível 50 -> completed
+      buildDeep('r255-depth-root50', 47);
+      // raiz real no nível 51 -> depth-limit
+      buildDeep('r255-depth-limit', 48);
+      // display:none no nível 50 -> short-circuited (não sobrescrito por
+      // depth-limit)
+      buildDeep('r255-depth-displaynone50', 49, 'display:none');
+
+      // Ciclo real na cadeia de ancestrais.
+      var cycA = document.getElementById('r255-cycle-a');
+      var cycB = document.getElementById('r255-cycle-b');
+      Object.defineProperty(cycA, 'parentElement', {
+        get: function () { return cycB; },
+        configurable: true,
+      });
+      Object.defineProperty(cycB, 'parentElement', {
+        get: function () { return cycA; },
+        configurable: true,
+      });
+
+      // Precedencia assignedSlot -> parentElement -> host do shadow root.
+      // O build do Chromium deste ambiente nao computa a tabela de slots
+      // (assignedSlot e sempre null), portanto a precedencia da regra e
+      // verificada com um assignedSlot definido na propria instancia.
+      var slotHost = document.createElement('div');
+      slotHost.id = 'r255-assigned-slot-host';
+      var slotWrapper = document.createElement('div');
+      slotWrapper.id = 'r255-assigned-slot-wrapper';
+      var precedenceSlot = document.createElement('slot');
+      precedenceSlot.id = 'r255-assigned-slot';
+      precedenceSlot.style.opacity = '0.5';
+      var precedenceChild = document.createElement('span');
+      precedenceChild.id = 'r255-assigned-slot-child';
+      precedenceChild.style.display = 'inline-block';
+      precedenceChild.style.padding = '2px';
+      precedenceChild.textContent = 'precedencia';
+      slotWrapper.appendChild(precedenceSlot);
+      slotWrapper.appendChild(precedenceChild);
+      slotHost.appendChild(slotWrapper);
+      document.body.appendChild(slotHost);
+      Object.defineProperty(precedenceChild, 'assignedSlot', {
+        get: function () { return precedenceSlot; },
+        configurable: true,
+      });
+
+      window.__r255Fixtures = {
+        shadowChild: 'r255-shadow-child',
+        shadowChildOpacity0: 'r255-shadow-child-opacity0',
+        shadowChildDisplayNone: 'r255-shadow-child-displaynone',
+        shadowSlotted: 'r255-shadow-slotted',
+        depthRoot50: 'r255-depth-root50',
+        depthLimit: 'r255-depth-limit',
+        depthDisplayNone50: 'r255-depth-displaynone50',
+        cycleA: 'r255-cycle-a',
+        cycleB: 'r255-cycle-b',
+      };
+    })();
+  </script>
+
+  <!-- ============================================================
+       R25.6 — Fixtures das excecoes reais e da integracao
+       ============================================================ -->
+
+  <!-- Alvo simples da excecao real (Teste A). -->
+  <div class="r256-exception-target" id="r256-exception-target">alvo</div>
+
+  <!-- Cadeia com opacidade zero antes da excecao (Teste B). -->
+  <div class="r256-exception-target" id="r256-exception-opacity0-parent" style="opacity:0">
+    <span class="r256-exception-target" id="r256-exception-opacity0-child">filho opaco</span>
+  </div>
+
+  <!-- Cadeia com visibility:hidden que nao interrompe a travessia (Teste C). -->
+  <div class="r256-exception-target" id="r256-exception-visibilityhidden-parent" style="visibility:hidden">
+    <span class="r256-exception-target" id="r256-exception-visibilityhidden-child" style="visibility:visible">filho visivel</span>
+  </div>
+
+  <!-- Consumidor de --accent para a integracao da coleta principal. -->
+  <div class="r256-accent-consumer" id="r256-accent-consumer">consumidor</div>
+
+  <!-- Consumidor de --accent dentro de ancestral com opacidade zero. -->
+  <div class="r256-accent-opacity0-ancestor" id="r256-accent-opacity0-ancestor">
+    <span class="r256-accent-consumer" id="r256-accent-opacity0-child">consumidor opaco</span>
+  </div>
+</body>
+</html>

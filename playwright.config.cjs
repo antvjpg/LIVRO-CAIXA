@@ -78,6 +78,13 @@ module.exports = defineConfig({
       use: { storageState: STATE },
     },
     {
+      name: 'c4-cdp',
+      dependencies: ['setup'],
+      retries: 0,
+      testMatch: /c4\/.*\.spec\.js$/,
+      use: { storageState: STATE },
+    },
+    {
       name: 'seguranca',
       dependencies: ['setup'],
       testMatch: /seguranca\/.*\.spec\.js$/,

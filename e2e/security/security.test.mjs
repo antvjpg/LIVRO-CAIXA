@@ -543,7 +543,10 @@ test('workflow: versões das actions rodam em runtime Node 24', () => {
     assert.ok(wf.includes('node-version: 24'), `${arquivo}: CI deve usar a mesma faixa do dev local (Node 24)`);
   }
   const e2e = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'code-e2e.yml'), 'utf8');
-  pinada(e2e, 'actions/upload-artifact', 6, 'code-e2e.yml');
+  assert.ok(
+    !/uses:\s*actions\/upload-artifact@/m.test(e2e),
+    'code-e2e.yml não pode publicar artefatos enquanto a contenção de segurança estiver ativa'
+  );
 });
 
 test('workflow: toda action é pinada por SHA com tag documentada (supply chain)', () => {
