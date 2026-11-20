@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "task": "D-02",
+    "url": "http://127.0.0.1:8000/index.html",
+    "timestamp": "2026-11-20T16:57:10.905Z",
+    "browser": "Chromium 156 headless CDP",
+    "method": "Methodologia CDP Navigation (externos bloqueados + stub Firebase)"
+  },
+  "summary": {
+    "total": 9,
+    "pass": 9,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "id": "V1",
+      "desc": "Botão Início existe no grupo principal do drawer",
+      "expected": "exists=true, inPrincipal=true, isFirst=true, icon=fi-rr-home",
+      "observed": "{\"exists\":true,\"text\":\"Início\",\"inPrincipal\":true,\"isFirst\":true,\"icon\":\"fi fi-rr-home\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V2",
+      "desc": "Clique Início no drawer abre view e fecha drawer",
+      "expected": "viewInicioActive=true, navActive=inicio, drawerOpen=false, drawerAriaHidden=true",
+      "observed": "{\"setup\":\"openDrawer()\",\"beforeClick\":{\"overlayOpen\":true,\"bodyClass\":\"\"},\"viewInicioActive\":true,\"navActive\":\"inicio\",\"drawerOpen\":false,\"drawerAriaHidden\":\"true\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V3",
+      "desc": "Ação inicio mapeada uma vez, sem duplicação",
+      "expected": "count=1",
+      "observed": "{\"action\":\"inicio\",\"count\":1}",
+      "status": "PASS"
+    },
+    {
+      "id": "V4-overview",
+      "desc": "Ação overview do drawer preservada",
+      "expected": "tab=caixa",
+      "observed": "{\"tab\":\"caixa\",\"navActive\":\"caixa\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V4-dash",
+      "desc": "Ação dash do drawer preservada",
+      "expected": "tab=dash",
+      "observed": "{\"tab\":\"dash\",\"navActive\":\"caixa\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V4-pockets",
+      "desc": "Ação pockets do drawer preservada",
+      "expected": "tab=pockets",
+      "observed": "{\"tab\":\"pockets\",\"navActive\":\"pockets\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V4-investments",
+      "desc": "Ação investments do drawer preservada",
+      "expected": "tab=invest",
+      "observed": "{\"tab\":\"invest\",\"navActive\":\"invest\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V4-profile",
+      "desc": "Ação profile do drawer preservada",
+      "expected": "tab=profile",
+      "observed": "{\"tab\":\"profile\",\"navActive\":\"profile\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V5",
+      "desc": "Sem erros de console relacionados à navegação",
+      "expected": "0",
+      "observed": "0",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": [
+    "[INIT] Erro no callback de autenticação: TypeError: Cannot read properties of undefined (reading 'forEach')\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:111:31\n    at Object.onAuthStateChanged (<anonymous>:5:50)\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:76:8"
+  ],
+  "note": " Firebase real não inicializa; validação cobre mecanismo de navegação e drawer."
+}

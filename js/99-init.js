@@ -1607,6 +1607,7 @@ if (circle1) {
   document.querySelectorAll('[data-drawer-action]').forEach(button => button.addEventListener('click', () => {
     const action = button.dataset.drawerAction;
     const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
+    if (action === 'inicio') { window.switchTab('inicio'); window.scrollTo({ top:0, behavior:'smooth' }); }
     if (action === 'overview') { window.switchTab('caixa'); window.scrollTo({ top:0, behavior:'smooth' }); }
     if (action === 'dash') { window.switchTab('dash'); window.scrollTo({ top:0, behavior:'smooth' }); }
     if (action === 'entries') { window.switchTab('caixa'); setTimeout(() => scrollTo('ledgerBody'), 20); }
