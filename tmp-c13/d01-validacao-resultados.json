@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "task": "D-01",
+    "url": "http://127.0.0.1:8000/index.html",
+    "timestamp": "2026-11-20T16:48:12.132Z",
+    "browser": "Chromium 156 headless CDP",
+    "method": "Runtime.evaluate + Fetch bloqueio de externos"
+  },
+  "summary": {
+    "total": 13,
+    "pass": 13,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "id": "V1",
+      "desc": "Barra inferior com exatamente 5 destinos",
+      "expected": "5: inicio,pockets,caixa,invest,profile",
+      "observed": "5: inicio,pockets,caixa,invest,profile",
+      "status": "PASS"
+    },
+    {
+      "id": "V2",
+      "desc": "Primeiro destino inicio, ícone casa, aria-label Início",
+      "expected": "dest=inicio, aria=Início, icon contém fi-rr-home",
+      "observed": "{\"dest\":\"inicio\",\"aria\":\"Início\",\"icon\":\"fi fi-rr-home\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V3",
+      "desc": "#viewInicio existe no DOM",
+      "expected": "true",
+      "observed": "true",
+      "status": "PASS"
+    },
+    {
+      "id": "V3b",
+      "desc": "window.switchTab disponível",
+      "expected": "true",
+      "observed": "true",
+      "status": "PASS"
+    },
+    {
+      "id": "V4",
+      "desc": "Início ativa view, is-active e indicador na 1ª posição",
+      "expected": "viewInicioActive=true, isActive=true, navActive=inicio, indicatorX=0%",
+      "observed": "{\"viewInicioActive\":true,\"isActive\":true,\"navActive\":\"inicio\",\"indicatorX\":\"0%\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V5-pockets",
+      "desc": "Navegação para pockets",
+      "expected": "isActive=true, navActive=pockets",
+      "observed": "{\"isActive\":true,\"navActive\":\"pockets\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V5-caixa",
+      "desc": "Navegação para caixa",
+      "expected": "isActive=true, navActive=caixa",
+      "observed": "{\"isActive\":true,\"navActive\":\"caixa\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V5-invest",
+      "desc": "Navegação para invest",
+      "expected": "isActive=true, navActive=invest",
+      "observed": "{\"isActive\":true,\"navActive\":\"invest\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V5-profile",
+      "desc": "Navegação para profile",
+      "expected": "isActive=true, navActive=profile",
+      "observed": "{\"isActive\":true,\"navActive\":\"profile\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V6a",
+      "desc": "Última aba salva é inicio",
+      "expected": "inicio",
+      "observed": "inicio (keys: [\"livrocaixa_last_tab\"])",
+      "status": "PASS"
+    },
+    {
+      "id": "V6b",
+      "desc": "Restauração de inicio após reload",
+      "expected": "viewInicioActive=true, navActive=inicio",
+      "observed": "{\"viewInicioActive\":true,\"navActive\":\"inicio\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V7",
+      "desc": "dashboard legado acessível via switchTab",
+      "expected": "viewDashboard active=true, tab=dashboard",
+      "observed": "{\"ok\":true,\"tab\":\"dashboard\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V8",
+      "desc": "Sem erros novos de console relacionados à navegação",
+      "expected": "0 erros",
+      "observed": "0",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": [
+    "[INIT] Erro no callback de autenticação: TypeError: Cannot read properties of undefined (reading 'forEach')\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:111:31\n    at Object.onAuthStateChanged (<anonymous>:5:50)\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:76:8",
+    "[INIT] Erro no callback de autenticação: TypeError: Cannot read properties of undefined (reading 'forEach')\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:111:31\n    at Object.onAuthStateChanged (<anonymous>:5:50)\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:76:8"
+  ],
+  "note": "Recursos externos (CDN) abortados por ausência de rede no Termux; app JS local carregado. Firebase autenticação pode não inicializar — validação cobre apenas mecanismo de navegação."
+}
