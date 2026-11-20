@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "task": "D-04",
+    "url": "http://127.0.0.1:8000/index.html",
+    "timestamp": "2026-11-20T17:34:23.144Z",
+    "browser": "Chromium 156 headless CDP",
+    "method": "Metodologia CDP Navigation",
+    "dados": "sintéticos determinísticos (Opção A, seção 5.1)",
+    "injetado": {
+      "month": "2026-11",
+      "entradas": 1500,
+      "saidas": 300,
+      "saldo": 1200
+    }
+  },
+  "summary": {
+    "total": 8,
+    "pass": 8,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "id": "V1",
+      "desc": "Host Início recebe o resumo do renderizador real",
+      "expected": "inicioFilled=true",
+      "observed": "true",
+      "status": "PASS"
+    },
+    {
+      "id": "V2",
+      "desc": "Livro-Caixa (legado) continua exibindo o resumo",
+      "expected": "caixaFilled=true",
+      "observed": "true",
+      "status": "PASS"
+    },
+    {
+      "id": "V3",
+      "desc": "Mesmo conteúdo nos dois hosts (reutilização do cálculo)",
+      "expected": "textos iguais",
+      "observed": "{\"inicio\":\"Resumo do fluxoNovembro / 2026Ver visão geralEntradasR$ 1.500,00SaídasR$ 300,00Saldo do mêsR$ 1.200,00\",\"caixa\":\"Resumo do fluxoNovembro / 2026Ver visão geralEntradasR$ 1.500,00SaídasR$ 300,00Saldo do mêsR$ 1.200,00\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V4",
+      "desc": "Resumo contém Entradas/Saídas/Saldo do cálculo real",
+      "expected": "todos os rótulos=true",
+      "observed": "{\"hasEntradas\":true,\"hasSaidas\":true,\"hasSaldo\":true,\"raw\":\"Resumo do fluxoNovembro / 2026Ver visão geralEntradasR$ 1.500,00SaídasR$ 300,00Saldo do mêsR$ 1.200,00\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V5",
+      "desc": "Valores do resumo correspondem aos dados sintéticos",
+      "expected": "{\"e\":\"R$ 1.500,00\",\"s\":\"R$ 300,00\",\"n\":\"R$ 1.200,00\"}",
+      "observed": "[\"R$ 1.500,00\",\"R$ 300,00\",\"R$ 1.200,00\"]",
+      "status": "PASS"
+    },
+    {
+      "id": "V6",
+      "desc": "Nenhum ID duplicado introduzido",
+      "expected": "0 duplicatas",
+      "observed": "{\"total\":466,\"duplicates\":[]}",
+      "status": "PASS"
+    },
+    {
+      "id": "V7",
+      "desc": "Persiste após múltiplas trocas de view",
+      "expected": "todos true",
+      "observed": "{\"inicioFilled\":true,\"caixaFilled\":true,\"equal\":true}",
+      "status": "PASS"
+    },
+    {
+      "id": "V8",
+      "desc": "Sem erros de console relacionados ao resumo/navegação",
+      "expected": "0",
+      "observed": "0",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": [
+    "[INIT] Erro no callback de autenticação: TypeError: Cannot read properties of undefined (reading 'forEach')\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:111:31\n    at Object.onAuthStateChanged (<anonymous>:5:50)\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:76:8"
+  ],
+  "note": "Renderizador real renderAdvancedDashboard() executado com entries sintéticas. Firebase real não inicializa; sincronização fora de escopo."
+}
