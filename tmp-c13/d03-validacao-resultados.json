@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "task": "D-03",
+    "url": "http://127.0.0.1:8000/index.html",
+    "timestamp": "2026-11-20T17:11:01.229Z",
+    "browser": "Chromium 156 headless CDP",
+    "method": "Metodologia CDP Navigation"
+  },
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "id": "V1",
+      "desc": "Host Início .next-pay-inner recebe conteúdo do renderizador",
+      "expected": "kicker=true, linha ou empty=true",
+      "observed": "{\"inicioText\":\"Próximo pagamentoNenhum pagamento pendente\",\"inicioHasKicker\":true,\"inicioHasRowOrEmpty\":true}",
+      "status": "PASS"
+    },
+    {
+      "id": "V2",
+      "desc": "Dashboard legado continua exibindo o cartão (sem regressão)",
+      "expected": "legacyHasInner=true, kicker/texto presente",
+      "observed": "{\"legacyText\":\"Próximo pagamentoNenhum pagamento pendente\",\"legacyHasInner\":true}",
+      "status": "PASS"
+    },
+    {
+      "id": "V3",
+      "desc": "Mesmo conteúdo nos dois hosts (reutilização do cálculo)",
+      "expected": "textos iguais",
+      "observed": "{\"inicio\":\"Próximo pagamentoNenhum pagamento pendente\",\"legacy\":\"Próximo pagamentoNenhum pagamento pendente\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V4",
+      "desc": "Nenhum ID duplicado introduzido",
+      "expected": "0 duplicatas",
+      "observed": "{\"total\":466,\"duplicates\":[]}",
+      "status": "PASS"
+    },
+    {
+      "id": "V5",
+      "desc": "Persiste após múltiplas trocas de view",
+      "expected": "inicioFilled=true, legacyFilled=true, equal=true",
+      "observed": "{\"inicioFilled\":true,\"legacyFilled\":true,\"equal\":true}",
+      "status": "PASS"
+    },
+    {
+      "id": "V6",
+      "desc": "Sem erros de console relacionados ao cartão/navegação",
+      "expected": "0",
+      "observed": "0",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": [
+    "[INIT] Erro no callback de autenticação: TypeError: Cannot read properties of undefined (reading 'forEach')\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:111:31\n    at Object.onAuthStateChanged (<anonymous>:5:50)\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:76:8"
+  ],
+  "note": "Firebase real não inicializa. Sem dados financeiros, o renderizador produz o estado \"Nenhum pagamento pendente\" de forma determinística; a validação cobre reutilização do cálculo e ausência de regressão."
+}

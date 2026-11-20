@@ -134,7 +134,8 @@
 
     (function updateNextPaymentCard(){
       const host = document.getElementById('dashboardNextPayment');
-      if (!host) return;
+      const inicioInner = document.querySelector('#viewInicio .next-pay-inner');
+      if (!host && !inicioInner) return;
       const today = todayISO().slice(0, 10);
       const list = (typeof pendingBills !== 'undefined' && Array.isArray(pendingBills) ? pendingBills : [])
         .filter(bill => {
@@ -150,13 +151,16 @@
         })
         .sort((a,b) => String(billDueDateForMonth(a, year, monthIndex)).localeCompare(String(billDueDateForMonth(b, year, monthIndex))));
       const next = list[0];
+      let cardHTML;
       if (!next) {
-        host.innerHTML = '<div class="next-pay-inner empty"><span class="next-pay-kicker">Próximo pagamento</span><strong>Nenhum pagamento pendente</strong></div>';
-        return;
+        cardHTML = '<div class="next-pay-inner empty"><span class="next-pay-kicker">Próximo pagamento</span><strong>Nenhum pagamento pendente</strong></div>';
+      } else {
+        const due = String(billDueDateForMonth(next, year, monthIndex)).slice(0, 10);
+        const dueFmt = due.split('-').reverse().join('/');
+        cardHTML = '<div class="next-pay-inner"><span class="next-pay-kicker">Próximo pagamento</span><div class="next-pay-row"><strong>' + escapeHTML(next.name || 'Conta') + '</strong><b>' + fmt(next.amount) + '</b></div><span class="hint">Vence em ' + dueFmt + '</span></div>';
       }
-      const due = String(billDueDateForMonth(next, year, monthIndex)).slice(0, 10);
-      const dueFmt = due.split('-').reverse().join('/');
-      host.innerHTML = '<div class="next-pay-inner"><span class="next-pay-kicker">Próximo pagamento</span><div class="next-pay-row"><strong>' + escapeHTML(next.name || 'Conta') + '</strong><b>' + fmt(next.amount) + '</b></div><span class="hint">Vence em ' + dueFmt + '</span></div>';
+      if (host) host.innerHTML = cardHTML;
+      if (inicioInner) inicioInner.outerHTML = cardHTML;
     })();
 
     const commitments = upcomingBills.map(bill => { const dueDate = billDueDateForMonth(bill, year, monthIndex); const status = billStatus(bill, month); const tone = status === 'Atrasado' ? 'overdue' : ''; return `<div class="dashboard-commitment-row ${tone}"><div><strong>${escapeHTML(bill.name || 'Conta recorrente')}</strong><span>${status} · ${dueDate.split('-').reverse().join('/')}</span></div><b>${fmt(bill.amount)}</b></div>`; }).join('');
