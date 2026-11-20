@@ -1,0 +1,546 @@
+{
+  "meta": {
+    "task": "D-05",
+    "phase": "antes",
+    "timestamp": "2026-11-20T17:45:21.893Z",
+    "app": "http://127.0.0.1:8000/index.html"
+  },
+  "cenarios": [
+    {
+      "nome": "mobile-claro",
+      "metricas": {
+        "viewport": {
+          "w": 390,
+          "h": 844
+        },
+        "docScrollWidth": 390,
+        "docClientWidth": 390,
+        "horizontalOverflow": false,
+        "view": {
+          "x": 14,
+          "y": 242,
+          "w": 362,
+          "h": 594,
+          "display": "block",
+          "position": "static"
+        },
+        "header": {
+          "rect": {
+            "x": 14,
+            "y": 242,
+            "w": 362,
+            "h": 62,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        "grid": {
+          "rect": {
+            "x": 14,
+            "y": 316,
+            "w": 362,
+            "h": 495,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          "children": 3
+        },
+        "cards": [
+          {
+            "cls": "inicio-card balance-card",
+            "rect": {
+              "x": 14,
+              "y": 316,
+              "w": 362,
+              "h": 138,
+              "display": "block",
+              "position": "relative"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "14px",
+              "margin": "0px"
+            }
+          },
+          {
+            "cls": "inicio-card advanced-dashboard-card",
+            "rect": {
+              "x": 14,
+              "y": 454,
+              "w": 362,
+              "h": 241,
+              "display": "block",
+              "position": "static"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "cls": "inicio-card dashboard-next-payment-card",
+            "rect": {
+              "x": 14,
+              "y": 711,
+              "w": 362,
+              "h": 100,
+              "display": "block",
+              "position": "static"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "footer": {
+          "rect": {
+            "x": 14,
+            "y": 811,
+            "w": 362,
+            "h": 26,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        "tokens": {
+          "accent": "#5F7A43",
+          "surface": "#FFFEFA",
+          "paper": "#F7F5EF"
+        }
+      },
+      "screenshot": "tmp-c13/d05-antes-mobile-claro.png"
+    },
+    {
+      "nome": "mobile-escuro",
+      "metricas": {
+        "viewport": {
+          "w": 390,
+          "h": 844
+        },
+        "docScrollWidth": 390,
+        "docClientWidth": 390,
+        "horizontalOverflow": false,
+        "view": {
+          "x": 14,
+          "y": 242,
+          "w": 362,
+          "h": 594,
+          "display": "block",
+          "position": "static"
+        },
+        "header": {
+          "rect": {
+            "x": 14,
+            "y": 242,
+            "w": 362,
+            "h": 62,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        "grid": {
+          "rect": {
+            "x": 14,
+            "y": 316,
+            "w": 362,
+            "h": 495,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          "children": 3
+        },
+        "cards": [
+          {
+            "cls": "inicio-card balance-card",
+            "rect": {
+              "x": 14,
+              "y": 316,
+              "w": 362,
+              "h": 138,
+              "display": "block",
+              "position": "relative"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "14px",
+              "margin": "0px"
+            }
+          },
+          {
+            "cls": "inicio-card advanced-dashboard-card",
+            "rect": {
+              "x": 14,
+              "y": 454,
+              "w": 362,
+              "h": 241,
+              "display": "block",
+              "position": "static"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "cls": "inicio-card dashboard-next-payment-card",
+            "rect": {
+              "x": 14,
+              "y": 711,
+              "w": 362,
+              "h": 100,
+              "display": "block",
+              "position": "static"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "footer": {
+          "rect": {
+            "x": 14,
+            "y": 811,
+            "w": 362,
+            "h": 26,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        "tokens": {
+          "accent": "#C9A86A",
+          "surface": "#16211A",
+          "paper": "#0F1712"
+        }
+      },
+      "screenshot": "tmp-c13/d05-antes-mobile-escuro.png"
+    },
+    {
+      "nome": "desktop-claro",
+      "metricas": {
+        "viewport": {
+          "w": 1280,
+          "h": 800
+        },
+        "docScrollWidth": 1265,
+        "docClientWidth": 1265,
+        "horizontalOverflow": false,
+        "view": {
+          "x": 97,
+          "y": 205,
+          "w": 1072,
+          "h": 520,
+          "display": "block",
+          "position": "static"
+        },
+        "header": {
+          "rect": {
+            "x": 97,
+            "y": 205,
+            "w": 1072,
+            "h": 62,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        "grid": {
+          "rect": {
+            "x": 97,
+            "y": 279,
+            "w": 1072,
+            "h": 421,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          "children": 3
+        },
+        "cards": [
+          {
+            "cls": "inicio-card balance-card",
+            "rect": {
+              "x": 97,
+              "y": 279,
+              "w": 1072,
+              "h": 154,
+              "display": "block",
+              "position": "relative"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "20px 18px",
+              "margin": "0px"
+            }
+          },
+          {
+            "cls": "inicio-card advanced-dashboard-card",
+            "rect": {
+              "x": 97,
+              "y": 433,
+              "w": 1072,
+              "h": 149,
+              "display": "block",
+              "position": "static"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "cls": "inicio-card dashboard-next-payment-card",
+            "rect": {
+              "x": 97,
+              "y": 597,
+              "w": 1072,
+              "h": 102,
+              "display": "block",
+              "position": "static"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "footer": {
+          "rect": {
+            "x": 97,
+            "y": 699,
+            "w": 1072,
+            "h": 26,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        "tokens": {
+          "accent": "#5F7A43",
+          "surface": "#FFFEFA",
+          "paper": "#F7F5EF"
+        }
+      },
+      "screenshot": "tmp-c13/d05-antes-desktop-claro.png"
+    },
+    {
+      "nome": "desktop-escuro",
+      "metricas": {
+        "viewport": {
+          "w": 1280,
+          "h": 800
+        },
+        "docScrollWidth": 1265,
+        "docClientWidth": 1265,
+        "horizontalOverflow": false,
+        "view": {
+          "x": 97,
+          "y": 205,
+          "w": 1072,
+          "h": 520,
+          "display": "block",
+          "position": "static"
+        },
+        "header": {
+          "rect": {
+            "x": 97,
+            "y": 205,
+            "w": 1072,
+            "h": 62,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        "grid": {
+          "rect": {
+            "x": 97,
+            "y": 279,
+            "w": 1072,
+            "h": 421,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          },
+          "children": 3
+        },
+        "cards": [
+          {
+            "cls": "inicio-card balance-card",
+            "rect": {
+              "x": 97,
+              "y": 279,
+              "w": 1072,
+              "h": 154,
+              "display": "block",
+              "position": "relative"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "20px 18px",
+              "margin": "0px"
+            }
+          },
+          {
+            "cls": "inicio-card advanced-dashboard-card",
+            "rect": {
+              "x": 97,
+              "y": 433,
+              "w": 1072,
+              "h": 149,
+              "display": "block",
+              "position": "static"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          },
+          {
+            "cls": "inicio-card dashboard-next-payment-card",
+            "rect": {
+              "x": 97,
+              "y": 597,
+              "w": 1072,
+              "h": 102,
+              "display": "block",
+              "position": "static"
+            },
+            "css": {
+              "display": "block",
+              "gridTemplateColumns": "none",
+              "gap": "normal",
+              "padding": "0px",
+              "margin": "0px"
+            }
+          }
+        ],
+        "footer": {
+          "rect": {
+            "x": 97,
+            "y": 699,
+            "w": 1072,
+            "h": 26,
+            "display": "block",
+            "position": "static"
+          },
+          "css": {
+            "display": "block",
+            "gridTemplateColumns": "none",
+            "gap": "normal",
+            "padding": "0px",
+            "margin": "0px"
+          }
+        },
+        "tokens": {
+          "accent": "#C9A86A",
+          "surface": "#16211A",
+          "paper": "#0F1712"
+        }
+      },
+      "screenshot": "tmp-c13/d05-antes-desktop-escuro.png"
+    }
+  ]
+}

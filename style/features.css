@@ -4315,6 +4315,80 @@ body[data-tab="dash"] .fab-add{
   display:none;
 }
 
+/* C.4-V05-B D-05 — composição da view Início (tokens existentes, sem paleta paralela) */
+#viewInicio .inicio-header{
+  margin:0 0 16px;
+}
+#viewInicio .inicio-header h2{
+  margin:0;
+}
+#viewInicio .inicio-header .hint{
+  margin:4px 0 0;
+  display:block;
+}
+#viewInicio .inicio-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  align-items:start;
+  gap:14px;
+  width:100%;
+  max-width:100%;
+}
+#viewInicio .inicio-card{
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:break-word;
+}
+/* Cards que não herdam .balance-card precisam da mesma superfície/estrutura */
+#viewInicio .advanced-dashboard-card,
+#viewInicio .dashboard-next-payment-card{
+  background:var(--paper);
+  color:var(--ink);
+  border-radius:10px;
+  padding:20px 18px;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-sm);
+}
+#viewInicio .advanced-dashboard-card .advanced-dashboard,
+#viewInicio .dashboard-next-payment-card .next-pay-inner{
+  min-width:0;
+}
+/* Em colunas estreitas, o badge do health-card nao pode esmagar o rotulo:
+   o flex:1 1 0% + min-width:0 do div filho colapsa o texto a ~8px no desktop. */
+#viewInicio .advanced-dashboard .dashboard-health-card{
+  flex-wrap:wrap;
+}
+#viewInicio .advanced-dashboard .dashboard-health-card>div{
+  flex:1 1 100%;
+  min-width:0;
+}
+#viewInicio .advanced-dashboard .dashboard-health-card strong{
+  overflow-wrap:anywhere;
+}
+#viewInicio .advanced-dashboard .dashboard-health-card>b{
+  white-space:normal;
+  margin-left:auto;
+}
+#viewInicio .inicio-footer{
+  display:flex;
+  align-items:flex-end;
+  gap:14px;
+  margin-top:20px;
+}
+/* Exceção escopada: o resumo existe em Início (D-04) e deve ser visível aqui */
+#viewInicio .inicio-footer .cashflow-mini-summary{
+  display:block;
+  flex:1 1 auto;
+  min-width:0;
+  margin:0;
+}
+/* faixa 1 coluna em telas estreitas */
+@media(max-width:360px){
+  #viewInicio .inicio-grid{
+    grid-template-columns:minmax(0, 1fr);
+  }
+}
+
 /* F04 — cards 2x2 caixinhas mais compactos */
 #viewPockets .balance-strip .balance-card,
 #pocketBalanceStrip .balance-card{

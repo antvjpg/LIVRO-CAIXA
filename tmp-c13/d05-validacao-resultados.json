@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "task": "D-05",
+    "url": "http://127.0.0.1:8000/index.html",
+    "timestamp": "2026-11-20T18:09:24.779Z",
+    "browser": "Chromium 156 headless CDP",
+    "method": "Baseline antes/depois + critérios de aceite"
+  },
+  "summary": {
+    "total": 19,
+    "pass": 19,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "id": "V-mobile-1",
+      "desc": "Grid com 1 coluna(s) em mobile",
+      "expected": "display=grid, 1 colunas",
+      "observed": "{\"display\":\"grid\",\"cols\":\"362px\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-mobile-2",
+      "desc": "Sem overflow horizontal em mobile",
+      "expected": "overflow=false",
+      "observed": "false",
+      "status": "PASS"
+    },
+    {
+      "id": "V-mobile-3",
+      "desc": "3 cards com superfície/estrutura em mobile",
+      "expected": "3 cards com bg e padding",
+      "observed": "[{\"w\":362,\"h\":138,\"bg\":\"rgb(255, 254, 250)\",\"padding\":\"14px\",\"border\":\"1px\"},{\"w\":362,\"h\":286,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"},{\"w\":362,\"h\":142,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"}]",
+      "status": "PASS"
+    },
+    {
+      "id": "V-tablet-1",
+      "desc": "Grid com 2 coluna(s) em tablet",
+      "expected": "display=grid, 2 colunas",
+      "observed": "{\"display\":\"grid\",\"cols\":\"361.5px 361.5px\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-tablet-2",
+      "desc": "Sem overflow horizontal em tablet",
+      "expected": "overflow=false",
+      "observed": "false",
+      "status": "PASS"
+    },
+    {
+      "id": "V-tablet-3",
+      "desc": "3 cards com superfície/estrutura em tablet",
+      "expected": "3 cards com bg e padding",
+      "observed": "[{\"w\":362,\"h\":154,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"},{\"w\":362,\"h\":290,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"},{\"w\":362,\"h\":144,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"}]",
+      "status": "PASS"
+    },
+    {
+      "id": "V-desktop-1",
+      "desc": "Grid com 3 coluna(s) em desktop",
+      "expected": "display=grid, 3 colunas",
+      "observed": "{\"display\":\"grid\",\"cols\":\"348px 348px 348px\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-desktop-2",
+      "desc": "Sem overflow horizontal em desktop",
+      "expected": "overflow=false",
+      "observed": "false",
+      "status": "PASS"
+    },
+    {
+      "id": "V-desktop-3",
+      "desc": "3 cards com superfície/estrutura em desktop",
+      "expected": "3 cards com bg e padding",
+      "observed": "[{\"w\":348,\"h\":154,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"},{\"w\":348,\"h\":290,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"},{\"w\":348,\"h\":144,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"}]",
+      "status": "PASS"
+    },
+    {
+      "id": "V-narrow-1",
+      "desc": "Grid com 1 coluna(s) em narrow",
+      "expected": "display=grid, 1 colunas",
+      "observed": "{\"display\":\"grid\",\"cols\":\"292px\"}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-narrow-2",
+      "desc": "Sem overflow horizontal em narrow",
+      "expected": "overflow=false",
+      "observed": "false",
+      "status": "PASS"
+    },
+    {
+      "id": "V-narrow-3",
+      "desc": "3 cards com superfície/estrutura em narrow",
+      "expected": "3 cards com bg e padding",
+      "observed": "[{\"w\":292,\"h\":138,\"bg\":\"rgb(255, 254, 250)\",\"padding\":\"14px\",\"border\":\"1px\"},{\"w\":292,\"h\":300,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"},{\"w\":292,\"h\":142,\"bg\":\"rgb(247, 245, 239)\",\"padding\":\"20px 18px\",\"border\":\"1px\"}]",
+      "status": "PASS"
+    },
+    {
+      "id": "V-resumo",
+      "desc": "Resumo do fluxo visível em Início",
+      "expected": "display!=none, hasContent=true",
+      "observed": "{\"display\":\"block\",\"hasContent\":true}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-reg-caixa",
+      "desc": "View caixa sem regressão",
+      "expected": "tab=caixa, overflow=false",
+      "observed": "{\"tab\":\"caixa\",\"viewAtiva\":true,\"overflow\":false}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-reg-pockets",
+      "desc": "View pockets sem regressão",
+      "expected": "tab=pockets, overflow=false",
+      "observed": "{\"tab\":\"pockets\",\"viewAtiva\":true,\"overflow\":false}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-reg-invest",
+      "desc": "View invest sem regressão",
+      "expected": "tab=invest, overflow=false",
+      "observed": "{\"tab\":\"invest\",\"viewAtiva\":true,\"overflow\":false}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-reg-profile",
+      "desc": "View profile sem regressão",
+      "expected": "tab=profile, overflow=false",
+      "observed": "{\"tab\":\"profile\",\"viewAtiva\":true,\"overflow\":false}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-reg-dash",
+      "desc": "View dash sem regressão",
+      "expected": "tab=dash, overflow=false",
+      "observed": "{\"tab\":\"dash\",\"viewAtiva\":true,\"overflow\":false}",
+      "status": "PASS"
+    },
+    {
+      "id": "V-console",
+      "desc": "Sem erros de console relacionados",
+      "expected": "0",
+      "observed": "0",
+      "status": "PASS"
+    }
+  ],
+  "consoleErrors": [
+    "[INIT] Erro no callback de autenticação: TypeError: Cannot read properties of undefined (reading 'forEach')\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:111:31\n    at Object.onAuthStateChanged (<anonymous>:2:124)\n    at http://127.0.0.1:8000/js/32-auth-wiring.js?v=20-25:76:8"
+  ],
+  "baseline": {
+    "antes": "tmp-c13/d05-baseline-antes.json",
+    "depois": "tmp-c13/d05-baseline-depois.json",
+    "screenshots": "tmp-c13/d05-{antes,depois}-*.png"
+  },
+  "note": "Validação visual via CDP com stub Firebase; fontes/ícones CDN bloqueados. Composição/grid/overflow/contraste validados; aspecto de ícones não avaliado."
+}
