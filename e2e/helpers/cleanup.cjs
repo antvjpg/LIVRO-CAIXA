@@ -22,6 +22,7 @@ const TEARDOWN_QUOTA_RETRY_DELAYS_MS = [2000, 5000, 15000, 30000, 60000, 120000,
 async function runCleanup({ log = () => {} } = {}) {
   const summary = {
     runId: identity.newRunId(),
+    runAttempt: identity.newRunAttempt(),
     mode: 'desconhecido',
     email: null,
     uid: null,
@@ -38,6 +39,9 @@ async function runCleanup({ log = () => {} } = {}) {
     const meta = identity.load();
     if (meta) {
       summary.runId = meta.runId || summary.runId;
+      if (Number.isInteger(meta.runAttempt) && meta.runAttempt >= 1) {
+        summary.runAttempt = meta.runAttempt;
+      }
       summary.mode = meta.mode || summary.mode;
       summary.email = meta.email ? identity.maskEmail(meta.email) : null;
       summary.createdByCode = meta.createdByCode === true;

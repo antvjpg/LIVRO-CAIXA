@@ -5,7 +5,7 @@ name: C.O.D.E. E2E
 # UI real e a exclui no teardown (só se foi criada por esta run).
 on:
   push:
-    branches: [main, feature/code-qa, feat/tabler-icon-foundation]
+    branches: [main, feature/code-qa, feat/tabler-icon-foundation, feat/code-c4-integration]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -21,6 +21,12 @@ jobs:
     env:
       CODE_BASE_URL: http://127.0.0.1:8000
       CI: "true"
+
+    # Cache de persistência entre runs na mesma branch com mesmos deps.
+    # Implementado via steps actions/cache/restore e actions/cache/save.
+    # Chave: branch + hash do package-lock.json + run ID/tentativa.
+    # O cache fica isolado por branch e dependeências; pull requests não restauram
+    # nem salvam estado seletivo.
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
@@ -47,12 +53,102 @@ jobs:
       - name: Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Suítes E2E (identidade efêmera gerada pelo global-setup)
-        run: npx playwright test
+      - name: Verificar modo de execução
+        id: modo
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.inputs.mode }}" = "full" ]; then
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.inputs.mode }}" = "auto" ]; then
+            # Verificação conservadora: se CODE_E2E_MODE não estiver definido,
+            # ou estiver indefinido, ou for inválido, forçar FULL.
+            if [ -z "${CODE_E2E_MODE:-}" ] || [ "${CODE_E2E_MODE}" = "undefined" ]; then
+              echo "mode=full" >> "$GITHUB_OUTPUT"
+            else
+              echo "mode=${CODE_E2E_MODE}" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Relatório C.O.D.E.
-        if: always()
-        run: node e2e/reports/generate-report.cjs
+      - name: Restaurar estado anterior do Playwright
+        if: github.event_name != 'pull_request'
+        id: playwright-cache
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            e2e/.artifacts/last-run.json
+            e2e/.artifacts/last-run-meta.json
+          key: coded-e2e-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.ref }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            coded-e2e-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.ref }}-
+
+      - name: Decidir modo de execução
+        id: decisao
+        run: |
+          # Utilizar o output do step restore para decidir, se houver cache hit.
+          CACHE_HIT="${{ steps.playwright-cache.outputs.cache-hit || 'false' }}"
+
+          # Verificar se os arquivos de estado existem e são válidos.
+          if [ -s e2e/.artifacts/last-run.json ] && [ -s e2e/.artifacts/last-run-meta.json ]; then
+            # Validar que o metadado pertence à mesma branch e run.
+            META_BRANCH=$(python3 -c "import json; d=json.load(open('e2e/.artifacts/last-run-meta.json')); print(d.get('branch',''))" 2>/dev/null || echo "")
+            META_SHA=$(python3 -c "import json; d=json.load(open('e2e/.artifacts/last-run-meta.json')); print(d.get('sha',''))" 2>/dev/null || echo "")
+            META_RUN=$(python3 -c "import json; d=json.load(open('e2e/.artifacts/last-run-meta.json')); print(d.get('runId',''))" 2>/dev/null || echo "")
+
+            if [ "${META_BRANCH}" = "${{ github.ref}}" ] && [ "${META_SHA}" = "${{ github.sha }}" ] && [ "${META_RUN}" = "${{ github.run_id }}" ]; then
+              # Verificar BLOCKED e FLAKY no metadado
+            BLOCKED=$(python3 -c "import json; d=json.load(open('e2e/.artifacts/last-run-meta.json')); print(d.get('blocked',0))" 2>/dev/null || echo "0")
+            FLAKY=$(python3 -c "import json; d=json.load(open('e2e/.artifacts/last-run-meta.json')); print(d.get('flaky',0))" 2>/dev/null || echo "0")
+
+            if [ "${BLOCKED}" -gt 0 ] || [ "${FLAKY}" -gt 0 ]; then
+              echo "mode=full" >> "$GITHUB_OUTPUT"
+            else
+              echo "mode=last-failed" >> "$GITHUB_OUTPUT"
+            fi
+            else
+              # Branch/SHA/run não conferem — forçar FULL
+              echo "mode=full" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            # Arquivos inexistentes — primeira execução ou cache expirado
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Preparar flags do Playwright
+        id: playwright-flags
+        env:
+          CODE_E2E_MODE: ${{ steps.decisao.outputs.mode }}
+        run: |
+          if [ "${CODE_E2E_MODE}" = "last-failed" ]; then
+            echo "mode=LAST-FAILED" >> "$GITHUB_OUTPUT"
+            # Utilizar o estado nativo do Playwright, não o metadado auxiliar.
+            echo "flags=--config playwright.config.cjs --last-failed --last-failed-file=e2e/.artifacts/last-run.json" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=FULL" >> "$GITHUB_OUTPUT"
+            echo "flags=--config playwright.config.cjs" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Suítes E2E (identidade efêmera gerada pelo global-setup)
+        env:
+          CODE_E2E_MODE: ${{ steps.playwright-flags.outputs.mode }}
+        run: |
+          if [ "$CODE_E2E_MODE" = "LAST-FAILED" ]; then
+            node e2e/scripts/run-code.cjs \
+              --code-report \
+              --code-report-strict \
+              --code-report-on-failure \
+              --config playwright.config.cjs \
+              --last-failed \
+              --last-failed-file=e2e/.artifacts/last-run.json
+          else
+            node e2e/scripts/run-code.cjs \
+              --code-report \
+              --code-report-strict \
+              --code-report-on-failure \
+              --config playwright.config.cjs
+          fi
 
       - name: Confirmação de limpeza da run efêmera
         if: always()
@@ -65,30 +161,30 @@ jobs:
             node -e "const s=require('./e2e/.state/qa-summary.json');console.log('cleanup | created='+(s.createdByCode?'SIM':'NAO')+' | firestore='+s.firestoreCleanup+' | auth='+s.authCleanup+(s.severity?(' | '+s.severity):''))"
           fi
 
-      - name: Publicar resumo
+      - name: Status de publicação das evidências
         if: always()
         run: |
           {
-            echo "## C.O.D.E. — resultado"
-            echo '```'
-            cat e2e/reports/CODE-relatorio-*.md 2>/dev/null | sed -n '1,220p' || echo "sem relatório"
-            echo '```'
+            echo "## C.O.D.E. — evidências"
+            echo ""
+            echo "A publicação de artefatos e relatórios detalhados está temporariamente suspensa por contenção de segurança."
+            echo "Os arquivos de diagnóstico permanecem restritos ao runner desta execução."
+            echo "A publicação será reavaliada após a implementação e validação da sanitização fail-closed."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Bloqueio não pode passar em silêncio
-        if: always()
-        run: node e2e/reports/generate-report.cjs --strict
-
-      # Evidências: somente relatórios (sanitizados). Nunca e2e/.state/ nem
-      # credenciais — ver testes em e2e/security/security.test.mjs.
-      - name: Evidências
-        if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+      - name: Salvar estado atual no cache
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          # Garantir que os arquivos existem antes de salvar
+          mkdir -p e2e/.artifacts
+          MODE="${{ steps.playwright-flags.outputs.mode || 'UNKNOWN' }}"
+          if [ ! -s e2e/.artifacts/last-run-meta.json ]; then
+            echo "{\"schemaVersion\":\"coded-e2e/last-run-meta/2.0\",\"mode\":\"${MODE}\",\"branch\":\"${{ github.ref }}\",\"sha\":\"${{ github.sha }}\",\"runId\":\"${{ github.run_id }}\",\"timestamp\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}" > e2e/.artifacts/last-run-meta.json
+          fi
+      - uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        if: always() && github.event_name != 'pull_request'
         with:
-          name: code-e2e-evidencias
           path: |
-            e2e/reports/
-            playwright-report/
-            test-results/
-          if-no-files-found: ignore
-          retention-days: 14
+            e2e/.artifacts/last-run.json
+            e2e/.artifacts/last-run-meta.json
+          key: coded-e2e-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.ref }}-${{ github.run_id }}-${{ github.run_attempt }}

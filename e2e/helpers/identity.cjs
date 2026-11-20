@@ -22,11 +22,29 @@ function ensureDir(p) {
 
 /* Identificador rastreável da run, sem segredo (GitHub run id ou local). */
 function newRunId() {
+  const shared = typeof process.env.CODE_EXECUTION_RUN_ID === 'string' ? process.env.CODE_EXECUTION_RUN_ID.trim() : '';
+  if (shared) {
+    return shared;
+  }
   if (process.env.GITHUB_RUN_ID) {
     const attempt = process.env.GITHUB_RUN_ATTEMPT ? `-a${process.env.GITHUB_RUN_ATTEMPT}` : '';
     return `gh${process.env.GITHUB_RUN_ID}${attempt}`;
   }
   return `loc${Date.now().toString(36)}`;
+}
+
+/* Tentativa da execução: wrapper/CI compartilham o valor validado;
+   invocação direta cai no legado GitHub ou em 1. */
+function newRunAttempt() {
+  const positive = (value) => {
+    const raw = typeof value === 'string' ? value.trim() : '';
+    return /^[1-9]\d*$/.test(raw) ? Number(raw) : null;
+  };
+  const shared = positive(process.env.CODE_EXECUTION_RUN_ATTEMPT);
+  if (shared) return shared;
+  const gh = positive(process.env.GITHUB_RUN_ATTEMPT);
+  if (gh) return gh;
+  return 1;
 }
 
 /* Credenciais efêmeras: devolvidas em memória; o chamador injeta em
@@ -201,6 +219,7 @@ module.exports = {
   IDENTITY_PATH,
   SUMMARY_PATH,
   newRunId,
+  newRunAttempt,
   generate,
   load,
   save,

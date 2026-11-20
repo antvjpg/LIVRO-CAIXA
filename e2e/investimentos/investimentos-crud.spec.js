@@ -19,6 +19,14 @@ const NAME_RF = 'CODE_TEST_INVCRUD_RF_001';
 const NAME_OUT = 'CODE_TEST_INVCRUD_OUT_001';
 const NAME_BTC = 'CODE_TEST_INVCRUD_BTC_001';
 
+/* Persistência no Firestore é assíncrona no CI; a janela padrão cobre os
+   demais oráculos e a janela estendida cobre a criação sequencial dos quatro
+   ativos (o BTC é gravado por último e foi o observado ausente nas runs
+   intermitentes). Intervalos progressivos evitam pressão sobre a API. */
+const PERSIST_TIMEOUT_MS = 180_000;
+const PERSIST_TIMEOUT_CRIACAO_MS = 240_000;
+const PERSIST_INTERVALS_MS = [1000, 2000, 5000, 10_000, 15_000, 20_000];
+
 const UNITS_ST = 12.5;
 const PRICE_ST = 5.10;
 const VALUE_RF = 1000;
@@ -273,21 +281,30 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     return { investments, yields, investmentsPlain, yieldsPlain };
   }
 
-  async function snapshotWithInvestments(rest, names, timeout = 120_000) {
-    await expect
-      .poll(
-        async () => {
-          const investments = await listCollection(rest.uid, rest.idToken, rest.projectId, 'investments');
-          const present = new Set(investments.map((d) => d.fields.name));
-          return names.filter((name) => !present.has(name));
-        },
-        {
-          timeout,
-          intervals: [1000, 2000, 5000, 10_000],
-          message: `ativos persistidos no Firestore: ${names.join(', ')}`
-        }
-      )
-      .toEqual([]);
+  async function snapshotWithInvestments(rest, names, timeout = PERSIST_TIMEOUT_MS) {
+    let ultimosAusentes = names.slice();
+    try {
+      await expect
+        .poll(
+          async () => {
+            const investments = await listCollection(rest.uid, rest.idToken, rest.projectId, 'investments');
+            const present = new Set(investments.map((d) => d.fields.name));
+            ultimosAusentes = names.filter((name) => !present.has(name));
+            return ultimosAusentes;
+          },
+          {
+            timeout,
+            intervals: PERSIST_INTERVALS_MS,
+            message: `ativos persistidos no Firestore: ${names.join(', ')}`
+          }
+        )
+        .toEqual([]);
+    } catch (err) {
+      throw new Error(
+        `Persistência não confirmada no Firestore após ${timeout}ms — ausentes: ${ultimosAusentes.join(', ')}`,
+        { cause: err }
+      );
+    }
     return snapshot(rest);
   }
 
@@ -302,7 +319,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
   }
 
   test('1. criação (4 tipos), validações, tripla conferência e persistência', async ({ page }, testInfo) => {
-    test.setTimeout(300_000);
+    test.setTimeout(420_000);
     const creds = skipSemCredencial();
 
     let reset1;
@@ -340,9 +357,35 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await openNewAsset(page);
     await saveAsset(page, { name: NAME_BTC, type: 'Bitcoin', units: UNITS_BTC, price: PRICE_BTC });
 
+    /* Barreira de ACK do servidor: o app grava com batch().commit() sobre
+       persistência IndexedDB (js/00-bootstrap.js), cuja promise resolve no
+       commit LOCAL, antes do ACK remoto. O REST enxerga apenas o servidor;
+       sem esta barreira o BTC pode estar na fila de mutações do SDK enquanto
+       o card já aparece na UI. waitForPendingWrites drena a fila sem espera
+       fixa; o race apenas evita travar indefinidamente se o stream cair. */
+    await page.evaluate(() => Promise.race([
+      window.db.waitForPendingWrites(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('waitForPendingWrites excedeu 60s')), 60_000)),
+    ]));
+
+    /* Consistência de leitura do último gravado: o BTC é criado por último e
+       foi o ativo ausente nas falhas intermitentes. Poll isolado antecedente
+       melhora a observabilidade e reduz a janela antes da checagem conjunta,
+       sem espera fixa e sem aceitar ausência como sucesso. */
+    const restBtc = await sessionFromPage(page);
+    await expect
+      .poll(
+        async () => {
+          const docs = await listCollection(restBtc.uid, restBtc.idToken, restBtc.projectId, 'investments');
+          return docs.some((d) => d.fields.name === NAME_BTC);
+        },
+        { timeout: PERSIST_TIMEOUT_CRIACAO_MS, intervals: PERSIST_INTERVALS_MS, message: 'BTC persistido no Firestore' }
+      )
+      .toBe(true);
+
     // strip total vs oracle
     const rest = await sessionFromPage(page);
-    const snap = await snapshotWithInvestments(rest, [NAME_ST, NAME_RF, NAME_OUT, NAME_BTC]);
+    const snap = await snapshotWithInvestments(rest, [NAME_ST, NAME_RF, NAME_OUT, NAME_BTC], PERSIST_TIMEOUT_CRIACAO_MS);
     const expectedTotal = invOracle.investmentsTotal(snap.investmentsPlain, snap.yieldsPlain);
     expect(await stripTotal(page), 'strip total × oracle').toBeCloseTo(expectedTotal, 2);
 
