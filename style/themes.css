@@ -1,7 +1,10 @@
 /* =========================================================
    LIVRO-CAIXA — TEMAS (paletas claro/escuro + pickers)
    Arquivo único de definição de tema.
-   Carrega ANTES de styles.css (index.html) — a ordem importa.
+   Carregado primeiro entre as folhas locais em index.html
+   (themes.css → base.css → components.css → layout.css →
+   features.css → dashboard-chat.css). A ordem importa:
+   os tokens definidos aqui são consumidos pelas folhas seguintes.
 
    CHECKLIST — como criar um tema novo:
    1. Paleta aqui neste arquivo:
