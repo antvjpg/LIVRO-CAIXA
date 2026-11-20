@@ -642,7 +642,7 @@ test('diagnóstico: nenhuma fonte do C.O.D.E. afirma provider desabilitado sem e
   const fontes = [
     'e2e/helpers/qa-account.cjs',
     'e2e/README.md',
-    'docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md',
+    'docs/auditorias/autenticacao/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md',
   ];
   for (const rel of fontes) {
     const txt = fs.readFileSync(path.join(ROOT, rel), 'utf8');

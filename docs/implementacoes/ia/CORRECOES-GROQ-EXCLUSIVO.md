@@ -1,6 +1,10 @@
 # Correções Aplicadas — LIA Groq-Exclusivo
 
-> **NOTA HISTÓRICA (Nov/2026):** Esta implementação da LIA/IA foi **removida completamente** em novembro de 2026. Este documento permanece apenas como registro histórico das correções aplicadas antes da remoção.
+> **NOTA HISTÓRICA (Nov/2026):** Esta implementação da LIA/IA foi **removida completamente** em novembro de 2026 (commit `ffae78d6a72d96001acae6a307aca422c60bfaab`). Este documento é o **relatório de implementação e validação** da correção feita antes da remoção; não descreve a arquitetura atual.
+
+## Classificação: relatório de implementação / validação (histórico)
+
+Este documento é a etapa posterior ao diagnóstico em `docs/auditorias/ia/AUDITORIA-GROQ-EXCLUSIVA.md`: diagnóstico (02/11) → autorização → implementação → testes 53/53 (02/11) → revisão → remoção completa da funcionalidade (02/11, `ffae78d`). Os testes abaixo são resultado registrado na época; **não foram reexecutados** nesta reconciliação.
 
 ## Data
 2026-11-02
@@ -137,7 +141,7 @@ Endpoint `/openrouter-usage` não existe mais no Worker.
 
 ---
 
-## Arquitetura Final
+## Arquitetura final da implementação histórica (substituída pela remoção em nov/2026)
 
 ```
 Frontend (js/00-bootstrap.js)                    Worker Cloudflare                      Groq API
@@ -153,12 +157,12 @@ Frontend (js/00-bootstrap.js)                    Worker Cloudflare              
 │                                                │                                      │
 ```
 
-**Nenhum caminho alternativo para OpenRouter, Google ou outro provedor.**
+**Nenhum caminho alternativo para OpenRouter, Google ou outro provedor** era admitido nessa implementação histórica. Verificação feita em 20/11/2026: o código atual **não contém** rotas `/ai`, `/quota`, `/openrouter-usage`, `/mcp` ou `/bridge/*`, nem variáveis `AI_PROVIDER`, `GROQ_API_KEY` ou `GROQ_DAILY_LIMIT` em configuração ativa. Restam apenas referências textuais/passivas: comentários em `worker/src/shared/validation.js`, `worker/src/financial/gateway.js` e `js/26-receipts.js`; um padrão de detecção de segredo em `e2e/security/security.test.mjs`; e o backup histórico `index.html.backup-diagnostico-alert-20261001-195746`. Nenhuma delas é um provedor ativo. Não alterar ou remover esses artefatos nesta tarefa.
 
 ---
 
-## Critério de Sucesso Cumprido
+## Critério de Sucesso Cumprido (da implementação histórica)
 
 > A LIA deve utilizar exclusivamente a Groq por meio do Worker Cloudflare. Nenhuma falha, timeout, indisponibilidade ou erro de configuração poderá provocar troca silenciosa para OpenRouter, Google ou qualquer outro provedor.
 
-✅ **ATENDIDO**
+✅ **ATENDIDO na implementação histórica.** Em 20/11/2026 o critério não é mais aplicável: a funcionalidade foi removida e não existe provedor de IA ativo no código atual.

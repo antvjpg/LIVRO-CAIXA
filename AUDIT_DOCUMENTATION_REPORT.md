@@ -4017,7 +4017,7 @@ A tabela abaixo é uma amostra representativa, não um inventário exaustivo. O 
 - A regra define apenas `color:#111111`; fundos, bordas, sombras, dimensões, animações e estados de hover/foco não foram alterados.
 - Nenhum token global foi substituído. `--accent`, `--surface-accent`, `--toggle-active-bg` e `--action-delete-background` permanecem inalterados.
 - Nenhum arquivo HTML, JavaScript, outro CSS, manifesto, captura, configuração ou teste foi alterado.
-- `docs/DOCUMENTACAO_VARIAVEIS_CSS.md` não foi atualizado porque a correção não cria token nem regra geral de pareamento; é uma exceção localizada por tema/componente.
+- `docs/design-system/DOCUMENTACAO_VARIAVEIS_CSS.md` não foi atualizado porque a correção não cria token nem regra geral de pareamento; é uma exceção localizada por tema/componente.
 
 **Seletores e condições aplicados:**
 

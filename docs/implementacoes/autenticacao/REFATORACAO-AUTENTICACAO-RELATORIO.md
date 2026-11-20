@@ -2,6 +2,10 @@
 
 > **HISTÓRICO — relatório da refatoração de autenticação.** Linhas e arquivos citados (`app.js`, `99-init.js`) referem-se ao estado na época; conferir o código atual antes de agir (AGENTS.md §2/§45). A Proteção local foi objeto de ciclo corretivo dedicado (ver página do Notion “Proteção local — Plano de execução por fases”, encerrado em 07/11/2026).
 
+**Recorte temporal (reconciliação F1.4, 20/11/2026):** implementação registrada em 02/11/2026, branch `main`, commit `7f806e5`, como etapa posterior ao diagnóstico em `docs/auditorias/autenticacao/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md` (27/09/2026, `feature/code-qa`, `1152fbc`). O documento foi atualizado em 04/11 (`414ab7e`) e 07/11 (`0f14f0b`). **Classificação:** relatório de implementação/validação histórica; não é diagnóstico nem evidência de validação atual.
+
+**Limitação explícita:** a validação registrada aqui foi sintática (`node --check`) e documental. Isso **não** equivale a login/logout reais, sessão Firebase autenticada ou sincronização Firestore ponta a ponta. Os itens ainda não validados da seção D permanecem como ressalva, e os critérios marcados como concluídos referem-se ao escopo daquela refatoração, não ao estado verificado em 20/11/2026.
+
 ## A. Diagnóstico Inicial
 
 ### Problemas Encontrados
@@ -241,7 +245,7 @@ M js/99-init.js
 
 ### Arquivos Criados
 
-- `docs/REFATORACAO-AUTENTICACAO-RELATORIO.md` - este relatório técnico
+- `docs/implementacoes/autenticacao/REFATORACAO-AUTENTICACAO-RELATORIO.md` - este relatório técnico
 
 ### Arquivos Removidos
 

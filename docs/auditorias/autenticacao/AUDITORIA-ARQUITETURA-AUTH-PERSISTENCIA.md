@@ -5,6 +5,8 @@ Método: inspeção direta de código (nenhuma alteração no aplicativo foi fei
 
 > **Atualizado em 07/11/2026 (main `a44c74b`).** A auditoria original foi feita em `1152fbc`, quando todo o JS era inline em `index.html`. Em `208c0eb` o JS passou para `app.js` + `patches.js`; na refatoração atual `app.js` foi dividido em `js/` (`js/00-bootstrap.js`…`js/32-auth-wiring.js`, `js/99-init.js`), com `js/legacy/patches.js`, `js/domain/*` e `js/data/emoji-catalog.js`. Em novembro de 2026 a LIA/IA, o OCR assistido e a integração MCP foram removidos do projeto (o módulo `js/33-mcp-bridge.js` e a pasta `ocr/` não existem mais). As referências `app.js:<linha>` abaixo são **históricas** (o conteúdo foi preservado nos módulos `js/`); as referências `index.html:<linha>` são HTML.
 
+**Relação com a implementação posterior (reconciliação F1.4, 20/11/2026):** esta é uma auditoria **diagnóstica** de 27/09/2026 (`feature/code-qa`, HEAD `1152fbc`). Um dos achados — concentração de `onAuthStateChanged` em `99-init.js` e listener redundante de `syncProfileEmail` — foi tratado pelo relatório de implementação `docs/implementacoes/autenticacao/REFATORACAO-AUTENTICACAO-RELATORIO.md` (commit `7f806e5`, 02/11/2026), que moveu o handler para `js/32-auth-wiring.js`. Achados históricos, correções implementadas, riscos residuais e itens não validados são mantidos distintamente: o resultado de CI citado na seção 6 é de 07/11/2026 e **não** é uma validação executada nesta reconciliação. Teste estático, stub ou inspeção não equivalem a autenticação real nem a sincronização Firebase/Firestore ponta a ponta.
+
 ---
 
 ## 1. Arquitetura encontrada

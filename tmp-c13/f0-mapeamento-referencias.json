@@ -1,0 +1,6635 @@
+{
+  "fase": "F0 — mapeamento de referencias e manifestos",
+  "gerado_em_utc": "2026-11-20T19:07:48.347753+00:00",
+  "observacao": "Busca por basename em arquivos de texto; linhas amostradas (max 5 por fonte).",
+  "total_arquivos_com_referencias": 133,
+  "total_targets_referenciados": 152,
+  "por_target": {
+    "docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 4,
+      "fontes": {
+        "README.md": {
+          "count": 1,
+          "lines": [
+            186
+          ]
+        },
+        "e2e/README.md": {
+          "count": 1,
+          "lines": [
+            265
+          ]
+        },
+        "e2e/helpers/app.cjs": {
+          "count": 1,
+          "lines": [
+            2
+          ]
+        },
+        "e2e/security/security.test.mjs": {
+          "count": 1,
+          "lines": [
+            645
+          ]
+        }
+      }
+    },
+    "docs/AUDITORIA-GROQ-EXCLUSIVA.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "README.md": {
+          "count": 1,
+          "lines": [
+            191
+          ]
+        }
+      }
+    },
+    "docs/AUDITORIA-IA-RESUMO.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "README.md": {
+          "count": 1,
+          "lines": [
+            191
+          ]
+        }
+      }
+    },
+    "docs/AUDITORIA-VISUAL-MODAIS.md": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "README.md": {
+          "count": 1,
+          "lines": [
+            187
+          ]
+        },
+        "docs/AUDITORIA-VISUAL-MODAIS.md": {
+          "count": 1,
+          "lines": [
+            33
+          ]
+        },
+        "e2e/README.md": {
+          "count": 1,
+          "lines": [
+            294
+          ]
+        }
+      }
+    },
+    "docs/AUTHOVERLAY-EVOLUCAO-VISUAL.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "README.md": {
+          "count": 1,
+          "lines": [
+            189
+          ]
+        }
+      }
+    },
+    "docs/COBERTURA-FLUXOS-FINANCEIROS.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "README.md": {
+          "count": 1,
+          "lines": [
+            188
+          ]
+        }
+      }
+    },
+    "docs/CORRECOES-GROQ-EXCLUSIVO.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "README.md": {
+          "count": 1,
+          "lines": [
+            191
+          ]
+        }
+      }
+    },
+    "docs/DOCUMENTACAO_VARIAVEIS_CSS.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "AUDIT_DOCUMENTATION_REPORT.md": {
+          "count": 1,
+          "lines": [
+            4020
+          ]
+        },
+        "README.md": {
+          "count": 1,
+          "lines": [
+            185
+          ]
+        }
+      }
+    },
+    "docs/NOTION_PHASE_B_CONTENT.md": {
+      "total_arquivos_referenciando": 0,
+      "total_ocorrencias": 0,
+      "fontes": {}
+    },
+    "docs/OPENGOALS_PANEL_FIX_SUMMARY.md": {
+      "total_arquivos_referenciando": 0,
+      "total_ocorrencias": 0,
+      "fontes": {}
+    },
+    "docs/REFATORACAO-AUTENTICACAO-RELATORIO.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "README.md": {
+          "count": 1,
+          "lines": [
+            190
+          ]
+        },
+        "docs/REFATORACAO-AUTENTICACAO-RELATORIO.md": {
+          "count": 1,
+          "lines": [
+            244
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2-R2-3-R2-4.md": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 4,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            268
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md": {
+          "count": 1,
+          "lines": [
+            249
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+          "count": 2,
+          "lines": [
+            52,
+            166
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2-R2-3.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            264
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+          "count": 2,
+          "lines": [
+            88,
+            109
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            256
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 4,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            255
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 3,
+          "lines": [
+            99,
+            201,
+            248
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/COMPARACAO-R1-vs-R2.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 1,
+          "lines": [
+            253
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-1.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 4,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            257
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 3,
+          "lines": [
+            107,
+            199,
+            249
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-2.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            258
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-3.md": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 6,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2-R2-3.md": {
+          "count": 1,
+          "lines": [
+            17
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            261
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-3.md": {
+          "count": 1,
+          "lines": [
+            52
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+          "count": 3,
+          "lines": [
+            3,
+            34,
+            89
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-4.md": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 4,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            265
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md": {
+          "count": 1,
+          "lines": [
+            249
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+          "count": 2,
+          "lines": [
+            49,
+            167
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-5-1.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            54
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            84
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-5.md": {
+      "total_arquivos_referenciando": 0,
+      "total_ocorrencias": 0,
+      "fontes": {}
+    },
+    "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            57
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 1,
+          "lines": [
+            52
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 6,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 3,
+          "lines": [
+            103,
+            202,
+            250
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+          "count": 2,
+          "lines": [
+            165,
+            173
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            36
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/METODOLOGIA-R1.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            251
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 1,
+          "lines": [
+            251
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/METODOLOGIA-R2-1.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 5,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            253
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 4,
+          "lines": [
+            95,
+            200,
+            247,
+            272
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/METODOLOGIA-R2-2.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            254
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/METODOLOGIA-R2-3.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            262
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+          "count": 1,
+          "lines": [
+            86
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 4,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            266
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md": {
+          "count": 1,
+          "lines": [
+            249
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+          "count": 2,
+          "lines": [
+            50,
+            168
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/METODOLOGIA-R2-5-1.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            55
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/METODOLOGIA-R2-5.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 1,
+          "lines": [
+            50
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/METODOLOGIA-R2.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            252
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 1,
+          "lines": [
+            252
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            259
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            260
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            263
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+          "count": 1,
+          "lines": [
+            87
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 4,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            267
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md": {
+          "count": 1,
+          "lines": [
+            249
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+          "count": 2,
+          "lines": [
+            51,
+            169
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            56
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 1,
+          "lines": [
+            51
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-relatorio.md": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "AUDIT_DOCUMENTATION_REPORT.md": {
+          "count": 1,
+          "lines": [
+            4271
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 2,
+          "lines": [
+            42,
+            185
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-run.log": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "AUDIT_DOCUMENTATION_REPORT.md": {
+          "count": 1,
+          "lines": [
+            4270
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            188
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-relatorio.md": {
+          "count": 1,
+          "lines": [
+            9
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.cjs": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            186
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R1.md": {
+          "count": 2,
+          "lines": [
+            35,
+            47
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.json": {
+      "total_arquivos_referenciando": 6,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "AUDIT_DOCUMENTATION_REPORT.md": {
+          "count": 1,
+          "lines": [
+            4268
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 2,
+          "lines": [
+            184,
+            219
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R1.md": {
+          "count": 1,
+          "lines": [
+            49
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-relatorio.md": {
+          "count": 1,
+          "lines": [
+            8
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-run.log": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.cjs": {
+          "count": 1,
+          "lines": [
+            4
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.log": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 4,
+      "fontes": {
+        "AUDIT_DOCUMENTATION_REPORT.md": {
+          "count": 1,
+          "lines": [
+            4269
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            187
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-relatorio.md": {
+          "count": 1,
+          "lines": [
+            10
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.cjs": {
+          "count": 1,
+          "lines": [
+            5
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias/probe-accent.log": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            189
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2-run.log": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            193
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 14,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-1.md": {
+          "count": 9,
+          "lines": [
+            4,
+            11,
+            12,
+            13,
+            14
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            191
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2.md": {
+          "count": 2,
+          "lines": [
+            38,
+            67
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 2,
+          "lines": [
+            34,
+            48
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.json": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 5,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 2,
+          "lines": [
+            190,
+            220
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2.md": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2-run.log": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.cjs": {
+          "count": 1,
+          "lines": [
+            4
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.log": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            192
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.cjs": {
+          "count": 1,
+          "lines": [
+            5
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1-run.log": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            197
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 2,
+          "lines": [
+            198,
+            246
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 17,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-2.md": {
+          "count": 9,
+          "lines": [
+            4,
+            11,
+            12,
+            13,
+            14
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            195
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-1.md": {
+          "count": 2,
+          "lines": [
+            38,
+            66
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 4,
+          "lines": [
+            46,
+            196,
+            243,
+            266
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md": {
+          "count": 1,
+          "lines": [
+            69
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.json": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 2,
+          "lines": [
+            194,
+            221
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-1.md": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 2,
+          "lines": [
+            195,
+            244
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1-run.log": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.cjs": {
+          "count": 1,
+          "lines": [
+            4
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.log": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 4,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            196
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md": {
+          "count": 2,
+          "lines": [
+            197,
+            245
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.cjs": {
+          "count": 1,
+          "lines": [
+            5
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-run.log": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            201
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md": {
+          "count": 1,
+          "lines": [
+            235
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-test-fixtures.html": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            203
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md": {
+          "count": 1,
+          "lines": [
+            237
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-test.cjs": {
+          "count": 1,
+          "lines": [
+            11
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-test.cjs": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 14,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-3.md": {
+          "count": 1,
+          "lines": [
+            13
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 2,
+          "lines": [
+            202,
+            203
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md": {
+          "count": 11,
+          "lines": [
+            116,
+            117,
+            118,
+            119,
+            120
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 13,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-3.md": {
+          "count": 6,
+          "lines": [
+            4,
+            11,
+            12,
+            14,
+            15
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            199
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-2.md": {
+          "count": 2,
+          "lines": [
+            40,
+            69
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md": {
+          "count": 4,
+          "lines": [
+            67,
+            138,
+            233,
+            290
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.json": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 3,
+          "lines": [
+            198,
+            222,
+            224
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-2.md": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md": {
+          "count": 1,
+          "lines": [
+            232
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-run.log": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.cjs": {
+          "count": 1,
+          "lines": [
+            4
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.log": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            200
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md": {
+          "count": 1,
+          "lines": [
+            234
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.cjs": {
+          "count": 1,
+          "lines": [
+            5
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test-fixtures.html": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            208
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+          "count": 1,
+          "lines": [
+            83
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test.cjs": {
+          "count": 1,
+          "lines": [
+            13
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 11,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2-R2-3.md": {
+          "count": 3,
+          "lines": [
+            79,
+            102,
+            115
+          ]
+        },
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-4.md": {
+          "count": 1,
+          "lines": [
+            15
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 2,
+          "lines": [
+            207,
+            208
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-3.md": {
+          "count": 1,
+          "lines": [
+            58
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+          "count": 4,
+          "lines": [
+            15,
+            52,
+            82,
+            115
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 13,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-4.md": {
+          "count": 8,
+          "lines": [
+            4,
+            13,
+            14,
+            16,
+            17
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            206
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-3.md": {
+          "count": 2,
+          "lines": [
+            40,
+            69
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+          "count": 1,
+          "lines": [
+            79
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test.cjs": {
+          "count": 1,
+          "lines": [
+            14
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.json": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 6,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 3,
+          "lines": [
+            204,
+            223,
+            225
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-3.md": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+          "count": 1,
+          "lines": [
+            80
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.cjs": {
+          "count": 1,
+          "lines": [
+            4
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.log": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            205
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md": {
+          "count": 1,
+          "lines": [
+            81
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.cjs": {
+          "count": 1,
+          "lines": [
+            5
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-core.cjs": {
+      "total_arquivos_referenciando": 7,
+      "total_ocorrencias": 22,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-4.md": {
+          "count": 1,
+          "lines": [
+            15
+          ]
+        },
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-5.md": {
+          "count": 10,
+          "lines": [
+            13,
+            15,
+            16,
+            17,
+            18
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            209
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md": {
+          "count": 4,
+          "lines": [
+            47,
+            59,
+            204,
+            248
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+          "count": 2,
+          "lines": [
+            45,
+            78
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            16
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            13
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test-fixtures.html": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 5,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            212
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md": {
+          "count": 1,
+          "lines": [
+            248
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+          "count": 2,
+          "lines": [
+            37,
+            48
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test.cjs": {
+          "count": 1,
+          "lines": [
+            34
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test.cjs": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 5,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 2,
+          "lines": [
+            211,
+            212
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md": {
+          "count": 2,
+          "lines": [
+            202,
+            248
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+          "count": 1,
+          "lines": [
+            47
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 6,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-5.md": {
+          "count": 2,
+          "lines": [
+            14,
+            42
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md": {
+          "count": 1,
+          "lines": [
+            210
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md": {
+          "count": 2,
+          "lines": [
+            83,
+            248
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md": {
+          "count": 1,
+          "lines": [
+            46
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-core.cjs": {
+      "total_arquivos_referenciando": 7,
+      "total_ocorrencias": 17,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-5-1.md": {
+          "count": 7,
+          "lines": [
+            13,
+            15,
+            16,
+            17,
+            18
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-5.md": {
+          "count": 1,
+          "lines": [
+            55
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 2,
+          "lines": [
+            43,
+            131
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            15,
+            16
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            16
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            19
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-integrity.json": {
+      "total_arquivos_referenciando": 2,
+      "total_ocorrencias": 5,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md": {
+          "count": 3,
+          "lines": [
+            46,
+            77,
+            81
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 2,
+          "lines": [
+            49,
+            127
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test-fixtures.html": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md": {
+          "count": 1,
+          "lines": [
+            43
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 3,
+          "lines": [
+            35,
+            46,
+            134
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            39,
+            40
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.cjs": {
+          "count": 1,
+          "lines": [
+            36
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test-results.json": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 5,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md": {
+          "count": 1,
+          "lines": [
+            45
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 2,
+          "lines": [
+            48,
+            136
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            55,
+            56
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md": {
+          "count": 2,
+          "lines": [
+            42,
+            43
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-5.md": {
+          "count": 1,
+          "lines": [
+            166
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 2,
+          "lines": [
+            45,
+            133
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            31,
+            32
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.log": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 5,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md": {
+          "count": 1,
+          "lines": [
+            44
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 2,
+          "lines": [
+            47,
+            135
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            47,
+            48
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 8,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-5-1.md": {
+          "count": 3,
+          "lines": [
+            14,
+            20,
+            21
+          ]
+        },
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md": {
+          "count": 1,
+          "lines": [
+            41
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md": {
+          "count": 2,
+          "lines": [
+            44,
+            132
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            23,
+            24
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-1/CORRECOES_APLICADAS_E_RESSALVAS-R2-5-1.md": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 3,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            118
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            83
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            85
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-core.cjs": {
+      "total_arquivos_referenciando": 8,
+      "total_ocorrencias": 19,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            51
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 2,
+          "lines": [
+            47,
+            75
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/CORRECOES_APLICADAS_E_RESSALVAS-R2-5-1.md": {
+          "count": 5,
+          "lines": [
+            52,
+            73,
+            112,
+            113,
+            131
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json": {
+          "count": 2,
+          "lines": [
+            15,
+            16
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            16
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            24
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 4,
+          "lines": [
+            31,
+            32,
+            33,
+            111
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 9,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md": {
+          "count": 3,
+          "lines": [
+            46,
+            82,
+            86
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 2,
+          "lines": [
+            53,
+            155
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/CORRECOES_APLICADAS_E_RESSALVAS-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            149
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 3,
+          "lines": [
+            27,
+            28,
+            117
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test-fixtures.html": {
+      "total_arquivos_referenciando": 6,
+      "total_ocorrencias": 9,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            43
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 2,
+          "lines": [
+            39,
+            50
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/CORRECOES_APLICADAS_E_RESSALVAS-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            146
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json": {
+          "count": 2,
+          "lines": [
+            36,
+            37
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.cjs": {
+          "count": 1,
+          "lines": [
+            36
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 2,
+          "lines": [
+            35,
+            114
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test-results.json": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 12,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            45
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            52
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/CORRECOES_APLICADAS_E_RESSALVAS-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            148
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json": {
+          "count": 2,
+          "lines": [
+            50,
+            51
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 7,
+          "lines": [
+            21,
+            22,
+            23,
+            24,
+            25
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.cjs": {
+      "total_arquivos_referenciando": 6,
+      "total_ocorrencias": 14,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md": {
+          "count": 2,
+          "lines": [
+            42,
+            43
+          ]
+        },
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            101
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            49
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/CORRECOES_APLICADAS_E_RESSALVAS-R2-5-1.md": {
+          "count": 3,
+          "lines": [
+            90,
+            114,
+            115
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json": {
+          "count": 2,
+          "lines": [
+            29,
+            30
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 5,
+          "lines": [
+            12,
+            29,
+            30,
+            34,
+            113
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.log": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            44
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            51
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/CORRECOES_APLICADAS_E_RESSALVAS-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            147
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json": {
+          "count": 2,
+          "lines": [
+            43,
+            44
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 2,
+          "lines": [
+            20,
+            115
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            41
+          ]
+        },
+        "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md": {
+          "count": 1,
+          "lines": [
+            48
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json": {
+          "count": 2,
+          "lines": [
+            22,
+            23
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 3,
+          "lines": [
+            112,
+            146,
+            147
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 8,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            162
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 2,
+          "lines": [
+            51,
+            82
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+          "count": 2,
+          "lines": [
+            317,
+            368
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json": {
+          "count": 2,
+          "lines": [
+            66,
+            67
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            86
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 2,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+          "count": 2,
+          "lines": [
+            316,
+            414
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+      "total_arquivos_referenciando": 1,
+      "total_ocorrencias": 1,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            87
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-core.cjs": {
+      "total_arquivos_referenciando": 7,
+      "total_ocorrencias": 22,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 2,
+          "lines": [
+            156,
+            157
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            44
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+          "count": 6,
+          "lines": [
+            63,
+            204,
+            249,
+            257,
+            362
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json": {
+          "count": 2,
+          "lines": [
+            24,
+            25
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            16
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            24
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 7,
+          "lines": [
+            13,
+            21,
+            22,
+            23,
+            24
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            160
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 2,
+          "lines": [
+            50,
+            90
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+          "count": 4,
+          "lines": [
+            315,
+            352,
+            370,
+            414
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test-fixtures.html": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 9,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 2,
+          "lines": [
+            24,
+            47
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+          "count": 3,
+          "lines": [
+            301,
+            365,
+            414
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json": {
+          "count": 3,
+          "lines": [
+            19,
+            45,
+            46
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test.cjs": {
+          "count": 1,
+          "lines": [
+            35
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test-results.json": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 8,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            49
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+          "count": 5,
+          "lines": [
+            314,
+            350,
+            351,
+            367,
+            414
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json": {
+          "count": 2,
+          "lines": [
+            59,
+            60
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            158
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            46
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+          "count": 3,
+          "lines": [
+            285,
+            364,
+            414
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json": {
+          "count": 2,
+          "lines": [
+            38,
+            39
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test.log": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            48
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+          "count": 4,
+          "lines": [
+            313,
+            349,
+            366,
+            414
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json": {
+          "count": 2,
+          "lines": [
+            52,
+            53
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 9,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md": {
+          "count": 1,
+          "lines": [
+            45
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md": {
+          "count": 4,
+          "lines": [
+            363,
+            389,
+            390,
+            414
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json": {
+          "count": 2,
+          "lines": [
+            31,
+            32
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 2,
+          "lines": [
+            125,
+            126
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+      "total_arquivos_referenciando": 6,
+      "total_ocorrencias": 10,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            143
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 2,
+          "lines": [
+            51,
+            83
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 3,
+          "lines": [
+            228,
+            289,
+            338
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+          "count": 2,
+          "lines": [
+            66,
+            67
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            111
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            110
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+      "total_arquivos_referenciando": 7,
+      "total_ocorrencias": 11,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            143
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            52
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 3,
+          "lines": [
+            226,
+            290,
+            338
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+          "count": 2,
+          "lines": [
+            73,
+            74
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            113,
+            124
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            149
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            257
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+      "total_arquivos_referenciando": 7,
+      "total_ocorrencias": 12,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            143
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 2,
+          "lines": [
+            53,
+            84
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 3,
+          "lines": [
+            227,
+            291,
+            338
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+          "count": 2,
+          "lines": [
+            80,
+            81
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            112,
+            124
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            149
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            257
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-core.cjs": {
+      "total_arquivos_referenciando": 7,
+      "total_ocorrencias": 18,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 3,
+          "lines": [
+            137,
+            138,
+            139
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            44
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 7,
+          "lines": [
+            51,
+            68,
+            88,
+            150,
+            189
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+          "count": 2,
+          "lines": [
+            24,
+            25
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            19
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            27
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            46
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 10,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            142
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 2,
+          "lines": [
+            50,
+            93
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 4,
+          "lines": [
+            225,
+            273,
+            293,
+            338
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            49,
+            148
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            256
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test-fixtures.html": {
+      "total_arquivos_referenciando": 6,
+      "total_ocorrencias": 10,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            140
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 2,
+          "lines": [
+            24,
+            47
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 2,
+          "lines": [
+            286,
+            338
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+          "count": 3,
+          "lines": [
+            19,
+            45,
+            46
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test.cjs": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            48
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test-results.json": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 9,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            142
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            49
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 5,
+          "lines": [
+            224,
+            271,
+            272,
+            288,
+            338
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+          "count": 2,
+          "lines": [
+            59,
+            60
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            140
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            46
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 2,
+          "lines": [
+            285,
+            338
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+          "count": 2,
+          "lines": [
+            38,
+            39
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            47
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test.log": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 8,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            142
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            48
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 4,
+          "lines": [
+            223,
+            270,
+            287,
+            338
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+          "count": 2,
+          "lines": [
+            52,
+            53
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3.cjs": {
+      "total_arquivos_referenciando": 3,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md": {
+          "count": 1,
+          "lines": [
+            45
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md": {
+          "count": 4,
+          "lines": [
+            284,
+            312,
+            313,
+            338
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json": {
+          "count": 2,
+          "lines": [
+            31,
+            32
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            73
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            78,
+            369
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 2,
+          "lines": [
+            89,
+            90
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            29
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+      "total_arquivos_referenciando": 6,
+      "total_ocorrencias": 9,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            74,
+            110
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            79,
+            369
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 2,
+          "lines": [
+            96,
+            97
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            30
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            111
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-core.cjs": {
+      "total_arquivos_referenciando": 8,
+      "total_ocorrencias": 26,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            64
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 8,
+          "lines": [
+            25,
+            70,
+            92,
+            106,
+            120
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 2,
+          "lines": [
+            26,
+            27
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            19
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            27
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            20
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/DIAGNOSTICO-R2-5-5.md": {
+          "count": 3,
+          "lines": [
+            10,
+            35,
+            39
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 7,
+          "lines": [
+            38,
+            74,
+            99,
+            123,
+            159
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 10,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 3,
+          "lines": [
+            60,
+            75,
+            120
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 5,
+          "lines": [
+            77,
+            193,
+            194,
+            362,
+            369
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            124
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/verificar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            17
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test-fixtures.html": {
+      "total_arquivos_referenciando": 8,
+      "total_ocorrencias": 14,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            24,
+            67
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 3,
+          "lines": [
+            27,
+            73,
+            369
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 3,
+          "lines": [
+            21,
+            47,
+            48
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test-results.json": {
+          "count": 1,
+          "lines": [
+            14
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test.cjs": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 2,
+          "lines": [
+            23,
+            89
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-resultados-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            164
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test-results.json": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 10,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            69,
+            81
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 3,
+          "lines": [
+            75,
+            171,
+            369
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 2,
+          "lines": [
+            61,
+            62
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 2,
+          "lines": [
+            25,
+            53
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-resultados-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            18
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 13,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            66
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 8,
+          "lines": [
+            26,
+            72,
+            74,
+            97,
+            111
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 2,
+          "lines": [
+            40,
+            41
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test.log": {
+      "total_arquivos_referenciando": 6,
+      "total_ocorrencias": 14,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            68
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 7,
+          "lines": [
+            74,
+            165,
+            166,
+            167,
+            171
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 2,
+          "lines": [
+            54,
+            55
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test-results.json": {
+          "count": 1,
+          "lines": [
+            6
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            24
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-resultados-r2-5-4.cjs": {
+          "count": 2,
+          "lines": [
+            17,
+            155
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 9,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            65
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 4,
+          "lines": [
+            71,
+            182,
+            332,
+            369
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 2,
+          "lines": [
+            33,
+            34
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            21
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            71
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            80,
+            369
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 2,
+          "lines": [
+            75,
+            76
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 2,
+          "lines": [
+            8,
+            27
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-resultados-r2-5-4.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 9,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            70
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 4,
+          "lines": [
+            75,
+            76,
+            182,
+            369
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 2,
+          "lines": [
+            68,
+            69
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            26
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-resultados-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            9
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-4/verificar-manifesto-r2-5-4.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 10,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            72,
+            122
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            81,
+            369
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json": {
+          "count": 3,
+          "lines": [
+            82,
+            83,
+            212
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs": {
+          "count": 2,
+          "lines": [
+            28,
+            113
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/verificar-manifesto-r2-5-4.cjs": {
+          "count": 1,
+          "lines": [
+            8
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/DIAGNOSTICO-R2-5-5.md": {
+      "total_arquivos_referenciando": 8,
+      "total_ocorrencias": 11,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            21,
+            40
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            59,
+            353
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            89,
+            90
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            29
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            132
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            132
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 6,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            23,
+            41
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            60
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            96,
+            97
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            30
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+      "total_arquivos_referenciando": 6,
+      "total_ocorrencias": 8,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            22,
+            42
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            61
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            103,
+            104
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            31
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            133
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            133
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-core.cjs": {
+      "total_arquivos_referenciando": 11,
+      "total_ocorrencias": 17,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/DIAGNOSTICO-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            11
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            31
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            50,
+            83
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            26,
+            27
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            19
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            27
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            20
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            35
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            38,
+            72
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            35
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            38,
+            72
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 7,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            43,
+            45
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 3,
+          "lines": [
+            46,
+            62,
+            336
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            125
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/verificar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            17
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test-fixtures.html": {
+      "total_arquivos_referenciando": 9,
+      "total_ocorrencias": 12,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            34
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            53
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 3,
+          "lines": [
+            21,
+            47,
+            48
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test-results.json": {
+          "count": 1,
+          "lines": [
+            14
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test.cjs": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 2,
+          "lines": [
+            23,
+            90
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-resultados-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            164
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test-results.json": {
+      "total_arquivos_referenciando": 7,
+      "total_ocorrencias": 9,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            36
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            55
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            61,
+            62
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 2,
+          "lines": [
+            25,
+            54
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-resultados-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            18
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test.cjs": {
+      "total_arquivos_referenciando": 6,
+      "total_ocorrencias": 8,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            33,
+            82
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            52
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            40,
+            41
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test.log": {
+      "total_arquivos_referenciando": 8,
+      "total_ocorrencias": 11,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            35
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            54,
+            337
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            54,
+            55
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test-results.json": {
+          "count": 1,
+          "lines": [
+            6
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            24
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-resultados-r2-5-5.cjs": {
+          "count": 2,
+          "lines": [
+            17,
+            155
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            38
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5.cjs": {
+      "total_arquivos_referenciando": 9,
+      "total_ocorrencias": 15,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/DIAGNOSTICO-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            283
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            51,
+            347
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            33,
+            34
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            21
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            137
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 3,
+          "lines": [
+            38,
+            92,
+            105
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            137
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 3,
+          "lines": [
+            38,
+            92,
+            105
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+      "total_arquivos_referenciando": 4,
+      "total_ocorrencias": 8,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            38,
+            88
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            57,
+            62
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            75,
+            76
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 2,
+          "lines": [
+            8,
+            27
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-resultados-r2-5-5.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 8,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            37,
+            85
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            55,
+            56
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 2,
+          "lines": [
+            68,
+            69
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            26
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-resultados-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            9
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-5/verificar-manifesto-r2-5-5.cjs": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 12,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            39,
+            89
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 4,
+          "lines": [
+            58,
+            62,
+            335,
+            381
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json": {
+          "count": 3,
+          "lines": [
+            82,
+            83,
+            224
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs": {
+          "count": 2,
+          "lines": [
+            28,
+            114
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/verificar-manifesto-r2-5-5.cjs": {
+          "count": 1,
+          "lines": [
+            8
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md": {
+      "total_arquivos_referenciando": 13,
+      "total_ocorrencias": 19,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            21,
+            40
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            59
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            89,
+            90
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            29
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            133
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            13,
+            14,
+            15
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            21,
+            40
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            59
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            89,
+            90
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            29
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            133
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+      "total_arquivos_referenciando": 11,
+      "total_ocorrencias": 17,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            23,
+            41
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            60
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            96,
+            97
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            30
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            33,
+            34,
+            35
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            23,
+            41
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            60
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            96,
+            97
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            30
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+      "total_arquivos_referenciando": 11,
+      "total_ocorrencias": 17,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            22,
+            42
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            61
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            103,
+            104
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            31
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            134
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            50,
+            51,
+            52
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            22,
+            42
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            61
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            103,
+            104
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            31
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            134
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs": {
+      "total_arquivos_referenciando": 32,
+      "total_ocorrencias": 50,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            207
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            31
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            50
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            26,
+            27
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            19
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            27
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            20
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/DIAGNOSTICO-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            251,
+            256
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            45,
+            135
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            40,
+            158
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json": {
+          "count": 1,
+          "lines": [
+            3313
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.cjs": {
+          "count": 1,
+          "lines": [
+            21
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            29
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            204
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 5,
+          "lines": [
+            67,
+            68,
+            69,
+            474,
+            480
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            207
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            31
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            50
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            26,
+            27
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            19
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            3,
+            27
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            20
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/DIAGNOSTICO-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            251,
+            256
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            45,
+            135
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            40,
+            158
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json": {
+          "count": 1,
+          "lines": [
+            3313
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.cjs": {
+          "count": 1,
+          "lines": [
+            21
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            29
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            204
+          ]
+        },
+        "e2e/c4/playwright-cdp-bridge.spec.js": {
+          "count": 1,
+          "lines": [
+            26
+          ]
+        },
+        "tmp-c13/c4-control-validation.cjs": {
+          "count": 1,
+          "lines": [
+            47
+          ]
+        },
+        "tmp-c13/c4-relatorio-tecnico.md": {
+          "count": 3,
+          "lines": [
+            34,
+            46,
+            75
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+      "total_arquivos_referenciando": 13,
+      "total_ocorrencias": 23,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            43,
+            45
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 3,
+          "lines": [
+            46,
+            62,
+            218
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            125
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/verificar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            17
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            45
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            40,
+            65
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            84,
+            85,
+            86
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            43,
+            45
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 3,
+          "lines": [
+            46,
+            62,
+            218
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            125
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/verificar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            17
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            45
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            40,
+            65
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test-fixtures.html": {
+      "total_arquivos_referenciando": 17,
+      "total_ocorrencias": 25,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            34
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            53
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 3,
+          "lines": [
+            21,
+            47,
+            48
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test-results.json": {
+          "count": 1,
+          "lines": [
+            14
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.cjs": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            23,
+            90
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            166
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            101,
+            102,
+            103
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            34
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            53
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 3,
+          "lines": [
+            21,
+            47,
+            48
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test-results.json": {
+          "count": 1,
+          "lines": [
+            14
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.cjs": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            23,
+            90
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            166
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test-results.json": {
+      "total_arquivos_referenciando": 13,
+      "total_ocorrencias": 19,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            36
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            55
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            61,
+            62
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            25,
+            54
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            18
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            118,
+            119,
+            120
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            36
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            55
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            61,
+            62
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            25,
+            54
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            18
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.cjs": {
+      "total_arquivos_referenciando": 11,
+      "total_ocorrencias": 17,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            33,
+            103
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            52
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            40,
+            41
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            135,
+            136,
+            137
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            33,
+            103
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            52
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            40,
+            41
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.log": {
+      "total_arquivos_referenciando": 15,
+      "total_ocorrencias": 23,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            35
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            54,
+            219
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            54,
+            55
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test-results.json": {
+          "count": 1,
+          "lines": [
+            6
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            24
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            17,
+            157
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            152,
+            153,
+            154
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            35
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            54,
+            219
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            54,
+            55
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test-results.json": {
+          "count": 1,
+          "lines": [
+            6
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            24
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            17,
+            157
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            40
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6.cjs": {
+      "total_arquivos_referenciando": 17,
+      "total_ocorrencias": 25,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            226
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            51
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            33,
+            34
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.cjs": {
+          "count": 1,
+          "lines": [
+            20
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            21
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/DIAGNOSTICO-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            27
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 3,
+          "lines": [
+            40,
+            75,
+            88
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            169,
+            170,
+            171
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            226
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            51
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            33,
+            34
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.cjs": {
+          "count": 1,
+          "lines": [
+            20
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            21
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/DIAGNOSTICO-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            27
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 3,
+          "lines": [
+            40,
+            75,
+            88
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+      "total_arquivos_referenciando": 9,
+      "total_ocorrencias": 19,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            38,
+            109
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            57,
+            62
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            75,
+            76
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            8,
+            27
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            186,
+            187,
+            188
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            38,
+            109
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            57,
+            62
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            75,
+            76
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            8,
+            27
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs": {
+      "total_arquivos_referenciando": 11,
+      "total_ocorrencias": 19,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            37,
+            106
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            55,
+            56
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            68,
+            69
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            26
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            9
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            203,
+            204,
+            205
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            37,
+            106
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            55,
+            56
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 2,
+          "lines": [
+            68,
+            69
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            26
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            9
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-6/verificar-manifesto-r2-5-6.cjs": {
+      "total_arquivos_referenciando": 11,
+      "total_ocorrencias": 23,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            39,
+            110
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            58,
+            62
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 3,
+          "lines": [
+            82,
+            83,
+            238
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            28,
+            114
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/verificar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            8
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            220,
+            221,
+            222
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            39,
+            110
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            58,
+            62
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json": {
+          "count": 3,
+          "lines": [
+            82,
+            83,
+            238
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs": {
+          "count": 2,
+          "lines": [
+            28,
+            114
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/verificar-manifesto-r2-5-6.cjs": {
+          "count": 1,
+          "lines": [
+            8
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/DIAGNOSTICO-R2-5-7.md": {
+      "total_arquivos_referenciando": 9,
+      "total_ocorrencias": 15,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            22,
+            40
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            60
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            83,
+            84
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            31
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            238,
+            239,
+            240
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            22,
+            40
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            60
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            83,
+            84
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            31
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+      "total_arquivos_referenciando": 10,
+      "total_ocorrencias": 17,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            24,
+            41
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            61
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            90,
+            91
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            255,
+            256,
+            257
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            24,
+            41
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            61
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            90,
+            91
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "tmp-c13/c4-relatorio-tecnico.md": {
+          "count": 2,
+          "lines": [
+            50,
+            78
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+      "total_arquivos_referenciando": 9,
+      "total_ocorrencias": 17,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 3,
+          "lines": [
+            23,
+            42,
+            121
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            62
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            97,
+            98
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            33
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            272,
+            273,
+            274
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 3,
+          "lines": [
+            23,
+            42,
+            121
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            62
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            97,
+            98
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            33
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+      "total_arquivos_referenciando": 10,
+      "total_ocorrencias": 24,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            43,
+            47
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 3,
+          "lines": [
+            48,
+            63,
+            181
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            127
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/verificar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            17
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 6,
+          "lines": [
+            289,
+            290,
+            291,
+            398,
+            534
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            43,
+            47
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 3,
+          "lines": [
+            48,
+            63,
+            181
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            127
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/verificar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            17
+          ]
+        },
+        "tmp-c13/c4-relatorio-tecnico.md": {
+          "count": 4,
+          "lines": [
+            49,
+            77,
+            204,
+            258
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-fixtures.html": {
+      "total_arquivos_referenciando": 17,
+      "total_ocorrencias": 28,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            34
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            54
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 3,
+          "lines": [
+            22,
+            41,
+            42
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json": {
+          "count": 1,
+          "lines": [
+            14
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.cjs": {
+          "count": 1,
+          "lines": [
+            42
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            25,
+            92
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            167
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            318,
+            319,
+            320
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            34
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            54
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 3,
+          "lines": [
+            22,
+            41,
+            42
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json": {
+          "count": 1,
+          "lines": [
+            14
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.cjs": {
+          "count": 1,
+          "lines": [
+            42
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            25,
+            92
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            167
+          ]
+        },
+        "e2e/c4/playwright-cdp-bridge.spec.js": {
+          "count": 1,
+          "lines": [
+            896
+          ]
+        },
+        "tmp-c13/c4-relatorio-tecnico.md": {
+          "count": 4,
+          "lines": [
+            34,
+            47,
+            74,
+            256
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json": {
+      "total_arquivos_referenciando": 13,
+      "total_ocorrencias": 21,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            36
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            56
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            55,
+            56
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            27,
+            56
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            18
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            335,
+            336,
+            337
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            36
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            56
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            55,
+            56
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            27,
+            56
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            18
+          ]
+        },
+        "e2e/c4/playwright-cdp-bridge.spec.js": {
+          "count": 1,
+          "lines": [
+            1441
+          ]
+        },
+        "tmp-c13/c4-relatorio-tecnico.md": {
+          "count": 3,
+          "lines": [
+            48,
+            76,
+            257
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.cjs": {
+      "total_arquivos_referenciando": 10,
+      "total_ocorrencias": 17,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            33,
+            102
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            53
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            34,
+            35
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            24
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            352,
+            353,
+            354
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            33,
+            102
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            53
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            34,
+            35
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            24
+          ]
+        },
+        "e2e/c4/playwright-cdp-bridge.spec.js": {
+          "count": 2,
+          "lines": [
+            915,
+            1360
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.log": {
+      "total_arquivos_referenciando": 14,
+      "total_ocorrencias": 22,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            35
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            55,
+            182
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            48,
+            49
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json": {
+          "count": 1,
+          "lines": [
+            6
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            26
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            17,
+            158
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            369,
+            370,
+            371
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            35
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            55,
+            182
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            48,
+            49
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json": {
+          "count": 1,
+          "lines": [
+            6
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            26
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            17,
+            158
+          ]
+        },
+        "tmp-c13/c4-relatorio-tecnico.md": {
+          "count": 1,
+          "lines": [
+            209
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7.cjs": {
+      "total_arquivos_referenciando": 13,
+      "total_ocorrencias": 22,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            52
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            27,
+            28
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.cjs": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            23
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 4,
+          "lines": [
+            386,
+            387,
+            388,
+            540
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            32
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            52
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            27,
+            28
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.cjs": {
+          "count": 1,
+          "lines": [
+            22
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            23
+          ]
+        },
+        "e2e/c4/playwright-cdp-bridge.spec.js": {
+          "count": 2,
+          "lines": [
+            410,
+            897
+          ]
+        },
+        "tmp-c13/c4-relatorio-tecnico.md": {
+          "count": 4,
+          "lines": [
+            34,
+            45,
+            73,
+            255
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+      "total_arquivos_referenciando": 9,
+      "total_ocorrencias": 19,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            38,
+            108
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            58,
+            63
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            69,
+            70
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            8,
+            29
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            409,
+            410,
+            411
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            38,
+            108
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            58,
+            63
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            69,
+            70
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            8,
+            29
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+      "total_arquivos_referenciando": 11,
+      "total_ocorrencias": 19,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            37,
+            105
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            56,
+            57
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            62,
+            63
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            28
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            9
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            426,
+            427,
+            428
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            37,
+            105
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            56,
+            57
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 2,
+          "lines": [
+            62,
+            63
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            28
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            9
+          ]
+        }
+      }
+    },
+    "docs/auditorias/c4-v05-b/evidencias-r2-5-7/verificar-manifesto-r2-5-7.cjs": {
+      "total_arquivos_referenciando": 11,
+      "total_ocorrencias": 25,
+      "fontes": {
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            39,
+            109
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 3,
+          "lines": [
+            59,
+            63,
+            220
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 3,
+          "lines": [
+            76,
+            77,
+            244
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            30,
+            116
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/verificar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            8
+          ]
+        },
+        "e2e/c4/original/SOURCE-MANIFEST.md": {
+          "count": 3,
+          "lines": [
+            443,
+            444,
+            445
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            39,
+            109
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 3,
+          "lines": [
+            59,
+            63,
+            220
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json": {
+          "count": 3,
+          "lines": [
+            76,
+            77,
+            244
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs": {
+          "count": 2,
+          "lines": [
+            30,
+            116
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/verificar-manifesto-r2-5-7.cjs": {
+          "count": 1,
+          "lines": [
+            8
+          ]
+        }
+      }
+    },
+    "docs/padroes/METODOLOGIA-VALIDACAO-NAVEGACAO-CDP.md": {
+      "total_arquivos_referenciando": 5,
+      "total_ocorrencias": 5,
+      "fontes": {
+        "docs/NOTION_PHASE_B_CONTENT.md": {
+          "count": 1,
+          "lines": [
+            75
+          ]
+        },
+        "tmp-c13/d02-validacao.cjs": {
+          "count": 1,
+          "lines": [
+            2
+          ]
+        },
+        "tmp-c13/d03-validacao.cjs": {
+          "count": 1,
+          "lines": [
+            2
+          ]
+        },
+        "tmp-c13/d04-validacao.cjs": {
+          "count": 1,
+          "lines": [
+            2
+          ]
+        },
+        "tmp-c13/d05-baseline.cjs": {
+          "count": 1,
+          "lines": [
+            3
+          ]
+        }
+      }
+    },
+    "docs/padroes/MODELO-RELATORIO-AUDITORIA.md": {
+      "total_arquivos_referenciando": 13,
+      "total_ocorrencias": 19,
+      "fontes": {
+        "AGENTS.md": {
+          "count": 1,
+          "lines": [
+            1495
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md": {
+          "count": 2,
+          "lines": [
+            110,
+            114
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md": {
+          "count": 1,
+          "lines": [
+            3
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md": {
+          "count": 1,
+          "lines": [
+            108
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md": {
+          "count": 2,
+          "lines": [
+            5,
+            38
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            130
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            5,
+            38
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            131
+          ]
+        },
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            5,
+            40
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md": {
+          "count": 1,
+          "lines": [
+            130
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md": {
+          "count": 2,
+          "lines": [
+            5,
+            38
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md": {
+          "count": 1,
+          "lines": [
+            131
+          ]
+        },
+        "e2e/c4/original/docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md": {
+          "count": 2,
+          "lines": [
+            5,
+            40
+          ]
+        }
+      }
+    }
+  },
+  "manifestos_com_hashes_c4": [
+    {
+      "manifest": "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md",
+      "hashes_sha256_64hex": 6,
+      "artefatos_c4_referenciados": [
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-core.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test-fixtures.html",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test-results.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1.cjs"
+      ]
+    },
+    {
+      "manifest": "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md",
+      "hashes_sha256_64hex": 6,
+      "artefatos_c4_referenciados": [
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-core.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test-fixtures.html",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test-results.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5.cjs"
+      ]
+    },
+    {
+      "manifest": "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md",
+      "hashes_sha256_64hex": 45,
+      "artefatos_c4_referenciados": [
+        "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2-R2-3.md",
+        "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2.md",
+        "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1.md",
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R1.md",
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-1.md",
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-2.md",
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-3.md",
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2.md",
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1-run.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-run.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-test-fixtures.html",
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-test.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test-fixtures.html",
+        "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-core.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test-fixtures.html",
+        "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2-run.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.log",
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-relatorio.md",
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-run.log",
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.cjs",
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.json",
+        "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.log",
+        "docs/auditorias/c4-v05-b/evidencias/probe-accent.log"
+      ]
+    },
+    {
+      "manifest": "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md",
+      "hashes_sha256_64hex": 8,
+      "artefatos_c4_referenciados": [
+        "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1.md",
+        "docs/auditorias/c4-v05-b/METODOLOGIA-R2-1.md",
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1-run.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.log"
+      ]
+    },
+    {
+      "manifest": "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md",
+      "hashes_sha256_64hex": 6,
+      "artefatos_c4_referenciados": [
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-run.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.log"
+      ]
+    },
+    {
+      "manifest": "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1-run.log",
+      "hashes_sha256_64hex": 1,
+      "artefatos_c4_referenciados": [
+        "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.json"
+      ]
+    },
+    {
+      "manifest": "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-run.log",
+      "hashes_sha256_64hex": 1,
+      "artefatos_c4_referenciados": [
+        "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.json"
+      ]
+    },
+    {
+      "manifest": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md",
+      "hashes_sha256_64hex": 8,
+      "artefatos_c4_referenciados": [
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/CORRECOES_APLICADAS_E_RESSALVAS-R2-5-1.md",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-core.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test-fixtures.html",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test-results.json",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.cjs",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.log",
+        "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1.cjs"
+      ]
+    }
+  ],
+  "manifestos_integridade_c4_refinado": [
+    {
+      "path": "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md",
+      "categoria": "indice de evidencias",
+      "hashes_sha256_64hex": 6
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md",
+      "categoria": "indice de evidencias",
+      "hashes_sha256_64hex": 6
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md",
+      "categoria": "indice de evidencias",
+      "hashes_sha256_64hex": 45
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json",
+      "categoria": "manifesto de integridade",
+      "hashes_sha256_64hex": 6
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md",
+      "categoria": "indice de evidencias",
+      "hashes_sha256_64hex": 2
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json",
+      "categoria": "manifesto de integridade",
+      "hashes_sha256_64hex": 7
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md",
+      "categoria": "indice de evidencias",
+      "hashes_sha256_64hex": 2
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json",
+      "categoria": "manifesto de integridade",
+      "hashes_sha256_64hex": 9
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md",
+      "categoria": "indice de evidencias",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json",
+      "categoria": "manifesto de integridade",
+      "hashes_sha256_64hex": 11
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs",
+      "categoria": "script gerador de manifesto",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/verificar-manifesto-r2-5-4.cjs",
+      "categoria": "script verificador de manifesto",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md",
+      "categoria": "indice de evidencias",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json",
+      "categoria": "manifesto de integridade",
+      "hashes_sha256_64hex": 12
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs",
+      "categoria": "script gerador de manifesto",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/verificar-manifesto-r2-5-5.cjs",
+      "categoria": "script verificador de manifesto",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md",
+      "categoria": "indice de evidencias",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json",
+      "categoria": "manifesto de integridade",
+      "hashes_sha256_64hex": 12
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs",
+      "categoria": "script gerador de manifesto",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/verificar-manifesto-r2-5-6.cjs",
+      "categoria": "script verificador de manifesto",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md",
+      "categoria": "indice de evidencias",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json",
+      "categoria": "manifesto de integridade",
+      "hashes_sha256_64hex": 11
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs",
+      "categoria": "script gerador de manifesto",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/verificar-manifesto-r2-5-7.cjs",
+      "categoria": "script verificador de manifesto",
+      "hashes_sha256_64hex": 0
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-integrity.json",
+      "categoria": "manifesto de integridade",
+      "hashes_sha256_64hex": 6
+    }
+  ],
+  "total_artefatos_c4": 142,
+  "total_subdiretorios_c4": 14
+}

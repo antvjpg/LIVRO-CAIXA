@@ -1,0 +1,955 @@
+{
+  "fase": "F0 — congelamento e inventario do baseline",
+  "gerado_em_utc": "2026-11-20T19:07:08.322132+00:00",
+  "branch": "feat/app-navigation-redesign",
+  "head": "23444f0a62f5e5c2b45eed0905442a6e6069ca44",
+  "merge_base_origin_main": "f513611afb5195b501a896f66ed5b7c7848c2986",
+  "merge_base_main_local": "9181d0d02ce5c702851923574c67509b33f4a196",
+  "total_arquivos": 155,
+  "por_area": {
+    "auditorias/c4-v05-b/": 142,
+    "padroes/": 2,
+    "raiz de docs/": 11
+  },
+  "por_extensao": {
+    ".cjs": 45,
+    ".html": 11,
+    ".json": 21,
+    ".log": 18,
+    ".md": 60
+  },
+  "hash_manifestos_ou_soma": null,
+  "arquivos": [
+    {
+      "path": "docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md",
+      "extension": ".md",
+      "size_bytes": 10512,
+      "sha256": "632fa12e83e06b8209ef8795a8c14f23b2ecfa45e6d7023cca5d382a316f267e"
+    },
+    {
+      "path": "docs/AUDITORIA-GROQ-EXCLUSIVA.md",
+      "extension": ".md",
+      "size_bytes": 7081,
+      "sha256": "7c20f41a1947cb3985ae6db8cd18da874d4d81564f413656b66d94c3e452d178"
+    },
+    {
+      "path": "docs/AUDITORIA-IA-RESUMO.md",
+      "extension": ".md",
+      "size_bytes": 22492,
+      "sha256": "2b8bbd8bb1b075d1f63deadefa63bd422ec59c01bdac964d38d9b8fb0c2b92ba"
+    },
+    {
+      "path": "docs/AUDITORIA-VISUAL-MODAIS.md",
+      "extension": ".md",
+      "size_bytes": 23323,
+      "sha256": "006f4cbff2fde50cd23683d280d387b2e3d6ae3cededfa9569094fc7f6d00019"
+    },
+    {
+      "path": "docs/AUTHOVERLAY-EVOLUCAO-VISUAL.md",
+      "extension": ".md",
+      "size_bytes": 5084,
+      "sha256": "a90e2b9d29f4aaf884dd0102c7125433d59f31f5fbb1f607cbcd7e96be8920f9"
+    },
+    {
+      "path": "docs/COBERTURA-FLUXOS-FINANCEIROS.md",
+      "extension": ".md",
+      "size_bytes": 11577,
+      "sha256": "2e97c12d9dec339d8f218b80166ba2ea9b02ba3ac44c7e3989b9d0e82ba8cf00"
+    },
+    {
+      "path": "docs/CORRECOES-GROQ-EXCLUSIVO.md",
+      "extension": ".md",
+      "size_bytes": 6731,
+      "sha256": "f007576e24060c725d791e4a8b5d91d6a9baf90a04bf0fb74910a3a1ff4399ff"
+    },
+    {
+      "path": "docs/DOCUMENTACAO_VARIAVEIS_CSS.md",
+      "extension": ".md",
+      "size_bytes": 30326,
+      "sha256": "390d8b0b7ae4b1e65f32275ca84e518de76ce5d4ebb13e987ddc73b0f9caafa4"
+    },
+    {
+      "path": "docs/NOTION_PHASE_B_CONTENT.md",
+      "extension": ".md",
+      "size_bytes": 5931,
+      "sha256": "90608a6bd7cc5978dfca8d76fe5e46db60c016851a05b77caee4284cfc563603"
+    },
+    {
+      "path": "docs/OPENGOALS_PANEL_FIX_SUMMARY.md",
+      "extension": ".md",
+      "size_bytes": 2176,
+      "sha256": "0cd9dccbffb5a66860c9d6ba5f7fd37da54cced733871a24b25bcb5c0dafc670"
+    },
+    {
+      "path": "docs/REFATORACAO-AUTENTICACAO-RELATORIO.md",
+      "extension": ".md",
+      "size_bytes": 19567,
+      "sha256": "f6b37911d574956a55fc1e08091df27f34a627c9f0c81595c0445eae83f73f71"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2-R2-3-R2-4.md",
+      "extension": ".md",
+      "size_bytes": 8419,
+      "sha256": "cdd808ecda9ac269746597185cfbc7b77a45fb2a47f645c8b8dad89ea2086c5f"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2-R2-3.md",
+      "extension": ".md",
+      "size_bytes": 10980,
+      "sha256": "3b31989ad0fb3b6c45cef382252dfcdf7510f4500c6a346a11446847da267e71"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1-R2-2.md",
+      "extension": ".md",
+      "size_bytes": 8545,
+      "sha256": "cee1ce8097b8cc9b36504361b5d03bbc70cbc6b3c90983c78323e748ffc1a961"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/COMPARACAO-R1-R2-R2-1.md",
+      "extension": ".md",
+      "size_bytes": 6780,
+      "sha256": "270bc402c3bea69a103c43e3ab5777ce2ffb533e9e80f423ddca1bb12efea7a7"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/COMPARACAO-R1-vs-R2.md",
+      "extension": ".md",
+      "size_bytes": 5764,
+      "sha256": "0c58215224143ef9512db31eb2b9a9de6674f731dd05b05e7f0c2a39890969d1"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-1.md",
+      "extension": ".md",
+      "size_bytes": 4625,
+      "sha256": "53295e6a94f4d490affa8c9dab39ca9cfc2b5ff4073b911986364c463b74421f"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-2.md",
+      "extension": ".md",
+      "size_bytes": 4905,
+      "sha256": "7ed045aeae02444dad5975ad54d269478ce96d3db4ff3958b8c2ce150e58af84"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-3.md",
+      "extension": ".md",
+      "size_bytes": 4267,
+      "sha256": "43838dd476ee404fa04161e838aec3efbb8f7d8ed619cc25205b2255def1c216"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-4.md",
+      "extension": ".md",
+      "size_bytes": 4622,
+      "sha256": "06f3761efa16bca9d0bc87da3b9359380975dafd92e45815584469688c3bb19c"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-5-1.md",
+      "extension": ".md",
+      "size_bytes": 4346,
+      "sha256": "4afb3f282764d1a05bb12d180fc06f471858ccfcbe3a73a5c6bcebcc1717ffe2"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/DIAGNOSTICO-R2-5.md",
+      "extension": ".md",
+      "size_bytes": 7552,
+      "sha256": "b45f0102952aef1ef5e42dab88b420fc1a961cd4ab966eade07ebe15795a54c5"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5-1.md",
+      "extension": ".md",
+      "size_bytes": 7430,
+      "sha256": "c6f1820b47705e69a52b992b1a5a9ae35a0078c94fd20eb6f29382c44f4c3145"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS-R2-5.md",
+      "extension": ".md",
+      "size_bytes": 6847,
+      "sha256": "034219b83261d20134f03bdff6df97288947b5a8641942e40a02624ee28843d4"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/INDICE-EVIDENCIAS.md",
+      "extension": ".md",
+      "size_bytes": 36050,
+      "sha256": "e89ba5090a8344b0615a742ab72cc26edbe693890db35c34a20fba95fffd6a83"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/METODOLOGIA-R1.md",
+      "extension": ".md",
+      "size_bytes": 14716,
+      "sha256": "b214b5a6c91f572d2fe6d9d7fb954bf12fc180f0975dbc1e51322cd6daf8e128"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/METODOLOGIA-R2-1.md",
+      "extension": ".md",
+      "size_bytes": 15351,
+      "sha256": "e57a6449fac37d276ad57cdde140511a937a5ef440a43b6e994344c4decc6e8e"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/METODOLOGIA-R2-2.md",
+      "extension": ".md",
+      "size_bytes": 16771,
+      "sha256": "55e4a61522472a5c399a935a270adfce217f8e04f9478fc2bea70257efd47a91"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/METODOLOGIA-R2-3.md",
+      "extension": ".md",
+      "size_bytes": 14316,
+      "sha256": "e57a6a5009b101585903196cc02cd4d63e6008952f5c70b5bd02ec037a8795ad"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/METODOLOGIA-R2-4.md",
+      "extension": ".md",
+      "size_bytes": 12822,
+      "sha256": "ec8b708e1448344d8c67d461b273526ac4f36e542703b1acf0edf5e19c53b88a"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/METODOLOGIA-R2-5-1.md",
+      "extension": ".md",
+      "size_bytes": 9814,
+      "sha256": "9ffe879c3c6b8d5dbc72f3e6479c2ebb7f501ae615fa9d5e7ceeeff15b53b750"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/METODOLOGIA-R2-5.md",
+      "extension": ".md",
+      "size_bytes": 10355,
+      "sha256": "9e61ec6a63b5c7ce6b9a89fbd77b1520ee220ea60ab72fe41128e94d867f4e01"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/METODOLOGIA-R2.md",
+      "extension": ".md",
+      "size_bytes": 14837,
+      "sha256": "5c22aa2ba3630b455d3e15e4507cc4b49700ca0d12e1f9180a6bdd74d03d3735"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-1.md",
+      "extension": ".md",
+      "size_bytes": 16147,
+      "sha256": "7ae42480ccb0cb8625aa963e585f09a7ef9c9eab11d724d470d5f7cf2b6331fe"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-2.md",
+      "extension": ".md",
+      "size_bytes": 16492,
+      "sha256": "3cc6d6ee469eaeec6cc69c1bcb922c0b10f2ec6a87e0d82ce9261c5de6072e31"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/RELATORIO-FINAL-R2-3.md",
+      "extension": ".md",
+      "size_bytes": 8393,
+      "sha256": "6e31b347bd2768fc93ae7ce7ade1370b0a97deed585ba5f5bdcfd220d1b50220"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-4.md",
+      "extension": ".md",
+      "size_bytes": 8453,
+      "sha256": "79972d019cbc4f90cd4f67aadda434ea6084521ad05f4c82cdf8f85802a16632"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5-1.md",
+      "extension": ".md",
+      "size_bytes": 8971,
+      "sha256": "e21303fa252460fc1f1242bd29eec4867947b21b82debc63f8e3b85c4a60b35f"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/RELATORIO-VALIDACAO-CONTROLADA-R2-5.md",
+      "extension": ".md",
+      "size_bytes": 7420,
+      "sha256": "79ac3fc50a24d4277911ae99edbe621ffa57bb2a8645d158ca5b990272c6d3dd"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-relatorio.md",
+      "extension": ".md",
+      "size_bytes": 117051,
+      "sha256": "3c8b07aee867a8c3a29938e1398d1846d81302d1e3f1aba448d5d283e5739798"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1-run.log",
+      "extension": ".log",
+      "size_bytes": 715,
+      "sha256": "1617862c7ca2e66b9ad5c6dddeadfd85b08c3d37bbebd57a40cd3f006fb4222a"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.cjs",
+      "extension": ".cjs",
+      "size_bytes": 23360,
+      "sha256": "3e882ed45d4663b4ddb82d94e0b7d2552c0fccfc4bb1badca5c11fa59ec013e5"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.json",
+      "extension": ".json",
+      "size_bytes": 21291317,
+      "sha256": "9d9cdcf05468364c8936a62f50d2dcdd3ffdfe6ed20c19c1997f456b3318afe8"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias/c4-v05-b-r1.log",
+      "extension": ".log",
+      "size_bytes": 569,
+      "sha256": "25264b07b2b8d17639f15d95715a3711c78ab4983d26478ee0ca1059a5b76976"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias/probe-accent.log",
+      "extension": ".log",
+      "size_bytes": 106330,
+      "sha256": "4b0c72dc81ad17f425be9314925e4ae414c39f80bc601dbba015794a54643c74"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2-run.log",
+      "extension": ".log",
+      "size_bytes": 715,
+      "sha256": "722cdec3e8cd0e19c5ce79aca51490bf071a6909d6603938f2d75dee760827ce"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.cjs",
+      "extension": ".cjs",
+      "size_bytes": 31209,
+      "sha256": "a9cb418faafc26d314e0867a13e03605597cd8067e14c581d1aaa86d932c7733"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.json",
+      "extension": ".json",
+      "size_bytes": 16117034,
+      "sha256": "778f70bddb741c7b3327808e623953cc14f04fcd2a56ce7f1d1d38f195cdefcb"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2/c4-v05-b-r2.log",
+      "extension": ".log",
+      "size_bytes": 590,
+      "sha256": "21d36e3fc7a87974a7eb9109eb379e03e064046525c3f79c8acfbd851e7090f0"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1-run.log",
+      "extension": ".log",
+      "size_bytes": 811,
+      "sha256": "b07067eb9c3ebbc47ec8a36f6c2d97cf4341f28eaf9d0becc80b58faade27e11"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.cjs",
+      "extension": ".cjs",
+      "size_bytes": 37544,
+      "sha256": "e0abff42b037645465cebec22c6e756618f2f8c0a8994b273b92f7658b5fcf2d"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.json",
+      "extension": ".json",
+      "size_bytes": 18193172,
+      "sha256": "979d5bd36ab83bfc5ae6e7d0d756f659696a7a8be8c110811664eb63fed76ef0"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-1/c4-v05-b-r2-1.log",
+      "extension": ".log",
+      "size_bytes": 590,
+      "sha256": "21d36e3fc7a87974a7eb9109eb379e03e064046525c3f79c8acfbd851e7090f0"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-run.log",
+      "extension": ".log",
+      "size_bytes": 826,
+      "sha256": "9c153002ac3acbbe45cf0c709b99cda473851e823f7a768af9fa6aca704df977"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 1775,
+      "sha256": "22adacfb1634b2426205e3adde708dda3e81ed3667951caccdb1903719e185c5"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 6157,
+      "sha256": "f7550f1c21342e2fe3882c6a1381dc8e5284daa14702b02fbf6e6b618c347ba9"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.cjs",
+      "extension": ".cjs",
+      "size_bytes": 37221,
+      "sha256": "953bcab767fa11043950ab1dca35b33340104c57285cd538be87778879f98ecc"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.json",
+      "extension": ".json",
+      "size_bytes": 20755539,
+      "sha256": "bc342abca4a676f193d197472206993290255f984cb6f60e8f2bec9969cb6eeb"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-2/c4-v05-b-r2-2.log",
+      "extension": ".log",
+      "size_bytes": 590,
+      "sha256": "21d36e3fc7a87974a7eb9109eb379e03e064046525c3f79c8acfbd851e7090f0"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 1671,
+      "sha256": "b0fa861e2230ac8d01673115fc968e6516c4a7bee3b81bea7b137fe9207c1ef0"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 8521,
+      "sha256": "e15887aadae071dded868ab006d01d3712fad3288626c86f8b4c5e628bbfc679"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.cjs",
+      "extension": ".cjs",
+      "size_bytes": 38424,
+      "sha256": "32ddc6cd38403fb4f23790c9af6473f0df3649a3d1e5f142f515c791bf68f68b"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.json",
+      "extension": ".json",
+      "size_bytes": 21135004,
+      "sha256": "b6fe3f957e9f58597b9c26a9a496138e28b9cc3d5af83d9f5dccb53a4bf57492"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-3/c4-v05-b-r2-3.log",
+      "extension": ".log",
+      "size_bytes": 590,
+      "sha256": "21d36e3fc7a87974a7eb9109eb379e03e064046525c3f79c8acfbd851e7090f0"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-core.cjs",
+      "extension": ".cjs",
+      "size_bytes": 21877,
+      "sha256": "21151110f9561501d9f81d581f4048755a7294c519bc8c936a509a1679709004"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 8034,
+      "sha256": "11a90bae623bbc8a79ac1d010591f690d4357087adc9c574411c883d752dfaab"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 24230,
+      "sha256": "2950371024689a5054dd90c2e5bb4e15d99e84a1d32c929c4389c0ecad578be6"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-4/c4-v05-b-r2-4.cjs",
+      "extension": ".cjs",
+      "size_bytes": 28571,
+      "sha256": "a92a50d3a55e1bee5bd8762f627054ab083702d1cecfffef3458cc7a3d06835d"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-core.cjs",
+      "extension": ".cjs",
+      "size_bytes": 25739,
+      "sha256": "73ca81810995db8e9dfe1e161e36c5835fbc9d37cf30568a182cb5d3a40b766c"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-integrity.json",
+      "extension": ".json",
+      "size_bytes": 3799,
+      "sha256": "d8eae8228b6d5afb9955b4ae9bb4c5b5a9c8572b0159b734579e11cf4f42c0ee"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 7929,
+      "sha256": "d243b0ac8b058b48f0bab2170f64717e48eee2ce70f574911312cafa690b2b01"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test-results.json",
+      "extension": ".json",
+      "size_bytes": 11560,
+      "sha256": "705edcc37b201e17565aa9f41550261a370260394f402e6e4abad4daa22834de"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 26181,
+      "sha256": "d71d9c69a091cab31c86b535233ebb8b5183b130908f08595ec9e2ff9155e570"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5-test.log",
+      "extension": ".log",
+      "size_bytes": 4218,
+      "sha256": "c9332f2a30ea815f222940a2e10a355864a3182e7aba43047946ec8a4393cba3"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5/c4-v05-b-r2-5.cjs",
+      "extension": ".cjs",
+      "size_bytes": 31214,
+      "sha256": "f2c7f696e5c8a5642c94989e21da997c8c2505cafe51cc6cb706f97ca90a4e41"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-1/CORRECOES_APLICADAS_E_RESSALVAS-R2-5-1.md",
+      "extension": ".md",
+      "size_bytes": 7782,
+      "sha256": "f989186193a89e09fe7484eab4e31a19ab2f06e70e889fe0a0521d382af689db"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-core.cjs",
+      "extension": ".cjs",
+      "size_bytes": 35448,
+      "sha256": "8e2db9f5d00f872ba3ba07fe759bf64c039eb60d448b209eeef721cc782e3903"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json",
+      "extension": ".json",
+      "size_bytes": 2611,
+      "sha256": "4200b31d155b1953afe27a7f2ba759157b5d6e9eb899c2a27d97882e1fa459b6"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 11203,
+      "sha256": "83e6e417a5a887ffb65a22e03d9bc29720f412bf0bb1c8b8417506005a0c1661"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test-results.json",
+      "extension": ".json",
+      "size_bytes": 14082,
+      "sha256": "dd7466fd803d24751c27fab6510176cf043895b24c9aa7d1470ac4b1eb93ab12"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 31624,
+      "sha256": "c85370ff0474c68b0b21806fdb1152c8e39e1aec987cdda9745a27692e899ab3"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-test.log",
+      "extension": ".log",
+      "size_bytes": 5313,
+      "sha256": "331bde6cc1a44d59fc1d182b35dbb414c78f4f14153de2f9f9a1111cfa1e919e"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1.cjs",
+      "extension": ".cjs",
+      "size_bytes": 33256,
+      "sha256": "f6603c98a6894d904ee9a02a2ae84dd2998f384197121be53964a0f9bbb32a60"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/DIAGNOSTICO-R2-5-2.md",
+      "extension": ".md",
+      "size_bytes": 11222,
+      "sha256": "1905bf87b245fa2341ce52b9f8e17f127f8d21474c84e1a461dd23163765e1f3"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/INDICE-EVIDENCIAS-R2-5-2.md",
+      "extension": ".md",
+      "size_bytes": 5256,
+      "sha256": "350f8fd2b7ec2bdc4c15e3963cc8ed83c58e3d2a7798d8420b4e873fc0706859"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/RELATORIO-FINAL-R2-5-2.md",
+      "extension": ".md",
+      "size_bytes": 22284,
+      "sha256": "73677622b5acab7f25068717f6573d75473516283a72097240220ef54dc36c92"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-core.cjs",
+      "extension": ".cjs",
+      "size_bytes": 39902,
+      "sha256": "6a2f2537b57d72186f2e3f5b2f05c07151aca9b689bad4078035aca1458528bb"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-integrity.json",
+      "extension": ".json",
+      "size_bytes": 3799,
+      "sha256": "ac8cef585ee06b7958d31daf94da826ca12503cdca91ffc35f3acd6738de70cb"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 13719,
+      "sha256": "7280582ae941373b99a9f31546e557536767a45fa455741bc40be6cb5a466231"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test-results.json",
+      "extension": ".json",
+      "size_bytes": 18233,
+      "sha256": "777b7e3ed5516941a50d2ec552f7a309bd05c0f7110318135351f9d2b544a7b9"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 42437,
+      "sha256": "21671d00eff8d97161485d949973b38ebce78d258b3481228f4b087c7556da66"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2-test.log",
+      "extension": ".log",
+      "size_bytes": 7145,
+      "sha256": "a97c66c4e2b340267efe61e3188744f1ca3d0557acfedd45878bf8c864c3196a"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-2/c4-v05-b-r2-5-2.cjs",
+      "extension": ".cjs",
+      "size_bytes": 33256,
+      "sha256": "74e7859767a1eb1708fc95e2b28140e1652acc43afd9f0f793ea36633a1cb259"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md",
+      "extension": ".md",
+      "size_bytes": 11555,
+      "sha256": "4eeed2ef16de29cc6894daf8e9416e8280d0bb138470cfa0071f390d1fc8543c"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/INDICE-EVIDENCIAS-R2-5-3.md",
+      "extension": ".md",
+      "size_bytes": 5265,
+      "sha256": "cf783547ace61db99d18e9d969136a0cf04ecff64b209138304e6c42d2eeced7"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/RELATORIO-FINAL-R2-5-3.md",
+      "extension": ".md",
+      "size_bytes": 19436,
+      "sha256": "58f4aa55463593f2cbe1f41b94311e26176a4bbff1374c040582224d87326db8"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-core.cjs",
+      "extension": ".cjs",
+      "size_bytes": 41289,
+      "sha256": "6ac07ac3715db15ad2689eb310b50d93a5528f111a9abc64a07e2a7ad0a4a4c2"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json",
+      "extension": ".json",
+      "size_bytes": 4340,
+      "sha256": "d425a24fb9d1ea71541459a7a57982168e92679976aeeca25490dcd4868642f6"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 15831,
+      "sha256": "0b5f1b4467e87e43b011ef20a1a56dec643516bb8b1229467547c07d47374172"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test-results.json",
+      "extension": ".json",
+      "size_bytes": 31743,
+      "sha256": "bd5f01b4773aad2fb0b5ec34749a07b25707ca898cb1fc4757d9c24c80ee9d9b"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 62618,
+      "sha256": "ce1b3c26e9a2d908f49323598de76e6ea173151a06be57785ce8441657ebf78e"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-test.log",
+      "extension": ".log",
+      "size_bytes": 10066,
+      "sha256": "3031937d7103b18fa8000ab9072ada9f57ce00faf4d8374bffcaf292597d2a1c"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3.cjs",
+      "extension": ".cjs",
+      "size_bytes": 33483,
+      "sha256": "eeb07441786dd96ade887b00db139518441e7762ec4dc3b2294e6ca52d66c0e6"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/INDICE-EVIDENCIAS-R2-5-4.md",
+      "extension": ".md",
+      "size_bytes": 7407,
+      "sha256": "8e45ca4322f4478d064ffca84ec7d0081f09c6169037a13fa422e8525db3f8c9"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md",
+      "extension": ".md",
+      "size_bytes": 31585,
+      "sha256": "cf1a7428fdcf0c8886eb6cf7a1754357476ec601734f9c224a08d49bfa3251da"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-core.cjs",
+      "extension": ".cjs",
+      "size_bytes": 41424,
+      "sha256": "b4c66405ca6b4f8e4f5448f357a12033529e8668cf213e8a451e5d2db1f1bdf0"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-integrity.json",
+      "extension": ".json",
+      "size_bytes": 6757,
+      "sha256": "f507ffaf4c81b1560fc652224afaeb688cbee6cfd1902127d7d711751aac54da"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 16472,
+      "sha256": "90e9049b64138650a607db9abf5f2c9b3120011bd387ebe694954daacf690d81"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test-results.json",
+      "extension": ".json",
+      "size_bytes": 42848,
+      "sha256": "5f25802e507bfdfb5b43954637c447e87b190062d460ceecfc2db924f2f1fe50"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 67451,
+      "sha256": "d70d6fb454bb0e3dcc96384448aa564d24684af732075e3d39e8b2cbda3e93aa"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4-test.log",
+      "extension": ".log",
+      "size_bytes": 10861,
+      "sha256": "282f1e0a6edb7f16e6889710d1236c92d472def50b7dae73588af096865dcafd"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/c4-v05-b-r2-5-4.cjs",
+      "extension": ".cjs",
+      "size_bytes": 33483,
+      "sha256": "38ce6e5305d513f95caa2bc431fe1f7788815a87edf79ae420285bfcc4a16cc3"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-manifesto-r2-5-4.cjs",
+      "extension": ".cjs",
+      "size_bytes": 4476,
+      "sha256": "a8e86a01af3d1ece9fcc4a1873526d7c16fcf0adbbbcb819d11aa34b9d5679d0"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/gerar-resultados-r2-5-4.cjs",
+      "extension": ".cjs",
+      "size_bytes": 7459,
+      "sha256": "fa697affbabdaf188bf1508d2184f74fab882d294bbef4c4c6eec9d17fa10b0e"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-4/verificar-manifesto-r2-5-4.cjs",
+      "extension": ".cjs",
+      "size_bytes": 3159,
+      "sha256": "888574f662db34fd4f185fb90a10900787fdc34139701fad1907846f24c1bf48"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/DIAGNOSTICO-R2-5-5.md",
+      "extension": ".md",
+      "size_bytes": 13334,
+      "sha256": "5b4ff32205060139ae047525dee97ab5d4cc4c41967b40572d1287d639a8f4e0"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md",
+      "extension": ".md",
+      "size_bytes": 6291,
+      "sha256": "f7da0fb3a9dcfe0d1b58e146751506c006a2170bc2ca61dd678a71a8f778308c"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/RELATORIO-FINAL-R2-5-5.md",
+      "extension": ".md",
+      "size_bytes": 31472,
+      "sha256": "2e2c231303439a52d0d3c73e97ba07dc8958d39fffc2605bc18cd6e613789082"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-core.cjs",
+      "extension": ".cjs",
+      "size_bytes": 50288,
+      "sha256": "909deeb34fd51d97dfdcade532fb7255977fb7ddfa5dbd728910800ff14d3883"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-integrity.json",
+      "extension": ".json",
+      "size_bytes": 7677,
+      "sha256": "4de7d3d972ee070458eb0000cd02860a57ca5c809f17fe5604dd1e92b6b995b4"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 23025,
+      "sha256": "0381120cf9c285d7663840d9e9c3627a401981de109657d077ccdbf8891febb1"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test-results.json",
+      "extension": ".json",
+      "size_bytes": 78488,
+      "sha256": "29d25a489ae64774b8f294b857a8633d9c5a0c829a9952a811e8d30918834ee8"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 101979,
+      "sha256": "6011a6fab7e1a911f8f658fb066eeab553df31ebbaac69ad5dd20c1292c1b015"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5-test.log",
+      "extension": ".log",
+      "size_bytes": 20363,
+      "sha256": "e00b13c11190e6c2dc730eaf64e1d9e05559d9c36bf70f54f7bc0d4ed4120d57"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/c4-v05-b-r2-5-5.cjs",
+      "extension": ".cjs",
+      "size_bytes": 33483,
+      "sha256": "b4c10c65b435263b7bde614b228f8a48e9e643b6fd0732adae244db6f333e955"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-manifesto-r2-5-5.cjs",
+      "extension": ".cjs",
+      "size_bytes": 4503,
+      "sha256": "d78c022f89c4dbf014744d39aa3d73bb68416591096009ea4b87f8fd3c979d09"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/gerar-resultados-r2-5-5.cjs",
+      "extension": ".cjs",
+      "size_bytes": 8429,
+      "sha256": "e008eac0c75d1658ba91fdd2bbc764d818fe9badf11fb526347a4e986650a058"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-5/verificar-manifesto-r2-5-5.cjs",
+      "extension": ".cjs",
+      "size_bytes": 3159,
+      "sha256": "398704f2a0b4a50439b8c5a35b2c684f8d74c99023ae5cb8a587ec39e1634bad"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md",
+      "extension": ".md",
+      "size_bytes": 19867,
+      "sha256": "476bed7731e9663bdb88a2387fd0a4f1704ed1f41ec6f34ee975a5f3eb5eef9e"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md",
+      "extension": ".md",
+      "size_bytes": 7408,
+      "sha256": "d435e73d9880f553a130f89c028614a562654a54d57f36165315173748eb9935"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md",
+      "extension": ".md",
+      "size_bytes": 24275,
+      "sha256": "8d4d53dc27a1f04a04df1c07965d1c9e659b7eb9f880411c654d03118a774027"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs",
+      "extension": ".cjs",
+      "size_bytes": 51154,
+      "sha256": "43b0039e491096fa5497ec6bc4c6e2f29efe86665491b51d741ed0b4b832f006"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-integrity.json",
+      "extension": ".json",
+      "size_bytes": 8044,
+      "sha256": "26b8ec78a9d05e3cc24a62c3234b3f38a7e36c17c425414d8f59c61864f52d9c"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 25255,
+      "sha256": "a75d8ca9cb5fc3d543e61fbe89ff58647a48cef448df9970a6209b3a8829c760"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test-results.json",
+      "extension": ".json",
+      "size_bytes": 92550,
+      "sha256": "d732a34be705e1af37a45fbcec19c677283c71d5d1acee6bd2f1310d60433da8"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 124337,
+      "sha256": "d065d8b7b572a7937d4571a883afd67ba59a20fe8835e13ede24f7499e0e420d"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-test.log",
+      "extension": ".log",
+      "size_bytes": 24138,
+      "sha256": "1116d8619348b6a07c7c930e1c87fa0d5eeb9abc8aebfac8c57d879843ee8f8a"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6.cjs",
+      "extension": ".cjs",
+      "size_bytes": 36902,
+      "sha256": "369c9ff8352b39b60a6115a4d149891f00971b1d816451de2d3bb1aeec25f8f4"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-manifesto-r2-5-6.cjs",
+      "extension": ".cjs",
+      "size_bytes": 4503,
+      "sha256": "30e7091995f94a63d8424d798aecce1362cc7599399584d84a486126260b7af6"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/gerar-resultados-r2-5-6.cjs",
+      "extension": ".cjs",
+      "size_bytes": 9203,
+      "sha256": "61c344b6364977ae7bfc1c8f464991365d51b32cc9a7039586531a898f4c8fdc"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/verificar-manifesto-r2-5-6.cjs",
+      "extension": ".cjs",
+      "size_bytes": 3159,
+      "sha256": "d1e466154e91eab78c5931c99cf765174dd43ad14fc7c3cb2e1231ba21cd4b6d"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/DIAGNOSTICO-R2-5-7.md",
+      "extension": ".md",
+      "size_bytes": 14923,
+      "sha256": "9fdc11cd7399bd5368c92bd2d77318bc61003156c2cd6896683d7fa7a911927a"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md",
+      "extension": ".md",
+      "size_bytes": 7867,
+      "sha256": "9f4d4ea6f0d00e5770e11a6d78fa3e616c3feca9ba27104f7afbda5c3ac2ef43"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md",
+      "extension": ".md",
+      "size_bytes": 22888,
+      "sha256": "5dc8d3daac4de7c32d9ee8cb8dc84d663925b20a494e7655053318f83ad77fbf"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json",
+      "extension": ".json",
+      "size_bytes": 8632,
+      "sha256": "9a81114df4aebd75779b6f4cc9121ea2536c2c39ed47ac39c6359bd29e5b24d6"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-fixtures.html",
+      "extension": ".html",
+      "size_bytes": 25255,
+      "sha256": "0cd5f37a063f62c4632aa0e245cded4c001b679bd9790672aad127de08cd3e42"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json",
+      "extension": ".json",
+      "size_bytes": 102325,
+      "sha256": "8a68d8ea0902e8500e77fc9da8ba1a16ddfafd6a565a4c24e030d7edc4438a5c"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.cjs",
+      "extension": ".cjs",
+      "size_bytes": 143509,
+      "sha256": "6c0a7e8084d99d736384f769b8c71bc77839bbf9205c531c1e795569971c176d"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.log",
+      "extension": ".log",
+      "size_bytes": 26597,
+      "sha256": "5762bcb4f232c260988a56dfc8e4c9cbe5e1d9549fa4fbca83995f87882beb9f"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7.cjs",
+      "extension": ".cjs",
+      "size_bytes": 38725,
+      "sha256": "a35db1d585de0a46f2919a4c6b4e7b852b7129fdc1b8c232778865aca2b9b999"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-manifesto-r2-5-7.cjs",
+      "extension": ".cjs",
+      "size_bytes": 4655,
+      "sha256": "c731e9dad3c289d57cc1922baa8108dae96c7be358c0e321b473c03f6edbbbf5"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/gerar-resultados-r2-5-7.cjs",
+      "extension": ".cjs",
+      "size_bytes": 10304,
+      "sha256": "5801ffc641d44d18a94b4c584a7c0debf82f5e61cc638f8bff5aac92172144ad"
+    },
+    {
+      "path": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/verificar-manifesto-r2-5-7.cjs",
+      "extension": ".cjs",
+      "size_bytes": 3159,
+      "sha256": "c84bb396d0c483c2d19866070b464ff39dc96abe57cde95d98a4f92978ec3efa"
+    },
+    {
+      "path": "docs/padroes/METODOLOGIA-VALIDACAO-NAVEGACAO-CDP.md",
+      "extension": ".md",
+      "size_bytes": 12693,
+      "sha256": "fcff1277e9f852d113fde11d6c388a6ece52aa6e38bf862db21928110af51502"
+    },
+    {
+      "path": "docs/padroes/MODELO-RELATORIO-AUDITORIA.md",
+      "extension": ".md",
+      "size_bytes": 3939,
+      "sha256": "633392567e48f2e444e401b3a8af237c65b716e3cc6fb65ab87735b9be5f473b"
+    }
+  ],
+  "tamanho_total_bytes": 100627804
+}

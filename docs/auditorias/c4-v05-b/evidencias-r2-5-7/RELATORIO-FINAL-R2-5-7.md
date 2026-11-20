@@ -53,7 +53,7 @@ Todos os artefatos residem em `docs/auditorias/c4-v05-b/evidencias-r2-5-7/`. O m
 | EV-02 | `c4-v05-b-r2-5-7-test.cjs` | Suíte: 360 asserções herdadas + 33 novas | Cópia da R2.5.6 + acréscimos | SHA-256 no manifesto | `node --check` aprovado; execução integral |
 | EV-03 | `c4-v05-b-r2-5-7-test-fixtures.html` | Fixture da R2.5.7 | Cópia da R2.5.6 | SHA-256 no manifesto | Sem alteração funcional: as views do teste Z são criadas em tempo de execução |
 | EV-04 | `c4-v05-b-r2-5-7-test.log` | Log textual das 393 asserções | Execução da suíte | SHA-256 no manifesto | Parser: 0 linhas não parseadas |
-| EV-05 | `c4-v05-b-r2-5-7-test-results.json` | 393 registros individuais e contagens recalculadas | `gerar-resultados-r2-5-7.cjs` | SHA-256 no manifesto | `summaryMatchesLog: true`; `groupsMatchSummary: true`; 0 duplicidades |
+| EV-05 | `c4-v05-b-r2-5-7-test-results.json` | 393 registros individuais e contagens recalculadas | `gerar-resultados-r2-5-7.cjs` | SHA-256 no manifesto | `summaryMatchesLog: true`; `groupsMatchSummary: true`; 0 duplicidades de par `(id, nome)` |
 | EV-06 | `gerar-resultados-r2-5-7.cjs` | Consolida o log em registros individuais | Implementação desta etapa | SHA-256 no manifesto | `node --check` aprovado |
 | EV-07 | `gerar-manifesto-r2-5-7.cjs` | Gera o manifesto após o último artefato | Implementação desta etapa | SHA-256 no manifesto | `node --check` aprovado |
 | EV-08 | `verificar-manifesto-r2-5-7.cjs` | Recálculo independente dos hashes | Implementação desta etapa | SHA-256 no manifesto | `node --check` aprovado; execução concluída |
@@ -102,15 +102,18 @@ Todos os artefatos residem em `docs/auditorias/c4-v05-b/evidencias-r2-5-7/`. O m
 | Métrica | Valor |
 |---|---|
 | Registros individuais (asserções) | 393 |
-| Identificadores distintos | 134 |
+| Identificadores de caso distintos (`id`) | 134 |
+| Chaves de asserção distintas — par `(id, nome)` | 393 |
+| IDs de caso com mais de uma asserção | 93 (máximo: V37 com 19 asserções) |
 | PASS | 392 |
 | FAIL | 0 |
 | BLOCKED | 1 |
 | NOT RUN | 0 |
-| Duplicidades de identificador | 0 (nenhum identificador aparece em dois registros) |
-| Duplicidades de par `(id, nome)` | 0 |
+| Duplicidades de chave de asserção `(id, nome)` | 0 |
 | `summaryMatchesLog` | `true` |
 | `groupsMatchSummary` | `true` |
+
+**Semântica das contagens (reconciliação F1.1, 20/11/2026):** cada uma das 393 linhas do log é um **registro de asserção** com nome próprio; o campo `id` identifica o **caso** ao qual a asserção pertence (134 casos distintos); a **chave única da asserção** é o par `(id, nome)`, distinto em todos os 393 registros. Um mesmo `id` pode — e 93 o fazem — concentrar múltiplas asserções nomeadas. Portanto, "93 IDs repetidos" não indica duplicidade de testes; indicaria colisão apenas se houvesse repetição do par `(id, nome)`, que é zero. A afirmação anterior ("nenhum identificador aparece em dois registros") estava imprecisa e foi substituída por esta distinção. Os 393 registros, os nomes das asserções, o único BLOCKED (V32) e os hashes dos artefatos de execução não foram alterados.
 
 Distribuição por grupo: A:16 · B:17 · C:21 · D:27 · V:164 · P:19 · R:12 · E:7 · F:11 · G:11 · H:4 · X:21 · Y:30 · **Z:33**.
 

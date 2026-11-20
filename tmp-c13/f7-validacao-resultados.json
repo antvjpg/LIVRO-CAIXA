@@ -1,0 +1,71 @@
+{
+  "executado_em_utc": "2026-11-20T23:12:26.842945+00:00",
+  "branch": "feat/app-layout-redesign",
+  "head": "23444f0a62f5e5c2b45eed0905442a6e6069ca44",
+  "total": 12,
+  "pass": 12,
+  "fail": 0,
+  "blocked": 0,
+  "checks": [
+    {
+      "name": "HEAD inalterado",
+      "status": "PASS",
+      "detail": "23444f0a62f5e5c2b45eed0905442a6e6069ca44"
+    },
+    {
+      "name": "Branch alinhada ao remoto",
+      "status": "PASS",
+      "detail": "feat/app-layout-redesign local 23444f0a == upstream 23444f0a"
+    },
+    {
+      "name": "Sem commits locais alem do remoto",
+      "status": "PASS",
+      "detail": "0 commits"
+    },
+    {
+      "name": "git diff --check",
+      "status": "PASS",
+      "detail": "limpo"
+    },
+    {
+      "name": "Baseline sem arquivos ausentes",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "name": "Nenhuma alteracao fora do escopo",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "name": "Todas as alteracoes esperadas presentes",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "name": "Contagem de docs/",
+      "status": "PASS",
+      "detail": "156 = 155 baseline + README"
+    },
+    {
+      "name": "Links Markdown (inclusive C.4)",
+      "status": "PASS",
+      "detail": "34 verificados; 0 quebrados: []"
+    },
+    {
+      "name": "Manifestos C.4 (74/74)",
+      "status": "PASS",
+      "detail": "8 manifestos, 74 artefatos, 74 conferidos, 0 divergentes: []"
+    },
+    {
+      "name": "R2.5.7 contagens preservadas",
+      "status": "PASS",
+      "detail": "393 registros / 134 IDs / 393 chaves"
+    },
+    {
+      "name": "V32 unico BLOCKED",
+      "status": "PASS",
+      "detail": "preservado"
+    }
+  ]
+}

@@ -182,13 +182,14 @@ Exigência de qualidade: sinal verde de CI não substitui cobertura de ponta a p
 |---|---|
 | [`AGENTS.md`](AGENTS.md) | Regras de engenharia, segurança e manutenção do repositório |
 | [`e2e/README.md`](e2e/README.md) | C.O.D.E.: organização, comandos, identidade QA, classificação de resultados e matriz de cobertura |
-| [`docs/DOCUMENTACAO_VARIAVEIS_CSS.md`](docs/DOCUMENTACAO_VARIAVEIS_CSS.md) | Variáveis CSS e como criar temas |
-| [`docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md`](docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md) | Auditoria de arquitetura, auth e persistência |
-| [`docs/AUDITORIA-VISUAL-MODAIS.md`](docs/AUDITORIA-VISUAL-MODAIS.md) | Auditoria visual dos modais (achados e revisões; histórico de outubro/2026) |
-| [`docs/COBERTURA-FLUXOS-FINANCEIROS.md`](docs/COBERTURA-FLUXOS-FINANCEIROS.md) | Matriz de fluxos financeiros (histórico das fases do LOG; localidades desatualizadas) |
-| [`docs/AUTHOVERLAY-EVOLUCAO-VISUAL.md`](docs/AUTHOVERLAY-EVOLUCAO-VISUAL.md) | Entrega visual do AuthOverlay (histórico, 03/11/2026) |
-| [`docs/REFATORACAO-AUTENTICACAO-RELATORIO.md`](docs/REFATORACAO-AUTENTICACAO-RELATORIO.md) | Relatório da refatoração de autenticação (histórico) |
-| [`docs/AUDITORIA-IA-RESUMO.md`, `AUDITORIA-GROQ-EXCLUSIVA.md`, `CORRECOES-GROQ-EXCLUSIVO.md`](docs/) | Auditorias do período da IA/Groq (histórico — removidos em nov/2026) |
+| [`docs/README.md`](docs/README.md) | Índice navegável da documentação, organizada por função |
+| [`docs/design-system/DOCUMENTACAO_VARIAVEIS_CSS.md`](docs/design-system/DOCUMENTACAO_VARIAVEIS_CSS.md) | Variáveis CSS e como criar temas |
+| [`docs/auditorias/autenticacao/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md`](docs/auditorias/autenticacao/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md) | Auditoria de arquitetura, auth e persistência |
+| [`docs/auditorias/visual/AUDITORIA-VISUAL-MODAIS.md`](docs/auditorias/visual/AUDITORIA-VISUAL-MODAIS.md) | Auditoria visual dos modais (achados e revisões; histórico de outubro/2026) |
+| [`docs/referencias/financeiro/COBERTURA-FLUXOS-FINANCEIROS.md`](docs/referencias/financeiro/COBERTURA-FLUXOS-FINANCEIROS.md) | Matriz de fluxos financeiros (histórico das fases do LOG; localidades desatualizadas) |
+| [`docs/design-system/auth-overlay/AUTHOVERLAY-EVOLUCAO-VISUAL.md`](docs/design-system/auth-overlay/AUTHOVERLAY-EVOLUCAO-VISUAL.md) | Entrega visual do AuthOverlay (histórico, 03/11/2026) |
+| [`docs/implementacoes/autenticacao/REFATORACAO-AUTENTICACAO-RELATORIO.md`](docs/implementacoes/autenticacao/REFATORACAO-AUTENTICACAO-RELATORIO.md) | Relatório da refatoração de autenticação (histórico) |
+| IA/Groq (histórico — removidos em nov/2026): [`AUDITORIA-IA-RESUMO.md`](docs/arquitetura/ia/AUDITORIA-IA-RESUMO.md), [`AUDITORIA-GROQ-EXCLUSIVA.md`](docs/auditorias/ia/AUDITORIA-GROQ-EXCLUSIVA.md), [`CORRECOES-GROQ-EXCLUSIVO.md`](docs/implementacoes/ia/CORRECOES-GROQ-EXCLUSIVO.md) | Auditorias do período da IA/Groq |
 | [Notion — Proteção local (plano por fases)](https://app.notion.com/p/410cf6c0c0bd8173a6c5db9e7b5a4b37) | Ciclo de proteção local executado e encerrado (07/11/2026) |
 | [Notion — Diário de execução C.O.D.E.](https://app.notion.com/p/40bcf6c0c0bd811da932e549e594766e) | Registro cronológico das sessões e evidências |
 | [`.opencode/skills/auditoria/SKILL.md`](.opencode/skills/auditoria/SKILL.md) | Skill de auditoria técnica cruzada — arquitetura, regras financeiras, C.O.D.E., E2E, Worker, Firebase, PWA + auditoria cruzada |

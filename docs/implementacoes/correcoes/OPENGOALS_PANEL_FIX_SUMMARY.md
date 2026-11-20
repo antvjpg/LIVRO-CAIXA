@@ -1,5 +1,7 @@
 # Correção Pontual: openGoalsPanel() — Remoção de Lógica de Cards do Início
 
+> **Classificação (reconciliação F1.5, 20/11/2026):** resumo histórico de correção pontual, não relatório de aprovação. A correção foi registrada em 09/11/2026 (`72ab824`, Phase B.1.2.1) e consolidada em 12/11 (`4d6ef63`). Verificação pontual em 20/11: `js/20-dashboard.js:1757` (`openGoalsPanel()`) não contém mais o bloco de atualização dos cards de Início; a conferência é inspeção de código, não execução funcional.
+
 ## Contexto
 Função `openGoalsPanel()` em `js/20-dashboard.js` continha um bloco indevido responsável por atualizar os cartões da aba Início (patrimônio, saúde financeira, próximo pagamento). Esse bloco introduzia risco de regressão ao possuir `return` antecipado quando não encontrava próximo pagamento, impedindo a execução de `window.switchTab('goals')`.
 

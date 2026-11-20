@@ -1,0 +1,106 @@
+{
+  "executado_em_utc": "2026-11-20T19:36:57.599988+00:00",
+  "branch": "feat/app-navigation-redesign",
+  "head": "23444f0a62f5e5c2b45eed0905442a6e6069ca44",
+  "total": 19,
+  "pass": 17,
+  "fail": 0,
+  "blocked": 2,
+  "checks": [
+    {
+      "name": "HEAD inalterado",
+      "status": "PASS",
+      "detail": "23444f0a62f5e5c2b45eed0905442a6e6069ca44"
+    },
+    {
+      "name": "git diff --check",
+      "status": "PASS",
+      "detail": "sem espacos em branco"
+    },
+    {
+      "name": "Nenhum arquivo do baseline ausente",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "name": "Nenhum arquivo alterado fora do escopo",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "name": "Todos os arquivos esperados foram alterados",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "name": "Contagem de arquivos em docs/",
+      "status": "PASS",
+      "detail": "156 (155 do baseline + 1 README criado na F4)"
+    },
+    {
+      "name": "Unico arquivo novo em docs/",
+      "status": "PASS",
+      "detail": "['docs/README.md']"
+    },
+    {
+      "name": "Links em documentos movidos, indice e READMEs",
+      "status": "PASS",
+      "detail": "34 links verificados; 0 quebrados fora do pacote C.4: []"
+    },
+    {
+      "name": "Links quebrados preexistentes no pacote C.4 protegido",
+      "status": "BLOCKED",
+      "detail": "4 alvos inexistentes em indices C.4: docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md:108 -> ../../../../padroes/MODELO-RELATORIO-AUDITORIA.md; docs/auditorias/c4-v05-b/evidencias-r2-5-5/INDICE-EVIDENCIAS-R2-5-5.md:110 -> ../DIAGNOSTICO-R2-5-3.md; docs/auditorias/c4-v05-b/evidencias-r2-5-6/INDICE-EVIDENCIAS-R2-5-6.md:130 -> ../../../../padroes/MODELO-RELATORIO-AUDITORIA.md; docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md:134 -> ../../../../padroes/MODELO-RELATORIO-AUDITORIA.md — todos presentes no HEAD antes desta execucao (ver git show HEAD:<arquivo>); nao corrigidos por serem artefatos protegidos"
+    },
+    {
+      "name": "Referencias a caminhos antigos",
+      "status": "PASS",
+      "detail": "0: []"
+    },
+    {
+      "name": "Manifestos C.4 (hash/size/lines)",
+      "status": "BLOCKED",
+      "detail": "8 manifestos, 74 artefatos declarados, 66 conferidos, 8 divergentes: ['docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json:c4-v05-b-r2-5-1-core.cjs', 'docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json:c4-v05-b-r2-5-1.cjs', 'docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json:c4-v05-b-r2-5-1-test.cjs', 'docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json:c4-v05-b-r2-5-1-test-fixtures.html', 'docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json:c4-v05-b-r2-5-1-test.log', 'docs/auditorias/c4-v05-b/evidencias-r2-5-1/c4-v05-b-r2-5-1-integrity.json:c4-v05-b-r2-5-1-test-results.json', 'docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json:INDICE-EVIDENCIAS-R2-5-3.md', 'docs/auditorias/c4-v05-b/evidencias-r2-5-3/c4-v05-b-r2-5-3-integrity.json:RELATORIO-FINAL-R2-5-3.md'] — divergencias preexistentes em R2.5.1/R2.5.3 (artefatos inalterados desde o baseline F0); nao corrigidas sem autorizacao especifica"
+    },
+    {
+      "name": "Pacote C.4 alterado apenas onde autorizado (F1.1)",
+      "status": "PASS",
+      "detail": "3 alterados: ['docs/auditorias/c4-v05-b/evidencias-r2-5-7/INDICE-EVIDENCIAS-R2-5-7.md', 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/RELATORIO-FINAL-R2-5-7.md', 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-integrity.json']"
+    },
+    {
+      "name": "R2.5.7 contagens",
+      "status": "PASS",
+      "detail": "393 registros / 134 IDs / 93 IDs repetidos / 393 chaves"
+    },
+    {
+      "name": "R2.5.7 V32 BLOCKED preservado",
+      "status": "PASS",
+      "detail": "registros com id V32: ['BLOCKED', 'PASS']; unico BLOCKED do conjunto preservado (o id V32 tambem identifica uma assercao PASS)"
+    },
+    {
+      "name": "F1.1 corrigido em relatorio e indice",
+      "status": "PASS",
+      "detail": "semantica presente nos dois"
+    },
+    {
+      "name": "Metadados historicos R2.5.7 preservados",
+      "status": "PASS",
+      "detail": "a790d616, publicationCommit presente"
+    },
+    {
+      "name": "D-06 a D-08 nao pendentes",
+      "status": "PASS",
+      "detail": "documento reconciliado"
+    },
+    {
+      "name": "C.1-C.8 nao marcadas como concluidas",
+      "status": "PASS",
+      "detail": "aviso presente (quebrado entre linhas do bloco de citacao)"
+    },
+    {
+      "name": "Teste de seguranca com caminho movido",
+      "status": "PASS",
+      "detail": "node --test e2e/security/security.test.mjs: 44/44 PASS, 0 FAIL (inclusive o teste que le docs/auditorias/autenticacao/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md)"
+    }
+  ]
+}

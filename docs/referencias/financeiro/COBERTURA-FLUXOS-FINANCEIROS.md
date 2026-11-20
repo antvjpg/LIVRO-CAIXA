@@ -4,6 +4,8 @@
 
 Demonstra que a cobertura dos fluxos financeiros é baseada em **matriz + testes**, não em suposição.
 
+> **Classificação (reconciliação F1.5, 20/11/2026):** matriz de referência histórica, não relatório de aprovação. Os rótulos `verde`, `amarelo` e `vermelho` são classificações do snapshot original e **não** são evidência de execução atual. As contagens de oráculos/segurança/worker/E2E citadas acima foram lidas de `e2e/README.md` em 07/11/2026 e **não foram reexecutadas** nesta reconciliação. A taxonomia de fluxos permanece útil como checklist; para cobertura vigente, consultar as suítes atuais.
+
 ## Legenda
 - **ARQUIVO/FUNÇÃO**: origem do evento de LOG ou Trilha de Auditoria.
 - **EVENTO**: ação registrada.

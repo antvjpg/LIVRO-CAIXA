@@ -1,8 +1,23 @@
 # Auditoria de Integracao Groq-Exclusivo - LIA
 
-> **NOTA HISTÓRICA (Nov/2026):** Esta implementação da LIA/IA foi **removida completamente** em novembro de 2026. Este documento permanece apenas como registro histórico da auditoria realizada antes da remoção.
+> **NOTA HISTÓRICA (Nov/2026):** Esta implementação da LIA/IA foi **removida completamente** em novembro de 2026 (commit `ffae78d6a72d96001acae6a307aca422c60bfaab`, 02/11/2026). Este documento permanece apenas como registro histórico do **diagnóstico** realizado antes da remoção.
 
-## Status: CONCLUIDO
+## Classificação: diagnóstico / snapshot histórico — 02/11/2026
+
+**Status do diagnóstico: CONCLUÍDO.** Isso **não** significa que a correção tenha sido concluída neste documento: as ações corretivas foram executadas e registradas separadamente em `docs/implementacoes/ia/CORRECOES-GROQ-EXCLUSIVO.md`. A arquitetura aqui descrita não é a arquitetura vigente — a funcionalidade foi removida em nov/2026.
+
+### Cronologia documental
+
+| Data | Registro | Fonte |
+|---|---|---|
+| 01/11/2026 | Suporte multi-provedor (OpenRouter, Google Gemini, Groq) — `ce72d70` | histórico Git |
+| 01/11/2026 | Seletor de provedor no frontend — `e55efc7` | histórico Git |
+| 02/11/2026 | Diagnóstico de não exclusividade (este documento) | data registrada no próprio documento |
+| 02/11/2026 | Ajuste de quota/headers Groq — `4bcc39d` | histórico Git |
+| 02/11/2026 | Correções e validação 53/53 — `docs/implementacoes/ia/CORRECOES-GROQ-EXCLUSIVO.md` | data e testes no próprio documento |
+| 02/11/2026 | Remoção completa da LIA/IA — `ffae78d` | histórico Git |
+
+Os documentos não registram branch própria; a branch citada nos metadados atuais do repositório é `feat/app-navigation-redesign`, posterior aos fatos acima.
 
 ### Diagnostico da Divergencia
 
@@ -25,7 +40,7 @@ GOOGLE_MODELS / GROQ_MODELS                          # wrangler.toml
 initAiProviderSelect()                               # 00-bootstrap.js:127-140
 ```
 
-### Arquitetura Atual (Nao Exclusiva Groq)
+### Arquitetura vigente à época do diagnóstico — não exclusiva Groq (snapshot 02/11/2026)
 
 ```
 Frontend                                              Worker Cloudflare                              IA Externa
@@ -109,13 +124,15 @@ Antes de considerar o trabalho concluido, deve-se:
 4. Garantir que NAO ha caminhos alternativos ativos para OpenRouter ou Google
 5. Confirmar que a configuracao e consistente em todos os niveis (code, env, frontend)
 
-### Critério de Sucesso Final
+### Critério de Sucesso Final (proposta histórica)
 
-A LIA deve utilizar exclusivamente a Groq por meio do Worker Cloudflare. Nenhuma falha, timeout, indisponibilidade ou erro de configuracao podera provocar troca silenciosa para OpenRouter, Google ou qualquer outro provedor.
+A LIA deveria utilizar exclusivamente a Groq por meio do Worker Cloudflare. Nenhuma falha, timeout, indisponibilidade ou erro de configuracao poderia provocar troca silenciosa para OpenRouter, Google ou qualquer outro provedor.
 
-A publicacao em producao sera uma etapa separada, realizada somente apos revisao dos resultados e autorizacao expressa.
+A publicacao em producao seria etapa separada, realizada somente apos revisao dos resultados e autorizacao expressa.
+
+**Situação atual:** este critério foi atendido pela implementação histórica descrita em `docs/implementacoes/ia/CORRECOES-GROQ-EXCLUSIVO.md`, mas a funcionalidade como um todo foi removida em nov/2026 (`ffae78d`). Não há hoje provedor de IA ativo — portanto, a afirmação "Groq é o único provedor ativo" **não** descreve o código atual.
 
 ---
 
 *Relatorio gerado em: 2026-11-02*
-*Fases executadas: 1 (Diagnostico) - Aguardando autorizacao para correcao*
+*Fases executadas no documento: 1 (Diagnóstico). A correção foi documentada em arquivo separado; a implementação foi posteriormente removida.*

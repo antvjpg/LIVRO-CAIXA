@@ -3,7 +3,6 @@
     "version": "R2.5.7",
     "branch": "feat/app-navigation-redesign",
     "baseCommit": "a790d61612566185d42d24a9d1678faa7f466cf9",
-    "publicationCommit": "ad9188964b5c5a68e380c77af95c8f688fd1dec2",
     "generatedAt": "2026-11-15T16:41:23.089Z",
     "nodeVersion": "v26.12.1",
     "platform": "android (Termux/Android)",
@@ -20,7 +19,8 @@
       "exitCode": 0,
       "cdpUrl": "http://127.0.0.1:9222",
       "fixtureUrl": "http://127.0.0.1:8000/docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-fixtures.html"
-    }
+    },
+    "publicationCommit": "ad9188964b5c5a68e380c77af95c8f688fd1dec2"
   },
   "artifacts": [
     {
@@ -89,16 +89,16 @@
     {
       "name": "INDICE-EVIDENCIAS-R2-5-7.md",
       "path": "INDICE-EVIDENCIAS-R2-5-7.md",
-      "sizeBytes": 7867,
-      "lines": 135,
-      "sha256": "9f4d4ea6f0d00e5770e11a6d78fa3e616c3feca9ba27104f7afbda5c3ac2ef43"
+      "sizeBytes": 8223,
+      "lines": 138,
+      "sha256": "c7c81703414c3725252ccf8c17952ddd44483b7297e23c4ae7e1d7b64753ea6e"
     },
     {
       "name": "RELATORIO-FINAL-R2-5-7.md",
       "path": "RELATORIO-FINAL-R2-5-7.md",
-      "sizeBytes": 22888,
-      "lines": 291,
-      "sha256": "5dc8d3daac4de7c32d9ee8cb8dc84d663925b20a494e7655053318f83ad77fbf"
+      "sizeBytes": 23818,
+      "lines": 294,
+      "sha256": "9366d07d44257f282fb9db737d298e7a489ea78902f6cdb0baa662e29fbb12ee"
     }
   ],
   "testSummary": {
@@ -248,6 +248,6 @@
     "filesAltered": 0,
     "filesMissing": 0,
     "note": "allHashesMatch e os demais contadores sao preenchidos pela rotina de verificacao independente, apos o recalculo real sobre os arquivos do disco. Enquanto forem null, a integridade deste manifesto nao esta declarada.",
-    "verifiedAt": "2026-11-15T16:52:26.763Z"
+    "verifiedAt": "2026-11-20T23:04:37.522Z"
   }
 }

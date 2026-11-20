@@ -262,7 +262,7 @@ Execução de referência: **CI run `42397573276` (07/11/2026, commit `a44c74b`)
    página** (contagem de docs/sinal de token, sem token nem conteúdo) e detecta
    logo na 1ª página vazia com token ou token repetido.
 3. Nenhum `data-testid` novo foi criado: usamos os seletores já existentes
-   mapeados em `docs/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md` (zero mudança no app).
+   mapeados em `docs/auditorias/autenticacao/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md` (zero mudança no app).
 4. Oracles de caixinhas (`pocket.js`), metas (`goal.js`) e investimentos
    (`investment.js`) já existem; os de cartões serão escritos **depois** de
    auditar a semântica real (nada de inventar regra financeira).
@@ -291,4 +291,4 @@ Execução de referência: **CI run `42397573276` (07/11/2026, commit `a44c74b`)
    receber, conciliação, notificações, spec E2E da Proteção local (PIN) e
    offline/PWA/responsividade no CI.
 5. Validações visuais pendentes dos modais: tema escuro e telas estreitas
-   (ver `docs/AUDITORIA-VISUAL-MODAIS.md` §10).
+   (ver `docs/auditorias/visual/AUDITORIA-VISUAL-MODAIS.md` §10).

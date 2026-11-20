@@ -2,6 +2,7 @@
 
 > **Histórico 19–25/10/2026.** Segmento de auditoria encerrado: a LIA/IA, o OCR e o MCP foram removidos em nov/2026 (ex.: `panelAiChat` é só estrutura visual, `openAiChat` não existe mais; `panelOcrReview` e `ocr/` não existem). Contagens de runs e testes referem-se ao snapshot de outubro (run final atual: `42397573276`, 07/11/2026 — ver `e2e/README.md` §5).
 > Documento técnico da auditoria e das alterações realizadas.
+> **Classificação (reconciliação F1.5, 20/11/2026):** auditoria visual histórica, com registro das alterações decorrentes; não é relatório de aprovação da interface atual.
 > Data: 19/10/2026 · Viewport: **1440×900** · Chromium 153 (Playwright) · Tema claro.
 > Revisão: 22/10/2026 · `main` = `2154a82` · reexecutada em 23/10/2026 — ver §11.
 
@@ -30,7 +31,7 @@ em `js/24-automation-render.js:300` e por isso não aparece numa varredura está
 | `e2e/visual/audit-modais.cjs` | criado | **commitado** | harness de auditoria visual (417 linhas) |
 | `e2e/visual/saida/auditoria-modais.json` | gerado | **commitado** | métricas por modal |
 | `e2e/visual/saida/RELATORIO.md` | gerado | **commitado** | resumo tabular da execução |
-| `docs/AUDITORIA-VISUAL-MODAIS.md` | criado | **commitado** | este documento (movido de `e2e/visual/` em 12/11/2026) |
+| `docs/auditorias/visual/AUDITORIA-VISUAL-MODAIS.md` | criado | **commitado** | este documento (movido de `e2e/visual/` em 12/11/2026) |
 
 **Alterações de produção restritas a apresentação:** `index.html` + `style/features.css` +
 `style/components.css`. Nenhum ID, classe, listener, regra financeira ou fluxo de

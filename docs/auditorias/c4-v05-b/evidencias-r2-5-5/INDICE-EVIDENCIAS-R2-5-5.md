@@ -105,7 +105,7 @@ O verificador sai com código 0 quando todos os artefatos declarados conferem no
 
 ## 6. Referências
 
-- Modelo de relatório: [`../../../../padroes/MODELO-RELATORIO-AUDITORIA.md`](../../../../padroes/MODELO-RELATORIO-AUDITORIA.md)
+- Modelo de relatório: [`../../../padroes/MODELO-RELATORIO-AUDITORIA.md`](../../../padroes/MODELO-RELATORIO-AUDITORIA.md)
 - Regras de engenharia: [`../../../../AGENTS.md`](../../../../AGENTS.md)
-- Diagnóstico R2.5.3 (base da auditoria que motivou esta etapa): [`../DIAGNOSTICO-R2-5-3.md`](../DIAGNOSTICO-R2-5-3.md)
+- Diagnóstico R2.5.3 (base da auditoria que motivou esta etapa): [`../evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md`](../evidencias-r2-5-3/DIAGNOSTICO-R2-5-3.md)
 - Relatório da R2.5.4: [`../evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md`](../evidencias-r2-5-4/RELATORIO-FINAL-R2-5-4.md)

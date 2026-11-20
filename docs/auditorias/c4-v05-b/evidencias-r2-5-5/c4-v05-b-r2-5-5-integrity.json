@@ -95,9 +95,9 @@
     {
       "name": "INDICE-EVIDENCIAS-R2-5-5.md",
       "path": "INDICE-EVIDENCIAS-R2-5-5.md",
-      "sizeBytes": 6291,
+      "sizeBytes": 6321,
       "lines": 111,
-      "sha256": "f7da0fb3a9dcfe0d1b58e146751506c006a2170bc2ca61dd678a71a8f778308c"
+      "sha256": "28807aec522f601387054e4fe6ffa7ef609d6f9ce83cc57d7208da1d0382d037"
     },
     {
       "name": "RELATORIO-FINAL-R2-5-5.md",
@@ -228,6 +228,6 @@
     "filesAltered": 0,
     "filesMissing": 0,
     "note": "allHashesMatch e os demais contadores sao preenchidos pela rotina de verificacao independente, apos o recalculo real sobre os arquivos do disco. Enquanto forem null, a integridade deste manifesto nao esta declarada.",
-    "verifiedAt": "2026-11-15T14:53:24.219Z"
+    "verifiedAt": "2026-11-20T23:04:35.986Z"
   }
 }

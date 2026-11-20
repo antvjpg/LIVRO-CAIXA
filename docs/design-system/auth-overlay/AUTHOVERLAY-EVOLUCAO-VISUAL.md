@@ -1,6 +1,7 @@
 # AuthOverlay — Evolução Visual
 
 > **Histórico 03/11/2026 — entrega pontual.** Números de linha e tokens citados tratam do código na data da entrega; conferir o código atual (AGENTS.md §2/§45).
+> **Classificação (reconciliação F1.5):** histórico e referência visual de entrega pontual; decisões visuais preservadas, sem registro de aprovação ou validação executada nesta reconciliação.
 
 Data: 2026-11-03
 

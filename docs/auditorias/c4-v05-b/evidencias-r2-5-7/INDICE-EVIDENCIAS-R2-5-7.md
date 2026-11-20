@@ -53,13 +53,14 @@
 | Métrica | Valor |
 |---|---|
 | Registros individuais (asserções) | 393 |
-| Identificadores distintos | 134 |
+| Identificadores de caso distintos (`id`) | 134 |
+| Chaves de asserção distintas — par `(id, nome)` | 393 |
+| IDs de caso com mais de uma asserção | 93 |
 | PASS | 392 |
 | FAIL | 0 |
 | BLOCKED | 1 |
 | NOT RUN | 0 |
-| Duplicidades de identificador | 0 |
-| Duplicidades de par `(id, nome)` | 0 |
+| Duplicidades de chave de asserção `(id, nome)` | 0 |
 | `summaryMatchesLog` | `true` |
 | `groupsMatchSummary` | `true` |
 | Linhas não parseadas | 0 |
@@ -67,6 +68,8 @@
 | Asserções novas | 33 (33 PASS) |
 
 **Grupos:** A:16 · B:17 · C:21 · D:27 · V:164 · P:19 · R:12 · E:7 · F:11 · G:11 · H:4 · X:21 · Y:30 · **Z:33**
+
+**Semântica das contagens (reconciliação F1.1, 20/11/2026):** 393 registros de asserção, 134 IDs de caso e 93 IDs com múltiplas asserções nomeadas; a chave única é o par `(id, nome)`, sem duplicidades. Ver `RELATORIO-FINAL-R2-5-7.md`, seção 6.1.
 
 **Grupo Z — identidade de execução da coleta (F-04)**
 
@@ -128,7 +131,7 @@ O verificador sai com código 0 quando todos os artefatos declarados conferem no
 
 ## 6. Referências
 
-- Modelo de relatório: [`../../../../padroes/MODELO-RELATORIO-AUDITORIA.md`](../../../../padroes/MODELO-RELATORIO-AUDITORIA.md)
+- Modelo de relatório: [`../../../padroes/MODELO-RELATORIO-AUDITORIA.md`](../../../padroes/MODELO-RELATORIO-AUDITORIA.md)
 - Regras de engenharia: [`../../../../AGENTS.md`](../../../../AGENTS.md)
 - Diagnóstico da R2.5.6 (base desta etapa): [`../evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md`](../evidencias-r2-5-6/DIAGNOSTICO-R2-5-6.md)
 - Relatório da R2.5.6: [`../evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md`](../evidencias-r2-5-6/RELATORIO-FINAL-R2-5-6.md)

@@ -11,6 +11,8 @@ Este documento descreve **os tokens CSS efetivamente existentes** após a padron
 
 A referência é o CSS do repositório local. Se este documento e o código divergirem, **o código atual prevalece**.
 
+> **Classificação (reconciliação F1.5, 20/11/2026):** referência/especificação de tokens e temas — não é auditoria, relatório de implementação nem evidência de aprovação. Nenhum teste foi executado para produzir este inventário; a coleta completa de consumidores de `--accent` na aplicação permanece bloqueada e depende de verificação independente.
+
 ## Sumário
 
 - [1. Convenção de nomenclatura](#1-convenção-de-nomenclatura)

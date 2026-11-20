@@ -2,15 +2,17 @@
 
 > **NOTA HISTÓRICA (Nov/2026):** Esta implementação da LIA/IA foi **removida completamente** em novembro de 2026. Este documento permanece apenas como registro histórico da auditoria realizada antes da remoção. A funcionalidade de IA não está mais disponível no aplicativo.
 
+**Recorte temporal:** documento criado em 01/11/2026 (`ae48061`), atualizado pela remoção em 02/11/2026 (`ffae78d`) e realocado em 04/11/2026 (`414ab7e`). O texto não registra branch nem HEAD próprios; o recorte acima foi obtido do histórico Git. **Classificação:** auditoria diagnóstica histórica — não descreve a arquitetura vigente em 20/11/2026.
+
 ## Sumário Executivo
 
 Esta auditoria técnica examinou o subsistema de Inteligência Artificial do LIVRO-CAIXA, abrangendo arquitetura, provedores, contexto financeiro, prompts, persistência, segurança e testes. O subsistema apresenta arquitetura tricampeada (frontend/validação → worker/roteamento → provedores/execução) com boa separação de responsabilidades, mas possui 3 criticidades operacionais e 7 itens de melhoria identificados.
 
-**Estado geral**: Funcional com riscos operacionais identificados. Recomenda-se corrigir itens CRÍTICO antes de produção com múltiplos usuários.
+**Estado geral à época da auditoria (01/11/2026)**: Funcional com riscos operacionais identificados. Recomenda-se corrigir itens CRÍTICO antes de produção com múltiplos usuários. **Estado atual (20/11/2026):** não há subsistema de IA ativo; não existem os módulos, rotas, provedores nem variáveis descritos abaixo. As recomendações desta seção são históricas e algumas foram superadas pela migração para Groq-exclusivo e, depois, pela remoção total — ver `docs/implementacoes/ia/CORRECOES-GROQ-EXCLUSIVO.md`.
 
 ---
 
-## Arquitetura
+## Arquitetura diagnosticada (snapshot histórico — 01/11/2026)
 
 ### Componentes Identificados
 
@@ -102,7 +104,7 @@ index.html → LivroCaixaChatContract → validateChatPayload → POST /ai
 
 ---
 
-## Matriz de Provedores
+## Matriz de Provedores (histórica — 01/11/2026)
 
 | Cenário | Comportamento |
 |---------|--------------|
@@ -417,5 +419,7 @@ O subsistema de IA do LIVRO-CAIXA é funcional e segue boa arquitetura de separa
 3. **Fallback de provedor inexistente** — usuário não tem feedback quando o provedor selecionado falha por credenciais faltando.
 
 Além disso, 7 itens de melhoria de médio/baixo impacto devem ser planejados no próximo ciclo de desenvolvimento para aprimorar a experiência do usuário e a robustez do sistema.
+
+**Reconciliação (20/11/2026):** esta conclusão é histórica. A criticidade 3 ("fallback de provedor inexistente") foi tratada de forma diversa pela migração para Groq-exclusivo, que removeu a seleção de provedor; em seguida, toda a funcionalidade foi removida (`ffae78d`). As criticidades 1 e 2 referiam-se à infraestrutura de cota/rate limit do Worker de IA, também removida. Nenhum desses itens descreve risco residual no código atual.
 
 **Recomendação**: Corrigir itens CRÍTICO (items 1-3 da seção de recomendações) antes de qualquer mudança que aumente o número de usuários simultâneos ou a carga de requisições de IA.
