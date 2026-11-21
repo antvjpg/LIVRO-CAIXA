@@ -1,0 +1,179 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/data/data/com.termux/files/usr/lib/python3.14/http/server.py", line 1432, in <module>
+    test(
+    ~~~~^
+        HandlerClass=handler_class,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        tls_password=tls_key_password,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/data/data/com.termux/files/usr/lib/python3.14/http/server.py", line 1348, in test
+    server = ServerClass(addr, HandlerClass)
+  File "/data/data/com.termux/files/usr/lib/python3.14/socketserver.py", line 457, in __init__
+    self.server_bind()
+    ~~~~~~~~~~~~~~~~^^
+  File "/data/data/com.termux/files/usr/lib/python3.14/http/server.py", line 1419, in server_bind
+    return super().server_bind()
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "/data/data/com.termux/files/usr/lib/python3.14/http/server.py", line 148, in server_bind
+    socketserver.TCPServer.server_bind(self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/data/data/com.termux/files/usr/lib/python3.14/socketserver.py", line 478, in server_bind
+    self.socket.bind(self.server_address)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+OSError: [Err127.0.0.1 - - [21/Nov/2026 17:54:53] "GET /tmp-c13/r2-6-2/fixture.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 17:55:05] "GET /tmp-c13/r2-6-2/fixture.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 17:55:05] code 404, message File not found
+127.0.0.1 - - [21/Nov/2026 17:55:05] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [21/Nov/2026 17:58:20] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 17:58:31] "GET /docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-fixtures.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 17:58:31] code 404, message File not found
+127.0.0.1 - - [21/Nov/2026 17:58:31] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [21/Nov/2026 18:06:17] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /style/base.css?v=20-24 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /style/themes.css?v=20-23 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/domain/card-engine-v3-combined.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /style/components.css?v=20-33 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /style/features.css?v=20-31 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /style/layout.css?v=20-36 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /vendor/tabler-icons/tabler-icons.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/domain/financial-client.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /style/dashboard-chat.css?v=20-24 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/data/tabler-icon-catalog.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/domain/security-utils.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/00-bootstrap.js?v=20-33 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/domain/icon-system.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/data/emoji-catalog.js?v=20-02 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/10-state-utils.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/12-auth-session.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/11-financial-domain.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/13-backup.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/16-events-modals.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/15-tabs-nav.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/14-theme.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /src/diagnostic/login-diagnostic.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/domain/audit-trail.js?v=20-41 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/domain/pin-protection.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/domain/simple-log.js?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /js/legacy/patches.js?v=20-02 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:28] "GET /manifest.webmanifest?v=19-19 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/17-sync-persistence.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/18-render-core.js?v=20-28 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/20-dashboard.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/22-profile.js?v=20-26 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/21-ai-features.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/24-automation-render.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/25-bills-receivables.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/19-goals.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/27-cards.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/26-receipts.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/29-invest-movements.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/30-transfer-receipts.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/31-import-export.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/32-auth-wiring.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/99-init.js?v=20-28 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:29] "GET /js/domain/secure-storage.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-01.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-02.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-06.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-05.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-04.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-03.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-10.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-11.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-07.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-09.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-12.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-08.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-13.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-18.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-15.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-17.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-16.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-14.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-19.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-21.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-20.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-22.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-23.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-24.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:30] "GET /assets/avatars/avatar-geometry-25.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:31] "GET /icon-192.png HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:06:31] "GET /icon-192.png?v=13 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:11:48] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:01] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/domain/card-engine-v3-combined.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /style/themes.css?v=20-23 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /style/base.css?v=20-24 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /style/components.css?v=20-33 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /style/layout.css?v=20-36 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /style/features.css?v=20-31 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /style/dashboard-chat.css?v=20-24 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /vendor/tabler-icons/tabler-icons.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/domain/financial-client.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/domain/security-utils.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/data/emoji-catalog.js?v=20-02 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/data/tabler-icon-catalog.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/domain/icon-system.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/00-bootstrap.js?v=20-33 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/10-state-utils.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/12-auth-session.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/13-backup.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/11-financial-domain.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/15-tabs-nav.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/14-theme.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/16-events-modals.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:02] "GET /js/domain/audit-trail.js?v=20-41 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:03] "GET /js/domain/simple-log.js?v=1 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:03] "GET /js/domain/pin-protection.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:03] "GET /src/diagnostic/login-diagnostic.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:03] "GET /manifest.webmanifest?v=19-19 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:03] "GET /js/legacy/patches.js?v=20-02 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:04] "GET /js/17-sync-persistence.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:04] "GET /js/18-render-core.js?v=20-28 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:04] "GET /js/19-goals.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/20-dashboard.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/21-ai-features.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/22-profile.js?v=20-26 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/26-receipts.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/25-bills-receivables.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/24-automation-render.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/domain/secure-storage.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/27-cards.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/29-invest-movements.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/30-transfer-receipts.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/31-import-export.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/32-auth-wiring.js?v=20-25 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:05] "GET /js/99-init.js?v=20-28 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-01.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-02.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-04.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-03.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-05.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-06.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-07.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-09.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-08.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-12.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-10.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-11.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-16.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-13.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-14.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-15.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-17.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-18.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-19.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-20.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-21.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-23.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-24.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-22.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /assets/avatars/avatar-geometry-25.svg HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /icon-192.png?v=13 HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 18:12:06] "GET /icon-192.png HTTP/1.1" 200 -

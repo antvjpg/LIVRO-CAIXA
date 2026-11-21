@@ -1,0 +1,24 @@
+{
+  "id": "R2.6-FASE5-CONTRATO",
+  "data": "2026-11-21T20:55:07.215Z",
+  "contrato": {
+    "getWinningRuleHistoricalOk": true,
+    "getWinningRuleAdditiveOk": true,
+    "winnerAdditiveOk": true,
+    "captureWinningRulesOk": true,
+    "captureStatus": "captured"
+  },
+  "erro": {
+    "captureStatus": "cdp-error",
+    "winningDeclaration": null,
+    "candidates": [],
+    "cdpErrorsRegistrados": 1,
+    "semVencedorFabricado": true
+  },
+  "resumo": {
+    "total": 8,
+    "PASS": 8,
+    "FAIL": 0
+  },
+  "status": "PASS"
+}

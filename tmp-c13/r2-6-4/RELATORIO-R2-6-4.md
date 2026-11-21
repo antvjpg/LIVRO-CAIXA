@@ -10,8 +10,8 @@
 - **Data:** 21/11/2026.
 - **Repositório:** `antvjpg/LIVRO-CAIXA`.
 - **Branch:** `feat/app-layout-redesign`.
-- **Commit-base:** `678117667cbf17c11178c418fe78a34b7a13dff5`.
-- **Commit examinado:** o mesmo commit-base; as alterações da correção estão no working tree, ainda não comitadas.
+- **Commit-base:** `adce77e306576a1c52a3bc21d92e2cc6f9055134` (documento originado em `678117667cbf17c11178c418fe78a34b7a13dff5`; ver adendo final).
+- **Commit examinado:** `adce77e306576a1c52a3bc21d92e2cc6f9055134`; fases 0–6 executadas em cópias controladas, sem push.
 - **Responsável pela execução:** agente opencode (executor). **Não é auditor independente.**
 - **Estado do working tree:** validador `tmp-c13/r2-6-2/validacao-r2-6-3.cjs` modificado; núcleo `docs/auditorias/c4-v05-b/evidencias-r2-6/` e diretório `tmp-c13/r2-6-4/` novos; logs e scripts exploratórios não rastreados. Nenhum commit ou push foi feito.
 
@@ -76,11 +76,11 @@ O hash interno difere do SHA do arquivo porque, por construção, exclui `meta.h
 - **Impacto:** a correção existe como núcleo versionado candidato; o fluxo histórico não foi alterado.
 - **Classificação:** ausência de promoção, não defeito do novo núcleo.
 
-### A-03 — Regressão da suíte histórica não executada com o novo núcleo
-- **Gravidade:** MÉDIO · **Confiança:** ALTA.
-- **Problema observado:** apenas a matriz de 10 cenários foi reexecutada.
-- **Impacto:** não há evidência de que os 393 registros R2.5.7 permaneçam estáveis com o novo núcleo.
-- **Status do teste:** **NOT RUN**.
+### A-03 — Regressão da suíte histórica com o novo núcleo
+- **Gravidade:** BAIXO (ressalva de evidência) · **Confiança:** ALTA para status; MÉDIA para dados.
+- **Problema original:** apenas a matriz de 10 cenários havia sido reexecutada. Resolvido em Fase 6: 393 registros reexecutados em cópias controladas, `392 PASS / 0 FAIL / 1 BLOCKED`, log byte-identico ao baseline.
+- **Ressalva remanescente:** não foi retido JSON de saída da coleta (`C4_OUT`); a comparação cobre integralmente `(id, status, posição)`, mas não todos os campos de dados dos registros.
+- **Status do teste:** **PASS (com ressalva)** — ver `tmp-c13/r2-6-4/RELATORIO-FASE6.md`.
 
 ### A-04 — Escopo limitado da matriz
 - **Gravidade:** MÉDIO · **Confiança:** ALTA.
@@ -112,9 +112,9 @@ O hash interno difere do SHA do arquivo porque, por construção, exclui `meta.h
 | V-06 | Cor computada pelo navegador | 10/10 conforme esperado | PASS |
 | V-07 | `resolvedValueNucleo` | 10/10 conforme cor esperada | PASS |
 | V-08 | Erros CDP/console/exceções | 0 / 0 / 0 em ambas as execuções | PASS |
-| V-09 | Suíte R2.5.7 com novo núcleo | não executada | **NOT RUN** |
-| V-10 | CI/Linux com novo núcleo | não executado | **NOT RUN** |
-| V-11 | Revisão independente | não executada | **NOT RUN** |
+| V-09 | Suíte R2.5.7 com novo núcleo | 393 registros; 392 PASS / 0 FAIL / 1 BLOCKED (V32); 0 divergências de status | **PASS (com ressalva)** |
+| V-10 | CI/Linux com novo núcleo | não executado: push vetado e harness histórico não migrado | **BLOCKED** |
+| V-11 | Revisão independente | auditoria somente leitura executada; achados incorporados | **PASS (com ressalvas)** |
 
 ---
 
@@ -134,9 +134,9 @@ O hash interno difere do SHA do arquivo porque, por construção, exclui `meta.h
 ## 8. Limitações e incertezas
 
 - **Itens não verificados:** R2.7, V32, CSS de produção, consolidação de tokens, mudanças financeiras.
-- **Testes bloqueados:** nenhum.
-- **Testes não executados:** V-09, V-10, V-11.
-- **Incertezas:** equivalência do comportamento CDP em Chromium do CI/Linux; compatibilidade do novo `resolvedValue` com consumidores do harness; aceite de escopo para `@layer` e origens não testadas.
+- **Testes bloqueados:** V-10 (CI/Linux), por decisão do usuário de não fazer push e não migrar o harness histórico.
+- **Testes não executados:** nenhum dos testes locais previstos; V-10 permanece BLOCKED, não NOT RUN.
+- **Incertezas:** equivalência do comportamento CDP em Chromium do CI/Linux; compatibilidade do novo `resolvedValue` com consumidores do harness; ausência de JSON de saída da reexecução impede comparação de todos os campos de dados; aceite de escopo para `@layer` e origens não testadas.
 - **Dependências externas:** nenhuma; a fixture não carrega recursos externos.
 
 ---
@@ -144,18 +144,18 @@ O hash interno difere do SHA do arquivo porque, por construção, exclui `meta.h
 ## 9. Veredito
 
 - **APROVADA / REPROVADA / INCONCLUSIVA:** **INCONCLUSIVA** para declarar o Gate R2.6 suficiente. A correção local do núcleo está **APROVADA COM RESSALVAS** para os 10 cenários.
-- **Fundamentação:** as cinco falhas confirmadas em R2.6.3 não se repetiram; 10/10 cenários passaram com o núcleo corrigido; 0 regressões e 0 falhas novas. Porém, não há auditoria independente, regressão R2.5.7, validação em CI nem promoção do novo núcleo ao harness.
-- **Critérios atendidos:** R2.6.1, R2.6.2, R2.6.3; correção mínima implementada; comparação antes/depois rastreável.
-- **Critérios não atendidos:** revisão independente; regressão da suíte histórica; validação em CI/Linux; reconciliação documental da C.4; aceite formal e versionação.
-- **Condições para nova avaliação:** executar V-09 a V-11, corrigir A-06, decidir a promoção do núcleo e registrar aceite no Notion.
+- **Fundamentação:** as cinco falhas confirmadas em R2.6.3 não se repetiram; 10/10 cenários passaram com o núcleo corrigido; 0 regressões e 0 falhas novas; 393 registros R2.5.7 reexecutados sem divergência de status; revisão independente executada. Porém, CI/Linux, migração/promoção do harness e aceite formal não ocorreram.
+- **Critérios atendidos:** R2.6.1, R2.6.2, R2.6.3; correção mínima implementada; comparação antes/depois; G0–G6; revisão independente com achados tratados.
+- **Critérios não atendidos:** V-10 (CI/Linux) — bloqueado por decisão do usuário; promoção/migração do harness histórico; reconciliação documental final da C.4; aceite formal.
+- **Condições para nova avaliação:** registrar aceite alternativo por escrito (evidência Termux + revisão independente) ou autorizar push/CI e migração controlada do harness; corrigir A-06; decidir a promoção do núcleo.
 
 ---
 
 ## 10. Próximos passos
 
 - **Correções necessárias:** nenhuma nova correção identificada no núcleo; apenas decisão de promoção e reconciliação documental.
-- **Evidências adicionais:** suíte R2.5.7 com novo núcleo, execução no CI/Linux, reprodução por auditor independente.
-- **Próxima etapa autorizada:** nenhuma automática. Depende de autorização explícita para promover o núcleo, rodar a regressão histórica e/ou corrigir a documentação C.4.
+- **Evidências adicionais:** suíte R2.5.7 com novo núcleo executada; revisão independente executada; permanece pendente CI/Linux e retenção de JSON `C4_OUT` da nova execução.
+- **Próxima etapa autorizada:** nenhuma automática. O gate depende de aceite formal ou autorização explícita para promover o núcleo, rodar CI/Linux e corrigir a documentação C.4. Sem push.
 
 ---
 
@@ -163,4 +163,10 @@ O hash interno difere do SHA do arquivo porque, por construção, exclui `meta.h
 
 | Data | Auditoria | Commit-base | Veredito | Responsável |
 |---|---|---|---|---|
-| 21/11/2026 | R2.6.4 — mecanismo de regra vencedora | `6781176` | Inconclusiva para gate; correção aprovada com ressalvas | opencode (executor, não auditor independente) |
+| 21/11/2026 | R2.6.4 — mecanismo de regra vencedora | `6781176` → `adce77e` | Inconclusiva para gate; correção aprovada com ressalvas; fases 0–6 executadas | opencode (executor) + auditor independente (Fase 7) |
+
+---
+
+## Adendo — 21/11/2026 (Fase 7)
+
+Este documento foi atualizado para refletir as fases posteriores: V-09 passou de `NOT RUN` para `PASS (com ressalva)`, V-10 foi classificado como `BLOCKED` e V-11 como `PASS (com ressalvas)`. O texto original permanece como registro histórico; em caso de conflito, o adendo e os relatórios `RELATORIO-FASE0.md` a `RELATORIO-FASE7.md` prevalecem. Gate R2.6 continua **INCONCLUSIVO** por bloqueio de CI/promoção decidido pelo usuário, não por falha técnica nas fases locais.

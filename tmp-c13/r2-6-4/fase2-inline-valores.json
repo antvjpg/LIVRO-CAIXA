@@ -1,0 +1,73 @@
+{
+  "id": "R2.6-FASE2",
+  "data": "2026-11-21T20:50:25.003Z",
+  "nucleo": "docs/auditorias/c4-v05-b/evidencias-r2-6/c4-v05-b-r2-6-core.cjs",
+  "objetivo": "confirmar coleta inline e separacao entre valor declarado e resolvido",
+  "resultados": [
+    {
+      "id": "C05",
+      "alvo": "#r261-inline",
+      "esperado": {
+        "declared": "rgb(255, 0, 0)",
+        "resolved": "rgb(255, 0, 0)",
+        "source": "inline"
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "source": "inline",
+        "selectorText": null,
+        "declaredValueRaw": "#FF0000",
+        "declaredValueCanonico": "rgb(255, 0, 0)",
+        "important": false,
+        "resolvedValueNucleo": "rgb(255, 0, 0)",
+        "computedStyleCDP": "rgb(255, 0, 0)",
+        "inlineDeclarations": [
+          {
+            "name": "color",
+            "value": "#FF0000",
+            "important": false
+          }
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C06",
+      "alvo": "#r261-inline-var",
+      "esperado": {
+        "declared": "var(--inline-accent)",
+        "resolved": "rgb(0, 0, 255)",
+        "source": "inline"
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "source": "inline",
+        "selectorText": null,
+        "declaredValueRaw": "var(--inline-accent)",
+        "declaredValueCanonico": "var(--inline-accent)",
+        "important": false,
+        "resolvedValueNucleo": "rgb(0, 0, 255)",
+        "computedStyleCDP": "rgb(0, 0, 255)",
+        "inlineDeclarations": [
+          {
+            "name": "--inline-accent",
+            "value": "#0000FF",
+            "important": false
+          },
+          {
+            "name": "color",
+            "value": "var(--inline-accent)",
+            "important": false
+          }
+        ]
+      },
+      "status": "PASS"
+    }
+  ],
+  "resumo": {
+    "total": 2,
+    "PASS": 2,
+    "FAIL": 0,
+    "errosCDP": 0
+  }
+}

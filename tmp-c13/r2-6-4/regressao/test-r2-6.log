@@ -1,0 +1,427 @@
+
+=== GRUPO A — sampleId com screen (R25-01) ===
+  PASS: A1: sampleId difere por tela (dash vs caixa)
+  PASS: A1: screen dash presente no sampleId
+  PASS: A1: screen caixa presente no sampleId
+  PASS: A2: sampleId difere por viewport (mobile vs desktop)
+  PASS: A2: prefixo mobile presente
+  PASS: A2: prefixo desktop presente
+  PASS: A3: sampleId difere por tema (3 vs 4)
+  PASS: A4: sampleId difere por estado (hover vs focus-visible)
+  PASS: A5: sampleId difere por índice (0 vs 1)
+  PASS: A6: sampleId difere por tela mesmo sem elementos correspondentes
+  PASS: A7: 50 chamadas sucessivas geram 50 sampleIds únicos
+  PASS: A7: registro real contém 50 sampleIds
+  PASS: A7b: registro real detecta sampleId duplicado
+  PASS: A8: prefixo r25- presente
+  PASS: A9: screen não resulta em segmento vazio
+  PASS: A9: screen dash está na posição correta
+
+=== GRUPO B — Associação key → nodeId (cardinalidade) (R25-02) ===
+  PASS: B1: 0 IDs resulta em node-not-found
+  PASS: B1: nodeId é null quando não há IDs
+  PASS: B1: idCount é 0
+  PASS: B2: 1 ID resulta em resolved
+  PASS: B2: nodeId é o ID resolvido
+  PASS: B2: idCount é 1
+  PASS: B3: mais de 1 ID resulta em ambiguous-node-association
+  PASS: B3: nodeId é null quando ambíguo (não escolhe primeiro)
+  PASS: B3: idCount registra a quantidade real de IDs
+  PASS: B4a: resolveNodeIdResult com 0 IDs retorna node-not-found
+  PASS: B4b: probeState retorna array mesmo com erro CDP
+  PASS: B4b: nenhuma ocorrência quando CDP falha na consulta
+  PASS: B5: múltiplos IDs não resultam em escolha arbitrária do primeiro
+  PASS: B5: nodeId é null quando há múltiplos IDs
+  PASS: B6: chave registrada
+  PASS: B6: seletor registrado
+  PASS: B6: quantidade de IDs registrada
+
+=== GRUPO C — Limpeza de pseudoestado (try/finally real) (R25-03) ===
+  PASS: C1: sampleId gerado com prefixo r25
+  PASS: C1: nodeId presente na ocorrência
+  PASS: C1: cleanupStatus é success quando limpeza bem-sucedida
+  PASS: C2: sem estado residual de :focus após probeState
+  PASS: C3: múltiplas chamadas de probeState executam sem falha em cadeia
+  PASS: C4: limpeza tentada após falha de computed style (cleanupStatus=success)
+  PASS: C4: amostra descartada quando computed style falha
+  PASS: C4: motivo é computed-style-error
+  PASS: C4: falha de computed style foi efetivamente injetada
+  PASS: C4b: limpeza tentada mesmo com falha na aplicação
+  PASS: C5: cleanupStatus é failed quando limpeza falha
+  PASS: C5: amostra descartada quando limpeza falha
+  PASS: C5: motivo é cleanup-failed
+  PASS: C5: falha de limpeza foi efetivamente injetada
+  PASS: C6: primeira chamada produz ocorrências
+  PASS: C6: primeira chamada limpeza success
+  PASS: C6: segunda chamada produz ocorrências mesmo com falha na limpeza
+  PASS: C6: segunda chamada limpeza failed
+  PASS: C6: segunda chamada amostra descartada
+  PASS: C6: terceira chamada produz ocorrências após recuperação
+  PASS: C6: terceira chamada limpeza success após recuperação
+
+=== GRUPO D — Visibilidade efetiva e ancestrais (R25-04) ===
+  PASS: D1: elemento visível tem visibilityStatus visible
+  PASS: D1: elemento visível tem geometryStatus available
+  PASS: D1: rect disponível para elemento visível
+  PASS: D2: display:none resulta em visibilityStatus hidden
+  PASS: D3: visibility:hidden resulta em visibilityStatus hidden
+  PASS: D4: opacity:0 resulta em visibilityStatus not-visible (não visível)
+  PASS: D4: valor original de opacity preservado (não convertido para 1)
+  PASS: D5: dimensões zero resulta em visibilityStatus not-visible
+  PASS: D5: geometria degenerada (dimensões zero) tem geometryStatus unavailable
+  PASS: D5: retângulo é null para geometria degenerada
+  PASS: D6: ancestral com opacity:0 resulta em visibilityStatus not-visible
+  PASS: D6: ancestorOpacity acumulado é 0
+  PASS: D7: ancestral com display:none resulta em visibilityStatus hidden
+  PASS: D7: ancestorHidden é true
+  PASS: D8: ancestral sem alteração de opacidade tem ancestorOpacity=1
+  PASS: D8: ancestral sem display:none tem ancestorHidden=false
+  PASS: D9: ancestral com visibility:hidden resulta em visibilityStatus hidden
+  PASS: D9: ancestorHidden é true para ancestral visibility:hidden
+  PASS: D9: travessia de ancestral concluída com sucesso
+  PASS: D10: ancestral com visibility:collapse resulta em visibilityStatus hidden
+  PASS: D10: ancestorHidden é true para ancestral visibility:collapse
+  PASS: D11: falha na leitura de ancestral resulta em visibilityStatus unknown
+  PASS: D11: ancestorVisibility não é completed quando leitura falha
+  PASS: D11: ancestorFailureReason preenchido quando leitura falha
+  PASS: D12: ocorrência com ancestral opacity:0 tem visibilityStatus not-visible
+  PASS: D12: ocorrência com ancestral visível tem visibilityStatus visible
+  PASS: D12: cada ocorrência tem nodeId individual (identidade preservada)
+
+=== GRUPO V — Semântica de visibility (herança e sobrescrita) ===
+  PASS: V1: ancestral visible e descendente visible → visível
+  PASS: V2: ancestral hidden e descendente sem sobrescrita → oculto
+  PASS: V3: ancestral hidden e descendente visible → visível (sobrescrita)
+  PASS: V4: ancestral collapse e descendente sem sobrescrita → oculto
+  PASS: V5: ancestral collapse e descendente visible → resultado observado: visible
+    V5 observado: visibilityStatus=visible, ancestorHidden=true, ancestorVisibility=completed
+  PASS: V6: ancestral display:none e descendente visible → oculto (absoluto)
+  PASS: V7: ancestral opacity:0 → not-visible
+  PASS: V7: ancestorOpacity acumulado é 0
+  PASS: V8: dois ancestrais diferentes → respeitar computado do nível mais próximo
+  PASS: V9: falha na leitura de ancestral → visibilityStatus unknown, nunca visível
+  PASS: V9: ancestorVisibility não é completed quando leitura falha
+  PASS: V9: ancestorFailureReason preenchido
+  PASS: V10: ocorrência com ancestral opacity:0 → not-visible
+  PASS: V10: ocorrência com ancestral visível → visible
+  PASS: V11: travessia incompleta não pode confirmar visibilidade (unknown, nunca visible)
+  PASS: V11: falha na obtenção do pai resulta em ancestorVisibility partial
+  PASS: V11: estado desconhecido não descarta a amostra
+  PASS: V11: ancestorFailureReason preenchido
+  PASS: V11: evidência ancestorHidden do ancestral oculto foi preservada
+  PASS: V12: opacidade zero preservada apesar da falha posterior na travessia
+  PASS: V12: ancestorOpacity preservado em 0 após falha posterior
+  PASS: V12: travessia incompleta registrada mesmo com evidência absoluta presente
+  PASS: V13: visibilidade não confirmada quando a travessia falha com opacity parcial
+  PASS: V13: travessia incompleta ou erro registrado
+  PASS: V13: ancestorOpacity representa somente o valor parcial coletado (0.5)
+
+=== GRUPO P — Falha de aplicação de pseudoestado ===
+  PASS: P1: aplicação bem-sucedida → cleanupStatus success
+  PASS: P1: amostra válida quando aplicação bem-sucedida
+  PASS: P2: falha de aplicação foi efetivamente injetada
+  PASS: P2: amostra descartada quando aplicação falha
+  PASS: P2: motivo é pseudo-apply-error
+  PASS: P2: limpeza executada mesmo com falha de aplicação
+  PASS: P3: amostra descartada quando coleta falha após aplicação
+  PASS: P3: limpeza executada após falha de coleta
+  PASS: P4: falha de limpeza foi efetivamente injetada
+  PASS: P4: cleanupStatus é failed quando limpeza falha
+  PASS: P4: amostra não é íntegra quando limpeza falha
+  PASS: P5: falha de aplicação injetada
+  PASS: P5: falha de limpeza injetada
+  PASS: P5: amostra descartada
+  PASS: P5: cleanupStatus failed
+  PASS: P6: cleanupStatus not-required quando não há pseudoestado
+  PASS: P6: estado normal → visível
+  PASS: P7: amostra ocultada por visibility tem discarded = true
+  PASS: P7: motivo é visibility
+
+=== GRUPO R — Travessia da raiz do documento ===
+  PASS: R1: HTML opacity 1 → travessia concluída
+  PASS: R1: ancestorOpacity = 1 (HTML opacidade padrão)
+  PASS: R2: HTML opacity:0 → not-visible
+  PASS: R2: ancestorOpacity acumulado é 0 (HTML)
+  PASS: R3: HTML opacity:0.5 → ancestorOpacity = 0.5
+  PASS: R3: HTML opacity:0.5 (não zero) → visível
+  PASS: R4: HTML display:none → hidden
+  PASS: R5: HTML visibility:hidden e descendente sem sobrescrita → hidden
+  PASS: R6: falha ao ler estilo da raiz → visibilityStatus unknown
+  PASS: R6: ancestorVisibility não é completed quando leitura da raiz falha
+  PASS: R7: travessia normal até raiz → ancestorVisibility completed
+  PASS: R7: ancestorDepth > 0 (travessia alcançou ancestrais)
+
+=== GRUPO E — Atributos DOM com expectativas exatas (R25-05) ===
+  PASS: E1: tabindex="0" lido corretamente (valor="0")
+  PASS: E2: tabindex="-1" lido corretamente (valor="-1")
+  PASS: E3: tabindex ausente retorna null
+  PASS: E4: role="button" lido corretamente (valor="button")
+  PASS: E5: aria-label lido corretamente (valor="Rótulo de acessibilidade")
+  PASS: E6: disabled=true lido corretamente
+  PASS: E7: disabled=false lido corretamente
+
+=== GRUPO F — Validação geométrica (R25-05) ===
+  PASS: F1: retângulo válido retorna objeto
+  PASS: F1: geometria correta (x=10, y=10, w=40, h=40)
+  PASS: F2: quadrilátero rotacionado válido retorna objeto
+  PASS: F2: geometria rotacionada correta
+  PASS: F3: lista ausente retorna null
+  PASS: F4: lista com menos de 8 coordenadas retorna null
+  PASS: F5: coordenada NaN retorna null
+  PASS: F6: coordenada infinita retorna null
+  PASS: F7: valor textual inválido retorna null
+  PASS: F8: largura degenerada (zero) retorna null
+  PASS: F9: altura degenerada (zero) retorna null
+
+=== GRUPO G — Classificação de erros CDP (R25-07) ===
+  PASS: G1: nó removido classificado como node-detached
+  PASS: G1: confiança alta para node-detached
+  PASS: G2: seletor sem nós classificado como node-not-found
+  PASS: G3: box model não computável classificado como geometry-unavailable
+  PASS: G4: parâmetros inválidos classificado como protocol-error
+  PASS: G5: erro não mapeado classificado como unknown
+  PASS: G5: confiança baixa para erro desconhecido
+  PASS: G6: mensagem ambígua não classificada como node-detached sem evidência de remoção
+  PASS: G7: sampleId preservado no registro de erro
+  PASS: G7: nodeId preservado no registro de erro
+  PASS: G8: sampleId string vazia preservada (não nullificada)
+
+=== GRUPO H — Visibilidade de ancestrais com Chromium real ===
+  PASS: H1: elemento dentro de ancestral opacity:0 tem visibilityStatus not-visible via probeState real
+  PASS: H1: ancestorOpacity=0 detectado via probeState real
+  PASS: H2: elemento dentro de ancestral display:none tem visibilityStatus hidden via probeState real
+  PASS: H2: ancestorHidden=true detectado via probeState real
+
+=== GRUPO V — R25.5 estados da travessia, exceções reais, opacidade e Shadow DOM ===
+  PASS: V14: display:none em ancestral resulta em short-circuited
+  PASS: V14: display:none em ancestral nunca resulta em completed
+  PASS: V14: ancestorDisplayNone registra a evidência absoluta
+  PASS: V14: ancestorHidden preservado para compatibilidade
+  PASS: V14: display:none em ancestral resulta em visibilityStatus hidden
+  PASS: V14: opacidade interrompida por display:none é short-circuited
+  PASS: V15: display:none no nível 50 resulta em short-circuited
+  PASS: V15: display:none no nível 50 não é sobrescrito por depth-limit
+  PASS: V15: a falha no nível 50 foi alcançada antes da interrupção
+  PASS: V15: display:none absoluto mantém a conclusão hidden
+  PASS: V16: raiz real examinada no nível 50 resulta em completed
+  PASS: V16: a travessia examinou exatamente 50 nós
+  PASS: V16: cadeia completa resulta em opacidade complete
+  PASS: V16: travessia completa e opacidade completa confirmam visibilidade
+  PASS: V17: ancestral além do limite resulta em depth-limit
+  PASS: V17: a travessia parou no limite de 50 nós
+  PASS: V17: depth-limit nunca é apresentado como completed
+  PASS: V17: travessia incompleta não confirma visibilidade
+  PASS: V17: ancestorFailureReason registra o limite de profundidade
+  PASS: V18: ciclo na cadeia de ancestrais resulta em cycle
+  PASS: V18: cycle não é sobrescrito por depth-limit
+  PASS: V18: cycle nunca é apresentado como completed
+  PASS: V18: ciclo não permite confirmar visibilidade
+  PASS: V19: falha sem exceção na obtenção do pai resulta em partial
+  PASS: V19: partial nunca é apresentado como completed
+  PASS: V19: ancestorFailureReason preenchido na falha de leitura
+  PASS: V19: travessia parcial não confirma visibilidade
+  PASS: V20: exceção real em Runtime.callFunctionOn resulta em error
+  PASS: V20: exceção real não é convertida em partial
+  PASS: V20: a causa da exceção é registrada
+  PASS: V20: exceção impede a confirmação de visibilidade
+  PASS: V21: exceção real após opacidade zero resulta em error
+  PASS: V21: a opacidade zero já coletada é preservada após a exceção
+  PASS: V21: o produto zero já alcançado é conclusivo apesar da exceção
+  PASS: V21: exceção posterior ao opacidade zero mantém not-visible
+  PASS: V22: exceção real resulta em error
+  PASS: V22: a evidência ancestorHidden anterior à exceção é preservada
+  PASS: V22: com ancestral oculto e descendente visível, o resultado é unknown
+  PASS: V22: estado desconhecido não descarta a amostra
+  PASS: V23: exceção na primeira leitura de estilo resulta em error
+  PASS: V23: nenhuma opacidade é presumida quando a leitura falha
+  PASS: V23: o estado da opacidade reflete a exceção
+  PASS: V23: a visibilidade não é confirmada após exceção na primeira leitura
+  PASS: V24: cadeia completa de opacidade resulta em complete
+  PASS: V24: a opacidade completa acumulada é 1
+  PASS: V24: a travessia completa resulta em completed
+  PASS: V25: cadeia incompleta com produto diferente de zero resulta em partial
+  PASS: V25: o valor parcial acumulado é preservado
+  PASS: V25: a travessia incompleta é registrada como partial
+  PASS: V26: produto zero seguido de falha resulta em conclusive-zero
+  PASS: V26: o produto zero é preservado
+  PASS: V26: a evidência de opacidade zero permanece conclusiva
+  PASS: V27: opacidade inválida não é convertida em 1
+  PASS: V27: opacidade inválida é registrada como invalid
+  PASS: V27: opacidade inválida impede a confirmação de visibilidade
+  PASS: V27: opacidade fora do intervalo CSS [0,1] não é convertida em 1
+  PASS: V27: opacidade fora do intervalo é registrada como invalid
+  PASS: V28: opacidade parcial não pode produzir visible
+  PASS: V28: opacidade parcial resulta em unknown
+  PASS: V29: a travessia através do shadow root alcança a raiz do documento
+  PASS: V29: a opacidade do host Shadow DOM foi incluída na travessia
+  PASS: V29: a travessia percorreu o ancestral intermediário e o host
+  PASS: V29: elemento em shadow tree visível mantém visibilidade confirmada
+  PASS: V30: opacity:0 no host Shadow DOM produz not-visible
+  PASS: V30: a opacidade zero do host foi detectada na travessia composta
+  PASS: V30: a opacidade zero composta é conclusiva
+  PASS: V31: display:none no host Shadow DOM produz hidden
+  PASS: V31: display:none no host interrompe a travessia como short-circuited
+  PASS: V31: a interrupção por display:none não é completed
+  BLOCKED: V32: distribuição real por slot não observável neste ambiente — assignedSlot permanece null e slot.assignedNodes() retorna lista vazia no Chromium 156.0.8078.79 (build Termux/Android), inclusive no caso canônico
+  PASS: V32: observado — a travessia do elemento no shadow root alcança a raiz via host
+  PASS: V32b: a precedência prefere assignedSlot a parentElement na travessia
+  PASS: V32b: a travessia composta com assignedSlot alcança a raiz do documento
+  PASS: V32b: a cadeia composta com assignedSlot resulta em complete
+  PASS: V33: elemento desconectado não é declarado completed
+  PASS: V33: elemento desconectado resulta em travessia parcial
+  PASS: V33: elemento desconectado não tem visibilidade confirmada
+  PASS: V34: estado terminal preservado sem sobrescrita posterior — display:none em ancestral
+  PASS: V34: estado terminal preservado sem sobrescrita posterior — display:none no nível 50
+  PASS: V34: estado terminal preservado sem sobrescrita posterior — raiz no nível 50
+  PASS: V34: estado terminal preservado sem sobrescrita posterior — ancestral além do limite
+  PASS: V34: estado terminal preservado sem sobrescrita posterior — ciclo
+  PASS: V34: estado terminal preservado sem sobrescrita posterior — falha sem exceção
+  PASS: V34: estado terminal preservado sem sobrescrita posterior — exceção real
+  PASS: V34: depth-limit e short-circuited são estados distintos e não se confundem
+  PASS: V34: nenhum dos casos terminais foi convertido em completed
+  PASS: V35: ancestorOpacityStatus corresponde ao cenário — complete
+  PASS: V35: ancestorOpacity corresponde ao valor observado — complete
+  PASS: V35: ancestorOpacityStatus corresponde ao cenário — partial
+  PASS: V35: ancestorOpacity corresponde ao valor observado — partial
+  PASS: V35: ancestorOpacityStatus corresponde ao cenário — conclusive-zero
+  PASS: V35: ancestorOpacity corresponde ao valor observado — conclusive-zero
+  PASS: V35: ancestorOpacityStatus corresponde ao cenário — short-circuited
+  PASS: V35: ancestorOpacity corresponde ao valor observado — short-circuited
+  PASS: V35: ancestorOpacityStatus corresponde ao cenário — invalid
+  PASS: V35: ancestorOpacity corresponde ao valor observado — invalid
+  PASS: V35: ancestorOpacityStatus corresponde ao cenário — error
+  PASS: V35: ancestorOpacity corresponde ao valor observado — error
+  PASS: V36: discarded é coerente com visibilityStatus hidden
+  PASS: V36: discarded é coerente com visibilityStatus not-visible
+  PASS: V36: discarded é coerente com visibilityStatus unknown por travessia parcial
+  PASS: V36: discarded é coerente com visibilityStatus unknown por exceção real
+  PASS: V36: discarded é coerente com visibilityStatus visible
+  PASS: V36: amostras descartadas por visibilidade registram o motivo visibility
+  PASS: V37: campo legado preservado — ancestorVisibility
+  PASS: V37: campo legado preservado — ancestorOpacity
+  PASS: V37: campo legado preservado — ancestorHidden
+  PASS: V37: campo legado preservado — ancestorDepth
+  PASS: V37: campo legado preservado — ancestorFailureReason
+  PASS: V37: campo legado preservado — visibilityStatus
+  PASS: V37: campo legado preservado — geometryStatus
+  PASS: V37: campo legado preservado — discarded
+  PASS: V37: campo legado preservado — reason
+  PASS: V37: campo legado preservado — sampleId
+  PASS: V37: campo legado preservado — index
+  PASS: V37: campo legado preservado — selector
+  PASS: V37: campo legado preservado — state
+  PASS: V37: campo legado preservado — nodeId
+  PASS: V37: campo novo presente — ancestorOpacityStatus
+  PASS: V37: campo novo presente — ancestorDisplayNone
+  PASS: V37: os campos de evidência mantêm o tipo booleano
+  PASS: V37: ancestorOpacity permanece numérico ou nulo
+  PASS: V37: ancestorDepth permanece numérico
+  PASS: V38: o JSON serializado preserva o campo — sampleId
+  PASS: V38: o JSON serializado preserva o campo — index
+  PASS: V38: o JSON serializado preserva o campo — selector
+  PASS: V38: o JSON serializado preserva o campo — state
+  PASS: V38: o JSON serializado preserva o campo — nodeId
+  PASS: V38: o JSON serializado preserva o campo — ancestorVisibility
+  PASS: V38: o JSON serializado preserva o campo — ancestorOpacity
+  PASS: V38: o JSON serializado preserva o campo — ancestorOpacityStatus
+  PASS: V38: o JSON serializado preserva o campo — ancestorHidden
+  PASS: V38: o JSON serializado preserva o campo — ancestorDisplayNone
+  PASS: V38: o JSON serializado preserva o campo — ancestorDepth
+  PASS: V38: o JSON serializado preserva o campo — visibilityStatus
+  PASS: V38: o JSON serializado preserva o campo — discarded
+  PASS: V38: a rastreabilidade da ocorrência (sampleId) é preservada
+  PASS: V38: índice e nodeId identificam a ocorrência específica
+  PASS: V38: o novo campo de integridade da opacidade sobrevive à serialização
+
+=== GRUPO X — R25.6 contrato de excecoes CDP (excecao real no Chromium) ===
+  PASS: X1: a resposta CDP do Chromium contem exceptionDetails (excecao real executada)
+  PASS: X1: a chamada CDP foi resolvida com exceptionDetails, e nao rejeitada
+  PASS: X1: exceptionDetails na leitura do pai resulta em error
+  PASS: X1: exceptionDetails nao e classificado como partial
+  PASS: X1: exceptionDetails nao e classificado como unavailable
+  PASS: X1: ancestorFailureReason identifica a excecao occorrida no navegador
+  PASS: X1: o estado da opacidade reflete a excecao
+  PASS: X2: a excecao real ocorreu no navegador durante a leitura do pai
+  PASS: X2: a excecao real resulta em error
+  PASS: X2: a opacidade zero ja coletada e preservada apos a excecao
+  PASS: X2: a opacidade zero permanece conclusiva apesar da excecao
+  PASS: X2: a classificacao final permanece not-visible
+  PASS: X3: a excecao real ocorreu no navegador durante a leitura do pai
+  PASS: X3: a excecao real resulta em error
+  PASS: X3: a evidencia ancestorHidden anterior a excecao e preservada
+  PASS: X3: com descendente visivel e ancestral oculto em falha, o resultado e unknown
+  PASS: X3: a falha posterior impede a confirmacao de visibilidade
+  PASS: X3: estado desconhecido nao descarta a amostra
+  PASS: X4: os dois caminhos de excecao resultam em error
+  PASS: X4: cada caminho registra a sua propria causa, distinguindo execucao no navegador de rejeicao no cliente
+  PASS: X4: o caminho de rejeicao no cliente foi de fato exercitado
+  PASS: Y5: todas as associacoes key->nodeId do lote permanecem validas apos a resolucao
+  PASS: Y5: nenhuma associacao resolvida foi invalidada durante o lote
+  PASS: Y5: o lote contem mais de uma associacao resolvida (caso que expunha o defeito)
+
+=== GRUPO Y — R25.6 integracao da coleta principal com o nucleo ===
+  PASS: Y1: a associacao key->nodeId foi resolvida pelo fluxo real
+  PASS: Y1: a travessia foi executada pelo mecanismo do nucleo compartilhado
+  PASS: Y1: o campo ancestorVisibility da linha final vem do resultado do nucleo
+  PASS: Y1: o campo ancestorOpacity da linha final vem do resultado do nucleo
+  PASS: Y1: o campo ancestorOpacityStatus da linha final vem do resultado do nucleo
+  PASS: Y1: o campo ancestorHidden da linha final vem do resultado do nucleo
+  PASS: Y1: o campo ancestorDisplayNone da linha final vem do resultado do nucleo
+  PASS: Y1: o campo ancestorDepth da linha final vem do resultado do nucleo
+  PASS: Y1: o campo ancestorFailureReason da linha final vem do resultado do nucleo
+  PASS: Y1: a travessia da linha real foi concluida ate a raiz
+  PASS: Y1: a opacidade da linha real foi acumulada de forma completa
+  PASS: Y1: travessia completa e opacidade completa produzem visible na linha da coleta
+  PASS: Y1: a linha final preserva a associacao resolvida
+  PASS: Y2: a opacidade zero do ancestral chegou a linha final pelo mecanismo
+  PASS: Y2: a opacidade zero e conclusiva na linha final
+  PASS: Y2: a opacidade zero comprovada produz not-visible na linha da coleta
+  PASS: Y2: a linha com opacidade zero nunca e declarada visible
+  PASS: Y3: a travessia incompleta e registrada como partial na linha final
+  PASS: Y3: travessia incompleta nao produz visible na linha da coleta
+  PASS: Y3: a linha com travessia incompleta nunca e declarada visible
+  PASS: Y4: associacao invalida registra estado indisponivel
+  PASS: Y4: associacao invalida nao inventa opacidade igual a 1
+  PASS: Y4: o estado da opacidade e indisponivel quando a travessia nao ocorreu
+  PASS: Y4: a causa explicita da associacao invalida e registrada
+  PASS: Y4: associacao invalida nao confirma visibilidade
+  PASS: Y4: associacao invalida nunca produz visible
+  PASS: Y4: a captura de regras CSS permanece sinalizada para associacao invalida
+
+=== GRUPO Z — R25.7 identidade de execucao da coleta ===
+  PASS: Z1: com chaves reutilizadas, a resolucao real encontra dois elementos para a mesma chave
+  PASS: Z1: a reutilizacao de chave produz ambiguous-node-association (reproducao de F-04)
+  PASS: Z1: a associacao ambigua nao escolhe arbitrariamente um nodeId
+  PASS: Z2: cada execucao da coleta tem identificador proprio
+  PASS: Z2: o identificador de execucao e monotonico no contexto da pagina
+  PASS: Z2: nenhuma chave e reutilizada entre execucoes
+  PASS: Z2: todas as chaves da execucao atual carregam o identificador da execucao
+  PASS: Z3: todas as linhas da execucao atual foram resolvidas sem ambiguidade
+  PASS: Z3: cada associacao da execucao atual aponta para exatamente um nodeId
+  PASS: Z3: o nodeId resolvido pertence ao elemento que recebeu a chave da execucao atual
+  PASS: Z3: o elemento da execucao anterior conserva o proprio atributo (nao e apagado)
+  PASS: Z3: o elemento da execucao anterior nao recebeu a chave da execucao atual
+  PASS: Z4: as tres execucoes tem identificadores distintos
+  PASS: Z4: os identificadores de execucao sao estritamente crescentes
+  PASS: Z4: nenhuma chave se repete entre as tres execucoes
+  PASS: Z4: todas as linhas das tres execucoes foram resolvidas
+  PASS: Z4: nenhuma associacao das tres execucoes e ambigua
+  PASS: Z4: uma chave de execucao anterior nao e resolvida na execucao atual
+  PASS: Z5: a execucao com a view anterior oculta e montada resolve sem ambiguidade
+  PASS: Z5: a view anterior oculta e montada nao reutiliza a chave da execucao atual
+  PASS: Z5: o consumidor da view oculta nao e descoberto pela execucao atual (pre-filtro de visibilidade)
+  PASS: Z5: o consumidor oculto mantem o atributo da execucao que o descobriu
+  PASS: Z6: chave inexistente resulta em node-not-found
+  PASS: Z6: chave inexistente nao produz nodeId
+  PASS: Z7: chave duplicada dentro da execucao atual resulta em ambiguous-node-association
+  PASS: Z7: a duplicidade real e detectada e nenhum nodeId e escolhido
+  PASS: Z8: chave antiga de outra execucao nao e resolvida na execucao atual
+  PASS: Z8: a chave antiga nao produz nodeId na execucao atual
+  PASS: Z8: a recusa da chave antiga registra causa explicita
+  PASS: Z9: erro CDP durante a resolucao resulta em cdp-error
+  PASS: Z9: erro CDP nao produz nodeId
+  PASS: Z9: o erro CDP e registrado no registro de erros
+  PASS: Z10: sem identificador de execucao, nenhuma associacao e resolvida
+
+=== RESUMO DOS TESTES CONTROLADOS R2.5.7 ===
+PASS: 392 FAIL: 0 BLOCKED: 1

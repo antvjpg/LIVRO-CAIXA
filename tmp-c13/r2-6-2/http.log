@@ -1,0 +1,8 @@
+127.0.0.1 - - [21/Nov/2026 12:51:56] "GET /tmp-c13/r2-6-2/fixture.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 12:52:07] "GET /tmp-c13/r2-6-2/fixture.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 12:52:07] code 404, message File not found
+127.0.0.1 - - [21/Nov/2026 12:52:07] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [21/Nov/2026 13:08:59] "GET /tmp-c13/r2-6-2/fixture.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 13:09:09] "GET /tmp-c13/r2-6-2/fixture.html HTTP/1.1" 200 -
+127.0.0.1 - - [21/Nov/2026 13:09:10] code 404, message File not found
+127.0.0.1 - - [21/Nov/2026 13:09:10] "GET /favicon.ico HTTP/1.1" 404 -

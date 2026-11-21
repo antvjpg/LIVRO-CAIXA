@@ -1,0 +1,55 @@
+{
+  "id": "R2.6-FASE3",
+  "data": "2026-11-21T20:51:40.967Z",
+  "objetivo": "verificar heranca explicita e implicita sem vencedor ficticio",
+  "resultados": [
+    {
+      "id": "C07",
+      "alvo": "#r261-inherit",
+      "esperado": {
+        "source": "stylesheet",
+        "declared": "inherit",
+        "resolved": "rgb(95, 122, 67)",
+        "selector": "#r261-inherit"
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "source": "stylesheet",
+        "selectorText": "#r261-inherit",
+        "declaredValueCanonico": "inherit",
+        "resolvedValueNucleo": "rgb(95, 122, 67)",
+        "computedStyleCDP": "rgb(95, 122, 67)",
+        "inheritedGroups": 3,
+        "inheritedColorRules": 1
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "C08",
+      "alvo": "#r261-inherit-implicit",
+      "esperado": {
+        "source": "inherited",
+        "declared": "var(--accent)",
+        "resolved": "rgb(95, 122, 67)",
+        "selector": ".r261-parent-implicit"
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "source": "inherited",
+        "selectorText": ".r261-parent-implicit",
+        "declaredValueCanonico": "var(--accent)",
+        "resolvedValueNucleo": "rgb(95, 122, 67)",
+        "computedStyleCDP": "rgb(95, 122, 67)",
+        "inheritedGroups": 3,
+        "inheritedColorRules": 1
+      },
+      "status": "PASS"
+    }
+  ],
+  "resumo": {
+    "total": 2,
+    "PASS": 2,
+    "FAIL": 0,
+    "errosCDP": 0
+  }
+}

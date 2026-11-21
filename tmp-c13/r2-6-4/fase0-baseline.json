@@ -1,0 +1,67 @@
+{
+  "id": "R2.6-FASE0",
+  "geradoEm": "2026-11-21T20:39:17.556085+00:00",
+  "git": {
+    "branch": "feat/app-layout-redesign",
+    "head": "adce77e306576a1c52a3bc21d92e2cc6f9055134",
+    "status": [
+      "?? tmp-c13/c4-accent-chromium.log",
+      "?? tmp-c13/c4-accent-http.log",
+      "?? tmp-c13/c4-ci-e2e.log",
+      "?? tmp-c13/r2-6-2/chromium.log",
+      "?? tmp-c13/r2-6-2/http.log",
+      "?? tmp-c13/r2-6-4/chromium.log",
+      "?? tmp-c13/r2-6-4/http.log"
+    ],
+    "trackedModified": 0
+  },
+  "integridade_historica": {
+    "metodo": "recalculacao somente leitura dos 11 artefatos declarados no manifesto R2.5.7",
+    "observacao": "o script verificar-manifesto-r2-5-7.cjs grava verifiedAt/counters no manifesto; nao foi executado para preservar o historico",
+    "manifestoShaAntes": "c3b8249bc3db097ed1883d8eafb5273e06f188d5c29f495a75c5bde69768d5b2",
+    "manifestoShaDepois": "c3b8249bc3db097ed1883d8eafb5273e06f188d5c29f495a75c5bde69768d5b2",
+    "manifestoInalterado": true,
+    "artefatosDeclarados": 11,
+    "match": 11,
+    "mismatch": 0,
+    "missing": 0,
+    "detalhes": [
+      { "name": "c4-v05-b-r2-5-7.cjs", "status": "MATCH" },
+      { "name": "c4-v05-b-r2-5-7-test.cjs", "status": "MATCH" },
+      { "name": "c4-v05-b-r2-5-7-test-fixtures.html", "status": "MATCH" },
+      { "name": "c4-v05-b-r2-5-7-test.log", "status": "MATCH" },
+      { "name": "c4-v05-b-r2-5-7-test-results.json", "status": "MATCH" },
+      { "name": "gerar-resultados-r2-5-7.cjs", "status": "MATCH" },
+      { "name": "gerar-manifesto-r2-5-7.cjs", "status": "MATCH" },
+      { "name": "verificar-manifesto-r2-5-7.cjs", "status": "MATCH" },
+      { "name": "DIAGNOSTICO-R2-5-7.md", "status": "MATCH" },
+      { "name": "INDICE-EVIDENCIAS-R2-5-7.md", "status": "MATCH" },
+      { "name": "RELATORIO-FINAL-R2-5-7.md", "status": "MATCH" }
+    ],
+    "testResultsSha": "8a68d8ea0902e8500e77fc9da8ba1a16ddfafd6a565a4c24e030d7edc4438a5c",
+    "summaryDeclarado": { "total": 393, "passed": 392, "failed": 0, "blocked": 1 },
+    "testsArrayCount": 393,
+    "groupsCount": 14,
+    "summaryMatchesLog": true,
+    "groupsMatchSummary": true
+  },
+  "hashes": {
+    "nucleo_historico_r256": "43b0039e491096fa5497ec6bc4c6e2f29efe86665491b51d741ed0b4b832f006",
+    "nucleo_candidato_r26": "a373707ae029b0c7465d66959f9ae02aea36c8486953ecedc1fb6c2245232a70",
+    "fixture_r262": "385d364bc624799af8ead55ba15514101b2e3e13770237146d7fbb7a8654e024",
+    "matriz_r262": "e7e7142c08c906e7aafb9b70f3694786b6153e0892d2d67252e7a819614ef5e5",
+    "validador_r263": "6f10c234cdcae20ac830998d3fec5416ea0847b0745800fc461567d9aeff7ce5",
+    "resultado_correcao": "02bc71eab65dc6c3cd280cc1f49514cc23ba155ead6163f7129cab9d9c5962b9",
+    "resultado_historico_reexecucao": "a3fdb4e8bf1b1275c6d8f1f5dfc21b70989d9bde22f7e44fd70e7ffe3950948b",
+    "relatorio_r264": "214cea6274c172b87c9bf6ff91649ec62983af6865b562b8998c3c38e6a200ee",
+    "relatorio_correcoes": "b7a61ee3b84b432048a028c2268914f85d97595a580df8ecb8643bd4eeeedc3c",
+    "manifesto_r257": "c3b8249bc3db097ed1883d8eafb5273e06f188d5c29f495a75c5bde69768d5b2",
+    "test_results_r257": "8a68d8ea0902e8500e77fc9da8ba1a16ddfafd6a565a4c24e030d7edc4438a5c"
+  },
+  "comandos": [
+    "node --check <arquivo.js>",
+    "node docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test.cjs",
+    "node docs/auditorias/c4-v05-b/evidencias-r2-5-7/verificar-manifesto-r2-5-7.cjs (grava no manifesto; usar apenas se autorizado)",
+    "node tmp-c13/r2-6-2/validacao-r2-6-3.cjs --core=<nucleo> --out=<saida>"
+  ]
+}

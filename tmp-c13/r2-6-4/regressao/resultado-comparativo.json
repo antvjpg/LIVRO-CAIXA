@@ -1,0 +1,60 @@
+{
+  "id": "R2.6-FASE6",
+  "data": "2026-11-21",
+  "objetivo": "regressao dos 393 registros R2.5.7 com o nucleo corrigido R2.6",
+  "nucleo": {
+    "historico": "43b0039e491096fa5497ec6bc4c6e2f29efe86665491b51d741ed0b4b832f006",
+    "corrigido": "a373707ae029b0c7465d66959f9ae02aea36c8486953ecedc1fb6c2245232a70"
+  },
+  "copiasControladas": {
+    "harness": {
+      "arquivo": "tmp-c13/r2-6-4/regressao/harness-r2-6.cjs",
+      "sha256": "f6367ef735606813534624d6675a3c2dac644ce726cd758a98c06ed02a708ef4",
+      "originaisPreservados": true
+    },
+    "teste": {
+      "arquivo": "tmp-c13/r2-6-4/regressao/test-r2-6.cjs",
+      "sha256": "1e047da2cd5dbfebaa70f7fc7f97ffdd4315aaa265bf8747eaf7c32515644c03",
+      "originaisPreservados": true
+    }
+  },
+  "execucao": {
+    "log": "tmp-c13/r2-6-4/regressao/test-r2-6.log",
+    "sha256": "5762bcb4f232c260988a56dfc8e4c9cbe5e1d9549fa4fbca83995f87882beb9f",
+    "exitCode": 0,
+    "tests": 393,
+    "groups": 14,
+    "summary": { "PASS": 392, "FAIL": 0, "BLOCKED": 1 },
+    "blockedIds": ["V32"]
+  },
+  "baseline": {
+    "arquivo": "docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json",
+    "sha256": "8a68d8ea0902e8500e77fc9da8ba1a16ddfafd6a565a4c24e030d7edc4438a5c",
+    "logSha256Declarado": "5762bcb4f232c260988a56dfc8e4c9cbe5e1d9549fa4fbca83995f87882beb9f",
+    "summary": { "total": 393, "passed": 392, "failed": 0, "blocked": 1 },
+    "tests": 393,
+    "groups": 14
+  },
+  "comparacao": {
+    "porPosicao": { "comparados": 393, "correspondencias": 393, "divergencias": 0 },
+    "porMulticonjuntoIdStatus": { "igual": true, "somenteBaseline": 0, "somenteNovo": 0 },
+    "porIdUnico": { "unicos": 134, "correspondencias": 134, "divergencias": 0 },
+    "logShaIdenticoAoBaseline": true,
+    "interpretacaoLogIdentico": "prova igualdade de status/ordem dos 393 testes; nao prova igualdade de todos os campos de dados",
+    "divergenciasClassificadas": [],
+    "regressoes": [],
+    "mudancasIntencionais": [],
+    "inconclusivas": []
+  },
+  "limitacoes": [
+    "Nao ha JSON de saida C4_OUT da reexecucao; comparacao cobre integralmente (id, status, posicao), nao o registro completo.",
+    "Execucoes de coleta com C4_OUT foram abortadas pelo usuario, sem gerar arquivo.",
+    "CI/Linux nao executado: push vetado e harness historico nao migrado."
+  ],
+  "distribuicaoGrupos": {
+    "A": 16, "B": 17, "C": 21, "D": 27, "E": 7, "F": 11, "G": 11,
+    "H": 4, "P": 19, "R": 12, "V": 164, "X": 21, "Y": 30, "Z": 33
+  },
+  "aceiteG6": "PASS (com ressalva de evidencia de dados)",
+  "observacao": "O log da reexecucao e byte-identico ao log historico declarado no baseline; nenhum arquivo historico foi sobrescrito. A igualdade e evidencia de status/ordem, nao de todos os campos de dados."
+}

@@ -1,0 +1,54 @@
+{
+  "id": "R2.6-FASE1-ORDEM-INVERSA",
+  "data": "2026-11-21T20:46:36.518Z",
+  "objetivo": "verificar que specificity/important vencem mesmo com matchedCSSRules invertido",
+  "resultados": [
+    {
+      "id": "C03-inverso",
+      "expected": {
+        "selectorText": "button.r261-spec",
+        "value": "var(--accent)",
+        "important": false
+      },
+      "observed": {
+        "selectorText": "button.r261-spec",
+        "value": "var(--accent)",
+        "important": false,
+        "source": "stylesheet",
+        "specificity": {
+          "a": 0,
+          "b": 1,
+          "c": 1
+        }
+      },
+      "captureStatus": "captured",
+      "status": "PASS"
+    },
+    {
+      "id": "C04-inverso",
+      "expected": {
+        "selectorText": ".r261-important",
+        "value": "var(--accent)",
+        "important": true
+      },
+      "observed": {
+        "selectorText": ".r261-important",
+        "value": "var(--accent) !important",
+        "important": true,
+        "source": "stylesheet",
+        "specificity": {
+          "a": 0,
+          "b": 1,
+          "c": 0
+        }
+      },
+      "captureStatus": "captured",
+      "status": "PASS"
+    }
+  ],
+  "resumo": {
+    "total": 2,
+    "PASS": 2,
+    "FAIL": 0
+  }
+}

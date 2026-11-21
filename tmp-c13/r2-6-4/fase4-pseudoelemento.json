@@ -1,0 +1,34 @@
+{
+  "id": "R2.6-FASE4",
+  "data": "2026-11-21T20:52:54.667Z",
+  "objetivo": "verificar pseudoelemento isolado do elemento proprietario",
+  "esperado": {
+    "source": "stylesheet",
+    "selectorText": "#r261-pseudo::before",
+    "pseudoElement": "::before",
+    "declared": "var(--accent)",
+    "resolved": "rgb(95, 122, 67)",
+    "ownerSelector": "#r261-pseudo",
+    "ownerDeclared": "rgb(17, 17, 17)"
+  },
+  "observado": {
+    "pseudo": {
+      "captureStatus": "captured",
+      "source": "stylesheet",
+      "selectorText": "#r261-pseudo::before",
+      "pseudoElement": "::before",
+      "declaredValueCanonico": "var(--accent)",
+      "resolvedValueNucleo": "rgb(95, 122, 67)"
+    },
+    "owner": {
+      "captureStatus": "captured",
+      "selectorText": "#r261-pseudo",
+      "declaredValueCanonico": "rgb(17, 17, 17)",
+      "resolvedValueNucleo": "rgb(17, 17, 17)"
+    },
+    "pseudoElementsNoCDP": 1,
+    "pseudoMatches": 1
+  },
+  "status": "PASS",
+  "errosCDP": 0
+}
