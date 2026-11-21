@@ -1,0 +1,401 @@
+{
+  "meta": {
+    "task": "C.0 — fechamento do baseline técnico",
+    "branch": "feat/app-layout-redesign",
+    "head": "95b92c6aaf059f4d224dddc478ef201a2b31f503",
+    "upstream": "95b92c6aaf059f4d224dddc478ef201a2b31f503",
+    "statusEntries": 0,
+    "excludedFromStatus": "tmp-c13/c0-* (evidencias e logs desta propria coleta)",
+    "originMain": "0 84",
+    "localMain": "0 130",
+    "remoteUrl": "git@github.com:antvjpg/LIVRO-CAIXA.git",
+    "lastCommit": "95b92c6aaf059f4d224dddc478ef201a2b31f503 2026-11-20T20:13:18-03:00 docs: corrige e reorganiza documentacao funcional de docs/ (F0-F7)"
+  },
+  "startedAt": "2026-11-21T00:03:40.884Z",
+  "server": {
+    "url": "http://127.0.0.1:8000",
+    "command": "python3 -m http.server 8000 --bind 127.0.0.1",
+    "httpStatus": "200"
+  },
+  "environment": {
+    "browserProduct": "Chrome/156.0.8078.79",
+    "browserRevision": "@a21ce95c24ce3964416f09ae1862f53f319eb4d0",
+    "browserUserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "runtime": {
+      "href": "http://127.0.0.1:8000/index.html",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1
+      },
+      "readyState": "complete",
+      "bodyClass": "",
+      "lightTheme": "1",
+      "darkTheme": "",
+      "destinationButtons": 5,
+      "stylesheets": 10,
+      "scripts": 44
+    },
+    "domReady": true,
+    "blockedExternalRequests": 13,
+    "blockedExamples": [
+      "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open",
+      "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+      "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+      "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",
+      "https://cdn.jsdelivr.net/npm/chart.js",
+      "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
+      "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
+      "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"
+    ],
+    "consoleErrors": [],
+    "exceptions": [],
+    "externalPolicy": "Fetch.requestPaused: somente 127.0.0.1:8000, data: e about: são liberados",
+    "firebaseStub": "stub mínimo injetado via Page.addScriptToEvaluateOnNewDocument",
+    "serviceWorker": "ServiceWorker.disable() + Network.setCacheDisabled(true)"
+  },
+  "served": [
+    {
+      "path": "index.html",
+      "httpStatus": 200,
+      "servedSha256": "1246d07bb5ebfa3363751b41a79518b980f8a54542946020f043d56212312342",
+      "localSha256": "1246d07bb5ebfa3363751b41a79518b980f8a54542946020f043d56212312342",
+      "headSha256": "1246d07bb5ebfa3363751b41a79518b980f8a54542946020f043d56212312342"
+    },
+    {
+      "path": "js/00-bootstrap.js",
+      "httpStatus": 200,
+      "servedSha256": "8e247e8524794285534b82ad33badd95bb068f4daa31800816152ddc47c9a7fd",
+      "localSha256": "8e247e8524794285534b82ad33badd95bb068f4daa31800816152ddc47c9a7fd",
+      "headSha256": "8e247e8524794285534b82ad33badd95bb068f4daa31800816152ddc47c9a7fd"
+    },
+    {
+      "path": "js/10-state-utils.js",
+      "httpStatus": 200,
+      "servedSha256": "63b16179d2580dc34c20c68079be9373003ea3b2ed83ddbd80ce53f715be15b0",
+      "localSha256": "63b16179d2580dc34c20c68079be9373003ea3b2ed83ddbd80ce53f715be15b0",
+      "headSha256": "63b16179d2580dc34c20c68079be9373003ea3b2ed83ddbd80ce53f715be15b0"
+    },
+    {
+      "path": "js/11-financial-domain.js",
+      "httpStatus": 200,
+      "servedSha256": "159d6a48ddb82fd1e748b1f5e7a548f80ff251a8bd14cc3091d8a98a4c7a5af7",
+      "localSha256": "159d6a48ddb82fd1e748b1f5e7a548f80ff251a8bd14cc3091d8a98a4c7a5af7",
+      "headSha256": "159d6a48ddb82fd1e748b1f5e7a548f80ff251a8bd14cc3091d8a98a4c7a5af7"
+    },
+    {
+      "path": "js/12-auth-session.js",
+      "httpStatus": 200,
+      "servedSha256": "75d8efcdaa7b3b34296a8f494729b02cee19217c75e670bba906e5d521efa960",
+      "localSha256": "75d8efcdaa7b3b34296a8f494729b02cee19217c75e670bba906e5d521efa960",
+      "headSha256": "75d8efcdaa7b3b34296a8f494729b02cee19217c75e670bba906e5d521efa960"
+    },
+    {
+      "path": "js/13-backup.js",
+      "httpStatus": 200,
+      "servedSha256": "3e16989b53e2bf666eddf80bb4cf2fd71f1a27398a710825cee2dab5682a5ad5",
+      "localSha256": "3e16989b53e2bf666eddf80bb4cf2fd71f1a27398a710825cee2dab5682a5ad5",
+      "headSha256": "3e16989b53e2bf666eddf80bb4cf2fd71f1a27398a710825cee2dab5682a5ad5"
+    },
+    {
+      "path": "js/14-theme.js",
+      "httpStatus": 200,
+      "servedSha256": "9fd31b6c1232859bea468cc14dbf1f739b9c58600b614a03738977b9c921f294",
+      "localSha256": "9fd31b6c1232859bea468cc14dbf1f739b9c58600b614a03738977b9c921f294",
+      "headSha256": "9fd31b6c1232859bea468cc14dbf1f739b9c58600b614a03738977b9c921f294"
+    },
+    {
+      "path": "js/15-tabs-nav.js",
+      "httpStatus": 200,
+      "servedSha256": "7c9a77433530c9693adf3517e9e09e1e8667a0dcc392b9afb1c5d9d728c4fc02",
+      "localSha256": "7c9a77433530c9693adf3517e9e09e1e8667a0dcc392b9afb1c5d9d728c4fc02",
+      "headSha256": "7c9a77433530c9693adf3517e9e09e1e8667a0dcc392b9afb1c5d9d728c4fc02"
+    },
+    {
+      "path": "js/16-events-modals.js",
+      "httpStatus": 200,
+      "servedSha256": "b08248fd1c834dcc73cb99adaa8bfc41b80bf5b3c4eba6b1cb7f81c360fdf70b",
+      "localSha256": "b08248fd1c834dcc73cb99adaa8bfc41b80bf5b3c4eba6b1cb7f81c360fdf70b",
+      "headSha256": "b08248fd1c834dcc73cb99adaa8bfc41b80bf5b3c4eba6b1cb7f81c360fdf70b"
+    },
+    {
+      "path": "js/17-sync-persistence.js",
+      "httpStatus": 200,
+      "servedSha256": "6b778aabf1e2c1b9e978b53dee8c6e3a0f4ecb02bdca2a795487903d21254ceb",
+      "localSha256": "6b778aabf1e2c1b9e978b53dee8c6e3a0f4ecb02bdca2a795487903d21254ceb",
+      "headSha256": "6b778aabf1e2c1b9e978b53dee8c6e3a0f4ecb02bdca2a795487903d21254ceb"
+    },
+    {
+      "path": "js/18-render-core.js",
+      "httpStatus": 200,
+      "servedSha256": "aca3027e16ce9193e40f5e49d0df0ba8bd18966675229302379b703de219204e",
+      "localSha256": "aca3027e16ce9193e40f5e49d0df0ba8bd18966675229302379b703de219204e",
+      "headSha256": "aca3027e16ce9193e40f5e49d0df0ba8bd18966675229302379b703de219204e"
+    },
+    {
+      "path": "js/19-goals.js",
+      "httpStatus": 200,
+      "servedSha256": "b187bbe92fb3217f613daebd9bef3658625bfa7f0af6e0bfb65c43fb134cc6a8",
+      "localSha256": "b187bbe92fb3217f613daebd9bef3658625bfa7f0af6e0bfb65c43fb134cc6a8",
+      "headSha256": "b187bbe92fb3217f613daebd9bef3658625bfa7f0af6e0bfb65c43fb134cc6a8"
+    },
+    {
+      "path": "js/20-dashboard.js",
+      "httpStatus": 200,
+      "servedSha256": "8ee4a0c2187b5193ea2f73a788d8ccb43a184a44dda342a99e044fcd57e95884",
+      "localSha256": "8ee4a0c2187b5193ea2f73a788d8ccb43a184a44dda342a99e044fcd57e95884",
+      "headSha256": "8ee4a0c2187b5193ea2f73a788d8ccb43a184a44dda342a99e044fcd57e95884"
+    },
+    {
+      "path": "js/21-ai-features.js",
+      "httpStatus": 200,
+      "servedSha256": "0b8e44a074f228294337aa25da062561dc6d27cb1866dee851fda2e6a9fd6a3e",
+      "localSha256": "0b8e44a074f228294337aa25da062561dc6d27cb1866dee851fda2e6a9fd6a3e",
+      "headSha256": "0b8e44a074f228294337aa25da062561dc6d27cb1866dee851fda2e6a9fd6a3e"
+    },
+    {
+      "path": "js/22-profile.js",
+      "httpStatus": 200,
+      "servedSha256": "112929fe70d41929d506985769100e38f403a14b1d1f6995fc989834ae9854b8",
+      "localSha256": "112929fe70d41929d506985769100e38f403a14b1d1f6995fc989834ae9854b8",
+      "headSha256": "112929fe70d41929d506985769100e38f403a14b1d1f6995fc989834ae9854b8"
+    },
+    {
+      "path": "js/24-automation-render.js",
+      "httpStatus": 200,
+      "servedSha256": "73541b2462b20c58d90c4d7a2e3e6831cb3ea75802f3d1f1dca53ee50d62991d",
+      "localSha256": "73541b2462b20c58d90c4d7a2e3e6831cb3ea75802f3d1f1dca53ee50d62991d",
+      "headSha256": "73541b2462b20c58d90c4d7a2e3e6831cb3ea75802f3d1f1dca53ee50d62991d"
+    },
+    {
+      "path": "js/25-bills-receivables.js",
+      "httpStatus": 200,
+      "servedSha256": "484e70dbb0260b814dd0df349a635c769b43ab6bf292f0475f3ce0effaa9db0c",
+      "localSha256": "484e70dbb0260b814dd0df349a635c769b43ab6bf292f0475f3ce0effaa9db0c",
+      "headSha256": "484e70dbb0260b814dd0df349a635c769b43ab6bf292f0475f3ce0effaa9db0c"
+    },
+    {
+      "path": "js/26-receipts.js",
+      "httpStatus": 200,
+      "servedSha256": "d18e0bd9210551a77f1217f5dc96944e79054afd73a779e384a5b2a687639e5f",
+      "localSha256": "d18e0bd9210551a77f1217f5dc96944e79054afd73a779e384a5b2a687639e5f",
+      "headSha256": "d18e0bd9210551a77f1217f5dc96944e79054afd73a779e384a5b2a687639e5f"
+    },
+    {
+      "path": "js/27-cards.js",
+      "httpStatus": 200,
+      "servedSha256": "221d53cc3093772afdb4b712793747624078de92d72f13064d12f277bb1a1589",
+      "localSha256": "221d53cc3093772afdb4b712793747624078de92d72f13064d12f277bb1a1589",
+      "headSha256": "221d53cc3093772afdb4b712793747624078de92d72f13064d12f277bb1a1589"
+    },
+    {
+      "path": "js/29-invest-movements.js",
+      "httpStatus": 200,
+      "servedSha256": "a3d4c6a6f9ad50da55ffc1714964ec9d6fea5f04009b60cb19f838e34e7038df",
+      "localSha256": "a3d4c6a6f9ad50da55ffc1714964ec9d6fea5f04009b60cb19f838e34e7038df",
+      "headSha256": "a3d4c6a6f9ad50da55ffc1714964ec9d6fea5f04009b60cb19f838e34e7038df"
+    },
+    {
+      "path": "js/30-transfer-receipts.js",
+      "httpStatus": 200,
+      "servedSha256": "1818cc0c2cabccb6ff80536161a303c5137f2fe1be70bd085e7a989024d8a422",
+      "localSha256": "1818cc0c2cabccb6ff80536161a303c5137f2fe1be70bd085e7a989024d8a422",
+      "headSha256": "1818cc0c2cabccb6ff80536161a303c5137f2fe1be70bd085e7a989024d8a422"
+    },
+    {
+      "path": "js/31-import-export.js",
+      "httpStatus": 200,
+      "servedSha256": "69a40c3723d2ee530417b03afefcc53258c4b6e0058d57c5a686654eb9ee69e8",
+      "localSha256": "69a40c3723d2ee530417b03afefcc53258c4b6e0058d57c5a686654eb9ee69e8",
+      "headSha256": "69a40c3723d2ee530417b03afefcc53258c4b6e0058d57c5a686654eb9ee69e8"
+    },
+    {
+      "path": "js/32-auth-wiring.js",
+      "httpStatus": 200,
+      "servedSha256": "912a8ae9e94d7775965bba092e16ec62d38567f9989e73052c80673cbffc2b8d",
+      "localSha256": "912a8ae9e94d7775965bba092e16ec62d38567f9989e73052c80673cbffc2b8d",
+      "headSha256": "912a8ae9e94d7775965bba092e16ec62d38567f9989e73052c80673cbffc2b8d"
+    },
+    {
+      "path": "js/99-init.js",
+      "httpStatus": 200,
+      "servedSha256": "5bbe9b30e8afa02746e4f341ba163afdc559d40a29d396c0c362a86d0cb4a0f0",
+      "localSha256": "5bbe9b30e8afa02746e4f341ba163afdc559d40a29d396c0c362a86d0cb4a0f0",
+      "headSha256": "5bbe9b30e8afa02746e4f341ba163afdc559d40a29d396c0c362a86d0cb4a0f0"
+    },
+    {
+      "path": "js/data/emoji-catalog.js",
+      "httpStatus": 200,
+      "servedSha256": "6b752321c91e9dca5313071ff7ec65eac6fe92eed68e81775bf96066c10ccaba",
+      "localSha256": "6b752321c91e9dca5313071ff7ec65eac6fe92eed68e81775bf96066c10ccaba",
+      "headSha256": "6b752321c91e9dca5313071ff7ec65eac6fe92eed68e81775bf96066c10ccaba"
+    },
+    {
+      "path": "js/data/tabler-icon-catalog.js",
+      "httpStatus": 200,
+      "servedSha256": "77f888b677644df3a9e351bacabefaed9d95e81fdfda0b5d86e4d2f055546839",
+      "localSha256": "77f888b677644df3a9e351bacabefaed9d95e81fdfda0b5d86e4d2f055546839",
+      "headSha256": "77f888b677644df3a9e351bacabefaed9d95e81fdfda0b5d86e4d2f055546839"
+    },
+    {
+      "path": "js/domain/audit-trail.js",
+      "httpStatus": 200,
+      "servedSha256": "63971fbf51289db210b0f3ef0b68e9a28e9ea043655cacb6b6cb3df22a1494bf",
+      "localSha256": "63971fbf51289db210b0f3ef0b68e9a28e9ea043655cacb6b6cb3df22a1494bf",
+      "headSha256": "63971fbf51289db210b0f3ef0b68e9a28e9ea043655cacb6b6cb3df22a1494bf"
+    },
+    {
+      "path": "js/domain/card-engine-v3-combined.js",
+      "httpStatus": 200,
+      "servedSha256": "9aed17dd8597eef00022b254933753e1fd3c9b1d2555137f82ae699b1f1e4a1a",
+      "localSha256": "9aed17dd8597eef00022b254933753e1fd3c9b1d2555137f82ae699b1f1e4a1a",
+      "headSha256": "9aed17dd8597eef00022b254933753e1fd3c9b1d2555137f82ae699b1f1e4a1a"
+    },
+    {
+      "path": "js/domain/financial-client.js",
+      "httpStatus": 200,
+      "servedSha256": "b25ca6f88537e2fd77fe0b7d234d5da97e639965168d74ca19150a809207164e",
+      "localSha256": "b25ca6f88537e2fd77fe0b7d234d5da97e639965168d74ca19150a809207164e",
+      "headSha256": "b25ca6f88537e2fd77fe0b7d234d5da97e639965168d74ca19150a809207164e"
+    },
+    {
+      "path": "js/domain/icon-system.js",
+      "httpStatus": 200,
+      "servedSha256": "3b2edec7d47718645d7fffc195d586045e5280c6b469ea43197b24ed3616ef5f",
+      "localSha256": "3b2edec7d47718645d7fffc195d586045e5280c6b469ea43197b24ed3616ef5f",
+      "headSha256": "3b2edec7d47718645d7fffc195d586045e5280c6b469ea43197b24ed3616ef5f"
+    },
+    {
+      "path": "js/domain/pin-protection.js",
+      "httpStatus": 200,
+      "servedSha256": "8cb68def16e627188eb1394f33200b981a98407c6e459488b43cc1861ec9a918",
+      "localSha256": "8cb68def16e627188eb1394f33200b981a98407c6e459488b43cc1861ec9a918",
+      "headSha256": "8cb68def16e627188eb1394f33200b981a98407c6e459488b43cc1861ec9a918"
+    },
+    {
+      "path": "js/domain/security-utils.js",
+      "httpStatus": 200,
+      "servedSha256": "2ac1deb9fbc71806ca4a956a6e6a9253f46e8594084916393140cb3bb2b254e5",
+      "localSha256": "2ac1deb9fbc71806ca4a956a6e6a9253f46e8594084916393140cb3bb2b254e5",
+      "headSha256": "2ac1deb9fbc71806ca4a956a6e6a9253f46e8594084916393140cb3bb2b254e5"
+    },
+    {
+      "path": "js/domain/simple-log.js",
+      "httpStatus": 200,
+      "servedSha256": "7d0b9f41f353cfad6b9351674dd4f6fc409bff8fd3af0c83853f9ec6bf4ad82a",
+      "localSha256": "7d0b9f41f353cfad6b9351674dd4f6fc409bff8fd3af0c83853f9ec6bf4ad82a",
+      "headSha256": "7d0b9f41f353cfad6b9351674dd4f6fc409bff8fd3af0c83853f9ec6bf4ad82a"
+    },
+    {
+      "path": "js/legacy/patches.js",
+      "httpStatus": 200,
+      "servedSha256": "184b78e5f9e1802081a29416851fc9d3b444f1ea01422a0f6cba4612731a032e",
+      "localSha256": "184b78e5f9e1802081a29416851fc9d3b444f1ea01422a0f6cba4612731a032e",
+      "headSha256": "184b78e5f9e1802081a29416851fc9d3b444f1ea01422a0f6cba4612731a032e"
+    },
+    {
+      "path": "src/diagnostic/login-diagnostic.js",
+      "httpStatus": 200,
+      "servedSha256": "c2a101d9e372c8fc66b579d178b2e978a19e4f11bd920e6bdf5eac5fc4ccff37",
+      "localSha256": "c2a101d9e372c8fc66b579d178b2e978a19e4f11bd920e6bdf5eac5fc4ccff37",
+      "headSha256": "c2a101d9e372c8fc66b579d178b2e978a19e4f11bd920e6bdf5eac5fc4ccff37"
+    },
+    {
+      "path": "style/base.css",
+      "httpStatus": 200,
+      "servedSha256": "46b5548bc1504d94f8a72190d409a424f0a9ab2b4cd21ca1c9514876806f99ac",
+      "localSha256": "46b5548bc1504d94f8a72190d409a424f0a9ab2b4cd21ca1c9514876806f99ac",
+      "headSha256": "46b5548bc1504d94f8a72190d409a424f0a9ab2b4cd21ca1c9514876806f99ac"
+    },
+    {
+      "path": "style/components.css",
+      "httpStatus": 200,
+      "servedSha256": "3a1d5b5e8fc1eb2af5e1184857c1692171a295df08d782f581127d6522044803",
+      "localSha256": "3a1d5b5e8fc1eb2af5e1184857c1692171a295df08d782f581127d6522044803",
+      "headSha256": "3a1d5b5e8fc1eb2af5e1184857c1692171a295df08d782f581127d6522044803"
+    },
+    {
+      "path": "style/dashboard-chat.css",
+      "httpStatus": 200,
+      "servedSha256": "6353609a62ccbccdd43e136ddcb1a6bdd9bb5a1fa3520c27331615ad13bcc61a",
+      "localSha256": "6353609a62ccbccdd43e136ddcb1a6bdd9bb5a1fa3520c27331615ad13bcc61a",
+      "headSha256": "6353609a62ccbccdd43e136ddcb1a6bdd9bb5a1fa3520c27331615ad13bcc61a"
+    },
+    {
+      "path": "style/features.css",
+      "httpStatus": 200,
+      "servedSha256": "f2ab24c52a48112243ec0165a60c078c57256c38311cf0f9dd960adaf1a9156f",
+      "localSha256": "f2ab24c52a48112243ec0165a60c078c57256c38311cf0f9dd960adaf1a9156f",
+      "headSha256": "f2ab24c52a48112243ec0165a60c078c57256c38311cf0f9dd960adaf1a9156f"
+    },
+    {
+      "path": "style/layout.css",
+      "httpStatus": 200,
+      "servedSha256": "0d8f84a0f1cc8643b7f960fdcc777d9000f6855a48c3e89cc84fe87292150793",
+      "localSha256": "0d8f84a0f1cc8643b7f960fdcc777d9000f6855a48c3e89cc84fe87292150793",
+      "headSha256": "0d8f84a0f1cc8643b7f960fdcc777d9000f6855a48c3e89cc84fe87292150793"
+    },
+    {
+      "path": "style/themes.css",
+      "httpStatus": 200,
+      "servedSha256": "327cd8aee4bd468f3b332d50da149c693d5560bba91d07661f5a65f6cd1617db",
+      "localSha256": "327cd8aee4bd468f3b332d50da149c693d5560bba91d07661f5a65f6cd1617db",
+      "headSha256": "327cd8aee4bd468f3b332d50da149c693d5560bba91d07661f5a65f6cd1617db"
+    },
+    {
+      "path": "sw.js",
+      "httpStatus": 200,
+      "servedSha256": "466fcb8c833d2a58938fbf2187323c9b90105bdb7f9c0ccbcf9a66c21503a708",
+      "localSha256": "466fcb8c833d2a58938fbf2187323c9b90105bdb7f9c0ccbcf9a66c21503a708",
+      "headSha256": "466fcb8c833d2a58938fbf2187323c9b90105bdb7f9c0ccbcf9a66c21503a708"
+    },
+    {
+      "path": "vendor/tabler-icons/tabler-icons.css",
+      "httpStatus": 200,
+      "servedSha256": "31c20a7e03333b2fbd282cfed14b1e9ec340043e6974004af58ad7c3bae344cc",
+      "localSha256": "31c20a7e03333b2fbd282cfed14b1e9ec340043e6974004af58ad7c3bae344cc",
+      "headSha256": "31c20a7e03333b2fbd282cfed14b1e9ec340043e6974004af58ad7c3bae344cc"
+    }
+  ],
+  "checks": [
+    {
+      "status": "PASS",
+      "detail": "branch feat/app-layout-redesign; HEAD 95b92c6a = upstream 95b92c6a"
+    },
+    {
+      "status": "PASS",
+      "detail": "working tree: 0 entradas"
+    },
+    {
+      "status": "PASS",
+      "detail": "origin/main...HEAD = 0 84"
+    },
+    {
+      "status": "PASS",
+      "detail": "servidor local http://127.0.0.1:8000 respondeu HTTP 200"
+    },
+    {
+      "status": "PASS",
+      "detail": "DOM pronto: true; botões de destino: 5"
+    },
+    {
+      "status": "PASS",
+      "detail": "43/43 servidos = locais; 43/43 locais = HEAD"
+    },
+    {
+      "status": "PASS",
+      "detail": "browser Chrome/156.0.8078.79; viewport 390x844; tema padrão"
+    }
+  ],
+  "limitations": [
+    "Recursos externos foram bloqueados; CDNs e Firebase real não foram validados.",
+    "O servidor é local e estático; build/publicação remota não foi certificada.",
+    "C.0 não implica aprovação de C.1–C.8."
+  ],
+  "shaServidoStatus": "PASS",
+  "veredito": "PASS",
+  "finishedAt": "2026-11-21T00:03:47.268Z"
+}
