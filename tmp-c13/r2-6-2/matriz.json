@@ -1,0 +1,277 @@
+{
+  "id": "R2.6.2",
+  "titulo": "Matriz de fixtures controladas para cascata CSS — Gate R2.6",
+  "data": "2026-11-21",
+  "branch": "feat/app-layout-redesign",
+  "head": "7c7a89803e46b293273cbe5d4f03a4c702d1672f",
+  "fixture": "tmp-c13/r2-6-2/fixture.html",
+  "finalidade": "Fornecer resultado esperado conhecido, independente do nucleo C.4, para a validacao CDP da R2.6.3.",
+  "status": "MATRIZ PRONTA; R2.6.3 NOT RUN",
+  "ambiente": {
+    "browser": "Chromium headless + CDP",
+    "viewport": "800x600",
+    "recursosExternos": "nenhum",
+    "firebase": "nao utilizado",
+    "producao": "nenhuma alteracao"
+  },
+  "constantes": {
+    "accent": "#5F7A43",
+    "accentComputed": "rgb(95, 122, 67)",
+    "vermelhoComputed": "rgb(255, 0, 0)",
+    "azulComputed": "rgb(0, 0, 255)",
+    "cinzaComputed": "rgb(17, 17, 17)"
+  },
+  "criterios": {
+    "principio": "O esperado foi derivado das regras da cascata CSS, nao da implementacao de getWinningRule. Nenhum modulo do nucleo C.4 e importado pelo oraculo.",
+    "etapas": [
+      "V0 validar fixture: todos os IDs existem, um unico elemento por alvo e nenhum recurso externo.",
+      "V1 validar estado: CSS.getComputedStyleForNode (e getComputedStyle via Runtime quando aplicavel) produz a cor computada esperada.",
+      "V2 oraculo CDP independente: montar o vencedor usando CSS.getMatchedStylesForNode (matchedCSSRules, inherited, pseudoElements), CSS.getInlineStylesForNode e propriedades customizadas resolvidas pelo navegador.",
+      "V3 mecanismo sob teste: chamar getWinningRule/captureWinningRules do nucleo e comparar com o esperado.",
+      "V4 classificar: PASS somente se V0, V1 e V2 passarem; o resultado de V3 e registrado a parte como mecanismo PASS/FAIL."
+    ],
+    "normalizacaoCor": "Comparar cores com parseColor do nucleo ou equivalente independente; var(...) e nomes de propriedades customizadas sao comparados literalmente.",
+    "comparacaoVencedor": [
+      "source",
+      "selectorText",
+      "declaredValue",
+      "important",
+      "pseudoElement"
+    ],
+    "regrasClassificacao": {
+      "PASS": "Fixture valida, cor computada conforme esperado, oraculo independente conforme esperado e mecanismo conforme esperado.",
+      "FAIL": "Fixture valida e oraculo conforme esperado, mas mecanismo divergiu.",
+      "BLOCKED": "Fixture invalida, cor computada divergente do esperado ou CDP indisponivel.",
+      "NOT RUN": "Cenario nao executado."
+    }
+  },
+  "cenarios": [
+    {
+      "id": "C01",
+      "nome": "baseline",
+      "objetivo": "Estabelecer leitura de referencia com uma unica declaracao.",
+      "alvo": "#r261-baseline",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "esperado": {
+        "computed": "rgb(95, 122, 67)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-baseline",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        }
+      },
+      "riscoTestado": "nenhum; serve como calibracao"
+    },
+    {
+      "id": "C02",
+      "nome": "source-order",
+      "objetivo": "Mesma especificidade: a declaracao posterior da folha deve vencer.",
+      "alvo": "#r261-order",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "esperado": {
+        "computed": "rgb(95, 122, 67)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-order",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null,
+          "ruleOrdinal": 2
+        },
+        "perdedor": {
+          "selectorText": "#r261-order",
+          "declaredValue": "#111111"
+        }
+      },
+      "riscoTestado": "ordem da matriz matchedCSSRules"
+    },
+    {
+      "id": "C03",
+      "nome": "specificity-invertida",
+      "objetivo": "Especificidade maior declarada PRIMEIRO deve vencer sobre menor declarada DEPOIS.",
+      "alvo": "#r261-spec",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "esperado": {
+        "computed": "rgb(95, 122, 67)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "button.r261-spec",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null,
+          "ruleOrdinal": 1
+        },
+        "perdedor": {
+          "selectorText": ".r261-spec",
+          "declaredValue": "#111111"
+        }
+      },
+      "riscoTestado": "escolha por ultimo candidato em vez de especificidade"
+    },
+    {
+      "id": "C04",
+      "nome": "important-invertido",
+      "objetivo": "!important de menor especificidade deve vencer sobre declaracao normal de maior especificidade.",
+      "alvo": "#r261-important",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "esperado": {
+        "computed": "rgb(95, 122, 67)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": ".r261-important",
+          "declaredValue": "var(--accent)",
+          "important": true,
+          "pseudoElement": null,
+          "ruleOrdinal": 1
+        },
+        "perdedor": {
+          "selectorText": "#r261-important",
+          "declaredValue": "#111111",
+          "important": false
+        }
+      },
+      "riscoTestado": "flag important registrada mas nao aplicada"
+    },
+    {
+      "id": "C05",
+      "nome": "inline-vs-stylesheet",
+      "objetivo": "Estilo inline deve vencer a regra de stylesheet.",
+      "alvo": "#r261-inline",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "esperado": {
+        "computed": "rgb(255, 0, 0)",
+        "vencedor": {
+          "source": "inline",
+          "selectorText": null,
+          "declaredValue": "#FF0000",
+          "important": false,
+          "pseudoElement": null
+        },
+        "perdedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-inline",
+          "declaredValue": "var(--accent)"
+        }
+      },
+      "riscoTestado": "ausencia de CSS.getInlineStylesForNode"
+    },
+    {
+      "id": "C06",
+      "nome": "custom-property-inline",
+      "objetivo": "Propriedade customizada definida inline deve ser resolvida na declaracao inline vencedora.",
+      "alvo": "#r261-inline-var",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "esperado": {
+        "computed": "rgb(0, 0, 255)",
+        "variaveis": {
+          "--inline-accent": "#0000FF"
+        },
+        "vencedor": {
+          "source": "inline",
+          "selectorText": null,
+          "declaredValue": "var(--inline-accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "perdedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-inline-var",
+          "declaredValue": "#111111"
+        }
+      },
+      "riscoTestado": "inline custom property e resolucao de var()"
+    },
+    {
+      "id": "C07",
+      "nome": "inherit-explicito",
+      "objetivo": "color: inherit deve resolver para a cor do ancestral.",
+      "alvo": "#r261-inherit",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "esperado": {
+        "computed": "rgb(95, 122, 67)",
+        "ancestral": ".r261-parent",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-inherit",
+          "declaredValue": "inherit",
+          "important": false,
+          "pseudoElement": null
+        }
+      },
+      "riscoTestado": "declaracao inherit propria e resolucao via ancestral"
+    },
+    {
+      "id": "C08",
+      "nome": "herda-implicita",
+      "objetivo": "Sem declaracao propria de color, o vencedor deve vir do ancestral.",
+      "alvo": "#r261-inherit-implicit",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "esperado": {
+        "computed": "rgb(95, 122, 67)",
+        "vencedor": {
+          "source": "inherited",
+          "selectorText": ".r261-parent-implicit",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        }
+      },
+      "riscoTestado": "array inherited do CDP nao consumido"
+    },
+    {
+      "id": "C09",
+      "nome": "variaveis-encadeadas",
+      "objetivo": "Variaveis encadeadas na raiz devem resolver para a cor final.",
+      "alvo": "#r261-chain",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "esperado": {
+        "computed": "rgb(95, 122, 67)",
+        "cadeia": {
+          "#r261-chain": "color: var(--chain-a)",
+          ":root --chain-a": "var(--chain-b)",
+          ":root --chain-b": "var(--accent)",
+          ":root --accent": "#5F7A43"
+        },
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-chain",
+          "declaredValue": "var(--chain-a)",
+          "important": false,
+          "pseudoElement": null
+        }
+      },
+      "riscoTestado": "resolucao de var() encadeada; o vencedor continua sendo a declaracao color"
+    },
+    {
+      "id": "C10",
+      "nome": "pseudoelemento",
+      "objetivo": "A cor do pseudoelemento deve ser rastreada separadamente do elemento owner.",
+      "alvo": "#r261-pseudo",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "esperado": {
+        "computed": "rgb(95, 122, 67)",
+        "computedOwner": "rgb(17, 17, 17)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-pseudo::before",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": "::before"
+        }
+      },
+      "riscoTestado": "getWinningRule sem parametro de pseudoelemento"
+    }
+  ]
+}

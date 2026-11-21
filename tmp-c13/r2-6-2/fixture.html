@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R2.6.2 — Fixture isolada de cascata controlada</title>
+<style>
+  :root {
+    --accent: #5F7A43;
+    --chain-b: var(--accent);
+    --chain-a: var(--chain-b);
+  }
+
+  body { margin: 0; padding: 12px; background: #FFFFFF; font-family: sans-serif; }
+  .r261-box { display: inline-block; min-width: 90px; padding: 6px 10px; background: #FFFFFF; margin: 2px 0; }
+
+  /* C01 — referência: uma única declaração. */
+  #r261-baseline { color: var(--accent); }
+
+  /* C02 — mesma especificidade: a última declaração da folha deve vencer. */
+  #r261-order { color: #111111; }
+  #r261-order { color: var(--accent); }
+
+  /* C03 — especificidade maior PRIMEIRO, menor DEPOIS: a maior deve vencer. */
+  button.r261-spec { color: var(--accent); }
+  .r261-spec { color: #111111; }
+
+  /* C04 — !important de menor especificidade PRIMEIRO, normal maior DEPOIS. */
+  .r261-important { color: var(--accent) !important; }
+  #r261-important { color: #111111; }
+
+  /* C05 — estilo inline deve vencer a regra de stylesheet. */
+  #r261-inline { color: var(--accent); }
+
+  /* C06 — propriedade customizada inline e cor inline encadeada. */
+  #r261-inline-var { color: #111111; }
+
+  /* C07 — herança explícita via color: inherit. */
+  .r261-parent { color: var(--accent); }
+  #r261-inherit { color: inherit; }
+
+  /* C08 — herança implícita: o filho não declara color. */
+  .r261-parent-implicit { color: var(--accent); }
+  #r261-inherit-implicit { background: #FFFFFF; }
+
+  /* C09 — variáveis encadeadas na raiz. */
+  #r261-chain { color: var(--chain-a); }
+
+  /* C10 — pseudoelemento com cor própria. */
+  #r261-pseudo { color: #111111; }
+  #r261-pseudo::before { content: 'P'; color: var(--accent); }
+</style>
+</head>
+<body>
+  <div id="r261-baseline" class="r261-box">C01 baseline</div>
+  <div id="r261-order" class="r261-box">C02 source-order</div>
+  <button id="r261-spec" class="r261-spec r261-box">C03 specificity</button>
+  <div id="r261-important" class="r261-important r261-box">C04 important</div>
+  <div id="r261-inline" class="r261-box" style="color: #FF0000;">C05 inline</div>
+  <div id="r261-inline-var" class="r261-box" style="--inline-accent: #0000FF; color: var(--inline-accent);">C06 inline-var</div>
+  <div class="r261-parent"><div id="r261-inherit" class="r261-box">C07 inherit</div></div>
+  <div class="r261-parent-implicit"><div id="r261-inherit-implicit" class="r261-box">C08 inherited</div></div>
+  <div id="r261-chain" class="r261-box">C09 chain</div>
+  <div id="r261-pseudo" class="r261-box">C10 pseudo</div>
+</body>
+</html>
