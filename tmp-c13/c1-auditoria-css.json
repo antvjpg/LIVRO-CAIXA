@@ -1,0 +1,1936 @@
+{
+  "task": "C.1 — auditoria de carregamento e cobertura CSS",
+  "startedAt": "2026-11-21T00:18:58.385Z",
+  "branch": "feat/app-layout-redesign",
+  "head": "2568b198c0f8e6c9a8d5937da4f38c07226548a5",
+  "views": [
+    {
+      "label": "mobile-light",
+      "stylesheets": [
+        {
+          "href": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap",
+          "disabled": false,
+          "rules": null
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/themes.css?v=20-23",
+          "disabled": false,
+          "rules": 51
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/base.css?v=20-24",
+          "disabled": false,
+          "rules": 106
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/components.css?v=20-33",
+          "disabled": false,
+          "rules": 252
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/layout.css?v=20-36",
+          "disabled": false,
+          "rules": 23
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/features.css?v=20-31",
+          "disabled": false,
+          "rules": 1565
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/dashboard-chat.css?v=20-24",
+          "disabled": false,
+          "rules": 186
+        },
+        {
+          "href": "http://127.0.0.1:8000/vendor/tabler-icons/tabler-icons.css",
+          "disabled": false,
+          "rules": 54
+        },
+        {
+          "href": "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+          "disabled": false,
+          "rules": null
+        },
+        {
+          "href": "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css",
+          "disabled": false,
+          "rules": null
+        }
+      ],
+      "mediaQueries": [
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 7,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 6,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 380,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 16,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 14,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 17,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 11,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 16,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 480px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 480px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 3,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: no-preference)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 17,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 3,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 7,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 420px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 700px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-height: 700px)",
+          "nested": 9,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 700px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 3,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 9,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 359px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 720px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 360px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 900px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 420px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 3,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 7,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 1080px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 860px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 22,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 1024px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 1024px)",
+          "nested": 5,
+          "active": false
+        }
+      ],
+      "tokens": {
+        "vars": {
+          "--accent": "#5F7A43",
+          "--accent-rgb": "95,122,67",
+          "--accent-foreground": "#F7FAF6",
+          "--surface-accent": "#1E2E16",
+          "--paper": "#F7F5EF",
+          "--ink": "#1A2417",
+          "--line": "#D8D2C1",
+          "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)",
+          "--radius-md": "14px",
+          "--z-modal": "1400"
+        },
+        "bodyClass": "",
+        "lightTheme": "1",
+        "darkTheme": null
+      },
+      "layout": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "dpr": 1
+        },
+        "gridColumns": "362px",
+        "gridGap": "14px",
+        "gridCards": [
+          {
+            "x": 14,
+            "y": 575,
+            "w": 362,
+            "h": 168
+          },
+          {
+            "x": 14,
+            "y": 757,
+            "w": 362,
+            "h": 286
+          },
+          {
+            "x": 14,
+            "y": 1057,
+            "w": 362,
+            "h": 142
+          }
+        ],
+        "navDisplay": "grid",
+        "destinationButtons": 5,
+        "visibleViews": [
+          "viewInicio"
+        ]
+      }
+    },
+    {
+      "label": "mobile-dark",
+      "stylesheets": [
+        {
+          "href": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap",
+          "disabled": false,
+          "rules": null
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/themes.css?v=20-23",
+          "disabled": false,
+          "rules": 51
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/base.css?v=20-24",
+          "disabled": false,
+          "rules": 106
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/components.css?v=20-33",
+          "disabled": false,
+          "rules": 252
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/layout.css?v=20-36",
+          "disabled": false,
+          "rules": 23
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/features.css?v=20-31",
+          "disabled": false,
+          "rules": 1565
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/dashboard-chat.css?v=20-24",
+          "disabled": false,
+          "rules": 186
+        },
+        {
+          "href": "http://127.0.0.1:8000/vendor/tabler-icons/tabler-icons.css",
+          "disabled": false,
+          "rules": 54
+        },
+        {
+          "href": "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+          "disabled": false,
+          "rules": null
+        },
+        {
+          "href": "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css",
+          "disabled": false,
+          "rules": null
+        }
+      ],
+      "mediaQueries": [
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 7,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 6,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 380,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 16,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 14,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 17,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 11,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 16,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 480px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 480px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 3,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: no-preference)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 17,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 3,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 7,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 420px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 700px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-height: 700px)",
+          "nested": 9,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 700px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 3,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 9,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 359px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 720px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 360px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 900px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 4,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 420px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 3,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 7,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 1080px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 860px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 22,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 1,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 1024px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 1024px)",
+          "nested": 5,
+          "active": false
+        }
+      ],
+      "tokens": {
+        "vars": {
+          "--accent": "#22C55E",
+          "--accent-rgb": "34,197,94",
+          "--accent-foreground": "#0A2415",
+          "--surface-accent": "#27362C",
+          "--paper": "#121212",
+          "--ink": "#FFFFFF",
+          "--line": "#2C2C2E",
+          "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)",
+          "--radius-md": "14px",
+          "--z-modal": "1400"
+        },
+        "bodyClass": "dark-mode",
+        "lightTheme": "1",
+        "darkTheme": "2"
+      },
+      "layout": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "dpr": 1
+        },
+        "gridColumns": "362px",
+        "gridGap": "14px",
+        "gridCards": [
+          {
+            "x": 14,
+            "y": 575,
+            "w": 362,
+            "h": 168
+          },
+          {
+            "x": 14,
+            "y": 757,
+            "w": 362,
+            "h": 286
+          },
+          {
+            "x": 14,
+            "y": 1057,
+            "w": 362,
+            "h": 142
+          }
+        ],
+        "navDisplay": "grid",
+        "destinationButtons": 5,
+        "visibleViews": [
+          "viewInicio"
+        ]
+      }
+    },
+    {
+      "label": "desktop-light",
+      "stylesheets": [
+        {
+          "href": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap",
+          "disabled": false,
+          "rules": null
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/themes.css?v=20-23",
+          "disabled": false,
+          "rules": 51
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/base.css?v=20-24",
+          "disabled": false,
+          "rules": 106
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/components.css?v=20-33",
+          "disabled": false,
+          "rules": 252
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/layout.css?v=20-36",
+          "disabled": false,
+          "rules": 23
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/features.css?v=20-31",
+          "disabled": false,
+          "rules": 1565
+        },
+        {
+          "href": "http://127.0.0.1:8000/style/dashboard-chat.css?v=20-24",
+          "disabled": false,
+          "rules": 186
+        },
+        {
+          "href": "http://127.0.0.1:8000/vendor/tabler-icons/tabler-icons.css",
+          "disabled": false,
+          "rules": 54
+        },
+        {
+          "href": "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+          "disabled": false,
+          "rules": null
+        },
+        {
+          "href": "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css",
+          "disabled": false,
+          "rules": null
+        }
+      ],
+      "mediaQueries": [
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 7,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 6,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 380,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 16,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 14,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 17,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 4,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 11,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 4,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 16,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 4,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 4,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 480px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 768px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 480px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 3,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 4,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: no-preference)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 17,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 4,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 3,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 7,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 420px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 4,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 700px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-height: 700px)",
+          "nested": 9,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 700px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 3,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 9,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 359px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 720px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 360px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 900px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 681px)",
+          "nested": 2,
+          "active": true
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 5,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 4,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 420px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 2,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 700px)",
+          "nested": 3,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 600px)",
+          "nested": 7,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 1080px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 860px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 22,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(prefers-reduced-motion: reduce)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(max-width: 680px)",
+          "nested": 1,
+          "active": false
+        },
+        {
+          "condition": "(min-width: 1024px)",
+          "nested": 5,
+          "active": true
+        },
+        {
+          "condition": "(min-width: 1024px)",
+          "nested": 5,
+          "active": true
+        }
+      ],
+      "tokens": {
+        "vars": {
+          "--accent": "#5F7A43",
+          "--accent-rgb": "95,122,67",
+          "--accent-foreground": "#F7FAF6",
+          "--surface-accent": "#1E2E16",
+          "--paper": "#F7F5EF",
+          "--ink": "#1A2417",
+          "--line": "#D8D2C1",
+          "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)",
+          "--radius-md": "14px",
+          "--z-modal": "1400"
+        },
+        "bodyClass": "",
+        "lightTheme": "1",
+        "darkTheme": null
+      },
+      "layout": {
+        "viewport": {
+          "width": 1280,
+          "height": 800,
+          "dpr": 1
+        },
+        "gridColumns": "348px 348px 348px",
+        "gridGap": "14px",
+        "gridCards": [
+          {
+            "x": 104,
+            "y": 545,
+            "w": 348,
+            "h": 189
+          },
+          {
+            "x": 466,
+            "y": 545,
+            "w": 348,
+            "h": 290
+          },
+          {
+            "x": 828,
+            "y": 545,
+            "w": 348,
+            "h": 144
+          }
+        ],
+        "navDisplay": "none",
+        "destinationButtons": 5,
+        "visibleViews": [
+          "viewInicio"
+        ]
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "name": "body",
+      "selector": "body",
+      "found": true,
+      "matchedCount": 9,
+      "matched": [
+        {
+          "selector": "body",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "box-sizing:border-box;"
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "-webkit-tap-highlight-color:transparent;"
+        },
+        {
+          "selector": "body",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n    --action-finalize-foreground:var(--color-green);\n    --action-finalize-border:color-mix(in srgb, var(--color-green) 28%, var(--line));\n    --action-finalize-background:color-mix(in srgb, var(--color-green) 10%, var(--surface));\n    --action-finalize-background-hover:color-mix(in srgb, var(--color-green) 24%, var(--surface));\n    --action-finalize-border-hover:color-mix(in srgb, var(--color-gr"
+        },
+        {
+          "selector": "body",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n    margin:0;\n    background:var(--paper);\n    color:var(--ink);\n    font-family:var(--font-family-ui);\n    -webkit-font-smoothing:antialiased;\n    transition: background 0.2s, color 0.2s;\n    overflow-x: hidden;\n    width:100%;\n  "
+        },
+        {
+          "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n    -webkit-tap-highlight-color:transparent;\n    -webkit-touch-callout:none;\n  "
+        },
+        {
+          "selector": "body, button, input, select, textarea",
+          "origin": "regular",
+          "media": [],
+          "cssText": "font-variant-numeric:tabular-nums;"
+        },
+        {
+          "selector": "body",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  min-height:100%;\n  min-height:100dvh;\n"
+        },
+        {
+          "selector": "body:not(.dark-mode)[data-light-theme=\"1\"]",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n    --paper:#F7F5EF; --paper-2:#EFEBE0; --ink:#1A2417; --ink-soft:#4C5A52; --line:#D8D2C1;\n    --surface:#FFFEFA; --surface-raised:#FCFDF9; --surface-accent:#1E2E16;\n    --color-green:#437A4E; --color-green-subtle:#DFEBD8;\n    --color-gold:#B08D3E; --gold-rgb:176,141,62; --color-gold-subtle:#F2E8D0; --color-red:#B08D3E; --color-red-subtle:#E8E3D8;\n    --accent:#5F7A43; --accent-rgb:95,122,67; --a"
+        }
+      ],
+      "computed": {
+        "display": "block",
+        "grid-template-columns": "none",
+        "background-color": "rgb(247, 245, 239)",
+        "color": "rgb(26, 36, 23)",
+        "border-top-width": "0px",
+        "font-family": "\"Plus Jakarta Sans\", sans-serif",
+        "font-size": "16px",
+        "box-shadow": "none",
+        "align-items": "normal",
+        "flex-wrap": "nowrap"
+      }
+    },
+    {
+      "name": "app-header",
+      "selector": ".app-header",
+      "found": true,
+      "matchedCount": 9,
+      "matched": [
+        {
+          "selector": "article, aside, footer, header, hgroup, main, nav, search, section",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "box-sizing:border-box;"
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "-webkit-tap-highlight-color:transparent;"
+        },
+        {
+          "selector": "header",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n    padding:36px 24px 20px;\n    border-bottom:2px solid var(--ink);\n    display:flex;\n    align-items:baseline;\n    justify-content:space-between;\n    flex-wrap:wrap;\n    gap:12px;\n    max-width:980px;\n    margin:0 auto;\n  "
+        },
+        {
+          "selector": "header.app-header",
+          "origin": "regular",
+          "media": [],
+          "cssText": "position:relative;overflow:hidden;"
+        },
+        {
+          "selector": "header.app-header",
+          "origin": "regular",
+          "media": [
+            "(min-width: 681px)"
+          ],
+          "cssText": "justify-content:flex-start;align-items:center;"
+        },
+        {
+          "selector": "header.app-header",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  padding-top:calc(33px + env(safe-area-inset-top, 0px));\n"
+        },
+        {
+          "selector": "body:not(.dark-mode) header.app-header",
+          "origin": "regular",
+          "media": [
+            "(min-width: 681px)"
+          ],
+          "cssText": "\n      background:linear-gradient(135deg,var(--header-from),var(--header-to));\n      color:var(--header-foreground);\n      max-width:none;margin:0;border-bottom:0;\n      padding-inline:max(24px,calc((100vw - 980px)/2));\n    "
+        }
+      ],
+      "computed": {
+        "display": "flex",
+        "grid-template-columns": "none",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "color": "rgb(247, 245, 239)",
+        "border-top-width": "0px",
+        "font-family": "\"Plus Jakarta Sans\", sans-serif",
+        "font-size": "16px",
+        "box-shadow": "none",
+        "align-items": "center",
+        "flex-wrap": "wrap"
+      }
+    },
+    {
+      "name": "bottom-nav",
+      "selector": ".mobile-bottom-nav",
+      "found": true,
+      "matchedCount": 7,
+      "matched": [
+        {
+          "selector": "article, aside, footer, header, hgroup, main, nav, search, section",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "box-sizing:border-box;"
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "-webkit-tap-highlight-color:transparent;"
+        },
+        {
+          "selector": ".mobile-bottom-nav",
+          "origin": "regular",
+          "media": [],
+          "cssText": " display:none; "
+        },
+        {
+          "selector": ".mobile-bottom-nav",
+          "origin": "regular",
+          "media": [],
+          "cssText": "isolation:isolate;overflow:hidden;"
+        },
+        {
+          "selector": ".mobile-bottom-nav",
+          "origin": "regular",
+          "media": [],
+          "cssText": "--nav-indicator-x:0%;"
+        }
+      ],
+      "computed": {
+        "display": "none",
+        "grid-template-columns": "none",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 36, 23)",
+        "border-top-width": "0px",
+        "font-family": "\"Plus Jakarta Sans\", sans-serif",
+        "font-size": "16px",
+        "box-shadow": "none",
+        "align-items": "normal",
+        "flex-wrap": "nowrap"
+      }
+    },
+    {
+      "name": "botao-inicio",
+      "selector": ".mobile-bottom-nav button[data-destination=\"inicio\"]",
+      "found": true,
+      "matchedCount": 12,
+      "matched": [
+        {
+          "selector": "button",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "input, textarea, select, button",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "box-sizing:border-box;"
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "-webkit-tap-highlight-color:transparent;"
+        },
+        {
+          "selector": "button",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n    \n    font-size:12px;\n    text-transform:uppercase;\n    letter-spacing:0.05em;\n    border:1.5px solid var(--ink);\n    background:transparent;\n    color:var(--ink);\n    padding:12px 14px;\n    cursor:pointer;\n    border-radius:4px;\n    transition:background 0.15s, color 0.15s, transform 0.05s;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    text-align: center;\n  "
+        },
+        {
+          "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n    -webkit-tap-highlight-color:transparent;\n    -webkit-touch-callout:none;\n  "
+        },
+        {
+          "selector": "body, button, input, select, textarea",
+          "origin": "regular",
+          "media": [],
+          "cssText": "font-variant-numeric:tabular-nums;"
+        },
+        {
+          "selector": "button",
+          "origin": "regular",
+          "media": [],
+          "cssText": "transition:transform var(--v1616-fast) var(--v1616-ease),background-color var(--v1616-fast) ease,border-color var(--v1616-fast) ease,box-shadow var(--v1616-fast) ease,color var(--v1616-fast) ease;"
+        },
+        {
+          "selector": ".mobile-bottom-nav button",
+          "origin": "regular",
+          "media": [],
+          "cssText": "position:relative;z-index:1;background:transparent;transition:color 220ms ease,transform 160ms var(--v1616-ease);"
+        },
+        {
+          "selector": ".mobile-bottom-nav button.is-active",
+          "origin": "regular",
+          "media": [],
+          "cssText": "background:transparent;box-shadow:none;"
+        }
+      ],
+      "computed": {
+        "display": "flex",
+        "grid-template-columns": "none",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 36, 23)",
+        "border-top-width": "1px",
+        "font-family": "Arial",
+        "font-size": "12px",
+        "box-shadow": "none",
+        "align-items": "center",
+        "flex-wrap": "nowrap"
+      }
+    },
+    {
+      "name": "view-inicio",
+      "selector": "#viewInicio",
+      "found": true,
+      "matchedCount": 7,
+      "matched": [
+        {
+          "selector": "div",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "box-sizing:border-box;"
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "-webkit-tap-highlight-color:transparent;"
+        },
+        {
+          "selector": ".tab-content",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n    display: none;\n  "
+        },
+        {
+          "selector": ".tab-content",
+          "origin": "regular",
+          "media": [],
+          "cssText": "animation:tab-content-enter 220ms var(--v1616-ease) both;"
+        },
+        {
+          "selector": ".tab-content.active",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n    display: block;\n  "
+        }
+      ],
+      "computed": {
+        "display": "block",
+        "grid-template-columns": "none",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 36, 23)",
+        "border-top-width": "0px",
+        "font-family": "\"Plus Jakarta Sans\", sans-serif",
+        "font-size": "16px",
+        "box-shadow": "none",
+        "align-items": "normal",
+        "flex-wrap": "nowrap"
+      }
+    },
+    {
+      "name": "inicio-grid",
+      "selector": "#viewInicio .inicio-grid",
+      "found": true,
+      "matchedCount": 5,
+      "matched": [
+        {
+          "selector": "div",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "box-sizing:border-box;"
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "-webkit-tap-highlight-color:transparent;"
+        },
+        {
+          "selector": "#viewInicio .inicio-grid",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  display:grid;\n  grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr));\n  align-items:start;\n  gap:14px;\n  width:100%;\n  max-width:100%;\n"
+        }
+      ],
+      "computed": {
+        "display": "grid",
+        "grid-template-columns": "348px 348px 348px",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 36, 23)",
+        "border-top-width": "0px",
+        "font-family": "\"Plus Jakarta Sans\", sans-serif",
+        "font-size": "16px",
+        "box-shadow": "none",
+        "align-items": "start",
+        "flex-wrap": "nowrap"
+      }
+    },
+    {
+      "name": "card-saude",
+      "selector": "#viewInicio .inicio-card.advanced-dashboard-card",
+      "found": true,
+      "matchedCount": 6,
+      "matched": [
+        {
+          "selector": "div",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "box-sizing:border-box;"
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "-webkit-tap-highlight-color:transparent;"
+        },
+        {
+          "selector": "#viewInicio .inicio-card",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  min-width:0;\n  max-width:100%;\n  overflow-wrap:break-word;\n"
+        },
+        {
+          "selector": "#viewInicio .advanced-dashboard-card, #viewInicio .dashboard-next-payment-card",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  background:var(--paper);\n  color:var(--ink);\n  border-radius:10px;\n  padding:20px 18px;\n  border:1px solid var(--line);\n  box-shadow:var(--shadow-sm);\n"
+        }
+      ],
+      "computed": {
+        "display": "block",
+        "grid-template-columns": "none",
+        "background-color": "rgb(247, 245, 239)",
+        "color": "rgb(26, 36, 23)",
+        "border-top-width": "1px",
+        "font-family": "\"Plus Jakarta Sans\", sans-serif",
+        "font-size": "16px",
+        "box-shadow": "rgba(20, 48, 36, 0.08) 0px 1px 3px 0px",
+        "align-items": "normal",
+        "flex-wrap": "nowrap"
+      }
+    },
+    {
+      "name": "card-proximo",
+      "selector": "#viewInicio .inicio-card.dashboard-next-payment-card",
+      "found": true,
+      "matchedCount": 6,
+      "matched": [
+        {
+          "selector": "div",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "box-sizing:border-box;"
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "-webkit-tap-highlight-color:transparent;"
+        },
+        {
+          "selector": "#viewInicio .inicio-card",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  min-width:0;\n  max-width:100%;\n  overflow-wrap:break-word;\n"
+        },
+        {
+          "selector": "#viewInicio .advanced-dashboard-card, #viewInicio .dashboard-next-payment-card",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  background:var(--paper);\n  color:var(--ink);\n  border-radius:10px;\n  padding:20px 18px;\n  border:1px solid var(--line);\n  box-shadow:var(--shadow-sm);\n"
+        }
+      ],
+      "computed": {
+        "display": "block",
+        "grid-template-columns": "none",
+        "background-color": "rgb(247, 245, 239)",
+        "color": "rgb(26, 36, 23)",
+        "border-top-width": "1px",
+        "font-family": "\"Plus Jakarta Sans\", sans-serif",
+        "font-size": "16px",
+        "box-shadow": "rgba(20, 48, 36, 0.08) 0px 1px 3px 0px",
+        "align-items": "normal",
+        "flex-wrap": "nowrap"
+      }
+    },
+    {
+      "name": "resumo-fluxo",
+      "selector": "#viewInicio .inicio-footer .cashflow-mini-summary",
+      "found": true,
+      "matchedCount": 9,
+      "matched": [
+        {
+          "selector": "div",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+          "origin": "user-agent",
+          "media": [],
+          "cssText": ""
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "box-sizing:border-box;"
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "media": [],
+          "cssText": "-webkit-tap-highlight-color:transparent;"
+        },
+        {
+          "selector": ".cashflow-mini-summary",
+          "origin": "regular",
+          "media": [],
+          "cssText": "margin:14px 0 16px;padding:14px 15px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 5px 14px rgba(28,58,43,.05);"
+        },
+        {
+          "selector": ".cashflow-mini-summary, #cashflowMiniSummary",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  padding:10px 12px;\n  gap:8px;\n  border-radius:14px;\n"
+        },
+        {
+          "selector": "#cashflowMiniSummary, .cashflow-mini-summary",
+          "origin": "regular",
+          "media": [],
+          "cssText": "padding:10px 12px;"
+        },
+        {
+          "selector": "#cashflowMiniSummary, .cashflow-mini-summary",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  display:none;\n"
+        },
+        {
+          "selector": "#viewInicio .inicio-footer .cashflow-mini-summary",
+          "origin": "regular",
+          "media": [],
+          "cssText": "\n  display:block;\n  flex:1 1 auto;\n  min-width:0;\n  margin:0;\n"
+        }
+      ],
+      "computed": {
+        "display": "block",
+        "grid-template-columns": "none",
+        "background-color": "rgb(255, 254, 250)",
+        "color": "rgb(26, 36, 23)",
+        "border-top-width": "1px",
+        "font-family": "\"Plus Jakarta Sans\", sans-serif",
+        "font-size": "16px",
+        "box-shadow": "rgba(28, 58, 43, 0.05) 0px 5px 14px 0px",
+        "align-items": "normal",
+        "flex-wrap": "nowrap"
+      }
+    }
+  ],
+  "blockedExternal": [
+    "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open",
+    "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+    "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+    "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",
+    "https://cdn.jsdelivr.net/npm/chart.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js",
+    "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+    "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css"
+  ],
+  "consoleErrors": [],
+  "exceptions": [],
+  "limitations": [
+    "Recursos externos bloqueados: fontes e ícones CDN não foram avaliados visualmente.",
+    "Amostragem de seletores, não cobertura exaustiva de todas as telas.",
+    "Nenhuma regra CSS foi alterada; esta é uma auditoria somente leitura."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/156.0.8078.79",
+    "revision": "@a21ce95c24ce3964416f09ae1862f53f319eb4d0",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "jsVersion": "15.6.75.27"
+  },
+  "domReady": true,
+  "cssOrder": {
+    "expected": [
+      "./style/themes.css?v=20-23",
+      "./style/base.css?v=20-24",
+      "./style/components.css?v=20-33",
+      "./style/layout.css?v=20-36",
+      "./style/features.css?v=20-31",
+      "./style/dashboard-chat.css?v=20-24",
+      "./vendor/tabler-icons/tabler-icons.css"
+    ],
+    "observed": [
+      "./style/themes.css?v=20-23",
+      "./style/base.css?v=20-24",
+      "./style/components.css?v=20-33",
+      "./style/layout.css?v=20-36",
+      "./style/features.css?v=20-31",
+      "./style/dashboard-chat.css?v=20-24",
+      "./vendor/tabler-icons/tabler-icons.css"
+    ],
+    "match": true
+  },
+  "vereditoColeta": "PASS",
+  "finishedAt": "2026-11-21T00:19:03.197Z"
+}

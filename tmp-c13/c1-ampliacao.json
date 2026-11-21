@@ -1,0 +1,4299 @@
+{
+  "task": "C.1 ampliada — todas as views, breakpoints e temas",
+  "startedAt": "2026-11-21T00:24:11.467Z",
+  "branch": "feat/app-layout-redesign",
+  "head": "2568b198c0f8e6c9a8d5937da4f38c07226548a5",
+  "views": [
+    {
+      "label": "div#viewDash.tab-content",
+      "nodeId": 317,
+      "nodes": [
+        {
+          "label": "div#dashFilterBar.dash-filter-bar",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewDash .dash-filter-bar",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(255, 254, 250)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.dash-filter-field",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewDash .dash-filter-field",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "span#dashPeriodLabel.dash-filter-label",
+          "matchedCount": 3,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewDash .dash-filter-label",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "9px"
+          }
+        },
+        {
+          "label": "div.dash-segmented",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewDash .dash-segmented",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "repeat(5, minmax(0px, 1fr))",
+            "background-color": "rgb(247, 245, 239)",
+            "color": "rgb(26, 36, 23)",
+            "position": "relative",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "span.dash-segmented-pill",
+          "matchedCount": 3,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewDash .dash-segmented-pill",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgb(95, 122, 67)",
+            "color": "rgb(26, 36, 23)",
+            "position": "absolute",
+            "width": "calc(20% - 4.8px)",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "button#dashCustomPeriodBtn",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(76, 90, 82)",
+            "position": "relative",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "11px"
+          }
+        },
+        {
+          "label": "i.fi.fi-rr-calendar",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "i, cite, em, var, address, dfn",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewDash .dash-segmented button#dashCustomPeriodBtn .fi",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "14px"
+          }
+        },
+        {
+          "label": "div.dash-filter-field",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewDash .dash-filter-field",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewDashboard.tab-content",
+      "nodeId": 348,
+      "nodes": [
+        {
+          "label": "div#advancedDashboard",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewDashboard #advancedDashboard",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "section.advanced-dashboard.dashboard-page",
+          "matchedCount": 7,
+          "matched": [
+            {
+              "selector": "article, aside, footer, header, hgroup, main, nav, search, section",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".advanced-dashboard",
+              "media": []
+            },
+            {
+              "selector": "#viewDashboard .dashboard-page",
+              "media": []
+            },
+            {
+              "selector": "#viewDashboard .advanced-dashboard",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(255, 254, 250)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.dashboard-page-heading",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".dashboard-page-heading",
+              "media": []
+            },
+            {
+              "selector": "#viewDashboard .dashboard-page-heading",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "span.eyebrow",
+          "matchedCount": 2,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "inline",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "span.dashboard-period",
+          "matchedCount": 3,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".dashboard-period",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "color(srgb 0.885176 0.893255 0.842824)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "10px"
+          }
+        },
+        {
+          "label": "div.dashboard-health-card.neutral",
+          "matchedCount": 7,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".dashboard-health-card",
+              "media": []
+            },
+            {
+              "selector": ".advanced-dashboard .dashboard-health-card",
+              "media": []
+            },
+            {
+              "selector": "#viewDashboard .dashboard-health-card",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(247, 245, 239)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "span.dashboard-health-icon",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".dashboard-health-icon",
+              "media": []
+            },
+            {
+              "selector": ".dashboard-health-card.neutral .dashboard-health-icon",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "none",
+            "background-color": "rgb(216, 210, 193)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "30px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.dashboard-metrics",
+          "matchedCount": 7,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".dashboard-metrics",
+              "media": []
+            },
+            {
+              "selector": ".advanced-dashboard .dashboard-metrics",
+              "media": []
+            },
+            {
+              "selector": "#viewDashboard .dashboard-metrics",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "repeat(4, minmax(0px, 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewGoals.tab-content",
+      "nodeId": 614,
+      "nodes": [
+        {
+          "label": "div.goals-page",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div#panelGoals.goals-panel.goals-panel-v2",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".goals-panel-v2",
+              "media": []
+            },
+            {
+              "selector": "body:not(.dark-mode) .goals-panel-v2",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgb(247, 245, 239)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.goals-v2-header",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".goals-v2-header",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.goals-v2-title-wrap",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "span.goals-v2-kicker",
+          "matchedCount": 3,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".goals-v2-kicker",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "11px"
+          }
+        },
+        {
+          "label": "h3.goals-v2-title",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "h3",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".goals-v2-title",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "23.2px"
+          }
+        },
+        {
+          "label": "p.goals-v2-intro",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "p",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".goals-v2-intro",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "color(srgb 0.101961 0.141176 0.0901961 / 0.62)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "12.5px"
+          }
+        },
+        {
+          "label": "div.goals-v2-section",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewCaixa.tab-content",
+      "nodeId": 631,
+      "nodes": [
+        {
+          "label": "div.toolbar",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".toolbar",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "repeat(auto-fill, minmax(180px, 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "button#btnTransferencia.quick-action",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(252, 253, 249)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "11px"
+          }
+        },
+        {
+          "label": "span.quick-action-icon",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".quick-action-icon, .profile-item-icon, .nav-icon",
+              "media": []
+            },
+            {
+              "selector": ".quick-action-icon",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "none",
+            "background-color": "color(srgb 0.885176 0.893255 0.842824)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "11px"
+          }
+        },
+        {
+          "label": "i.fi.fi-rr-money-bill-transfer",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "i, cite, em, var, address, dfn",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".quick-action-icon .fi, .header-icon-button .fi, .drawer-item-icon .fi, .diagnostic-summary-icon .fi, .profile-item-icon .fi, .profile-avatar .fi",
+              "media": []
+            },
+            {
+              "selector": ".nav-tab .fi, .quick-action-icon .fi, .header-icon-button .fi, .drawer-item-icon .fi, .diagnostic-summary-icon .fi, .profile-item-icon .fi, .profile-avatar .fi",
+              "media": []
+            },
+            {
+              "selector": ".quick-action-icon .fi, .header-icon-button .fi, .drawer-item-icon .fi, .diagnostic-summary-icon .fi",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "18px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "18px"
+          }
+        },
+        {
+          "label": "button#btnPasteTrigger.quick-action",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(252, 253, 249)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "11px"
+          }
+        },
+        {
+          "label": "span.quick-action-icon",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".quick-action-icon, .profile-item-icon, .nav-icon",
+              "media": []
+            },
+            {
+              "selector": ".quick-action-icon",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "none",
+            "background-color": "color(srgb 0.885176 0.893255 0.842824)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "11px"
+          }
+        },
+        {
+          "label": "i.fi.fi-rr-paste",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "i, cite, em, var, address, dfn",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".quick-action-icon .fi, .header-icon-button .fi, .drawer-item-icon .fi, .diagnostic-summary-icon .fi, .profile-item-icon .fi, .profile-avatar .fi",
+              "media": []
+            },
+            {
+              "selector": ".nav-tab .fi, .quick-action-icon .fi, .header-icon-button .fi, .drawer-item-icon .fi, .diagnostic-summary-icon .fi, .profile-item-icon .fi, .profile-avatar .fi",
+              "media": []
+            },
+            {
+              "selector": ".quick-action-icon .fi, .header-icon-button .fi, .drawer-item-icon .fi, .diagnostic-summary-icon .fi",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "18px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "18px"
+          }
+        },
+        {
+          "label": "button#btnImportTrigger.quick-action",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(252, 253, 249)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "11px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewBills.tab-content",
+      "nodeId": 706,
+      "nodes": [
+        {
+          "label": "div#billsSummary.balance-strip.section-balance-strip",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".balance-strip",
+              "media": []
+            },
+            {
+              "selector": "#viewBills .balance-strip.section-balance-strip",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "repeat(auto-fit, minmax(min(100%, 150px), 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "100%",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.toolbar.bills-toolbar-v19-16",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".toolbar",
+              "media": []
+            },
+            {
+              "selector": "#viewBills .toolbar",
+              "media": []
+            },
+            {
+              "selector": "#viewBills .bills-toolbar-v19-16",
+              "media": []
+            },
+            {
+              "selector": "#viewBills .bills-toolbar-v19-16",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "1.2fr 1fr auto",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "100%",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.bills-toolbar-actions",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewBills .bills-toolbar-main, #viewBills .bills-toolbar-actions, #viewBills .bills-toolbar-titular",
+              "media": []
+            },
+            {
+              "selector": "#viewBills .bills-toolbar-actions",
+              "media": []
+            },
+            {
+              "selector": "#viewBills .bills-toolbar-main, #viewBills .bills-toolbar-actions, #viewBills .bills-toolbar-titular",
+              "media": [
+                "(min-width: 720px)"
+              ]
+            },
+            {
+              "selector": "#viewBills .bills-toolbar-v19-16 > .bills-toolbar-actions",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "repeat(3, minmax(0px, 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "100%",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "button#btnBillsToday",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgb(255, 254, 250)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "0px",
+            "font-family": "Arial",
+            "font-size": "10px"
+          }
+        },
+        {
+          "label": "i.fi.fi-rr-calendar-day",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "i, cite, em, var, address, dfn",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#btnBillsToday .fi, #btnLockNow .fi, #btnExportBillsPdf .fi, #btnExportBillsXlsx .fi, #btnExportFormatPdf .fi, #btnExportFormatXlsx .fi, #btnExportFormatDocx .fi",
+              "media": []
+            },
+            {
+              "selector": "#btnBillsToday .fi, #btnLockNow .fi, #btnExportBillsPdf .fi, #btnExportBillsXlsx .fi",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "inline-block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "Arial",
+            "font-size": "18px"
+          }
+        },
+        {
+          "label": "button#btnExportBillsPdf",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgb(255, 254, 250)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "0px",
+            "font-family": "Arial",
+            "font-size": "10px"
+          }
+        },
+        {
+          "label": "i.fi.fi-rr-file-pdf",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "i, cite, em, var, address, dfn",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#btnBillsToday .fi, #btnLockNow .fi, #btnExportBillsPdf .fi, #btnExportBillsXlsx .fi, #btnExportFormatPdf .fi, #btnExportFormatXlsx .fi, #btnExportFormatDocx .fi",
+              "media": []
+            },
+            {
+              "selector": "#btnBillsToday .fi, #btnLockNow .fi, #btnExportBillsPdf .fi, #btnExportBillsXlsx .fi",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "inline-block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "Arial",
+            "font-size": "18px"
+          }
+        },
+        {
+          "label": "button#btnExportBillsXlsx",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgb(255, 254, 250)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "0px",
+            "font-family": "Arial",
+            "font-size": "10px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewReceivables.tab-content",
+      "nodeId": 763,
+      "nodes": [
+        {
+          "label": "div.cards-toolbar",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".cards-toolbar",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "p.hint",
+          "matchedCount": 7,
+          "matched": [
+            {
+              "selector": "p",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".hint",
+              "media": []
+            },
+            {
+              "selector": ".hint",
+              "media": []
+            },
+            {
+              "selector": ".cards-toolbar .hint",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "12px"
+          }
+        },
+        {
+          "label": "button#btnNewReceivable.primary",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(95, 122, 67)",
+            "color": "rgb(247, 250, 246)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "Arial",
+            "font-size": "12px"
+          }
+        },
+        {
+          "label": "i.fi.fi-rr-plus",
+          "matchedCount": 3,
+          "matched": [
+            {
+              "selector": "i, cite, em, var, address, dfn",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(247, 250, 246)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "Arial",
+            "font-size": "12px"
+          }
+        },
+        {
+          "label": "div#receivablesSummary.balance-strip.section-balance-strip",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".balance-strip",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "repeat(auto-fit, minmax(min(100%, 150px), 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "100%",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.toolbar",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".toolbar",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "repeat(auto-fill, minmax(180px, 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "label.calendar-filter-control",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "label",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            },
+            {
+              "selector": "label",
+              "media": []
+            },
+            {
+              "selector": ".calendar-filter-control",
+              "media": []
+            },
+            {
+              "selector": ".feature-profile-panel, .feature-profile-section, .feature-profile-toggle, .bill-share-panel, .bill-share-message, .calendar-filter-control",
+              "media": []
+            },
+            {
+              "selector": ".calendar-filter-control, .calendar-filter-control select",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(255, 254, 250)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "10px"
+          }
+        },
+        {
+          "label": "select#receivableStatusFilter",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"date\" i], input[type=\"datetime-local\" i], input[type=\"month\" i], input[type=\"week\" i], select",
+              "media": []
+            },
+            {
+              "selector": "select",
+              "media": []
+            },
+            {
+              "selector": "select",
+              "media": []
+            },
+            {
+              "selector": "select:not(:-internal-list-box)",
+              "media": []
+            },
+            {
+              "selector": "select:not(:-internal-list-box)",
+              "media": []
+            },
+            {
+              "selector": "select:not(:-internal-list-box)",
+              "media": []
+            },
+            {
+              "selector": "select:not(:-internal-list-box):not([multiple]):not([popover])",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgb(255, 254, 250)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "100%",
+            "font-family": "Inter, sans-serif",
+            "font-size": "11px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewInvest.tab-content",
+      "nodeId": 805,
+      "nodes": [
+        {
+          "label": "div#investBalanceStrip.balance-strip.section-balance-strip",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".balance-strip",
+              "media": []
+            },
+            {
+              "selector": "#viewInvest .balance-strip, #investBalanceStrip",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "1fr",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "100%",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.toolbar",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".toolbar",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "repeat(auto-fill, minmax(180px, 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "button#btnUpdateAllPrices.quote-refresh-btn",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(252, 253, 249)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "Arial",
+            "font-size": "13px"
+          }
+        },
+        {
+          "label": "span.quote-refresh-icon",
+          "matchedCount": 3,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".quote-refresh-icon",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "24px",
+            "font-family": "Arial",
+            "font-size": "13px"
+          }
+        },
+        {
+          "label": "i.fi.fi-rr-refresh",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "i, cite, em, var, address, dfn",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".quote-refresh-icon i",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "Arial",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "span.quote-refresh-label",
+          "matchedCount": 2,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "Arial",
+            "font-size": "13px"
+          }
+        },
+        {
+          "label": "button#btnExpandInvestTotal.invest-total-expand-btn",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "Arial",
+            "font-size": "11px"
+          }
+        },
+        {
+          "label": "div#updateAllStatus",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "12px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewPockets.tab-content",
+      "nodeId": 819,
+      "nodes": [
+        {
+          "label": "div#pocketBalanceStrip.balance-strip",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".balance-strip",
+              "media": []
+            },
+            {
+              "selector": "#viewPockets .balance-strip, #pocketBalanceStrip",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "repeat(2, minmax(0px, 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "100%",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div#pocketGrid.invest-grid",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".invest-grid",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "repeat(auto-fill, minmax(280px, 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewCards.tab-content",
+      "nodeId": 823,
+      "nodes": [
+        {
+          "label": "div.cards-toolbar",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".cards-toolbar",
+              "media": []
+            },
+            {
+              "selector": "#viewCards .cards-toolbar",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "p.hint",
+          "matchedCount": 7,
+          "matched": [
+            {
+              "selector": "p",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".hint",
+              "media": []
+            },
+            {
+              "selector": ".hint",
+              "media": []
+            },
+            {
+              "selector": ".cards-toolbar .hint",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "12px"
+          }
+        },
+        {
+          "label": "div#cardHero.card-hero",
+          "matchedCount": 7,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "[hidden]",
+              "media": []
+            },
+            {
+              "selector": ".card-hero",
+              "media": []
+            },
+            {
+              "selector": ".card-hero[hidden]",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "none",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "relative",
+            "width": "100%",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div#cardsGrid.cards-grid",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".cards-grid",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "repeat(auto-fit, minmax(290px, 1fr))",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewInicio.tab-content.active",
+      "nodeId": 834,
+      "nodes": [
+        {
+          "label": "div.inicio-header",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewInicio .inicio-header",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "1072px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "p.hint",
+          "matchedCount": 7,
+          "matched": [
+            {
+              "selector": "p",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".hint",
+              "media": []
+            },
+            {
+              "selector": ".hint",
+              "media": []
+            },
+            {
+              "selector": "#viewInicio .inicio-header .hint",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "1072px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "12px"
+          }
+        },
+        {
+          "label": "div.inicio-grid",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewInicio .inicio-grid",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "348px 348px 348px",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "1072px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.inicio-card.balance-card",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".balance-card",
+              "media": []
+            },
+            {
+              "selector": "#viewInicio .inicio-card",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgb(247, 245, 239)",
+            "color": "rgb(26, 36, 23)",
+            "position": "relative",
+            "width": "348px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.balance-card-head",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".balance-card-head",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "310px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "span.label",
+          "matchedCount": 3,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".balance-card .label",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "266px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "11px"
+          }
+        },
+        {
+          "label": "span.balance-symbol",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".balance-symbol",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            },
+            {
+              "selector": ".balance-card .balance-symbol",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "36px",
+            "background-color": "color(srgb 0.885176 0.893255 0.842824)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "36px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "i.fi.fi-rr-wallet",
+          "matchedCount": 3,
+          "matched": [
+            {
+              "selector": "i, cite, em, var, address, dfn",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "0px",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        }
+      ]
+    },
+    {
+      "label": "div#viewProfile.tab-content",
+      "nodeId": 911,
+      "nodes": [
+        {
+          "label": "section.profile-shell",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "article, aside, footer, header, hgroup, main, nav, search, section",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "body:not([data-tab=\"profile\"]) .profile-shell",
+              "media": []
+            },
+            {
+              "selector": "#viewProfile .profile-shell",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "none",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "100%",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.profile-heading.profile-heading-integrated",
+          "matchedCount": 6,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".profile-heading-integrated",
+              "media": []
+            },
+            {
+              "selector": "#viewProfile .profile-heading.profile-heading-integrated",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgb(255, 254, 250)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "button#btnOpenAvatarGrid.profile-avatar",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "none",
+            "background-color": "color(srgb 0.885176 0.893255 0.842824)",
+            "color": "rgb(95, 122, 67)",
+            "position": "static",
+            "width": "40px",
+            "font-family": "Arial",
+            "font-size": "12px"
+          }
+        },
+        {
+          "label": "p#profileEmail",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "p",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".profile-heading-integrated p",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "12px"
+          }
+        },
+        {
+          "label": "button#btnProfileLogout.profile-heading-logout",
+          "matchedCount": 8,
+          "matched": [
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "input, textarea, select, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "button",
+              "media": []
+            },
+            {
+              "selector": "html, body, button, input, select, textarea, a, label, [role=\"button\"], .profile-item, .feature-profile-toggle, .mobile-nav-item, .drawer-item, .nav-tabs button",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "grid",
+            "grid-template-columns": "none",
+            "background-color": "rgb(247, 245, 239)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "38px",
+            "font-family": "Arial",
+            "font-size": "12px"
+          }
+        },
+        {
+          "label": "i.fi.fi-rr-exit",
+          "matchedCount": 4,
+          "matched": [
+            {
+              "selector": "i, cite, em, var, address, dfn",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".profile-heading-logout i",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "Arial",
+            "font-size": "18px"
+          }
+        },
+        {
+          "label": "div.profile-group",
+          "matchedCount": 5,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "#viewProfile .profile-group",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "block",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 36, 23)",
+            "position": "static",
+            "width": "100%",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "16px"
+          }
+        },
+        {
+          "label": "div.profile-group-title",
+          "matchedCount": 7,
+          "matched": [
+            {
+              "selector": "div",
+              "media": []
+            },
+            {
+              "selector": "address, blockquote, center, div, figure, figcaption, footer, form, header, hr, legend, listing, main, p, plaintext, pre, summary, xmp, article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section, search, table, caption, colgroup, col, thead, tbody, tfoot, tr, td, th, dir, dd, dl, dt, menu, ol, ul, li, bdi, output, [dir=\"ltr\" i], [dir=\"rtl\" i], [dir=\"auto\" i]",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": "*",
+              "media": []
+            },
+            {
+              "selector": ".profile-group-title",
+              "media": []
+            },
+            {
+              "selector": ".profile-group-title",
+              "media": []
+            },
+            {
+              "selector": "#viewProfile .profile-group-title",
+              "media": []
+            }
+          ],
+          "computed": {
+            "display": "flex",
+            "grid-template-columns": "none",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(76, 90, 82)",
+            "position": "static",
+            "width": "auto",
+            "font-family": "\"Plus Jakarta Sans\", sans-serif",
+            "font-size": "12px"
+          }
+        }
+      ]
+    }
+  ],
+  "breakpoints": [
+    {
+      "width": 320,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 420px)",
+        "(max-width: 359px)",
+        "(max-width: 360px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 12,
+      "metrics": {
+        "width": 320,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 320,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 358,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 420px)",
+        "(max-width: 359px)",
+        "(max-width: 360px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 12,
+      "metrics": {
+        "width": 358,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 358,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 359,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 420px)",
+        "(max-width: 359px)",
+        "(max-width: 360px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 12,
+      "metrics": {
+        "width": 359,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 359,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 360,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 420px)",
+        "(max-width: 360px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 11,
+      "metrics": {
+        "width": 360,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 360,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 361,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 420px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 10,
+      "metrics": {
+        "width": 361,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 361,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 390,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 420px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 10,
+      "metrics": {
+        "width": 390,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 390,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 419,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 420px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 10,
+      "metrics": {
+        "width": 419,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 419,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 420,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 420px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 10,
+      "metrics": {
+        "width": 420,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 420,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 421,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 9,
+      "metrics": {
+        "width": 421,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 421,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 479,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 9,
+      "metrics": {
+        "width": 479,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 479,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 480,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(max-width: 480px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 9,
+      "metrics": {
+        "width": 480,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 480,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 481,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 8,
+      "metrics": {
+        "width": 481,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 481,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 599,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 8,
+      "metrics": {
+        "width": 599,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 599,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 600,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 600px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 8,
+      "metrics": {
+        "width": 600,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 600,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 601,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 601,
+        "height": 844,
+        "gridColumns": 1,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 601,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 679,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 679,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 679,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 680,
+      "activeConditions": [
+        "(max-width: 680px)",
+        "(max-width: 768px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 680,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "grid",
+        "scrollWidth": 680,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 681,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 681,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 681,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 682,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 682,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 682,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 699,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 699,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 699,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 700,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(max-width: 700px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 8,
+      "metrics": {
+        "width": 700,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 700,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 701,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 701,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 701,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 719,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 719,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 719,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 720,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 8,
+      "metrics": {
+        "width": 720,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 720,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 721,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 8,
+      "metrics": {
+        "width": 721,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 721,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 767,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 8,
+      "metrics": {
+        "width": 767,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 767,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 768,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(max-width: 768px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 8,
+      "metrics": {
+        "width": 768,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 768,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 769,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 769,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 769,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 859,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 859,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 859,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 860,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)",
+        "(max-width: 860px)"
+      ],
+      "activeCount": 7,
+      "metrics": {
+        "width": 860,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 860,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 861,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)"
+      ],
+      "activeCount": 6,
+      "metrics": {
+        "width": 861,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 861,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 899,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)"
+      ],
+      "activeCount": 6,
+      "metrics": {
+        "width": 899,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 899,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 900,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 900px)",
+        "(max-width: 1080px)"
+      ],
+      "activeCount": 6,
+      "metrics": {
+        "width": 900,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 900,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 901,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 1080px)"
+      ],
+      "activeCount": 5,
+      "metrics": {
+        "width": 901,
+        "height": 844,
+        "gridColumns": 2,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 901,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 1023,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 1080px)"
+      ],
+      "activeCount": 5,
+      "metrics": {
+        "width": 1023,
+        "height": 844,
+        "gridColumns": 3,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 1023,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 1024,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 1080px)",
+        "(min-width: 1024px)"
+      ],
+      "activeCount": 6,
+      "metrics": {
+        "width": 1024,
+        "height": 844,
+        "gridColumns": 3,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 1024,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 1025,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 1080px)",
+        "(min-width: 1024px)"
+      ],
+      "activeCount": 6,
+      "metrics": {
+        "width": 1025,
+        "height": 844,
+        "gridColumns": 3,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 1025,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 1079,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 1080px)",
+        "(min-width: 1024px)"
+      ],
+      "activeCount": 6,
+      "metrics": {
+        "width": 1079,
+        "height": 844,
+        "gridColumns": 3,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 1079,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 1080,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(max-width: 1080px)",
+        "(min-width: 1024px)"
+      ],
+      "activeCount": 6,
+      "metrics": {
+        "width": 1080,
+        "height": 844,
+        "gridColumns": 3,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 1080,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 1081,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(min-width: 1024px)"
+      ],
+      "activeCount": 5,
+      "metrics": {
+        "width": 1081,
+        "height": 844,
+        "gridColumns": 3,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 1081,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 1280,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(min-width: 1024px)"
+      ],
+      "activeCount": 5,
+      "metrics": {
+        "width": 1280,
+        "height": 844,
+        "gridColumns": 3,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 1280,
+        "overflowX": false
+      }
+    },
+    {
+      "width": 1440,
+      "activeConditions": [
+        "(min-width: 681px)",
+        "(prefers-reduced-motion: no-preference)",
+        "(min-width: 700px)",
+        "(min-width: 720px)",
+        "(min-width: 1024px)"
+      ],
+      "activeCount": 5,
+      "metrics": {
+        "width": 1440,
+        "height": 844,
+        "gridColumns": 3,
+        "gridGap": "14px",
+        "navDisplay": "none",
+        "scrollWidth": 1440,
+        "overflowX": false
+      }
+    }
+  ],
+  "themes": [
+    {
+      "mode": "light",
+      "variant": 1,
+      "tokens": {
+        "--accent": "#5F7A43",
+        "--accent-rgb": "95,122,67",
+        "--accent-foreground": "#F7FAF6",
+        "--surface-accent": "#1E2E16",
+        "--paper": "#F7F5EF",
+        "--ink": "#1A2417",
+        "--line": "#D8D2C1",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    },
+    {
+      "mode": "light",
+      "variant": 2,
+      "tokens": {
+        "--accent": "#327957",
+        "--accent-rgb": "50,121,87",
+        "--accent-foreground": "#FFFEF9",
+        "--surface-accent": "#18382C",
+        "--paper": "#F8F7F2",
+        "--ink": "#19352A",
+        "--line": "#E1E1D9",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    },
+    {
+      "mode": "light",
+      "variant": 3,
+      "tokens": {
+        "--accent": "#40916C",
+        "--accent-rgb": "64,145,108",
+        "--accent-foreground": "#FAF9F6",
+        "--surface-accent": "#31572C",
+        "--paper": "#FAF9F6",
+        "--ink": "#31572C",
+        "--line": "color-mix(in srgb,#90A955 35%,#FAF9F6)",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    },
+    {
+      "mode": "light",
+      "variant": 4,
+      "tokens": {
+        "--accent": "#C66F50",
+        "--accent-rgb": "198,111,80",
+        "--accent-foreground": "#FFFFFF",
+        "--surface-accent": "#8F4F3C",
+        "--paper": "#FBF6EF",
+        "--ink": "#342C25",
+        "--line": "#E2D3C0",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    },
+    {
+      "mode": "light",
+      "variant": 5,
+      "tokens": {
+        "--accent": "#E85002",
+        "--accent-rgb": "232,80,2",
+        "--accent-foreground": "#FFFFFF",
+        "--surface-accent": "#E85002",
+        "--paper": "#F9F9F9",
+        "--ink": "#1A1A1A",
+        "--line": "#E8E8E8",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    },
+    {
+      "mode": "dark",
+      "variant": 1,
+      "tokens": {
+        "--accent": "#9DD08B",
+        "--accent-rgb": "157,208,139",
+        "--accent-foreground": "#12190F",
+        "--surface-accent": "#33301E",
+        "--paper": "#1A1917",
+        "--ink": "#F1EDE1",
+        "--line": "#37342D",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    },
+    {
+      "mode": "dark",
+      "variant": 2,
+      "tokens": {
+        "--accent": "#22C55E",
+        "--accent-rgb": "34,197,94",
+        "--accent-foreground": "#0A2415",
+        "--surface-accent": "#27362C",
+        "--paper": "#121212",
+        "--ink": "#FFFFFF",
+        "--line": "#2C2C2E",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    },
+    {
+      "mode": "dark",
+      "variant": 3,
+      "tokens": {
+        "--accent": "#C9A86A",
+        "--accent-rgb": "201,168,106",
+        "--accent-foreground": "#16211A",
+        "--surface-accent": "#2A3A2E",
+        "--paper": "#0F1712",
+        "--ink": "#F3EFE4",
+        "--line": "#2A3A2E",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    },
+    {
+      "mode": "dark",
+      "variant": 4,
+      "tokens": {
+        "--accent": "#D08860",
+        "--accent-rgb": "208,136,96",
+        "--accent-foreground": "#1E1408",
+        "--surface-accent": "#403126",
+        "--paper": "#141410",
+        "--ink": "#F5F1E6",
+        "--line": "#33342A",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    },
+    {
+      "mode": "dark",
+      "variant": 5,
+      "tokens": {
+        "--accent": "#E85002",
+        "--accent-rgb": "232,80,2",
+        "--accent-foreground": "#FFFFFF",
+        "--surface-accent": "#2A1208",
+        "--paper": "#000000",
+        "--ink": "#F9F9F9",
+        "--line": "#333333",
+        "--shadow-lg": "0 18px 42px rgba(20,48,36,.08)"
+      }
+    }
+  ],
+  "blockedExternal": [
+    "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open",
+    "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+    "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+    "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",
+    "https://cdn.jsdelivr.net/npm/chart.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js",
+    "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+    "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css"
+  ],
+  "consoleErrors": [],
+  "exceptions": [],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/156.0.8078.79",
+    "revision": "@a21ce95c24ce3964416f09ae1862f53f319eb4d0",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "jsVersion": "15.6.75.27"
+  },
+  "domReady": true,
+  "viewCount": 11,
+  "allMediaConditions": [
+    "(min-width: 681px)",
+    "(prefers-reduced-motion: reduce)",
+    "(max-width: 680px)",
+    "(max-width: 768px)",
+    "(max-width: 600px)",
+    "(max-width: 700px)",
+    "(max-width: 480px)",
+    "(prefers-reduced-motion: no-preference)",
+    "(max-width: 420px)",
+    "(min-width: 700px)",
+    "(max-height: 700px)",
+    "(max-width: 359px)",
+    "(min-width: 720px)",
+    "(max-width: 360px)",
+    "(max-width: 900px)",
+    "(max-width: 1080px)",
+    "(max-width: 860px)",
+    "(min-width: 1024px)"
+  ],
+  "sweepWidths": [
+    320,
+    358,
+    359,
+    360,
+    361,
+    390,
+    419,
+    420,
+    421,
+    479,
+    480,
+    481,
+    599,
+    600,
+    601,
+    679,
+    680,
+    681,
+    682,
+    699,
+    700,
+    701,
+    719,
+    720,
+    721,
+    767,
+    768,
+    769,
+    859,
+    860,
+    861,
+    899,
+    900,
+    901,
+    1023,
+    1024,
+    1025,
+    1079,
+    1080,
+    1081,
+    1280,
+    1440
+  ],
+  "widthConditions": [
+    "(min-width: 681px)",
+    "(max-width: 680px)",
+    "(max-width: 768px)",
+    "(max-width: 600px)",
+    "(max-width: 700px)",
+    "(max-width: 480px)",
+    "(max-width: 420px)",
+    "(min-width: 700px)",
+    "(max-width: 359px)",
+    "(min-width: 720px)",
+    "(max-width: 360px)",
+    "(max-width: 900px)",
+    "(max-width: 1080px)",
+    "(max-width: 860px)",
+    "(min-width: 1024px)"
+  ],
+  "widthConditionsCovered": [
+    "(min-width: 681px)",
+    "(max-width: 680px)",
+    "(max-width: 768px)",
+    "(max-width: 600px)",
+    "(max-width: 700px)",
+    "(max-width: 480px)",
+    "(max-width: 420px)",
+    "(min-width: 700px)",
+    "(max-width: 359px)",
+    "(min-width: 720px)",
+    "(max-width: 360px)",
+    "(max-width: 900px)",
+    "(max-width: 1080px)",
+    "(max-width: 860px)",
+    "(min-width: 1024px)"
+  ],
+  "widthConditionsNeverActive": [],
+  "overflowFailures": [],
+  "cssWorkingTree": "",
+  "status": {
+    "domReady": true,
+    "viewsTotal": 11,
+    "viewsWithMatchedRules": 11,
+    "nodeSamples": 78,
+    "nodesWithRules": 78,
+    "breakpointsSweep": 42,
+    "widthConditionsTotal": 15,
+    "widthConditionsCovered": 15,
+    "widthConditionsNeverActive": 0,
+    "overflowFailures": 0,
+    "themesTested": 10,
+    "distinctThemeTokenSets": 10,
+    "allThemeTokensDefined": true,
+    "cssWorkingTreeClean": true,
+    "consoleErrors": 0,
+    "exceptions": 0
+  },
+  "veredito": "PASS",
+  "finishedAt": "2026-11-21T00:24:28.228Z"
+}

@@ -11,7 +11,7 @@ Este documento descreve **os tokens CSS efetivamente existentes** após a padron
 
 A referência é o CSS do repositório local. Se este documento e o código divergirem, **o código atual prevalece**.
 
-> **Classificação (reconciliação F1.5, 20/11/2026):** referência/especificação de tokens e temas — não é auditoria, relatório de implementação nem evidência de aprovação. Nenhum teste foi executado para produzir este inventário; a coleta completa de consumidores de `--accent` na aplicação permanece bloqueada e depende de verificação independente.
+> **Classificação (reconciliação F1.5 em 20/11/2026; auditoria C.1 em 21/11/2026):** referência/especificação de tokens e temas — não é relatório de implementação nem evidência de aprovação de redesign. O inventário foi confrontado com o código e com uma auditoria runtime somente leitura no HEAD `95b92c6` (11/11 views, 78/78 nós, 15/15 breakpoints de largura, 10 temas — ver §8). A coleta técnica de consumidores de `--accent` existe no pacote C.4; o que permanece bloqueado é a **aprovação independente** dessa coleta, não sua execução.
 
 ## Sumário
 
@@ -47,6 +47,7 @@ A referência é o CSS do repositório local. Se este documento e o código dive
   - [6.1 Tema claro hipotético (ID 6)](#61-tema-claro-hipotético-id-6)
   - [6.2 Tema escuro hipotético (ID 6)](#62-tema-escuro-hipotético-id-6)
 - [7. Ordem de carregamento e escopo](#7-ordem-de-carregamento-e-escopo)
+- [8. Reconciliação runtime C.1 (21/11/2026)](#8-reconciliação-runtime-c1-21112026)
 
 ## 1. Convenção de nomenclatura
 
@@ -419,7 +420,7 @@ Se um token **não** aparece no bloco de tema, ele herda do `body.dark-mode` ou 
 
 Os seguintes aliases redundantes foram eliminados porque todos os consumidores foram migrados:
 
-- `--accent-soft`/`--accent-muted` → unificados em `--accent-subtle`. Não há dupla definição.
+- `--accent-soft`/`--accent-muted` → unificados em `--accent-subtle`. Não há dupla definição **no CSS ativo**. Os nomes antigos sobrevivem apenas em `style/features.css.bak:103,944`, que não é carregado e não deve ser reativado.
 
 ### 4.2 Nomes preservados intencionalmente
 
@@ -524,7 +525,66 @@ Seletor:
 
 ## 7. Ordem de carregamento e escopo
 
-1. `style/themes.css` primeiro (define `:root`, seletores de tema e ações).
+1. `style/themes.css` primeiro **entre as folhas de `style/`** (define `:root`, seletores de tema e ações).
 2. Em seguida, `style/base.css`, `style/components.css`, `style/layout.css`, `style/features.css`, `style/dashboard-chat.css` conforme o HTML.
+3. Depois vem `vendor/tabler-icons/tabler-icons.css`, que também é local, mas não define tokens. Antes das folhas locais há Google Fonts (externa); depois há duas folhas Flaticon (externas).
 
-A ordem importa: `body` resolve `--accent` com o valor cascaded do tema/seletor, por isso as ações ficam em `body`, não em `:root`.
+A ordem foi confirmada no runtime em 21/11/2026: 10 folhas no total (7 locais + 3 externas). Ela importa porque `body` resolve `--accent` com o valor cascaded do tema/seletor, por isso as ações ficam em `body`, não em `:root`. Ainda assim, `features.css` carrega depois de `themes.css` e redefine `--action-border` (`:root` e `body.dark-mode` em `features.css:3838,3842`); isso é comportamento atual e deve ser considerado ao alterar tokens de ação.
+
+---
+
+## 8. Reconciliação runtime C.1 (21/11/2026)
+
+Esta seção registra a auditoria **somente leitura** executada no HEAD `95b92c6aaf059f4d224dddc478ef201a2b31f503`, com Chromium headless/CDP, recursos externos bloqueados e stub mínimo do Firebase. Nenhuma regra CSS foi alterada.
+
+### 8.1 Cobertura e breakpoints
+
+| Item | Resultado observado |
+|---|---|
+| Views auditadas | 11/11 (`dash`, `dashboard`, `goals`, `caixa`, `bills`, `receivables`, `invest`, `pockets`, `cards`, `inicio`, `profile`) |
+| Nós com regras CSS casadas | 78/78 |
+| Larguras varridas | 42 (limiares de breakpoints ±1 px, 320–1440) |
+| Condições `@media` de largura | 15/15 atingidas em alguma largura |
+| Overflow horizontal | 0 falhas |
+| `#viewInicio .inicio-grid` | 1 coluna em 390 px; 3 colunas em 1280 px; `gap:14px` |
+| `.mobile-bottom-nav` | `display:grid` em mobile; `display:none` em desktop |
+
+Condições ambientais (`prefers-reduced-motion`, `max-height`) foram registradas no CSSOM, mas não dependem de largura e não foram forçadas nesta coleta.
+
+### 8.2 Valores computados por tema
+
+Valores lidos de `getComputedStyle(document.body)` após aplicar cada variante:
+
+| Tema | `--accent` | `--paper` | `--ink` | `--surface-accent` |
+|---|---|---|---|---|
+| light 1 | `#5F7A43` | `#F7F5EF` | `#1A2417` | `#1E2E16` |
+| light 2 | `#327957` | `#F8F7F2` | `#19352A` | `#18382C` |
+| light 3 | `#40916C` | `#FAF9F6` | `#31572C` | `#31572C` |
+| light 4 | `#C66F50` | `#FBF6EF` | `#342C25` | `#8F4F3C` |
+| light 5 | `#E85002` | `#F9F9F9` | `#1A1A1A` | `#E85002` |
+| dark 1 | `#9DD08B` | `#1A1917` | `#F1EDE1` | `#33301E` |
+| dark 2 | `#22C55E` | `#121212` | `#FFFFFF` | `#27362C` |
+| dark 3 | `#C9A86A` | `#0F1712` | `#F3EFE4` | `#2A3A2E` |
+| dark 4 | `#D08860` | `#141410` | `#F5F1E6` | `#403126` |
+| dark 5 | `#E85002` | `#000000` | `#F9F9F9` | `#2A1208` |
+
+Os 10 conjuntos são distintos e nenhum token crítico está vazio. Isso **não** prova contraste WCAG de todos os pares; continua valendo a regra da seção 1.8.
+
+### 8.3 Achados abertos (não corrigidos nesta auditoria)
+
+- `@media (min-width:1024px)` duplicado em `dashboard-chat.css:965,986`.
+- `.export-preview-*` redefinido em `features.css:904/910` e `:933/940`.
+- `.bill-form-sheet` @700 redefinido em `features.css:3204,3286`.
+- `.card-form-sheet` @700 redefinido em `features.css:6124,6196`.
+- `.log-toolbar` @600: `features.css:870` esconde e `:876` reafirma colunas.
+- **Integridade:** `dashboard-chat.css:972-973` contém `*/` órfão (19 fechamentos para 18 aberturas de comentário).
+- `themes.css:19` ainda cita `app.js`, arquivo inexistente; as referências de linha históricas devem ser lidas como tal.
+
+Esses itens são diagnosticados, não resolvidos: correções de CSS pertencem a escopo autorizado das fases de implementação, não a esta referência.
+
+### 8.4 Evidências
+
+- Relatório: `tmp-c13/c1-relatorio.md`.
+- Dados ampliados: `tmp-c13/c1-ampliacao.json`; primeira passada: `tmp-c13/c1-auditoria-css.json`.
+- Scripts: `tmp-c13/c1-ampliacao.cjs` e `tmp-c13/c1-auditoria-css.cjs`.
+- Limitação: fontes/ícones CDN e Firebase real foram bloqueados pela metodologia e não foram avaliados visualmente.
