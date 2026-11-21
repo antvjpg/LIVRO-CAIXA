@@ -2,11 +2,17 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const CDP = require('chrome-remote-interface');
-const { createCDPAuditCore } = require('../../docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs');
 
 const DIR = __dirname;
+const coreArg = process.argv.find((a) => a.startsWith('--core='));
+const outArg = process.argv.find((a) => a.startsWith('--out='));
+const CORE_LABEL = coreArg
+  ? coreArg.slice('--core='.length)
+  : 'docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs';
+const CORE_PATH = coreArg ? path.resolve(CORE_LABEL) : path.join(DIR, '../../', CORE_LABEL);
+const OUT = outArg ? path.resolve(outArg.slice('--out='.length)) : path.join(DIR, 'resultado.json');
+const { createCDPAuditCore } = require(CORE_PATH);
 const MATRIZ = JSON.parse(fs.readFileSync(path.join(DIR, 'matriz.json'), 'utf8'));
-const OUT = path.join(DIR, 'resultado.json');
 const URL = 'http://127.0.0.1:8000/tmp-c13/r2-6-2/fixture.html';
 
 function sha(s) {
@@ -178,6 +184,9 @@ async function getPseudoComputed(Runtime, selector, pseudo, property) {
 
 function inferirSourceFonte(coreWinner, own, inline, inherited, pseudoMatches) {
   if (!coreWinner) return { source: 'nenhum', pseudoElement: null };
+  if (coreWinner.source) {
+    return { source: coreWinner.source, pseudoElement: coreWinner.pseudoElement || null };
+  }
   const alvo = { selectorText: coreWinner.selectorText || null, declaredValue: canonValue(coreWinner.value) };
   const acha = (arr) => arr.find((c) => c.selectorText === alvo.selectorText && canonValue(c.declaredValue) === alvo.declaredValue);
   if (acha(pseudoMatches)) return { source: 'stylesheet', pseudoElement: pseudoMatches[0] ? pseudoMatches[0].pseudoElement || null : null };
@@ -197,7 +206,7 @@ async function run() {
       fixture: MATRIZ.fixture,
       url: URL,
       matriz: 'tmp-c13/r2-6-2/matriz.json',
-      nucleo: 'docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs',
+      nucleo: CORE_LABEL,
       ambiente: MATRIZ.ambiente,
     },
     cenarios: [],
@@ -313,7 +322,11 @@ async function run() {
         },
       };
 
-      const nucleo = await core.getWinningRule(nodeId, cenario.propriedade);
+      const opcoes = {
+        pseudoElement: cenario.pseudoElement || undefined,
+        selector: cenario.alvo,
+      };
+      const nucleo = await core.getWinningRule(nodeId, cenario.propriedade, opcoes);
       const fonte = inferirSourceFonte(nucleo.winningDeclaration, own, inline, inherited, pseudoMatches);
       const mecanismoView = nucleo.winningDeclaration
         ? {
@@ -321,7 +334,7 @@ async function run() {
             selectorText: nucleo.winningDeclaration.selectorText || null,
             declaredValue: canonValue(nucleo.winningDeclaration.value),
             important: Boolean(nucleo.winningDeclaration.important),
-            pseudoElement: cenario.pseudoElement ? fonte.pseudoElement : null,
+            pseudoElement: nucleo.winningDeclaration.pseudoElement || (cenario.pseudoElement ? fonte.pseudoElement : null),
           }
         : null;
       const mecanismoDiv = compareWinner(mecanismoView, esperadoWinner, MATRIZ.criterios.comparacaoVencedor);
@@ -332,6 +345,7 @@ async function run() {
         status: mecanismoDiv.length === 0 ? 'PASS' : 'FAIL',
         candidatosNucleo: (nucleo.candidates || []).length,
         computedValueNucleo: nucleo.computedValue,
+        resolvedValueNucleo: nucleo.resolvedValue,
       };
 
       if (!registro.fixture.valida || !computedOk || !ownerOk || oracleDiv.length) {

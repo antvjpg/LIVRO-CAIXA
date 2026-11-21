@@ -1,0 +1,705 @@
+{
+  "meta": {
+    "id": "R2.6.3",
+    "data": "2026-11-21T16:09:10.811Z",
+    "branch": "feat/app-layout-redesign",
+    "head": "7c7a89803e46b293273cbe5d4f03a4c702d1672f",
+    "fixture": "tmp-c13/r2-6-2/fixture.html",
+    "url": "http://127.0.0.1:8000/tmp-c13/r2-6-2/fixture.html",
+    "matriz": "tmp-c13/r2-6-2/matriz.json",
+    "nucleo": "docs/auditorias/c4-v05-b/evidencias-r2-5-6/c4-v05-b-r2-5-6-core.cjs",
+    "ambiente": {
+      "browser": "Chromium headless + CDP",
+      "viewport": "800x600",
+      "recursosExternos": "nenhum",
+      "firebase": "nao utilizado",
+      "producao": "nenhuma alteracao"
+    },
+    "finishedAt": "2026-11-21T16:09:11.353Z",
+    "hash": "f0f0571036fb7e5bcd13301ab154161e9ac98a87acd092a71c5737f6eba858a7"
+  },
+  "cenarios": [
+    {
+      "id": "C01",
+      "nome": "baseline",
+      "objetivo": "Estabelecer leitura de referencia com uma unica declaracao.",
+      "alvo": "#r261-baseline",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "fixture": {
+        "nodeId": 12,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(95, 122, 67)",
+        "observado": "rgb(95, 122, 67)",
+        "canonicoEsperado": "rgb(95, 122, 67)",
+        "canonicoObservado": "rgb(95, 122, 67)",
+        "status": "PASS",
+        "ownerEsperado": null,
+        "ownerObservado": null,
+        "fonte": "CSS.getComputedStyleForNode"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-baseline",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "observado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-baseline",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 1,
+          "inline": 0,
+          "hereditarias": 0,
+          "pseudo": 0
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "captured",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-baseline",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "candidatosNucleo": 2,
+        "computedValueNucleo": "var(--accent)"
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "C02",
+      "nome": "source-order",
+      "objetivo": "Mesma especificidade: a declaracao posterior da folha deve vencer.",
+      "alvo": "#r261-order",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "fixture": {
+        "nodeId": 14,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(95, 122, 67)",
+        "observado": "rgb(95, 122, 67)",
+        "canonicoEsperado": "rgb(95, 122, 67)",
+        "canonicoObservado": "rgb(95, 122, 67)",
+        "status": "PASS",
+        "ownerEsperado": null,
+        "ownerObservado": null,
+        "fonte": "CSS.getComputedStyleForNode"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-order",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "observado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-order",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 2,
+          "inline": 0,
+          "hereditarias": 0,
+          "pseudo": 0
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "captured",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-order",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "candidatosNucleo": 4,
+        "computedValueNucleo": "var(--accent)"
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "C03",
+      "nome": "specificity-invertida",
+      "objetivo": "Especificidade maior declarada PRIMEIRO deve vencer sobre menor declarada DEPOIS.",
+      "alvo": "#r261-spec",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "fixture": {
+        "nodeId": 16,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(95, 122, 67)",
+        "observado": "rgb(95, 122, 67)",
+        "canonicoEsperado": "rgb(95, 122, 67)",
+        "canonicoObservado": "rgb(95, 122, 67)",
+        "status": "PASS",
+        "ownerEsperado": null,
+        "ownerObservado": null,
+        "fonte": "CSS.getComputedStyleForNode"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "stylesheet",
+          "selectorText": "button.r261-spec",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "observado": {
+          "source": "stylesheet",
+          "selectorText": "button.r261-spec",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 2,
+          "inline": 0,
+          "hereditarias": 0,
+          "pseudo": 0
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "captured",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "button.r261-spec",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "candidatosNucleo": 6,
+        "computedValueNucleo": "var(--accent)"
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "C04",
+      "nome": "important-invertido",
+      "objetivo": "!important de menor especificidade deve vencer sobre declaracao normal de maior especificidade.",
+      "alvo": "#r261-important",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "fixture": {
+        "nodeId": 18,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(95, 122, 67)",
+        "observado": "rgb(95, 122, 67)",
+        "canonicoEsperado": "rgb(95, 122, 67)",
+        "canonicoObservado": "rgb(95, 122, 67)",
+        "status": "PASS",
+        "ownerEsperado": null,
+        "ownerObservado": null,
+        "fonte": "CSS.getComputedStyleForNode"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "stylesheet",
+          "selectorText": ".r261-important",
+          "declaredValue": "var(--accent)",
+          "important": true,
+          "pseudoElement": null
+        },
+        "observado": {
+          "source": "stylesheet",
+          "selectorText": ".r261-important",
+          "declaredValue": "var(--accent)",
+          "important": true,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 2,
+          "inline": 0,
+          "hereditarias": 0,
+          "pseudo": 0
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "captured",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-important",
+          "declaredValue": "rgb(17, 17, 17)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [
+          "selectorText: esperado=\".r261-important\" observado=\"#r261-important\"",
+          "declaredValue: esperado=\"var(--accent)\" observado=\"rgb(17, 17, 17)\"",
+          "important: esperado=true observado=false"
+        ],
+        "status": "FAIL",
+        "candidatosNucleo": 4,
+        "computedValueNucleo": "rgb(17, 17, 17)"
+      },
+      "divergencias": [
+        "selectorText: esperado=\".r261-important\" observado=\"#r261-important\"",
+        "declaredValue: esperado=\"var(--accent)\" observado=\"rgb(17, 17, 17)\"",
+        "important: esperado=true observado=false"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "id": "C05",
+      "nome": "inline-vs-stylesheet",
+      "objetivo": "Estilo inline deve vencer a regra de stylesheet.",
+      "alvo": "#r261-inline",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "fixture": {
+        "nodeId": 20,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(255, 0, 0)",
+        "observado": "rgb(255, 0, 0)",
+        "canonicoEsperado": "rgb(255, 0, 0)",
+        "canonicoObservado": "rgb(255, 0, 0)",
+        "status": "PASS",
+        "ownerEsperado": null,
+        "ownerObservado": null,
+        "fonte": "CSS.getComputedStyleForNode"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "inline",
+          "selectorText": null,
+          "declaredValue": "rgb(255, 0, 0)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "observado": {
+          "source": "inline",
+          "selectorText": null,
+          "declaredValue": "rgb(255, 0, 0)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 1,
+          "inline": 1,
+          "hereditarias": 0,
+          "pseudo": 0
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "captured",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-inline",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [
+          "source: esperado=\"inline\" observado=\"stylesheet\"",
+          "selectorText: esperado=null observado=\"#r261-inline\"",
+          "declaredValue: esperado=\"rgb(255, 0, 0)\" observado=\"var(--accent)\""
+        ],
+        "status": "FAIL",
+        "candidatosNucleo": 2,
+        "computedValueNucleo": "var(--accent)"
+      },
+      "divergencias": [
+        "source: esperado=\"inline\" observado=\"stylesheet\"",
+        "selectorText: esperado=null observado=\"#r261-inline\"",
+        "declaredValue: esperado=\"rgb(255, 0, 0)\" observado=\"var(--accent)\""
+      ],
+      "status": "FAIL"
+    },
+    {
+      "id": "C06",
+      "nome": "custom-property-inline",
+      "objetivo": "Propriedade customizada definida inline deve ser resolvida na declaracao inline vencedora.",
+      "alvo": "#r261-inline-var",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "fixture": {
+        "nodeId": 22,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(0, 0, 255)",
+        "observado": "rgb(0, 0, 255)",
+        "canonicoEsperado": "rgb(0, 0, 255)",
+        "canonicoObservado": "rgb(0, 0, 255)",
+        "status": "PASS",
+        "ownerEsperado": null,
+        "ownerObservado": null,
+        "fonte": "CSS.getComputedStyleForNode"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "inline",
+          "selectorText": null,
+          "declaredValue": "var(--inline-accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "observado": {
+          "source": "inline",
+          "selectorText": null,
+          "declaredValue": "var(--inline-accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 1,
+          "inline": 1,
+          "hereditarias": 0,
+          "pseudo": 0
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "captured",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-inline-var",
+          "declaredValue": "rgb(17, 17, 17)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [
+          "source: esperado=\"inline\" observado=\"stylesheet\"",
+          "selectorText: esperado=null observado=\"#r261-inline-var\"",
+          "declaredValue: esperado=\"var(--inline-accent)\" observado=\"rgb(17, 17, 17)\""
+        ],
+        "status": "FAIL",
+        "candidatosNucleo": 2,
+        "computedValueNucleo": "rgb(17, 17, 17)"
+      },
+      "divergencias": [
+        "source: esperado=\"inline\" observado=\"stylesheet\"",
+        "selectorText: esperado=null observado=\"#r261-inline-var\"",
+        "declaredValue: esperado=\"var(--inline-accent)\" observado=\"rgb(17, 17, 17)\""
+      ],
+      "status": "FAIL"
+    },
+    {
+      "id": "C07",
+      "nome": "inherit-explicito",
+      "objetivo": "color: inherit deve resolver para a cor do ancestral.",
+      "alvo": "#r261-inherit",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "fixture": {
+        "nodeId": 25,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(95, 122, 67)",
+        "observado": "rgb(95, 122, 67)",
+        "canonicoEsperado": "rgb(95, 122, 67)",
+        "canonicoObservado": "rgb(95, 122, 67)",
+        "status": "PASS",
+        "ownerEsperado": null,
+        "ownerObservado": null,
+        "fonte": "CSS.getComputedStyleForNode"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-inherit",
+          "declaredValue": "inherit",
+          "important": false,
+          "pseudoElement": null
+        },
+        "observado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-inherit",
+          "declaredValue": "inherit",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 1,
+          "inline": 0,
+          "hereditarias": 1,
+          "pseudo": 0
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "captured",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-inherit",
+          "declaredValue": "inherit",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "candidatosNucleo": 2,
+        "computedValueNucleo": "inherit"
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "C08",
+      "nome": "herda-implicita",
+      "objetivo": "Sem declaracao propria de color, o vencedor deve vir do ancestral.",
+      "alvo": "#r261-inherit-implicit",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "fixture": {
+        "nodeId": 28,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(95, 122, 67)",
+        "observado": "rgb(95, 122, 67)",
+        "canonicoEsperado": "rgb(95, 122, 67)",
+        "canonicoObservado": "rgb(95, 122, 67)",
+        "status": "PASS",
+        "ownerEsperado": null,
+        "ownerObservado": null,
+        "fonte": "CSS.getComputedStyleForNode"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "inherited",
+          "selectorText": ".r261-parent-implicit",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "observado": {
+          "source": "inherited",
+          "selectorText": ".r261-parent-implicit",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 0,
+          "inline": 0,
+          "hereditarias": 1,
+          "pseudo": 0
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "no-matching-declaration",
+        "vencedor": null,
+        "divergencias": [
+          "vencedor observado ausente"
+        ],
+        "status": "FAIL",
+        "candidatosNucleo": 0,
+        "computedValueNucleo": null
+      },
+      "divergencias": [
+        "vencedor observado ausente"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "id": "C09",
+      "nome": "variaveis-encadeadas",
+      "objetivo": "Variaveis encadeadas na raiz devem resolver para a cor final.",
+      "alvo": "#r261-chain",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "fixture": {
+        "nodeId": 30,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(95, 122, 67)",
+        "observado": "rgb(95, 122, 67)",
+        "canonicoEsperado": "rgb(95, 122, 67)",
+        "canonicoObservado": "rgb(95, 122, 67)",
+        "status": "PASS",
+        "ownerEsperado": null,
+        "ownerObservado": null,
+        "fonte": "CSS.getComputedStyleForNode"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-chain",
+          "declaredValue": "var(--chain-a)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "observado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-chain",
+          "declaredValue": "var(--chain-a)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 1,
+          "inline": 0,
+          "hereditarias": 0,
+          "pseudo": 0
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "captured",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r261-chain",
+          "declaredValue": "var(--chain-a)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "candidatosNucleo": 2,
+        "computedValueNucleo": "var(--chain-a)"
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "C10",
+      "nome": "pseudoelemento",
+      "objetivo": "A cor do pseudoelemento deve ser rastreada separadamente do elemento owner.",
+      "alvo": "#r261-pseudo",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "fixture": {
+        "nodeId": 32,
+        "quantidade": 1,
+        "valida": true
+      },
+      "computado": {
+        "esperado": "rgb(95, 122, 67)",
+        "observado": "rgb(95, 122, 67)",
+        "canonicoEsperado": "rgb(95, 122, 67)",
+        "canonicoObservado": "rgb(95, 122, 67)",
+        "status": "PASS",
+        "ownerEsperado": "rgb(17, 17, 17)",
+        "ownerObservado": "rgb(17, 17, 17)",
+        "fonte": "Runtime.evaluate getComputedStyle"
+      },
+      "oracle": {
+        "esperado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-pseudo::before",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": "::before"
+        },
+        "observado": {
+          "source": "stylesheet",
+          "selectorText": "#r261-pseudo::before",
+          "declaredValue": "var(--accent)",
+          "important": false,
+          "pseudoElement": "::before"
+        },
+        "divergencias": [],
+        "status": "PASS",
+        "contagens": {
+          "proprias": 1,
+          "inline": 0,
+          "hereditarias": 0,
+          "pseudo": 1
+        }
+      },
+      "mecanismo": {
+        "captureStatus": "captured",
+        "vencedor": {
+          "source": "desconhecido",
+          "selectorText": "#r261-pseudo",
+          "declaredValue": "rgb(17, 17, 17)",
+          "important": false,
+          "pseudoElement": null
+        },
+        "divergencias": [
+          "source: esperado=\"stylesheet\" observado=\"desconhecido\"",
+          "selectorText: esperado=\"#r261-pseudo::before\" observado=\"#r261-pseudo\"",
+          "declaredValue: esperado=\"var(--accent)\" observado=\"rgb(17, 17, 17)\"",
+          "pseudoElement: esperado=\"::before\" observado=null"
+        ],
+        "status": "FAIL",
+        "candidatosNucleo": 2,
+        "computedValueNucleo": "rgb(17, 17, 17)"
+      },
+      "divergencias": [
+        "source: esperado=\"stylesheet\" observado=\"desconhecido\"",
+        "selectorText: esperado=\"#r261-pseudo::before\" observado=\"#r261-pseudo\"",
+        "declaredValue: esperado=\"var(--accent)\" observado=\"rgb(17, 17, 17)\"",
+        "pseudoElement: esperado=\"::before\" observado=null"
+      ],
+      "status": "FAIL"
+    }
+  ],
+  "resumo": {
+    "total": 10,
+    "PASS": 5,
+    "FAIL": 5,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "mecanismoPASS": 5,
+    "mecanismoFAIL": 5,
+    "oraclePASS": 10
+  },
+  "erros": {
+    "cdp": [],
+    "console": [],
+    "excecoes": []
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "f0f0571036fb7e5bcd13301ab154161e9ac98a87acd092a71c5737f6eba858a7",
+    "recalculated": "f0f0571036fb7e5bcd13301ab154161e9ac98a87acd092a71c5737f6eba858a7"
+  }
+}
