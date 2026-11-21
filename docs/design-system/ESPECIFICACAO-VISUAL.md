@@ -1,6 +1,6 @@
 # Especificação Visual — Baseline do APP LAYOUT REDESIGN
 
-**Classificação:** baseline visual e especificação proposta — **aguardando aceite independente**. Não é aprovação de redesign nem relatório de regressão.
+**Classificação:** baseline visual e especificação **aprovada pelo usuário em 21/11/2026** (aceite registrado nesta sessão; não é auditoria independente humana). Não é aprovação de redesign nem relatório de regressão. Publicação: commit `9159039c5423ea534e1d93cf0a85349177f5cadc`.
 **Baseline:** branch `feat/app-layout-redesign` · HEAD `cdbcb88354e74a3f1956e868905e9b67bfbd31e4` · coleta em 21/11/2026 com Chromium 156 headless (CDP :9222), servidor estático local em `http://127.0.0.1:8000`.
 **Evidência:** `e2e/visual/c3/coleta-cdbcb88/manifest.json`, 110 PNGs em `e2e/visual/c3/coleta-cdbcb88/capturas/`, script `e2e/visual/c3/captura-head.mjs`.
 
@@ -38,7 +38,7 @@ O pacote `e2e/visual/c3/evidencias/` (110 capturas, `shaHEAD=ab656b9`, `shaPubli
 - D-05: composição/grid da view Início (`style/features.css`, ~75 linhas).
 - D-03/D-04: Próximo Pagamento e Resumo do Fluxo passaram a renderizar também em Início.
 
-A nova coleta usa `headSha` lido dinamicamente no início da execução (não hardcoded) e `publicacaoSha` pendente até o commit que publicar as imagens.
+A nova coleta usa `headSha` lido dinamicamente no início da execução (não hardcoded). O `publicacaoSha` foi preenchido com o commit que publicou imagens e manifesto: `9159039c5423ea534e1d93cf0a85349177f5cadc`.
 
 ## 5. Paletas verificadas
 
@@ -83,9 +83,9 @@ Critérios comuns: nenhum overlay de autenticação, nenhum seletor de tema vis�
 - [x] Matriz 110 capturas coletada no HEAD atual.
 - [x] Integridade do manifesto e dos PNGs verificada.
 - [x] Paletas conferidas em todas as capturas.
-- [ ] Revisão visual humana das capturas por tema/viewport.
-- [ ] Aprovação desta especificação.
-- [ ] Atualizar `publicacaoSha` no manifesto após o commit de publicação.
+- [x] Aprovação desta especificação pelo usuário (21/11/2026).
+- [x] `publicacaoSha` registrado no manifesto (`9159039c5423...`).
+- [ ] Revisão visual por auditor independente humano, se exigida posteriormente.
 
 ## 9. Evidências
 

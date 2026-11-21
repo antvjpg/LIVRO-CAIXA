@@ -2,7 +2,7 @@
   "meta": {
     "geradoEm": "2026-11-21T00:49:12.446Z",
     "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-    "publicacaoSha": null,
+    "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
     "branch": "feat/app-layout-redesign",
     "base": "http://127.0.0.1:8000/index.html",
     "sourceFiles": [
@@ -162,7 +162,8 @@
         "sha256": "5bbe9b30e8afa02746e4f341ba163afdc559d40a29d396c0c362a86d0cb4a0f0"
       }
     ],
-    "ultimaAtualizacao": "2026-11-21T00:58:34.724Z"
+    "ultimaAtualizacao": "2026-11-21T00:58:34.724Z",
+    "publicacaoRegistradaEm": "2026-11-21"
   },
   "capturas": [
     {
@@ -179,7 +180,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:49:18.811Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -245,7 +246,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:49:23.494Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -311,7 +312,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:49:28.428Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -377,7 +378,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:49:32.915Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -443,7 +444,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:49:37.527Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -509,7 +510,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:49:42.428Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -575,7 +576,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:49:47.741Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -641,7 +642,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:49:52.274Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -707,7 +708,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:49:56.813Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -773,7 +774,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:01.804Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -839,7 +840,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:06.444Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -905,7 +906,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:11.083Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -971,7 +972,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:16.082Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -1037,7 +1038,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:21.518Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -1103,7 +1104,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:26.150Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -1169,7 +1170,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:30.760Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -1235,7 +1236,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:35.676Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -1301,7 +1302,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:40.427Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -1367,7 +1368,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:45.077Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -1433,7 +1434,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:50.043Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -1499,7 +1500,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:50:55.863Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -1565,7 +1566,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:00.592Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -1631,7 +1632,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:05.322Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -1697,7 +1698,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:10.335Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -1763,7 +1764,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:15.200Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -1829,7 +1830,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:19.929Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -1895,7 +1896,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:24.918Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -1961,7 +1962,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:30.359Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -2027,7 +2028,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:34.966Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -2093,7 +2094,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:39.544Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -2159,7 +2160,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:44.463Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -2225,7 +2226,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:49.243Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -2291,7 +2292,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:53.850Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -2357,7 +2358,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:51:58.821Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -2423,7 +2424,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:04.235Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -2489,7 +2490,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:08.906Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -2542,7 +2543,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:13.341Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -2595,7 +2596,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:17.782Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -2648,7 +2649,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:22.220Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
@@ -2701,7 +2702,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:26.652Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -2754,7 +2755,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:31.115Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -2807,7 +2808,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:35.604Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -2860,7 +2861,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:40.012Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
@@ -2913,7 +2914,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:44.406Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -2966,7 +2967,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:48.810Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -3019,7 +3020,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:53.310Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -3072,7 +3073,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:52:57.783Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
@@ -3125,7 +3126,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:53:02.312Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -3178,7 +3179,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:53:06.764Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -3231,7 +3232,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:53:11.303Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -3284,7 +3285,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:53:15.828Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
@@ -3337,7 +3338,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:53:20.294Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -3390,7 +3391,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:53:24.768Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -3443,7 +3444,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:53:29.385Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -3496,7 +3497,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:53:33.819Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
@@ -3549,7 +3550,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:16.021Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -3615,7 +3616,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:20.719Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -3681,7 +3682,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:25.845Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -3747,7 +3748,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:30.608Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -3813,7 +3814,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:35.451Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -3879,7 +3880,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:40.411Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -3945,7 +3946,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:45.826Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -4011,7 +4012,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:50.381Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -4077,7 +4078,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:54.970Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -4143,7 +4144,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:54:59.957Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -4209,7 +4210,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:04.703Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -4275,7 +4276,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:09.327Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -4341,7 +4342,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:14.314Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -4407,7 +4408,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:19.757Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -4473,7 +4474,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:24.550Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -4539,7 +4540,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:29.198Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -4605,7 +4606,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:34.199Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -4671,7 +4672,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:39.399Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -4737,7 +4738,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:44.240Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -4803,7 +4804,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:49.234Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -4869,7 +4870,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:54.676Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -4935,7 +4936,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:55:59.431Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -5001,7 +5002,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:04.074Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -5067,7 +5068,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:09.119Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -5133,7 +5134,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:13.967Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -5199,7 +5200,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:18.688Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -5265,7 +5266,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:23.741Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -5331,7 +5332,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:29.268Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -5397,7 +5398,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:33.940Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -5463,7 +5464,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:38.595Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 593
@@ -5529,7 +5530,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:43.551Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 593,
         "max": 593
@@ -5595,7 +5596,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:48.268Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 271
@@ -5661,7 +5662,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:52.940Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 3009
@@ -5727,7 +5728,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:56:57.951Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 3009,
         "max": 3009
@@ -5793,7 +5794,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:03.442Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 2889,
         "max": 3009
@@ -5859,7 +5860,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:08.094Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -5912,7 +5913,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:12.525Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -5965,7 +5966,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:17.214Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -6018,7 +6019,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:21.704Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
@@ -6071,7 +6072,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:26.169Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -6124,7 +6125,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:30.656Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -6177,7 +6178,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:35.183Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -6230,7 +6231,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:39.761Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
@@ -6283,7 +6284,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:44.264Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -6336,7 +6337,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:48.874Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -6389,7 +6390,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:53.471Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -6442,7 +6443,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:57:58.022Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
@@ -6495,7 +6496,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:58:02.542Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -6548,7 +6549,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:58:07.159Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -6601,7 +6602,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:58:11.825Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -6654,7 +6655,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:58:16.452Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
@@ -6707,7 +6708,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:58:21.118Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -6760,7 +6761,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:58:25.651Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 126
@@ -6813,7 +6814,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:58:30.222Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 31
@@ -6866,7 +6867,7 @@
       "falhas": [],
       "dataHora": "2026-11-21T00:58:34.714Z",
       "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
-      "publicacaoSha": null,
+      "publicacaoSha": "9159039c5423ea534e1d93cf0a85349177f5cadc",
       "rolagem": {
         "y": 0,
         "max": 2495
