@@ -153,6 +153,22 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     return sessao;
   }
 
+  /* O commit do SDK resolve no commit LOCAL; o REST enxerga apenas o servidor.
+     Esperar waitForPendingWrites antes de cada oráculo evita consultar o
+     Firestore enquanto a mutação ainda está na fila de sincronização. O timeout
+     impede espera indefinida se o stream cair. */
+  async function waitForRemoteAck(page, timeoutMs = 60_000) {
+    await page.evaluate(async (limite) => {
+      if (typeof window.db?.waitForPendingWrites !== 'function') return;
+      await Promise.race([
+        window.db.waitForPendingWrites(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('waitForPendingWrites excedeu o limite')), limite)
+        ),
+      ]);
+    }, timeoutMs);
+  }
+
   function fillMoney(page, selector, value) {
     return page.fill(selector, String(Math.round(value * 100)));
   }
@@ -308,7 +324,9 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     return snapshot(rest);
   }
 
-  async function conferirOracle(rest, name) {
+  async function conferirOracle(page, name) {
+    await waitForRemoteAck(page);
+    const rest = await sessionFromPage(page);
     const snap = await snapshotWithInvestments(rest, [name]);
     const invDoc = snap.investments.find((d) => d.fields.name === name);
     if (!invDoc) throw new Error(`investments/${name} ausente no Firestore`);
@@ -357,16 +375,8 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await openNewAsset(page);
     await saveAsset(page, { name: NAME_BTC, type: 'Bitcoin', units: UNITS_BTC, price: PRICE_BTC });
 
-    /* Barreira de ACK do servidor: o app grava com batch().commit() sobre
-       persistência IndexedDB (js/00-bootstrap.js), cuja promise resolve no
-       commit LOCAL, antes do ACK remoto. O REST enxerga apenas o servidor;
-       sem esta barreira o BTC pode estar na fila de mutações do SDK enquanto
-       o card já aparece na UI. waitForPendingWrites drena a fila sem espera
-       fixa; o race apenas evita travar indefinidamente se o stream cair. */
-    await page.evaluate(() => Promise.race([
-      window.db.waitForPendingWrites(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('waitForPendingWrites excedeu 60s')), 60_000)),
-    ]));
+    /* Barreira de ACK do servidor antes da primeira conferência REST. */
+    await waitForRemoteAck(page);
 
     /* Consistência de leitura do último gravado: o BTC é criado por último e
        foi o ativo ausente nas falhas intermitentes. Poll isolado antecedente
@@ -391,7 +401,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
 
     // tripla conferência por ativo: oracle × UI
     for (const name of [NAME_ST, NAME_RF, NAME_OUT, NAME_BTC]) {
-      const conf = await conferirOracle(await sessionFromPage(page), name);
+      const conf = await conferirOracle(page, name);
       expect(await cardValue(page, name), `card ${name} × oracle`).toBeCloseTo(conf.value, 2);
     }
 
@@ -442,7 +452,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await saveCryptoMovement(page, { units: 3, price: 5.30 });
 
     // ST final: units 24.5, value 24.5*5.30=129.85
-    const confSt = await conferirOracle(await sessionFromPage(page), NAME_ST);
+    const confSt = await conferirOracle(page, NAME_ST);
     expect(await cardValue(page, NAME_ST), 'card ST após movimentações').toBeCloseTo(129.85, 2);
     expect(confSt.units, 'unidades ST após movimentações').toBeCloseTo(24.5, 6);
 
@@ -455,7 +465,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await saveSimpleMovement(page, { amount: 100 });
 
     // RF value final: 1000+200+50-100=1150
-    const confRf = await conferirOracle(await sessionFromPage(page), NAME_RF);
+    const confRf = await conferirOracle(page, NAME_RF);
     expect(await cardValue(page, NAME_RF), 'card RF após movimentações').toBeCloseTo(1150, 2);
 
     // rentabilidade positiva no RF: totalYield=50, base=1100, pct≈4.55
@@ -511,7 +521,7 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
 
     // rentabilidade após edição: base=1200, pct≈4.17
     const rfBox = card(page, NAME_RF).locator('.rentability-box');
-    const confRf2 = await conferirOracle(await sessionFromPage(page), NAME_RF);
+    const confRf2 = await conferirOracle(page, NAME_RF);
     const rfRent2 = invOracle.rentability(confRf2.assetPlain, confRf2.snap.yieldsPlain, 1250);
     await expect(rfBox).toContainText(`(${rfRent2.pct.toFixed(2)}%)`);
 
