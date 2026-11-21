@@ -123,7 +123,9 @@ async function fetchWithQuotaRetry(url, init) {
 /* Retry de rede somente para LISTAGEM (GET). Erros permanentes (400/401/403,
    regras Firestore, 404 = coleção vazia) e 429 (já tratado acima, com janela
    de carência) NÃO são repetidos. Nenhuma operação de escrita/exclusão passa
-   por aqui — o retry não pode duplicar mutações. */
+   por aqui — o retry não pode duplicar mutações.
+   Listagens usam no-store para evitar resposta 200 obsoleta de proxy/CDN:
+   um GET em cache pode devolver coleção vazia mesmo após o commit remoto. */
 const TRANSIENT_RETRY_DELAYS_MS = [1000, 3000];
 const TRANSIENT_NETWORK_CODES = new Set(['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'EPIPE', 'EAI_AGAIN']);
 
@@ -133,12 +135,18 @@ function isTransientNetworkError(err) {
   return TRANSIENT_NETWORK_CODES.has(err.code);
 }
 
-async function fetchCollectionPage(url, init) {
+async function fetchCollectionPage(url, init = {}) {
+  const { headers, ...rest } = init;
+  const requestInit = {
+    ...rest,
+    cache: 'no-store',
+    headers: { ...(headers || {}), 'Cache-Control': 'no-cache' },
+  };
   let tentativas = 0;
   for (;;) {
     let res;
     try {
-      res = await fetchWithQuotaRetry(url, init);
+      res = await fetchWithQuotaRetry(url, requestInit);
     } catch (err) {
       if (isTransientNetworkError(err) && tentativas < TRANSIENT_RETRY_DELAYS_MS.length) {
         await new Promise((r) => setTimeout(r, TRANSIENT_RETRY_DELAYS_MS[tentativas]));
