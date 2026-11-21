@@ -1,0 +1,47 @@
+[15672:15672:1120/214902.382783:ERROR:./../src/base/files/file_path_watcher_inotify.cc:925] Failed to read /proc/sys/fs/inotify/max_user_watches
+[15673:15673:1120/214902.382782:ERROR:./../src/base/files/file_path_watcher_inotify.cc:925] Failed to read /proc/sys/fs/inotify/max_user_watches
+[15661:15677:1120/214902.434577:ERROR:./../src/base/files/file_path_watcher_inotify.cc:925] Failed to read /proc/sys/fs/inotify/max_user_watches
+[15661:15681:1120/214902.440106:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /data/data/com.termux/files/usr/var/run/dbus/system_bus_socket: No such file or directory
+[15661:15681:1120/214902.440264:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15681:1120/214902.559953:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /data/data/com.termux/files/usr/var/run/dbus/system_bus_socket: No such file or directory
+[15661:15681:1120/214902.560230:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /data/data/com.termux/files/usr/var/run/dbus/system_bus_socket: No such file or directory
+[15661:15681:1120/214902.560432:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /data/data/com.termux/files/usr/var/run/dbus/system_bus_socket: No such file or directory
+[15661:15681:1120/214902.560551:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15681:1120/214902.560614:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15681:1120/214902.601867:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15681:1120/214902.801693:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+
+DevTools listening on ws://127.0.0.1:9222/devtools/browser/7f471962-81d9-48d3-b0a6-a058e3f91cb4
+[15661:15661:1120/214903.274361:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15661:1120/214903.274858:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15661:1120/214903.275202:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15681:1120/214903.276259:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15681:1120/214903.276406:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15661:1120/214903.287379:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15681:1120/214903.287649:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15681:1120/214903.329880:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /data/data/com.termux/files/usr/var/run/dbus/system_bus_socket: No such file or directory
+[15661:15661:1120/214903.329987:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15681:1120/214903.330155:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /data/data/com.termux/files/usr/var/run/dbus/system_bus_socket: No such file or directory
+[15661:15661:1120/214903.331036:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15681:1120/214903.331319:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15661:1120/214903.335123:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15661:1120/214903.387408:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: unknown error type:
+[15661:15661:1120/214903.387695:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15681:1120/214903.389065:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15661:1120/214903.457204:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15681:1120/214903.459060:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[15661:15661:1120/214903.486019:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type:
+[15661:15681:1120/214903.486605:ERROR:./../src/dbus/bus.cc:405] Failed to connect to the bus: Failed to connect to socket /data/data/com.termux/files/usr/var/run/dbus/system_bus_socket: No such file or directory
+[15661:15661:1120/214903.490903:ERROR:./../src/dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.NetworkManager.GetDevices: object_path= /org/freedesktop/NetworkManager: unknown error type:
+Warning: vkCreateInstance: Found no drivers!
+Warning: vkCreateInstance failed with VK_ERROR_INCOMPATIBLE_DRIVER
+    at CheckVkSuccessImpl (./../../../src/third_party/dawn/src/dawn/native/vulkan/VulkanError.cpp:106)
+
+Warning: maxDynamicUniformBuffersPerPipelineLayout artificially reduced from 72 to 16 to fit dynamic offset allocation limit.
+Warning: maxDynamicStorageBuffersPerPipelineLayout artificially reduced from 64 to 16 to fit dynamic offset allocation limit.
+Warning: vkCreateInstance: Found no drivers!
+Warning: vkCreateInstance failed with VK_ERROR_INCOMPATIBLE_DRIVER
+    at CheckVkSuccessImpl (./../../../src/third_party/dawn/src/dawn/native/vulkan/VulkanError.cpp:106)
+
+[15661:15661:1120/215202.654577:ERROR:../src/services/on_device_model/public/cpp/service_client.cc:37] Unexpected on_device_model service disconnect; reason: 1, description: Error loading backend.
+[16765:16765:0100/000000.902459:FATAL:../src/content/zygote/zygote_linux.cc:460] Failed to synchronise with parent zygote process

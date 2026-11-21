@@ -29,6 +29,7 @@ Não existe pasta `historico/`: temporalidade é informação de conteúdo, não
 | [`auditorias/ia/AUDITORIA-GROQ-EXCLUSIVA.md`](auditorias/ia/AUDITORIA-GROQ-EXCLUSIVA.md) | Diagnóstico de não exclusividade de provider | Histórico (02/11/2026) | Auditoria / IA |
 | [`auditorias/visual/AUDITORIA-VISUAL-MODAIS.md`](auditorias/visual/AUDITORIA-VISUAL-MODAIS.md) | Auditoria visual de modais em desktop | Histórico (19–25/10/2026) | Auditoria / visual |
 | [`design-system/DOCUMENTACAO_VARIAVEIS_CSS.md`](design-system/DOCUMENTACAO_VARIAVEIS_CSS.md) | Inventário de tokens e regras de temas | Referência vigente (o código prevalece) | Design system |
+| [`design-system/ESPECIFICACAO-VISUAL.md`](design-system/ESPECIFICACAO-VISUAL.md) | Baseline visual por tela/tema/viewport e critérios de aceite | Proposta derivada da C.3 — aguardando aceite | Design system |
 | [`design-system/auth-overlay/AUTHOVERLAY-EVOLUCAO-VISUAL.md`](design-system/auth-overlay/AUTHOVERLAY-EVOLUCAO-VISUAL.md) | Histórico e referência visual do AuthOverlay | Histórico/referência (03/11/2026) | Design system |
 | [`implementacoes/autenticacao/REFATORACAO-AUTENTICACAO-RELATORIO.md`](implementacoes/autenticacao/REFATORACAO-AUTENTICACAO-RELATORIO.md) | Refatoração do ciclo de autenticação | Histórico (02/11/2026) | Implementação / autenticação |
 | [`implementacoes/ia/CORRECOES-GROQ-EXCLUSIVO.md`](implementacoes/ia/CORRECOES-GROQ-EXCLUSIVO.md) | Correções e validação da migração Groq | Histórico (02/11/2026) | Implementação / IA |

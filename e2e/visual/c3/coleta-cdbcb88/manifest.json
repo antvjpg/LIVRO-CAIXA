@@ -1,0 +1,6909 @@
+{
+  "meta": {
+    "geradoEm": "2026-11-21T00:49:12.446Z",
+    "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+    "publicacaoSha": null,
+    "branch": "feat/app-layout-redesign",
+    "base": "http://127.0.0.1:8000/index.html",
+    "sourceFiles": [
+      {
+        "path": "index.html",
+        "bytes": 101676,
+        "sha256": "1246d07bb5ebfa3363751b41a79518b980f8a54542946020f043d56212312342"
+      },
+      {
+        "path": "sw.js",
+        "bytes": 6079,
+        "sha256": "466fcb8c833d2a58938fbf2187323c9b90105bdb7f9c0ccbcf9a66c21503a708"
+      },
+      {
+        "path": "style/base.css",
+        "bytes": 14646,
+        "sha256": "46b5548bc1504d94f8a72190d409a424f0a9ab2b4cd21ca1c9514876806f99ac"
+      },
+      {
+        "path": "style/components.css",
+        "bytes": 32442,
+        "sha256": "3a1d5b5e8fc1eb2af5e1184857c1692171a295df08d782f581127d6522044803"
+      },
+      {
+        "path": "style/dashboard-chat.css",
+        "bytes": 26288,
+        "sha256": "6353609a62ccbccdd43e136ddcb1a6bdd9bb5a1fa3520c27331615ad13bcc61a"
+      },
+      {
+        "path": "style/features.css",
+        "bytes": 228855,
+        "sha256": "f2ab24c52a48112243ec0165a60c078c57256c38311cf0f9dd960adaf1a9156f"
+      },
+      {
+        "path": "style/layout.css",
+        "bytes": 63658,
+        "sha256": "0d8f84a0f1cc8643b7f960fdcc777d9000f6855a48c3e89cc84fe87292150793"
+      },
+      {
+        "path": "style/themes.css",
+        "bytes": 21486,
+        "sha256": "327cd8aee4bd468f3b332d50da149c693d5560bba91d07661f5a65f6cd1617db"
+      },
+      {
+        "path": "js/00-bootstrap.js",
+        "bytes": 2854,
+        "sha256": "8e247e8524794285534b82ad33badd95bb068f4daa31800816152ddc47c9a7fd"
+      },
+      {
+        "path": "js/10-state-utils.js",
+        "bytes": 11203,
+        "sha256": "63b16179d2580dc34c20c68079be9373003ea3b2ed83ddbd80ce53f715be15b0"
+      },
+      {
+        "path": "js/11-financial-domain.js",
+        "bytes": 3480,
+        "sha256": "159d6a48ddb82fd1e748b1f5e7a548f80ff251a8bd14cc3091d8a98a4c7a5af7"
+      },
+      {
+        "path": "js/12-auth-session.js",
+        "bytes": 2268,
+        "sha256": "75d8efcdaa7b3b34296a8f494729b02cee19217c75e670bba906e5d521efa960"
+      },
+      {
+        "path": "js/13-backup.js",
+        "bytes": 9751,
+        "sha256": "3e16989b53e2bf666eddf80bb4cf2fd71f1a27398a710825cee2dab5682a5ad5"
+      },
+      {
+        "path": "js/14-theme.js",
+        "bytes": 3911,
+        "sha256": "9fd31b6c1232859bea468cc14dbf1f739b9c58600b614a03738977b9c921f294"
+      },
+      {
+        "path": "js/15-tabs-nav.js",
+        "bytes": 419,
+        "sha256": "7c9a77433530c9693adf3517e9e09e1e8667a0dcc392b9afb1c5d9d728c4fc02"
+      },
+      {
+        "path": "js/16-events-modals.js",
+        "bytes": 15210,
+        "sha256": "b08248fd1c834dcc73cb99adaa8bfc41b80bf5b3c4eba6b1cb7f81c360fdf70b"
+      },
+      {
+        "path": "js/17-sync-persistence.js",
+        "bytes": 24978,
+        "sha256": "6b778aabf1e2c1b9e978b53dee8c6e3a0f4ecb02bdca2a795487903d21254ceb"
+      },
+      {
+        "path": "js/18-render-core.js",
+        "bytes": 158247,
+        "sha256": "aca3027e16ce9193e40f5e49d0df0ba8bd18966675229302379b703de219204e"
+      },
+      {
+        "path": "js/19-goals.js",
+        "bytes": 11594,
+        "sha256": "b187bbe92fb3217f613daebd9bef3658625bfa7f0af6e0bfb65c43fb134cc6a8"
+      },
+      {
+        "path": "js/20-dashboard.js",
+        "bytes": 92739,
+        "sha256": "8ee4a0c2187b5193ea2f73a788d8ccb43a184a44dda342a99e044fcd57e95884"
+      },
+      {
+        "path": "js/21-ai-features.js",
+        "bytes": 20023,
+        "sha256": "0b8e44a074f228294337aa25da062561dc6d27cb1866dee851fda2e6a9fd6a3e"
+      },
+      {
+        "path": "js/22-profile.js",
+        "bytes": 14377,
+        "sha256": "112929fe70d41929d506985769100e38f403a14b1d1f6995fc989834ae9854b8"
+      },
+      {
+        "path": "js/24-automation-render.js",
+        "bytes": 17722,
+        "sha256": "73541b2462b20c58d90c4d7a2e3e6831cb3ea75802f3d1f1dca53ee50d62991d"
+      },
+      {
+        "path": "js/25-bills-receivables.js",
+        "bytes": 44460,
+        "sha256": "484e70dbb0260b814dd0df349a635c769b43ab6bf292f0475f3ce0effaa9db0c"
+      },
+      {
+        "path": "js/26-receipts.js",
+        "bytes": 13254,
+        "sha256": "d18e0bd9210551a77f1217f5dc96944e79054afd73a779e384a5b2a687639e5f"
+      },
+      {
+        "path": "js/27-cards.js",
+        "bytes": 52568,
+        "sha256": "221d53cc3093772afdb4b712793747624078de92d72f13064d12f277bb1a1589"
+      },
+      {
+        "path": "js/29-invest-movements.js",
+        "bytes": 9888,
+        "sha256": "a3d4c6a6f9ad50da55ffc1714964ec9d6fea5f04009b60cb19f838e34e7038df"
+      },
+      {
+        "path": "js/30-transfer-receipts.js",
+        "bytes": 10012,
+        "sha256": "1818cc0c2cabccb6ff80536161a303c5137f2fe1be70bd085e7a989024d8a422"
+      },
+      {
+        "path": "js/31-import-export.js",
+        "bytes": 38469,
+        "sha256": "69a40c3723d2ee530417b03afefcc53258c4b6e0058d57c5a686654eb9ee69e8"
+      },
+      {
+        "path": "js/32-auth-wiring.js",
+        "bytes": 5907,
+        "sha256": "912a8ae9e94d7775965bba092e16ec62d38567f9989e73052c80673cbffc2b8d"
+      },
+      {
+        "path": "js/99-init.js",
+        "bytes": 176767,
+        "sha256": "5bbe9b30e8afa02746e4f341ba163afdc559d40a29d396c0c362a86d0cb4a0f0"
+      }
+    ],
+    "ultimaAtualizacao": "2026-11-21T00:58:34.724Z"
+  },
+  "capturas": [
+    {
+      "arquivo": "1-mobile-oliva-claro-tela-inicial.png",
+      "sha256Arquivo": "a07d864bbb52c40ff0b5ef9d0e61d1a444c258766562cee61ac467f39f2460a7",
+      "bytes": 375156,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:49:18.811Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "2-mobile-oliva-claro-view-inicio.png",
+      "sha256Arquivo": "ebb2d3120b4117c52a8466b66df67862350529297ac6010c07c90d6d0456ac26",
+      "bytes": 341502,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:49:23.494Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "3-mobile-oliva-claro-view-inicio-rolagem.png",
+      "sha256Arquivo": "28dccb661b4e2f4658f9c683b0bf8984e959c6cfb62604ba5eb547e1468f14b3",
+      "bytes": 68491,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:49:28.428Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "4-mobile-oliva-claro-drawer-aberto.png",
+      "sha256Arquivo": "997ccd5c9555560760af27b9ee8c655936a578a3f2dc2a91c909b4e6f618a871",
+      "bytes": 136370,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:49:32.915Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "5-mobile-oliva-claro-perfil.png",
+      "sha256Arquivo": "f5ee12262abb0651768b034cc0b46bbf0acccf723986bf937838bd9beddd2e62",
+      "bytes": 361650,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:49:37.527Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "6-mobile-oliva-claro-perfil-rolagem.png",
+      "sha256Arquivo": "3069c43510daaf94f55fe298cb0a1afb332443a3ee18f74f5bce2a68d7847871",
+      "bytes": 80243,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:49:42.428Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "7-mobile-oliva-claro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "e74acfa2740da730c208b62ef67e8410818bff91b7e3ba2238c2c570bb7480f6",
+      "bytes": 121866,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:49:47.741Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "8-mobile-verde-claro-tela-inicial.png",
+      "sha256Arquivo": "d2df8e1896fcbde1e7861956748ed204fb2f52deec43c6f548fc22c94f1899dd",
+      "bytes": 323430,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:49:52.274Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "9-mobile-verde-claro-view-inicio.png",
+      "sha256Arquivo": "be887387dd0a7076d95c8866081ddbcb8be2d704424b91b929277c910933dcb0",
+      "bytes": 292075,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:49:56.813Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "10-mobile-verde-claro-view-inicio-rolagem.png",
+      "sha256Arquivo": "afffef93dc1d094dc65efd459da95e2a3c25f116cb8b4a70172b04a4fe5a8c2d",
+      "bytes": 66721,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:01.804Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "11-mobile-verde-claro-drawer-aberto.png",
+      "sha256Arquivo": "b3144c2b883aab8dd2a9a1f8289b06dcad3bee6a82680d78199a5e6b1071be7b",
+      "bytes": 132949,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:06.444Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "12-mobile-verde-claro-perfil.png",
+      "sha256Arquivo": "c2bf5aa06f78e752e3e5dbd0506b9527f2516faf43980c8c4ed697c403297990",
+      "bytes": 311938,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:11.083Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "13-mobile-verde-claro-perfil-rolagem.png",
+      "sha256Arquivo": "e2aeda45fb243d97dfd638c88fba251021c80b3129f7b471c16c96608122e91e",
+      "bytes": 79010,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:16.082Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "14-mobile-verde-claro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "bd67ff305c0e3974b532010c1286e54ada60c341b8648171cd6cae391cecede7",
+      "bytes": 119853,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:21.518Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "15-mobile-lima-claro-tela-inicial.png",
+      "sha256Arquivo": "5f8b9c78fbc76bb6322fbb74064896085ecc050ec5c2d634ec2d502c2c7fce0a",
+      "bytes": 397457,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:26.150Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "16-mobile-lima-claro-view-inicio.png",
+      "sha256Arquivo": "5191ed11c3a90cfaa2662c52f149279021fe60c62d5cec2b3d734cf3806cf975",
+      "bytes": 362957,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:30.760Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "17-mobile-lima-claro-view-inicio-rolagem.png",
+      "sha256Arquivo": "0965fe6f6dc49c09108577b924c37012bd4e69d2c78603d3878712300e593197",
+      "bytes": 67642,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:35.676Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "18-mobile-lima-claro-drawer-aberto.png",
+      "sha256Arquivo": "02f33db1b36d50dcb0c8c081d975ff9ed427de0f78a33cb4198b1ca6bf796cd5",
+      "bytes": 133375,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:40.427Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "19-mobile-lima-claro-perfil.png",
+      "sha256Arquivo": "d4affa7c3e76161a15e7881b971931cfb3d39a23d8e799e5f99a953fef38de4c",
+      "bytes": 384542,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:45.077Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "20-mobile-lima-claro-perfil-rolagem.png",
+      "sha256Arquivo": "81ad97ae8fb1710e9c1ad39a72c60c7ba398b22ef7eb6db65d3212897bdce5e0",
+      "bytes": 78929,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:50.043Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "21-mobile-lima-claro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "916c59e6e48ac1ecafbeb08b48e26568723acb3e1eaf9ea17b217ea21a6ca964",
+      "bytes": 119517,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:50:55.863Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "22-mobile-terracota-claro-tela-inicial.png",
+      "sha256Arquivo": "af92815471e1353d0d1bdca85157893d65b7b399109c798e5c99677e96fdcb42",
+      "bytes": 391350,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:00.592Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "23-mobile-terracota-claro-view-inicio.png",
+      "sha256Arquivo": "9bcf4a03962ecc4793d2b05d15132ff09827dd221dc5ad4637f3f704db145019",
+      "bytes": 359123,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:05.322Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "24-mobile-terracota-claro-view-inicio-rolagem.png",
+      "sha256Arquivo": "cc2dfdceabdafc18d566a49d35bffeff24c38de57092497d679d4d8d896984be",
+      "bytes": 68071,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:10.335Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "25-mobile-terracota-claro-drawer-aberto.png",
+      "sha256Arquivo": "e11238a02690c8821a75c3a1b263dd3ceeca061a0ab121182f19912dcb908731",
+      "bytes": 132066,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:15.200Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "26-mobile-terracota-claro-perfil.png",
+      "sha256Arquivo": "e63cb5daad5ec230a2b7bccb1bf725a538772380293c11541a5de5274c31c415",
+      "bytes": 378029,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:19.929Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "27-mobile-terracota-claro-perfil-rolagem.png",
+      "sha256Arquivo": "5ce7d637b7bc9e1425e55973803e7984ff6a1bafd1f2e0baae501d341d2e8710",
+      "bytes": 79362,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:24.918Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "28-mobile-terracota-claro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "2bc7b60439478a5797cceeb694ef82a1ce5ea9fb1af7f248bd156d077bd6bbe4",
+      "bytes": 120742,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:30.359Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "29-mobile-laranja-claro-tela-inicial.png",
+      "sha256Arquivo": "f82dd6cc2ad59d4f4ff5c9cc66ce3040a6f94b3b9dadb1380df6b3bfdde94e1b",
+      "bytes": 269307,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:34.966Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "30-mobile-laranja-claro-view-inicio.png",
+      "sha256Arquivo": "16b8257dbe0ba4c90361fcb157151cdbfbe882eda9f354ada94983af7c95c31c",
+      "bytes": 242568,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:39.544Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "31-mobile-laranja-claro-view-inicio-rolagem.png",
+      "sha256Arquivo": "d776a6b20a6f3a0724000d2f4f1eff725f7e37c89e6a6cf067c00e793aeaf8e4",
+      "bytes": 60589,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:44.463Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "32-mobile-laranja-claro-drawer-aberto.png",
+      "sha256Arquivo": "f4f08ee6302152773a189d864006ac4673790f7f0b264d0c4eba929911a43941",
+      "bytes": 123906,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:49.243Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "33-mobile-laranja-claro-perfil.png",
+      "sha256Arquivo": "02d5ce50f24065c7a361202e258c5657c1665375af570e52ee7111bbbfaa08f1",
+      "bytes": 255914,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:53.850Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "34-mobile-laranja-claro-perfil-rolagem.png",
+      "sha256Arquivo": "a74285dd82279c0af9303b733b6bebf13ece63ea6f57003630685a1a42e9c1ae",
+      "bytes": 68433,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:51:58.821Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "35-mobile-laranja-claro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "ccc7989a9259847391daaafb96f5d2a9c3ce2944617471587166d6a1b2247538",
+      "bytes": 103609,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:04.235Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "36-desktop-oliva-claro-tela-inicial.png",
+      "sha256Arquivo": "80ec699b44b3f449dc751cb3c96b2b8292f3c369096f3ac1fae5fcc7910335ca",
+      "bytes": 128596,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:08.906Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "37-desktop-oliva-claro-view-inicio.png",
+      "sha256Arquivo": "02af1a7893803ecd526faf2cbfd5aa1a87ca03965922b0473bcd692f5ce5f95f",
+      "bytes": 126780,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:13.341Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "38-desktop-oliva-claro-drawer-aberto.png",
+      "sha256Arquivo": "4ab1a9b79bd2a78a6d4155cd5203b98612388f294df76467d15e95027c264014",
+      "bytes": 105888,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:17.782Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "39-desktop-oliva-claro-perfil.png",
+      "sha256Arquivo": "53f06676e0582dd1a4f9e8bb10981deca4c0c2340deffca7b4df011717a794d4",
+      "bytes": 136380,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "oliva-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:22.220Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#5f7a43",
+            "paper": "#f7f5ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    },
+    {
+      "arquivo": "40-desktop-verde-claro-tela-inicial.png",
+      "sha256Arquivo": "e325ea919933350f78453025849b519218b63ca2a83e79595191873fe5e35a21",
+      "bytes": 95073,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:26.652Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "41-desktop-verde-claro-view-inicio.png",
+      "sha256Arquivo": "1d98dd4a309459936e5e1044e1333184029e3a2024d2397a6d12f4a6dd15a1e7",
+      "bytes": 93232,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:31.115Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "42-desktop-verde-claro-drawer-aberto.png",
+      "sha256Arquivo": "466e2853902a26125fb0634a927e7ad22406a41d385b8db05277c5b2954f33f5",
+      "bytes": 97641,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:35.604Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "43-desktop-verde-claro-perfil.png",
+      "sha256Arquivo": "6c7855c10c08acbe43df27d28d94508ca3e4683ac32558e0889596dfc4b3a2e3",
+      "bytes": 102848,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "verde-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:40.012Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#327957",
+            "paper": "#f8f7f2"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    },
+    {
+      "arquivo": "44-desktop-lima-claro-tela-inicial.png",
+      "sha256Arquivo": "20dcb9b13e82b60cc77eb375ca7712b658e645996962034bdb1e309c98fc9767",
+      "bytes": 153437,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:44.406Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "45-desktop-lima-claro-view-inicio.png",
+      "sha256Arquivo": "d2cb54266a656ca5da23f0c0a4fb354ac42ef25bd95515091833dcd9cc9f5fb4",
+      "bytes": 151647,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:48.810Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "46-desktop-lima-claro-drawer-aberto.png",
+      "sha256Arquivo": "08fdc57e1a6b152e8f3a1180bc19e10ef8ecc830d46edaa98393c22369168d5b",
+      "bytes": 106854,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:53.310Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "47-desktop-lima-claro-perfil.png",
+      "sha256Arquivo": "d321e8313c0993d21d9b6b53e4cf3c33739f366cfa46d7129f27186b094a9bee",
+      "bytes": 161122,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "lima-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:52:57.783Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#40916c",
+            "paper": "#faf9f6"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    },
+    {
+      "arquivo": "48-desktop-terracota-claro-tela-inicial.png",
+      "sha256Arquivo": "e8c4998bc9a8d7ed1387eb2c3e6fd2778d7af6f535cbb3a48eeee94ac81ade05",
+      "bytes": 150774,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:53:02.312Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "49-desktop-terracota-claro-view-inicio.png",
+      "sha256Arquivo": "f758abd177446aabe9471c3965e9c0b245fae2858947d8f726cb33a20145d667",
+      "bytes": 148947,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:53:06.764Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "50-desktop-terracota-claro-drawer-aberto.png",
+      "sha256Arquivo": "d1e8089b8b32c943c09b7e0edabd0b8464fe9c6b58e7fe0d55c5fe569e2fb79b",
+      "bytes": 104177,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:53:11.303Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "51-desktop-terracota-claro-perfil.png",
+      "sha256Arquivo": "b1c1e6094c68c169951380129e7a10fc088c642fab581d32924cb1ef94d90c71",
+      "bytes": 158821,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "terracota-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:53:15.828Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#c66f50",
+            "paper": "#fbf6ef"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    },
+    {
+      "arquivo": "52-desktop-laranja-claro-tela-inicial.png",
+      "sha256Arquivo": "6b6eec3c623d1d72fd94969b7b92b28f62742115c8f088eb28eb217f35802c74",
+      "bytes": 133634,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:53:20.294Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "53-desktop-laranja-claro-view-inicio.png",
+      "sha256Arquivo": "3113f93dd45889044c649870cd82070724bba9e9dbbe01ea20e97e979829ec4a",
+      "bytes": 131745,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:53:24.768Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "54-desktop-laranja-claro-drawer-aberto.png",
+      "sha256Arquivo": "263516674b93a950637d2a3da438b1116bf28edc531400cf9aefb367327f52c7",
+      "bytes": 96073,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:53:29.385Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "55-desktop-laranja-claro-perfil.png",
+      "sha256Arquivo": "5109337ec59ac1a0bba6305de3d55e4c169cb3a4ead4f01b14161a84c4c2c0e7",
+      "bytes": 139052,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "laranja-claro",
+      "modo": "claro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:53:33.819Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "claro",
+        "apply": "applyLightTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          },
+          "obtido": {
+            "chamada": "applyLightTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#f9f9f9"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    },
+    {
+      "arquivo": "56-mobile-oliva-escuro-tela-inicial.png",
+      "sha256Arquivo": "c0b00f7e5e8b79d97bafb2fdfed15998d5deaf5b47ea4ea716ec2f3675774767",
+      "bytes": 325650,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:16.021Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "57-mobile-oliva-escuro-view-inicio.png",
+      "sha256Arquivo": "8b68570d0485ec9964f39222a3a5fe98447161eb2eeb7ef055cf477947450085",
+      "bytes": 292269,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:20.719Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "58-mobile-oliva-escuro-view-inicio-rolagem.png",
+      "sha256Arquivo": "d39b2d7662e857949c90ef7ef293b3197f449d455f1dd8a919d7b286f0e39816",
+      "bytes": 62991,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:25.845Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "59-mobile-oliva-escuro-drawer-aberto.png",
+      "sha256Arquivo": "aeb42de5bead42dd174e5aa7bb6af868599ea4f9c07da26f175f805e01d70480",
+      "bytes": 124775,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:30.608Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "60-mobile-oliva-escuro-perfil.png",
+      "sha256Arquivo": "9a4d2614a197092daf818dc5a8dddfdc515d69ec46a4e97de023b9e9cdc8c204",
+      "bytes": 318251,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:35.451Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "61-mobile-oliva-escuro-perfil-rolagem.png",
+      "sha256Arquivo": "fc868cfbcd08170e998f763afffae702f625d15d6e37a3dc3e1485cce940fd7d",
+      "bytes": 79383,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:40.411Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "62-mobile-oliva-escuro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "23689057be871e161dd626d493c809e9e25eb8e39d24e3e773f08199036da6df",
+      "bytes": 116903,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:45.826Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "63-mobile-verde-escuro-tela-inicial.png",
+      "sha256Arquivo": "ae82cea89572d6fa22b3836b09e15865d61f8eec7028f5f7614a62b2ffd3135a",
+      "bytes": 284913,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:50.381Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "64-mobile-verde-escuro-view-inicio.png",
+      "sha256Arquivo": "c89f8daf24dc72f58a63f9af20e7da0c9a4f9425360da6b7d30fb4e0057959cb",
+      "bytes": 256833,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:54.970Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "65-mobile-verde-escuro-view-inicio-rolagem.png",
+      "sha256Arquivo": "9654edf9ccf7ca545a33e3dc2a9408cc0394e937c74cbadec184b65b3bcac4dc",
+      "bytes": 57062,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:54:59.957Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "66-mobile-verde-escuro-drawer-aberto.png",
+      "sha256Arquivo": "3b2a8ef4a168e7fb2d8bd789d582058d4a21249a6aee6e84f7f1e6dbab72bdfd",
+      "bytes": 113149,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:04.703Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "67-mobile-verde-escuro-perfil.png",
+      "sha256Arquivo": "a0353286b1c0903e17bf5b148ad9bae0732068f7ea1c348087a0e8e210836769",
+      "bytes": 277941,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:09.327Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "68-mobile-verde-escuro-perfil-rolagem.png",
+      "sha256Arquivo": "a4793927ecd599d4cf1fa133c34392b0f1aee8def9420c0c3e9d279bc021e0a6",
+      "bytes": 74622,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:14.314Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "69-mobile-verde-escuro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "13cdd0e9bb52f326520ce10e1b1e8bbdc75c96ddc99f7c86ffad340235d1b0d8",
+      "bytes": 106599,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:19.757Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "70-mobile-bege-escuro-tela-inicial.png",
+      "sha256Arquivo": "f6bca33ed45cd19ed04e374102391ba5ce82528a92a51b44712eee9441bb9d9e",
+      "bytes": 302177,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:24.550Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "71-mobile-bege-escuro-view-inicio.png",
+      "sha256Arquivo": "837e09762a08f4efdab7036a2e95bc639ca5edea57ec291965c8051c53ce267f",
+      "bytes": 269048,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:29.198Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "72-mobile-bege-escuro-view-inicio-rolagem.png",
+      "sha256Arquivo": "233ea49bf647c661826b79a5935b5f067ebcd4353edac6c88f4be80a0fe8b90e",
+      "bytes": 63021,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:34.199Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "73-mobile-bege-escuro-drawer-aberto.png",
+      "sha256Arquivo": "194def713a1d5c769ca32ad8455b38ec142c53e5f135050d324580e4cce9fe97",
+      "bytes": 123449,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:39.399Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "74-mobile-bege-escuro-perfil.png",
+      "sha256Arquivo": "d0ec3791009d970127d4ab5a69360c8e9e354efe0f66a9ff3c9862e65ba5ae2b",
+      "bytes": 293654,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:44.240Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "75-mobile-bege-escuro-perfil-rolagem.png",
+      "sha256Arquivo": "c60e34dacaa87ff6f426b551ca3f69ce311a31316d3f1573192e096ebb32b819",
+      "bytes": 79885,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:49.234Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "76-mobile-bege-escuro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "17e15e1e3cfcb81d6c6314136019e2f9d15e57eb23903ee1e94236f45e3bbd5d",
+      "bytes": 116506,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:54.676Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "77-mobile-terracota-escuro-tela-inicial.png",
+      "sha256Arquivo": "6e4356e951849d70208660b5e78a84b243376723259a45afb468eb02e310457e",
+      "bytes": 280740,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:55:59.431Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "78-mobile-terracota-escuro-view-inicio.png",
+      "sha256Arquivo": "2e8835c05c1ae64d6b2efeaf2e6efe71c25c7b8b193c9fa6be22d469f7227b86",
+      "bytes": 250047,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:04.074Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "79-mobile-terracota-escuro-view-inicio-rolagem.png",
+      "sha256Arquivo": "ea06e6400c047258c82fb6f98968d4238fb4cb2edf6de32aef90036cff962ae4",
+      "bytes": 62053,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:09.119Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "80-mobile-terracota-escuro-drawer-aberto.png",
+      "sha256Arquivo": "4c3d439efc5a3e72f9612bf2880ddcc56f1a19d780a9dff76b8570a7f7a9c1e9",
+      "bytes": 120884,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:13.967Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "81-mobile-terracota-escuro-perfil.png",
+      "sha256Arquivo": "2ead7655ace739a8da5ceef19c19bdd752ff86b9509b7176b140a67d6966040e",
+      "bytes": 273554,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:18.688Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "82-mobile-terracota-escuro-perfil-rolagem.png",
+      "sha256Arquivo": "445696f89d00617e7282a35a60799a268593d27c66ece26a89d415742396b75b",
+      "bytes": 79384,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:23.741Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "83-mobile-terracota-escuro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "f8b223d889183b98307e6d71d0c909255478dee319cd456f7890fd21f88959db",
+      "bytes": 114736,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:29.268Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "84-mobile-laranja-escuro-tela-inicial.png",
+      "sha256Arquivo": "dfb3ab1732fb9b67f8ec778d339e9281a45b94b91c3274b90e64afa60525bb7a",
+      "bytes": 278662,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:33.940Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "85-mobile-laranja-escuro-view-inicio.png",
+      "sha256Arquivo": "935a94ee2d931fa64b84428bdf4b37fd19becf93e50652a9311fb00e10a3e559",
+      "bytes": 258575,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:38.595Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "86-mobile-laranja-escuro-view-inicio-rolagem.png",
+      "sha256Arquivo": "71f5106e9a01fa3ff040aaa6256ec46ceae1118ab6d4738b73db3f3f3361cfb8",
+      "bytes": 54230,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio-rolagem",
+      "descricao": "View Início — conteúdo abaixo da primeira dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:43.551Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 593,
+        "max": 593
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 593,
+          "max": 593
+        }
+      }
+    },
+    {
+      "arquivo": "87-mobile-laranja-escuro-drawer-aberto.png",
+      "sha256Arquivo": "9f561f719c8b6f8a9700ef338987003b1cf3f4e0d4c378809e0f99fbc9678f37",
+      "bytes": 114971,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:48.268Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 271
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 271
+        }
+      }
+    },
+    {
+      "arquivo": "88-mobile-laranja-escuro-perfil.png",
+      "sha256Arquivo": "52cdc2df01a42289810afff6658573a6ea46084854c10d0c5c6f496df39d9b04",
+      "bytes": 277686,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:52.940Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "89-mobile-laranja-escuro-perfil-rolagem.png",
+      "sha256Arquivo": "1937abff5b9e8041cfcf740df86bed2a6cbb66b9c38efe7052bbea0c8cba3600",
+      "bytes": 69057,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem",
+      "descricao": "Perfil — conteúdo abaixo da dobra",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:56:57.951Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 3009,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "oculta-intencional",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "oculta-intencional",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 3009,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "90-mobile-laranja-escuro-perfil-rolagem-nav-visivel.png",
+      "sha256Arquivo": "11a5282a1d157ea7169b2587c2b2bc977816614a45bcf1ee119c9b9ff80491e3",
+      "bytes": 98092,
+      "viewport": "mobile",
+      "resolucao": "390x844",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "perfil-rolagem-nav-visivel",
+      "descricao": "Perfil — conteúdo inferior com nav reexibida",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:03.442Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 2889,
+        "max": 3009
+      },
+      "navMobile": {
+        "estado": "visivel",
+        "total": 5,
+        "geometria": {
+          "width": 362,
+          "height": 68
+        }
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "navMobile": {
+          "estado": "visivel",
+          "total": 5,
+          "geometria": {
+            "width": 362,
+            "height": 68
+          }
+        },
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 2889,
+          "max": 3009
+        }
+      }
+    },
+    {
+      "arquivo": "91-desktop-oliva-escuro-tela-inicial.png",
+      "sha256Arquivo": "ce474f6eff40cc001eed7841a4b64e8123baaab212d933d2c083710a6a7ebf21",
+      "bytes": 177120,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:08.094Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "92-desktop-oliva-escuro-view-inicio.png",
+      "sha256Arquivo": "8be2ef2510a00080b373f40adcaa72331aad8dfc4f68161af9b1be0054595763",
+      "bytes": 175065,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:12.525Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "93-desktop-oliva-escuro-drawer-aberto.png",
+      "sha256Arquivo": "5882a847ab3fa9925f6be18813652202cb485291f9d0361aaa9000af50a085b6",
+      "bytes": 106619,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:17.214Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "94-desktop-oliva-escuro-perfil.png",
+      "sha256Arquivo": "a6797a1f5d1fa853884251982f7d574a254c97b0949debd1dc909b6bebc83358",
+      "bytes": 185351,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "oliva-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:21.704Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:1",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:1",
+            "dataset": "1",
+            "accent": "#9dd08b",
+            "paper": "#1a1917"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    },
+    {
+      "arquivo": "95-desktop-verde-escuro-tela-inicial.png",
+      "sha256Arquivo": "db524c8dfc3c96784a576a333f450e2f8a8879d2128aa06fbf285b68085c3e20",
+      "bytes": 153047,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:26.169Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "96-desktop-verde-escuro-view-inicio.png",
+      "sha256Arquivo": "a197c04f3662a316624d2ebbece5c544e8a15a6806af791d6d589afb83867dbe",
+      "bytes": 150368,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:30.656Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "97-desktop-verde-escuro-drawer-aberto.png",
+      "sha256Arquivo": "baa90df408acd1bd15efccfac8a4a19c91f022488dc5df72361fbf0e62251de4",
+      "bytes": 88375,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:35.183Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "98-desktop-verde-escuro-perfil.png",
+      "sha256Arquivo": "05130d1d1231dadd710297ef773895a655ea3a24a9de6beb7e7fe9d07eccf9eb",
+      "bytes": 161111,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "verde-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:39.761Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:2",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:2",
+            "dataset": "2",
+            "accent": "#22c55e",
+            "paper": "#121212"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    },
+    {
+      "arquivo": "99-desktop-bege-escuro-tela-inicial.png",
+      "sha256Arquivo": "6bb4115633f6a0705705f5ebdeb6d14d9d6d6527a6173b71092bd59ffdab8c6f",
+      "bytes": 157487,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:44.264Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "100-desktop-bege-escuro-view-inicio.png",
+      "sha256Arquivo": "d8fa86b3394b3065cf1ce818cc8d232ad954b4fdda922b5d024afc2c813e8106",
+      "bytes": 155057,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:48.874Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "101-desktop-bege-escuro-drawer-aberto.png",
+      "sha256Arquivo": "ec0df6c688c115cdffdded3fe3bcae46016eae7a70e67468d4d3ec434f8ac7e3",
+      "bytes": 97766,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:53.471Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "102-desktop-bege-escuro-perfil.png",
+      "sha256Arquivo": "0d515f0b954d4f348164c730fb2bcf5d1c17b97a97f5ff02b9871c533f2deaac",
+      "bytes": 165722,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "bege-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:57:58.022Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:3",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:3",
+            "dataset": "3",
+            "accent": "#c9a86a",
+            "paper": "#0f1712"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    },
+    {
+      "arquivo": "103-desktop-terracota-escuro-tela-inicial.png",
+      "sha256Arquivo": "521eed2a1bf5b9b3647d93cb2055c23e0892c811a4ed6a8ad699befe54360c62",
+      "bytes": 145005,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:58:02.542Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "104-desktop-terracota-escuro-view-inicio.png",
+      "sha256Arquivo": "153937a01e425b47bb01a9de8462c1dc3e3c69d7a098e01f896fd25cc38d1130",
+      "bytes": 142635,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:58:07.159Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "105-desktop-terracota-escuro-drawer-aberto.png",
+      "sha256Arquivo": "b77e4565b4aa0a6695bbb297ad1a159792c483a9f001225b4ffb496ecb17531f",
+      "bytes": 96595,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:58:11.825Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "106-desktop-terracota-escuro-perfil.png",
+      "sha256Arquivo": "81455313ba32a5893029eb81f1045cf30eaebde193035481195f9c4a416daca8",
+      "bytes": 153603,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "terracota-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:58:16.452Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:4",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:4",
+            "dataset": "4",
+            "accent": "#d08860",
+            "paper": "#141410"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    },
+    {
+      "arquivo": "107-desktop-laranja-escuro-tela-inicial.png",
+      "sha256Arquivo": "24a1eb73ce5b9c9cbfb33a7b9a0224c8a9c68f0287d0f089e004f6a9d6063b31",
+      "bytes": 143670,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "tela-inicial",
+      "descricao": "Tela inicial do app (viewCaixa por padrão)",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:58:21.118Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "108-desktop-laranja-escuro-view-inicio.png",
+      "sha256Arquivo": "c7f227c0d0bb1ed2f9e30890aa1536e4909296157e6330ebe5ddc10d9d1236e1",
+      "bytes": 141697,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "view-inicio",
+      "descricao": "View Início",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:58:25.651Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 126
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 126
+        }
+      }
+    },
+    {
+      "arquivo": "109-desktop-laranja-escuro-drawer-aberto.png",
+      "sha256Arquivo": "c6cc474e605e31fcc080c7b87d51b1ffc90bf7c4b10acb82ea07d18beeffc784",
+      "bytes": 99017,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "drawer-aberto",
+      "descricao": "Drawer aberto",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:58:30.222Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 31
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "visivel",
+        "modoCorreto": "correto",
+        "viewActive": "nao-aplica",
+        "rolagem": {
+          "y": 0,
+          "max": 31
+        }
+      }
+    },
+    {
+      "arquivo": "110-desktop-laranja-escuro-perfil.png",
+      "sha256Arquivo": "8b63ea09f9227491d1b4bddd9ccec405bdff86cff99a2e2e7d2e1d8638b305e6",
+      "bytes": 150851,
+      "viewport": "desktop",
+      "resolucao": "1440x900",
+      "tema": "laranja-escuro",
+      "modo": "escuro",
+      "tela": "perfil",
+      "descricao": "Perfil",
+      "estado": "capturado",
+      "falhas": [],
+      "dataHora": "2026-11-21T00:58:34.714Z",
+      "headSha": "cdbcb88354e74a3f1956e868905e9b67bfbd31e4",
+      "publicacaoSha": null,
+      "rolagem": {
+        "y": 0,
+        "max": 2495
+      },
+      "navMobile": {
+        "esperado": "nao-aplica"
+      },
+      "temaValidacao": {
+        "mode": "escuro",
+        "apply": "applyDarkTheme-chamado:5",
+        "verify": "correto",
+        "paleta": "correta",
+        "paletaDetalhes": {
+          "esperado": {
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          },
+          "obtido": {
+            "chamada": "applyDarkTheme-chamado:5",
+            "dataset": "5",
+            "accent": "#e85002",
+            "paper": "#000000"
+          }
+        }
+      },
+      "overlaysVerificados": {
+        "auth": "oculto",
+        "themePicker": "oculto",
+        "drawer": "oculto",
+        "modoCorreto": "correto",
+        "viewActive": "ativa",
+        "rolagem": {
+          "y": 0,
+          "max": 2495
+        }
+      }
+    }
+  ]
+}
