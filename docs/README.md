@@ -24,6 +24,7 @@ Não existe pasta `historico/`: temporalidade é informação de conteúdo, não
 | Documento | Finalidade | Estado temporal | Área |
 |---|---|---|---|
 | [`arquitetura/ia/AUDITORIA-IA-RESUMO.md`](arquitetura/ia/AUDITORIA-IA-RESUMO.md) | Auditoria cruzada do subsistema de IA | Histórico (01/11/2026; funcionalidade removida) | Arquitetura / IA |
+| [`arquitetura/navegacao/ESPECIFICACAO-NAVEGACAO.md`](arquitetura/navegacao/ESPECIFICACAO-NAVEGACAO.md) | Mapa de destinos, aliases, dispatcher, persistência e transições | Proposta derivada de auditoria C.2 — aguardando aceite | Arquitetura / navegação |
 | [`auditorias/autenticacao/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md`](auditorias/autenticacao/AUDITORIA-ARQUITETURA-AUTH-PERSISTENCIA.md) | Diagnóstico de arquitetura, auth e persistência | Histórico (27/09/2026) | Auditoria / autenticação |
 | [`auditorias/ia/AUDITORIA-GROQ-EXCLUSIVA.md`](auditorias/ia/AUDITORIA-GROQ-EXCLUSIVA.md) | Diagnóstico de não exclusividade de provider | Histórico (02/11/2026) | Auditoria / IA |
 | [`auditorias/visual/AUDITORIA-VISUAL-MODAIS.md`](auditorias/visual/AUDITORIA-VISUAL-MODAIS.md) | Auditoria visual de modais em desktop | Histórico (19–25/10/2026) | Auditoria / visual |

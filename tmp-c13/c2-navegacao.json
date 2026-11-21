@@ -1,0 +1,1013 @@
+{
+  "task": "C.2 — auditoria de navegação",
+  "startedAt": "2026-11-21T00:38:21.163Z",
+  "branch": "feat/app-layout-redesign",
+  "head": "7313bb598644bd60864b2fcc1f04c9c463d369cc",
+  "bottomNav": [
+    {
+      "destination": "inicio",
+      "clicked": true,
+      "expectedView": "viewInicio",
+      "state": {
+        "bodyTab": "inicio",
+        "activeViews": [
+          "viewInicio"
+        ],
+        "navActive": "inicio",
+        "indicator": "0%",
+        "activeBottomButtons": [
+          "inicio"
+        ],
+        "lastTab": "inicio",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "bottom:inicio",
+        "status": "PASS",
+        "detail": "view=viewInicio last=inicio nav=inicio indicator=0%"
+      }
+    },
+    {
+      "destination": "pockets",
+      "clicked": true,
+      "expectedView": "viewPockets",
+      "state": {
+        "bodyTab": "pockets",
+        "activeViews": [
+          "viewPockets"
+        ],
+        "navActive": "pockets",
+        "indicator": "100%",
+        "activeBottomButtons": [
+          "pockets"
+        ],
+        "lastTab": "pockets",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar caixinha"
+      },
+      "check": {
+        "name": "bottom:pockets",
+        "status": "PASS",
+        "detail": "view=viewPockets last=pockets nav=pockets indicator=100%"
+      }
+    },
+    {
+      "destination": "caixa",
+      "clicked": true,
+      "expectedView": "viewCaixa",
+      "state": {
+        "bodyTab": "caixa",
+        "activeViews": [
+          "viewCaixa"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "caixa",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar lançamento"
+      },
+      "check": {
+        "name": "bottom:caixa",
+        "status": "PASS",
+        "detail": "view=viewCaixa last=caixa nav=caixa indicator=200%"
+      }
+    },
+    {
+      "destination": "invest",
+      "clicked": true,
+      "expectedView": "viewInvest",
+      "state": {
+        "bodyTab": "invest",
+        "activeViews": [
+          "viewInvest"
+        ],
+        "navActive": "invest",
+        "indicator": "300%",
+        "activeBottomButtons": [
+          "invest"
+        ],
+        "lastTab": "invest",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar investimento"
+      },
+      "check": {
+        "name": "bottom:invest",
+        "status": "PASS",
+        "detail": "view=viewInvest last=invest nav=invest indicator=300%"
+      }
+    },
+    {
+      "destination": "profile",
+      "clicked": true,
+      "expectedView": "viewProfile",
+      "state": {
+        "bodyTab": "profile",
+        "activeViews": [
+          "viewProfile"
+        ],
+        "navActive": "profile",
+        "indicator": "400%",
+        "activeBottomButtons": [
+          "profile"
+        ],
+        "lastTab": "profile",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "bottom:profile",
+        "status": "PASS",
+        "detail": "view=viewProfile last=profile nav=profile indicator=400%"
+      }
+    }
+  ],
+  "drawer": [
+    {
+      "action": "inicio",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewInicio",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "profile",
+        "activeViews": [
+          "viewProfile"
+        ],
+        "navActive": "profile",
+        "indicator": "400%",
+        "activeBottomButtons": [
+          "profile"
+        ],
+        "lastTab": "profile",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "state": {
+        "bodyTab": "inicio",
+        "activeViews": [
+          "viewInicio"
+        ],
+        "navActive": "inicio",
+        "indicator": "0%",
+        "activeBottomButtons": [
+          "inicio"
+        ],
+        "lastTab": "inicio",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "drawer:inicio",
+        "status": "PASS",
+        "detail": "view=viewInicio last=inicio drawer=false panels="
+      }
+    },
+    {
+      "action": "overview",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewCaixa",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "inicio",
+        "activeViews": [
+          "viewInicio"
+        ],
+        "navActive": "inicio",
+        "indicator": "0%",
+        "activeBottomButtons": [
+          "inicio"
+        ],
+        "lastTab": "inicio",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "state": {
+        "bodyTab": "caixa",
+        "activeViews": [
+          "viewCaixa"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "caixa",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar lançamento"
+      },
+      "check": {
+        "name": "drawer:overview",
+        "status": "PASS",
+        "detail": "view=viewCaixa last=caixa drawer=false panels="
+      }
+    },
+    {
+      "action": "dash",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewDash",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "caixa",
+        "activeViews": [
+          "viewCaixa"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "caixa",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar lançamento"
+      },
+      "state": {
+        "bodyTab": "dash",
+        "activeViews": [
+          "viewDash"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "dash",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "drawer:dash",
+        "status": "PASS",
+        "detail": "view=viewDash last=dash drawer=false panels="
+      }
+    },
+    {
+      "action": "cards",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewCards",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "dash",
+        "activeViews": [
+          "viewDash"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "dash",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "state": {
+        "bodyTab": "cards",
+        "activeViews": [
+          "viewCards"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "cards",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar cartão"
+      },
+      "check": {
+        "name": "drawer:cards",
+        "status": "PASS",
+        "detail": "view=viewCards last=cards drawer=false panels="
+      }
+    },
+    {
+      "action": "bills",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewBills",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "cards",
+        "activeViews": [
+          "viewCards"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "cards",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar cartão"
+      },
+      "state": {
+        "bodyTab": "bills",
+        "activeViews": [
+          "viewBills"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "bills",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar conta recorrente"
+      },
+      "check": {
+        "name": "drawer:bills",
+        "status": "PASS",
+        "detail": "view=viewBills last=bills drawer=false panels="
+      }
+    },
+    {
+      "action": "receivables",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewReceivables",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "bills",
+        "activeViews": [
+          "viewBills"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "bills",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar conta recorrente"
+      },
+      "state": {
+        "bodyTab": "receivables",
+        "activeViews": [
+          "viewReceivables"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "receivables",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar valor a receber"
+      },
+      "check": {
+        "name": "drawer:receivables",
+        "status": "PASS",
+        "detail": "view=viewReceivables last=receivables drawer=false panels="
+      }
+    },
+    {
+      "action": "pockets",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewPockets",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "receivables",
+        "activeViews": [
+          "viewReceivables"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "receivables",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar valor a receber"
+      },
+      "state": {
+        "bodyTab": "pockets",
+        "activeViews": [
+          "viewPockets"
+        ],
+        "navActive": "pockets",
+        "indicator": "100%",
+        "activeBottomButtons": [
+          "pockets"
+        ],
+        "lastTab": "pockets",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar caixinha"
+      },
+      "check": {
+        "name": "drawer:pockets",
+        "status": "PASS",
+        "detail": "view=viewPockets last=pockets drawer=false panels="
+      }
+    },
+    {
+      "action": "goals",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewGoals",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "pockets",
+        "activeViews": [
+          "viewPockets"
+        ],
+        "navActive": "pockets",
+        "indicator": "100%",
+        "activeBottomButtons": [
+          "pockets"
+        ],
+        "lastTab": "pockets",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar caixinha"
+      },
+      "state": {
+        "bodyTab": "goals",
+        "activeViews": [
+          "viewGoals"
+        ],
+        "navActive": null,
+        "indicator": "100%",
+        "activeBottomButtons": [],
+        "lastTab": "goals",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar meta"
+      },
+      "check": {
+        "name": "drawer:goals",
+        "status": "PASS",
+        "detail": "view=viewGoals last=goals drawer=false panels="
+      }
+    },
+    {
+      "action": "investments",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewInvest",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "goals",
+        "activeViews": [
+          "viewGoals"
+        ],
+        "navActive": null,
+        "indicator": "100%",
+        "activeBottomButtons": [],
+        "lastTab": "goals",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar meta"
+      },
+      "state": {
+        "bodyTab": "invest",
+        "activeViews": [
+          "viewInvest"
+        ],
+        "navActive": "invest",
+        "indicator": "300%",
+        "activeBottomButtons": [
+          "invest"
+        ],
+        "lastTab": "invest",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar investimento"
+      },
+      "check": {
+        "name": "drawer:investments",
+        "status": "PASS",
+        "detail": "view=viewInvest last=invest drawer=false panels="
+      }
+    },
+    {
+      "action": "profile",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": "viewProfile",
+      "expectedPanel": null,
+      "beforeClick": {
+        "bodyTab": "invest",
+        "activeViews": [
+          "viewInvest"
+        ],
+        "navActive": "invest",
+        "indicator": "300%",
+        "activeBottomButtons": [
+          "invest"
+        ],
+        "lastTab": "invest",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar investimento"
+      },
+      "state": {
+        "bodyTab": "profile",
+        "activeViews": [
+          "viewProfile"
+        ],
+        "navActive": "profile",
+        "indicator": "400%",
+        "activeBottomButtons": [
+          "profile"
+        ],
+        "lastTab": "profile",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "drawer:profile",
+        "status": "PASS",
+        "detail": "view=viewProfile last=profile drawer=false panels="
+      }
+    },
+    {
+      "action": "lab",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": null,
+      "expectedPanel": "panelFeatureProfile",
+      "beforeClick": {
+        "bodyTab": "profile",
+        "activeViews": [
+          "viewProfile"
+        ],
+        "navActive": "profile",
+        "indicator": "400%",
+        "activeBottomButtons": [
+          "profile"
+        ],
+        "lastTab": "profile",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "state": {
+        "bodyTab": "profile",
+        "activeViews": [
+          "viewProfile"
+        ],
+        "navActive": "profile",
+        "indicator": "400%",
+        "activeBottomButtons": [
+          "profile"
+        ],
+        "lastTab": "profile",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [
+          "panelFeatureProfile"
+        ],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "drawer:lab",
+        "status": "PASS",
+        "detail": "view=viewProfile last=profile drawer=false panels=panelFeatureProfile"
+      }
+    },
+    {
+      "action": "novoLog",
+      "opened": true,
+      "drawerOpenBeforeClick": false,
+      "clicked": true,
+      "expectedView": null,
+      "expectedPanel": "panelLOG",
+      "beforeClick": {
+        "bodyTab": "profile",
+        "activeViews": [
+          "viewProfile"
+        ],
+        "navActive": "profile",
+        "indicator": "400%",
+        "activeBottomButtons": [
+          "profile"
+        ],
+        "lastTab": "profile",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [
+          "panelFeatureProfile"
+        ],
+        "fabLabel": "Adicionar"
+      },
+      "state": {
+        "bodyTab": "profile",
+        "activeViews": [
+          "viewProfile"
+        ],
+        "navActive": "profile",
+        "indicator": "400%",
+        "activeBottomButtons": [
+          "profile"
+        ],
+        "lastTab": "profile",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [
+          "panelLOG"
+        ],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "drawer:novoLog",
+        "status": "PASS",
+        "detail": "view=viewProfile last=profile drawer=false panels=panelLOG"
+      }
+    }
+  ],
+  "persistence": [
+    {
+      "destination": "inicio",
+      "before": {
+        "bodyTab": "inicio",
+        "activeViews": [
+          "viewInicio"
+        ],
+        "navActive": "inicio",
+        "indicator": "0%",
+        "activeBottomButtons": [
+          "inicio"
+        ],
+        "lastTab": "inicio",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [
+          "panelLOG"
+        ],
+        "fabLabel": "Adicionar"
+      },
+      "after": {
+        "bodyTab": "inicio",
+        "activeViews": [
+          "viewInicio"
+        ],
+        "navActive": "inicio",
+        "indicator": "0%",
+        "activeBottomButtons": [
+          "inicio"
+        ],
+        "lastTab": "inicio",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "persist:inicio",
+        "status": "PASS",
+        "detail": "antes=inicio/viewInicio depois=inicio/viewInicio"
+      }
+    },
+    {
+      "destination": "pockets",
+      "before": {
+        "bodyTab": "pockets",
+        "activeViews": [
+          "viewPockets"
+        ],
+        "navActive": "pockets",
+        "indicator": "100%",
+        "activeBottomButtons": [
+          "pockets"
+        ],
+        "lastTab": "pockets",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar caixinha"
+      },
+      "after": {
+        "bodyTab": "pockets",
+        "activeViews": [
+          "viewPockets"
+        ],
+        "navActive": "pockets",
+        "indicator": "100%",
+        "activeBottomButtons": [
+          "pockets"
+        ],
+        "lastTab": "pockets",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar caixinha"
+      },
+      "check": {
+        "name": "persist:pockets",
+        "status": "PASS",
+        "detail": "antes=pockets/viewPockets depois=pockets/viewPockets"
+      }
+    }
+  ],
+  "desktop": [
+    {
+      "action": "inicio",
+      "opened": true,
+      "clicked": true,
+      "expectedView": "viewInicio",
+      "state": {
+        "bodyTab": "inicio",
+        "activeViews": [
+          "viewInicio"
+        ],
+        "navActive": "inicio",
+        "indicator": "0%",
+        "activeBottomButtons": [
+          "inicio"
+        ],
+        "lastTab": "inicio",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "desktop:inicio",
+        "status": "PASS",
+        "detail": "view=viewInicio drawer=false nav=inicio"
+      }
+    },
+    {
+      "action": "overview",
+      "opened": true,
+      "clicked": true,
+      "expectedView": "viewCaixa",
+      "state": {
+        "bodyTab": "caixa",
+        "activeViews": [
+          "viewCaixa"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "caixa",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar lançamento"
+      },
+      "check": {
+        "name": "desktop:overview",
+        "status": "PASS",
+        "detail": "view=viewCaixa drawer=false nav=caixa"
+      }
+    },
+    {
+      "action": "dash",
+      "opened": true,
+      "clicked": true,
+      "expectedView": "viewDash",
+      "state": {
+        "bodyTab": "dash",
+        "activeViews": [
+          "viewDash"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "dash",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "desktop:dash",
+        "status": "PASS",
+        "detail": "view=viewDash drawer=false nav=caixa"
+      }
+    },
+    {
+      "action": "cards",
+      "opened": true,
+      "clicked": true,
+      "expectedView": "viewCards",
+      "state": {
+        "bodyTab": "cards",
+        "activeViews": [
+          "viewCards"
+        ],
+        "navActive": "caixa",
+        "indicator": "200%",
+        "activeBottomButtons": [
+          "caixa"
+        ],
+        "lastTab": "cards",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar cartão"
+      },
+      "check": {
+        "name": "desktop:cards",
+        "status": "PASS",
+        "detail": "view=viewCards drawer=false nav=caixa"
+      }
+    },
+    {
+      "action": "goals",
+      "opened": true,
+      "clicked": true,
+      "expectedView": "viewGoals",
+      "state": {
+        "bodyTab": "goals",
+        "activeViews": [
+          "viewGoals"
+        ],
+        "navActive": null,
+        "indicator": "200%",
+        "activeBottomButtons": [],
+        "lastTab": "goals",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar meta"
+      },
+      "check": {
+        "name": "desktop:goals",
+        "status": "PASS",
+        "detail": "view=viewGoals drawer=false nav=null"
+      }
+    },
+    {
+      "action": "investments",
+      "opened": true,
+      "clicked": true,
+      "expectedView": "viewInvest",
+      "state": {
+        "bodyTab": "invest",
+        "activeViews": [
+          "viewInvest"
+        ],
+        "navActive": "invest",
+        "indicator": "300%",
+        "activeBottomButtons": [
+          "invest"
+        ],
+        "lastTab": "invest",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar investimento"
+      },
+      "check": {
+        "name": "desktop:investments",
+        "status": "PASS",
+        "detail": "view=viewInvest drawer=false nav=invest"
+      }
+    },
+    {
+      "action": "profile",
+      "opened": true,
+      "clicked": true,
+      "expectedView": "viewProfile",
+      "state": {
+        "bodyTab": "profile",
+        "activeViews": [
+          "viewProfile"
+        ],
+        "navActive": "profile",
+        "indicator": "400%",
+        "activeBottomButtons": [
+          "profile"
+        ],
+        "lastTab": "profile",
+        "scrollY": 0,
+        "drawerOpen": false,
+        "openPanels": [],
+        "fabLabel": "Adicionar"
+      },
+      "check": {
+        "name": "desktop:profile",
+        "status": "PASS",
+        "detail": "view=viewProfile drawer=false nav=profile"
+      }
+    }
+  ],
+  "blockedExternal": [
+    "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&f",
+    "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+    "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+    "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",
+    "https://cdn.jsdelivr.net/npm/chart.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js",
+    "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+    "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css",
+    "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&f",
+    "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+    "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+    "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",
+    "https://cdn.jsdelivr.net/npm/chart.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js",
+    "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js",
+    "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+    "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css",
+    "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&f",
+    "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+  ],
+  "consoleErrors": [],
+  "exceptions": [],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/156.0.8078.79",
+    "revision": "@a21ce95c24ce3964416f09ae1862f53f319eb4d0",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "jsVersion": "15.6.75.27"
+  },
+  "domReady": true,
+  "dispatcherChain": {
+    "hasOriginal": true,
+    "hasSwitch": true,
+    "hasPersist": true,
+    "source": "function(...args) {\n      origSwitchTab.apply(this, args);\n      const tab = document.body.dataset.tab || currentTab;\n      updateFabAriaLabel(tab);\n    }"
+  },
+  "veredito": "PASS",
+  "finishedAt": "2026-11-21T00:38:47.618Z",
+  "summary": {
+    "bottomChecks": "5/5",
+    "drawerChecks": "12/12",
+    "persistenceChecks": "2/2",
+    "desktopChecks": "7/7",
+    "consoleErrors": 0,
+    "exceptions": 0
+  }
+}
