@@ -1,0 +1,1783 @@
+{
+  "id": "A-02B-TESTE-BILATERAL",
+  "data": "2026-11-22T16:27:58.547Z",
+  "helper": "tmp-c13/r2-6-6-a02b/validacao-bilateral.cjs",
+  "criterios": [
+    "presenca dos dois concorrentes",
+    "origem",
+    "valor declarado",
+    "importante booleano explicito",
+    "cdpOrigin",
+    "proveniencia",
+    "source",
+    "styleSheetId",
+    "rejeicao de duplicatas e contradicoes"
+  ],
+  "testes": [
+    {
+      "nome": "P1 — O3 com os dois concorrentes corretos",
+      "caso": "R265-O3",
+      "esperado": "PASS",
+      "observado": "PASS",
+      "status": "PASS",
+      "divergencias": [],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "PASS",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author normal",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "14px",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "declaredValue": "14px",
+            "important": false,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 1
+          }
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent normal",
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "2em",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "declaredValue": "2em",
+            "important": false,
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "14px",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "h1",
+          "declaredValue": "2em",
+          "important": false,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "N1 — O3 sem concorrente author",
+      "caso": "R265-O3",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author normal",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "14px",
+            "important": false
+          },
+          "observado": null
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent normal",
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "2em",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "declaredValue": "2em",
+            "important": false,
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "h1",
+          "declaredValue": "2em",
+          "important": false,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "N2 — O3 sem concorrente user-agent",
+      "caso": "R265-O3",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "B: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "PASS",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author normal",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "14px",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "declaredValue": "14px",
+            "important": false,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 1
+          }
+        },
+        {
+          "id": "B",
+          "status": "FAIL",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent normal",
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "2em",
+            "important": false
+          },
+          "observado": null
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "14px",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        }
+      ]
+    },
+    {
+      "nome": "P2 — O4 com os dois concorrentes important",
+      "caso": "R265-O4",
+      "esperado": "PASS",
+      "observado": "PASS",
+      "status": "PASS",
+      "divergencias": [],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "PASS",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "block",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-important",
+            "declaredValue": "block",
+            "important": true,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 1
+          }
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent important",
+            "source": "stylesheet",
+            "selectorText": "input[type=\"hidden\" i]",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "none",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "input[type=\"hidden\" i]",
+            "declaredValue": "none",
+            "important": true,
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-important",
+          "declaredValue": "block",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "input[type=\"hidden\" i]",
+          "declaredValue": "none",
+          "important": true,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "input, textarea, select, button",
+          "declaredValue": "inline-block",
+          "important": false,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 3
+        }
+      ]
+    },
+    {
+      "nome": "N3 — O4 sem concorrente author",
+      "caso": "R265-O4",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "B: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "PASS",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "block",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-important",
+            "declaredValue": "block",
+            "important": true,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 1
+          }
+        },
+        {
+          "id": "B",
+          "status": "FAIL",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent important",
+            "source": "stylesheet",
+            "selectorText": "input[type=\"hidden\" i]",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "none",
+            "important": true
+          },
+          "observado": null
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-important",
+          "declaredValue": "block",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        }
+      ]
+    },
+    {
+      "nome": "N4 — O4 sem concorrente user-agent",
+      "caso": "R265-O4",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "block",
+            "important": true
+          },
+          "observado": null
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent important",
+            "source": "stylesheet",
+            "selectorText": "input[type=\"hidden\" i]",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "none",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "input[type=\"hidden\" i]",
+            "declaredValue": "none",
+            "important": true,
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "input[type=\"hidden\" i]",
+          "declaredValue": "none",
+          "important": true,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "N5 — O4 com author sem !important",
+      "caso": "R265-O4",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "B: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "PASS",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "block",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-important",
+            "declaredValue": "block",
+            "important": true,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 1
+          }
+        },
+        {
+          "id": "B",
+          "status": "FAIL",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent important",
+            "source": "stylesheet",
+            "selectorText": "input[type=\"hidden\" i]",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "none",
+            "important": true
+          },
+          "observado": null
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-important",
+          "declaredValue": "block",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "input[type=\"hidden\" i]",
+          "declaredValue": "none",
+          "important": false,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "P3 — U1 com user important e author important",
+      "caso": "R265-U1",
+      "esperado": "PASS",
+      "observado": "PASS",
+      "status": "PASS",
+      "divergencias": [],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "PASS",
+          "esperado": {
+            "id": "A",
+            "rotulo": "user important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true,
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "order": 1
+          }
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(10, 20, 30)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "N6 — U1 sem concorrente user",
+      "caso": "R265-U1",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "user important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true
+          },
+          "observado": null
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(10, 20, 30)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "N7 — U1 sem concorrente author",
+      "caso": "R265-U1",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "B: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "PASS",
+          "esperado": {
+            "id": "A",
+            "rotulo": "user important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true,
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "order": 1
+          }
+        },
+        {
+          "id": "B",
+          "status": "FAIL",
+          "esperado": {
+            "id": "B",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true
+          },
+          "observado": null
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "styleSheetId": null,
+          "order": 1
+        }
+      ]
+    },
+    {
+      "nome": "N8 — U1 com origem user incorreta",
+      "caso": "R265-U1",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: concorrente ausente",
+        "B: evidencia contraditoria (1)"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "user important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true
+          },
+          "observado": null
+        },
+        {
+          "id": "B",
+          "status": "FAIL",
+          "esperado": {
+            "id": "B",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          },
+          "contradictory": [
+            {
+              "source": "stylesheet",
+              "selectorText": "#r266-user-important",
+              "declaredValue": "rgb(200, 10, 20)",
+              "important": true,
+              "origin": "author",
+              "cdpOrigin": "user-agent",
+              "provenance": null,
+              "styleSheetId": null,
+              "order": 1
+            }
+          ]
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(10, 20, 30)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "N9 — U1 com author sem !important",
+      "caso": "R265-U1",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "B: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "PASS",
+          "esperado": {
+            "id": "A",
+            "rotulo": "user important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true,
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "order": 1
+          }
+        },
+        {
+          "id": "B",
+          "status": "FAIL",
+          "esperado": {
+            "id": "B",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true
+          },
+          "observado": null
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(10, 20, 30)",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "N10 — O3 com valor author incorreto",
+      "caso": "R265-O3",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author normal",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "14px",
+            "important": false
+          },
+          "observado": null
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent normal",
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "2em",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "declaredValue": "2em",
+            "important": false,
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "15px",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "h1",
+          "declaredValue": "2em",
+          "important": false,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "N11 — O3 com evidencia author duplicada",
+      "caso": "R265-O3",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: evidencia duplicada (2)"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author normal",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "14px",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "declaredValue": "14px",
+            "important": false,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 1
+          },
+          "duplicados": 2
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent normal",
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "2em",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "declaredValue": "2em",
+            "important": false,
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "14px",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "h1",
+          "declaredValue": "2em",
+          "important": false,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "14px",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 3
+        }
+      ]
+    },
+    {
+      "nome": "N12 — O3 com evidencia contraditoria",
+      "caso": "R265-O3",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: evidencia contraditoria (1)"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author normal",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "14px",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "declaredValue": "14px",
+            "important": false,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 1
+          },
+          "contradictory": [
+            {
+              "source": "stylesheet",
+              "selectorText": "#r266-ua-normal",
+              "declaredValue": "99px",
+              "important": false,
+              "origin": "author",
+              "cdpOrigin": "regular",
+              "provenance": null,
+              "styleSheetId": null,
+              "order": 3
+            }
+          ]
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent normal",
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "2em",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "declaredValue": "2em",
+            "important": false,
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "14px",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "h1",
+          "declaredValue": "2em",
+          "important": false,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "99px",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 3
+        }
+      ]
+    },
+    {
+      "nome": "N13 — O3 com campo important ausente no author",
+      "caso": "R265-O3",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: concorrente ausente"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author normal",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "14px",
+            "important": false
+          },
+          "observado": null
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent normal",
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "2em",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "declaredValue": "2em",
+            "important": false,
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "14px",
+          "important": null,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "h1",
+          "declaredValue": "2em",
+          "important": false,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        }
+      ]
+    },
+    {
+      "nome": "N14 — O3 com cdpOrigin contraditorio",
+      "caso": "R265-O3",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: evidencia contraditoria (1)"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "author normal",
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "14px",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-ua-normal",
+            "declaredValue": "14px",
+            "important": false,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 1
+          },
+          "contradictory": [
+            {
+              "source": "stylesheet",
+              "selectorText": "#r266-ua-normal",
+              "declaredValue": "14px",
+              "important": false,
+              "origin": "author",
+              "cdpOrigin": "author",
+              "provenance": null,
+              "styleSheetId": null,
+              "order": 3
+            }
+          ]
+        },
+        {
+          "id": "B",
+          "status": "PASS",
+          "esperado": {
+            "id": "B",
+            "rotulo": "user-agent normal",
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "declaredValue": "2em",
+            "important": false
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "h1",
+            "declaredValue": "2em",
+            "important": false,
+            "origin": "user-agent",
+            "cdpOrigin": "user-agent",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          }
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "14px",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "h1",
+          "declaredValue": "2em",
+          "important": false,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "14px",
+          "important": false,
+          "origin": "author",
+          "cdpOrigin": "author",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 3
+        }
+      ]
+    },
+    {
+      "nome": "N15 — U1 com proveniencia contraditoria",
+      "caso": "R265-U1",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: evidencia contraditoria (1)",
+        "B: evidencia contraditoria (1)"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "user important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true,
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "order": 1
+          },
+          "contradictory": [
+            {
+              "source": "stylesheet",
+              "selectorText": "#r266-user-important",
+              "declaredValue": "rgb(200, 10, 20)",
+              "important": true,
+              "origin": "user",
+              "cdpOrigin": "user-agent",
+              "provenance": null,
+              "styleSheetId": null,
+              "order": 3
+            }
+          ]
+        },
+        {
+          "id": "B",
+          "status": "FAIL",
+          "esperado": {
+            "id": "B",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          },
+          "contradictory": [
+            {
+              "source": "stylesheet",
+              "selectorText": "#r266-user-important",
+              "declaredValue": "rgb(200, 10, 20)",
+              "important": true,
+              "origin": "user",
+              "cdpOrigin": "user-agent",
+              "provenance": null,
+              "styleSheetId": null,
+              "order": 3
+            }
+          ]
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(10, 20, 30)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 3
+        }
+      ]
+    },
+    {
+      "nome": "N16 — U1 com styleSheetId contraditorio",
+      "caso": "R265-U1",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: evidencia contraditoria (1)",
+        "B: evidencia contraditoria (1)"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "user important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true,
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "order": 1
+          },
+          "contradictory": [
+            {
+              "source": "stylesheet",
+              "selectorText": "#r266-user-important",
+              "declaredValue": "rgb(200, 10, 20)",
+              "important": true,
+              "origin": "user",
+              "cdpOrigin": "user-agent",
+              "provenance": "user",
+              "styleSheetId": "sheet-errada",
+              "order": 3
+            }
+          ]
+        },
+        {
+          "id": "B",
+          "status": "FAIL",
+          "esperado": {
+            "id": "B",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          },
+          "contradictory": [
+            {
+              "source": "stylesheet",
+              "selectorText": "#r266-user-important",
+              "declaredValue": "rgb(200, 10, 20)",
+              "important": true,
+              "origin": "user",
+              "cdpOrigin": "user-agent",
+              "provenance": "user",
+              "styleSheetId": "sheet-errada",
+              "order": 3
+            }
+          ]
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(10, 20, 30)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "styleSheetId": "sheet-errada",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "nome": "N17 — U1 com source contraditorio",
+      "caso": "R265-U1",
+      "esperado": "FAIL",
+      "observado": "FAIL",
+      "status": "PASS",
+      "divergencias": [
+        "A: evidencia contraditoria (1)",
+        "B: evidencia contraditoria (1)"
+      ],
+      "concorrentes": [
+        {
+          "id": "A",
+          "status": "FAIL",
+          "esperado": {
+            "id": "A",
+            "rotulo": "user important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(200, 10, 20)",
+            "important": true,
+            "origin": "user",
+            "cdpOrigin": "user-agent",
+            "provenance": "user",
+            "styleSheetId": null,
+            "order": 1
+          },
+          "contradictory": [
+            {
+              "source": "inline",
+              "selectorText": "#r266-user-important",
+              "declaredValue": "rgb(200, 10, 20)",
+              "important": true,
+              "origin": "user",
+              "cdpOrigin": "user-agent",
+              "provenance": "user",
+              "styleSheetId": null,
+              "order": 3
+            }
+          ]
+        },
+        {
+          "id": "B",
+          "status": "FAIL",
+          "esperado": {
+            "id": "B",
+            "rotulo": "author important",
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true
+          },
+          "observado": {
+            "source": "stylesheet",
+            "selectorText": "#r266-user-important",
+            "declaredValue": "rgb(10, 20, 30)",
+            "important": true,
+            "origin": "author",
+            "cdpOrigin": "regular",
+            "provenance": null,
+            "styleSheetId": null,
+            "order": 2
+          },
+          "contradictory": [
+            {
+              "source": "inline",
+              "selectorText": "#r266-user-important",
+              "declaredValue": "rgb(200, 10, 20)",
+              "important": true,
+              "origin": "user",
+              "cdpOrigin": "user-agent",
+              "provenance": "user",
+              "styleSheetId": null,
+              "order": 3
+            }
+          ]
+        }
+      ],
+      "candidatos": [
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "styleSheetId": null,
+          "order": 1
+        },
+        {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(10, 20, 30)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "styleSheetId": null,
+          "order": 2
+        },
+        {
+          "source": "inline",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "styleSheetId": null,
+          "order": 3
+        }
+      ]
+    }
+  ],
+  "resumo": {
+    "total": 20,
+    "PASS": 20,
+    "FAIL": 0,
+    "positivosPASS": 3,
+    "negativosPASS": 17
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "7f1980c4b2838e575b624fa63cec778fc574b84e778ff3f857604048ca7689a5",
+    "recalculated": "7f1980c4b2838e575b624fa63cec778fc574b84e778ff3f857604048ca7689a5"
+  }
+}
