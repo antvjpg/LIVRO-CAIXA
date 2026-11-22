@@ -1,0 +1,176 @@
+{
+  "id": "R2.6.5",
+  "fixture": "tmp-c13/r2-6-5/fixture.html",
+  "url": "http://127.0.0.1:8000/tmp-c13/r2-6-5/fixture.html",
+  "criterios": ["computed", "resolved", "vencedor", "resolveStatus"],
+  "casos": [
+    {
+      "id": "R265-O1",
+      "grupo": "origem",
+      "descricao": "declaracao normal inline vence author stylesheet",
+      "alvo": "#r265-origin-inline",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(2, 3, 4)",
+        "vencedor": {"source": "inline", "selectorText": null, "declaredValue": "rgb(2, 3, 4)", "important": false, "origin": "inline", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-O2",
+      "grupo": "origem",
+      "descricao": "declaracao importante inline vence author importante",
+      "alvo": "#r265-origin-inline-important",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(11, 22, 33)",
+        "vencedor": {"source": "inline", "selectorText": null, "declaredValue": "rgb(11, 22, 33)", "important": true, "origin": "inline", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-O5",
+      "grupo": "origem",
+      "descricao": "author importante em stylesheet vence inline normal",
+      "alvo": "#r265-important-vs-inline",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(60, 70, 80)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r265-important-vs-inline", "declaredValue": "rgb(60, 70, 80)", "important": true, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-O3",
+      "grupo": "origem",
+      "descricao": "author normal vence user-agent normal",
+      "bloqueio": "CSS.setUserAgentStylesheet indisponivel neste Chromium; origem user-agent nao injetavel",
+      "alvo": "#r265-ua-normal",
+      "propriedade": "color",
+      "uaStylesheet": "#r265-ua-normal { color: rgb(40, 50, 60); }",
+      "esperado": {
+        "computed": "rgb(42, 52, 62)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r265-ua-normal", "declaredValue": "rgb(42, 52, 62)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-O4",
+      "grupo": "origem",
+      "descricao": "user-agent importante vence author importante",
+      "bloqueio": "CSS.setUserAgentStylesheet indisponivel neste Chromium; origem user-agent nao injetavel",
+      "alvo": "#r265-ua-important",
+      "propriedade": "color",
+      "uaStylesheet": "#r265-ua-important { color: rgb(40, 50, 60) !important; }",
+      "esperado": {
+        "computed": "rgb(40, 50, 60)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r265-ua-important", "declaredValue": "rgb(40, 50, 60)", "important": true, "origin": "user-agent", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-U1",
+      "grupo": "origem",
+      "descricao": "user importante contra author importante",
+      "alvo": "#r265-user-important",
+      "propriedade": "color",
+      "bloqueio": "origem user nao injetavel via CDP neste ambiente",
+      "esperado": {
+        "computed": null,
+        "vencedor": null,
+        "resolveStatus": "blocked"
+      }
+    },
+    {
+      "id": "R265-S1",
+      "grupo": "especificidade",
+      "descricao": "seletor agrupado usa a maior especificidade entre os seletores correspondentes",
+      "alvo": "#r265-grouped",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(70, 80, 90)",
+        "vencedor": {"source": "stylesheet", "selectorText": ".r265-grouped, #r265-grouped", "declaredValue": "rgb(70, 80, 90)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-S2",
+      "grupo": "especificidade",
+      "descricao": "lista de seletores na ordem classe/id",
+      "alvo": "#r265-inv-b",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(101, 111, 121)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r265-inv-b, .r265-inv-a", "declaredValue": "rgb(101, 111, 121)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-P1",
+      "grupo": "pseudoelemento",
+      "descricao": "propriedade color sem hifen em pseudoelemento",
+      "alvo": "#r265-pseudo",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "esperado": {
+        "computed": "rgb(160, 170, 180)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r265-pseudo::before", "declaredValue": "rgb(160, 170, 180)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": "::before"},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-P2",
+      "grupo": "pseudoelemento",
+      "descricao": "propriedade background-color com hifen em pseudoelemento",
+      "alvo": "#r265-pseudo",
+      "propriedade": "background-color",
+      "pseudoElement": "::before",
+      "esperado": {
+        "computed": "rgb(190, 200, 210)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r265-pseudo::before", "declaredValue": "rgb(190, 200, 210)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": "::before"},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-P3",
+      "grupo": "pseudoelemento",
+      "descricao": "propriedade border-color com hifen em pseudoelemento",
+      "alvo": "#r265-pseudo",
+      "propriedade": "border-color",
+      "pseudoElement": "::before",
+      "esperado": {
+        "computed": "rgb(220, 230, 240)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r265-pseudo::before", "declaredValue": "rgb(220, 230, 240)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": "::before"},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-P4",
+      "grupo": "pseudoelemento",
+      "descricao": "propriedade font-size com hifen em pseudoelemento",
+      "alvo": "#r265-pseudo",
+      "propriedade": "font-size",
+      "pseudoElement": "::before",
+      "esperado": {
+        "computed": "14px",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r265-pseudo::before", "declaredValue": "14px", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": "::before"},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-P5",
+      "grupo": "pseudoelemento",
+      "descricao": "falha real de consulta e registrada como erro",
+      "alvo": "#r265-pseudo-error",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "selectorOption": "#r265-inexistente",
+      "esperado": {
+        "computed": "rgb(1, 1, 1)",
+        "resolved": "rgb(1, 1, 1)",
+        "vencedor": null,
+        "resolveStatus": "error"
+      }
+    }
+  ]
+}

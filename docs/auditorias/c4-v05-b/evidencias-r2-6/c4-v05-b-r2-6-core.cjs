@@ -600,36 +600,60 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
     return rule.selectorText || null;
   }
 
-  function ruleSpecificity(rule, match) {
-    const selectors = (rule && rule.selectorList && rule.selectorList.selectors) || [];
-    const idx = (match && match.matchingSelectors && match.matchingSelectors[0]) || 0;
-    const sel = selectors[idx] || selectors[0] || {};
-    if (sel.specificity) {
-      return {
-        a: Number(sel.specificity.a) || 0,
-        b: Number(sel.specificity.b) || 0,
-        c: Number(sel.specificity.c) || 0,
-      };
-    }
-    const text = String(sel.text || ruleSelector(rule) || '');
-    const a = (text.match(/#[\w-]+/g) || []).length;
-    const b = (text.match(/[.\[:][\w-]+/g) || []).length;
-    const rest = text.replace(/#[\w-]+/g, '').replace(/[.\[:][\w-]+/g, '');
+  function specificityFromSelector(text) {
+    const clean = String(text || '')
+      .replace(/::[\w-]+(?:\([^)]*\))?/g, '')
+      .replace(/:(?:before|after|first-line|first-letter)(?:\([^)]*\))?/gi, '');
+    const a = (clean.match(/#[\w-]+/g) || []).length;
+    const b = (clean.match(/[.\[:][\w-]+/g) || []).length;
+    const rest = clean.replace(/#[\w-]+/g, '').replace(/[.\[:][\w-]+/g, '');
     const c = (rest.match(/[a-zA-Z][\w-]*/g) || []).length;
     return { a, b, c };
   }
 
-  function originRank(candidate) {
-    if (candidate.source === 'inline') return 3;
-    if (candidate.source === 'inherited') return 1;
-    if (candidate.origin === 'user-agent') return 0;
-    if (candidate.origin === 'user') return 1;
-    return 2;
+  function ruleSpecificity(rule, match) {
+    const selectors = (rule && rule.selectorList && rule.selectorList.selectors) || [];
+    const raw = (match && Array.isArray(match.matchingSelectors) && match.matchingSelectors.length)
+      ? match.matchingSelectors
+      : [0];
+    const indices = raw.map((item) => (item && typeof item === 'object' ? item.index : item));
+    let best = { a: -1, b: -1, c: -1 };
+    for (const entry of indices) {
+      const index = Number(entry) || 0;
+      const sel = selectors[index] || selectors[0] || {};
+      const text = sel.text || ruleSelector(rule);
+      let spec;
+      if (text && /::[\w-]+/.test(String(text))) {
+        spec = specificityFromSelector(text);
+      } else if (sel.specificity) {
+        spec = {
+          a: Number(sel.specificity.a) || 0,
+          b: Number(sel.specificity.b) || 0,
+          c: Number(sel.specificity.c) || 0,
+        };
+      } else {
+        spec = specificityFromSelector(text);
+      }
+      if (spec.a > best.a || (spec.a === best.a && spec.b > best.b) || (spec.a === best.a && spec.b === best.b && spec.c > best.c)) {
+        best = spec;
+      }
+    }
+    return best.a < 0 ? { a: 0, b: 0, c: 0 } : best;
+  }
+
+  function originRank(candidate, important) {
+    if (candidate.source === 'inherited') return -1;
+    if (candidate.source === 'inline') return important ? 2 : 3;
+    if (candidate.origin === 'user-agent') return important ? 4 : 0;
+    if (candidate.origin === 'user') return important ? 3 : 1;
+    return important ? 1 : 2;
   }
 
   function compareCandidates(a, b) {
-    const ra = [a.important ? 1 : 0, originRank(a), a.specificity.a, a.specificity.b, a.specificity.c, a.order];
-    const rb = [b.important ? 1 : 0, originRank(b), b.specificity.a, b.specificity.b, b.specificity.c, b.order];
+    if (Boolean(a.important) !== Boolean(b.important)) return a.important ? -1 : 1;
+    const important = Boolean(a.important);
+    const ra = [originRank(a, important), a.specificity.a, a.specificity.b, a.specificity.c, a.order];
+    const rb = [originRank(b, important), b.specificity.a, b.specificity.b, b.specificity.c, b.order];
     for (let i = 0; i < ra.length; i += 1) {
       if (ra[i] !== rb[i]) return rb[i] - ra[i];
     }
@@ -643,6 +667,7 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
       property,
       computedValue: null,
       resolvedValue: null,
+      resolveStatus: 'unavailable',
       winningDeclaration: null,
       candidates,
       captureStatus: status,
@@ -727,24 +752,34 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
       if (!winner) return empty('no-matching-declaration');
 
       let resolvedValue = winner.value;
+      let resolveStatus = 'fallback-declared';
       try {
         if (pseudoElement && options.selector) {
-          const expression = `getComputedStyle(document.querySelector(${JSON.stringify(options.selector)}), ${JSON.stringify(pseudoElement)}).${property}`;
+          const expression = `(()=>{const el=document.querySelector(${JSON.stringify(options.selector)});if(!el)throw new Error('seletor nao encontrado');const cs=getComputedStyle(el,${JSON.stringify(pseudoElement)});return cs[${JSON.stringify(property)}]||null;})()`;
           const res = await Runtime.evaluate({ expression, returnByValue: true });
-          if (res && res.result && res.result.value !== undefined) resolvedValue = res.result.value;
+          if (res && res.exceptionDetails) throw new Error(describeCDPException(res.exceptionDetails));
+          if (res && res.result && res.result.value !== undefined && res.result.value !== null) {
+            resolvedValue = res.result.value;
+            resolveStatus = 'computed';
+          }
         } else if (!pseudoElement) {
           const computed = await CSS.getComputedStyleForNode({ nodeId });
           const found = (computed.computedStyle || []).find((p) => p.name === property);
-          if (found) resolvedValue = found.value;
+          if (found) {
+            resolvedValue = found.value;
+            resolveStatus = 'computed';
+          }
         }
       } catch (e) {
         cdpErrors.push(makeCDPErrorRecord('resolveWinningValue', e.name, e.message, { nodeId, property, pseudoElement }));
+        resolveStatus = 'error';
       }
 
       return {
         property,
         computedValue: winner.value,
         resolvedValue,
+        resolveStatus,
         winningDeclaration: { ...winner, captureStatus: 'captured' },
         candidates,
         captureStatus: 'captured',
@@ -780,6 +815,7 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
         property: r.property,
         computedValue: r.computedValue,
         resolvedValue: r.resolvedValue,
+        resolveStatus: r.resolveStatus,
         winningDeclaration: r.winningDeclaration,
         candidates: r.candidates,
         captureStatus: r.captureStatus,

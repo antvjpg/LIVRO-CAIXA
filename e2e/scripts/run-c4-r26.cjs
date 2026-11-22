@@ -9,9 +9,11 @@ const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACTS = path.join(ROOT, 'e2e/.artifacts');
 const CORE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6/c4-v05-b-r2-6-core.cjs');
 const VALIDATOR = path.join(ROOT, 'tmp-c13/r2-6-2/validacao-r2-6-3.cjs');
+const VALIDATOR_265 = path.join(ROOT, 'tmp-c13/r2-6-5/validacao-r2-6-5.cjs');
 const REGRESSION = path.join(ROOT, 'tmp-c13/r2-6-4/regressao/test-r2-6.cjs');
 const BASELINE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
 const MATRIZ_OUT = path.join(ARTIFACTS, 'r2-6-matriz.json');
+const MATRIZ_265_OUT = path.join(ARTIFACTS, 'r2-6-5-matriz.json');
 const REG_LOG = path.join(ARTIFACTS, 'r2-6-regressao.log');
 const HTTP_LOG = path.join(ARTIFACTS, 'r2-6-http.log');
 const CHROME_LOG = path.join(ARTIFACTS, 'r2-6-chromium.log');
@@ -103,6 +105,7 @@ function appendStepSummary(summary) {
     `| SHA | \`${summary.sha || 'local'}\` |`,
     `| Node | ${summary.node} |`,
     `| Matriz | ${summary.matrix.PASS} PASS / ${summary.matrix.FAIL} FAIL / ${summary.matrix.BLOCKED} BLOCKED |`,
+    `| R2.6.5 | ${summary.r26_5.PASS} PASS / ${summary.r26_5.FAIL} FAIL / ${summary.r26_5.BLOCKED} BLOCKED |`,
     `| Regressao | ${summary.regression.PASS} PASS / ${summary.regression.FAIL} FAIL / ${summary.regression.BLOCKED} BLOCKED |`,
     `| Divergencias | ${summary.regression.divergences} |`,
     `| Duracao | ${summary.durationMs}ms |`,
@@ -124,6 +127,7 @@ async function main() {
   let server = null;
   let browser = null;
   let matrix = null;
+  let r265 = null;
   let regressionRows = [];
   let baselineRows = [];
 
@@ -168,11 +172,42 @@ async function main() {
     if (resumo.BLOCKED !== 0) problems.push(`matriz BLOCKED=${resumo.BLOCKED}, esperado 0`);
     if (resumo.NOT_RUN !== 0) problems.push(`matriz NOT_RUN=${resumo.NOT_RUN}, esperado 0`);
     if (resumo.oraclePASS !== 10) problems.push(`oraculo PASS=${resumo.oraclePASS}, esperado 10`);
-    if (matrix.verification && matrix.verification.hashMatches !== true) problems.push('hash da matriz nao confere');
+    if (!matrix.verification || matrix.verification.hashMatches !== true) problems.push('hash da matriz nao confere');
     for (const key of ['cdp', 'console', 'excecoes']) {
       const itens = (matrix.erros && matrix.erros[key]) || [];
       if (itens.length) problems.push(`matriz erros.${key}=${itens.length}`);
     }
+
+    const r265Run = spawnSync(
+      process.execPath,
+      [VALIDATOR_265, `--core=${CORE}`, `--out=${MATRIZ_265_OUT}`],
+      { cwd: ROOT, stdio: 'inherit' }
+    );
+    if (r265Run.status !== 0) problems.push(`validador R2.6.5 exit=${r265Run.status}`);
+    r265 = JSON.parse(fs.readFileSync(MATRIZ_265_OUT, 'utf8'));
+    const r265Resumo = r265.resumo || {};
+    if (r265Resumo.total !== 13) problems.push(`R2.6.5 total=${r265Resumo.total}, esperado 13`);
+    if (r265Resumo.PASS !== 10) problems.push(`R2.6.5 PASS=${r265Resumo.PASS}, esperado 10`);
+    if (r265Resumo.FAIL !== 0) problems.push(`R2.6.5 FAIL=${r265Resumo.FAIL}, esperado 0`);
+    if (r265Resumo.BLOCKED !== 3) problems.push(`R2.6.5 BLOCKED=${r265Resumo.BLOCKED}, esperado 3`);
+    const r265BlockedIds = (r265.casos || [])
+      .filter((c) => c.status === 'BLOCKED')
+      .map((c) => c.id)
+      .sort()
+      .join(',');
+    if (r265BlockedIds !== 'R265-O3,R265-O4,R265-U1') {
+      problems.push(`R2.6.5 BLOCKED IDs=${r265BlockedIds || 'nenhum'}, esperado R265-O3,R265-O4,R265-U1`);
+    }
+    if (r265Resumo.NOT_RUN !== 0) problems.push(`R2.6.5 NOT_RUN=${r265Resumo.NOT_RUN}, esperado 0`);
+    if (r265Resumo.origemPASS !== 3) problems.push(`R2.6.5 origemPASS=${r265Resumo.origemPASS}, esperado 3`);
+    if (r265Resumo.especificidadePASS !== 2) problems.push(`R2.6.5 especificidadePASS=${r265Resumo.especificidadePASS}, esperado 2`);
+    if (r265Resumo.pseudoelementoPASS !== 5) problems.push(`R2.6.5 pseudoelementoPASS=${r265Resumo.pseudoelementoPASS}, esperado 5`);
+    if (!r265.verification || r265.verification.hashMatches !== true) problems.push('hash R2.6.5 nao confere');
+    const r265Erros = r265.erros || {};
+    if ((r265Erros.console || []).length) problems.push(`R2.6.5 consoleErrors=${r265Erros.console.length}`);
+    if ((r265Erros.excecoes || []).length) problems.push(`R2.6.5 exceptions=${r265Erros.excecoes.length}`);
+    const cdpInesperados = (r265Erros.cdp || []).filter((e) => String(e.operation || '').indexOf('resolveWinningValue') === -1);
+    if (cdpInesperados.length) problems.push(`R2.6.5 cdpErrors inesperados=${cdpInesperados.length}`);
 
     const regressionRun = spawnSync(process.execPath, [REGRESSION], {
       cwd: ROOT,
@@ -224,6 +259,12 @@ async function main() {
       BLOCKED: (matrix && matrix.resumo && matrix.resumo.BLOCKED) || 0,
       oraclePASS: (matrix && matrix.resumo && matrix.resumo.oraclePASS) || 0,
     },
+    r26_5: {
+      PASS: (r265 && r265.resumo && r265.resumo.PASS) || 0,
+      FAIL: (r265 && r265.resumo && r265.resumo.FAIL) || 0,
+      BLOCKED: (r265 && r265.resumo && r265.resumo.BLOCKED) || 0,
+      NOT_RUN: (r265 && r265.resumo && r265.resumo.NOT_RUN) || 0,
+    },
     regression: {
       records: regressionRows.length,
       baseline: baselineRows.length,
@@ -237,7 +278,7 @@ async function main() {
   };
   fs.writeFileSync(SUMMARY_OUT, `${JSON.stringify(summary, null, 2)}\n`);
   appendStepSummary(summary);
-  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
+  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
   if (problems.length) {
     for (const problem of problems) console.error(`- ${problem}`);
     process.exitCode = 1;

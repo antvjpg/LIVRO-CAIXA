@@ -1,0 +1,29 @@
+{
+  "id": "R2.6.5-BASELINE",
+  "head": "432cd84b3900269f5912a8341349ded6a4e2d959",
+  "nucleoSha256": "a373707ae029b0c7465d66959f9ae02aea36c8486953ecedc1fb6c2245232a70",
+  "runnerLocal": {
+    "status": "PASS",
+    "matriz": "10 PASS / 0 FAIL / 0 BLOCKED",
+    "regressao": "392 PASS / 0 FAIL / 1 BLOCKED (V32)",
+    "logSha256": "9e22098266d2b5e4134f6873072b718e60ebde368c7f187726e4c1dc3f048502"
+  },
+  "segurancaLocal": {
+    "status": "FAIL",
+    "total": 94,
+    "pass": 93,
+    "fail": 1,
+    "falha": "workflow: toda action é pinada por SHA com tag documentada (supply chain)",
+    "logSha256": "46c8f81da6520e896b0b29afcfcb925fcc51411f1204263ba4f4a46ffd2f6e18"
+  },
+  "r265": {
+    "status": "FAIL",
+    "total": 13,
+    "PASS": 0,
+    "FAIL": 10,
+    "BLOCKED": 3,
+    "hash": "58598b61f13122cad24d260995caf81a0018aca6a13e5296063ad75f40af0cb4",
+    "resultado": "tmp-c13/r2-6-5/resultado-baseline.json"
+  },
+  "observacao": "Baseline coletado antes de qualquer alteracao de codigo na R2.6.5."
+}

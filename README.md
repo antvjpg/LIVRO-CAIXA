@@ -1,6 +1,7 @@
 # Livro-Caixa
 
 [![C.O.D.E. E2E](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/code-e2e.yml/badge.svg)](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/code-e2e.yml)
+[![C.4 — R2.6.5](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/c4-r26.yml/badge.svg)](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/c4-r26.yml)
 [![Worker](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/worker.yml/badge.svg)](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/worker.yml)
 [![GitHub Pages](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/pages.yml/badge.svg)](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/pages.yml)
 [![Firestore rules](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/firestore.yml/badge.svg)](https://github.com/antvjpg/LIVRO-CAIXA/actions/workflows/firestore.yml)
@@ -121,7 +122,7 @@ e2e/                  infraestrutura de QA C.O.D.E. (ver e2e/README.md)
   e2e/oracles/        modelos de referência independentes + testes unitários
   e2e/reports/        relatório C.O.D.E. (generate-report.cjs, history.jsonl)
   e2e/visual/         auditoria visual dos modais (harness local)
-.github/workflows/    CI: code-e2e, worker, pages, firestore, eol-check, model-failed-alert
+.github/workflows/    CI: code-e2e, c4-r26 (R2.6.5), worker, pages, firestore, eol-check, model-failed-alert
 docs/                 auditorias e relatórios (vários históricos — ver Documentação)
 .opencode/skills/     skills de auditoria, performance e estilo (ponytail)
 ```

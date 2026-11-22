@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>R2.6.5 — cascata CSS</title>
+<style>
+#r265-origin-normal { color: rgb(1, 2, 3); }
+#r265-origin-inline { color: rgb(1, 2, 3); }
+#r265-origin-important { color: rgb(10, 20, 30) !important; }
+#r265-origin-inline-important { color: rgb(10, 20, 30) !important; }
+#r265-important-vs-inline { color: rgb(60, 70, 80) !important; }
+#r265-ua-normal { color: rgb(42, 52, 62); }
+#r265-ua-important { color: rgb(10, 20, 30) !important; }
+#r265-user-important { color: rgb(11, 22, 33) !important; }
+.r265-grouped, #r265-grouped { color: rgb(70, 80, 90); }
+.r265-grouped.r265-grouped { color: rgb(71, 81, 91); }
+.r265-inv-a, #r265-inv-b { color: rgb(100, 110, 120); }
+#r265-inv-b, .r265-inv-a { color: rgb(101, 111, 121); }
+#r265-pseudo::before { content: "x"; color: rgb(160, 170, 180); background-color: rgb(190, 200, 210); border-color: rgb(220, 230, 240); font-size: 14px; }
+#r265-pseudo-error::before { content: "e"; color: rgb(1, 1, 1); background-color: rgb(2, 2, 2); }
+</style>
+</head>
+<body>
+<div id="r265-origin-normal">normal</div>
+<div id="r265-origin-inline" style="color: rgb(2, 3, 4);">inline</div>
+<div id="r265-origin-important">important</div>
+<div id="r265-origin-inline-important" style="color: rgb(11, 22, 33) !important;">inline important</div>
+<div id="r265-important-vs-inline" style="color: rgb(61, 71, 81);">important vs inline</div>
+<div id="r265-ua-normal">ua normal</div>
+<div id="r265-ua-important">ua important</div>
+<div id="r265-user-important">user important</div>
+<div id="r265-grouped" class="r265-grouped">grouped</div>
+<div id="r265-inv-b" class="r265-inv-a">invertido</div>
+<div id="r265-pseudo">pseudo</div>
+<div id="r265-pseudo-error">erro</div>
+</body>
+</html>
