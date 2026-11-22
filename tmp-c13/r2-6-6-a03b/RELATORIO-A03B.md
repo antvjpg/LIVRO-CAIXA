@@ -17,6 +17,7 @@
 - `tmp-c13/r2-6-6-a03b/fixture.html` — fixture derivada da A-03, com o mesmo cenário controlado.
 - `tmp-c13/r2-6-6-a03b/validacao-a03b.cjs` — validador de navegador A-03B.
 - `tmp-c13/r2-6-6-a03b/resultados/` — evidências locais versionadas.
+- `tmp-c13/r2-6-6-a03b/parecer-independente.md` — auditoria independente da linhagem A-03B.
 - `e2e/.artifacts/r2-6-a03b-especificidade.json` e `e2e/.artifacts/r2-6-a03b-matriz.json` — artefatos do runner.
 
 ### Modificado
@@ -113,7 +114,18 @@ Runner C.4 local:
 - Regressão: `392 PASS / 0 FAIL / 1 BLOCKED (V32)`, `0 divergências`.
 - `verdict: PASS`, `problems: []`.
 
-CI anterior da A-03, preservado como referência: C.4 run `45048697513` e C.O.D.E. run `45048697614`, ambos `success`. CI da A-03B ainda pendente de commit/push.
+CI anterior da A-03, preservado como referência: C.4 run `45048697513` e C.O.D.E. run `45048697614`, ambos `success`.
+
+CI da A-03B executado no SHA `e39d0dec548050b2c2540eca0ba6ed1ae3840a56`:
+
+| Workflow | Run | Tentativa 1 | Tentativa 2 | Conclusão final |
+|---|---|---|---|---|
+| C.4 — R2.6 | `45051454962` | `failure` — `AssertionError [ERR_ASSERTION]: assert(!this.paused)` em `Parser.finish` (undici), exit 1 | `success` | `success` |
+| C.O.D.E. E2E | `45051455003` | `failure` — 71 passed, 1 flaky em `metas.spec.js:417`, reprovado por `--strict` | `success` — 72 passed, 0 flaky | `success` |
+
+O artifact `14765854320` registra `sha=e39d0…`, `verdict=PASS`, `problems=[]`, A-03B `12 PASS / 0 FAIL / 0 BLOCKED`, `indicesCorrespondentesPASS=1` e regressão `392 PASS / 0 FAIL / 1 BLOCKED (V32)`.
+
+As falhas da tentativa 1 permanecem registradas como instabilidade histórica; não foram convertidas artificialmente em sucesso contínuo.
 
 ## 8. SHA-256
 
@@ -128,11 +140,11 @@ CI anterior da A-03, preservado como referência: C.4 run `45048697513` e C.O.D.
 
 ## 9. Limitações
 
-- CI da A-03B não executado por ausência de autorização de commit/push nesta etapa.
-- A-03 original continua com `matchingSelectors[0]` em seu validador; a correção está na linhagem A-03B, preservando o histórico.
+- CI da A-03B já executado; IDs, tentativas e conclusões registrados na Seção 7.
+- O padrão `matchingSelectors[0]` permanece em R2.6.6, A-01, A-01B, A-02 e A-02B; A-03/A-03B usam `selectMaxSpecificity`, preservando o histórico.
 - `V32` permanece `BLOCKED`.
-- Ainda não há auditoria independente de A-03B.
-- R2.6.6 não é promovida automaticamente.
+- Auditoria independente registrada em `tmp-c13/r2-6-6-a03b/parecer-independente.md`, com veredito APROVADA COM RESSALVAS.
+- R2.6.6 não é promovida automaticamente; a auditoria independente do núcleo e da extensão permanece pendente para fins de promoção.
 
 ## 10. Declaração de preservação
 
@@ -140,6 +152,8 @@ A-01/A-01B, A-02/A-02B e A-03 foram integralmente preservadas. O runner apenas a
 
 ## 11. Parecer final
 
-**A-03B: PRONTA PARA AUDITORIA INDEPENDENTE, COM CI GITHUB PENDENTE.**
+**A-03B: APROVADA COM RESSALVAS.**
 
-As duas ressalvas foram endereçadas: os índices correspondentes agora são evidência obrigatória no cenário Chromium, e metadado parcialmente indisponível produz `null`/`insuficiente`, não máximo definitivo. Todos os testes locais e a regressão passaram.
+Auditoria independente registrada em `tmp-c13/r2-6-6-a03b/parecer-independente.md`. As duas ressalvas foram endereçadas: os índices correspondentes agora são evidência obrigatória no cenário Chromium, e metadado parcialmente indisponível produz `null`/`insuficiente`, não máximo definitivo. Todos os testes locais, o CI na tentativa 2 e a regressão passaram.
+
+Ressalvas remanescentes: o gate não fixa `selectorText` do vencedor, o summary local não registra SHA e os artefatos locais são ignorados pelo Git, índices mistos ainda produzem `maximo` entre os válidos conforme contrato declarado, e a tentativa 1 dos workflows apresentou instabilidade documentada. Nenhuma ressalva impede o fechamento da A-03B nem autoriza a promoção de R2.6.6.
