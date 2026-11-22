@@ -232,8 +232,8 @@ Hashes:
 
 - baseline R2.6.6: `5f6626a64cabc55d40ab35eeaa04a396dc0c8536c7599adeaaf51f54cf3e71db`.
 - correção R2.6.6 avulsa: `5593e9b5a9e05a9042fb794454e2462fd2512eede3f5d88baa552c269f638bf6`.
-- artefato final do runner `e2e/.artifacts/r2-6-6-matriz.json`: `12f8c11b2ae9a4dec6d6dd3637d77dd35f02610af1c83a60abbae24a39b32898`.
-- resumo final `e2e/.artifacts/r2-6-ci-summary.json`: `1886128f629cc2580b7e06bef42771c9777c414e895b5f08645a90e126b6c9a2`.
+- artefato final do runner `e2e/.artifacts/r2-6-6-matriz.json`: `b4e3b9b0ded0b8b77ccb1717ca417e0c2fa4618a910ad242a3969970e22a5606`.
+- resumo final `e2e/.artifacts/r2-6-ci-summary.json`: `56c5c5e0ca510304b223a56b6c219351e370dcc1398f3eff7e01e250e8ef060b`.
 
 Os hashes diferem entre execuções porque o JSON inclui timestamp; a verificação interna `hashMatches` foi `true` em todos os artefatos.
 
@@ -264,6 +264,18 @@ Os hashes diferem entre execuções porque o JSON inclui timestamp; a verificaç
 - Causa da segunda falha C.4: o ID derivado do caminho abriu uma página `chrome-extension://…/inject.html` cujo título permaneceu a própria URL; a injeção não foi confirmada e `R265-U1` ficou `BLOCKED`.
 - Nova correção: o validador passou a confirmar a origem user pelo valor computado após a tentativa de injeção, a tentar também IDs de extensão descobertos em alvos CDP e a registrar todas as tentativas. O runner aceita `confirmado=true` ou título `r266-inject:ok`.
 - Reexecução local final: `11 PASS / 0 FAIL / 0 BLOCKED`; runner C.4 local `PASS`.
+- Terceira execução GitHub Actions do commit `67e4504`: C.4 [run 45022968469](https://github.com/antvjpg/LIVRO-CAIXA/actions/runs/45022968469) falhou com `R265-U1: FAIL`; C.O.D.E. [run 45022968442](https://github.com/antvjpg/LIVRO-CAIXA/actions/runs/45022968442) passou.
+
+### Estudo dos BLOCKED antes da correção final
+
+Por solicitação explícita, nenhuma correção foi aplicada antes de estudar cada `BLOCKED`:
+
+- `R265-O3`, `R265-O4` e `R265-U1` no validador R2.6.5: bloqueios estáticos e históricos; o runner exige exatamente esses três IDs. Reclassificá-los falsaria o snapshot.
+- `V32` na regressão: limitação real do Chromium Termux/Android (`assignedSlot` nulo e `slot.assignedNodes()` vazio), preservada byte a byte no baseline de 393 registros. Não foi reclassificado.
+- `R265-U1` no CI da R2.6.6: o ID derivado do caminho está correto; o problema é o **binário escolhido**. O runner priorizava `CHROME_BIN`, que na imagem do GitHub Actions aponta para o Google Chrome 157 branded; builds branded ignoram `--load-extension` desde o Chrome 137. O Chrome for Testing 153 instalado pelo Playwright não era usado.
+- A tentativa de usar `xvfb-run` foi estudada e descartada: não ataca a causa (restrição de build, não de headless), não havia sido validada em CI e poderia alterar o comportamento das demais suítes. Foi revertida antes de qualquer commit.
+- Correção aprovada e aplicada: `findChromium()` passou a procurar primeiro os browsers gerenciados pelo Playwright e só depois usar `CHROME_BIN`. Nenhum núcleo, fixture, validador ou artefato histórico foi alterado.
+- Validação local após a correção final: runner C.4 `PASS`, matriz `10/10`, R2.6.5 `10/13`, R2.6.6 `11/11`, regressão `392/393`.
 
 ## Resultado da implementação
 
@@ -276,7 +288,7 @@ R2.6.6 concluída localmente:
 
 ## Pendências e próximos passos
 
-1. Commit/push autorizados pelo usuário: `2882d72` publicado; correção do ID da extensão enviada neste commit.
+1. Commit/push autorizados: `2882d72`, `55574ec` e `67e4504` publicados; correção de seleção do Chromium pendente de publicação neste commit.
 2. Confirmar a reexecução do CI GitHub Actions `c4-r26.yml` e o artefato `c4-r2-6-evidencias` com `r2-6-6-matriz.json`.
 3. Atualizar o plano no Notion com o veredito final do CI.
 4. Auditoria independente do novo núcleo e da extensão antes de usar a R2.6.6 como substituta oficial da R2.6.5.

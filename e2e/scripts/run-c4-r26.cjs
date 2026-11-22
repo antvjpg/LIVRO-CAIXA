@@ -46,7 +46,6 @@ async function waitFor(label, url, timeoutMs = 30000) {
 }
 
 function findChromium() {
-  if (process.env.CHROME_BIN && fs.existsSync(process.env.CHROME_BIN)) return process.env.CHROME_BIN;
   const roots = [
     path.join(os.homedir(), '.cache/ms-playwright'),
     path.join(ROOT, 'node_modules/playwright-core/.local-browsers'),
@@ -65,6 +64,7 @@ function findChromium() {
       }
     }
   }
+  if (process.env.CHROME_BIN && fs.existsSync(process.env.CHROME_BIN)) return process.env.CHROME_BIN;
   for (const name of ['chromium-browser', 'chromium', 'google-chrome']) {
     const found = spawnSync('which', [name], { encoding: 'utf8' }).stdout.trim();
     if (found && fs.existsSync(found)) return found;
