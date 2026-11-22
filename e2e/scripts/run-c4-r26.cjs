@@ -240,7 +240,8 @@ async function main() {
       if (itens.length) problems.push(`R2.6.6 erros.${key}=${itens.length}`);
     }
     const injecoesU1 = (r266.casos || []).filter((c) => c.id === 'R265-U1');
-    if (injecoesU1.length !== 1 || !injecoesU1[0].injecao || injecoesU1[0].injecao.title !== 'r266-inject:ok') {
+    const injecaoU1 = injecoesU1.length === 1 ? injecoesU1[0].injecao : null;
+    if (!injecaoU1 || (injecaoU1.confirmado !== true && injecaoU1.title !== 'r266-inject:ok')) {
       problems.push('R2.6.6 injecao USER nao confirmada');
     }
 

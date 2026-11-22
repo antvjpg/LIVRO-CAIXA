@@ -232,8 +232,8 @@ Hashes:
 
 - baseline R2.6.6: `5f6626a64cabc55d40ab35eeaa04a396dc0c8536c7599adeaaf51f54cf3e71db`.
 - correção R2.6.6 avulsa: `5593e9b5a9e05a9042fb794454e2462fd2512eede3f5d88baa552c269f638bf6`.
-- artefato final do runner `e2e/.artifacts/r2-6-6-matriz.json`: `bdb7828ffac6e507e70a97e14ac8b0d7bd2492bde5c0673a25f78f9ee604c5e4`.
-- resumo final `e2e/.artifacts/r2-6-ci-summary.json`: `d0e418a512efee985a110a03040f930e3750073ca2d8d69fcba260987f0f162b`.
+- artefato final do runner `e2e/.artifacts/r2-6-6-matriz.json`: `12f8c11b2ae9a4dec6d6dd3637d77dd35f02610af1c83a60abbae24a39b32898`.
+- resumo final `e2e/.artifacts/r2-6-ci-summary.json`: `1886128f629cc2580b7e06bef42771c9777c414e895b5f08645a90e126b6c9a2`.
 
 Os hashes diferem entre execuções porque o JSON inclui timestamp; a verificação interna `hashMatches` foi `true` em todos os artefatos.
 
@@ -260,6 +260,10 @@ Os hashes diferem entre execuções porque o JSON inclui timestamp; a verificaç
 - Correção: o validador passou a derivar o ID da extensão unpacked do caminho absoluto (SHA-256, primeiros 16 bytes mapeados para `a`–`p`), verificando localmente que o algoritmo reproduz o ID observado. A descoberta do service worker permanece apenas como fallback.
 - Também foi adicionado `client.setMaxListeners(50)`, eliminando o aviso `MaxListenersExceededWarning`.
 - Reexecução local após a correção: `11 PASS / 0 FAIL / 0 BLOCKED`, sem avisos; runner C.4 local `PASS`.
+- Segunda execução GitHub Actions do commit `55574ec`: C.4 [run 44976338236](https://github.com/antvjpg/LIVRO-CAIXA/actions/runs/44976338236) falhou novamente; C.O.D.E. [run 44976338274](https://github.com/antvjpg/LIVRO-CAIXA/actions/runs/44976338274) falhou em etapa não relacionada ao R2.6.6.
+- Causa da segunda falha C.4: o ID derivado do caminho abriu uma página `chrome-extension://…/inject.html` cujo título permaneceu a própria URL; a injeção não foi confirmada e `R265-U1` ficou `BLOCKED`.
+- Nova correção: o validador passou a confirmar a origem user pelo valor computado após a tentativa de injeção, a tentar também IDs de extensão descobertos em alvos CDP e a registrar todas as tentativas. O runner aceita `confirmado=true` ou título `r266-inject:ok`.
+- Reexecução local final: `11 PASS / 0 FAIL / 0 BLOCKED`; runner C.4 local `PASS`.
 
 ## Resultado da implementação
 

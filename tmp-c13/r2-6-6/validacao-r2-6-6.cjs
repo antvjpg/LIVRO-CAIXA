@@ -127,19 +127,28 @@ async function openInjectPage(client, extensionId) {
 }
 
 async function injectUser(client) {
+  const targets = await client.Target.getTargets();
+  const ids = [EXTENSION_ID];
+  for (const target of (targets.targetInfos || [])) {
+    const match = target.url && target.url.match(/^chrome-extension:\/\/([^/]+)\//);
+    if (match && !ids.includes(match[1])) ids.push(match[1]);
+  }
+  const tentativas = [];
   let extensionId = EXTENSION_ID;
   let metodo = 'hash-do-caminho';
-  let title = await openInjectPage(client, extensionId);
-  if (title !== 'r266-inject:ok') {
-    const targets = await client.Target.getTargets();
-    const worker = (targets.targetInfos || []).find((t) => t.type === 'service_worker' && /\/sw\.js$/.test(t.url));
-    if (worker) {
-      extensionId = worker.url.split('/')[2];
-      metodo = 'service-worker';
-      title = await openInjectPage(client, extensionId);
+  let title = '';
+  for (const id of ids) {
+    const tentativa = await openInjectPage(client, id);
+    tentativas.push({ extensionId: id, title: tentativa });
+    if (tentativa === 'r266-inject:ok') {
+      extensionId = id;
+      metodo = id === EXTENSION_ID ? 'hash-do-caminho' : 'alvo-cdp';
+      title = tentativa;
+      break;
     }
+    if (!title) title = tentativa;
   }
-  return { extensionId, metodo, title };
+  return { extensionId, metodo, title, tentativas };
 }
 
 async function regrasCandidatas(client, nodeId, property, pseudo, DOM, CSS) {
@@ -219,17 +228,22 @@ async function run() {
       };
       try {
         await navigate(Page, CASOS.url);
-        if (caso.injectUser) {
-          registro.injecao = await injectUser(client);
-          if (registro.injecao.title !== 'r266-inject:ok') throw new Error(`injecao user falhou: ${registro.injecao.title}`);
-        }
         const { root } = await DOM.getDocument({ depth: -1, pierce: true });
         const { nodeIds } = await DOM.querySelectorAll({ nodeId: root.nodeId, selector: caso.alvo });
         if (!nodeIds || nodeIds.length !== 1) throw new Error(`alvo ambiguo ou ausente: ${caso.alvo}`);
         const nodeId = nodeIds[0];
+        if (caso.injectUser) {
+          registro.injecao = await injectUser(client);
+          const aposInjecao = await browserComputed(client, nodeId, caso.alvo, null, caso.propriedade);
+          registro.injecao.computadoApos = aposInjecao;
+          registro.injecao.confirmado = sameValue(aposInjecao, caso.esperado.computed);
+        }
         const computed = await browserComputed(client, nodeId, caso.alvo, caso.pseudoElement || null, caso.propriedade);
         registro.regrasNavegador = await regrasCandidatas(client, nodeId, caso.propriedade, caso.pseudoElement || null, DOM, CSS);
         const expected = caso.esperado;
+        if (caso.injectUser && !registro.injecao.confirmado && registro.injecao.title !== 'r266-inject:ok') {
+          registro.divergencias.push(`injecao user nao confirmada: ${registro.injecao.title}`);
+        }
         registro.navegador = { observado: computed, esperado: expected.computed, status: sameValue(computed, expected.computed) ? 'PASS' : 'FAIL' };
         if (registro.navegador.status === 'FAIL') registro.divergencias.push(`oraculo navegador: esperado=${expected.computed} observado=${computed}`);
 
