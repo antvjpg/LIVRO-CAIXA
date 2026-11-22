@@ -26,6 +26,9 @@ const BILATERAL_A02_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a02-bilateral.json');
 const VALIDATOR_A02B = path.join(ROOT, 'tmp-c13/r2-6-6-a02b/validacao-a02b.cjs');
 const BILATERAL_A02B = path.join(ROOT, 'tmp-c13/r2-6-6-a02b/teste-bilateral-a02b.cjs');
 const BILATERAL_A02B_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a02b-bilateral.json');
+const VALIDATOR_A03 = path.join(ROOT, 'tmp-c13/r2-6-6-a03/validacao-a03.cjs');
+const ESPECIFICIDADE_A03 = path.join(ROOT, 'tmp-c13/r2-6-6-a03/teste-especificidade-a03.cjs');
+const ESPECIFICIDADE_A03_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a03-especificidade.json');
 const EXTENSION_266 = path.join(ROOT, 'tmp-c13/r2-6-6/extension');
 const REGRESSION = path.join(ROOT, 'tmp-c13/r2-6-4/regressao/test-r2-6.cjs');
 const BASELINE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
@@ -36,6 +39,7 @@ const MATRIZ_A01_OUT = path.join(ARTIFACTS, 'r2-6-a01-matriz.json');
 const MATRIZ_A01B_OUT = path.join(ARTIFACTS, 'r2-6-a01b-matriz.json');
 const MATRIZ_A02_OUT = path.join(ARTIFACTS, 'r2-6-a02-matriz.json');
 const MATRIZ_A02B_OUT = path.join(ARTIFACTS, 'r2-6-a02b-matriz.json');
+const MATRIZ_A03_OUT = path.join(ARTIFACTS, 'r2-6-a03-matriz.json');
 const REG_LOG = path.join(ARTIFACTS, 'r2-6-regressao.log');
 const HTTP_LOG = path.join(ARTIFACTS, 'r2-6-http.log');
 const CHROME_LOG = path.join(ARTIFACTS, 'r2-6-chromium.log');
@@ -133,6 +137,7 @@ function appendStepSummary(summary) {
     `| A-01B | ${summary.a01b.PASS} PASS / ${summary.a01b.FAIL} FAIL / ${summary.a01b.BLOCKED} BLOCKED |`,
     `| A-02 | ${summary.a02.PASS} PASS / ${summary.a02.FAIL} FAIL / ${summary.a02.BLOCKED} BLOCKED |`,
     `| A-02B | ${summary.a02b.PASS} PASS / ${summary.a02b.FAIL} FAIL / ${summary.a02b.BLOCKED} BLOCKED |`,
+    `| A-03 | ${summary.a03.PASS} PASS / ${summary.a03.FAIL} FAIL / ${summary.a03.BLOCKED} BLOCKED |`,
     `| Regressao | ${summary.regression.PASS} PASS / ${summary.regression.FAIL} FAIL / ${summary.regression.BLOCKED} BLOCKED |`,
     `| Divergencias | ${summary.regression.divergences} |`,
     `| Duracao | ${summary.durationMs}ms |`,
@@ -164,6 +169,8 @@ async function main() {
   let bilateralA02 = null;
   let a02b = null;
   let bilateralA02b = null;
+  let a03 = null;
+  let especificidadeA03 = null;
   let regressionRows = [];
   let baselineRows = [];
 
@@ -450,6 +457,52 @@ async function main() {
       problems.push('A-02B disputas bilaterais incompletas');
     }
 
+    const especificidadeRun = spawnSync(process.execPath, [ESPECIFICIDADE_A03, `--out=${ESPECIFICIDADE_A03_ARTIFACT}`], { cwd: ROOT, stdio: 'inherit' });
+    if (especificidadeRun.status !== 0) problems.push(`teste de especificidade A-03 exit=${especificidadeRun.status}`);
+    if (!fs.existsSync(ESPECIFICIDADE_A03_ARTIFACT)) {
+      problems.push('teste de especificidade A-03 sem artifact');
+    } else {
+      especificidadeA03 = JSON.parse(fs.readFileSync(ESPECIFICIDADE_A03_ARTIFACT, 'utf8'));
+      const especificidadeResumo = especificidadeA03.resumo || {};
+      if (especificidadeResumo.total !== 10) problems.push(`A-03 especificidade total=${especificidadeResumo.total}, esperado 10`);
+      if (especificidadeResumo.PASS !== 10) problems.push(`A-03 especificidade PASS=${especificidadeResumo.PASS}, esperado 10`);
+      if (especificidadeResumo.FAIL !== 0) problems.push(`A-03 especificidade FAIL=${especificidadeResumo.FAIL}, esperado 0`);
+      if (!especificidadeA03.verification || especificidadeA03.verification.hashMatches !== true) problems.push('hash do teste de especificidade A-03 nao confere');
+    }
+
+    const a03Run = spawnSync(
+      process.execPath,
+      [VALIDATOR_A03, `--core=${CORE_A01B}`, `--out=${MATRIZ_A03_OUT}`],
+      { cwd: ROOT, stdio: 'inherit' }
+    );
+    if (a03Run.status !== 0) problems.push(`validador A-03 exit=${a03Run.status}`);
+    a03 = JSON.parse(fs.readFileSync(MATRIZ_A03_OUT, 'utf8'));
+    const a03Resumo = a03.resumo || {};
+    if (a03Resumo.total !== 12) problems.push(`A-03 total=${a03Resumo.total}, esperado 12`);
+    if (a03Resumo.PASS !== 12) problems.push(`A-03 PASS=${a03Resumo.PASS}, esperado 12`);
+    if (a03Resumo.FAIL !== 0) problems.push(`A-03 FAIL=${a03Resumo.FAIL}, esperado 0`);
+    if (a03Resumo.BLOCKED !== 0) problems.push(`A-03 BLOCKED=${a03Resumo.BLOCKED}, esperado 0`);
+    if (a03Resumo.NOT_RUN !== 0) problems.push(`A-03 NOT_RUN=${a03Resumo.NOT_RUN}, esperado 0`);
+    if (a03Resumo.origemPASS !== 3) problems.push(`A-03 origemPASS=${a03Resumo.origemPASS}, esperado 3`);
+    if (a03Resumo.especificidadePASS !== 9) problems.push(`A-03 especificidadePASS=${a03Resumo.especificidadePASS}, esperado 9`);
+    if (a03Resumo.provenienciaPASS !== 1) problems.push(`A-03 provenienciaPASS=${a03Resumo.provenienciaPASS}, esperado 1`);
+    if (a03Resumo.provenienciaAmbigua !== 0) problems.push(`A-03 provenienciaAmbigua=${a03Resumo.provenienciaAmbigua}, esperado 0`);
+    if (a03Resumo.userBranchExercised !== true) problems.push('A-03 ramo user nao exercitado');
+    if (a03Resumo.bilateralPASS !== 3) problems.push(`A-03 bilateralPASS=${a03Resumo.bilateralPASS}, esperado 3`);
+    if (a03Resumo.bilateralFAIL !== 0) problems.push(`A-03 bilateralFAIL=${a03Resumo.bilateralFAIL}, esperado 0`);
+    if (a03Resumo.disputasEsperadas !== 3) problems.push(`A-03 disputasEsperadas=${a03Resumo.disputasEsperadas}, esperado 3`);
+    if (a03Resumo.especificidadeDiagnosticaPASS !== 1) problems.push(`A-03 especificidadeDiagnosticaPASS=${a03Resumo.especificidadeDiagnosticaPASS}, esperado 1`);
+    if (!a03.verification || a03.verification.hashMatches !== true) problems.push('hash A-03 nao confere');
+    const a03Erros = a03.erros || {};
+    for (const key of ['cdp', 'console', 'excecoes']) {
+      const itens = a03Erros[key] || [];
+      if (itens.length) problems.push(`A-03 erros.${key}=${itens.length}`);
+    }
+    const casoGrupo = (a03.casos || []).find((c) => c.id === 'R266-S9');
+    if (!casoGrupo || casoGrupo.status !== 'PASS' || !casoGrupo.diagnostico || casoGrupo.diagnostico.especificidade.a !== 1 || casoGrupo.diagnostico.especificidade.b !== 1 || casoGrupo.diagnostico.especificidade.c !== 0) {
+      problems.push('A-03 diagnostico de seletores agrupados incorreto');
+    }
+
     const regressionRun = spawnSync(process.execPath, [REGRESSION], {
       cwd: ROOT,
       encoding: 'utf8',
@@ -556,6 +609,14 @@ async function main() {
       testeBilateralPASS: bilateralA02b && bilateralA02b.resumo ? bilateralA02b.resumo.PASS || 0 : 0,
       negativosPASS: bilateralA02b && bilateralA02b.resumo ? bilateralA02b.resumo.negativosPASS || 0 : 0,
     },
+    a03: {
+      PASS: (a03 && a03.resumo && a03.resumo.PASS) || 0,
+      FAIL: (a03 && a03.resumo && a03.resumo.FAIL) || 0,
+      BLOCKED: (a03 && a03.resumo && a03.resumo.BLOCKED) || 0,
+      NOT_RUN: (a03 && a03.resumo && a03.resumo.NOT_RUN) || 0,
+      especificidadeDiagnosticaPASS: (a03 && a03.resumo && a03.resumo.especificidadeDiagnosticaPASS) || 0,
+      testeEspecificidadePASS: especificidadeA03 && especificidadeA03.resumo ? especificidadeA03.resumo.PASS || 0 : 0,
+    },
     regression: {
       records: regressionRows.length,
       baseline: baselineRows.length,
@@ -569,7 +630,7 @@ async function main() {
   };
   fs.writeFileSync(SUMMARY_OUT, `${JSON.stringify(summary, null, 2)}\n`);
   appendStepSummary(summary);
-  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | A-01B ${summary.a01b.PASS}/11 | A-02 ${summary.a02.PASS}/11 | A-02B ${summary.a02b.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
+  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | A-01B ${summary.a01b.PASS}/11 | A-02 ${summary.a02.PASS}/11 | A-02B ${summary.a02b.PASS}/11 | A-03 ${summary.a03.PASS}/12 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
   if (problems.length) {
     for (const problem of problems) console.error(`- ${problem}`);
     process.exitCode = 1;
