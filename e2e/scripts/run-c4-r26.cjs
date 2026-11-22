@@ -9,15 +9,21 @@ const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACTS = path.join(ROOT, 'e2e/.artifacts');
 const CORE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6/c4-v05-b-r2-6-core.cjs');
 const CORE_266 = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6-6/c4-v05-b-r2-6-6-core.cjs');
+const CORE_A01 = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6-6-a01/c4-v05-b-r2-6-6-a01-core.cjs');
 const VALIDATOR = path.join(ROOT, 'tmp-c13/r2-6-2/validacao-r2-6-3.cjs');
 const VALIDATOR_265 = path.join(ROOT, 'tmp-c13/r2-6-5/validacao-r2-6-5.cjs');
 const VALIDATOR_266 = path.join(ROOT, 'tmp-c13/r2-6-6/validacao-r2-6-6.cjs');
+const VALIDATOR_A01 = path.join(ROOT, 'tmp-c13/r2-6-6-a01/validacao-a01.cjs');
+const COMPARADOR_A01 = path.join(ROOT, 'tmp-c13/r2-6-6-a01/teste-comparador-a01.cjs');
+const COMPARADOR_A01_OUT = path.join(ROOT, 'tmp-c13/r2-6-6-a01/resultados/teste-comparador-a01.json');
+const COMPARADOR_A01_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a01-comparador.json');
 const EXTENSION_266 = path.join(ROOT, 'tmp-c13/r2-6-6/extension');
 const REGRESSION = path.join(ROOT, 'tmp-c13/r2-6-4/regressao/test-r2-6.cjs');
 const BASELINE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
 const MATRIZ_OUT = path.join(ARTIFACTS, 'r2-6-matriz.json');
 const MATRIZ_265_OUT = path.join(ARTIFACTS, 'r2-6-5-matriz.json');
 const MATRIZ_266_OUT = path.join(ARTIFACTS, 'r2-6-6-matriz.json');
+const MATRIZ_A01_OUT = path.join(ARTIFACTS, 'r2-6-a01-matriz.json');
 const REG_LOG = path.join(ARTIFACTS, 'r2-6-regressao.log');
 const HTTP_LOG = path.join(ARTIFACTS, 'r2-6-http.log');
 const CHROME_LOG = path.join(ARTIFACTS, 'r2-6-chromium.log');
@@ -111,6 +117,7 @@ function appendStepSummary(summary) {
     `| Matriz | ${summary.matrix.PASS} PASS / ${summary.matrix.FAIL} FAIL / ${summary.matrix.BLOCKED} BLOCKED |`,
     `| R2.6.5 | ${summary.r26_5.PASS} PASS / ${summary.r26_5.FAIL} FAIL / ${summary.r26_5.BLOCKED} BLOCKED |`,
     `| R2.6.6 | ${summary.r26_6.PASS} PASS / ${summary.r26_6.FAIL} FAIL / ${summary.r26_6.BLOCKED} BLOCKED |`,
+    `| A-01 | ${summary.a01.PASS} PASS / ${summary.a01.FAIL} FAIL / ${summary.a01.BLOCKED} BLOCKED |`,
     `| Regressao | ${summary.regression.PASS} PASS / ${summary.regression.FAIL} FAIL / ${summary.regression.BLOCKED} BLOCKED |`,
     `| Divergencias | ${summary.regression.divergences} |`,
     `| Duracao | ${summary.durationMs}ms |`,
@@ -134,6 +141,8 @@ async function main() {
   let matrix = null;
   let r265 = null;
   let r266 = null;
+  let a01 = null;
+  let comparadorA01 = null;
   let regressionRows = [];
   let baselineRows = [];
 
@@ -245,6 +254,49 @@ async function main() {
       problems.push('R2.6.6 injecao USER nao confirmada');
     }
 
+    const comparadorRun = spawnSync(process.execPath, [COMPARADOR_A01], { cwd: ROOT, stdio: 'inherit' });
+    if (comparadorRun.status !== 0) problems.push(`comparador A-01 exit=${comparadorRun.status}`);
+    if (!fs.existsSync(COMPARADOR_A01_OUT)) {
+      problems.push('comparador A-01 sem artifact');
+    } else {
+      fs.copyFileSync(COMPARADOR_A01_OUT, COMPARADOR_A01_ARTIFACT);
+      comparadorA01 = JSON.parse(fs.readFileSync(COMPARADOR_A01_ARTIFACT, 'utf8'));
+      const comparadorResumo = comparadorA01.resumo || {};
+      if (comparadorResumo.total !== 4) problems.push(`comparador A-01 total=${comparadorResumo.total}, esperado 4`);
+      if (comparadorResumo.PASS !== 4) problems.push(`comparador A-01 PASS=${comparadorResumo.PASS}, esperado 4`);
+      if (comparadorResumo.FAIL !== 0) problems.push(`comparador A-01 FAIL=${comparadorResumo.FAIL}, esperado 0`);
+      if (!comparadorA01.verification || comparadorA01.verification.hashMatches !== true) problems.push('hash do comparador A-01 nao confere');
+    }
+
+    const a01Run = spawnSync(
+      process.execPath,
+      [VALIDATOR_A01, `--core=${CORE_A01}`, `--out=${MATRIZ_A01_OUT}`],
+      { cwd: ROOT, stdio: 'inherit' }
+    );
+    if (a01Run.status !== 0) problems.push(`validador A-01 exit=${a01Run.status}`);
+    a01 = JSON.parse(fs.readFileSync(MATRIZ_A01_OUT, 'utf8'));
+    const a01Resumo = a01.resumo || {};
+    if (a01Resumo.total !== 11) problems.push(`A-01 total=${a01Resumo.total}, esperado 11`);
+    if (a01Resumo.PASS !== 11) problems.push(`A-01 PASS=${a01Resumo.PASS}, esperado 11`);
+    if (a01Resumo.FAIL !== 0) problems.push(`A-01 FAIL=${a01Resumo.FAIL}, esperado 0`);
+    if (a01Resumo.BLOCKED !== 0) problems.push(`A-01 BLOCKED=${a01Resumo.BLOCKED}, esperado 0`);
+    if (a01Resumo.NOT_RUN !== 0) problems.push(`A-01 NOT_RUN=${a01Resumo.NOT_RUN}, esperado 0`);
+    if (a01Resumo.origemPASS !== 3) problems.push(`A-01 origemPASS=${a01Resumo.origemPASS}, esperado 3`);
+    if (a01Resumo.especificidadePASS !== 8) problems.push(`A-01 especificidadePASS=${a01Resumo.especificidadePASS}, esperado 8`);
+    if (a01Resumo.provenienciaPASS !== 1) problems.push(`A-01 provenienciaPASS=${a01Resumo.provenienciaPASS}, esperado 1`);
+    if (a01Resumo.userBranchExercised !== true) problems.push('A-01 ramo user nao exercitado');
+    if (!a01.verification || a01.verification.hashMatches !== true) problems.push('hash A-01 nao confere');
+    const a01Erros = a01.erros || {};
+    for (const key of ['cdp', 'console', 'excecoes']) {
+      const itens = a01Erros[key] || [];
+      if (itens.length) problems.push(`A-01 erros.${key}=${itens.length}`);
+    }
+    const u1A01 = (a01.casos || []).find((c) => c.id === 'R265-U1');
+    const vencedorU1 = u1A01 && u1A01.nucleo ? u1A01.nucleo.vencedor : null;
+    if (!u1A01 || !u1A01.proveniencia || !vencedorU1 || vencedorU1.origin !== 'user' || vencedorU1.cdpOrigin !== 'user-agent' || vencedorU1.provenance !== 'user') {
+      problems.push('A-01 proveniencia USER nao chegou ao vencedor');
+    }
+
     const regressionRun = spawnSync(process.execPath, [REGRESSION], {
       cwd: ROOT,
       encoding: 'utf8',
@@ -290,6 +342,7 @@ async function main() {
     node: process.version,
     core: CORE,
     core266: CORE_266,
+    coreA01: CORE_A01,
     matrix: {
       PASS: (matrix && matrix.resumo && matrix.resumo.PASS) || 0,
       FAIL: (matrix && matrix.resumo && matrix.resumo.FAIL) || 0,
@@ -308,6 +361,15 @@ async function main() {
       BLOCKED: (r266 && r266.resumo && r266.resumo.BLOCKED) || 0,
       NOT_RUN: (r266 && r266.resumo && r266.resumo.NOT_RUN) || 0,
     },
+    a01: {
+      PASS: (a01 && a01.resumo && a01.resumo.PASS) || 0,
+      FAIL: (a01 && a01.resumo && a01.resumo.FAIL) || 0,
+      BLOCKED: (a01 && a01.resumo && a01.resumo.BLOCKED) || 0,
+      NOT_RUN: (a01 && a01.resumo && a01.resumo.NOT_RUN) || 0,
+      provenienciaPASS: (a01 && a01.resumo && a01.resumo.provenienciaPASS) || 0,
+      userBranchExercised: Boolean(a01 && a01.resumo && a01.resumo.userBranchExercised),
+      comparadorPASS: comparadorA01 && comparadorA01.resumo ? comparadorA01.resumo.PASS || 0 : 0,
+    },
     regression: {
       records: regressionRows.length,
       baseline: baselineRows.length,
@@ -321,7 +383,7 @@ async function main() {
   };
   fs.writeFileSync(SUMMARY_OUT, `${JSON.stringify(summary, null, 2)}\n`);
   appendStepSummary(summary);
-  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
+  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
   if (problems.length) {
     for (const problem of problems) console.error(`- ${problem}`);
     process.exitCode = 1;

@@ -1,0 +1,254 @@
+{
+  "id": "A-01-TESTE-A",
+  "data": "2026-11-22T13:46:04.925Z",
+  "nucleo": "docs/auditorias/c4-v05-b/evidencias-r2-6-6-a01/c4-v05-b-r2-6-6-a01-core.cjs",
+  "metodo": "createCDPAuditCore.getWinningRule com dominios CDP simulados",
+  "testes": [
+    {
+      "nome": "A1 — user !important supera author !important",
+      "status": "PASS",
+      "divergencias": [],
+      "esperado": {
+        "origin": "user",
+        "cdpOrigin": "user-agent",
+        "provenance": "user",
+        "value": "rgb(200, 10, 20)",
+        "important": true,
+        "computed": "rgb(200, 10, 20)"
+      },
+      "vencedor": {
+        "value": "rgb(200, 10, 20)",
+        "important": true,
+        "origin": "user",
+        "cdpOrigin": "user-agent",
+        "provenance": "user",
+        "selectorText": "#alvo",
+        "styleSheetId": "sheet-user-a01",
+        "specificity": {
+          "a": 1,
+          "b": 0,
+          "c": 0
+        }
+      },
+      "candidatos": [
+        {
+          "value": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "selectorText": "#alvo",
+          "styleSheetId": "sheet-user-a01",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "value": "rgb(10, 20, 30)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "selectorText": "#alvo",
+          "styleSheetId": "sheet-author-a01",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        }
+      ],
+      "resolvedValue": "rgb(200, 10, 20)",
+      "resolveStatus": "computed"
+    },
+    {
+      "nome": "A2 — user-agent !important supera user !important",
+      "status": "PASS",
+      "divergencias": [],
+      "esperado": {
+        "origin": "user-agent",
+        "cdpOrigin": "user-agent",
+        "provenance": null,
+        "value": "rgb(1, 2, 3)",
+        "important": true,
+        "computed": "rgb(1, 2, 3)"
+      },
+      "vencedor": {
+        "value": "rgb(1, 2, 3)",
+        "important": true,
+        "origin": "user-agent",
+        "cdpOrigin": "user-agent",
+        "provenance": null,
+        "selectorText": "input[type=\"hidden\" i]",
+        "styleSheetId": "sheet-ua-a01",
+        "specificity": {
+          "a": 0,
+          "b": 1,
+          "c": 1
+        }
+      },
+      "candidatos": [
+        {
+          "value": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "selectorText": "#alvo",
+          "styleSheetId": "sheet-user-a01",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "value": "rgb(10, 20, 30)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "selectorText": "#alvo",
+          "styleSheetId": "sheet-author-a01",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "value": "rgb(1, 2, 3)",
+          "important": true,
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "provenance": null,
+          "selectorText": "input[type=\"hidden\" i]",
+          "styleSheetId": "sheet-ua-a01",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          }
+        }
+      ],
+      "resolvedValue": "rgb(1, 2, 3)",
+      "resolveStatus": "computed"
+    },
+    {
+      "nome": "A3 — USER nao e classificado como user-agent",
+      "status": "PASS",
+      "divergencias": [],
+      "esperado": {
+        "origin": "user",
+        "cdpOrigin": "user-agent",
+        "provenance": "user",
+        "value": "rgb(200, 10, 20)",
+        "important": true,
+        "computed": "rgb(200, 10, 20)"
+      },
+      "vencedor": {
+        "value": "rgb(200, 10, 20)",
+        "important": true,
+        "origin": "user",
+        "cdpOrigin": "user-agent",
+        "provenance": "user",
+        "selectorText": "#alvo",
+        "styleSheetId": "sheet-user-a01",
+        "specificity": {
+          "a": 1,
+          "b": 0,
+          "c": 0
+        }
+      },
+      "candidatos": [
+        {
+          "value": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "provenance": "user",
+          "selectorText": "#alvo",
+          "styleSheetId": "sheet-user-a01",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "value": "rgb(10, 20, 30)",
+          "important": true,
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "provenance": null,
+          "selectorText": "#alvo",
+          "styleSheetId": "sheet-author-a01",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        }
+      ],
+      "resolvedValue": "rgb(200, 10, 20)",
+      "resolveStatus": "computed"
+    }
+  ],
+  "rastreabilidade": {
+    "status": "PASS",
+    "candidatoUser": {
+      "value": "rgb(200, 10, 20)",
+      "important": true,
+      "origin": "user",
+      "cdpOrigin": "user-agent",
+      "provenance": "user",
+      "selectorText": "#alvo",
+      "styleSheetId": "sheet-user-a01",
+      "specificity": {
+        "a": 1,
+        "b": 0,
+        "c": 0
+      }
+    },
+    "candidatoAuthor": {
+      "value": "rgb(10, 20, 30)",
+      "important": true,
+      "origin": "author",
+      "cdpOrigin": "regular",
+      "provenance": null,
+      "selectorText": "#alvo",
+      "styleSheetId": "sheet-author-a01",
+      "specificity": {
+        "a": 1,
+        "b": 0,
+        "c": 0
+      }
+    },
+    "vencedor": {
+      "value": "rgb(200, 10, 20)",
+      "important": true,
+      "origin": "user",
+      "cdpOrigin": "user-agent",
+      "provenance": "user",
+      "selectorText": "#alvo",
+      "styleSheetId": "sheet-user-a01",
+      "specificity": {
+        "a": 1,
+        "b": 0,
+        "c": 0
+      }
+    }
+  },
+  "resumo": {
+    "total": 4,
+    "PASS": 4,
+    "FAIL": 0
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "50e127205a9c36700a68fe2c3e39f9dd4706e3271b93ac9871725d2ed12658c9",
+    "recalculated": "50e127205a9c36700a68fe2c3e39f9dd4706e3271b93ac9871725d2ed12658c9"
+  }
+}
