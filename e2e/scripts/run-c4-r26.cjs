@@ -29,6 +29,9 @@ const BILATERAL_A02B_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a02b-bilateral.json')
 const VALIDATOR_A03 = path.join(ROOT, 'tmp-c13/r2-6-6-a03/validacao-a03.cjs');
 const ESPECIFICIDADE_A03 = path.join(ROOT, 'tmp-c13/r2-6-6-a03/teste-especificidade-a03.cjs');
 const ESPECIFICIDADE_A03_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a03-especificidade.json');
+const VALIDATOR_A03B = path.join(ROOT, 'tmp-c13/r2-6-6-a03b/validacao-a03b.cjs');
+const ESPECIFICIDADE_A03B = path.join(ROOT, 'tmp-c13/r2-6-6-a03b/teste-especificidade-a03b.cjs');
+const ESPECIFICIDADE_A03B_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a03b-especificidade.json');
 const EXTENSION_266 = path.join(ROOT, 'tmp-c13/r2-6-6/extension');
 const REGRESSION = path.join(ROOT, 'tmp-c13/r2-6-4/regressao/test-r2-6.cjs');
 const BASELINE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
@@ -40,6 +43,7 @@ const MATRIZ_A01B_OUT = path.join(ARTIFACTS, 'r2-6-a01b-matriz.json');
 const MATRIZ_A02_OUT = path.join(ARTIFACTS, 'r2-6-a02-matriz.json');
 const MATRIZ_A02B_OUT = path.join(ARTIFACTS, 'r2-6-a02b-matriz.json');
 const MATRIZ_A03_OUT = path.join(ARTIFACTS, 'r2-6-a03-matriz.json');
+const MATRIZ_A03B_OUT = path.join(ARTIFACTS, 'r2-6-a03b-matriz.json');
 const REG_LOG = path.join(ARTIFACTS, 'r2-6-regressao.log');
 const HTTP_LOG = path.join(ARTIFACTS, 'r2-6-http.log');
 const CHROME_LOG = path.join(ARTIFACTS, 'r2-6-chromium.log');
@@ -138,6 +142,7 @@ function appendStepSummary(summary) {
     `| A-02 | ${summary.a02.PASS} PASS / ${summary.a02.FAIL} FAIL / ${summary.a02.BLOCKED} BLOCKED |`,
     `| A-02B | ${summary.a02b.PASS} PASS / ${summary.a02b.FAIL} FAIL / ${summary.a02b.BLOCKED} BLOCKED |`,
     `| A-03 | ${summary.a03.PASS} PASS / ${summary.a03.FAIL} FAIL / ${summary.a03.BLOCKED} BLOCKED |`,
+    `| A-03B | ${summary.a03b.PASS} PASS / ${summary.a03b.FAIL} FAIL / ${summary.a03b.BLOCKED} BLOCKED |`,
     `| Regressao | ${summary.regression.PASS} PASS / ${summary.regression.FAIL} FAIL / ${summary.regression.BLOCKED} BLOCKED |`,
     `| Divergencias | ${summary.regression.divergences} |`,
     `| Duracao | ${summary.durationMs}ms |`,
@@ -171,6 +176,8 @@ async function main() {
   let bilateralA02b = null;
   let a03 = null;
   let especificidadeA03 = null;
+  let a03b = null;
+  let especificidadeA03b = null;
   let regressionRows = [];
   let baselineRows = [];
 
@@ -503,6 +510,61 @@ async function main() {
       problems.push('A-03 diagnostico de seletores agrupados incorreto');
     }
 
+    const especificidadeBRun = spawnSync(process.execPath, [ESPECIFICIDADE_A03B, `--out=${ESPECIFICIDADE_A03B_ARTIFACT}`], { cwd: ROOT, stdio: 'inherit' });
+    if (especificidadeBRun.status !== 0) problems.push(`teste de especificidade A-03B exit=${especificidadeBRun.status}`);
+    if (!fs.existsSync(ESPECIFICIDADE_A03B_ARTIFACT)) {
+      problems.push('teste de especificidade A-03B sem artifact');
+    } else {
+      especificidadeA03b = JSON.parse(fs.readFileSync(ESPECIFICIDADE_A03B_ARTIFACT, 'utf8'));
+      const resumoB = especificidadeA03b.resumo || {};
+      if (resumoB.total !== 12) problems.push(`A-03B especificidade total=${resumoB.total}, esperado 12`);
+      if (resumoB.PASS !== 12) problems.push(`A-03B especificidade PASS=${resumoB.PASS}, esperado 12`);
+      if (resumoB.FAIL !== 0) problems.push(`A-03B especificidade FAIL=${resumoB.FAIL}, esperado 0`);
+      const testeParcial = (especificidadeA03b.testes || []).find((t) => t.nome.indexOf('A11') === 0);
+      if (!testeParcial || testeParcial.status !== 'PASS' || !testeParcial.avaliacao || testeParcial.avaliacao.status !== 'insuficiente') {
+        problems.push('A-03B nao comprovou metadado parcialmente indisponivel');
+      }
+      const testeIndices = (especificidadeA03b.testes || []).find((t) => t.nome.indexOf('A12') === 0);
+      if (!testeIndices || testeIndices.status !== 'PASS' || !testeIndices.avaliacao || JSON.stringify(testeIndices.avaliacao.indicesValidos) !== JSON.stringify([1, 0])) {
+        problems.push('A-03B nao registrou os indices correspondentes');
+      }
+      if (!especificidadeA03b.verification || especificidadeA03b.verification.hashMatches !== true) problems.push('hash do teste de especificidade A-03B nao confere');
+    }
+
+    const a03bRun = spawnSync(
+      process.execPath,
+      [VALIDATOR_A03B, `--core=${CORE_A01B}`, `--out=${MATRIZ_A03B_OUT}`],
+      { cwd: ROOT, stdio: 'inherit' }
+    );
+    if (a03bRun.status !== 0) problems.push(`validador A-03B exit=${a03bRun.status}`);
+    a03b = JSON.parse(fs.readFileSync(MATRIZ_A03B_OUT, 'utf8'));
+    const a03bResumo = a03b.resumo || {};
+    if (a03bResumo.total !== 12) problems.push(`A-03B total=${a03bResumo.total}, esperado 12`);
+    if (a03bResumo.PASS !== 12) problems.push(`A-03B PASS=${a03bResumo.PASS}, esperado 12`);
+    if (a03bResumo.FAIL !== 0) problems.push(`A-03B FAIL=${a03bResumo.FAIL}, esperado 0`);
+    if (a03bResumo.BLOCKED !== 0) problems.push(`A-03B BLOCKED=${a03bResumo.BLOCKED}, esperado 0`);
+    if (a03bResumo.NOT_RUN !== 0) problems.push(`A-03B NOT_RUN=${a03bResumo.NOT_RUN}, esperado 0`);
+    if (a03bResumo.origemPASS !== 3) problems.push(`A-03B origemPASS=${a03bResumo.origemPASS}, esperado 3`);
+    if (a03bResumo.especificidadePASS !== 9) problems.push(`A-03B especificidadePASS=${a03bResumo.especificidadePASS}, esperado 9`);
+    if (a03bResumo.provenienciaPASS !== 1) problems.push(`A-03B provenienciaPASS=${a03bResumo.provenienciaPASS}, esperado 1`);
+    if (a03bResumo.provenienciaAmbigua !== 0) problems.push(`A-03B provenienciaAmbigua=${a03bResumo.provenienciaAmbigua}, esperado 0`);
+    if (a03bResumo.userBranchExercised !== true) problems.push('A-03B ramo user nao exercitado');
+    if (a03bResumo.bilateralPASS !== 3) problems.push(`A-03B bilateralPASS=${a03bResumo.bilateralPASS}, esperado 3`);
+    if (a03bResumo.bilateralFAIL !== 0) problems.push(`A-03B bilateralFAIL=${a03bResumo.bilateralFAIL}, esperado 0`);
+    if (a03bResumo.disputasEsperadas !== 3) problems.push(`A-03B disputasEsperadas=${a03bResumo.disputasEsperadas}, esperado 3`);
+    if (a03bResumo.especificidadeDiagnosticaPASS !== 1) problems.push(`A-03B especificidadeDiagnosticaPASS=${a03bResumo.especificidadeDiagnosticaPASS}, esperado 1`);
+    if (a03bResumo.indicesCorrespondentesPASS !== 1) problems.push(`A-03B indicesCorrespondentesPASS=${a03bResumo.indicesCorrespondentesPASS}, esperado 1`);
+    if (!a03b.verification || a03b.verification.hashMatches !== true) problems.push('hash A-03B nao confere');
+    const a03bErros = a03b.erros || {};
+    for (const key of ['cdp', 'console', 'excecoes']) {
+      const itens = a03bErros[key] || [];
+      if (itens.length) problems.push(`A-03B erros.${key}=${itens.length}`);
+    }
+    const casoGrupoB = (a03b.casos || []).find((c) => c.id === 'R266-S9');
+    if (!casoGrupoB || casoGrupoB.status !== 'PASS' || !casoGrupoB.diagnostico || casoGrupoB.diagnostico.status !== 'maximo' || (casoGrupoB.diagnostico.indicesCorrespondentes || []).length < 2 || (casoGrupoB.diagnostico.indicesSemEspecificidade || []).length !== 0) {
+      problems.push('A-03B evidencia de seletores agrupados incompleta');
+    }
+
     const regressionRun = spawnSync(process.execPath, [REGRESSION], {
       cwd: ROOT,
       encoding: 'utf8',
@@ -617,6 +679,15 @@ async function main() {
       especificidadeDiagnosticaPASS: (a03 && a03.resumo && a03.resumo.especificidadeDiagnosticaPASS) || 0,
       testeEspecificidadePASS: especificidadeA03 && especificidadeA03.resumo ? especificidadeA03.resumo.PASS || 0 : 0,
     },
+    a03b: {
+      PASS: (a03b && a03b.resumo && a03b.resumo.PASS) || 0,
+      FAIL: (a03b && a03b.resumo && a03b.resumo.FAIL) || 0,
+      BLOCKED: (a03b && a03b.resumo && a03b.resumo.BLOCKED) || 0,
+      NOT_RUN: (a03b && a03b.resumo && a03b.resumo.NOT_RUN) || 0,
+      especificidadeDiagnosticaPASS: (a03b && a03b.resumo && a03b.resumo.especificidadeDiagnosticaPASS) || 0,
+      indicesCorrespondentesPASS: (a03b && a03b.resumo && a03b.resumo.indicesCorrespondentesPASS) || 0,
+      testeEspecificidadePASS: especificidadeA03b && especificidadeA03b.resumo ? especificidadeA03b.resumo.PASS || 0 : 0,
+    },
     regression: {
       records: regressionRows.length,
       baseline: baselineRows.length,
@@ -630,7 +701,7 @@ async function main() {
   };
   fs.writeFileSync(SUMMARY_OUT, `${JSON.stringify(summary, null, 2)}\n`);
   appendStepSummary(summary);
-  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | A-01B ${summary.a01b.PASS}/11 | A-02 ${summary.a02.PASS}/11 | A-02B ${summary.a02b.PASS}/11 | A-03 ${summary.a03.PASS}/12 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
+  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | A-01B ${summary.a01b.PASS}/11 | A-02 ${summary.a02.PASS}/11 | A-02B ${summary.a02b.PASS}/11 | A-03 ${summary.a03.PASS}/12 | A-03B ${summary.a03b.PASS}/12 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
   if (problems.length) {
     for (const problem of problems) console.error(`- ${problem}`);
     process.exitCode = 1;

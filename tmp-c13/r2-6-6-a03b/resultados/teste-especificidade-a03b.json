@@ -1,0 +1,646 @@
+{
+  "id": "A-03B-TESTE-ESPECIFICIDADE",
+  "data": "2026-11-22T17:46:09.279Z",
+  "helper": "tmp-c13/r2-6-6-a03b/especificidade-maxima.cjs",
+  "criterios": [
+    "todos os indices correspondentes",
+    "comparacao lexicografica a,b,c",
+    "ordem irrelevante",
+    "indices invalidos sem fallback",
+    "ausencia de evidencia retorna null",
+    "metadado parcial retorna insuficiente",
+    "evidencia dos indices correspondentes",
+    "formato objeto",
+    "pseudo-elemento preservado"
+  ],
+  "testes": [
+    {
+      "nome": "A1 — primeiro seletor menos especifico",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": ".card",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "text": "#app .card",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "matchingSelectors": [
+        0,
+        1
+      ],
+      "esperado": {
+        "a": 1,
+        "b": 1,
+        "c": 0,
+        "index": 1
+      },
+      "esperadoAvaliacao": {
+        "status": "maximo",
+        "indicesValidos": [
+          0,
+          1
+        ]
+      },
+      "observado": {
+        "a": 1,
+        "b": 1,
+        "c": 0,
+        "index": 1,
+        "indices": [
+          0,
+          1
+        ]
+      },
+      "avaliacao": {
+        "status": "maximo",
+        "indices": [
+          0,
+          1
+        ],
+        "indicesValidos": [
+          0,
+          1
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": []
+      }
+    },
+    {
+      "nome": "A2 — ordem invertida",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": ".card",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "text": "#app .card",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "matchingSelectors": [
+        1,
+        0
+      ],
+      "esperado": {
+        "a": 1,
+        "b": 1,
+        "c": 0,
+        "index": 1
+      },
+      "esperadoAvaliacao": null,
+      "observado": {
+        "a": 1,
+        "b": 1,
+        "c": 0,
+        "index": 1,
+        "indices": [
+          1,
+          0
+        ]
+      },
+      "avaliacao": {
+        "status": "maximo",
+        "indices": [
+          1,
+          0
+        ],
+        "indicesValidos": [
+          1,
+          0
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": []
+      }
+    },
+    {
+      "nome": "A3 — tres seletores com maximo intermediario",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": ".a",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "text": "#b",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "text": ".c.d",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          }
+        }
+      ],
+      "matchingSelectors": [
+        0,
+        1,
+        2
+      ],
+      "esperado": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "index": 1
+      },
+      "esperadoAvaliacao": null,
+      "observado": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "index": 1,
+        "indices": [
+          0,
+          1,
+          2
+        ]
+      },
+      "avaliacao": {
+        "status": "maximo",
+        "indices": [
+          0,
+          1,
+          2
+        ],
+        "indicesValidos": [
+          0,
+          1,
+          2
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": []
+      }
+    },
+    {
+      "nome": "A4 — empate deterministico",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": "#a",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "text": "#b",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        }
+      ],
+      "matchingSelectors": [
+        0,
+        1
+      ],
+      "esperado": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "index": 0
+      },
+      "esperadoAvaliacao": null,
+      "observado": {
+        "a": 1,
+        "b": 0,
+        "c": 0,
+        "index": 0,
+        "indices": [
+          0,
+          1
+        ]
+      },
+      "avaliacao": {
+        "status": "maximo",
+        "indices": [
+          0,
+          1
+        ],
+        "indicesValidos": [
+          0,
+          1
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": []
+      }
+    },
+    {
+      "nome": "A5 — indice invalido sem fallback",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": ".card",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "text": "#app .card",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "matchingSelectors": [
+        99
+      ],
+      "esperado": null,
+      "esperadoAvaliacao": null,
+      "observado": null,
+      "avaliacao": {
+        "status": "ausente",
+        "indices": [],
+        "indicesValidos": [],
+        "indicesInvalidos": 1,
+        "indicesSemEspecificidade": []
+      }
+    },
+    {
+      "nome": "A6 — correspondencia ausente",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": ".card",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "text": "#app .card",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "matchingSelectors": [],
+      "esperado": null,
+      "esperadoAvaliacao": null,
+      "observado": null,
+      "avaliacao": {
+        "status": "ausente",
+        "indices": [],
+        "indicesValidos": [],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": []
+      }
+    },
+    {
+      "nome": "A7 — formato objeto",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": ".card",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "text": "#app .card",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "matchingSelectors": [
+        {
+          "index": 0
+        },
+        {
+          "index": 1
+        }
+      ],
+      "esperado": {
+        "a": 1,
+        "b": 1,
+        "c": 0,
+        "index": 1
+      },
+      "esperadoAvaliacao": null,
+      "observado": {
+        "a": 1,
+        "b": 1,
+        "c": 0,
+        "index": 1,
+        "indices": [
+          0,
+          1
+        ]
+      },
+      "avaliacao": {
+        "status": "maximo",
+        "indices": [
+          0,
+          1
+        ],
+        "indicesValidos": [
+          0,
+          1
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": []
+      }
+    },
+    {
+      "nome": "A8 — especificidade indisponivel",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": ".sem-metadado",
+          "specificity": null
+        },
+        {
+          "text": ".outro",
+          "specificity": null
+        }
+      ],
+      "matchingSelectors": [
+        0,
+        1
+      ],
+      "esperado": null,
+      "esperadoAvaliacao": null,
+      "observado": null,
+      "avaliacao": {
+        "status": "insuficiente",
+        "indices": [
+          0,
+          1
+        ],
+        "indicesValidos": [
+          0,
+          1
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "nome": "A9 — seletor unico",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": ".card",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "matchingSelectors": [
+        0
+      ],
+      "esperado": {
+        "a": 0,
+        "b": 1,
+        "c": 0,
+        "index": 0
+      },
+      "esperadoAvaliacao": null,
+      "observado": {
+        "a": 0,
+        "b": 1,
+        "c": 0,
+        "index": 0,
+        "indices": [
+          0
+        ]
+      },
+      "avaliacao": {
+        "status": "maximo",
+        "indices": [
+          0
+        ],
+        "indicesValidos": [
+          0
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": []
+      }
+    },
+    {
+      "nome": "A10 — pseudo-elemento preservado",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": "#a::before",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          }
+        }
+      ],
+      "matchingSelectors": [
+        0
+      ],
+      "esperado": {
+        "a": 1,
+        "b": 0,
+        "c": 1,
+        "index": 0
+      },
+      "esperadoAvaliacao": null,
+      "observado": {
+        "a": 1,
+        "b": 0,
+        "c": 1,
+        "index": 0,
+        "indices": [
+          0
+        ]
+      },
+      "avaliacao": {
+        "status": "maximo",
+        "indices": [
+          0
+        ],
+        "indicesValidos": [
+          0
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": []
+      }
+    },
+    {
+      "nome": "A11 — metadado parcialmente indisponivel",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": "#a",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "text": "#b",
+          "specificity": null
+        }
+      ],
+      "matchingSelectors": [
+        0,
+        1
+      ],
+      "esperado": null,
+      "esperadoAvaliacao": {
+        "status": "insuficiente",
+        "indicesValidos": [
+          0,
+          1
+        ],
+        "indicesSemEspecificidade": [
+          1
+        ]
+      },
+      "observado": null,
+      "avaliacao": {
+        "status": "insuficiente",
+        "indices": [
+          0,
+          1
+        ],
+        "indicesValidos": [
+          0,
+          1
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": [
+          1
+        ]
+      }
+    },
+    {
+      "nome": "A12 — evidencia dos indices com ordem invertida",
+      "status": "PASS",
+      "divergencias": [],
+      "selectors": [
+        {
+          "text": ".card",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "text": "#app .card",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "matchingSelectors": [
+        1,
+        0
+      ],
+      "esperado": {
+        "a": 1,
+        "b": 1,
+        "c": 0,
+        "index": 1
+      },
+      "esperadoAvaliacao": {
+        "status": "maximo",
+        "indicesValidos": [
+          1,
+          0
+        ]
+      },
+      "observado": {
+        "a": 1,
+        "b": 1,
+        "c": 0,
+        "index": 1,
+        "indices": [
+          1,
+          0
+        ]
+      },
+      "avaliacao": {
+        "status": "maximo",
+        "indices": [
+          1,
+          0
+        ],
+        "indicesValidos": [
+          1,
+          0
+        ],
+        "indicesInvalidos": 0,
+        "indicesSemEspecificidade": []
+      }
+    }
+  ],
+  "resumo": {
+    "total": 12,
+    "PASS": 12,
+    "FAIL": 0
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "5896da1732bf6afb25cfb45d8b979c570d9bd785e7250e152df1a4334a4b196b",
+    "recalculated": "5896da1732bf6afb25cfb45d8b979c570d9bd785e7250e152df1a4334a4b196b"
+  }
+}
