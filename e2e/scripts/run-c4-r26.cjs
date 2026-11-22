@@ -8,12 +8,16 @@ const { spawn, spawnSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACTS = path.join(ROOT, 'e2e/.artifacts');
 const CORE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6/c4-v05-b-r2-6-core.cjs');
+const CORE_266 = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6-6/c4-v05-b-r2-6-6-core.cjs');
 const VALIDATOR = path.join(ROOT, 'tmp-c13/r2-6-2/validacao-r2-6-3.cjs');
 const VALIDATOR_265 = path.join(ROOT, 'tmp-c13/r2-6-5/validacao-r2-6-5.cjs');
+const VALIDATOR_266 = path.join(ROOT, 'tmp-c13/r2-6-6/validacao-r2-6-6.cjs');
+const EXTENSION_266 = path.join(ROOT, 'tmp-c13/r2-6-6/extension');
 const REGRESSION = path.join(ROOT, 'tmp-c13/r2-6-4/regressao/test-r2-6.cjs');
 const BASELINE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
 const MATRIZ_OUT = path.join(ARTIFACTS, 'r2-6-matriz.json');
 const MATRIZ_265_OUT = path.join(ARTIFACTS, 'r2-6-5-matriz.json');
+const MATRIZ_266_OUT = path.join(ARTIFACTS, 'r2-6-6-matriz.json');
 const REG_LOG = path.join(ARTIFACTS, 'r2-6-regressao.log');
 const HTTP_LOG = path.join(ARTIFACTS, 'r2-6-http.log');
 const CHROME_LOG = path.join(ARTIFACTS, 'r2-6-chromium.log');
@@ -106,6 +110,7 @@ function appendStepSummary(summary) {
     `| Node | ${summary.node} |`,
     `| Matriz | ${summary.matrix.PASS} PASS / ${summary.matrix.FAIL} FAIL / ${summary.matrix.BLOCKED} BLOCKED |`,
     `| R2.6.5 | ${summary.r26_5.PASS} PASS / ${summary.r26_5.FAIL} FAIL / ${summary.r26_5.BLOCKED} BLOCKED |`,
+    `| R2.6.6 | ${summary.r26_6.PASS} PASS / ${summary.r26_6.FAIL} FAIL / ${summary.r26_6.BLOCKED} BLOCKED |`,
     `| Regressao | ${summary.regression.PASS} PASS / ${summary.regression.FAIL} FAIL / ${summary.regression.BLOCKED} BLOCKED |`,
     `| Divergencias | ${summary.regression.divergences} |`,
     `| Duracao | ${summary.durationMs}ms |`,
@@ -128,6 +133,7 @@ async function main() {
   let browser = null;
   let matrix = null;
   let r265 = null;
+  let r266 = null;
   let regressionRows = [];
   let baselineRows = [];
 
@@ -141,6 +147,7 @@ async function main() {
 
     const executablePath = findChromium();
     if (!fs.existsSync(executablePath)) fail(`Chromium nao encontrado: ${executablePath}`);
+    if (!fs.existsSync(EXTENSION_266)) fail(`Extensao R2.6.6 nao encontrada: ${EXTENSION_266}`);
     const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'c4-r26-chrome-'));
     browser = spawn(
       executablePath,
@@ -151,6 +158,8 @@ async function main() {
         '--disable-dev-shm-usage',
         `--remote-debugging-port=${CDP_PORT}`,
         `--user-data-dir=${profile}`,
+        `--disable-extensions-except=${EXTENSION_266}`,
+        `--load-extension=${EXTENSION_266}`,
         'about:blank',
       ],
       { stdio: ['ignore', chromeLog, chromeLog] }
@@ -209,6 +218,32 @@ async function main() {
     const cdpInesperados = (r265Erros.cdp || []).filter((e) => String(e.operation || '').indexOf('resolveWinningValue') === -1);
     if (cdpInesperados.length) problems.push(`R2.6.5 cdpErrors inesperados=${cdpInesperados.length}`);
 
+    const r266Run = spawnSync(
+      process.execPath,
+      [VALIDATOR_266, `--core=${CORE_266}`, `--out=${MATRIZ_266_OUT}`],
+      { cwd: ROOT, stdio: 'inherit' }
+    );
+    if (r266Run.status !== 0) problems.push(`validador R2.6.6 exit=${r266Run.status}`);
+    r266 = JSON.parse(fs.readFileSync(MATRIZ_266_OUT, 'utf8'));
+    const r266Resumo = r266.resumo || {};
+    if (r266Resumo.total !== 11) problems.push(`R2.6.6 total=${r266Resumo.total}, esperado 11`);
+    if (r266Resumo.PASS !== 11) problems.push(`R2.6.6 PASS=${r266Resumo.PASS}, esperado 11`);
+    if (r266Resumo.FAIL !== 0) problems.push(`R2.6.6 FAIL=${r266Resumo.FAIL}, esperado 0`);
+    if (r266Resumo.BLOCKED !== 0) problems.push(`R2.6.6 BLOCKED=${r266Resumo.BLOCKED}, esperado 0`);
+    if (r266Resumo.NOT_RUN !== 0) problems.push(`R2.6.6 NOT_RUN=${r266Resumo.NOT_RUN}, esperado 0`);
+    if (r266Resumo.origemPASS !== 3) problems.push(`R2.6.6 origemPASS=${r266Resumo.origemPASS}, esperado 3`);
+    if (r266Resumo.especificidadePASS !== 8) problems.push(`R2.6.6 especificidadePASS=${r266Resumo.especificidadePASS}, esperado 8`);
+    if (!r266.verification || r266.verification.hashMatches !== true) problems.push('hash R2.6.6 nao confere');
+    const r266Erros = r266.erros || {};
+    for (const key of ['cdp', 'console', 'excecoes']) {
+      const itens = r266Erros[key] || [];
+      if (itens.length) problems.push(`R2.6.6 erros.${key}=${itens.length}`);
+    }
+    const injecoesU1 = (r266.casos || []).filter((c) => c.id === 'R265-U1');
+    if (injecoesU1.length !== 1 || !injecoesU1[0].injecao || injecoesU1[0].injecao.title !== 'r266-inject:ok') {
+      problems.push('R2.6.6 injecao USER nao confirmada');
+    }
+
     const regressionRun = spawnSync(process.execPath, [REGRESSION], {
       cwd: ROOT,
       encoding: 'utf8',
@@ -253,6 +288,7 @@ async function main() {
     sha: process.env.GITHUB_SHA || null,
     node: process.version,
     core: CORE,
+    core266: CORE_266,
     matrix: {
       PASS: (matrix && matrix.resumo && matrix.resumo.PASS) || 0,
       FAIL: (matrix && matrix.resumo && matrix.resumo.FAIL) || 0,
@@ -264,6 +300,12 @@ async function main() {
       FAIL: (r265 && r265.resumo && r265.resumo.FAIL) || 0,
       BLOCKED: (r265 && r265.resumo && r265.resumo.BLOCKED) || 0,
       NOT_RUN: (r265 && r265.resumo && r265.resumo.NOT_RUN) || 0,
+    },
+    r26_6: {
+      PASS: (r266 && r266.resumo && r266.resumo.PASS) || 0,
+      FAIL: (r266 && r266.resumo && r266.resumo.FAIL) || 0,
+      BLOCKED: (r266 && r266.resumo && r266.resumo.BLOCKED) || 0,
+      NOT_RUN: (r266 && r266.resumo && r266.resumo.NOT_RUN) || 0,
     },
     regression: {
       records: regressionRows.length,
@@ -278,7 +320,7 @@ async function main() {
   };
   fs.writeFileSync(SUMMARY_OUT, `${JSON.stringify(summary, null, 2)}\n`);
   appendStepSummary(summary);
-  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
+  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
   if (problems.length) {
     for (const problem of problems) console.error(`- ${problem}`);
     process.exitCode = 1;

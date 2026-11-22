@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>R2.6.6 — origens e especificidade</title>
+<style>
+#r266-ua-normal { font-size: 14px; }
+#r266-ua-important { display: block !important; }
+#r266-user-important { color: rgb(10, 20, 30) !important; }
+#r266-spec-is { color: rgb(1, 2, 3); }
+:is(#r266-spec-is) { color: rgb(4, 5, 6); }
+.r266-spec-where { color: rgb(7, 8, 9); }
+:where(#r266-spec-where) { color: rgb(10, 11, 12); }
+.r266-spec-not { color: rgb(13, 14, 15); }
+#r266-spec-not:not(.ausente) { color: rgb(16, 17, 18); }
+.r266-spec-has { color: rgb(22, 23, 24); }
+#r266-spec-has:has(.r266-filho) { color: rgb(19, 20, 21); }
+#r266-spec-after::after { content: "a"; color: rgb(25, 26, 27); }
+.r266-spec-where-pseudo::before { content: "w"; color: rgb(31, 32, 33); }
+:where(#r266-spec-where-pseudo)::before { content: "w"; color: rgb(28, 29, 30); }
+.r266-spec-is-pseudo::before { content: "i"; color: rgb(37, 38, 39); }
+:is(#r266-spec-is-pseudo)::before { content: "i"; color: rgb(34, 35, 36); }
+.r266-spec-not-pseudo::before { content: "n"; color: rgb(43, 44, 45); }
+#r266-spec-not-pseudo:not(.ausente)::before { content: "n"; color: rgb(40, 41, 42); }
+</style>
+</head>
+<body>
+<h1 id="r266-ua-normal">UA normal</h1>
+<input type="hidden" id="r266-ua-important">
+<div id="r266-user-important">user important</div>
+<div id="r266-spec-is">is</div>
+<div id="r266-spec-where" class="r266-spec-where">where</div>
+<div id="r266-spec-not" class="r266-spec-not">not</div>
+<div id="r266-spec-has" class="r266-spec-has"><span class="r266-filho">filho</span></div>
+<div id="r266-spec-after">after</div>
+<div id="r266-spec-where-pseudo" class="r266-spec-where-pseudo">where pseudo</div>
+<div id="r266-spec-is-pseudo" class="r266-spec-is-pseudo">is pseudo</div>
+<div id="r266-spec-not-pseudo" class="r266-spec-not-pseudo">not pseudo</div>
+</body>
+</html>

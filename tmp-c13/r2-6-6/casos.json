@@ -1,0 +1,146 @@
+{
+  "id": "R2.6.6",
+  "fixture": "tmp-c13/r2-6-6/fixture.html",
+  "url": "http://127.0.0.1:8000/tmp-c13/r2-6-6/fixture.html",
+  "extension": "tmp-c13/r2-6-6/extension",
+  "criterios": ["computed", "resolved", "vencedor", "origem", "importante", "especificidade"],
+  "casos": [
+    {
+      "id": "R265-O3",
+      "origem": "user-agent",
+      "descricao": "author normal vence user-agent normal",
+      "alvo": "#r266-ua-normal",
+      "propriedade": "font-size",
+      "esperado": {
+        "computed": "14px",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r266-ua-normal", "declaredValue": "14px", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-O4",
+      "origem": "user-agent",
+      "descricao": "user-agent importante vence author importante",
+      "alvo": "#r266-ua-important",
+      "propriedade": "display",
+      "esperado": {
+        "computed": "none",
+        "vencedor": {"source": "stylesheet", "selectorText": "input[type=\"hidden\" i]", "declaredValue": "none", "important": true, "origin": "user-agent", "specificity": {"a": 0, "b": 1, "c": 1}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R265-U1",
+      "origem": "user",
+      "descricao": "user importante vence author importante",
+      "alvo": "#r266-user-important",
+      "propriedade": "color",
+      "injectUser": true,
+      "esperado": {
+        "computed": "rgb(200, 10, 20)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r266-user-important", "declaredValue": "rgb(200, 10, 20)", "important": true, "origin": "user-agent", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R266-S1",
+      "origem": "especificidade",
+      "descricao": ":is() com ID",
+      "alvo": "#r266-spec-is",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(4, 5, 6)",
+        "vencedor": {"source": "stylesheet", "selectorText": ":is(#r266-spec-is)", "declaredValue": "rgb(4, 5, 6)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R266-S2",
+      "origem": "especificidade",
+      "descricao": ":where() tem especificidade zero",
+      "alvo": "#r266-spec-where",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(7, 8, 9)",
+        "vencedor": {"source": "stylesheet", "selectorText": ".r266-spec-where", "declaredValue": "rgb(7, 8, 9)", "important": false, "origin": "author", "specificity": {"a": 0, "b": 1, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R266-S3",
+      "origem": "especificidade",
+      "descricao": ":not() adiciona especificidade do argumento",
+      "alvo": "#r266-spec-not",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(16, 17, 18)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r266-spec-not:not(.ausente)", "declaredValue": "rgb(16, 17, 18)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 1, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R266-S4",
+      "origem": "especificidade",
+      "descricao": ":has() adiciona especificidade do argumento",
+      "alvo": "#r266-spec-has",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(19, 20, 21)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r266-spec-has:has(.r266-filho)", "declaredValue": "rgb(19, 20, 21)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 1, "c": 0}, "pseudoElement": null},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R266-S5",
+      "origem": "especificidade",
+      "descricao": "::after com ID",
+      "alvo": "#r266-spec-after",
+      "propriedade": "color",
+      "pseudoElement": "::after",
+      "esperado": {
+        "computed": "rgb(25, 26, 27)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r266-spec-after::after", "declaredValue": "rgb(25, 26, 27)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": "::after"},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R266-S6",
+      "origem": "especificidade",
+      "descricao": ":where() com pseudoelemento nao contribui com ID",
+      "alvo": "#r266-spec-where-pseudo",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "esperado": {
+        "computed": "rgb(31, 32, 33)",
+        "vencedor": {"source": "stylesheet", "selectorText": ".r266-spec-where-pseudo::before", "declaredValue": "rgb(31, 32, 33)", "important": false, "origin": "author", "specificity": {"a": 0, "b": 1, "c": 0}, "pseudoElement": "::before"},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R266-S7",
+      "origem": "especificidade",
+      "descricao": ":is() com ID em pseudoelemento",
+      "alvo": "#r266-spec-is-pseudo",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "esperado": {
+        "computed": "rgb(34, 35, 36)",
+        "vencedor": {"source": "stylesheet", "selectorText": ":is(#r266-spec-is-pseudo)::before", "declaredValue": "rgb(34, 35, 36)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 0, "c": 0}, "pseudoElement": "::before"},
+        "resolveStatus": "computed"
+      }
+    },
+    {
+      "id": "R266-S8",
+      "origem": "especificidade",
+      "descricao": ":not() com ID em pseudoelemento",
+      "alvo": "#r266-spec-not-pseudo",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "esperado": {
+        "computed": "rgb(40, 41, 42)",
+        "vencedor": {"source": "stylesheet", "selectorText": "#r266-spec-not-pseudo:not(.ausente)::before", "declaredValue": "rgb(40, 41, 42)", "important": false, "origin": "author", "specificity": {"a": 1, "b": 1, "c": 0}, "pseudoElement": "::before"},
+        "resolveStatus": "computed"
+      }
+    }
+  ]
+}
