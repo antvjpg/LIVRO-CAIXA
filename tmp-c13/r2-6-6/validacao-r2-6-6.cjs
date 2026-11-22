@@ -18,6 +18,14 @@ function sha(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
 }
 
+function extensionIdFromPath(dir) {
+  const hash = crypto.createHash('sha256').update(dir).digest('hex').slice(0, 32);
+  return Array.from(hash, (digit) => String.fromCharCode(97 + parseInt(digit, 16))).join('');
+}
+
+const EXTENSION_DIR = path.join(DIR, 'extension');
+const EXTENSION_ID = extensionIdFromPath(EXTENSION_DIR);
+
 function canon(value) {
   if (value === null || value === undefined) return null;
   let s = String(value).trim().toLowerCase().replace(/\s*!important\s*$/i, '');
@@ -102,11 +110,7 @@ async function browserComputed(client, nodeId, selector, pseudo, property) {
   return res && res.result && res.result.value !== undefined ? res.result.value : null;
 }
 
-async function injectUser(client) {
-  const targets = await client.Target.getTargets();
-  const worker = targets.targetInfos.find((t) => t.type === 'service_worker' && /\/sw\.js$/.test(t.url));
-  if (!worker) throw new Error('service worker da extensao nao encontrado');
-  const extensionId = worker.url.split('/')[2];
+async function openInjectPage(client, extensionId) {
   const created = await client.Target.createTarget({ url: `chrome-extension://${extensionId}/inject.html` });
   const attached = await client.Target.attachToTarget({ targetId: created.targetId, flatten: true });
   const sessionId = attached.sessionId;
@@ -119,7 +123,23 @@ async function injectUser(client) {
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
   await client.Target.closeTarget({ targetId: created.targetId });
-  return { extensionId, title };
+  return title;
+}
+
+async function injectUser(client) {
+  let extensionId = EXTENSION_ID;
+  let metodo = 'hash-do-caminho';
+  let title = await openInjectPage(client, extensionId);
+  if (title !== 'r266-inject:ok') {
+    const targets = await client.Target.getTargets();
+    const worker = (targets.targetInfos || []).find((t) => t.type === 'service_worker' && /\/sw\.js$/.test(t.url));
+    if (worker) {
+      extensionId = worker.url.split('/')[2];
+      metodo = 'service-worker';
+      title = await openInjectPage(client, extensionId);
+    }
+  }
+  return { extensionId, metodo, title };
 }
 
 async function regrasCandidatas(client, nodeId, property, pseudo, DOM, CSS) {
@@ -153,6 +173,7 @@ async function regrasCandidatas(client, nodeId, property, pseudo, DOM, CSS) {
 async function run() {
   const coreHash = sha(fs.readFileSync(CORE_PATH));
   const client = await CDP({ port: 9222 });
+  if (typeof client.setMaxListeners === 'function') client.setMaxListeners(50);
   const { Page, DOM, CSS, Runtime } = client;
   await Promise.all([Page.enable(), DOM.enable(), CSS.enable(), Runtime.enable()]);
   const browser = await client.send('Browser.getVersion');

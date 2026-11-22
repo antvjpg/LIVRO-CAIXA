@@ -176,8 +176,8 @@ Chamadas atualizadas para `ruleSpecificity(rule, match, pseudoElement)` e `ruleS
 ### Validador e runner
 
 - `tmp-c13/r2-6-6/validacao-r2-6-6.cjs`:
-  - descobre o service worker da extensão;
-  - cria a página `inject.html`, aguarda `r266-inject:ok` e registra o ID da extensão;
+  - deriva o ID da extensão do caminho absoluto (mesmo algoritmo do Chromium para extensões unpacked), com fallback para descoberta do service worker;
+  - cria a página `inject.html`, aguarda `r266-inject:ok` e registra o ID e o método;
   - consulta o navegador via CDP e `getComputedStyle`;
   - compara `computedValue`, `resolvedValue`, `resolveStatus`, vencedor, origem, `!important` e especificidade;
   - registra `origem`, `seletor`, `valor`, `importante` e `especificidade` das regras candidatas;
@@ -226,14 +226,14 @@ Chamadas atualizadas para `ruleSpecificity(rule, match, pseudoElement)` e `ruleS
 | Regressão R2.5.7 | PASS | `392 PASS / 0 FAIL / 1 BLOCKED (V32)`, 0 divergências |
 | Runner C.4 completo local | PASS | `verdict: PASS`, `problems: []`, 35.965 ms |
 | Segurança C.O.D.E. | PASS (histórico) | `94/94` na R2.6.5; código da aplicação não foi alterado nesta tarefa |
-| CI GitHub Actions da R2.6.6 | NOT RUN | Exige commit/push autorizados |
+| CI GitHub Actions da R2.6.6 | PARCIAL | Primeira execução falhou por descoberta do service worker; correção enviada neste commit |
 
 Hashes:
 
 - baseline R2.6.6: `5f6626a64cabc55d40ab35eeaa04a396dc0c8536c7599adeaaf51f54cf3e71db`.
-- correção R2.6.6 avulsa: `190fb6054652a3438c729f8411fc561f081795a35e48f9bb49f4bf2093b00f67`.
-- artefato final do runner `e2e/.artifacts/r2-6-6-matriz.json`: `993e866ccc22ec90d5d2ada97e8f08473c635006f785115f0211b9f8d29bf94a`.
-- resumo final `e2e/.artifacts/r2-6-ci-summary.json`: `2504c7c204d5a4ea937465e6f4a14b93f5bd8347367f88653e5bd52da3c167e8`.
+- correção R2.6.6 avulsa: `5593e9b5a9e05a9042fb794454e2462fd2512eede3f5d88baa552c269f638bf6`.
+- artefato final do runner `e2e/.artifacts/r2-6-6-matriz.json`: `bdb7828ffac6e507e70a97e14ac8b0d7bd2492bde5c0673a25f78f9ee604c5e4`.
+- resumo final `e2e/.artifacts/r2-6-ci-summary.json`: `d0e418a512efee985a110a03040f930e3750073ca2d8d69fcba260987f0f162b`.
 
 Os hashes diferem entre execuções porque o JSON inclui timestamp; a verificação interna `hashMatches` foi `true` em todos os artefatos.
 
@@ -248,12 +248,18 @@ Os hashes diferem entre execuções porque o JSON inclui timestamp; a verificaç
 
 ## Limitações e riscos
 
-- CI Linux/GitHub Actions da R2.6.6 não foi executado localmente; a validação foi feita apenas no Chromium headless do Termux.
-- O suporte a extensões em `--headless=new` depende da versão do Chromium instalada no CI; o runner falha explicitamente se a extensão não existir ou se o service worker/injeção não responder.
 - O CDP rotula CSS injetado por `origin: 'USER'` como `user-agent`; a distinção é preservada pelo registro da chamada da API e pelo efeito computado.
 - `V32` permanece `BLOCKED` e não foi reclassificado.
 - A R2.6.5 continua com três `BLOCKED` em seu próprio validador por preservação histórica; a R2.6.6 resolve esses cenários em novo validador/núcleo.
-- O aviso `MaxListenersExceededWarning` aparece no log do validador devido a múltiplos `loadEventFired`; não afeta resultados nem artefatos.
+- O veredito final do CI deve ser lido nas execuções do workflow `c4-r26.yml` após este commit; a primeira execução registrou a limitação descrita abaixo.
+
+### Incidente CI e correção enviada
+
+- Primeira execução GitHub Actions do commit `2882d72`: C.4 [run 44975227575](https://github.com/antvjpg/LIVRO-CAIXA/actions/runs/44975227575) falhou. C.O.D.E. [run 44975227528](https://github.com/antvjpg/LIVRO-CAIXA/actions/runs/44975227528) passou.
+- Causa: no Chromium `157.0.8103.78` do CI, o service worker da extensão não apareceu em `Target.getTargets()`, deixando `R265-U1` como `BLOCKED` (`service worker da extensao nao encontrado`).
+- Correção: o validador passou a derivar o ID da extensão unpacked do caminho absoluto (SHA-256, primeiros 16 bytes mapeados para `a`–`p`), verificando localmente que o algoritmo reproduz o ID observado. A descoberta do service worker permanece apenas como fallback.
+- Também foi adicionado `client.setMaxListeners(50)`, eliminando o aviso `MaxListenersExceededWarning`.
+- Reexecução local após a correção: `11 PASS / 0 FAIL / 0 BLOCKED`, sem avisos; runner C.4 local `PASS`.
 
 ## Resultado da implementação
 
@@ -266,7 +272,7 @@ R2.6.6 concluída localmente:
 
 ## Pendências e próximos passos
 
-1. Commit/push somente após autorização explícita do usuário.
-2. Executar o CI GitHub Actions `c4-r26.yml` após o push e conferir o artefato `c4-r2-6-evidencias` com `r2-6-6-matriz.json`.
-3. Atualizar o plano no Notion com o resultado da R2.6.6.
+1. Commit/push autorizados pelo usuário: `2882d72` publicado; correção do ID da extensão enviada neste commit.
+2. Confirmar a reexecução do CI GitHub Actions `c4-r26.yml` e o artefato `c4-r2-6-evidencias` com `r2-6-6-matriz.json`.
+3. Atualizar o plano no Notion com o veredito final do CI.
 4. Auditoria independente do novo núcleo e da extensão antes de usar a R2.6.6 como substituta oficial da R2.6.5.

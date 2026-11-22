@@ -1,7 +1,7 @@
 {
   "meta": {
     "id": "R2.6.6",
-    "data": "2026-11-22T01:57:44.649Z",
+    "data": "2026-11-22T02:27:23.640Z",
     "fixture": "tmp-c13/r2-6-6/fixture.html",
     "url": "http://127.0.0.1:8000/tmp-c13/r2-6-6/fixture.html",
     "extensao": "tmp-c13/r2-6-6/extension",
@@ -18,7 +18,7 @@
       "importante",
       "especificidade"
     ],
-    "hash": "190fb6054652a3438c729f8411fc561f081795a35e48f9bb49f4bf2093b00f67"
+    "hash": "5593e9b5a9e05a9042fb794454e2462fd2512eede3f5d88baa552c269f638bf6"
   },
   "casos": [
     {
@@ -183,6 +183,7 @@
       "pseudoElement": null,
       "injecao": {
         "extensionId": "gbjdkjllfkepoekbcolmbkjfpdghhacc",
+        "metodo": "hash-do-caminho",
         "title": "r266-inject:ok"
       },
       "regrasNavegador": [
@@ -910,7 +911,7 @@
   },
   "verification": {
     "hashMatches": true,
-    "declared": "190fb6054652a3438c729f8411fc561f081795a35e48f9bb49f4bf2093b00f67",
-    "recalculated": "190fb6054652a3438c729f8411fc561f081795a35e48f9bb49f4bf2093b00f67"
+    "declared": "5593e9b5a9e05a9042fb794454e2462fd2512eede3f5d88baa552c269f638bf6",
+    "recalculated": "5593e9b5a9e05a9042fb794454e2462fd2512eede3f5d88baa552c269f638bf6"
   }
 }
