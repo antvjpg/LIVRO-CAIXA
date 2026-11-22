@@ -20,6 +20,9 @@ const COMPARADOR_A01_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a01-comparador.json')
 const VALIDATOR_A01B = path.join(ROOT, 'tmp-c13/r2-6-6-a01b/validacao-a01b.cjs');
 const COMPARADOR_A01B = path.join(ROOT, 'tmp-c13/r2-6-6-a01b/teste-comparador-a01b.cjs');
 const COMPARADOR_A01B_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a01b-comparador.json');
+const VALIDATOR_A02 = path.join(ROOT, 'tmp-c13/r2-6-6-a02/validacao-a02.cjs');
+const BILATERAL_A02 = path.join(ROOT, 'tmp-c13/r2-6-6-a02/teste-bilateral-a02.cjs');
+const BILATERAL_A02_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a02-bilateral.json');
 const EXTENSION_266 = path.join(ROOT, 'tmp-c13/r2-6-6/extension');
 const REGRESSION = path.join(ROOT, 'tmp-c13/r2-6-4/regressao/test-r2-6.cjs');
 const BASELINE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
@@ -28,6 +31,7 @@ const MATRIZ_265_OUT = path.join(ARTIFACTS, 'r2-6-5-matriz.json');
 const MATRIZ_266_OUT = path.join(ARTIFACTS, 'r2-6-6-matriz.json');
 const MATRIZ_A01_OUT = path.join(ARTIFACTS, 'r2-6-a01-matriz.json');
 const MATRIZ_A01B_OUT = path.join(ARTIFACTS, 'r2-6-a01b-matriz.json');
+const MATRIZ_A02_OUT = path.join(ARTIFACTS, 'r2-6-a02-matriz.json');
 const REG_LOG = path.join(ARTIFACTS, 'r2-6-regressao.log');
 const HTTP_LOG = path.join(ARTIFACTS, 'r2-6-http.log');
 const CHROME_LOG = path.join(ARTIFACTS, 'r2-6-chromium.log');
@@ -123,6 +127,7 @@ function appendStepSummary(summary) {
     `| R2.6.6 | ${summary.r26_6.PASS} PASS / ${summary.r26_6.FAIL} FAIL / ${summary.r26_6.BLOCKED} BLOCKED |`,
     `| A-01 | ${summary.a01.PASS} PASS / ${summary.a01.FAIL} FAIL / ${summary.a01.BLOCKED} BLOCKED |`,
     `| A-01B | ${summary.a01b.PASS} PASS / ${summary.a01b.FAIL} FAIL / ${summary.a01b.BLOCKED} BLOCKED |`,
+    `| A-02 | ${summary.a02.PASS} PASS / ${summary.a02.FAIL} FAIL / ${summary.a02.BLOCKED} BLOCKED |`,
     `| Regressao | ${summary.regression.PASS} PASS / ${summary.regression.FAIL} FAIL / ${summary.regression.BLOCKED} BLOCKED |`,
     `| Divergencias | ${summary.regression.divergences} |`,
     `| Duracao | ${summary.durationMs}ms |`,
@@ -150,6 +155,8 @@ async function main() {
   let comparadorA01 = null;
   let a01b = null;
   let comparadorA01b = null;
+  let a02 = null;
+  let bilateralA02 = null;
   let regressionRows = [];
   let baselineRows = [];
 
@@ -346,6 +353,51 @@ async function main() {
       problems.push('A-01B associacao da regra USER nao foi unica');
     }
 
+    const bilateralRun = spawnSync(process.execPath, [BILATERAL_A02, `--out=${BILATERAL_A02_ARTIFACT}`], { cwd: ROOT, stdio: 'inherit' });
+    if (bilateralRun.status !== 0) problems.push(`teste bilateral A-02 exit=${bilateralRun.status}`);
+    if (!fs.existsSync(BILATERAL_A02_ARTIFACT)) {
+      problems.push('teste bilateral A-02 sem artifact');
+    } else {
+      bilateralA02 = JSON.parse(fs.readFileSync(BILATERAL_A02_ARTIFACT, 'utf8'));
+      const bilateralResumo = bilateralA02.resumo || {};
+      if (bilateralResumo.total !== 15) problems.push(`A-02 bilateral total=${bilateralResumo.total}, esperado 15`);
+      if (bilateralResumo.PASS !== 15) problems.push(`A-02 bilateral PASS=${bilateralResumo.PASS}, esperado 15`);
+      if (bilateralResumo.FAIL !== 0) problems.push(`A-02 bilateral FAIL=${bilateralResumo.FAIL}, esperado 0`);
+      if (bilateralResumo.positivosPASS !== 3) problems.push(`A-02 positivosPASS=${bilateralResumo.positivosPASS}, esperado 3`);
+      if (bilateralResumo.negativosPASS !== 12) problems.push(`A-02 negativosPASS=${bilateralResumo.negativosPASS}, esperado 12`);
+      if (!bilateralA02.verification || bilateralA02.verification.hashMatches !== true) problems.push('hash do teste bilateral A-02 nao confere');
+    }
+
+    const a02Run = spawnSync(
+      process.execPath,
+      [VALIDATOR_A02, `--core=${CORE_A01B}`, `--out=${MATRIZ_A02_OUT}`],
+      { cwd: ROOT, stdio: 'inherit' }
+    );
+    if (a02Run.status !== 0) problems.push(`validador A-02 exit=${a02Run.status}`);
+    a02 = JSON.parse(fs.readFileSync(MATRIZ_A02_OUT, 'utf8'));
+    const a02Resumo = a02.resumo || {};
+    if (a02Resumo.total !== 11) problems.push(`A-02 total=${a02Resumo.total}, esperado 11`);
+    if (a02Resumo.PASS !== 11) problems.push(`A-02 PASS=${a02Resumo.PASS}, esperado 11`);
+    if (a02Resumo.FAIL !== 0) problems.push(`A-02 FAIL=${a02Resumo.FAIL}, esperado 0`);
+    if (a02Resumo.BLOCKED !== 0) problems.push(`A-02 BLOCKED=${a02Resumo.BLOCKED}, esperado 0`);
+    if (a02Resumo.NOT_RUN !== 0) problems.push(`A-02 NOT_RUN=${a02Resumo.NOT_RUN}, esperado 0`);
+    if (a02Resumo.bilateralPASS !== 3) problems.push(`A-02 bilateralPASS=${a02Resumo.bilateralPASS}, esperado 3`);
+    if (a02Resumo.bilateralFAIL !== 0) problems.push(`A-02 bilateralFAIL=${a02Resumo.bilateralFAIL}, esperado 0`);
+    if (a02Resumo.disputasEsperadas !== 3) problems.push(`A-02 disputasEsperadas=${a02Resumo.disputasEsperadas}, esperado 3`);
+    if (a02Resumo.provenienciaPASS !== 1) problems.push(`A-02 provenienciaPASS=${a02Resumo.provenienciaPASS}, esperado 1`);
+    if (a02Resumo.provenienciaAmbigua !== 0) problems.push(`A-02 provenienciaAmbigua=${a02Resumo.provenienciaAmbigua}, esperado 0`);
+    if (a02Resumo.userBranchExercised !== true) problems.push('A-02 ramo user nao exercitado');
+    if (!a02.verification || a02.verification.hashMatches !== true) problems.push('hash A-02 nao confere');
+    const a02Erros = a02.erros || {};
+    for (const key of ['cdp', 'console', 'excecoes']) {
+      const itens = a02Erros[key] || [];
+      if (itens.length) problems.push(`A-02 erros.${key}=${itens.length}`);
+    }
+    const disputasA02 = (a02.casos || []).filter((c) => ['R265-O3', 'R265-O4', 'R265-U1'].includes(c.id));
+    if (disputasA02.length !== 3 || disputasA02.some((c) => !c.disputa || c.disputa.status !== 'PASS' || (c.disputa.concorrentes || []).length !== 2)) {
+      problems.push('A-02 disputas bilaterais incompletas');
+    }
+
     const regressionRun = spawnSync(process.execPath, [REGRESSION], {
       cwd: ROOT,
       encoding: 'utf8',
@@ -430,6 +482,17 @@ async function main() {
       userBranchExercised: Boolean(a01b && a01b.resumo && a01b.resumo.userBranchExercised),
       comparadorPASS: comparadorA01b && comparadorA01b.resumo ? comparadorA01b.resumo.PASS || 0 : 0,
     },
+    a02: {
+      PASS: (a02 && a02.resumo && a02.resumo.PASS) || 0,
+      FAIL: (a02 && a02.resumo && a02.resumo.FAIL) || 0,
+      BLOCKED: (a02 && a02.resumo && a02.resumo.BLOCKED) || 0,
+      NOT_RUN: (a02 && a02.resumo && a02.resumo.NOT_RUN) || 0,
+      bilateralPASS: (a02 && a02.resumo && a02.resumo.bilateralPASS) || 0,
+      bilateralFAIL: (a02 && a02.resumo && a02.resumo.bilateralFAIL) || 0,
+      disputasEsperadas: (a02 && a02.resumo && a02.resumo.disputasEsperadas) || 0,
+      testeBilateralPASS: bilateralA02 && bilateralA02.resumo ? bilateralA02.resumo.PASS || 0 : 0,
+      negativosPASS: bilateralA02 && bilateralA02.resumo ? bilateralA02.resumo.negativosPASS || 0 : 0,
+    },
     regression: {
       records: regressionRows.length,
       baseline: baselineRows.length,
@@ -443,7 +506,7 @@ async function main() {
   };
   fs.writeFileSync(SUMMARY_OUT, `${JSON.stringify(summary, null, 2)}\n`);
   appendStepSummary(summary);
-  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | A-01B ${summary.a01b.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
+  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | A-01B ${summary.a01b.PASS}/11 | A-02 ${summary.a02.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
   if (problems.length) {
     for (const problem of problems) console.error(`- ${problem}`);
     process.exitCode = 1;

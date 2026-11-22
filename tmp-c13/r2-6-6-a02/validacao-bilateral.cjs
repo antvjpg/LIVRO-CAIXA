@@ -1,0 +1,92 @@
+'use strict';
+
+function canon(value) {
+  if (value === null || value === undefined) return null;
+  let text = String(value).trim().toLowerCase().replace(/\s*!important\s*$/i, '');
+  const hex = text.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/);
+  if (hex) {
+    let h = hex[1];
+    if (h.length === 3) h = h.split('').map((x) => x + x).join('');
+    return `rgb(${parseInt(h.slice(0, 2), 16)}, ${parseInt(h.slice(2, 4), 16)}, ${parseInt(h.slice(4, 6), 16)})`;
+  }
+  const rgb = text.match(/^rgba?\(([^)]+)\)$/);
+  if (rgb) {
+    const nums = rgb[1].split(/[,\s/]+/).filter(Boolean).map(Number);
+    if (nums.length >= 3) return `rgb(${Math.round(nums[0])}, ${Math.round(nums[1])}, ${Math.round(nums[2])})`;
+  }
+  return text.replace(/\s+/g, ' ');
+}
+
+function sameValue(a, b) {
+  return canon(a) === canon(b);
+}
+
+function normalizeCandidate(candidate) {
+  return {
+    source: candidate && candidate.source || null,
+    selectorText: candidate && candidate.selectorText || null,
+    declaredValue: canon(candidate && (candidate.declaredValue !== undefined ? candidate.declaredValue : candidate.value)),
+    important: Boolean(candidate && candidate.important),
+    origin: candidate && candidate.origin || null,
+    cdpOrigin: candidate && candidate.cdpOrigin || null,
+    provenance: candidate && candidate.provenance || null,
+    styleSheetId: candidate && candidate.styleSheetId || null,
+    order: Number(candidate && candidate.order) || 0,
+  };
+}
+
+function matchesExpected(candidate, expected) {
+  if (expected.origin && candidate.origin !== expected.origin) return false;
+  if (expected.declaredValue !== undefined && !sameValue(candidate.declaredValue, expected.declaredValue)) return false;
+  if (typeof expected.important === 'boolean' && candidate.important !== expected.important) return false;
+  if (expected.selectorText && candidate.selectorText !== expected.selectorText) return false;
+  if (expected.cdpOrigin && candidate.cdpOrigin !== expected.cdpOrigin) return false;
+  if (expected.provenance !== undefined && candidate.provenance !== expected.provenance) return false;
+  if (expected.source && candidate.source !== expected.source) return false;
+  if (expected.styleSheetId && candidate.styleSheetId !== expected.styleSheetId) return false;
+  return true;
+}
+
+function isContradiction(candidate, expected, exact, allExpected) {
+  if (candidate === exact) return false;
+  if ((allExpected || []).some((item) => matchesExpected(candidate, item))) return false;
+  if (expected.selectorText && candidate.selectorText !== expected.selectorText) return false;
+  if (typeof expected.important === 'boolean' && candidate.important !== expected.important) return false;
+  return candidate.origin !== expected.origin || !sameValue(candidate.declaredValue, expected.declaredValue);
+}
+
+function validateDisputa(disputa, candidatos) {
+  const normalized = (candidatos || []).map(normalizeCandidate);
+  const divergencias = [];
+  const concorrentes = [];
+  const esperados = disputa && Array.isArray(disputa.concorrentes) ? disputa.concorrentes : [];
+  if (esperados.length !== 2) divergencias.push(`numero de concorrentes=${esperados.length}, esperado 2`);
+  for (const esperado of esperados) {
+    const matches = normalized.filter((candidate) => matchesExpected(candidate, esperado));
+    if (matches.length === 0) {
+      divergencias.push(`${esperado.id}: concorrente ausente`);
+      concorrentes.push({ id: esperado.id, status: 'FAIL', esperado, observado: null });
+      continue;
+    }
+    if (matches.length > 1) {
+      divergencias.push(`${esperado.id}: evidencia duplicada (${matches.length})`);
+      concorrentes.push({ id: esperado.id, status: 'FAIL', esperado, observado: matches[0], duplicados: matches.length });
+      continue;
+    }
+    const contradictory = normalized.filter((candidate) => isContradiction(candidate, esperado, matches[0], esperados));
+    if (contradictory.length) {
+      divergencias.push(`${esperado.id}: evidencia contraditoria (${contradictory.length})`);
+      concorrentes.push({ id: esperado.id, status: 'FAIL', esperado, observado: matches[0], contradictory });
+      continue;
+    }
+    concorrentes.push({ id: esperado.id, status: 'PASS', esperado, observado: matches[0] });
+  }
+  return {
+    status: divergencias.length ? 'FAIL' : 'PASS',
+    divergencias,
+    concorrentes,
+    candidatos: normalized,
+  };
+}
+
+module.exports = { canon, sameValue, normalizeCandidate, validateDisputa };
