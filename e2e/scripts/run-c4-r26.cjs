@@ -10,13 +10,16 @@ const ARTIFACTS = path.join(ROOT, 'e2e/.artifacts');
 const CORE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6/c4-v05-b-r2-6-core.cjs');
 const CORE_266 = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6-6/c4-v05-b-r2-6-6-core.cjs');
 const CORE_A01 = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6-6-a01/c4-v05-b-r2-6-6-a01-core.cjs');
+const CORE_A01B = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6-6-a01b/c4-v05-b-r2-6-6-a01b-core.cjs');
 const VALIDATOR = path.join(ROOT, 'tmp-c13/r2-6-2/validacao-r2-6-3.cjs');
 const VALIDATOR_265 = path.join(ROOT, 'tmp-c13/r2-6-5/validacao-r2-6-5.cjs');
 const VALIDATOR_266 = path.join(ROOT, 'tmp-c13/r2-6-6/validacao-r2-6-6.cjs');
 const VALIDATOR_A01 = path.join(ROOT, 'tmp-c13/r2-6-6-a01/validacao-a01.cjs');
 const COMPARADOR_A01 = path.join(ROOT, 'tmp-c13/r2-6-6-a01/teste-comparador-a01.cjs');
-const COMPARADOR_A01_OUT = path.join(ROOT, 'tmp-c13/r2-6-6-a01/resultados/teste-comparador-a01.json');
 const COMPARADOR_A01_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a01-comparador.json');
+const VALIDATOR_A01B = path.join(ROOT, 'tmp-c13/r2-6-6-a01b/validacao-a01b.cjs');
+const COMPARADOR_A01B = path.join(ROOT, 'tmp-c13/r2-6-6-a01b/teste-comparador-a01b.cjs');
+const COMPARADOR_A01B_ARTIFACT = path.join(ARTIFACTS, 'r2-6-a01b-comparador.json');
 const EXTENSION_266 = path.join(ROOT, 'tmp-c13/r2-6-6/extension');
 const REGRESSION = path.join(ROOT, 'tmp-c13/r2-6-4/regressao/test-r2-6.cjs');
 const BASELINE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
@@ -24,6 +27,7 @@ const MATRIZ_OUT = path.join(ARTIFACTS, 'r2-6-matriz.json');
 const MATRIZ_265_OUT = path.join(ARTIFACTS, 'r2-6-5-matriz.json');
 const MATRIZ_266_OUT = path.join(ARTIFACTS, 'r2-6-6-matriz.json');
 const MATRIZ_A01_OUT = path.join(ARTIFACTS, 'r2-6-a01-matriz.json');
+const MATRIZ_A01B_OUT = path.join(ARTIFACTS, 'r2-6-a01b-matriz.json');
 const REG_LOG = path.join(ARTIFACTS, 'r2-6-regressao.log');
 const HTTP_LOG = path.join(ARTIFACTS, 'r2-6-http.log');
 const CHROME_LOG = path.join(ARTIFACTS, 'r2-6-chromium.log');
@@ -118,6 +122,7 @@ function appendStepSummary(summary) {
     `| R2.6.5 | ${summary.r26_5.PASS} PASS / ${summary.r26_5.FAIL} FAIL / ${summary.r26_5.BLOCKED} BLOCKED |`,
     `| R2.6.6 | ${summary.r26_6.PASS} PASS / ${summary.r26_6.FAIL} FAIL / ${summary.r26_6.BLOCKED} BLOCKED |`,
     `| A-01 | ${summary.a01.PASS} PASS / ${summary.a01.FAIL} FAIL / ${summary.a01.BLOCKED} BLOCKED |`,
+    `| A-01B | ${summary.a01b.PASS} PASS / ${summary.a01b.FAIL} FAIL / ${summary.a01b.BLOCKED} BLOCKED |`,
     `| Regressao | ${summary.regression.PASS} PASS / ${summary.regression.FAIL} FAIL / ${summary.regression.BLOCKED} BLOCKED |`,
     `| Divergencias | ${summary.regression.divergences} |`,
     `| Duracao | ${summary.durationMs}ms |`,
@@ -143,6 +148,8 @@ async function main() {
   let r266 = null;
   let a01 = null;
   let comparadorA01 = null;
+  let a01b = null;
+  let comparadorA01b = null;
   let regressionRows = [];
   let baselineRows = [];
 
@@ -254,12 +261,11 @@ async function main() {
       problems.push('R2.6.6 injecao USER nao confirmada');
     }
 
-    const comparadorRun = spawnSync(process.execPath, [COMPARADOR_A01], { cwd: ROOT, stdio: 'inherit' });
+    const comparadorRun = spawnSync(process.execPath, [COMPARADOR_A01, `--out=${COMPARADOR_A01_ARTIFACT}`], { cwd: ROOT, stdio: 'inherit' });
     if (comparadorRun.status !== 0) problems.push(`comparador A-01 exit=${comparadorRun.status}`);
-    if (!fs.existsSync(COMPARADOR_A01_OUT)) {
+    if (!fs.existsSync(COMPARADOR_A01_ARTIFACT)) {
       problems.push('comparador A-01 sem artifact');
     } else {
-      fs.copyFileSync(COMPARADOR_A01_OUT, COMPARADOR_A01_ARTIFACT);
       comparadorA01 = JSON.parse(fs.readFileSync(COMPARADOR_A01_ARTIFACT, 'utf8'));
       const comparadorResumo = comparadorA01.resumo || {};
       if (comparadorResumo.total !== 4) problems.push(`comparador A-01 total=${comparadorResumo.total}, esperado 4`);
@@ -295,6 +301,49 @@ async function main() {
     const vencedorU1 = u1A01 && u1A01.nucleo ? u1A01.nucleo.vencedor : null;
     if (!u1A01 || !u1A01.proveniencia || !vencedorU1 || vencedorU1.origin !== 'user' || vencedorU1.cdpOrigin !== 'user-agent' || vencedorU1.provenance !== 'user') {
       problems.push('A-01 proveniencia USER nao chegou ao vencedor');
+    }
+
+    const comparadorBRun = spawnSync(process.execPath, [COMPARADOR_A01B, `--out=${COMPARADOR_A01B_ARTIFACT}`], { cwd: ROOT, stdio: 'inherit' });
+    if (comparadorBRun.status !== 0) problems.push(`comparador A-01B exit=${comparadorBRun.status}`);
+    if (!fs.existsSync(COMPARADOR_A01B_ARTIFACT)) {
+      problems.push('comparador A-01B sem artifact');
+    } else {
+      comparadorA01b = JSON.parse(fs.readFileSync(COMPARADOR_A01B_ARTIFACT, 'utf8'));
+      const comparadorBResumo = comparadorA01b.resumo || {};
+      if (comparadorBResumo.total !== 5) problems.push(`comparador A-01B total=${comparadorBResumo.total}, esperado 5`);
+      if (comparadorBResumo.PASS !== 5) problems.push(`comparador A-01B PASS=${comparadorBResumo.PASS}, esperado 5`);
+      if (comparadorBResumo.FAIL !== 0) problems.push(`comparador A-01B FAIL=${comparadorBResumo.FAIL}, esperado 0`);
+      const testeAmbiguo = (comparadorA01b.testes || []).find((t) => String(t.nome || '').indexOf('A4') === 0);
+      if (!testeAmbiguo || testeAmbiguo.status !== 'PASS') problems.push('comparador A-01B nao comprovou regra ambigua');
+      if (!comparadorA01b.verification || comparadorA01b.verification.hashMatches !== true) problems.push('hash do comparador A-01B nao confere');
+    }
+
+    const a01bRun = spawnSync(
+      process.execPath,
+      [VALIDATOR_A01B, `--core=${CORE_A01B}`, `--out=${MATRIZ_A01B_OUT}`],
+      { cwd: ROOT, stdio: 'inherit' }
+    );
+    if (a01bRun.status !== 0) problems.push(`validador A-01B exit=${a01bRun.status}`);
+    a01b = JSON.parse(fs.readFileSync(MATRIZ_A01B_OUT, 'utf8'));
+    const a01bResumo = a01b.resumo || {};
+    if (a01bResumo.total !== 11) problems.push(`A-01B total=${a01bResumo.total}, esperado 11`);
+    if (a01bResumo.PASS !== 11) problems.push(`A-01B PASS=${a01bResumo.PASS}, esperado 11`);
+    if (a01bResumo.FAIL !== 0) problems.push(`A-01B FAIL=${a01bResumo.FAIL}, esperado 0`);
+    if (a01bResumo.BLOCKED !== 0) problems.push(`A-01B BLOCKED=${a01bResumo.BLOCKED}, esperado 0`);
+    if (a01bResumo.NOT_RUN !== 0) problems.push(`A-01B NOT_RUN=${a01bResumo.NOT_RUN}, esperado 0`);
+    if (a01bResumo.provenienciaPASS !== 1) problems.push(`A-01B provenienciaPASS=${a01bResumo.provenienciaPASS}, esperado 1`);
+    if (a01bResumo.provenienciaAmbigua !== 0) problems.push(`A-01B provenienciaAmbigua=${a01bResumo.provenienciaAmbigua}, esperado 0`);
+    if (a01bResumo.userBranchExercised !== true) problems.push('A-01B ramo user nao exercitado');
+    if (!a01b.verification || a01b.verification.hashMatches !== true) problems.push('hash A-01B nao confere');
+    const a01bErros = a01b.erros || {};
+    for (const key of ['cdp', 'console', 'excecoes']) {
+      const itens = a01bErros[key] || [];
+      if (itens.length) problems.push(`A-01B erros.${key}=${itens.length}`);
+    }
+    const u1A01b = (a01b.casos || []).find((c) => c.id === 'R265-U1');
+    const resolucaoU1 = u1A01b && u1A01b.nucleo ? (u1A01b.nucleo.provenanceResolution || [])[0] : null;
+    if (!resolucaoU1 || resolucaoU1.status !== 'unica' || resolucaoU1.matchCount !== 1) {
+      problems.push('A-01B associacao da regra USER nao foi unica');
     }
 
     const regressionRun = spawnSync(process.execPath, [REGRESSION], {
@@ -343,6 +392,7 @@ async function main() {
     core: CORE,
     core266: CORE_266,
     coreA01: CORE_A01,
+    coreA01b: CORE_A01B,
     matrix: {
       PASS: (matrix && matrix.resumo && matrix.resumo.PASS) || 0,
       FAIL: (matrix && matrix.resumo && matrix.resumo.FAIL) || 0,
@@ -370,6 +420,16 @@ async function main() {
       userBranchExercised: Boolean(a01 && a01.resumo && a01.resumo.userBranchExercised),
       comparadorPASS: comparadorA01 && comparadorA01.resumo ? comparadorA01.resumo.PASS || 0 : 0,
     },
+    a01b: {
+      PASS: (a01b && a01b.resumo && a01b.resumo.PASS) || 0,
+      FAIL: (a01b && a01b.resumo && a01b.resumo.FAIL) || 0,
+      BLOCKED: (a01b && a01b.resumo && a01b.resumo.BLOCKED) || 0,
+      NOT_RUN: (a01b && a01b.resumo && a01b.resumo.NOT_RUN) || 0,
+      provenienciaPASS: (a01b && a01b.resumo && a01b.resumo.provenienciaPASS) || 0,
+      provenienciaAmbigua: (a01b && a01b.resumo && a01b.resumo.provenienciaAmbigua) || 0,
+      userBranchExercised: Boolean(a01b && a01b.resumo && a01b.resumo.userBranchExercised),
+      comparadorPASS: comparadorA01b && comparadorA01b.resumo ? comparadorA01b.resumo.PASS || 0 : 0,
+    },
     regression: {
       records: regressionRows.length,
       baseline: baselineRows.length,
@@ -383,7 +443,7 @@ async function main() {
   };
   fs.writeFileSync(SUMMARY_OUT, `${JSON.stringify(summary, null, 2)}\n`);
   appendStepSummary(summary);
-  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
+  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | A-01B ${summary.a01b.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
   if (problems.length) {
     for (const problem of problems) console.error(`- ${problem}`);
     process.exitCode = 1;

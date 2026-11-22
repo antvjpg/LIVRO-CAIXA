@@ -5,7 +5,8 @@ const path = require('path');
 const crypto = require('crypto');
 const { createCDPAuditCore } = require(path.resolve(__dirname, '../../docs/auditorias/c4-v05-b/evidencias-r2-6-6-a01/c4-v05-b-r2-6-6-a01-core.cjs'));
 
-const OUT = path.join(__dirname, 'resultados/teste-comparador-a01.json');
+const outArg = process.argv.find((a) => a.startsWith('--out='));
+const OUT = outArg ? path.resolve(outArg.slice('--out='.length)) : path.join(__dirname, 'resultados/teste-comparador-a01.json');
 
 function sha(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
