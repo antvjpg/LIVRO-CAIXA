@@ -98,8 +98,8 @@ async function waitForDataReady(page, timeout = 60_000) {
   await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
 }
 
-async function openTab(page, tab /* 'dashboard' | 'caixa' | ... | 'profile' */) {
-  const known = ['dashboard', 'caixa', 'pockets', 'cards', 'invest', 'goals', 'dash', 'receivables', 'profile'];
+async function openTab(page, tab /* 'inicio' | 'dashboard' | 'caixa' | ... | 'profile' */) {
+  const known = ['inicio', 'dashboard', 'caixa', 'pockets', 'cards', 'invest', 'goals', 'dash', 'receivables', 'profile'];
   if (!known.includes(tab)) throw new Error(`Aba desconhecida: ${tab}`);
   /* A navegação por abas do topo foi removida (menu lateral + bottom-nav são
      as únicas rotas). switchTab é a rota pública usada por ambos e também
