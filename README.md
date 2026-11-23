@@ -51,7 +51,7 @@ O Livro-Caixa é uma aplicação financeira pessoal em forma de SPA/PWA, constru
 | Persistência | Cloud Firestore (sincronização + cache offline) |
 | Gateway financeiro | Cloudflare Worker [`livro-caixa-ai`](worker/) — endpoint `/financial` (BCB SGS + Tesouro Nacional, rate limit próprio) |
 | Push | FCM via Worker (`worker/src/push/`) |
-| PWA | Service Worker (`sw.js`, `CACHE_NAME=livro-caixa-shell-v20-56`) + `manifest.webmanifest` |
+| PWA | Service Worker (`sw.js`, `CACHE_NAME=livro-caixa-shell-v20-58`) + `manifest.webmanifest` |
 | Deploy | GitHub Pages + Cloudflare Workers (CI automático) |
 
 ## Arquitetura
