@@ -1,0 +1,336 @@
+{
+  "meta": {
+    "id": "r266-aud-d-unitario",
+    "data": "2026-11-23T14:10:16.292Z",
+    "hash": "ab58c20a1c3deadbbf9bdc4af232a43590eb5fc6609aa5b09a4bfa66401e4664"
+  },
+  "testes": [
+    {
+      "id": "U01",
+      "categoria": "matriz-origens",
+      "descricao": "AUTHOR normal vence USER normal",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "U02",
+      "categoria": "matriz-origens",
+      "descricao": "AUTHOR normal vence USER-AGENT normal",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "U03",
+      "categoria": "matriz-origens",
+      "descricao": "USER normal vence USER-AGENT normal",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "U04",
+      "categoria": "matriz-origens",
+      "descricao": "USER-AGENT important vence USER important",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "U05",
+      "categoria": "matriz-origens",
+      "descricao": "USER-AGENT important vence AUTHOR important",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "U06",
+      "categoria": "matriz-origens",
+      "descricao": "USER important vence AUTHOR important",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "U07",
+      "categoria": "matriz-origens",
+      "descricao": "USER important vence AUTHOR normal",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "U08",
+      "categoria": "matriz-origens",
+      "descricao": "AUTHOR important vence USER normal",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "U09",
+      "categoria": "matriz-origens",
+      "descricao": "USER important vence USER-AGENT normal",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "U10",
+      "categoria": "matriz-origens",
+      "descricao": "USER-AGENT important vence AUTHOR normal",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "N01",
+      "categoria": "negativos-C2",
+      "descricao": "candidato AUTHOR ausente",
+      "status": "PASS",
+      "esperado": {
+        "status": "INSUFFICIENT"
+      },
+      "observado": {
+        "status": "INSUFFICIENT",
+        "insuficiencias": [
+          "dois-candidatos-obrigatorios-ausentes",
+          "candidato-ausente-ou-ambigu:author"
+        ],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "N02",
+      "categoria": "negativos-C2",
+      "descricao": "candidato USER-AGENT ausente",
+      "status": "PASS",
+      "esperado": {
+        "status": "INSUFFICIENT"
+      },
+      "observado": {
+        "status": "INSUFFICIENT",
+        "insuficiencias": [
+          "dois-candidatos-obrigatorios-ausentes",
+          "candidato-ausente-ou-ambigu:user-agent"
+        ],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "N03",
+      "categoria": "negativos-C2",
+      "descricao": "origem desconhecida",
+      "status": "PASS",
+      "esperado": {
+        "status": "INSUFFICIENT"
+      },
+      "observado": {
+        "status": "INSUFFICIENT",
+        "insuficiencias": [
+          "dois-candidatos-obrigatorios-ausentes",
+          "candidato-ausente-ou-ambigu:author"
+        ],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "N04",
+      "categoria": "negativos-C2",
+      "descricao": "importancia desconhecida",
+      "status": "PASS",
+      "esperado": {
+        "status": "INSUFFICIENT"
+      },
+      "observado": {
+        "status": "INSUFFICIENT",
+        "insuficiencias": [
+          "importancia-indeterminada:author"
+        ],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "N05",
+      "categoria": "negativos-C2",
+      "descricao": "metadados contraditorios",
+      "status": "PASS",
+      "esperado": {
+        "status": "INSUFFICIENT"
+      },
+      "observado": {
+        "status": "INSUFFICIENT",
+        "insuficiencias": [
+          "importancia-indeterminada:author"
+        ],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "N06",
+      "categoria": "negativos-C2",
+      "descricao": "propriedade/valor divergente",
+      "status": "PASS",
+      "esperado": {
+        "status": "FAIL"
+      },
+      "observado": {
+        "status": "FAIL",
+        "insuficiencias": [],
+        "divergencias": [
+          "valor-cdp"
+        ]
+      }
+    },
+    {
+      "id": "N07",
+      "categoria": "negativos-C2",
+      "descricao": "vencedor divergente",
+      "status": "PASS",
+      "esperado": {
+        "status": "FAIL"
+      },
+      "observado": {
+        "status": "FAIL",
+        "insuficiencias": [],
+        "divergencias": [
+          "vencedor-divergente"
+        ]
+      }
+    },
+    {
+      "id": "N08",
+      "categoria": "negativos-C2",
+      "descricao": "proveniencia ambigua",
+      "status": "PASS",
+      "esperado": {
+        "status": "INSUFFICIENT"
+      },
+      "observado": {
+        "status": "INSUFFICIENT",
+        "insuficiencias": [
+          "proveniencia-user-nao-unica"
+        ],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "N09",
+      "categoria": "negativos-C2",
+      "descricao": "injecao nao confirmada",
+      "status": "PASS",
+      "esperado": {
+        "status": "INSUFFICIENT"
+      },
+      "observado": {
+        "status": "INSUFFICIENT",
+        "insuficiencias": [
+          "injecao-user-nao-confirmada"
+        ],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "N10",
+      "categoria": "negativos-C2",
+      "descricao": "terceiro candidato",
+      "status": "PASS",
+      "esperado": {
+        "status": "INSUFFICIENT"
+      },
+      "observado": {
+        "status": "INSUFFICIENT",
+        "insuficiencias": [
+          "terceiro-candidato-relevante:user"
+        ],
+        "divergencias": []
+      }
+    },
+    {
+      "id": "C02-P",
+      "categoria": "C2",
+      "descricao": "cenario C2 com dois candidatos aprovado",
+      "status": "PASS",
+      "esperado": {
+        "status": "PASS"
+      },
+      "observado": {
+        "status": "PASS",
+        "insuficiencias": [],
+        "divergencias": []
+      }
+    }
+  ],
+  "resumo": {
+    "total": 21,
+    "PASS": 21,
+    "FAIL": 0
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "ab58c20a1c3deadbbf9bdc4af232a43590eb5fc6609aa5b09a4bfa66401e4664",
+    "recalculated": "ab58c20a1c3deadbbf9bdc4af232a43590eb5fc6609aa5b09a4bfa66401e4664"
+  }
+}

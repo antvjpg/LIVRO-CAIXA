@@ -93,9 +93,9 @@ const core = makeCore({ matchedCSSRules: [] }, 'rgb(0, 0, 0)');
 const importanceCases = [
   ['I01', 'important true', decl('rgb(0, 0, 255)', { important: true }), true, 'explicit'],
   ['I02', 'important false', decl('rgb(0, 0, 255)', { important: false }), false, 'explicit'],
-  ['I03', 'campo ausente sem texto', decl('rgb(0, 0, 255)', { text: null }), null, 'unknown'],
-  ['I04', 'important null', { name: 'color', value: 'rgb(0, 0, 255)', important: null, implicit: false }, null, 'unknown'],
-  ['I05', 'important tipo invalido', { name: 'color', value: 'rgb(0, 0, 255)', important: 'true', implicit: false }, null, 'unknown'],
+  ['I03', 'campo ausente sem texto nem valor', { name: 'color', important: undefined, implicit: false }, null, 'unknown'],
+  ['I04', 'important null', { name: 'color', important: null, implicit: false }, null, 'unknown'],
+  ['I05', 'important tipo invalido', { name: 'color', important: 'true', implicit: false }, null, 'unknown'],
   ['I06', 'texto !important', decl('rgb(0, 0, 255)', { text: 'color: rgb(0, 0, 255) !important' }), true, 'text'],
   ['I07', 'texto normal explicito', decl('rgb(0, 0, 255)', { text: 'color: rgb(0, 0, 255)' }), false, 'text'],
   ['I08', 'metadado false contra texto importante', decl('rgb(0, 0, 255)', { important: false, text: 'color: rgb(0, 0, 255) !important' }), null, 'contradiction'],

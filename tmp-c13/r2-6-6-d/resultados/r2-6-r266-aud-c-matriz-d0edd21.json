@@ -1,0 +1,194 @@
+{
+  "meta": {
+    "id": "r266-aud-c-navegador",
+    "data": "2026-11-23T03:26:19.276Z",
+    "fixture": "tmp-c13/r2-6-6-r266-aud-c/fixture.html",
+    "url": "http://127.0.0.1:8000/tmp-c13/r2-6-6-r266-aud-c/fixture.html",
+    "core": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-c/c4-v05-b-r2-6-6-r266-aud-c-core.cjs",
+    "coreSha256": "11999fd9f7531d536c01b3b4b5ccfddb849155aadf6edab9735dcbdc38127323",
+    "navegador": "Chrome/156.0.8078.79",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "protocolo": "1.3",
+    "hash": "0becf600f72bb0facbb18e3426d57319288739525ca3ce068368a58e26c63582"
+  },
+  "casos": [
+    {
+      "id": "C1",
+      "descricao": "Author important contra author normal no mesmo ancestral",
+      "alvo": "#c1-filho",
+      "propriedade": "color",
+      "status": "PASS",
+      "divergencias": [],
+      "vencedor": {
+        "value": "rgb(0, 128, 0) !important",
+        "origin": "author",
+        "cdpOrigin": "regular",
+        "important": true,
+        "importanceStatus": "explicit-with-ambiguous-text",
+        "selectorText": "#c1-pai.importante"
+      },
+      "valorComputado": {
+        "esperado": "rgb(0, 128, 0)",
+        "nucleo": "rgb(0, 128, 0)",
+        "cdp": "rgb(0, 128, 0)",
+        "getComputedStyle": "rgb(0, 128, 0)"
+      },
+      "cascata": {
+        "inheritanceStatus": "herdada",
+        "providerLevel": 1,
+        "providerSelector": "#c1-pai.importante",
+        "identityStatus": "inconclusivo",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "importanceStatus": "explicit-with-ambiguous-text",
+        "originStatus": "explicit"
+      }
+    },
+    {
+      "id": "C2",
+      "descricao": "Author normal vence user-agent normal no ancestral h1",
+      "alvo": "#c2-filho",
+      "propriedade": "font-size",
+      "status": "PASS",
+      "divergencias": [],
+      "vencedor": {
+        "value": "14px",
+        "origin": "author",
+        "cdpOrigin": "regular",
+        "important": false,
+        "importanceStatus": "text",
+        "selectorText": "h1#c2-pai"
+      },
+      "valorComputado": {
+        "esperado": "14px",
+        "nucleo": "14px",
+        "cdp": "14px",
+        "getComputedStyle": "14px"
+      },
+      "cascata": {
+        "inheritanceStatus": "herdada",
+        "providerLevel": 1,
+        "providerSelector": "h1#c2-pai",
+        "identityStatus": "inconclusivo",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "importanceStatus": "text",
+        "originStatus": "explicit"
+      }
+    },
+    {
+      "id": "C3",
+      "descricao": "Avo fornecedor com author important contra author normal",
+      "alvo": "#c3-filho",
+      "propriedade": "color",
+      "status": "PASS",
+      "divergencias": [],
+      "vencedor": {
+        "value": "rgb(0, 128, 0) !important",
+        "origin": "author",
+        "cdpOrigin": "regular",
+        "important": true,
+        "importanceStatus": "explicit-with-ambiguous-text",
+        "selectorText": "#c3-avo.importante"
+      },
+      "valorComputado": {
+        "esperado": "rgb(0, 128, 0)",
+        "nucleo": "rgb(0, 128, 0)",
+        "cdp": "rgb(0, 128, 0)",
+        "getComputedStyle": "rgb(0, 128, 0)"
+      },
+      "cascata": {
+        "inheritanceStatus": "herdada",
+        "providerLevel": 2,
+        "providerSelector": "#c3-avo.importante",
+        "identityStatus": "inconclusivo",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "importanceStatus": "explicit-with-ambiguous-text",
+        "originStatus": "explicit"
+      }
+    },
+    {
+      "id": "C4",
+      "descricao": "Declaracao propriedade do filho vence disputa de importancia no ancestral",
+      "alvo": "#c4-filho",
+      "propriedade": "color",
+      "status": "PASS",
+      "divergencias": [],
+      "vencedor": {
+        "value": "rgb(1, 2, 3)",
+        "origin": "author",
+        "cdpOrigin": "regular",
+        "important": false,
+        "importanceStatus": "text",
+        "selectorText": "#c4-filho"
+      },
+      "valorComputado": {
+        "esperado": "rgb(1, 2, 3)",
+        "nucleo": "rgb(1, 2, 3)",
+        "cdp": "rgb(1, 2, 3)",
+        "getComputedStyle": "rgb(1, 2, 3)"
+      },
+      "cascata": {
+        "inheritanceStatus": "propria",
+        "providerLevel": null,
+        "providerSelector": "#c4-filho",
+        "identityStatus": "nao-aplicavel",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "importanceStatus": "text",
+        "originStatus": "explicit"
+      }
+    },
+    {
+      "id": "C5",
+      "descricao": "Ancestral imediato vence ancestral distante com important",
+      "alvo": "#c5-filho",
+      "propriedade": "color",
+      "status": "PASS",
+      "divergencias": [],
+      "vencedor": {
+        "value": "rgb(0, 0, 255)",
+        "origin": "author",
+        "cdpOrigin": "regular",
+        "important": false,
+        "importanceStatus": "text",
+        "selectorText": "#c5-pai"
+      },
+      "valorComputado": {
+        "esperado": "rgb(0, 0, 255)",
+        "nucleo": "rgb(0, 0, 255)",
+        "cdp": "rgb(0, 0, 255)",
+        "getComputedStyle": "rgb(0, 0, 255)"
+      },
+      "cascata": {
+        "inheritanceStatus": "herdada",
+        "providerLevel": 1,
+        "providerSelector": "#c5-pai",
+        "identityStatus": "inconclusivo",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "importanceStatus": "text",
+        "originStatus": "explicit"
+      }
+    }
+  ],
+  "resumo": {
+    "total": 5,
+    "PASS": 5,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "chromiumReal": 5
+  },
+  "erros": {
+    "cdp": [],
+    "console": [],
+    "excecoes": []
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "0becf600f72bb0facbb18e3426d57319288739525ca3ce068368a58e26c63582",
+    "recalculated": "0becf600f72bb0facbb18e3426d57319288739525ca3ce068368a58e26c63582"
+  }
+}

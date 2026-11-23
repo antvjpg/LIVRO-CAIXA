@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>R266 AUD D — origem USER real</title>
+<style>
+  #d-user-normal.author-normal { color: rgb(0, 0, 255); }
+  h1#d-author-ua-normal { font-size: 14px; }
+  #d-user-important.author-important { color: rgb(0, 0, 255) !important; }
+  #d-author-normal-user-important.author-normal { color: rgb(0, 0, 255); }
+  #d-user-normal-author-important.author-important { color: rgb(0, 0, 255) !important; }
+  #d-ua-author-important.author-important { display: block !important; }
+  #d-ua-important-author-normal { display: block; }
+</style>
+</head>
+<body>
+  <div id="d-user-normal" class="author-normal">D1</div>
+  <h1 id="d-author-ua-normal">D2</h1>
+  <h1 id="d-user-normal-font">D3</h1>
+
+  <input type="hidden" id="d-ua-user-important">
+  <input type="hidden" id="d-ua-author-important" class="author-important">
+
+  <div id="d-user-important" class="author-important">D6</div>
+  <div id="d-author-normal-user-important" class="author-normal">D7</div>
+  <div id="d-user-normal-author-important" class="author-important">D8</div>
+  <h1 id="d-ua-normal-user-important">D9</h1>
+  <input type="hidden" id="d-ua-important-author-normal">
+</body>
+</html>

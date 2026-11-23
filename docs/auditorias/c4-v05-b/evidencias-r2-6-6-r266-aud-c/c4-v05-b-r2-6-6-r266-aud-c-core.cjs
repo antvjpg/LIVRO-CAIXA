@@ -657,7 +657,8 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
   function authoredProp(p, origin) {
     if (!p || p.disabled === true || p.parsedOk === false) return false;
     const temMetadadoImportancia = typeof p.important === 'boolean';
-    const temTexto = typeof p.text === 'string' && p.text.trim().length > 0;
+    const temTexto = (typeof p.text === 'string' && p.text.trim().length > 0)
+      || (typeof p.value === 'string' && p.value.trim().length > 0);
     if (!temMetadadoImportancia && !temTexto) return false;
     if (origin === 'user-agent' || origin === 'user') return true;
     return Boolean(p.implicit === false || temTexto);
@@ -670,7 +671,10 @@ function createCDPAuditCore({ CDP, DOM, CSS, Runtime, consoleErrors, exceptions,
       return { value: null, status: 'unknown', reason: 'declaracao-ausente' };
     }
     const temMetadado = typeof p.important === 'boolean';
-    const texto = typeof p.text === 'string' && p.text.trim().length > 0 ? p.text.trim() : null;
+    const textoDeclarativo = typeof p.text === 'string' && p.text.trim().length > 0
+      ? p.text.trim()
+      : typeof p.value === 'string' && p.value.trim().length > 0 ? p.value.trim() : null;
+    const texto = textoDeclarativo;
     const textoImportante = texto !== null && /!important\s*$/i.test(texto);
     const textoNormal = texto !== null && !/important/i.test(texto);
     const textoAmbiguo = texto !== null && !textoImportante && !textoNormal;

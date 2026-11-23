@@ -1,0 +1,196 @@
+{
+  "id": "C4-R26-CI",
+  "startedAt": "2026-11-23T14:09:40.003Z",
+  "finishedAt": "2026-11-23T14:10:38.793Z",
+  "durationMs": 58790,
+  "sha": null,
+  "node": "v26.12.1",
+  "core": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6/c4-v05-b-r2-6-core.cjs",
+  "core266": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-c/c4-v05-b-r2-6-6-r266-aud-c-core.cjs",
+  "core266Historico": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6/c4-v05-b-r2-6-6-core.cjs",
+  "core266Audb": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-b/c4-v05-b-r2-6-6-r266-aud-b-core.cjs",
+  "coreA01": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-a01/c4-v05-b-r2-6-6-a01-core.cjs",
+  "coreA01b": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-a01b/c4-v05-b-r2-6-6-a01b-core.cjs",
+  "nucleos": {
+    "r26": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6/c4-v05-b-r2-6-core.cjs",
+      "sha256": "3bfbebc61a2ca8bbe09c40bd1d9db1315f39db322cc49ed7c3d128c242dbd7db"
+    },
+    "r265": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6/c4-v05-b-r2-6-core.cjs",
+      "sha256": "3bfbebc61a2ca8bbe09c40bd1d9db1315f39db322cc49ed7c3d128c242dbd7db"
+    },
+    "r266": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-c/c4-v05-b-r2-6-6-r266-aud-c-core.cjs",
+      "sha256": "40449cee589a534cdf017439c16f19285a18ad499c1b78640efd261127ad1b0e"
+    },
+    "r266Historico": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6/c4-v05-b-r2-6-6-core.cjs",
+      "sha256": "8a6e08d3982c201ad36bd5973f05da7580182f70d0c42691b2279754de0636c4"
+    },
+    "r266Audb": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-b/c4-v05-b-r2-6-6-r266-aud-b-core.cjs",
+      "sha256": "f92d7016de979d30c34083f8cb320f9e0f74f4ab7d9916513db467e7c1d43926"
+    },
+    "a01": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-a01/c4-v05-b-r2-6-6-a01-core.cjs",
+      "sha256": "e6b66c91316f18c9c23cafdc7e0c3eb28cbcec19076bbff7425bad4101cab774"
+    },
+    "a01b": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-a01b/c4-v05-b-r2-6-6-a01b-core.cjs",
+      "sha256": "a3ad862fb5033493bb9573b1a6eee70d545a855e689e4911739fca66b0cd9a05"
+    },
+    "r266aud": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud/c4-v05-b-r2-6-6-r266-aud-core.cjs",
+      "sha256": "1ab22bb421cbb1048218ddabdd99651f63115ce15d7447eb01b09c27b265315d"
+    },
+    "r266audb": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-b/c4-v05-b-r2-6-6-r266-aud-b-core.cjs",
+      "sha256": "f92d7016de979d30c34083f8cb320f9e0f74f4ab7d9916513db467e7c1d43926"
+    },
+    "r266audc": {
+      "path": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-c/c4-v05-b-r2-6-6-r266-aud-c-core.cjs",
+      "sha256": "40449cee589a534cdf017439c16f19285a18ad499c1b78640efd261127ad1b0e"
+    }
+  },
+  "matrix": {
+    "PASS": 10,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "oraclePASS": 10
+  },
+  "r26_5": {
+    "PASS": 10,
+    "FAIL": 0,
+    "BLOCKED": 3,
+    "NOT_RUN": 0
+  },
+  "r26_6": {
+    "PASS": 11,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "nucleoSha256": "40449cee589a534cdf017439c16f19285a18ad499c1b78640efd261127ad1b0e"
+  },
+  "r26_6_historico": {
+    "PASS": 11,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "nucleoSha256": "8a6e08d3982c201ad36bd5973f05da7580182f70d0c42691b2279754de0636c4"
+  },
+  "r26_6_audb_comparativo": {
+    "PASS": 11,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "nucleoSha256": "f92d7016de979d30c34083f8cb320f9e0f74f4ab7d9916513db467e7c1d43926"
+  },
+  "a01": {
+    "PASS": 11,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "provenienciaPASS": 1,
+    "userBranchExercised": true,
+    "comparadorPASS": 4
+  },
+  "a01b": {
+    "PASS": 11,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "provenienciaPASS": 1,
+    "provenienciaAmbigua": 0,
+    "userBranchExercised": true,
+    "comparadorPASS": 5
+  },
+  "a02": {
+    "PASS": 11,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "bilateralPASS": 3,
+    "bilateralFAIL": 0,
+    "disputasEsperadas": 3,
+    "testeBilateralPASS": 15,
+    "negativosPASS": 12
+  },
+  "a02b": {
+    "PASS": 11,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "bilateralPASS": 3,
+    "bilateralFAIL": 0,
+    "disputasEsperadas": 3,
+    "testeBilateralPASS": 20,
+    "negativosPASS": 17
+  },
+  "a03": {
+    "PASS": 12,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "especificidadeDiagnosticaPASS": 1,
+    "testeEspecificidadePASS": 10
+  },
+  "a03b": {
+    "PASS": 12,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "especificidadeDiagnosticaPASS": 1,
+    "indicesCorrespondentesPASS": 1,
+    "testeEspecificidadePASS": 12
+  },
+  "r266aud": {
+    "PASS": 7,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "unitarioPASS": 25,
+    "cromiumReal": 6,
+    "cenarioSintetico": 1
+  },
+  "r266audb": {
+    "PASS": 7,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "unitarioPASS": 24,
+    "cromiumReal": 6,
+    "cenarioSintetico": 1,
+    "nucleoSha256": "f92d7016de979d30c34083f8cb320f9e0f74f4ab7d9916513db467e7c1d43926"
+  },
+  "r266audc": {
+    "PASS": 5,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "unitarioPASS": 33,
+    "chromiumReal": 5,
+    "nucleoSha256": "40449cee589a534cdf017439c16f19285a18ad499c1b78640efd261127ad1b0e"
+  },
+  "r266audd": {
+    "PASS": 10,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "INSUFFICIENT": 0,
+    "NOT_RUN": 0,
+    "unitarioPASS": 21,
+    "chromiumReal": 10,
+    "userReal": 7,
+    "nucleoSha256": "40449cee589a534cdf017439c16f19285a18ad499c1b78640efd261127ad1b0e"
+  },
+  "regression": {
+    "records": 393,
+    "baseline": 393,
+    "PASS": 392,
+    "FAIL": 0,
+    "BLOCKED": 1,
+    "divergences": 0
+  },
+  "problems": [],
+  "verdict": "PASS"
+}

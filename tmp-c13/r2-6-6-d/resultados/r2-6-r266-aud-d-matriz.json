@@ -1,0 +1,2214 @@
+{
+  "meta": {
+    "id": "r266-aud-d-navegador",
+    "data": "2026-11-23T14:10:18.678Z",
+    "fixture": "tmp-c13/r2-6-6-d/fixture.html",
+    "url": "http://127.0.0.1:8000/tmp-c13/r2-6-6-d/fixture.html",
+    "core": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-c/c4-v05-b-r2-6-6-r266-aud-c-core.cjs",
+    "coreSha256": "40449cee589a534cdf017439c16f19285a18ad499c1b78640efd261127ad1b0e",
+    "extensionD": "/data/data/com.termux/files/home/LIVRO-CAIXA/tmp-c13/r2-6-6-d/extension",
+    "extensionId": "kalmeefdblflkgfncmhjbeobkdfbndne",
+    "injecao": {
+      "extensionId": "kalmeefdblflkgfncmhjbeobkdfbndne",
+      "operacao": "chrome.scripting.insertCSS",
+      "originInformada": "USER",
+      "cssText": "#d-user-normal { color: rgb(20, 0, 255); } #d-user-normal-font { font-size: 18px; } #d-user-important { color: rgb(200, 10, 20) !important; } #d-author-normal-user-important { color: rgb(200, 10, 20) !important; } #d-user-normal-author-important { color: rgb(20, 0, 255); } #d-ua-normal-user-important { font-size: 18px !important; } #d-ua-user-important { display: block !important; }",
+      "title": "r266-d-inject:ok",
+      "confirmada": true
+    },
+    "navegador": "Chrome/156.0.8078.79",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "protocolo": "1.3",
+    "hash": "a40191edf2b37343ab9ce8bbbfe52204cf333866ad85413c33df524a93cdae3e"
+  },
+  "casos": [
+    {
+      "id": "D1",
+      "descricao": "AUTHOR normal vence USER normal",
+      "alvo": "#d-user-normal",
+      "propriedade": "color",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": {
+        "extensionId": "kalmeefdblflkgfncmhjbeobkdfbndne",
+        "operacao": "chrome.scripting.insertCSS",
+        "originInformada": "USER",
+        "cssText": "#d-user-normal { color: rgb(20, 0, 255); } #d-user-normal-font { font-size: 18px; } #d-user-important { color: rgb(200, 10, 20) !important; } #d-author-normal-user-important { color: rgb(200, 10, 20) !important; } #d-user-normal-author-important { color: rgb(20, 0, 255); } #d-ua-normal-user-important { font-size: 18px !important; } #d-ua-user-important { display: block !important; }",
+        "title": "r266-d-inject:ok",
+        "confirmada": true
+      },
+      "candidatos": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(20, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(20, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(20, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        }
+      ],
+      "vencedor": {
+        "origin": "author",
+        "cdpOrigin": "regular",
+        "value": "rgb(0, 0, 255)",
+        "important": false,
+        "importanceStatus": "text",
+        "selectorText": "#d-user-normal.author-normal",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 1,
+          "b": 1,
+          "c": 0
+        },
+        "specificityStatus": "disponivel",
+        "order": 3,
+        "provenance": null
+      },
+      "proveniencia": [
+        {
+          "status": "unica",
+          "matchCount": 1,
+          "matches": [
+            {
+              "selectorText": "#d-user-normal",
+              "declaredValue": "rgb(20, 0, 255)",
+              "important": false,
+              "importanceStatus": "text",
+              "cdpOrigin": "user-agent",
+              "styleSheetId": null,
+              "ruleId": null
+            }
+          ]
+        }
+      ],
+      "valorComputado": {
+        "esperado": "rgb(0, 0, 255)",
+        "nucleo": "rgb(0, 0, 255)",
+        "cdp": "rgb(0, 0, 255)",
+        "getComputedStyle": "rgb(0, 0, 255)"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    },
+    {
+      "id": "D2",
+      "descricao": "C2 corrigido: AUTHOR normal vence USER-AGENT normal com dois candidatos obrigatorios",
+      "alvo": "#d-author-ua-normal",
+      "propriedade": "font-size",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": null,
+      "candidatos": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "2em",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "14px",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1#d-author-ua-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "14px",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1#d-author-ua-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "2em",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "14px",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1#d-author-ua-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "14px",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1#d-author-ua-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "2em",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "14px",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1#d-author-ua-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        }
+      ],
+      "vencedor": {
+        "origin": "author",
+        "cdpOrigin": "regular",
+        "value": "14px",
+        "important": false,
+        "importanceStatus": "text",
+        "selectorText": "h1#d-author-ua-normal",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 1,
+          "b": 0,
+          "c": 1
+        },
+        "specificityStatus": "disponivel",
+        "order": 3,
+        "provenance": null
+      },
+      "proveniencia": [],
+      "valorComputado": {
+        "esperado": "14px",
+        "nucleo": "14px",
+        "cdp": "14px",
+        "getComputedStyle": "14px"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    },
+    {
+      "id": "D3",
+      "descricao": "USER normal vence USER-AGENT normal",
+      "alvo": "#d-user-normal-font",
+      "propriedade": "font-size",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": {
+        "extensionId": "kalmeefdblflkgfncmhjbeobkdfbndne",
+        "operacao": "chrome.scripting.insertCSS",
+        "originInformada": "USER",
+        "cssText": "#d-user-normal { color: rgb(20, 0, 255); } #d-user-normal-font { font-size: 18px; } #d-user-important { color: rgb(200, 10, 20) !important; } #d-author-normal-user-important { color: rgb(200, 10, 20) !important; } #d-user-normal-author-important { color: rgb(20, 0, 255); } #d-ua-normal-user-important { font-size: 18px !important; } #d-ua-user-important { display: block !important; }",
+        "title": "r266-d-inject:ok",
+        "confirmada": true
+      },
+      "candidatos": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "2em",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "18px",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal-font",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "2em",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "18px",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal-font",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "2em",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "18px",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal-font",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        }
+      ],
+      "vencedor": {
+        "origin": "user",
+        "cdpOrigin": "user-agent",
+        "value": "18px",
+        "important": false,
+        "importanceStatus": "text",
+        "selectorText": "#d-user-normal-font",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 1,
+          "b": 0,
+          "c": 0
+        },
+        "specificityStatus": "disponivel",
+        "order": 2,
+        "provenance": {
+          "origin": "user",
+          "status": null
+        }
+      },
+      "proveniencia": [
+        {
+          "status": "unica",
+          "matchCount": 1,
+          "matches": [
+            {
+              "selectorText": "#d-user-normal-font",
+              "declaredValue": "18px",
+              "important": false,
+              "importanceStatus": "text",
+              "cdpOrigin": "user-agent",
+              "styleSheetId": null,
+              "ruleId": null
+            }
+          ]
+        }
+      ],
+      "valorComputado": {
+        "esperado": "18px",
+        "nucleo": "18px",
+        "cdp": "18px",
+        "getComputedStyle": "18px"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    },
+    {
+      "id": "D4",
+      "descricao": "USER-AGENT important vence USER important",
+      "alvo": "#d-ua-user-important",
+      "propriedade": "display",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": {
+        "extensionId": "kalmeefdblflkgfncmhjbeobkdfbndne",
+        "operacao": "chrome.scripting.insertCSS",
+        "originInformada": "USER",
+        "cssText": "#d-user-normal { color: rgb(20, 0, 255); } #d-user-normal-font { font-size: 18px; } #d-user-important { color: rgb(200, 10, 20) !important; } #d-author-normal-user-important { color: rgb(200, 10, 20) !important; } #d-user-normal-author-important { color: rgb(20, 0, 255); } #d-ua-normal-user-important { font-size: 18px !important; } #d-ua-user-important { display: block !important; }",
+        "title": "r266-d-inject:ok",
+        "confirmada": true
+      },
+      "candidatos": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "inline-block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "input, textarea, select, button",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "none !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "input[type=\"hidden\" i]",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "block !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-ua-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "body",
+          "source": "inherited",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 4,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "html",
+          "source": "inherited",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 5,
+          "provenance": null
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "inline-block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "input, textarea, select, button",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "none !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "input[type=\"hidden\" i]",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "block !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-ua-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "none !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "input[type=\"hidden\" i]",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "block !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-ua-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        }
+      ],
+      "vencedor": {
+        "origin": "user-agent",
+        "cdpOrigin": "user-agent",
+        "value": "none !important",
+        "important": true,
+        "importanceStatus": "explicit",
+        "selectorText": "input[type=\"hidden\" i]",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 0,
+          "b": 1,
+          "c": 1
+        },
+        "specificityStatus": "disponivel",
+        "order": 2,
+        "provenance": null
+      },
+      "proveniencia": [
+        {
+          "status": "unica",
+          "matchCount": 1,
+          "matches": [
+            {
+              "selectorText": "#d-ua-user-important",
+              "declaredValue": "block !important",
+              "important": true,
+              "importanceStatus": "explicit",
+              "cdpOrigin": "user-agent",
+              "styleSheetId": null,
+              "ruleId": null
+            }
+          ]
+        }
+      ],
+      "valorComputado": {
+        "esperado": "none",
+        "nucleo": "none",
+        "cdp": "none",
+        "getComputedStyle": "none"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    },
+    {
+      "id": "D5",
+      "descricao": "USER-AGENT important vence AUTHOR important",
+      "alvo": "#d-ua-author-important",
+      "propriedade": "display",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": null,
+      "candidatos": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "inline-block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "input, textarea, select, button",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "none !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "input[type=\"hidden\" i]",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block !important",
+          "important": true,
+          "importanceStatus": "explicit-with-ambiguous-text",
+          "selectorText": "#d-ua-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-ua-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 4,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "body",
+          "source": "inherited",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 5,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "html",
+          "source": "inherited",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 6,
+          "provenance": null
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "inline-block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "input, textarea, select, button",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "none !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "input[type=\"hidden\" i]",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block !important",
+          "important": true,
+          "importanceStatus": "explicit-with-ambiguous-text",
+          "selectorText": "#d-ua-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-ua-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 4,
+          "provenance": null
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "none !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "input[type=\"hidden\" i]",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block !important",
+          "important": true,
+          "importanceStatus": "explicit-with-ambiguous-text",
+          "selectorText": "#d-ua-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "vencedor": {
+        "origin": "user-agent",
+        "cdpOrigin": "user-agent",
+        "value": "none !important",
+        "important": true,
+        "importanceStatus": "explicit",
+        "selectorText": "input[type=\"hidden\" i]",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 0,
+          "b": 1,
+          "c": 1
+        },
+        "specificityStatus": "disponivel",
+        "order": 2,
+        "provenance": null
+      },
+      "proveniencia": [],
+      "valorComputado": {
+        "esperado": "none",
+        "nucleo": "none",
+        "cdp": "none",
+        "getComputedStyle": "none"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    },
+    {
+      "id": "D6",
+      "descricao": "USER important vence AUTHOR important",
+      "alvo": "#d-user-important",
+      "propriedade": "color",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": {
+        "extensionId": "kalmeefdblflkgfncmhjbeobkdfbndne",
+        "operacao": "chrome.scripting.insertCSS",
+        "originInformada": "USER",
+        "cssText": "#d-user-normal { color: rgb(20, 0, 255); } #d-user-normal-font { font-size: 18px; } #d-user-important { color: rgb(200, 10, 20) !important; } #d-author-normal-user-important { color: rgb(200, 10, 20) !important; } #d-user-normal-author-important { color: rgb(20, 0, 255); } #d-ua-normal-user-important { font-size: 18px !important; } #d-ua-user-important { display: block !important; }",
+        "title": "r266-d-inject:ok",
+        "confirmada": true
+      },
+      "candidatos": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(200, 10, 20) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit-with-ambiguous-text",
+          "selectorText": "#d-user-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-user-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(200, 10, 20) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit-with-ambiguous-text",
+          "selectorText": "#d-user-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-user-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(200, 10, 20) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit-with-ambiguous-text",
+          "selectorText": "#d-user-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        }
+      ],
+      "vencedor": {
+        "origin": "user",
+        "cdpOrigin": "user-agent",
+        "value": "rgb(200, 10, 20) !important",
+        "important": true,
+        "importanceStatus": "explicit",
+        "selectorText": "#d-user-important",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 1,
+          "b": 0,
+          "c": 0
+        },
+        "specificityStatus": "disponivel",
+        "order": 1,
+        "provenance": {
+          "origin": "user",
+          "status": null
+        }
+      },
+      "proveniencia": [
+        {
+          "status": "unica",
+          "matchCount": 1,
+          "matches": [
+            {
+              "selectorText": "#d-user-important",
+              "declaredValue": "rgb(200, 10, 20) !important",
+              "important": true,
+              "importanceStatus": "explicit",
+              "cdpOrigin": "user-agent",
+              "styleSheetId": null,
+              "ruleId": null
+            }
+          ]
+        }
+      ],
+      "valorComputado": {
+        "esperado": "rgb(200, 10, 20)",
+        "nucleo": "rgb(200, 10, 20)",
+        "cdp": "rgb(200, 10, 20)",
+        "getComputedStyle": "rgb(200, 10, 20)"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    },
+    {
+      "id": "D7",
+      "descricao": "USER important vence AUTHOR normal",
+      "alvo": "#d-author-normal-user-important",
+      "propriedade": "color",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": {
+        "extensionId": "kalmeefdblflkgfncmhjbeobkdfbndne",
+        "operacao": "chrome.scripting.insertCSS",
+        "originInformada": "USER",
+        "cssText": "#d-user-normal { color: rgb(20, 0, 255); } #d-user-normal-font { font-size: 18px; } #d-user-important { color: rgb(200, 10, 20) !important; } #d-author-normal-user-important { color: rgb(200, 10, 20) !important; } #d-user-normal-author-important { color: rgb(20, 0, 255); } #d-ua-normal-user-important { font-size: 18px !important; } #d-ua-user-important { display: block !important; }",
+        "title": "r266-d-inject:ok",
+        "confirmada": true
+      },
+      "candidatos": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(200, 10, 20) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-author-normal-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-author-normal-user-important.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-author-normal-user-important.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(200, 10, 20) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-author-normal-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-author-normal-user-important.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-author-normal-user-important.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(200, 10, 20) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-author-normal-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-author-normal-user-important.author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        }
+      ],
+      "vencedor": {
+        "origin": "user",
+        "cdpOrigin": "user-agent",
+        "value": "rgb(200, 10, 20) !important",
+        "important": true,
+        "importanceStatus": "explicit",
+        "selectorText": "#d-author-normal-user-important",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 1,
+          "b": 0,
+          "c": 0
+        },
+        "specificityStatus": "disponivel",
+        "order": 1,
+        "provenance": {
+          "origin": "user",
+          "status": null
+        }
+      },
+      "proveniencia": [
+        {
+          "status": "unica",
+          "matchCount": 1,
+          "matches": [
+            {
+              "selectorText": "#d-author-normal-user-important",
+              "declaredValue": "rgb(200, 10, 20) !important",
+              "important": true,
+              "importanceStatus": "explicit",
+              "cdpOrigin": "user-agent",
+              "styleSheetId": null,
+              "ruleId": null
+            }
+          ]
+        }
+      ],
+      "valorComputado": {
+        "esperado": "rgb(200, 10, 20)",
+        "nucleo": "rgb(200, 10, 20)",
+        "cdp": "rgb(200, 10, 20)",
+        "getComputedStyle": "rgb(200, 10, 20)"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    },
+    {
+      "id": "D8",
+      "descricao": "AUTHOR important vence USER normal",
+      "alvo": "#d-user-normal-author-important",
+      "propriedade": "color",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": {
+        "extensionId": "kalmeefdblflkgfncmhjbeobkdfbndne",
+        "operacao": "chrome.scripting.insertCSS",
+        "originInformada": "USER",
+        "cssText": "#d-user-normal { color: rgb(20, 0, 255); } #d-user-normal-font { font-size: 18px; } #d-user-important { color: rgb(200, 10, 20) !important; } #d-author-normal-user-important { color: rgb(200, 10, 20) !important; } #d-user-normal-author-important { color: rgb(20, 0, 255); } #d-ua-normal-user-important { font-size: 18px !important; } #d-ua-user-important { display: block !important; }",
+        "title": "r266-d-inject:ok",
+        "confirmada": true
+      },
+      "candidatos": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(20, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal-author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit-with-ambiguous-text",
+          "selectorText": "#d-user-normal-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-user-normal-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(20, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal-author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit-with-ambiguous-text",
+          "selectorText": "#d-user-normal-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-user-normal-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "rgb(20, 0, 255)",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-user-normal-author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "rgb(0, 0, 255) !important",
+          "important": true,
+          "importanceStatus": "explicit-with-ambiguous-text",
+          "selectorText": "#d-user-normal-author-important.author-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        }
+      ],
+      "vencedor": {
+        "origin": "author",
+        "cdpOrigin": "regular",
+        "value": "rgb(0, 0, 255) !important",
+        "important": true,
+        "importanceStatus": "explicit",
+        "selectorText": "#d-user-normal-author-important.author-important",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 1,
+          "b": 1,
+          "c": 0
+        },
+        "specificityStatus": "disponivel",
+        "order": 3,
+        "provenance": null
+      },
+      "proveniencia": [
+        {
+          "status": "unica",
+          "matchCount": 1,
+          "matches": [
+            {
+              "selectorText": "#d-user-normal-author-important",
+              "declaredValue": "rgb(20, 0, 255)",
+              "important": false,
+              "importanceStatus": "text",
+              "cdpOrigin": "user-agent",
+              "styleSheetId": null,
+              "ruleId": null
+            }
+          ]
+        }
+      ],
+      "valorComputado": {
+        "esperado": "rgb(0, 0, 255)",
+        "nucleo": "rgb(0, 0, 255)",
+        "cdp": "rgb(0, 0, 255)",
+        "getComputedStyle": "rgb(0, 0, 255)"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    },
+    {
+      "id": "D9",
+      "descricao": "USER important vence USER-AGENT normal",
+      "alvo": "#d-ua-normal-user-important",
+      "propriedade": "font-size",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": {
+        "extensionId": "kalmeefdblflkgfncmhjbeobkdfbndne",
+        "operacao": "chrome.scripting.insertCSS",
+        "originInformada": "USER",
+        "cssText": "#d-user-normal { color: rgb(20, 0, 255); } #d-user-normal-font { font-size: 18px; } #d-user-important { color: rgb(200, 10, 20) !important; } #d-author-normal-user-important { color: rgb(200, 10, 20) !important; } #d-user-normal-author-important { color: rgb(20, 0, 255); } #d-ua-normal-user-important { font-size: 18px !important; } #d-ua-user-important { display: block !important; }",
+        "title": "r266-d-inject:ok",
+        "confirmada": true
+      },
+      "candidatos": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "2em",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "18px !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-ua-normal-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "2em",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "18px !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-ua-normal-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "2em",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "h1",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user",
+          "cdpOrigin": "user-agent",
+          "value": "18px !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "#d-ua-normal-user-important",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": {
+            "origin": "user",
+            "status": null
+          }
+        }
+      ],
+      "vencedor": {
+        "origin": "user",
+        "cdpOrigin": "user-agent",
+        "value": "18px !important",
+        "important": true,
+        "importanceStatus": "explicit",
+        "selectorText": "#d-ua-normal-user-important",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 1,
+          "b": 0,
+          "c": 0
+        },
+        "specificityStatus": "disponivel",
+        "order": 2,
+        "provenance": {
+          "origin": "user",
+          "status": null
+        }
+      },
+      "proveniencia": [
+        {
+          "status": "unica",
+          "matchCount": 1,
+          "matches": [
+            {
+              "selectorText": "#d-ua-normal-user-important",
+              "declaredValue": "18px !important",
+              "important": true,
+              "importanceStatus": "explicit",
+              "cdpOrigin": "user-agent",
+              "styleSheetId": null,
+              "ruleId": null
+            }
+          ]
+        }
+      ],
+      "valorComputado": {
+        "esperado": "18px",
+        "nucleo": "18px",
+        "cdp": "18px",
+        "getComputedStyle": "18px"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    },
+    {
+      "id": "D10",
+      "descricao": "USER-AGENT important vence AUTHOR normal",
+      "alvo": "#d-ua-important-author-normal",
+      "propriedade": "display",
+      "status": "PASS",
+      "divergencias": [],
+      "insuficiencias": [],
+      "injecao": null,
+      "candidatos": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "inline-block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "input, textarea, select, button",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "none !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "input[type=\"hidden\" i]",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-ua-important-author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-ua-important-author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 4,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "body",
+          "source": "inherited",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 5,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "html",
+          "source": "inherited",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 6,
+          "provenance": null
+        }
+      ],
+      "candidatosDecisao": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "inline-block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "input, textarea, select, button",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 1,
+          "provenance": null
+        },
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "none !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "input[type=\"hidden\" i]",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-ua-important-author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-ua-important-author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 4,
+          "provenance": null
+        }
+      ],
+      "candidatosRelevantes": [
+        {
+          "origin": "user-agent",
+          "cdpOrigin": "user-agent",
+          "value": "none !important",
+          "important": true,
+          "importanceStatus": "explicit",
+          "selectorText": "input[type=\"hidden\" i]",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "specificityStatus": "disponivel",
+          "order": 2,
+          "provenance": null
+        },
+        {
+          "origin": "author",
+          "cdpOrigin": "regular",
+          "value": "block",
+          "important": false,
+          "importanceStatus": "text",
+          "selectorText": "#d-ua-important-author-normal",
+          "source": "stylesheet",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "specificityStatus": "disponivel",
+          "order": 3,
+          "provenance": null
+        }
+      ],
+      "vencedor": {
+        "origin": "user-agent",
+        "cdpOrigin": "user-agent",
+        "value": "none !important",
+        "important": true,
+        "importanceStatus": "explicit",
+        "selectorText": "input[type=\"hidden\" i]",
+        "source": "stylesheet",
+        "specificity": {
+          "a": 0,
+          "b": 1,
+          "c": 1
+        },
+        "specificityStatus": "disponivel",
+        "order": 2,
+        "provenance": null
+      },
+      "proveniencia": [],
+      "valorComputado": {
+        "esperado": "none",
+        "nucleo": "none",
+        "cdp": "none",
+        "getComputedStyle": "none"
+      },
+      "comparador": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "specificityStatus": "disponivel",
+        "diagnostico": null
+      }
+    }
+  ],
+  "resumo": {
+    "total": 10,
+    "PASS": 10,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "INSUFFICIENT": 0,
+    "NOT_RUN": 0,
+    "chromiumReal": 10,
+    "userReal": 7
+  },
+  "erros": {
+    "cdp": [],
+    "console": [],
+    "excecoes": []
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "a40191edf2b37343ab9ce8bbbfe52204cf333866ad85413c33df524a93cdae3e",
+    "recalculated": "a40191edf2b37343ab9ce8bbbfe52204cf333866ad85413c33df524a93cdae3e"
+  }
+}

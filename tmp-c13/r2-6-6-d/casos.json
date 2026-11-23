@@ -1,0 +1,156 @@
+{
+  "id": "r266-aud-d",
+  "descricao": "Prova real em Chromium das origens AUTHOR, USER e USER-AGENT na cascata CSS",
+  "fixture": "tmp-c13/r2-6-6-d/fixture.html",
+  "url": "http://127.0.0.1:8000/tmp-c13/r2-6-6-d/fixture.html",
+  "core": "docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-c/c4-v05-b-r2-6-6-r266-aud-c-core.cjs",
+  "casos": [
+    {
+      "id": "D1",
+      "descricao": "AUTHOR normal vence USER normal",
+      "alvo": "#d-user-normal",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(0, 0, 255)",
+        "winner": { "origin": "author", "value": "rgb(0, 0, 255)", "important": false },
+        "concorrentes": [
+          { "origin": "author", "value": "rgb(0, 0, 255)", "important": false, "selectorText": "#d-user-normal.author-normal" },
+          { "origin": "user", "value": "rgb(20, 0, 255)", "important": false, "selectorText": "#d-user-normal", "cdpOrigin": "user-agent" }
+        ]
+      },
+      "proveniencia": { "origin": "user", "cdpOrigin": "user-agent", "selectorText": "#d-user-normal", "declaredValue": "rgb(20, 0, 255)", "important": false }
+    },
+    {
+      "id": "D2",
+      "descricao": "C2 corrigido: AUTHOR normal vence USER-AGENT normal com dois candidatos obrigatorios",
+      "alvo": "#d-author-ua-normal",
+      "propriedade": "font-size",
+      "esperado": {
+        "computed": "14px",
+        "winner": { "origin": "author", "value": "14px", "important": false },
+        "concorrentes": [
+          { "origin": "author", "value": "14px", "important": false, "selectorText": "h1#d-author-ua-normal" },
+          { "origin": "user-agent", "value": "2em", "important": false, "selectorText": "h1" }
+        ]
+      }
+    },
+    {
+      "id": "D3",
+      "descricao": "USER normal vence USER-AGENT normal",
+      "alvo": "#d-user-normal-font",
+      "propriedade": "font-size",
+      "esperado": {
+        "computed": "18px",
+        "winner": { "origin": "user", "value": "18px", "important": false },
+        "concorrentes": [
+          { "origin": "user", "value": "18px", "important": false, "selectorText": "#d-user-normal-font", "cdpOrigin": "user-agent" },
+          { "origin": "user-agent", "value": "2em", "important": false, "selectorText": "h1" }
+        ]
+      },
+      "proveniencia": { "origin": "user", "cdpOrigin": "user-agent", "selectorText": "#d-user-normal-font", "declaredValue": "18px", "important": false }
+    },
+    {
+      "id": "D4",
+      "descricao": "USER-AGENT important vence USER important",
+      "alvo": "#d-ua-user-important",
+      "propriedade": "display",
+      "esperado": {
+        "computed": "none",
+        "winner": { "origin": "user-agent", "value": "none", "important": true },
+        "concorrentes": [
+          { "origin": "user-agent", "value": "none", "important": true, "selectorText": "input[type=\"hidden\" i]" },
+          { "origin": "user", "value": "block", "important": true, "selectorText": "#d-ua-user-important", "cdpOrigin": "user-agent" }
+        ]
+      },
+      "proveniencia": { "origin": "user", "cdpOrigin": "user-agent", "selectorText": "#d-ua-user-important", "declaredValue": "block", "important": true }
+    },
+    {
+      "id": "D5",
+      "descricao": "USER-AGENT important vence AUTHOR important",
+      "alvo": "#d-ua-author-important",
+      "propriedade": "display",
+      "esperado": {
+        "computed": "none",
+        "winner": { "origin": "user-agent", "value": "none", "important": true },
+        "concorrentes": [
+          { "origin": "user-agent", "value": "none", "important": true, "selectorText": "input[type=\"hidden\" i]" },
+          { "origin": "author", "value": "block", "important": true, "selectorText": "#d-ua-author-important.author-important" }
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "descricao": "USER important vence AUTHOR important",
+      "alvo": "#d-user-important",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(200, 10, 20)",
+        "winner": { "origin": "user", "value": "rgb(200, 10, 20)", "important": true },
+        "concorrentes": [
+          { "origin": "user", "value": "rgb(200, 10, 20)", "important": true, "selectorText": "#d-user-important", "cdpOrigin": "user-agent" },
+          { "origin": "author", "value": "rgb(0, 0, 255)", "important": true, "selectorText": "#d-user-important.author-important" }
+        ]
+      },
+      "proveniencia": { "origin": "user", "cdpOrigin": "user-agent", "selectorText": "#d-user-important", "declaredValue": "rgb(200, 10, 20)", "important": true }
+    },
+    {
+      "id": "D7",
+      "descricao": "USER important vence AUTHOR normal",
+      "alvo": "#d-author-normal-user-important",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(200, 10, 20)",
+        "winner": { "origin": "user", "value": "rgb(200, 10, 20)", "important": true },
+        "concorrentes": [
+          { "origin": "author", "value": "rgb(0, 0, 255)", "important": false, "selectorText": "#d-author-normal-user-important.author-normal" },
+          { "origin": "user", "value": "rgb(200, 10, 20)", "important": true, "selectorText": "#d-author-normal-user-important", "cdpOrigin": "user-agent" }
+        ]
+      },
+      "proveniencia": { "origin": "user", "cdpOrigin": "user-agent", "selectorText": "#d-author-normal-user-important", "declaredValue": "rgb(200, 10, 20)", "important": true }
+    },
+    {
+      "id": "D8",
+      "descricao": "AUTHOR important vence USER normal",
+      "alvo": "#d-user-normal-author-important",
+      "propriedade": "color",
+      "esperado": {
+        "computed": "rgb(0, 0, 255)",
+        "winner": { "origin": "author", "value": "rgb(0, 0, 255)", "important": true },
+        "concorrentes": [
+          { "origin": "user", "value": "rgb(20, 0, 255)", "important": false, "selectorText": "#d-user-normal-author-important", "cdpOrigin": "user-agent" },
+          { "origin": "author", "value": "rgb(0, 0, 255)", "important": true, "selectorText": "#d-user-normal-author-important.author-important" }
+        ]
+      },
+      "proveniencia": { "origin": "user", "cdpOrigin": "user-agent", "selectorText": "#d-user-normal-author-important", "declaredValue": "rgb(20, 0, 255)", "important": false }
+    },
+    {
+      "id": "D9",
+      "descricao": "USER important vence USER-AGENT normal",
+      "alvo": "#d-ua-normal-user-important",
+      "propriedade": "font-size",
+      "esperado": {
+        "computed": "18px",
+        "winner": { "origin": "user", "value": "18px", "important": true },
+        "concorrentes": [
+          { "origin": "user-agent", "value": "2em", "important": false, "selectorText": "h1" },
+          { "origin": "user", "value": "18px", "important": true, "selectorText": "#d-ua-normal-user-important", "cdpOrigin": "user-agent" }
+        ]
+      },
+      "proveniencia": { "origin": "user", "cdpOrigin": "user-agent", "selectorText": "#d-ua-normal-user-important", "declaredValue": "18px", "important": true }
+    },
+    {
+      "id": "D10",
+      "descricao": "USER-AGENT important vence AUTHOR normal",
+      "alvo": "#d-ua-important-author-normal",
+      "propriedade": "display",
+      "esperado": {
+        "computed": "none",
+        "winner": { "origin": "user-agent", "value": "none", "important": true },
+        "concorrentes": [
+          { "origin": "user-agent", "value": "none", "important": true, "selectorText": "input[type=\"hidden\" i]" },
+          { "origin": "author", "value": "block", "important": false, "selectorText": "#d-ua-important-author-normal" }
+        ]
+      }
+    }
+  ]
+}
