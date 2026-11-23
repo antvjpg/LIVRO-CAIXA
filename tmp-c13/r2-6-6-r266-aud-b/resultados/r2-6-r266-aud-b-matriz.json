@@ -1,0 +1,593 @@
+{
+  "meta": {
+    "id": "r266-aud-b-navegador",
+    "data": "2026-11-23T00:42:55.374Z",
+    "fixture": "tmp-c13/r2-6-6-r266-aud-b/fixture.html",
+    "url": "http://127.0.0.1:8000/tmp-c13/r2-6-6-r266-aud-b/fixture.html",
+    "core": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-b/c4-v05-b-r2-6-6-r266-aud-b-core.cjs",
+    "coreSha256": "f92d7016de979d30c34083f8cb320f9e0f74f4ab7d9916513db467e7c1d43926",
+    "navegador": "Chrome/156.0.8078.79",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "protocolo": "1.3",
+    "hash": "bf056dfc350a8cc5c56f95a22b4170f5cf296b820e4755c56e1378324d5c14bd"
+  },
+  "casos": [
+    {
+      "id": "H1",
+      "descricao": "Filho sem declaracao propria; pai declara azul; avo mais especifico declara vermelho",
+      "alvo": "#h1-filho",
+      "origem": "chromium-cdp",
+      "status": "PASS",
+      "divergencias": [],
+      "recebedor": {
+        "nodeId": 14,
+        "seletor": "#h1-filho"
+      },
+      "ancestral": {
+        "providerNodeId": null,
+        "providerLevel": 1,
+        "providerIdentifiedBy": "cdp-ordem"
+      },
+      "declaracaoOrigem": {
+        "selectorText": "#h1-pai",
+        "declaredValue": "rgb(0, 0, 255)",
+        "important": false
+      },
+      "valorComputado": {
+        "esperado": "rgb(0, 0, 255)",
+        "nucleo": "rgb(0, 0, 255)",
+        "cdp": "rgb(0, 0, 255)",
+        "getComputedStyle": "rgb(0, 0, 255)"
+      },
+      "metadados": {
+        "inheritanceStatus": "herdada",
+        "identityStatus": "inconclusivo",
+        "specificityStatus": "disponivel",
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "ignorados": 1,
+        "cascadeLimitations": "delimitado",
+        "mecanismos": {
+          "cascadeLayers": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getLayersForNode",
+                "camadas": 0
+              }
+            ]
+          },
+          "animacoesTransicoes": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getComputedStyleForNode",
+                "property": "color"
+              }
+            ]
+          },
+          "scopingProximity": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          },
+          "encapsulationContexts": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "Runtime.callFunctionOn:getRootNode"
+              }
+            ]
+          },
+          "regrasCondicionais": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          }
+        }
+      }
+    },
+    {
+      "id": "H2",
+      "descricao": "Pai sem declaracao propria; avo fornece a propriedade",
+      "alvo": "#h2-filho",
+      "origem": "chromium-cdp",
+      "status": "PASS",
+      "divergencias": [],
+      "recebedor": {
+        "nodeId": 19,
+        "seletor": "#h2-filho"
+      },
+      "ancestral": {
+        "providerNodeId": null,
+        "providerLevel": 2,
+        "providerIdentifiedBy": "cdp-ordem"
+      },
+      "declaracaoOrigem": {
+        "selectorText": "#h2-avo",
+        "declaredValue": "rgb(10, 20, 30)",
+        "important": false
+      },
+      "valorComputado": {
+        "esperado": "rgb(10, 20, 30)",
+        "nucleo": "rgb(10, 20, 30)",
+        "cdp": "rgb(10, 20, 30)",
+        "getComputedStyle": "rgb(10, 20, 30)"
+      },
+      "metadados": {
+        "inheritanceStatus": "herdada",
+        "identityStatus": "inconclusivo",
+        "specificityStatus": "disponivel",
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "ignorados": 0,
+        "cascadeLimitations": "delimitado",
+        "mecanismos": {
+          "cascadeLayers": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getLayersForNode",
+                "camadas": 0
+              }
+            ]
+          },
+          "animacoesTransicoes": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getComputedStyleForNode",
+                "property": "color"
+              }
+            ]
+          },
+          "scopingProximity": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          },
+          "encapsulationContexts": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "Runtime.callFunctionOn:getRootNode"
+              }
+            ]
+          },
+          "regrasCondicionais": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          }
+        }
+      }
+    },
+    {
+      "id": "H3",
+      "descricao": "Pai com !important vence avo normal de maior especificidade",
+      "alvo": "#h3-filho",
+      "origem": "chromium-cdp",
+      "status": "PASS",
+      "divergencias": [],
+      "recebedor": {
+        "nodeId": 24,
+        "seletor": "#h3-filho"
+      },
+      "ancestral": {
+        "providerNodeId": null,
+        "providerLevel": 1,
+        "providerIdentifiedBy": "cdp-ordem"
+      },
+      "declaracaoOrigem": {
+        "selectorText": "#h3-pai",
+        "declaredValue": "rgb(0, 128, 0) !important",
+        "important": true
+      },
+      "valorComputado": {
+        "esperado": "rgb(0, 128, 0)",
+        "nucleo": "rgb(0, 128, 0)",
+        "cdp": "rgb(0, 128, 0)",
+        "getComputedStyle": "rgb(0, 128, 0)"
+      },
+      "metadados": {
+        "inheritanceStatus": "herdada",
+        "identityStatus": "inconclusivo",
+        "specificityStatus": "disponivel",
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "ignorados": 1,
+        "cascadeLimitations": "delimitado",
+        "mecanismos": {
+          "cascadeLayers": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getLayersForNode",
+                "camadas": 0
+              }
+            ]
+          },
+          "animacoesTransicoes": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getComputedStyleForNode",
+                "property": "color"
+              }
+            ]
+          },
+          "scopingProximity": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          },
+          "encapsulationContexts": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "Runtime.callFunctionOn:getRootNode"
+              }
+            ]
+          },
+          "regrasCondicionais": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          }
+        }
+      }
+    },
+    {
+      "id": "H4",
+      "descricao": "Declaracao propria do filho nao compete com declaracoes herdadas",
+      "alvo": "#h4-filho",
+      "origem": "chromium-cdp",
+      "status": "PASS",
+      "divergencias": [],
+      "recebedor": {
+        "nodeId": 29,
+        "seletor": "#h4-filho"
+      },
+      "ancestral": {
+        "providerNodeId": null,
+        "providerLevel": null,
+        "providerIdentifiedBy": null
+      },
+      "declaracaoOrigem": {
+        "selectorText": "#h4-filho",
+        "declaredValue": "rgb(1, 2, 3)",
+        "important": false
+      },
+      "valorComputado": {
+        "esperado": "rgb(1, 2, 3)",
+        "nucleo": "rgb(1, 2, 3)",
+        "cdp": "rgb(1, 2, 3)",
+        "getComputedStyle": "rgb(1, 2, 3)"
+      },
+      "metadados": {
+        "inheritanceStatus": "propria",
+        "identityStatus": "nao-aplicavel",
+        "specificityStatus": "disponivel",
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "propria",
+        "ignorados": 1,
+        "cascadeLimitations": "delimitado",
+        "mecanismos": {
+          "cascadeLayers": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getLayersForNode",
+                "camadas": 0
+              }
+            ]
+          },
+          "animacoesTransicoes": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getComputedStyleForNode",
+                "property": "color"
+              }
+            ]
+          },
+          "scopingProximity": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          },
+          "encapsulationContexts": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "Runtime.callFunctionOn:getRootNode"
+              }
+            ]
+          },
+          "regrasCondicionais": {
+            "sinal": true,
+            "verificacao": "confirmado",
+            "fontes": [
+              {
+                "mecanismo": "regrasCondicionais",
+                "fonte": "rule.conditional"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "H5",
+      "descricao": "Tres niveis de ancestral com declaracao apenas no ancestral mais distante",
+      "alvo": "#h5-filho",
+      "origem": "chromium-cdp",
+      "status": "PASS",
+      "divergencias": [],
+      "recebedor": {
+        "nodeId": 35,
+        "seletor": "#h5-filho"
+      },
+      "ancestral": {
+        "providerNodeId": null,
+        "providerLevel": 3,
+        "providerIdentifiedBy": "cdp-ordem"
+      },
+      "declaracaoOrigem": {
+        "selectorText": "#h5-bisavo",
+        "declaredValue": "rgb(8, 9, 10)",
+        "important": false
+      },
+      "valorComputado": {
+        "esperado": "rgb(8, 9, 10)",
+        "nucleo": "rgb(8, 9, 10)",
+        "cdp": "rgb(8, 9, 10)",
+        "getComputedStyle": "rgb(8, 9, 10)"
+      },
+      "metadados": {
+        "inheritanceStatus": "herdada",
+        "identityStatus": "inconclusivo",
+        "specificityStatus": "disponivel",
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "ignorados": 0,
+        "cascadeLimitations": "delimitado",
+        "mecanismos": {
+          "cascadeLayers": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getLayersForNode",
+                "camadas": 0
+              }
+            ]
+          },
+          "animacoesTransicoes": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getComputedStyleForNode",
+                "property": "color"
+              }
+            ]
+          },
+          "scopingProximity": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          },
+          "encapsulationContexts": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "Runtime.callFunctionOn:getRootNode"
+              }
+            ]
+          },
+          "regrasCondicionais": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          }
+        }
+      }
+    },
+    {
+      "id": "H6",
+      "descricao": "Pai herda do avo e filho herda do pai; recebedor e origem declarativa distintos",
+      "alvo": "#h6-filho",
+      "origem": "chromium-cdp",
+      "status": "PASS",
+      "divergencias": [],
+      "recebedor": {
+        "nodeId": 40,
+        "seletor": "#h6-filho"
+      },
+      "ancestral": {
+        "providerNodeId": null,
+        "providerLevel": 2,
+        "providerIdentifiedBy": "cdp-ordem"
+      },
+      "declaracaoOrigem": {
+        "selectorText": "#h6-avo",
+        "declaredValue": "rgb(11, 12, 13)",
+        "important": false
+      },
+      "valorComputado": {
+        "esperado": "rgb(11, 12, 13)",
+        "nucleo": "rgb(11, 12, 13)",
+        "cdp": "rgb(11, 12, 13)",
+        "getComputedStyle": "rgb(11, 12, 13)"
+      },
+      "metadados": {
+        "inheritanceStatus": "herdada",
+        "identityStatus": "inconclusivo",
+        "specificityStatus": "disponivel",
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "ignorados": 0,
+        "cascadeLimitations": "delimitado",
+        "mecanismos": {
+          "cascadeLayers": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getLayersForNode",
+                "camadas": 0
+              }
+            ]
+          },
+          "animacoesTransicoes": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getComputedStyleForNode",
+                "property": "color"
+              }
+            ]
+          },
+          "scopingProximity": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          },
+          "encapsulationContexts": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "Runtime.callFunctionOn:getRootNode"
+              }
+            ]
+          },
+          "regrasCondicionais": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          }
+        }
+      }
+    },
+    {
+      "id": "H7",
+      "descricao": "Metadado de ancestral sem namespace identificavel: diagnostico inconclusivo sem vencedor confiavel",
+      "alvo": null,
+      "origem": "mock-cdp",
+      "status": "PASS",
+      "divergencias": [],
+      "recebedor": {
+        "nodeId": 1,
+        "seletor": null
+      },
+      "ancestral": {
+        "providerNodeId": null,
+        "providerLevel": 1,
+        "providerIdentifiedBy": "cdp-ordem"
+      },
+      "declaracaoOrigem": {
+        "selectorText": "#mock-pai",
+        "declaredValue": "rgb(0, 0, 255)",
+        "important": false
+      },
+      "valorComputado": {
+        "esperado": "rgb(0, 0, 255)",
+        "nucleo": "rgb(0, 0, 255)",
+        "cdp": null,
+        "getComputedStyle": null
+      },
+      "metadados": {
+        "inheritanceStatus": "herdada",
+        "identityStatus": "inconclusivo",
+        "specificityStatus": "disponivel",
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "decisionSet": "herdada",
+        "ignorados": 0,
+        "cascadeLimitations": "delimitado",
+        "mecanismos": {
+          "cascadeLayers": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getLayersForNode",
+                "camadas": 0
+              }
+            ]
+          },
+          "animacoesTransicoes": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getComputedStyleForNode",
+                "property": "color"
+              }
+            ]
+          },
+          "scopingProximity": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          },
+          "encapsulationContexts": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "Runtime.callFunctionOn:getRootNode"
+              }
+            ]
+          },
+          "regrasCondicionais": {
+            "sinal": false,
+            "verificacao": "indisponivel",
+            "fontes": []
+          }
+        }
+      }
+    }
+  ],
+  "resumo": {
+    "total": 7,
+    "PASS": 7,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "cromiumReal": 6,
+    "cenarioSintetico": 1
+  },
+  "erros": {
+    "cdp": [],
+    "console": [],
+    "excecoes": []
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "bf056dfc350a8cc5c56f95a22b4170f5cf296b820e4755c56e1378324d5c14bd",
+    "recalculated": "bf056dfc350a8cc5c56f95a22b4170f5cf296b820e4755c56e1378324d5c14bd"
+  }
+}
