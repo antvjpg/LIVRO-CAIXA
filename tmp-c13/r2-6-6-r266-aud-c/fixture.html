@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>R266 AUD C — origem e importância herdadas</title>
+<style>
+  #c1-pai.importante { color: rgb(0, 128, 0) !important; }
+  #c1-pai { color: rgb(0, 0, 255); }
+
+  h1#c2-pai { font-size: 14px; }
+
+  #c3-avo.importante { color: rgb(0, 128, 0) !important; }
+  #c3-avo { color: rgb(0, 0, 255); }
+
+  #c4-pai { color: rgb(200, 0, 0) !important; }
+  #c4-filho { color: rgb(1, 2, 3); }
+
+  #c5-pai { color: rgb(0, 0, 255); }
+  #c5-avo { color: rgb(200, 0, 0) !important; }
+</style>
+</head>
+<body>
+  <section id="cenario-c1">
+    <div id="c1-pai" class="importante">
+      <span id="c1-filho">C1</span>
+    </div>
+  </section>
+
+  <section id="cenario-c2">
+    <h1 id="c2-pai">
+      <span id="c2-filho">C2</span>
+    </h1>
+  </section>
+
+  <section id="cenario-c3">
+    <div id="c3-avo" class="importante">
+      <div id="c3-pai">
+        <span id="c3-filho">C3</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="cenario-c4">
+    <div id="c4-pai">
+      <span id="c4-filho">C4</span>
+    </div>
+  </section>
+
+  <section id="cenario-c5">
+    <div id="c5-avo">
+      <div id="c5-pai">
+        <span id="c5-filho">C5</span>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

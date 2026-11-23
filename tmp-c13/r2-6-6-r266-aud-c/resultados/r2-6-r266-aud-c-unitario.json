@@ -1,0 +1,507 @@
+{
+  "meta": {
+    "id": "r266-aud-c-unitario",
+    "core": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-c/c4-v05-b-r2-6-6-r266-aud-c-core.cjs",
+    "coreSha256": "11999fd9f7531d536c01b3b4b5ccfddb849155aadf6edab9735dcbdc38127323",
+    "data": "2026-11-23T03:26:18.172Z",
+    "hash": "cc413602eff8aade3d4750a0c499f116f13b8b8df334eb8a3730e45d809bc1c3"
+  },
+  "testes": [
+    {
+      "id": "I01",
+      "categoria": "B05",
+      "descricao": "important true",
+      "status": "PASS",
+      "esperado": {
+        "value": true,
+        "status": "explicit"
+      },
+      "observado": {
+        "value": true,
+        "status": "explicit",
+        "reason": null
+      }
+    },
+    {
+      "id": "I02",
+      "categoria": "B05",
+      "descricao": "important false",
+      "status": "PASS",
+      "esperado": {
+        "value": false,
+        "status": "explicit"
+      },
+      "observado": {
+        "value": false,
+        "status": "explicit",
+        "reason": null
+      }
+    },
+    {
+      "id": "I03",
+      "categoria": "B05",
+      "descricao": "campo ausente sem texto",
+      "status": "PASS",
+      "esperado": {
+        "value": null,
+        "status": "unknown"
+      },
+      "observado": {
+        "value": null,
+        "status": "unknown",
+        "reason": "sem-metadado-e-sem-texto"
+      }
+    },
+    {
+      "id": "I04",
+      "categoria": "B05",
+      "descricao": "important null",
+      "status": "PASS",
+      "esperado": {
+        "value": null,
+        "status": "unknown"
+      },
+      "observado": {
+        "value": null,
+        "status": "unknown",
+        "reason": "sem-metadado-e-sem-texto"
+      }
+    },
+    {
+      "id": "I05",
+      "categoria": "B05",
+      "descricao": "important tipo invalido",
+      "status": "PASS",
+      "esperado": {
+        "value": null,
+        "status": "unknown"
+      },
+      "observado": {
+        "value": null,
+        "status": "unknown",
+        "reason": "sem-metadado-e-sem-texto"
+      }
+    },
+    {
+      "id": "I06",
+      "categoria": "B05",
+      "descricao": "texto !important",
+      "status": "PASS",
+      "esperado": {
+        "value": true,
+        "status": "text"
+      },
+      "observado": {
+        "value": true,
+        "status": "text",
+        "reason": "texto-importante-confirmado"
+      }
+    },
+    {
+      "id": "I07",
+      "categoria": "B05",
+      "descricao": "texto normal explicito",
+      "status": "PASS",
+      "esperado": {
+        "value": false,
+        "status": "text"
+      },
+      "observado": {
+        "value": false,
+        "status": "text",
+        "reason": "texto-normal-confirmado"
+      }
+    },
+    {
+      "id": "I08",
+      "categoria": "B05",
+      "descricao": "metadado false contra texto importante",
+      "status": "PASS",
+      "esperado": {
+        "value": null,
+        "status": "contradiction"
+      },
+      "observado": {
+        "value": null,
+        "status": "contradiction",
+        "reason": "metadado-normal-texto-importante"
+      }
+    },
+    {
+      "id": "I09",
+      "categoria": "B05",
+      "descricao": "metadado true contra texto normal",
+      "status": "PASS",
+      "esperado": {
+        "value": null,
+        "status": "contradiction"
+      },
+      "observado": {
+        "value": null,
+        "status": "contradiction",
+        "reason": "metadado-importante-texto-normal"
+      }
+    },
+    {
+      "id": "I10",
+      "categoria": "B05",
+      "descricao": "metadado ausente com texto ambiguo",
+      "status": "PASS",
+      "esperado": {
+        "value": null,
+        "status": "ambiguous"
+      },
+      "observado": {
+        "value": null,
+        "status": "ambiguous",
+        "reason": "texto-ambigu"
+      }
+    },
+    {
+      "id": "I11",
+      "categoria": "B05",
+      "descricao": "importancia desconhecida pode alterar o vencedor",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "importance-insufficient",
+        "vencedor": null
+      },
+      "observado": {
+        "captureStatus": "importance-insufficient",
+        "vencedor": null
+      }
+    },
+    {
+      "id": "I13",
+      "categoria": "B05",
+      "descricao": "contradicao impede promocao automatica",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "importance-contradiction",
+        "vencedor": null
+      },
+      "observado": {
+        "captureStatus": "importance-contradiction",
+        "vencedor": null
+      }
+    },
+    {
+      "id": "H06",
+      "categoria": "B06 heranca",
+      "descricao": "origem incompleta no grupo relevante bloqueia",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "origin-insufficient",
+        "vencedor": null
+      },
+      "observado": {
+        "captureStatus": "origin-insufficient",
+        "vencedor": null
+      }
+    },
+    {
+      "id": "H08",
+      "categoria": "B06 heranca",
+      "descricao": "empate com metadados contraditorios nao gera vencedor",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "importance-contradiction",
+        "vencedor": null
+      },
+      "observado": {
+        "captureStatus": "importance-contradiction",
+        "vencedor": null
+      }
+    },
+    {
+      "id": "I12",
+      "categoria": "B05",
+      "descricao": "importancia desconhecida irrelevante nao bloqueia mas rebaixa confianca",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "important": null
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado",
+        "important": null
+      }
+    },
+    {
+      "id": "O01",
+      "categoria": "B06",
+      "descricao": "author normal vs user normal",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(0, 128, 0)",
+        "origin": "author"
+      },
+      "observado": {
+        "value": "rgb(0, 128, 0)",
+        "origin": "author",
+        "important": false
+      }
+    },
+    {
+      "id": "O02",
+      "categoria": "B06",
+      "descricao": "author normal vs user-agent normal",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(0, 128, 0)",
+        "origin": "author"
+      },
+      "observado": {
+        "value": "rgb(0, 128, 0)",
+        "origin": "author",
+        "important": false
+      }
+    },
+    {
+      "id": "O03",
+      "categoria": "B06",
+      "descricao": "user normal vs user-agent normal",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(0, 0, 255)",
+        "origin": "user"
+      },
+      "observado": {
+        "value": "rgb(0, 0, 255)",
+        "origin": "user",
+        "important": false
+      }
+    },
+    {
+      "id": "O04",
+      "categoria": "B06",
+      "descricao": "user-agent important vs user important",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent"
+      },
+      "observado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent",
+        "important": true
+      }
+    },
+    {
+      "id": "O05",
+      "categoria": "B06",
+      "descricao": "user-agent important vs author important",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent"
+      },
+      "observado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent",
+        "important": true
+      }
+    },
+    {
+      "id": "O06",
+      "categoria": "B06",
+      "descricao": "user important vs author important",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(20, 0, 255)",
+        "origin": "user"
+      },
+      "observado": {
+        "value": "rgb(20, 0, 255)",
+        "origin": "user",
+        "important": true
+      }
+    },
+    {
+      "id": "O07",
+      "categoria": "B06",
+      "descricao": "author normal vs author important",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(10, 128, 10)",
+        "origin": "author"
+      },
+      "observado": {
+        "value": "rgb(10, 128, 10)",
+        "origin": "author",
+        "important": true
+      }
+    },
+    {
+      "id": "O08",
+      "categoria": "B06",
+      "descricao": "user normal vs user important",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(20, 0, 255)",
+        "origin": "user"
+      },
+      "observado": {
+        "value": "rgb(20, 0, 255)",
+        "origin": "user",
+        "important": true
+      }
+    },
+    {
+      "id": "O09",
+      "categoria": "B06",
+      "descricao": "user-agent normal vs user-agent important",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent"
+      },
+      "observado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent",
+        "important": true
+      }
+    },
+    {
+      "id": "O10",
+      "categoria": "B06",
+      "descricao": "author important vs user important",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(20, 0, 255)",
+        "origin": "user"
+      },
+      "observado": {
+        "value": "rgb(20, 0, 255)",
+        "origin": "user",
+        "important": true
+      }
+    },
+    {
+      "id": "O11",
+      "categoria": "B06",
+      "descricao": "user important vs user-agent important",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent"
+      },
+      "observado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent",
+        "important": true
+      }
+    },
+    {
+      "id": "O12",
+      "categoria": "B06",
+      "descricao": "author important vs user-agent important",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent"
+      },
+      "observado": {
+        "value": "rgb(200, 0, 0)",
+        "origin": "user-agent",
+        "important": true
+      }
+    },
+    {
+      "id": "H01",
+      "categoria": "B06 heranca",
+      "descricao": "pai imediato com duas origens normais",
+      "status": "PASS",
+      "esperado": {
+        "origin": "author",
+        "providerLevel": 1
+      },
+      "observado": {
+        "origin": "author",
+        "providerLevel": 1
+      }
+    },
+    {
+      "id": "H02",
+      "categoria": "B06 heranca",
+      "descricao": "pai imediato com origem normal e importante",
+      "status": "PASS",
+      "esperado": {
+        "important": true,
+        "origin": "author"
+      },
+      "observado": {
+        "important": true,
+        "origin": "author"
+      }
+    },
+    {
+      "id": "H03",
+      "categoria": "B06 heranca",
+      "descricao": "avo fornecedor com disputa de origens",
+      "status": "PASS",
+      "esperado": {
+        "origin": "user",
+        "providerLevel": 2
+      },
+      "observado": {
+        "origin": "user",
+        "providerLevel": 2
+      }
+    },
+    {
+      "id": "H04",
+      "categoria": "B06 heranca",
+      "descricao": "declaracao propria impede confusao com disputa do ancestral",
+      "status": "PASS",
+      "esperado": {
+        "origem": "propria",
+        "value": "rgb(1, 2, 3)"
+      },
+      "observado": {
+        "origem": "propria",
+        "value": "rgb(1, 2, 3)"
+      }
+    },
+    {
+      "id": "H05",
+      "categoria": "B06 heranca",
+      "descricao": "ancestral distante irrelevante",
+      "status": "PASS",
+      "esperado": {
+        "value": "rgb(0, 128, 0)",
+        "ignorados": 1
+      },
+      "observado": {
+        "value": "rgb(0, 128, 0)",
+        "ignorados": 1
+      }
+    },
+    {
+      "id": "H07",
+      "categoria": "B06 heranca",
+      "descricao": "origem desconhecida isolada rebaixa confianca",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado"
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "winnerConfidence": "condicionado"
+      }
+    }
+  ],
+  "resumo": {
+    "total": 33,
+    "PASS": 33,
+    "FAIL": 0
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "cc413602eff8aade3d4750a0c499f116f13b8b8df334eb8a3730e45d809bc1c3",
+    "recalculated": "cc413602eff8aade3d4750a0c499f116f13b8b8df334eb8a3730e45d809bc1c3"
+  }
+}

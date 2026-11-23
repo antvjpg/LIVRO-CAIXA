@@ -47,6 +47,13 @@ const TESTE_R266AUDB = path.join(ROOT, 'tmp-c13/r2-6-6-r266-aud-b/teste-r266-aud
 const TESTE_R266AUDB_ARTIFACT = path.join(ARTIFACTS, 'r2-6-r266-aud-b-unitario.json');
 const MATRIZ_R266AUDB_OUT = path.join(ARTIFACTS, 'r2-6-r266-aud-b-matriz.json');
 const MATRIZ_266_HISTORICO_OUT = path.join(ARTIFACTS, 'r2-6-6-historico-matriz.json');
+const CORE_R266AUDC = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-c/c4-v05-b-r2-6-6-r266-aud-c-core.cjs');
+const CORE_R266AUDC_SHA256 = '11999fd9f7531d536c01b3b4b5ccfddb849155aadf6edab9735dcbdc38127323';
+const VALIDATOR_R266AUDC = path.join(ROOT, 'tmp-c13/r2-6-6-r266-aud-c/validacao-r266-aud-c.cjs');
+const TESTE_R266AUDC = path.join(ROOT, 'tmp-c13/r2-6-6-r266-aud-c/teste-r266-aud-c.cjs');
+const TESTE_R266AUDC_ARTIFACT = path.join(ARTIFACTS, 'r2-6-r266-aud-c-unitario.json');
+const MATRIZ_R266AUDC_OUT = path.join(ARTIFACTS, 'r2-6-r266-aud-c-matriz.json');
+const MATRIZ_R266AUDB_COMPARATIVO_OUT = path.join(ARTIFACTS, 'r2-6-r266-aud-b-comparativo-matriz.json');
 const EXTENSION_266 = path.join(ROOT, 'tmp-c13/r2-6-6/extension');
 const REGRESSION = path.join(ROOT, 'tmp-c13/r2-6-4/regressao/test-r2-6.cjs');
 const BASELINE = path.join(ROOT, 'docs/auditorias/c4-v05-b/evidencias-r2-5-7/c4-v05-b-r2-5-7-test-results.json');
@@ -157,6 +164,7 @@ function appendStepSummary(summary) {
     `| R2.6.5 | ${summary.r26_5.PASS} PASS / ${summary.r26_5.FAIL} FAIL / ${summary.r26_5.BLOCKED} BLOCKED |`,
     `| R2.6.6 | ${summary.r26_6.PASS} PASS / ${summary.r26_6.FAIL} FAIL / ${summary.r26_6.BLOCKED} BLOCKED | núcleo ${summary.r26_6.nucleoSha256 || 'desconhecido'} |`,
     `| R2.6.6 histórico | ${summary.r26_6_historico.PASS} PASS / ${summary.r26_6_historico.FAIL} FAIL / ${summary.r26_6_historico.BLOCKED} BLOCKED | núcleo ${summary.r26_6_historico.nucleoSha256 || 'desconhecido'} |`,
+    `| R2.6.6 B comparativo | ${summary.r26_6_audb_comparativo.PASS} PASS / ${summary.r26_6_audb_comparativo.FAIL} FAIL / ${summary.r26_6_audb_comparativo.BLOCKED} BLOCKED | núcleo ${summary.r26_6_audb_comparativo.nucleoSha256 || 'desconhecido'} |`,
     `| A-01 | ${summary.a01.PASS} PASS / ${summary.a01.FAIL} FAIL / ${summary.a01.BLOCKED} BLOCKED |`,
     `| A-01B | ${summary.a01b.PASS} PASS / ${summary.a01b.FAIL} FAIL / ${summary.a01b.BLOCKED} BLOCKED |`,
     `| A-02 | ${summary.a02.PASS} PASS / ${summary.a02.FAIL} FAIL / ${summary.a02.BLOCKED} BLOCKED |`,
@@ -165,6 +173,7 @@ function appendStepSummary(summary) {
     `| A-03B | ${summary.a03b.PASS} PASS / ${summary.a03b.FAIL} FAIL / ${summary.a03b.BLOCKED} BLOCKED |`,
     `| R266-AUD | ${summary.r266aud.PASS} PASS / ${summary.r266aud.FAIL} FAIL / ${summary.r266aud.BLOCKED} BLOCKED |`,
     `| R266-AUD-B | ${summary.r266audb.PASS} PASS / ${summary.r266audb.FAIL} FAIL / ${summary.r266audb.BLOCKED} BLOCKED | núcleo ${summary.r266audb.nucleoSha256 || 'desconhecido'} |`,
+    `| R266-AUD-C | ${summary.r266audc.PASS} PASS / ${summary.r266audc.FAIL} FAIL / ${summary.r266audc.BLOCKED} BLOCKED | núcleo ${summary.r266audc.nucleoSha256 || 'desconhecido'} |`,
     `| Regressao | ${summary.regression.PASS} PASS / ${summary.regression.FAIL} FAIL / ${summary.regression.BLOCKED} BLOCKED |`,
     `| Divergencias | ${summary.regression.divergences} |`,
     `| Duracao | ${summary.durationMs}ms |`,
@@ -204,6 +213,9 @@ async function main() {
   let testeR266aud = null;
   let r266audb = null;
   let testeR266audb = null;
+  let r266audc = null;
+  let testeR266audc = null;
+  let r266AudbComparativo = null;
   let r266Historico = null;
   let regressionRows = [];
   let baselineRows = [];
@@ -289,15 +301,19 @@ async function main() {
     const cdpInesperados = (r265Erros.cdp || []).filter((e) => String(e.operation || '').indexOf('resolveWinningValue') === -1);
     if (cdpInesperados.length) problems.push(`R2.6.5 cdpErrors inesperados=${cdpInesperados.length}`);
 
-    if (path.resolve(CORE_266) === path.resolve(CORE_R266AUDB)) {
-      problems.push('R2.6.6 aponta para o nucleo historico; integracao R266-AUD-B nao efetiva');
+    if (path.resolve(CORE_266) === path.resolve(CORE_R266AUDC)) {
+      problems.push('R2.6.6 aponta para o nucleo historico; integracao R266-AUD-C nao efetiva');
+    }
+    if (path.resolve(CORE_R266AUDB) === path.resolve(CORE_R266AUDC)) {
+      problems.push('R2.6.6 aponta para o nucleo B; integracao R266-AUD-C nao efetiva');
     }
     if (sha256File(CORE_266) !== CORE_266_HISTORICO_SHA256) problems.push('SHA do nucleo historico R2.6.6 mudou');
     if (sha256File(CORE_R266AUDB) !== CORE_R266AUDB_SHA256) problems.push('SHA do nucleo R266-AUD-B nao corresponde ao pino');
+    if (sha256File(CORE_R266AUDC) !== CORE_R266AUDC_SHA256) problems.push('SHA do nucleo R266-AUD-C nao corresponde ao pino');
 
     const r266Run = spawnSync(
       process.execPath,
-      [VALIDATOR_266, `--core=${CORE_R266AUDB}`, `--out=${MATRIZ_266_OUT}`],
+      [VALIDATOR_266, `--core=${CORE_R266AUDC}`, `--out=${MATRIZ_266_OUT}`],
       { cwd: ROOT, stdio: 'inherit' }
     );
     if (r266Run.status !== 0) problems.push(`validador R2.6.6 exit=${r266Run.status}`);
@@ -311,8 +327,8 @@ async function main() {
     if (r266Resumo.origemPASS !== 3) problems.push(`R2.6.6 origemPASS=${r266Resumo.origemPASS}, esperado 3`);
     if (r266Resumo.especificidadePASS !== 8) problems.push(`R2.6.6 especificidadePASS=${r266Resumo.especificidadePASS}, esperado 8`);
     if (!r266.verification || r266.verification.hashMatches !== true) problems.push('hash R2.6.6 nao confere');
-    if (!r266.meta || r266.meta.nucleoSha256 !== CORE_R266AUDB_SHA256) {
-      problems.push('matriz R2.6.6 nao registra o nucleo R266-AUD-B');
+    if (!r266.meta || r266.meta.nucleoSha256 !== CORE_R266AUDC_SHA256) {
+      problems.push('matriz R2.6.6 nao registra o nucleo R266-AUD-C');
     }
     const r266Erros = r266.erros || {};
     for (const key of ['cdp', 'console', 'excecoes']) {
@@ -338,6 +354,21 @@ async function main() {
     }
     if (!r266Historico.meta || r266Historico.meta.nucleoSha256 !== CORE_266_HISTORICO_SHA256) {
       problems.push('matriz historica R2.6.6 nao registra o nucleo historico');
+    }
+
+    const r266AudbComparativoRun = spawnSync(
+      process.execPath,
+      [VALIDATOR_266, `--core=${CORE_R266AUDB}`, `--out=${MATRIZ_R266AUDB_COMPARATIVO_OUT}`],
+      { cwd: ROOT, stdio: 'inherit' }
+    );
+    if (r266AudbComparativoRun.status !== 0) problems.push(`validador R266-AUD-B comparativo exit=${r266AudbComparativoRun.status}`);
+    r266AudbComparativo = JSON.parse(fs.readFileSync(MATRIZ_R266AUDB_COMPARATIVO_OUT, 'utf8'));
+    const r266AudbCompResumo = r266AudbComparativo.resumo || {};
+    if (r266AudbCompResumo.total !== 11 || r266AudbCompResumo.PASS !== 11 || r266AudbCompResumo.FAIL !== 0) {
+      problems.push('matriz comparativa R266-AUD-B divergiu do baseline');
+    }
+    if (!r266AudbComparativo.meta || r266AudbComparativo.meta.nucleoSha256 !== CORE_R266AUDB_SHA256) {
+      problems.push('matriz comparativa R266-AUD-B nao registra o nucleo B');
     }
 
     const comparadorRun = spawnSync(process.execPath, [COMPARADOR_A01, `--out=${COMPARADOR_A01_ARTIFACT}`], { cwd: ROOT, stdio: 'inherit' });
@@ -718,6 +749,57 @@ async function main() {
       if (itens.length) problems.push(`R266-AUD-B erros.${key}=${itens.length}`);
     }
 
+    const testeR266AudcRun = spawnSync(process.execPath, [TESTE_R266AUDC, `--out=${TESTE_R266AUDC_ARTIFACT}`], { cwd: ROOT, stdio: 'inherit' });
+    if (testeR266AudcRun.status !== 0) problems.push(`teste R266-AUD-C exit=${testeR266AudcRun.status}`);
+    if (!fs.existsSync(TESTE_R266AUDC_ARTIFACT)) {
+      problems.push('teste R266-AUD-C sem artifact');
+    } else {
+      testeR266audc = JSON.parse(fs.readFileSync(TESTE_R266AUDC_ARTIFACT, 'utf8'));
+      const resumoTesteC = testeR266audc.resumo || {};
+      if (resumoTesteC.total !== 33) problems.push(`R266-AUD-C unitario total=${resumoTesteC.total}, esperado 33`);
+      if (resumoTesteC.PASS !== 33) problems.push(`R266-AUD-C unitario PASS=${resumoTesteC.PASS}, esperado 33`);
+      if (resumoTesteC.FAIL !== 0) problems.push(`R266-AUD-C unitario FAIL=${resumoTesteC.FAIL}, esperado 0`);
+      for (const id of ['I03', 'I08', 'I11', 'I12', 'I13', 'O01', 'O06', 'O11', 'O12', 'H01', 'H03', 'H06', 'H08']) {
+        const teste = (testeR266audc.testes || []).find((item) => item.id === id);
+        if (!teste || teste.status !== 'PASS') problems.push(`R266-AUD-C unitario caso ${id} nao PASS`);
+      }
+      if (!testeR266audc.meta || testeR266audc.meta.coreSha256 !== CORE_R266AUDC_SHA256) problems.push('teste R266-AUD-C nao registra o nucleo correto');
+      if (!testeR266audc.verification || testeR266audc.verification.hashMatches !== true) problems.push('hash do teste R266-AUD-C nao confere');
+    }
+
+    const r266AudcRun = spawnSync(
+      process.execPath,
+      [VALIDATOR_R266AUDC, `--core=${CORE_R266AUDC}`, `--out=${MATRIZ_R266AUDC_OUT}`],
+      { cwd: ROOT, stdio: 'inherit' }
+    );
+    if (r266AudcRun.status !== 0) problems.push(`validador R266-AUD-C exit=${r266AudcRun.status}`);
+    r266audc = JSON.parse(fs.readFileSync(MATRIZ_R266AUDC_OUT, 'utf8'));
+    const r266AudcResumo = r266audc.resumo || {};
+    if (r266AudcResumo.total !== 5) problems.push(`R266-AUD-C total=${r266AudcResumo.total}, esperado 5`);
+    if (r266AudcResumo.PASS !== 5) problems.push(`R266-AUD-C PASS=${r266AudcResumo.PASS}, esperado 5`);
+    if (r266AudcResumo.FAIL !== 0) problems.push(`R266-AUD-C FAIL=${r266AudcResumo.FAIL}, esperado 0`);
+    if (r266AudcResumo.BLOCKED !== 0) problems.push(`R266-AUD-C BLOCKED=${r266AudcResumo.BLOCKED}, esperado 0`);
+    if (r266AudcResumo.chromiumReal !== 5) problems.push(`R266-AUD-C chromiumReal=${r266AudcResumo.chromiumReal}, esperado 5`);
+    if (!r266audc.meta || r266audc.meta.coreSha256 !== CORE_R266AUDC_SHA256) problems.push('matriz R266-AUD-C nao registra o nucleo correto');
+    for (const id of ['C1', 'C2', 'C3', 'C4', 'C5']) {
+      const caso = (r266audc.casos || []).find((item) => item.id === id);
+      if (!caso || caso.status !== 'PASS') problems.push(`R266-AUD-C caso ${id} nao PASS`);
+    }
+    const c1 = (r266audc.casos || []).find((item) => item.id === 'C1');
+    if (!c1 || !c1.vencedor || c1.vencedor.origin !== 'author' || c1.vencedor.important !== true) {
+      problems.push('R266-AUD-C C1 nao comprovou author important no ancestral');
+    }
+    const c2 = (r266audc.casos || []).find((item) => item.id === 'C2');
+    if (!c2 || !c2.vencedor || c2.vencedor.origin !== 'author' || c2.vencedor.important !== false) {
+      problems.push('R266-AUD-C C2 nao comprovou author normal sobre user-agent');
+    }
+    if (!r266audc.verification || r266audc.verification.hashMatches !== true) problems.push('hash R266-AUD-C nao confere');
+    const r266AudcErros = r266audc.erros || {};
+    for (const key of ['cdp', 'console', 'excecoes']) {
+      const itens = r266AudcErros[key] || [];
+      if (itens.length) problems.push(`R266-AUD-C erros.${key}=${itens.length}`);
+    }
+
     const regressionRun = spawnSync(process.execPath, [REGRESSION], {
       cwd: ROOT,
       encoding: 'utf8',
@@ -762,19 +844,22 @@ async function main() {
     sha: process.env.GITHUB_SHA || null,
     node: process.version,
     core: CORE,
-    core266: CORE_R266AUDB,
+    core266: CORE_R266AUDC,
     core266Historico: CORE_266_HISTORICO,
+    core266Audb: CORE_R266AUDB,
     coreA01: CORE_A01,
     coreA01b: CORE_A01B,
     nucleos: {
       r26: { path: CORE, sha256: sha256File(CORE) },
       r265: { path: CORE, sha256: sha256File(CORE) },
-      r266: { path: CORE_R266AUDB, sha256: sha256File(CORE_R266AUDB) },
+      r266: { path: CORE_R266AUDC, sha256: sha256File(CORE_R266AUDC) },
       r266Historico: { path: CORE_266_HISTORICO, sha256: sha256File(CORE_266_HISTORICO) },
+      r266Audb: { path: CORE_R266AUDB, sha256: sha256File(CORE_R266AUDB) },
       a01: { path: CORE_A01, sha256: sha256File(CORE_A01) },
       a01b: { path: CORE_A01B, sha256: sha256File(CORE_A01B) },
       r266aud: { path: CORE_R266AUD, sha256: sha256File(CORE_R266AUD) },
       r266audb: { path: CORE_R266AUDB, sha256: sha256File(CORE_R266AUDB) },
+      r266audc: { path: CORE_R266AUDC, sha256: sha256File(CORE_R266AUDC) },
     },
     matrix: {
       PASS: (matrix && matrix.resumo && matrix.resumo.PASS) || 0,
@@ -801,6 +886,13 @@ async function main() {
       BLOCKED: (r266Historico && r266Historico.resumo && r266Historico.resumo.BLOCKED) || 0,
       NOT_RUN: (r266Historico && r266Historico.resumo && r266Historico.resumo.NOT_RUN) || 0,
       nucleoSha256: (r266Historico && r266Historico.meta && r266Historico.meta.nucleoSha256) || null,
+    },
+    r26_6_audb_comparativo: {
+      PASS: (r266AudbComparativo && r266AudbComparativo.resumo && r266AudbComparativo.resumo.PASS) || 0,
+      FAIL: (r266AudbComparativo && r266AudbComparativo.resumo && r266AudbComparativo.resumo.FAIL) || 0,
+      BLOCKED: (r266AudbComparativo && r266AudbComparativo.resumo && r266AudbComparativo.resumo.BLOCKED) || 0,
+      NOT_RUN: (r266AudbComparativo && r266AudbComparativo.resumo && r266AudbComparativo.resumo.NOT_RUN) || 0,
+      nucleoSha256: (r266AudbComparativo && r266AudbComparativo.meta && r266AudbComparativo.meta.nucleoSha256) || null,
     },
     a01: {
       PASS: (a01 && a01.resumo && a01.resumo.PASS) || 0,
@@ -879,6 +971,15 @@ async function main() {
       cenarioSintetico: (r266audb && r266audb.resumo && r266audb.resumo.cenarioSintetico) || 0,
       nucleoSha256: (r266audb && r266audb.meta && r266audb.meta.coreSha256) || null,
     },
+    r266audc: {
+      PASS: (r266audc && r266audc.resumo && r266audc.resumo.PASS) || 0,
+      FAIL: (r266audc && r266audc.resumo && r266audc.resumo.FAIL) || 0,
+      BLOCKED: (r266audc && r266audc.resumo && r266audc.resumo.BLOCKED) || 0,
+      NOT_RUN: (r266audc && r266audc.resumo && r266audc.resumo.NOT_RUN) || 0,
+      unitarioPASS: testeR266audc && testeR266audc.resumo ? testeR266audc.resumo.PASS || 0 : 0,
+      chromiumReal: (r266audc && r266audc.resumo && r266audc.resumo.chromiumReal) || 0,
+      nucleoSha256: (r266audc && r266audc.meta && r266audc.meta.coreSha256) || null,
+    },
     regression: {
       records: regressionRows.length,
       baseline: baselineRows.length,
@@ -892,7 +993,7 @@ async function main() {
   };
   fs.writeFileSync(SUMMARY_OUT, `${JSON.stringify(summary, null, 2)}\n`);
   appendStepSummary(summary);
-  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | A-01B ${summary.a01b.PASS}/11 | A-02 ${summary.a02.PASS}/11 | A-02B ${summary.a02b.PASS}/11 | A-03 ${summary.a03.PASS}/12 | A-03B ${summary.a03b.PASS}/12 | R266-AUD ${summary.r266aud.PASS}/7 | R266-AUD-B ${summary.r266audb.PASS}/7 | historico ${summary.r26_6_historico.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
+  console.log(`R2.6 CI: ${summary.verdict} | matriz ${summary.matrix.PASS}/10 | R2.6.5 ${summary.r26_5.PASS}/13 | R2.6.6 ${summary.r26_6.PASS}/11 | A-01 ${summary.a01.PASS}/11 | A-01B ${summary.a01b.PASS}/11 | A-02 ${summary.a02.PASS}/11 | A-02B ${summary.a02b.PASS}/11 | A-03 ${summary.a03.PASS}/12 | A-03B ${summary.a03b.PASS}/12 | R266-AUD ${summary.r266aud.PASS}/7 | R266-AUD-B ${summary.r266audb.PASS}/7 | R266-AUD-C ${summary.r266audc.PASS}/5 | B comparativo ${summary.r26_6_audb_comparativo.PASS}/11 | historico ${summary.r26_6_historico.PASS}/11 | regressao ${summary.regression.PASS}/${summary.regression.records}`);
   if (problems.length) {
     for (const problem of problems) console.error(`- ${problem}`);
     process.exitCode = 1;

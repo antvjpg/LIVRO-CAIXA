@@ -1,0 +1,914 @@
+{
+  "meta": {
+    "id": "R2.6.6",
+    "data": "2026-11-23T03:25:50.275Z",
+    "fixture": "tmp-c13/r2-6-6/fixture.html",
+    "url": "http://127.0.0.1:8000/tmp-c13/r2-6-6/fixture.html",
+    "extensao": "tmp-c13/r2-6-6/extension",
+    "nucleo": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-b/c4-v05-b-r2-6-6-r266-aud-b-core.cjs",
+    "nucleoSha256": "f92d7016de979d30c34083f8cb320f9e0f74f4ab7d9916513db467e7c1d43926",
+    "navegador": "Chrome/156.0.8078.79",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "protocolo": "1.3",
+    "criterios": [
+      "computed",
+      "resolved",
+      "vencedor",
+      "origem",
+      "importante",
+      "especificidade"
+    ],
+    "hash": "75c6d07f4ed3c6ccd9a8f5423c74f5a0b43c740fe1e162ef77a0d5d9c2bc8d55"
+  },
+  "casos": [
+    {
+      "id": "R265-O3",
+      "grupo": "user-agent",
+      "descricao": "author normal vence user-agent normal",
+      "alvo": "#r266-ua-normal",
+      "propriedade": "font-size",
+      "pseudoElement": null,
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "user-agent",
+          "seletor": "h1",
+          "valor": "2em",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-ua-normal",
+          "valor": "14px",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-ua-normal",
+          "valor": "14px",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "14px",
+        "esperado": "14px",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "14px",
+        "resolvedValue": "14px",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r266-ua-normal",
+          "declaredValue": "14px",
+          "important": false,
+          "origin": "author",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "pseudoElement": null
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R265-O4",
+      "grupo": "user-agent",
+      "descricao": "user-agent importante vence author importante",
+      "alvo": "#r266-ua-important",
+      "propriedade": "display",
+      "pseudoElement": null,
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "user-agent",
+          "seletor": "input, textarea, select, button",
+          "valor": "inline-block",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          }
+        },
+        {
+          "origem": "user-agent",
+          "seletor": "input[type=\"hidden\" i]",
+          "valor": "none",
+          "importante": true,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-ua-important",
+          "valor": "block",
+          "importante": true,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-ua-important",
+          "valor": "block",
+          "importante": true,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "none",
+        "esperado": "none",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "none !important",
+        "resolvedValue": "none",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "input[type=\"hidden\" i]",
+          "declaredValue": "none",
+          "important": true,
+          "origin": "user-agent",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          },
+          "pseudoElement": null
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R265-U1",
+      "grupo": "user",
+      "descricao": "user importante vence author importante",
+      "alvo": "#r266-user-important",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "injecao": {
+        "extensionId": "gbjdkjllfkepoekbcolmbkjfpdghhacc",
+        "metodo": "hash-do-caminho",
+        "title": "r266-inject:ok",
+        "tentativas": [
+          {
+            "extensionId": "gbjdkjllfkepoekbcolmbkjfpdghhacc",
+            "title": "r266-inject:ok"
+          }
+        ],
+        "computadoApos": "rgb(200, 10, 20)",
+        "confirmado": true
+      },
+      "regrasNavegador": [
+        {
+          "origem": "user-agent",
+          "seletor": "#r266-user-important",
+          "valor": "rgb(200, 10, 20)",
+          "importante": true,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-user-important",
+          "valor": "rgb(10, 20, 30)",
+          "importante": true,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-user-important",
+          "valor": "rgb(10, 20, 30)",
+          "importante": true,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "rgb(200, 10, 20)",
+        "esperado": "rgb(200, 10, 20)",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "rgb(200, 10, 20) !important",
+        "resolvedValue": "rgb(200, 10, 20)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r266-user-important",
+          "declaredValue": "rgb(200, 10, 20)",
+          "important": true,
+          "origin": "user-agent",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "pseudoElement": null
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R266-S1",
+      "grupo": "especificidade",
+      "descricao": ":is() com ID",
+      "alvo": "#r266-spec-is",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-is",
+          "valor": "rgb(1, 2, 3)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-is",
+          "valor": "rgb(1, 2, 3)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ":is(#r266-spec-is)",
+          "valor": "rgb(4, 5, 6)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ":is(#r266-spec-is)",
+          "valor": "rgb(4, 5, 6)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "rgb(4, 5, 6)",
+        "esperado": "rgb(4, 5, 6)",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "rgb(4, 5, 6)",
+        "resolvedValue": "rgb(4, 5, 6)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": ":is(#r266-spec-is)",
+          "declaredValue": "rgb(4, 5, 6)",
+          "important": false,
+          "origin": "author",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "pseudoElement": null
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R266-S2",
+      "grupo": "especificidade",
+      "descricao": ":where() tem especificidade zero",
+      "alvo": "#r266-spec-where",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "regular",
+          "seletor": ":where(#r266-spec-where)",
+          "valor": "rgb(10, 11, 12)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ":where(#r266-spec-where)",
+          "valor": "rgb(10, 11, 12)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-where",
+          "valor": "rgb(7, 8, 9)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-where",
+          "valor": "rgb(7, 8, 9)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "rgb(7, 8, 9)",
+        "esperado": "rgb(7, 8, 9)",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "rgb(7, 8, 9)",
+        "resolvedValue": "rgb(7, 8, 9)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": ".r266-spec-where",
+          "declaredValue": "rgb(7, 8, 9)",
+          "important": false,
+          "origin": "author",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "pseudoElement": null
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R266-S3",
+      "grupo": "especificidade",
+      "descricao": ":not() adiciona especificidade do argumento",
+      "alvo": "#r266-spec-not",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-not",
+          "valor": "rgb(13, 14, 15)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-not",
+          "valor": "rgb(13, 14, 15)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-not:not(.ausente)",
+          "valor": "rgb(16, 17, 18)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-not:not(.ausente)",
+          "valor": "rgb(16, 17, 18)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "rgb(16, 17, 18)",
+        "esperado": "rgb(16, 17, 18)",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "rgb(16, 17, 18)",
+        "resolvedValue": "rgb(16, 17, 18)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r266-spec-not:not(.ausente)",
+          "declaredValue": "rgb(16, 17, 18)",
+          "important": false,
+          "origin": "author",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "pseudoElement": null
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R266-S4",
+      "grupo": "especificidade",
+      "descricao": ":has() adiciona especificidade do argumento",
+      "alvo": "#r266-spec-has",
+      "propriedade": "color",
+      "pseudoElement": null,
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-has",
+          "valor": "rgb(22, 23, 24)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-has",
+          "valor": "rgb(22, 23, 24)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-has:has(.r266-filho)",
+          "valor": "rgb(19, 20, 21)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-has:has(.r266-filho)",
+          "valor": "rgb(19, 20, 21)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "rgb(19, 20, 21)",
+        "esperado": "rgb(19, 20, 21)",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "rgb(19, 20, 21)",
+        "resolvedValue": "rgb(19, 20, 21)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r266-spec-has:has(.r266-filho)",
+          "declaredValue": "rgb(19, 20, 21)",
+          "important": false,
+          "origin": "author",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "pseudoElement": null
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R266-S5",
+      "grupo": "especificidade",
+      "descricao": "::after com ID",
+      "alvo": "#r266-spec-after",
+      "propriedade": "color",
+      "pseudoElement": "::after",
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-after::after",
+          "valor": "rgb(25, 26, 27)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-after::after",
+          "valor": "rgb(25, 26, 27)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "rgb(25, 26, 27)",
+        "esperado": "rgb(25, 26, 27)",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "rgb(25, 26, 27)",
+        "resolvedValue": "rgb(25, 26, 27)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r266-spec-after::after",
+          "declaredValue": "rgb(25, 26, 27)",
+          "important": false,
+          "origin": "author",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "pseudoElement": "::after"
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R266-S6",
+      "grupo": "especificidade",
+      "descricao": ":where() com pseudoelemento nao contribui com ID",
+      "alvo": "#r266-spec-where-pseudo",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "regular",
+          "seletor": ":where(#r266-spec-where-pseudo)::before",
+          "valor": "rgb(28, 29, 30)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ":where(#r266-spec-where-pseudo)::before",
+          "valor": "rgb(28, 29, 30)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-where-pseudo::before",
+          "valor": "rgb(31, 32, 33)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-where-pseudo::before",
+          "valor": "rgb(31, 32, 33)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "rgb(31, 32, 33)",
+        "esperado": "rgb(31, 32, 33)",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "rgb(31, 32, 33)",
+        "resolvedValue": "rgb(31, 32, 33)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": ".r266-spec-where-pseudo::before",
+          "declaredValue": "rgb(31, 32, 33)",
+          "important": false,
+          "origin": "author",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "pseudoElement": "::before"
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R266-S7",
+      "grupo": "especificidade",
+      "descricao": ":is() com ID em pseudoelemento",
+      "alvo": "#r266-spec-is-pseudo",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-is-pseudo::before",
+          "valor": "rgb(37, 38, 39)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-is-pseudo::before",
+          "valor": "rgb(37, 38, 39)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ":is(#r266-spec-is-pseudo)::before",
+          "valor": "rgb(34, 35, 36)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ":is(#r266-spec-is-pseudo)::before",
+          "valor": "rgb(34, 35, 36)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 0,
+            "c": 1
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "rgb(34, 35, 36)",
+        "esperado": "rgb(34, 35, 36)",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "rgb(34, 35, 36)",
+        "resolvedValue": "rgb(34, 35, 36)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": ":is(#r266-spec-is-pseudo)::before",
+          "declaredValue": "rgb(34, 35, 36)",
+          "important": false,
+          "origin": "author",
+          "specificity": {
+            "a": 1,
+            "b": 0,
+            "c": 0
+          },
+          "pseudoElement": "::before"
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    },
+    {
+      "id": "R266-S8",
+      "grupo": "especificidade",
+      "descricao": ":not() com ID em pseudoelemento",
+      "alvo": "#r266-spec-not-pseudo",
+      "propriedade": "color",
+      "pseudoElement": "::before",
+      "injecao": null,
+      "regrasNavegador": [
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-not-pseudo::before",
+          "valor": "rgb(43, 44, 45)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": ".r266-spec-not-pseudo::before",
+          "valor": "rgb(43, 44, 45)",
+          "importante": false,
+          "especificidade": {
+            "a": 0,
+            "b": 1,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-not-pseudo:not(.ausente)::before",
+          "valor": "rgb(40, 41, 42)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 1,
+            "c": 1
+          }
+        },
+        {
+          "origem": "regular",
+          "seletor": "#r266-spec-not-pseudo:not(.ausente)::before",
+          "valor": "rgb(40, 41, 42)",
+          "importante": false,
+          "especificidade": {
+            "a": 1,
+            "b": 1,
+            "c": 1
+          }
+        }
+      ],
+      "navegador": {
+        "observado": "rgb(40, 41, 42)",
+        "esperado": "rgb(40, 41, 42)",
+        "status": "PASS"
+      },
+      "nucleo": {
+        "captureStatus": "captured",
+        "resolveStatus": "computed",
+        "computedValue": "rgb(40, 41, 42)",
+        "resolvedValue": "rgb(40, 41, 42)",
+        "vencedor": {
+          "source": "stylesheet",
+          "selectorText": "#r266-spec-not-pseudo:not(.ausente)::before",
+          "declaredValue": "rgb(40, 41, 42)",
+          "important": false,
+          "origin": "author",
+          "specificity": {
+            "a": 1,
+            "b": 1,
+            "c": 0
+          },
+          "pseudoElement": "::before"
+        },
+        "errosConsulta": 0
+      },
+      "divergencias": [],
+      "status": "PASS"
+    }
+  ],
+  "resumo": {
+    "total": 11,
+    "PASS": 11,
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT_RUN": 0,
+    "origemPASS": 3,
+    "especificidadePASS": 8
+  },
+  "erros": {
+    "cdp": [],
+    "console": [],
+    "excecoes": []
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "75c6d07f4ed3c6ccd9a8f5423c74f5a0b43c740fe1e162ef77a0d5d9c2bc8d55",
+    "recalculated": "75c6d07f4ed3c6ccd9a8f5423c74f5a0b43c740fe1e162ef77a0d5d9c2bc8d55"
+  }
+}

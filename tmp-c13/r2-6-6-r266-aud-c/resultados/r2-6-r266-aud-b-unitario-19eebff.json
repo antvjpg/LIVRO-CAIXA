@@ -1,0 +1,875 @@
+{
+  "meta": {
+    "id": "r266-aud-b-unitario",
+    "core": "/data/data/com.termux/files/home/LIVRO-CAIXA/docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-b/c4-v05-b-r2-6-6-r266-aud-b-core.cjs",
+    "coreSha256": "f92d7016de979d30c34083f8cb320f9e0f74f4ab7d9916513db467e7c1d43926",
+    "data": "2026-11-23T00:42:53.743Z",
+    "hash": "524dabd146329bcd82601795ce557f78b84beb1cb7a534415491c03ac3622f39"
+  },
+  "testes": [
+    {
+      "id": "N01",
+      "categoria": "B02",
+      "descricao": "nodeId valido define provider no namespace DOM.NodeId",
+      "status": "PASS",
+      "esperado": {
+        "status": "disponivel",
+        "providerNodeId": 10
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": 10,
+        "providerIdentifiedBy": "nodeId",
+        "orderHint": null,
+        "ids": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          }
+        ],
+        "identityRefs": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          }
+        ],
+        "relationRefs": [],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": 10,
+          "nodeIdAliases": null,
+          "domNodeId": null,
+          "parentNodeId": null,
+          "backendNodeId": null,
+          "objectId": null,
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "disponivel",
+        "reason": null
+      }
+    },
+    {
+      "id": "N02",
+      "categoria": "B02",
+      "descricao": "parentNodeId so nao identifica o ancestral",
+      "status": "PASS",
+      "esperado": {
+        "status": "inconclusivo",
+        "providerNodeId": null
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": null,
+        "providerIdentifiedBy": "cdp-ordem",
+        "orderHint": "cdp-ordem",
+        "ids": [
+          {
+            "campo": "parentNodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "parent-of-node",
+            "valido": true
+          }
+        ],
+        "identityRefs": [],
+        "relationRefs": [
+          {
+            "campo": "parentNodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "parent-of-node",
+            "valido": true
+          }
+        ],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": null,
+          "nodeIdAliases": null,
+          "domNodeId": null,
+          "parentNodeId": 10,
+          "backendNodeId": null,
+          "objectId": null,
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "inconclusivo",
+        "reason": "sem-identidade-namespace"
+      }
+    },
+    {
+      "id": "N03",
+      "categoria": "B02",
+      "descricao": "backendNodeId so permanece em namespace proprio",
+      "status": "PASS",
+      "esperado": {
+        "status": "inconclusivo",
+        "namespace": "DOM.BackendNodeId"
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": null,
+        "providerIdentifiedBy": "cdp-ordem",
+        "orderHint": "cdp-ordem",
+        "ids": [
+          {
+            "campo": "backendNodeId",
+            "valor": 10,
+            "namespace": "DOM.BackendNodeId",
+            "papel": "backend-node",
+            "valido": true
+          }
+        ],
+        "identityRefs": [
+          {
+            "campo": "backendNodeId",
+            "valor": 10,
+            "namespace": "DOM.BackendNodeId",
+            "papel": "backend-node",
+            "valido": true
+          }
+        ],
+        "relationRefs": [],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": null,
+          "nodeIdAliases": null,
+          "domNodeId": null,
+          "parentNodeId": null,
+          "backendNodeId": 10,
+          "objectId": null,
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "inconclusivo",
+        "reason": "sem-node-id-confirmado"
+      }
+    },
+    {
+      "id": "N04",
+      "categoria": "B02",
+      "descricao": "nodeId e parentNodeId distintos nao sao contradicao",
+      "status": "PASS",
+      "esperado": {
+        "status": "disponivel",
+        "providerNodeId": 10
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": 10,
+        "providerIdentifiedBy": "nodeId",
+        "orderHint": null,
+        "ids": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          },
+          {
+            "campo": "parentNodeId",
+            "valor": 99,
+            "namespace": "DOM.NodeId",
+            "papel": "parent-of-node",
+            "valido": true
+          }
+        ],
+        "identityRefs": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          }
+        ],
+        "relationRefs": [
+          {
+            "campo": "parentNodeId",
+            "valor": 99,
+            "namespace": "DOM.NodeId",
+            "papel": "parent-of-node",
+            "valido": true
+          }
+        ],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": 10,
+          "nodeIdAliases": null,
+          "domNodeId": null,
+          "parentNodeId": 99,
+          "backendNodeId": null,
+          "objectId": null,
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "disponivel",
+        "reason": null
+      }
+    },
+    {
+      "id": "N05",
+      "categoria": "B02",
+      "descricao": "colisao numerica entre namespaces nao corrobora",
+      "status": "PASS",
+      "esperado": {
+        "status": "disponivel",
+        "namespaces": 2
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": 10,
+        "providerIdentifiedBy": "nodeId",
+        "orderHint": null,
+        "ids": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          },
+          {
+            "campo": "backendNodeId",
+            "valor": 10,
+            "namespace": "DOM.BackendNodeId",
+            "papel": "backend-node",
+            "valido": true
+          }
+        ],
+        "identityRefs": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          },
+          {
+            "campo": "backendNodeId",
+            "valor": 10,
+            "namespace": "DOM.BackendNodeId",
+            "papel": "backend-node",
+            "valido": true
+          }
+        ],
+        "relationRefs": [],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": 10,
+          "nodeIdAliases": null,
+          "domNodeId": null,
+          "parentNodeId": null,
+          "backendNodeId": 10,
+          "objectId": null,
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "disponivel",
+        "reason": null
+      }
+    },
+    {
+      "id": "N06",
+      "categoria": "B02",
+      "descricao": "valores diferentes entre namespaces nao contradizem",
+      "status": "PASS",
+      "esperado": {
+        "status": "disponivel",
+        "providerNodeId": 10
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": 10,
+        "providerIdentifiedBy": "nodeId",
+        "orderHint": null,
+        "ids": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          },
+          {
+            "campo": "backendNodeId",
+            "valor": 99,
+            "namespace": "DOM.BackendNodeId",
+            "papel": "backend-node",
+            "valido": true
+          }
+        ],
+        "identityRefs": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          },
+          {
+            "campo": "backendNodeId",
+            "valor": 99,
+            "namespace": "DOM.BackendNodeId",
+            "papel": "backend-node",
+            "valido": true
+          }
+        ],
+        "relationRefs": [],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": 10,
+          "nodeIdAliases": null,
+          "domNodeId": null,
+          "parentNodeId": null,
+          "backendNodeId": 99,
+          "objectId": null,
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "disponivel",
+        "reason": null
+      }
+    },
+    {
+      "id": "N07",
+      "categoria": "B02",
+      "descricao": "conflito dentro do mesmo namespace gera insuficiente",
+      "status": "PASS",
+      "esperado": {
+        "status": "insuficiente",
+        "reason": "conflito-interno-namespace"
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": null,
+        "providerIdentifiedBy": null,
+        "orderHint": null,
+        "ids": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          },
+          {
+            "campo": "nodeIdAliases[0]",
+            "valor": 11,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          }
+        ],
+        "identityRefs": [
+          {
+            "campo": "nodeId",
+            "valor": 10,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          },
+          {
+            "campo": "nodeIdAliases[0]",
+            "valor": 11,
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": true
+          }
+        ],
+        "relationRefs": [],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": 10,
+          "nodeIdAliases": [
+            11
+          ],
+          "domNodeId": null,
+          "parentNodeId": null,
+          "backendNodeId": null,
+          "objectId": null,
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "insuficiente",
+        "reason": "conflito-interno-namespace"
+      }
+    },
+    {
+      "id": "N08",
+      "categoria": "B02",
+      "descricao": "ausencia total de identificador e inconclusiva por ordem",
+      "status": "PASS",
+      "esperado": {
+        "status": "inconclusivo",
+        "orderHint": "cdp-ordem"
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": null,
+        "providerIdentifiedBy": "cdp-ordem",
+        "orderHint": "cdp-ordem",
+        "ids": [],
+        "identityRefs": [],
+        "relationRefs": [],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": null,
+          "nodeIdAliases": null,
+          "domNodeId": null,
+          "parentNodeId": null,
+          "backendNodeId": null,
+          "objectId": null,
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "inconclusivo",
+        "reason": "sem-identidade-namespace"
+      }
+    },
+    {
+      "id": "N09",
+      "categoria": "B02",
+      "descricao": "nodeId textual nao e coerced",
+      "status": "PASS",
+      "esperado": {
+        "status": "insuficiente",
+        "reason": "tipo-invalido"
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": null,
+        "providerIdentifiedBy": null,
+        "orderHint": null,
+        "ids": [
+          {
+            "campo": "nodeId",
+            "valor": "10",
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": false
+          }
+        ],
+        "identityRefs": [
+          {
+            "campo": "nodeId",
+            "valor": "10",
+            "namespace": "DOM.NodeId",
+            "papel": "node",
+            "valido": false
+          }
+        ],
+        "relationRefs": [],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": "10",
+          "nodeIdAliases": null,
+          "domNodeId": null,
+          "parentNodeId": null,
+          "backendNodeId": null,
+          "objectId": null,
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "insuficiente",
+        "reason": "tipo-invalido"
+      }
+    },
+    {
+      "id": "N10",
+      "categoria": "B02",
+      "descricao": "objectId so e handle inconclusivo",
+      "status": "PASS",
+      "esperado": {
+        "status": "inconclusivo",
+        "namespace": "Runtime.RemoteObjectId"
+      },
+      "observado": {
+        "providerLevel": 1,
+        "providerNodeId": null,
+        "providerIdentifiedBy": "cdp-ordem",
+        "orderHint": "cdp-ordem",
+        "ids": [
+          {
+            "campo": "objectId",
+            "valor": "handle-1",
+            "namespace": "Runtime.RemoteObjectId",
+            "papel": "handle",
+            "valido": true
+          }
+        ],
+        "identityRefs": [
+          {
+            "campo": "objectId",
+            "valor": "handle-1",
+            "namespace": "Runtime.RemoteObjectId",
+            "papel": "handle",
+            "valido": true
+          }
+        ],
+        "relationRefs": [],
+        "cssRefs": [],
+        "camposOriginais": {
+          "nodeId": null,
+          "nodeIdAliases": null,
+          "domNodeId": null,
+          "parentNodeId": null,
+          "backendNodeId": null,
+          "objectId": "handle-1",
+          "ruleId": null,
+          "styleSheetId": null
+        },
+        "status": "inconclusivo",
+        "reason": "sem-node-id-confirmado"
+      }
+    },
+    {
+      "id": "P01",
+      "categoria": "preservacao",
+      "descricao": "parser regex continua removido e indice estrito preservado",
+      "status": "PASS",
+      "esperado": {
+        "especificidade": "disponivel",
+        "parser": "indisponivel"
+      },
+      "observado": {
+        "especificidade": "disponivel",
+        "parser": "indisponivel"
+      }
+    },
+    {
+      "id": "D03",
+      "categoria": "B03",
+      "descricao": "grupo relevante com especificidade invalida continua insuficiente",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "specificity-insufficient",
+        "origem": "herdada"
+      },
+      "observado": {
+        "captureStatus": "specificity-insufficient",
+        "origem": "herdada"
+      }
+    },
+    {
+      "id": "D05",
+      "categoria": "B03",
+      "descricao": "grupo relevante com identidade insuficiente bloqueia",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "inheritance-insufficient"
+      },
+      "observado": {
+        "captureStatus": "inheritance-insufficient",
+        "identidade": "insuficiente"
+      }
+    },
+    {
+      "id": "D06",
+      "categoria": "B03",
+      "descricao": "pseudo-elemento ignora herdados malformados",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "captured",
+        "origem": "pseudo-elemento"
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "origem": "pseudo-elemento"
+      }
+    },
+    {
+      "id": "L04",
+      "categoria": "B04",
+      "descricao": "sem API de camadas a verificacao fica indisponivel",
+      "status": "PASS",
+      "esperado": {
+        "verificacao": "indisponivel",
+        "winnerConfidence": "condicionado"
+      },
+      "observado": {
+        "verificacao": "indisponivel",
+        "winnerConfidence": "condicionado"
+      }
+    },
+    {
+      "id": "D01",
+      "categoria": "B03",
+      "descricao": "propria valida ignora ancestral distante com especificidade invalida",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "captured",
+        "origem": "propria"
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "origem": "propria",
+        "ignorados": 1
+      }
+    },
+    {
+      "id": "D02",
+      "categoria": "B03",
+      "descricao": "pai valido vence avo com indice invalido irrelevante",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "captured",
+        "providerLevel": 1
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "heranca": {
+          "status": "herdada",
+          "reason": null,
+          "receiverNodeId": 1,
+          "providerNodeId": 10,
+          "providerLevel": 1,
+          "providerIdentifiedBy": "nodeId",
+          "identityStatus": "disponivel",
+          "orderHint": null,
+          "identityRefs": [
+            {
+              "campo": "nodeId",
+              "valor": 10,
+              "namespace": "DOM.NodeId",
+              "papel": "node",
+              "valido": true
+            }
+          ],
+          "relationRefs": [],
+          "cssRefs": [],
+          "camposOriginais": {
+            "nodeId": 10,
+            "nodeIdAliases": null,
+            "domNodeId": null,
+            "parentNodeId": null,
+            "backendNodeId": null,
+            "objectId": null,
+            "ruleId": null,
+            "styleSheetId": null
+          },
+          "originDeclaration": {
+            "selectorText": "#pai",
+            "declaredValue": "rgb(0, 0, 255)",
+            "important": false,
+            "origin": "author",
+            "source": "inherited"
+          },
+          "computedValue": "rgb(0, 0, 255)",
+          "ancestorChain": [
+            {
+              "index": 0,
+              "providerNodeId": 10,
+              "providerLevel": 1,
+              "providerIdentifiedBy": "nodeId",
+              "identityStatus": "disponivel",
+              "orderHint": null,
+              "declarations": 1,
+              "noConjuntoDecisao": true,
+              "status": "com-declaracao"
+            },
+            {
+              "index": 1,
+              "providerNodeId": 20,
+              "providerLevel": 2,
+              "providerIdentifiedBy": "nodeId",
+              "identityStatus": "disponivel",
+              "orderHint": null,
+              "declarations": 1,
+              "noConjuntoDecisao": false,
+              "status": "com-declaracao"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "D04",
+      "categoria": "B03",
+      "descricao": "propria nao e bloqueada por identidade insuficiente em ancestral",
+      "status": "PASS",
+      "esperado": {
+        "captureStatus": "captured",
+        "origem": "propria"
+      },
+      "observado": {
+        "captureStatus": "captured",
+        "origem": "propria"
+      }
+    },
+    {
+      "id": "L01",
+      "categoria": "B04",
+      "descricao": "layer com metadado disponivel condiciona o vencedor",
+      "status": "PASS",
+      "esperado": {
+        "winnerConfidence": "condicionado",
+        "layer": true
+      },
+      "observado": {
+        "winnerConfidence": "condicionado",
+        "mecanismo": {
+          "sinal": true,
+          "verificacao": "confirmado",
+          "fontes": [
+            {
+              "mecanismo": "cascadeLayers",
+              "fonte": "rule.layer"
+            },
+            {
+              "fonte": "CSS.getLayersForNode",
+              "camadas": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "L02",
+      "categoria": "B04",
+      "descricao": "evidencia explicita de ausencia permite vencedor confiavel",
+      "status": "PASS",
+      "esperado": {
+        "winnerConfidence": "confiavel"
+      },
+      "observado": {
+        "winnerConfidence": "confiavel",
+        "mecanismos": {
+          "cascadeLayers": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getLayersForNode",
+                "camadas": 0
+              },
+              {
+                "fonte": "options.evidenciasCascata"
+              }
+            ]
+          },
+          "animacoesTransicoes": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "CSS.getComputedStyleForNode",
+                "property": "color"
+              },
+              {
+                "fonte": "options.evidenciasCascata"
+              }
+            ]
+          },
+          "scopingProximity": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "options.evidenciasCascata"
+              }
+            ]
+          },
+          "encapsulationContexts": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "Runtime.callFunctionOn:getRootNode"
+              },
+              {
+                "fonte": "options.evidenciasCascata"
+              }
+            ]
+          },
+          "regrasCondicionais": {
+            "sinal": false,
+            "verificacao": "ausente-confiavel",
+            "fontes": [
+              {
+                "fonte": "options.evidenciasCascata"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "L03",
+      "categoria": "B04",
+      "descricao": "animacao com valor divergente rebaixa confianca",
+      "status": "PASS",
+      "esperado": {
+        "winnerConfidence": "condicionado",
+        "reason": "valor-computado-divergente-com-animacao"
+      },
+      "observado": {
+        "winnerConfidence": "condicionado",
+        "diagnostico": {
+          "reason": "valor-computado-divergente-com-animacao",
+          "declaredValue": "rgb(0, 0, 255)",
+          "computedValue": "rgb(0, 0, 128)"
+        }
+      }
+    },
+    {
+      "id": "L05",
+      "categoria": "B04",
+      "descricao": "sinal de scoping nao prova ausencia e condiciona",
+      "status": "PASS",
+      "esperado": {
+        "verificacao": "confirmado",
+        "winnerConfidence": "condicionado"
+      },
+      "observado": {
+        "verificacao": "confirmado",
+        "winnerConfidence": "condicionado"
+      }
+    },
+    {
+      "id": "L06",
+      "categoria": "B04",
+      "descricao": "regra condicional detectada condiciona o vencedor",
+      "status": "PASS",
+      "esperado": {
+        "verificacao": "confirmado",
+        "winnerConfidence": "condicionado"
+      },
+      "observado": {
+        "verificacao": "confirmado",
+        "winnerConfidence": "condicionado"
+      }
+    },
+    {
+      "id": "P02",
+      "categoria": "preservacao",
+      "descricao": "proveniencia USER preservada",
+      "status": "PASS",
+      "esperado": {
+        "origin": "user",
+        "cdpOrigin": "user-agent"
+      },
+      "observado": {
+        "origin": "user",
+        "cdpOrigin": "user-agent"
+      }
+    }
+  ],
+  "resumo": {
+    "total": 24,
+    "PASS": 24,
+    "FAIL": 0
+  },
+  "verification": {
+    "hashMatches": true,
+    "declared": "524dabd146329bcd82601795ce557f78b84beb1cb7a534415491c03ac3622f39",
+    "recalculated": "524dabd146329bcd82601795ce557f78b84beb1cb7a534415491c03ac3622f39"
+  }
+}

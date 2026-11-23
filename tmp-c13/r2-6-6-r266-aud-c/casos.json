@@ -1,0 +1,76 @@
+{
+  "id": "r266-aud-c",
+  "descricao": "Cenarios reais de importancia tri-valuada e precedencia de origens em declaracoes herdadas",
+  "fixture": "tmp-c13/r2-6-6-r266-aud-c/fixture.html",
+  "url": "http://127.0.0.1:8000/tmp-c13/r2-6-6-r266-aud-c/fixture.html",
+  "core": "docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud-c/c4-v05-b-r2-6-6-r266-aud-c-core.cjs",
+  "propriedade": "color",
+  "casos": [
+    {
+      "id": "C1",
+      "descricao": "Author important contra author normal no mesmo ancestral",
+      "alvo": "#c1-filho",
+      "esperado": {
+        "computed": "rgb(0, 128, 0)",
+        "origin": "author",
+        "important": true,
+        "inheritanceStatus": "herdada",
+        "providerLevel": 1,
+        "providerSelector": "#c1-pai.importante"
+      }
+    },
+    {
+      "id": "C2",
+      "descricao": "Author normal vence user-agent normal no ancestral h1",
+      "alvo": "#c2-filho",
+      "propriedade": "font-size",
+      "esperado": {
+        "computed": "14px",
+        "origin": "author",
+        "important": false,
+        "inheritanceStatus": "herdada",
+        "providerLevel": 1,
+        "providerSelector": "h1#c2-pai"
+      }
+    },
+    {
+      "id": "C3",
+      "descricao": "Avo fornecedor com author important contra author normal",
+      "alvo": "#c3-filho",
+      "esperado": {
+        "computed": "rgb(0, 128, 0)",
+        "origin": "author",
+        "important": true,
+        "inheritanceStatus": "herdada",
+        "providerLevel": 2,
+        "providerSelector": "#c3-avo.importante"
+      }
+    },
+    {
+      "id": "C4",
+      "descricao": "Declaracao propriedade do filho vence disputa de importancia no ancestral",
+      "alvo": "#c4-filho",
+      "esperado": {
+        "computed": "rgb(1, 2, 3)",
+        "origin": "author",
+        "important": false,
+        "inheritanceStatus": "propria",
+        "providerLevel": null,
+        "providerSelector": "#c4-filho"
+      }
+    },
+    {
+      "id": "C5",
+      "descricao": "Ancestral imediato vence ancestral distante com important",
+      "alvo": "#c5-filho",
+      "esperado": {
+        "computed": "rgb(0, 0, 255)",
+        "origin": "author",
+        "important": false,
+        "inheritanceStatus": "herdada",
+        "providerLevel": 1,
+        "providerSelector": "#c5-pai"
+      }
+    }
+  ]
+}
