@@ -1,0 +1,82 @@
+{
+  "id": "r266-aud",
+  "descricao": "Cenarios de heranca, cascata propria e limites de metadado CDP",
+  "fixture": "tmp-c13/r2-6-6-r266-aud/fixture.html",
+  "url": "http://127.0.0.1:8000/tmp-c13/r2-6-6-r266-aud/fixture.html",
+  "core": "docs/auditorias/c4-v05-b/evidencias-r2-6-6-r266-aud/c4-v05-b-r2-6-6-r266-aud-core.cjs",
+  "propriedade": "color",
+  "casos": [
+    {
+      "id": "H1",
+      "descricao": "Filho sem declaracao propria; pai declara azul; avo mais especifico declara vermelho",
+      "alvo": "#h1-filho",
+      "esperado": {
+        "computed": "rgb(0, 0, 255)",
+        "inheritanceStatus": "herdada",
+        "providerLevel": 1,
+        "providerSelector": "#h1-pai",
+        "importante": false
+      }
+    },
+    {
+      "id": "H2",
+      "descricao": "Pai sem declaracao propria; avo fornece a propriedade",
+      "alvo": "#h2-filho",
+      "esperado": {
+        "computed": "rgb(10, 20, 30)",
+        "inheritanceStatus": "herdada",
+        "providerLevel": 2,
+        "providerSelector": "#h2-avo",
+        "importante": false
+      }
+    },
+    {
+      "id": "H3",
+      "descricao": "Pai com !important vence avo normal de maior especificidade",
+      "alvo": "#h3-filho",
+      "esperado": {
+        "computed": "rgb(0, 128, 0)",
+        "inheritanceStatus": "herdada",
+        "providerLevel": 1,
+        "providerSelector": "#h3-pai",
+        "importante": true
+      }
+    },
+    {
+      "id": "H4",
+      "descricao": "Declaracao propria do filho nao compete com declaracoes herdadas",
+      "alvo": "#h4-filho",
+      "esperado": {
+        "computed": "rgb(1, 2, 3)",
+        "inheritanceStatus": "propria",
+        "providerLevel": null,
+        "providerSelector": "#h4-filho",
+        "importante": false
+      }
+    },
+    {
+      "id": "H5",
+      "descricao": "Tres niveis de ancestral com declaracao apenas no ancestral mais distante",
+      "alvo": "#h5-filho",
+      "esperado": {
+        "computed": "rgb(8, 9, 10)",
+        "inheritanceStatus": "herdada",
+        "providerLevel": 3,
+        "providerSelector": "#h5-bisavo",
+        "importante": false
+      }
+    },
+    {
+      "id": "H6",
+      "descricao": "Pai herda do avo e filho herda do pai; recebedor e origem declarativa distintos",
+      "alvo": "#h6-filho",
+      "esperado": {
+        "computed": "rgb(11, 12, 13)",
+        "inheritanceStatus": "herdada",
+        "providerLevel": 2,
+        "providerSelector": "#h6-avo",
+        "importante": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>R266 AUD — herança</title>
+<style>
+  #h1-avo.alt { color: rgb(200, 0, 0); }
+  #h1-pai { color: rgb(0, 0, 255); }
+
+  #h2-avo { color: rgb(10, 20, 30); }
+
+  #h3-avo.alt { color: rgb(200, 0, 0); }
+  #h3-pai { color: rgb(0, 128, 0) !important; }
+
+  #h4-avo.muitoespecifico { color: rgb(200, 0, 0); }
+  #h4-filho { color: rgb(1, 2, 3); }
+
+  #h5-bisavo { color: rgb(8, 9, 10); }
+
+  #h6-avo { color: rgb(11, 12, 13); }
+</style>
+</head>
+<body>
+  <section id="cenario-h1">
+    <div id="h1-avo" class="alt">
+      <div id="h1-pai">
+        <span id="h1-filho">H1</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="cenario-h2">
+    <div id="h2-avo">
+      <div id="h2-pai">
+        <span id="h2-filho">H2</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="cenario-h3">
+    <div id="h3-avo" class="alt">
+      <div id="h3-pai">
+        <span id="h3-filho">H3</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="cenario-h4">
+    <div id="h4-avo" class="muitoespecifico">
+      <div id="h4-pai">
+        <span id="h4-filho">H4</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="cenario-h5">
+    <div id="h5-bisavo">
+      <div id="h5-avo">
+        <div id="h5-pai">
+          <span id="h5-filho">H5</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cenario-h6">
+    <div id="h6-avo">
+      <div id="h6-pai">
+        <span id="h6-filho">H6</span>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
