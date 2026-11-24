@@ -131,10 +131,10 @@ test.describe('Início — navegação e renderização', () => {
     const flipped = preferenceBefore === '0' ? '1' : '0';
     await sparkSymbol.click();
     await expect.poll(async () => (await chartSnapshot()).preference).toBe(flipped);
-    let toggled = await chartSnapshot();
+    const toggled = await chartSnapshot();
     expect(toggled.ariaExpanded).toBe(String(flipped !== '0'));
-    expect(toggled.inicio).toBe(flipped !== '0');
-    expect(toggled.strip).toBe(false);
+    await expect.poll(async () => (await chartSnapshot()).inicio).toBe(flipped !== '0');
+    expect((await chartSnapshot()).strip).toBe(false);
     await sparkSymbol.focus();
     await page.keyboard.press('Enter');
     await expect.poll(async () => (await chartSnapshot()).preference).toBe(preferenceBefore === '0' ? '0' : '1');
