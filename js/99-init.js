@@ -430,9 +430,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabName === 'dashboard' || tabName === 'inicio') {
   renderAdvancedDashboard();
 }
-    // C6-INICIO-02 — canvas oculto renderiza 0×0; ao ativar a aba, recria
-    // somente o gráfico do contexto visível (inicio, caixa ou nenhum).
-    if (typeof syncPatrimonySparklines === 'function') {
+    // C6-INICIO-02 — a faixa muda entre Início e Livro-Caixa; reconstruí-la
+    // após a troca mantém o card Patrimônio Total apenas em caixa.
+    if (tabName === 'inicio' || tabName === 'caixa') {
+      if (typeof renderBalances === 'function') renderBalances();
+    } else if (typeof syncPatrimonySparklines === 'function') {
       syncPatrimonySparklines(!!currentUser && !!firstLoadDone);
     }
     if (tabName === 'dash') renderDashboardTab();
