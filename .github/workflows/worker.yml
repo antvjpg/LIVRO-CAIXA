@@ -5,6 +5,7 @@ permissions:
 
 on:
   push:
+    branches: [main]
     paths:
       - "worker/**"
       # Frontend que deposita o snapshot (testes de fiação da ponte):
@@ -13,6 +14,7 @@ on:
       - "js/**"
       - ".github/workflows/worker.yml"
   pull_request:
+    branches: [main]
     paths:
       - "worker/**"
       - "index.html"
