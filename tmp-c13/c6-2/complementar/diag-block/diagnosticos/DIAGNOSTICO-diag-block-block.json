@@ -1,0 +1,971 @@
+{
+  "round": "diag-block",
+  "iconMode": "block",
+  "scope": "diag",
+  "combos": [
+    "390x844/light-1",
+    "1280x800/light-1"
+  ],
+  "diagnostics": [
+    {
+      "key": "390x844-light-1",
+      "viewport": "390x844",
+      "theme": "light-1",
+      "overlay": {
+        "url": "http://127.0.0.1:8123/index.html",
+        "bodyClass": "",
+        "bodyDataset": {
+          "tab": "inicio",
+          "light": "1",
+          "dark": null
+        },
+        "visibleFixed": [
+          {
+            "id": null,
+            "className": "mobile-bottom-nav",
+            "tag": "NAV",
+            "position": "fixed",
+            "zIndex": "70",
+            "opacity": "1",
+            "filter": "none",
+            "backdropFilter": "blur(8px) saturate(1.35)",
+            "backgroundColor": "color(srgb 1 0.996078 0.980392 / 0.5)",
+            "backgroundImage": null,
+            "rect": {
+              "top": 762,
+              "left": 14,
+              "width": 347,
+              "height": 68
+            }
+          }
+        ],
+        "pointStacks": [
+          [
+            {
+              "tag": "HEADER",
+              "id": null,
+              "className": "app-header"
+            },
+            {
+              "tag": "BODY",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "HTML",
+              "id": null,
+              "className": ""
+            }
+          ],
+          [
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "balance-card invest-summary-card"
+            },
+            {
+              "tag": "DIV",
+              "id": "balanceStrip",
+              "className": "balance-strip"
+            },
+            {
+              "tag": "MAIN",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "BODY",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "HTML",
+              "id": null,
+              "className": ""
+            }
+          ],
+          [
+            {
+              "tag": "BUTTON",
+              "id": null,
+              "className": "is-active"
+            },
+            {
+              "tag": "NAV",
+              "id": null,
+              "className": "mobile-bottom-nav"
+            },
+            {
+              "tag": "CANVAS",
+              "id": "patrimonySparklineInicio",
+              "className": ""
+            },
+            {
+              "tag": "DIV",
+              "id": "patrimonySparkBoxInicio",
+              "className": "patrimony-spark-box"
+            },
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "inicio-card balance-card"
+            },
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "inicio-grid"
+            }
+          ]
+        ],
+        "overlays": [
+          {
+            "id": "authOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "1",
+            "className": "hidden"
+          },
+          {
+            "id": "syncOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "1",
+            "className": ""
+          },
+          {
+            "id": "modalOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "0",
+            "className": "modal-overlay"
+          }
+        ],
+        "openPanels": [],
+        "loading": false,
+        "tabChanging": false
+      },
+      "grayCandidate": [
+        {
+          "id": null,
+          "className": "mobile-bottom-nav",
+          "tag": "NAV",
+          "position": "fixed",
+          "zIndex": "70",
+          "opacity": "1",
+          "filter": "none",
+          "backdropFilter": "blur(8px) saturate(1.35)",
+          "backgroundColor": "color(srgb 1 0.996078 0.980392 / 0.5)",
+          "backgroundImage": null,
+          "rect": {
+            "top": 762,
+            "left": 14,
+            "width": 347,
+            "height": 68
+          }
+        }
+      ],
+      "fonts": {
+        "status": "loaded",
+        "size": 1,
+        "checks": {
+          "tabler-icons": false,
+          "uicons-regular-rounded": true,
+          "uicons-solid-rounded": true,
+          "Plus Jakarta Sans": true,
+          "Inter": true,
+          "Roboto": true,
+          "Open Sans": true,
+          "Space Grotesk": true,
+          "Manrope": true,
+          "Outfit": true,
+          "Sora": true
+        },
+        "loaded": [
+          {
+            "family": "tabler-icons",
+            "status": "unloaded"
+          }
+        ],
+        "stripGlyphs": [
+          {
+            "className": "fi fi-rr-bank",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "none",
+            "beforeFontFamily": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          {
+            "className": "fi fi-rr-piggy-bank",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "none",
+            "beforeFontFamily": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          {
+            "className": "fi fi-rr-chat-arrow-grow",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "none",
+            "beforeFontFamily": "\"Plus Jakarta Sans\", sans-serif"
+          }
+        ]
+      }
+    },
+    {
+      "key": "1280x800-light-1",
+      "viewport": "1280x800",
+      "theme": "light-1",
+      "overlay": {
+        "url": "http://127.0.0.1:8123/index.html",
+        "bodyClass": "",
+        "bodyDataset": {
+          "tab": "inicio",
+          "light": "1",
+          "dark": null
+        },
+        "visibleFixed": [],
+        "pointStacks": [
+          [
+            {
+              "tag": "BUTTON",
+              "id": "btnUniversalSearch",
+              "className": "header-search-bar"
+            },
+            {
+              "tag": "HEADER",
+              "id": null,
+              "className": "app-header"
+            },
+            {
+              "tag": "BODY",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "HTML",
+              "id": null,
+              "className": ""
+            }
+          ],
+          [
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "balance-card invest-summary-card"
+            },
+            {
+              "tag": "DIV",
+              "id": "balanceStrip",
+              "className": "balance-strip"
+            },
+            {
+              "tag": "MAIN",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "BODY",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "HTML",
+              "id": null,
+              "className": ""
+            }
+          ],
+          [
+            {
+              "tag": "CANVAS",
+              "id": "patrimonySparklineInicio",
+              "className": ""
+            },
+            {
+              "tag": "DIV",
+              "id": "patrimonySparkBoxInicio",
+              "className": "patrimony-spark-box"
+            },
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "inicio-card balance-card"
+            },
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "inicio-grid"
+            },
+            {
+              "tag": "DIV",
+              "id": "viewInicio",
+              "className": "tab-content active"
+            },
+            {
+              "tag": "MAIN",
+              "id": null,
+              "className": ""
+            }
+          ]
+        ],
+        "overlays": [
+          {
+            "id": "authOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "1",
+            "className": "hidden"
+          },
+          {
+            "id": "syncOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "1",
+            "className": ""
+          },
+          {
+            "id": "modalOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "0",
+            "className": "modal-overlay"
+          }
+        ],
+        "openPanels": [],
+        "loading": false,
+        "tabChanging": false
+      },
+      "grayCandidate": [],
+      "fonts": {
+        "status": "loaded",
+        "size": 1,
+        "checks": {
+          "tabler-icons": false,
+          "uicons-regular-rounded": true,
+          "uicons-solid-rounded": true,
+          "Plus Jakarta Sans": true,
+          "Inter": true,
+          "Roboto": true,
+          "Open Sans": true,
+          "Space Grotesk": true,
+          "Manrope": true,
+          "Outfit": true,
+          "Sora": true
+        },
+        "loaded": [
+          {
+            "family": "tabler-icons",
+            "status": "unloaded"
+          }
+        ],
+        "stripGlyphs": [
+          {
+            "className": "fi fi-rr-bank",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "none",
+            "beforeFontFamily": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          {
+            "className": "fi fi-rr-piggy-bank",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "none",
+            "beforeFontFamily": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          {
+            "className": "fi fi-rr-chat-arrow-grow",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "none",
+            "beforeFontFamily": "\"Plus Jakarta Sans\", sans-serif"
+          }
+        ]
+      }
+    }
+  ],
+  "network": {
+    "requests": [
+      {
+        "requestId": "B2AC8ADB9C63277A9078D8E998E3351B",
+        "url": "http://127.0.0.1:8123/index.html",
+        "type": "Document"
+      },
+      {
+        "requestId": "27240.130",
+        "url": "http://127.0.0.1:8123/style/themes.css?v=20-23",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.131",
+        "url": "http://127.0.0.1:8123/style/base.css?v=20-24",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.132",
+        "url": "http://127.0.0.1:8123/style/components.css?v=20-33",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.133",
+        "url": "http://127.0.0.1:8123/style/layout.css?v=20-36",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.134",
+        "url": "http://127.0.0.1:8123/style/features.css?v=20-32",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.135",
+        "url": "http://127.0.0.1:8123/style/dashboard-chat.css?v=20-24",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.136",
+        "url": "http://127.0.0.1:8123/vendor/tabler-icons/tabler-icons.css",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.170",
+        "url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.171",
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.172",
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.173",
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.174",
+        "url": "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.175",
+        "url": "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.176",
+        "url": "https://cdn.jsdelivr.net/npm/chart.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.177",
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.178",
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.179",
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.180",
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.181",
+        "url": "http://127.0.0.1:8123/js/domain/card-engine-v3-combined.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.182",
+        "url": "http://127.0.0.1:8123/js/domain/financial-client.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.183",
+        "url": "http://127.0.0.1:8123/js/domain/security-utils.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.191",
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.192",
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.194",
+        "url": "http://127.0.0.1:8123/manifest.webmanifest?v=19-19",
+        "type": "Manifest"
+      },
+      {
+        "requestId": "27240.195",
+        "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.196",
+        "url": "http://127.0.0.1:8123/js/data/tabler-icon-catalog.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.197",
+        "url": "http://127.0.0.1:8123/js/domain/icon-system.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.198",
+        "url": "http://127.0.0.1:8123/js/data/emoji-catalog.js?v=20-02",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.199",
+        "url": "http://127.0.0.1:8123/js/00-bootstrap.js?v=20-33",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.200",
+        "url": "http://127.0.0.1:8123/js/10-state-utils.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.201",
+        "url": "http://127.0.0.1:8123/js/11-financial-domain.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.202",
+        "url": "http://127.0.0.1:8123/js/12-auth-session.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.203",
+        "url": "http://127.0.0.1:8123/js/13-backup.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.204",
+        "url": "http://127.0.0.1:8123/js/14-theme.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.205",
+        "url": "http://127.0.0.1:8123/js/15-tabs-nav.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.206",
+        "url": "http://127.0.0.1:8123/js/16-events-modals.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.207",
+        "url": "http://127.0.0.1:8123/js/domain/audit-trail.js?v=20-41",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.208",
+        "url": "http://127.0.0.1:8123/js/17-sync-persistence.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.209",
+        "url": "http://127.0.0.1:8123/js/domain/pin-protection.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.210",
+        "url": "http://127.0.0.1:8123/js/18-render-core.js?v=20-29",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.211",
+        "url": "http://127.0.0.1:8123/js/19-goals.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.212",
+        "url": "http://127.0.0.1:8123/js/20-dashboard.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.213",
+        "url": "http://127.0.0.1:8123/js/21-ai-features.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.214",
+        "url": "http://127.0.0.1:8123/js/22-profile.js?v=20-26",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.215",
+        "url": "http://127.0.0.1:8123/js/24-automation-render.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.216",
+        "url": "http://127.0.0.1:8123/js/25-bills-receivables.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.217",
+        "url": "http://127.0.0.1:8123/js/26-receipts.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.218",
+        "url": "http://127.0.0.1:8123/js/27-cards.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.219",
+        "url": "http://127.0.0.1:8123/js/29-invest-movements.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.220",
+        "url": "http://127.0.0.1:8123/js/30-transfer-receipts.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.221",
+        "url": "http://127.0.0.1:8123/js/31-import-export.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.222",
+        "url": "http://127.0.0.1:8123/js/32-auth-wiring.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.223",
+        "url": "http://127.0.0.1:8123/js/99-init.js?v=20-29",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.224",
+        "url": "http://127.0.0.1:8123/js/domain/simple-log.js?v=1",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.225",
+        "url": "http://127.0.0.1:8123/src/diagnostic/login-diagnostic.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.226",
+        "url": "http://127.0.0.1:8123/js/legacy/patches.js?v=20-02",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.227",
+        "url": "http://127.0.0.1:8123/icon-192.png",
+        "type": "Other"
+      }
+    ],
+    "responses": [
+      {
+        "url": "http://127.0.0.1:8123/index.html",
+        "status": 200,
+        "mimeType": "text/html"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/themes.css?v=20-23",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/base.css?v=20-24",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/components.css?v=20-33",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/layout.css?v=20-36",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/dashboard-chat.css?v=20-24",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/vendor/tabler-icons/tabler-icons.css",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/features.css?v=20-32",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/manifest.webmanifest?v=19-19",
+        "status": 200,
+        "mimeType": "application/manifest+json"
+      },
+      {
+        "url": "http://127.0.0.1:8123/icon-192.png",
+        "status": 200,
+        "mimeType": "image/png"
+      }
+    ],
+    "failures": [
+      {
+        "url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://cdn.jsdelivr.net/npm/chart.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/card-engine-v3-combined.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/financial-client.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/security-utils.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/data/tabler-icon-catalog.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/icon-system.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/data/emoji-catalog.js?v=20-02",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/00-bootstrap.js?v=20-33",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/10-state-utils.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/11-financial-domain.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/12-auth-session.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/13-backup.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/14-theme.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/15-tabs-nav.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/16-events-modals.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/audit-trail.js?v=20-41",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/17-sync-persistence.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/pin-protection.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/18-render-core.js?v=20-29",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/19-goals.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/20-dashboard.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/21-ai-features.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/22-profile.js?v=20-26",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/24-automation-render.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/25-bills-receivables.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/26-receipts.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/27-cards.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/29-invest-movements.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/30-transfer-receipts.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/31-import-export.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/32-auth-wiring.js?v=20-25",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/99-init.js?v=20-29",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/simple-log.js?v=1",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/src/diagnostic/login-diagnostic.js",
+        "error": "",
+        "blockedReason": "inspector"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/legacy/patches.js?v=20-02",
+        "error": "",
+        "blockedReason": "inspector"
+      }
+    ],
+    "consoleErrors": [],
+    "exceptions": []
+  },
+  "generatedAt": "2026-11-24T16:37:52.065Z"
+}

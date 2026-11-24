@@ -1,0 +1,2585 @@
+{
+  "round": "diag-allow",
+  "iconMode": "allow",
+  "scope": "diag",
+  "combos": [
+    "390x844/light-1",
+    "1280x800/light-1"
+  ],
+  "diagnostics": [
+    {
+      "key": "390x844-light-1",
+      "viewport": "390x844",
+      "theme": "light-1",
+      "overlay": {
+        "url": "http://127.0.0.1:8123/index.html",
+        "bodyClass": "",
+        "bodyDataset": {
+          "tab": "inicio",
+          "light": "1",
+          "dark": null
+        },
+        "visibleFixed": [
+          {
+            "id": null,
+            "className": "mobile-bottom-nav",
+            "tag": "NAV",
+            "position": "fixed",
+            "zIndex": "70",
+            "opacity": "1",
+            "filter": "none",
+            "backdropFilter": "blur(8px) saturate(1.35)",
+            "backgroundColor": "color(srgb 1 0.996078 0.980392 / 0.5)",
+            "backgroundImage": null,
+            "rect": {
+              "top": 762,
+              "left": 14,
+              "width": 362,
+              "height": 68
+            }
+          }
+        ],
+        "pointStacks": [
+          [
+            {
+              "tag": "HEADER",
+              "id": null,
+              "className": "app-header"
+            },
+            {
+              "tag": "BODY",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "HTML",
+              "id": null,
+              "className": ""
+            }
+          ],
+          [
+            {
+              "tag": "DIV",
+              "id": "balanceStrip",
+              "className": "balance-strip"
+            },
+            {
+              "tag": "MAIN",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "BODY",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "HTML",
+              "id": null,
+              "className": ""
+            }
+          ],
+          [
+            {
+              "tag": "BUTTON",
+              "id": null,
+              "className": "is-active"
+            },
+            {
+              "tag": "NAV",
+              "id": null,
+              "className": "mobile-bottom-nav"
+            },
+            {
+              "tag": "CANVAS",
+              "id": "patrimonySparklineInicio",
+              "className": ""
+            },
+            {
+              "tag": "DIV",
+              "id": "patrimonySparkBoxInicio",
+              "className": "patrimony-spark-box"
+            },
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "inicio-card balance-card"
+            },
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "inicio-grid"
+            }
+          ]
+        ],
+        "overlays": [
+          {
+            "id": "authOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "1",
+            "className": ""
+          },
+          {
+            "id": "syncOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "1",
+            "className": "hidden"
+          },
+          {
+            "id": "modalOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "0",
+            "className": "modal-overlay"
+          }
+        ],
+        "openPanels": [],
+        "loading": false,
+        "tabChanging": false
+      },
+      "grayCandidate": [
+        {
+          "id": null,
+          "className": "mobile-bottom-nav",
+          "tag": "NAV",
+          "position": "fixed",
+          "zIndex": "70",
+          "opacity": "1",
+          "filter": "none",
+          "backdropFilter": "blur(8px) saturate(1.35)",
+          "backgroundColor": "color(srgb 1 0.996078 0.980392 / 0.5)",
+          "backgroundImage": null,
+          "rect": {
+            "top": 762,
+            "left": 14,
+            "width": 362,
+            "height": 68
+          }
+        }
+      ],
+      "fonts": {
+        "status": "loaded",
+        "size": 166,
+        "checks": {
+          "tabler-icons": false,
+          "uicons-regular-rounded": true,
+          "uicons-solid-rounded": true,
+          "Plus Jakarta Sans": true,
+          "Inter": true,
+          "Roboto": true,
+          "Open Sans": false,
+          "Space Grotesk": false,
+          "Manrope": false,
+          "Outfit": false,
+          "Sora": false
+        },
+        "loaded": [
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "tabler-icons",
+            "status": "unloaded"
+          },
+          {
+            "family": "uicons-regular-rounded",
+            "status": "loaded"
+          },
+          {
+            "family": "uicons-solid-rounded",
+            "status": "loaded"
+          }
+        ],
+        "stripGlyphs": [
+          {
+            "className": "fi fi-rr-bank",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "\"\"",
+            "beforeFontFamily": "uicons-regular-rounded"
+          },
+          {
+            "className": "fi fi-rr-piggy-bank",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "\"\"",
+            "beforeFontFamily": "uicons-regular-rounded"
+          },
+          {
+            "className": "fi fi-rr-chat-arrow-grow",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "\"\"",
+            "beforeFontFamily": "uicons-regular-rounded"
+          }
+        ]
+      }
+    },
+    {
+      "key": "1280x800-light-1",
+      "viewport": "1280x800",
+      "theme": "light-1",
+      "overlay": {
+        "url": "http://127.0.0.1:8123/index.html",
+        "bodyClass": "",
+        "bodyDataset": {
+          "tab": "inicio",
+          "light": "1",
+          "dark": null
+        },
+        "visibleFixed": [],
+        "pointStacks": [
+          [
+            {
+              "tag": "BUTTON",
+              "id": "btnUniversalSearch",
+              "className": "header-search-bar"
+            },
+            {
+              "tag": "HEADER",
+              "id": null,
+              "className": "app-header"
+            },
+            {
+              "tag": "BODY",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "HTML",
+              "id": null,
+              "className": ""
+            }
+          ],
+          [
+            {
+              "tag": "DIV",
+              "id": "balanceStrip",
+              "className": "balance-strip"
+            },
+            {
+              "tag": "MAIN",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "BODY",
+              "id": null,
+              "className": ""
+            },
+            {
+              "tag": "HTML",
+              "id": null,
+              "className": ""
+            }
+          ],
+          [
+            {
+              "tag": "CANVAS",
+              "id": "patrimonySparklineInicio",
+              "className": ""
+            },
+            {
+              "tag": "DIV",
+              "id": "patrimonySparkBoxInicio",
+              "className": "patrimony-spark-box"
+            },
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "inicio-card balance-card"
+            },
+            {
+              "tag": "DIV",
+              "id": null,
+              "className": "inicio-grid"
+            },
+            {
+              "tag": "DIV",
+              "id": "viewInicio",
+              "className": "tab-content active"
+            },
+            {
+              "tag": "MAIN",
+              "id": null,
+              "className": ""
+            }
+          ]
+        ],
+        "overlays": [
+          {
+            "id": "authOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "1",
+            "className": ""
+          },
+          {
+            "id": "syncOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "1",
+            "className": "hidden"
+          },
+          {
+            "id": "modalOverlay",
+            "present": true,
+            "display": "none",
+            "opacity": "0",
+            "className": "modal-overlay"
+          }
+        ],
+        "openPanels": [],
+        "loading": false,
+        "tabChanging": false
+      },
+      "grayCandidate": [],
+      "fonts": {
+        "status": "loaded",
+        "size": 166,
+        "checks": {
+          "tabler-icons": false,
+          "uicons-regular-rounded": true,
+          "uicons-solid-rounded": true,
+          "Plus Jakarta Sans": true,
+          "Inter": true,
+          "Roboto": true,
+          "Open Sans": false,
+          "Space Grotesk": false,
+          "Manrope": false,
+          "Outfit": false,
+          "Sora": false
+        },
+        "loaded": [
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "loaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Inter",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Manrope",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Open Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Outfit",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "unloaded"
+          },
+          {
+            "family": "Plus Jakarta Sans",
+            "status": "loaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Roboto",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Sora",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "Space Grotesk",
+            "status": "unloaded"
+          },
+          {
+            "family": "tabler-icons",
+            "status": "unloaded"
+          },
+          {
+            "family": "uicons-regular-rounded",
+            "status": "loaded"
+          },
+          {
+            "family": "uicons-solid-rounded",
+            "status": "loaded"
+          }
+        ],
+        "stripGlyphs": [
+          {
+            "className": "fi fi-rr-bank",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "\"\"",
+            "beforeFontFamily": "uicons-regular-rounded"
+          },
+          {
+            "className": "fi fi-rr-piggy-bank",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "\"\"",
+            "beforeFontFamily": "uicons-regular-rounded"
+          },
+          {
+            "className": "fi fi-rr-chat-arrow-grow",
+            "fontFamily": "\"Plus Jakarta Sans\", sans-serif",
+            "beforeContent": "\"\"",
+            "beforeFontFamily": "uicons-regular-rounded"
+          }
+        ]
+      }
+    }
+  ],
+  "network": {
+    "requests": [
+      {
+        "requestId": "B64F7CA11B94517253D06E781FBA5075",
+        "url": "http://127.0.0.1:8123/index.html",
+        "type": "Document"
+      },
+      {
+        "requestId": "27240.229",
+        "url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.230",
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.231",
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.232",
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.233",
+        "url": "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.234",
+        "url": "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.235",
+        "url": "https://cdn.jsdelivr.net/npm/chart.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.236",
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.237",
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.238",
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.239",
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.240",
+        "url": "http://127.0.0.1:8123/js/domain/card-engine-v3-combined.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.241",
+        "url": "http://127.0.0.1:8123/js/domain/financial-client.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.242",
+        "url": "http://127.0.0.1:8123/js/domain/security-utils.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.243",
+        "url": "http://127.0.0.1:8123/style/themes.css?v=20-23",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.244",
+        "url": "http://127.0.0.1:8123/style/base.css?v=20-24",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.245",
+        "url": "http://127.0.0.1:8123/style/components.css?v=20-33",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.246",
+        "url": "http://127.0.0.1:8123/style/layout.css?v=20-36",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.247",
+        "url": "http://127.0.0.1:8123/style/features.css?v=20-32",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.248",
+        "url": "http://127.0.0.1:8123/style/dashboard-chat.css?v=20-24",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.249",
+        "url": "http://127.0.0.1:8123/vendor/tabler-icons/tabler-icons.css",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.250",
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.251",
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css",
+        "type": "Stylesheet"
+      },
+      {
+        "requestId": "27240.252",
+        "url": "http://127.0.0.1:8123/js/data/tabler-icon-catalog.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.253",
+        "url": "http://127.0.0.1:8123/js/domain/icon-system.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.254",
+        "url": "http://127.0.0.1:8123/js/data/emoji-catalog.js?v=20-02",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.255",
+        "url": "http://127.0.0.1:8123/js/00-bootstrap.js?v=20-33",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.256",
+        "url": "http://127.0.0.1:8123/js/10-state-utils.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.257",
+        "url": "http://127.0.0.1:8123/js/11-financial-domain.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.258",
+        "url": "http://127.0.0.1:8123/js/12-auth-session.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.259",
+        "url": "http://127.0.0.1:8123/js/13-backup.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.260",
+        "url": "http://127.0.0.1:8123/js/14-theme.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.261",
+        "url": "http://127.0.0.1:8123/js/15-tabs-nav.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.262",
+        "url": "http://127.0.0.1:8123/js/16-events-modals.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.263",
+        "url": "http://127.0.0.1:8123/js/domain/audit-trail.js?v=20-41",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.264",
+        "url": "http://127.0.0.1:8123/js/17-sync-persistence.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.265",
+        "url": "http://127.0.0.1:8123/js/domain/pin-protection.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.266",
+        "url": "http://127.0.0.1:8123/js/18-render-core.js?v=20-29",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.267",
+        "url": "http://127.0.0.1:8123/js/19-goals.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.268",
+        "url": "http://127.0.0.1:8123/js/20-dashboard.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.269",
+        "url": "http://127.0.0.1:8123/js/21-ai-features.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.270",
+        "url": "http://127.0.0.1:8123/js/22-profile.js?v=20-26",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.271",
+        "url": "http://127.0.0.1:8123/js/24-automation-render.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.272",
+        "url": "http://127.0.0.1:8123/js/25-bills-receivables.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.273",
+        "url": "http://127.0.0.1:8123/js/26-receipts.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.274",
+        "url": "http://127.0.0.1:8123/js/27-cards.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.275",
+        "url": "http://127.0.0.1:8123/js/29-invest-movements.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.276",
+        "url": "http://127.0.0.1:8123/js/30-transfer-receipts.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.277",
+        "url": "http://127.0.0.1:8123/js/31-import-export.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.278",
+        "url": "http://127.0.0.1:8123/js/32-auth-wiring.js?v=20-25",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.279",
+        "url": "http://127.0.0.1:8123/js/99-init.js?v=20-29",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.280",
+        "url": "http://127.0.0.1:8123/js/domain/simple-log.js?v=1",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.281",
+        "url": "http://127.0.0.1:8123/src/diagnostic/login-diagnostic.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.282",
+        "url": "http://127.0.0.1:8123/js/legacy/patches.js?v=20-02",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.285",
+        "url": "http://127.0.0.1:8123/manifest.webmanifest?v=19-19",
+        "type": "Manifest"
+      },
+      {
+        "requestId": "27240.475",
+        "url": "http://127.0.0.1:8123/js/domain/secure-storage.js",
+        "type": "Script"
+      },
+      {
+        "requestId": "27240.313",
+        "url": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
+        "type": "Font"
+      },
+      {
+        "requestId": "27240.476",
+        "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.406",
+        "url": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yw.woff2",
+        "type": "Font"
+      },
+      {
+        "requestId": "27240.471",
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/webfonts/uicons-regular-rounded.woff2",
+        "type": "Font"
+      },
+      {
+        "requestId": "27240.473",
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/webfonts/uicons-solid-rounded.woff2",
+        "type": "Font"
+      },
+      {
+        "requestId": "27240.508",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-01.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.509",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-02.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.510",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-03.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.511",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-04.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.512",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-05.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.513",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-06.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.514",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-07.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.515",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-08.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.516",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-09.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.517",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-10.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.518",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-11.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.519",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-12.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.520",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-13.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.521",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-14.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.522",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-15.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.523",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-16.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.524",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-17.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.525",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-18.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.526",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-19.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.527",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-20.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.528",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-21.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.529",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-22.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.530",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-23.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.531",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-24.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.532",
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-25.svg",
+        "type": "Image"
+      },
+      {
+        "requestId": "27240.534",
+        "url": "http://127.0.0.1:8123/icon-192.png",
+        "type": "Other"
+      }
+    ],
+    "responses": [
+      {
+        "url": "http://127.0.0.1:8123/index.html",
+        "status": 200,
+        "mimeType": "text/html"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/themes.css?v=20-23",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/base.css?v=20-24",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/components.css?v=20-33",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/layout.css?v=20-36",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/features.css?v=20-32",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/style/dashboard-chat.css?v=20-24",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/vendor/tabler-icons/tabler-icons.css",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/card-engine-v3-combined.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/financial-client.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/security-utils.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/icon-system.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/data/emoji-catalog.js?v=20-02",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/data/tabler-icon-catalog.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/10-state-utils.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/13-backup.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/00-bootstrap.js?v=20-33",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/12-auth-session.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/11-financial-domain.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/14-theme.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/16-events-modals.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/audit-trail.js?v=20-41",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/pin-protection.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/15-tabs-nav.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/src/diagnostic/login-diagnostic.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/legacy/patches.js?v=20-02",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/manifest.webmanifest?v=19-19",
+        "status": 200,
+        "mimeType": "application/manifest+json"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/simple-log.js?v=1",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css",
+        "status": 200,
+        "mimeType": "text/css"
+      },
+      {
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+        "status": 200,
+        "mimeType": "application/javascript"
+      },
+      {
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",
+        "status": 200,
+        "mimeType": "application/javascript"
+      },
+      {
+        "url": "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+        "status": 200,
+        "mimeType": "application/javascript"
+      },
+      {
+        "url": "https://cdn.jsdelivr.net/npm/chart.js",
+        "status": 200,
+        "mimeType": "application/javascript"
+      },
+      {
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+        "status": 200,
+        "mimeType": "application/javascript"
+      },
+      {
+        "url": "https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",
+        "status": 200,
+        "mimeType": "application/javascript"
+      },
+      {
+        "url": "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/17-sync-persistence.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/18-render-core.js?v=20-29",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/21-ai-features.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/24-automation-render.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/19-goals.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/25-bills-receivables.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/22-profile.js?v=20-26",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJXaW5kb3dUZXh0IiBkPSJNMjAgM2gtMVYxaC0ydjJIN1YxSDV2Mkg0Yy0xLjEgMC0yIC45LTIgMnYxNmMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6bTAgMThINFY4aDE2djEzeiIvPjxwYXRoIGZpbGw9Im5vbmUiIGQ9Ik0wIDBoMjR2MjRIMHoiLz48L3N2Zz4=",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/20-dashboard.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/29-invest-movements.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/26-receipts.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/domain/secure-storage.js",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/27-cards.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/30-transfer-receipts.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/31-import-export.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/32-auth-wiring.js?v=20-25",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/js/99-init.js?v=20-29",
+        "status": 200,
+        "mimeType": "text/javascript"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-01.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-02.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-06.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-03.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-04.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-05.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-07.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yw.woff2",
+        "status": 200,
+        "mimeType": "font/woff2"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-08.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-12.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-13.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-09.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-11.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-10.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-15.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-14.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-16.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-18.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-17.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-19.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-20.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-21.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-22.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-23.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-25.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "http://127.0.0.1:8123/assets/avatars/avatar-geometry-24.svg",
+        "status": 200,
+        "mimeType": "image/svg+xml"
+      },
+      {
+        "url": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
+        "status": 200,
+        "mimeType": "font/woff2"
+      },
+      {
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/webfonts/uicons-regular-rounded.woff2",
+        "status": 200,
+        "mimeType": "application/octet-stream"
+      },
+      {
+        "url": "https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/webfonts/uicons-solid-rounded.woff2",
+        "status": 200,
+        "mimeType": "application/octet-stream"
+      },
+      {
+        "url": "http://127.0.0.1:8123/icon-192.png",
+        "status": 200,
+        "mimeType": "image/png"
+      }
+    ],
+    "failures": [],
+    "consoleErrors": [
+      {
+        "type": "warning",
+        "text": "[2026-11-24T16:37:56.436Z]  @firebase/firestore: Firestore (10.12.2): enableIndexedDbPersistence() will be deprecated in the future, you can use `FirestoreSettings.cache` instead."
+      }
+    ],
+    "exceptions": []
+  },
+  "generatedAt": "2026-11-24T16:38:01.638Z"
+}
