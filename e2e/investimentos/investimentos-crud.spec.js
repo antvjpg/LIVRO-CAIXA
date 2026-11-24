@@ -158,8 +158,9 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
      Firestore enquanto a mutação ainda está na fila de sincronização. O timeout
      impede espera indefinida se o stream cair. */
   async function waitForRemoteAck(page, timeoutMs = 60_000) {
+    const disponivel = await page.evaluate(() => typeof window.db?.waitForPendingWrites === 'function');
+    if (!disponivel) throw new Error('BLOCKED: window.db.waitForPendingWrites indisponível para a barreira de ACK');
     await page.evaluate(async (limite) => {
-      if (typeof window.db?.waitForPendingWrites !== 'function') return;
       await Promise.race([
         window.db.waitForPendingWrites(),
         new Promise((_, reject) =>
@@ -167,6 +168,19 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
         ),
       ]);
     }, timeoutMs);
+  }
+
+  async function confirmAssetPersisted(page, name, timeoutMs = 45_000) {
+    await expect
+      .poll(
+        async () => {
+          const rest = await sessionFromPage(page);
+          const docs = await listCollection(rest.uid, rest.idToken, rest.projectId, 'investments');
+          return docs.filter((doc) => doc.fields.name === name).length;
+        },
+        { timeout: timeoutMs, message: `ativo ${name} confirmado no Firestore por listagem REST` }
+      )
+      .toBeGreaterThan(0);
   }
 
   function fillMoney(page, selector, value) {
@@ -225,6 +239,8 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
     await clickGuarded(page, '#iSalvar');
     await waitInvestPanelClosed(page);
     await expect(card(page, name)).toBeVisible({ timeout: 15_000 });
+    await waitForRemoteAck(page);
+    await confirmAssetPersisted(page, name);
   }
 
   async function editAsset(page, name, changes = {}) {
@@ -316,6 +332,11 @@ test.describe.serial('Investimentos — CRUD completo (serial)', () => {
         )
         .toEqual([]);
     } catch (err) {
+      const mensagem = String((err && err.message) || err);
+      const timeoutReal = (err && err.name === 'TimeoutError') || /Timeout \d+ms exceeded|Timed out/i.test(mensagem);
+      if (!timeoutReal) {
+        throw new Error(`Falha ao conferir persistência no Firestore: ${mensagem}`, { cause: err });
+      }
       throw new Error(
         `Persistência não confirmada no Firestore após ${timeout}ms — ausentes: ${ultimosAusentes.join(', ')}`,
         { cause: err }
