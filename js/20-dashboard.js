@@ -117,15 +117,57 @@
     const visaoScore = dashFinanceScore(visaoScoreParts);
     if (inicioHealthHost) {
       inicioHealthHost.innerHTML = `
-        <div class="dashboard-health-card ${health.tone}">
-          <span class="dashboard-health-icon">${health.icon}</span>
-          <div>
-            <strong>
-              Saúde financeira${visaoScore ? ` · score ${visaoScore.value}/100` : ''}
-            </strong>
-            <small>${health.detail}</small>
+        <div class="inicio-health-content">
+
+          <div class="inicio-health-status">
+            <div class="inicio-health-copy">
+              <span class="inicio-health-eyebrow">
+                Seu momento financeiro
+              </span>
+
+              <strong class="inicio-health-label ${health.tone}">
+                ${health.label}
+              </strong>
+
+              <p>${health.detail}</p>
+            </div>
+
+            ${
+              visaoScore
+                ? `
+                  <div
+                    class="inicio-health-score"
+                    role="img"
+                    aria-label="Score de saúde financeira: ${visaoScore.value} de 100"
+                  >
+                    <strong>${visaoScore.value}</strong>
+                    <span>de 100</span>
+                  </div>
+                `
+                : ''
+            }
           </div>
-          <b>${visaoScore ? `${visaoScore.value} · ${health.label}` : health.label}</b>
+
+          <div class="inicio-health-metrics">
+
+            <div class="inicio-health-metric">
+              <small>Entradas</small>
+              <strong class="positive">${fmt(monthIncome)}</strong>
+            </div>
+
+            <div class="inicio-health-metric">
+              <small>Saídas</small>
+              <strong class="negative">${fmt(monthExpense)}</strong>
+            </div>
+
+            <div class="inicio-health-metric">
+              <small>Resultado</small>
+              <strong class="${monthNet >= 0 ? 'positive' : 'negative'}">
+                ${fmt(monthNet)}
+              </strong>
+            </div>
+
+          </div>
         </div>
       `;
     }

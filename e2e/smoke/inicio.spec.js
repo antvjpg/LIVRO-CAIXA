@@ -46,7 +46,7 @@ test.describe('Início — navegação e renderização', () => {
     await app.openTab(page, 'inicio');
 
     await expect(page.locator('#viewInicio')).toHaveClass(/active/);
-    await expect(page.locator('#viewInicio h2')).toHaveText('Início');
+    await expect(page.locator('main > .inicio-header h2')).toHaveText('Início');
 
     const cards = [
       { label: 'Patrimônio Total', selector: '#viewInicio .balance-card' },

@@ -4316,13 +4316,17 @@ body[data-tab="dash"] .fab-add{
 }
 
 /* C.4-V05-B D-05 — composição da view Início (tokens existentes, sem paleta paralela) */
-#viewInicio .inicio-header{
+main > .inicio-header{
+  display:none;
   margin:0 0 24px;
 }
-#viewInicio .inicio-header h2{
+body[data-tab="inicio"] main > .inicio-header{
+  display:block;
+}
+main > .inicio-header h2{
   margin:0;
 }
-#viewInicio .inicio-header .hint{
+main > .inicio-header .hint{
   margin:4px 0 0;
   display:block;
 }
@@ -4413,6 +4417,133 @@ body[data-tab="inicio"] #balanceStrip > .bank-summary-card .amount{
 #viewInicio .advanced-dashboard .dashboard-health-card>b{
   white-space:normal;
   margin-left:auto;
+}
+
+/* C6-INICIO-02 — Saúde Financeira em superfície única */
+
+/* O container interno deixa de parecer um segundo cartão. */
+#viewInicio .advanced-dashboard-card > .advanced-dashboard {
+  margin: 14px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Diagnóstico e score na mesma linha. */
+#viewInicio .inicio-health-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding: 4px 0 18px;
+}
+
+#viewInicio .inicio-health-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+#viewInicio .inicio-health-eyebrow {
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .075em;
+  text-transform: uppercase;
+}
+
+#viewInicio .inicio-health-label {
+  color: var(--ink);
+  font-size: 19px;
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+
+#viewInicio .inicio-health-label.warning {
+  color: var(--warning);
+}
+
+#viewInicio .inicio-health-label.positive {
+  color: var(--success);
+}
+
+#viewInicio .inicio-health-copy p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* Score destacado, sem criar outro cartão. */
+#viewInicio .inicio-health-score {
+  display: flex;
+  flex: 0 0 66px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 66px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  color: var(--accent);
+  line-height: 1;
+}
+
+#viewInicio .inicio-health-score strong {
+  font-size: 21px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+#viewInicio .inicio-health-score span {
+  margin-top: 3px;
+  color: var(--ink-soft);
+  font-size: 9px;
+}
+
+/* Indicadores integrados à superfície principal. */
+#viewInicio .inicio-health-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+
+#viewInicio .inicio-health-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+#viewInicio .inicio-health-metric small {
+  color: var(--ink-soft);
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+#viewInicio .inicio-health-metric strong {
+  color: var(--ink);
+  font-size: clamp(10px, 1.15vw, 13px);
+  font-weight: 750;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+#viewInicio .inicio-health-metric strong.positive {
+  color: var(--success);
+}
+
+#viewInicio .inicio-health-metric strong.negative {
+  color: var(--danger);
 }
 #viewInicio .inicio-footer{
   display:flex;
