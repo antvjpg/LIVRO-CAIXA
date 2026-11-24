@@ -173,6 +173,10 @@ function skipSemCredencial() {
   async function openNewAsset(page) {
     await page.click('#fabAdd');
     await page.waitForSelector('#panelInvest.open', { timeout: 15_000 });
+    /* openNewInvestModal() foca #iNome com setTimeout(80ms). Sem esperar esse
+       focus, o preenchimento de #iUnidades começa antes do callback e os
+       caracteres restantes vão parar ao #iNome (nome concatenado + unidades 0). */
+    await page.waitForFunction(() => document.activeElement?.id === 'iNome', null, { timeout: 5_000 });
   }
 
   async function waitInvestPanelClosed(page) {
