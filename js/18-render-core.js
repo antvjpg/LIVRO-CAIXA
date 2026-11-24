@@ -55,6 +55,32 @@ function editInstitution(btn, key) {
 
   let PATRIMONY_SPARK_STORAGE_KEY;
 
+  function destroyPatrimonySparkline(context) {
+    const existing = patrimonySparklineInstances[context];
+    if (!existing) return;
+    try { existing.destroy(); } catch (_) { /* instância já inválida */ }
+    patrimonySparklineInstances[context] = null;
+  }
+
+  function activePatrimonySparkContext() {
+    const tab = document.body.dataset.tab;
+    if (tab === 'inicio') return 'inicio';
+    if (tab === 'caixa') return 'strip';
+    return null;
+  }
+
+  function syncPatrimonySparklines(enabled) {
+    const active = activePatrimonySparkContext();
+    ['inicio', 'strip'].forEach((context) => {
+      if (context !== active || !enabled || !patrimonySparkVisible) {
+        destroyPatrimonySparkline(context);
+      }
+    });
+    if (active && enabled && patrimonySparkVisible) {
+      renderPatrimonySparkline(true, active);
+    }
+  }
+
   let patrimonySparkVisible;
   let investBreakdownVisible = false;
   let investTotalExpanded = false;
@@ -79,11 +105,7 @@ function editInstitution(btn, key) {
   function renderPatrimonySparkline(enabled, context) {
     const ctx = context === 'inicio' ? 'inicio' : 'strip';
     const targetCanvasId = ctx === 'inicio' ? 'patrimonySparklineInicio' : 'patrimonySparkline';
-    const existing = patrimonySparklineInstances[ctx];
-    if (existing) {
-      try { existing.destroy(); } catch (_) { /* instância já inválida */ }
-      patrimonySparklineInstances[ctx] = null;
-    }
+    destroyPatrimonySparkline(ctx);
     const canvas = document.getElementById(targetCanvasId);
     if (!enabled || !patrimonySparkVisible || !canvas) return;
     const series = dashboardMonthSeries(6);
@@ -214,10 +236,11 @@ function editInstitution(btn, key) {
       otherBox.classList.toggle('is-collapsed', !patrimonySparkVisible);
       otherBox.setAttribute('aria-hidden', String(!patrimonySparkVisible));
     }
+    const sparkReady = !!currentUser && !!firstLoadDone;
     if (patrimonySparkVisible) {
-      renderPatrimonySparkline(!!currentUser && !!firstLoadDone, context);
+      syncPatrimonySparklines(sparkReady);
     } else {
-      setTimeout(() => { if (!patrimonySparkVisible) renderPatrimonySparkline(false, context); }, 320);
+      setTimeout(() => { if (!patrimonySparkVisible) syncPatrimonySparklines(sparkReady); }, 320);
     }
   }
 
@@ -617,13 +640,15 @@ function editInstitution(btn, key) {
     const insightValue = balancesReady ? flowInsight.value : '—';
     const insightDetail = balancesReady ? flowInsight.detail : 'Aguardando dados';
 
-    let html = `
+    const totalCardHTML = `
     <div class="balance-card total">
       <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" role="button" tabindex="0" aria-expanded="${patrimonySparkVisible}" aria-controls="patrimonySparkBox" aria-label="${patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio'}"><i class="fi fi-rr-wallet" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && totalPatrimonio < 0 ? 'neg' : ''}">${totalLabel}</span>
       ${balancesReady ? `<div class="patrimony-spark-box${patrimonySparkVisible ? '' : ' is-collapsed'}" id="patrimonySparkBox" aria-hidden="${!patrimonySparkVisible}"><canvas id="patrimonySparkline" role="img" aria-label="Evolução do patrimônio nos últimos 6 meses"></canvas></div>` : ''}
       
-    </div>
+    </div>`;
+    let html = document.body.dataset.tab === 'inicio' ? '' : totalCardHTML;
+    html += `
     <div class="balance-card bank-summary-card" role="button" tabindex="0" aria-label="Ver saldos dos bancos" title="Ver saldos dos bancos">
       <div class="balance-card-head"><span class="label">Bancos</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-bank" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && bankTotal < 0 ? 'neg' : ''}">${bankLabel}</span>
@@ -642,10 +667,8 @@ function editInstitution(btn, key) {
     <div class="invest-breakdown-box${investBreakdownVisible ? '' : ' is-collapsed'}" id="investBreakdownBox" aria-hidden="${!investBreakdownVisible}"></div>`;
     strip.innerHTML = html;
     markValueRefresh(strip);
-    renderPatrimonySparkline(balancesReady, 'strip');
-    // B.1.3.3 — inicializa também o gráfico da view Início no ciclo normal
-    // (antes só era criado no toggle, o que impedia o segundo gráfico).
-    renderPatrimonySparkline(balancesReady, 'inicio');
+    // C6-INICIO-02 — mantém vivo somente o gráfico do contexto visível.
+    syncPatrimonySparklines(balancesReady);
     const sparkToggleSymbol = strip.querySelector('.balance-card.total .balance-symbol');
     sparkToggleSymbol?.addEventListener('click', () => togglePatrimonySparkline('strip'));
     sparkToggleSymbol?.addEventListener('keydown', (event) => {
@@ -687,6 +710,19 @@ function editInstitution(btn, key) {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
         openInvestTab();
+      }
+    });
+    // C6-INICIO-02 — o detalhamento não deve navegar pelo card pai.
+    const investToggleSymbol = investSummaryCard?.querySelector('.balance-symbol');
+    investToggleSymbol?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleInvestBreakdown();
+    });
+    investToggleSymbol?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleInvestBreakdown();
       }
     });
     // B.1.3.3 — estado visual do gráfico do Início sempre derivado de

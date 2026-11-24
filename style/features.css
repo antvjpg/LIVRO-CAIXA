@@ -4317,7 +4317,7 @@ body[data-tab="dash"] .fab-add{
 
 /* C.4-V05-B D-05 — composição da view Início (tokens existentes, sem paleta paralela) */
 #viewInicio .inicio-header{
-  margin:0 0 16px;
+  margin:0 0 24px;
 }
 #viewInicio .inicio-header h2{
   margin:0;
@@ -4326,32 +4326,72 @@ body[data-tab="dash"] .fab-add{
   margin:4px 0 0;
   display:block;
 }
+body[data-tab="inicio"] #balanceStrip{
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  align-items:stretch;
+  gap:15px;
+  margin:0 0 26px;
+}
+body[data-tab="inicio"] #balanceStrip > .bank-summary-card{
+  grid-column:1 / -1;
+}
+body[data-tab="inicio"] #balanceStrip > .pocket-summary-card{
+  grid-column:1;
+}
+body[data-tab="inicio"] #balanceStrip > .invest-summary-card{
+  grid-column:2;
+}
+body[data-tab="inicio"] #balanceStrip > .invest-breakdown-box{
+  grid-column:1 / -1;
+  margin-top:0;
+}
+body[data-tab="inicio"] #balanceStrip .balance-card{
+  min-height:0;
+  padding:20px 22px;
+}
+body[data-tab="inicio"] #balanceStrip .balance-card .amount{
+  font-size:clamp(18px, 2.4vw, 22px);
+  overflow-wrap:anywhere;
+}
 #viewInicio .inicio-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  align-items:start;
-  gap:14px;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  align-items:stretch;
+  column-gap:16px;
+  row-gap:24px;
   width:100%;
   max-width:100%;
+}
+#viewInicio .inicio-grid > .balance-card{
+  grid-column:1 / -1;
 }
 #viewInicio .inicio-card{
   min-width:0;
   max-width:100%;
-  overflow-wrap:break-word;
+  overflow-wrap:anywhere;
+  padding:22px;
 }
 /* Cards que não herdam .balance-card precisam da mesma superfície/estrutura */
 #viewInicio .advanced-dashboard-card,
 #viewInicio .dashboard-next-payment-card{
   background:var(--paper);
   color:var(--ink);
-  border-radius:10px;
-  padding:20px 18px;
+  border-radius:var(--radius-lg);
+  padding:22px;
   border:1px solid var(--line);
   box-shadow:var(--shadow-sm);
 }
 #viewInicio .advanced-dashboard-card .advanced-dashboard,
 #viewInicio .dashboard-next-payment-card .next-pay-inner{
   min-width:0;
+}
+#viewInicio .patrimony-spark-box,
+#viewInicio .patrimony-spark-box canvas{
+  box-sizing:border-box;
+  max-width:100%;
+}
+#viewInicio .patrimony-spark-box canvas{
+  display:block;
 }
 /* Em colunas estreitas, o badge do health-card nao pode esmagar o rotulo:
    o flex:1 1 0% + min-width:0 do div filho colapsa o texto a ~8px no desktop. */
@@ -4372,8 +4412,8 @@ body[data-tab="dash"] .fab-add{
 #viewInicio .inicio-footer{
   display:flex;
   align-items:flex-end;
-  gap:14px;
-  margin-top:20px;
+  gap:16px;
+  margin-top:24px;
 }
 /* Exceção escopada: o resumo existe em Início (D-04) e deve ser visível aqui */
 #viewInicio .inicio-footer .cashflow-mini-summary{
@@ -4382,10 +4422,27 @@ body[data-tab="dash"] .fab-add{
   min-width:0;
   margin:0;
 }
-/* faixa 1 coluna em telas estreitas */
-@media(max-width:360px){
+@media(max-width:680px){
+  body[data-tab="inicio"] #balanceStrip .balance-card .label{
+    white-space:normal;
+    overflow:visible;
+    text-overflow:clip;
+  }
+  body[data-tab="inicio"] #balanceStrip .balance-share{
+    font-size:9px;
+  }
+  body[data-tab="inicio"] #balanceStrip .balance-symbol{
+    width:26px;
+    height:26px;
+    min-width:26px;
+    border-radius:9px;
+  }
   #viewInicio .inicio-grid{
     grid-template-columns:minmax(0, 1fr);
+    row-gap:18px;
+  }
+  #viewInicio .inicio-grid > .balance-card{
+    grid-column:1;
   }
 }
 

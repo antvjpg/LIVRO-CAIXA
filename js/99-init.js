@@ -430,14 +430,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabName === 'dashboard' || tabName === 'inicio') {
   renderAdvancedDashboard();
 }
-    // B.1.3.3 — canvas oculto renderiza 0×0; ao ativar a aba, recria o gráfico
-    // já com a view visível para corrigir o dimensionamento.
-    if (tabName === 'caixa' || tabName === 'inicio') {
-      if (typeof renderPatrimonySparkline === 'function') {
-        const sparkReady = !!currentUser && !!firstLoadDone;
-        renderPatrimonySparkline(sparkReady, 'strip');
-        if (tabName === 'inicio') renderPatrimonySparkline(sparkReady, 'inicio');
-      }
+    // C6-INICIO-02 — canvas oculto renderiza 0×0; ao ativar a aba, recria
+    // somente o gráfico do contexto visível (inicio, caixa ou nenhum).
+    if (typeof syncPatrimonySparklines === 'function') {
+      syncPatrimonySparklines(!!currentUser && !!firstLoadDone);
     }
     if (tabName === 'dash') renderDashboardTab();
     if (tabName === 'caixa') renderCategorySummary();
