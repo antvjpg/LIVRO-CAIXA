@@ -1,16 +1,8 @@
 name: Testes
 
 on:
-  workflow_dispatch:
-    inputs:
-      alvo:
-        description: 'Conjunto de testes de iteração'
-        required: true
-        default: 'todos'
-        type: choice
-        options:
-          - todos
-          - inicio
+  push:
+    branches: [feat/app-layout-redesign]
 
 permissions:
   contents: read
@@ -46,12 +38,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Teste Início
-        if: ${{ inputs.alvo == 'inicio' }}
-        run: npx playwright test e2e/iteracao/inicio.spec.js --config=e2e/playwright.iteracao.config.cjs --project=iteracao --reporter=list
-
-      - name: Todos os testes de iteração
-        if: ${{ inputs.alvo == 'todos' }}
-        run: npx playwright test --config=e2e/playwright.iteracao.config.cjs --project=iteracao --reporter=list
+        run: npx playwright test e2e/iteracao/inicio.spec.js --config=playwright.iteracao.config.cjs --project=iteracao --reporter=list
 
       - name: Evidências
         if: always()
