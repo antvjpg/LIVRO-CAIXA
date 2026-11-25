@@ -1,0 +1,119 @@
+diff --git a/e2e/smoke/inicio.spec.js b/e2e/smoke/inicio.spec.js
+index dfd998e..a4c8ede 100644
+--- a/e2e/smoke/inicio.spec.js
++++ b/e2e/smoke/inicio.spec.js
+@@ -67,6 +67,84 @@ test.describe('Início — navegação e renderização', () => {
+       await expect(page.locator(selector), `container ${selector}`).toBeVisible();
+     }
+ 
++    const healthSelectors = [
++      '.inicio-health-content',
++      '.inicio-health-status',
++      '.inicio-health-copy',
++      '.inicio-health-eyebrow',
++      '.inicio-health-label',
++      '.inicio-health-metrics',
++      '.inicio-health-metric',
++    ];
++    for (const selector of healthSelectors) {
++      await expect(page.locator(`#viewInicio .advanced-dashboard ${selector}`).first(), `saúde ${selector}`).toBeVisible();
++    }
++    await expect(page.locator('#viewInicio .inicio-health-metric')).toHaveCount(3);
++
++    const healthSnapshot = await page.evaluate(() => {
++      const root = document.querySelector('#viewInicio .advanced-dashboard');
++      const norm = (value) => (value || '').replace(/\s+/g, ' ').trim();
++      const text = (selector) => norm(root?.querySelector(selector)?.textContent);
++      const score = root?.querySelector('.inicio-health-score');
++      const scoreValue = norm(score?.querySelector('strong')?.textContent);
++      const surface = root ? getComputedStyle(root) : null;
++      const metricNodes = Array.from(root?.querySelectorAll('.inicio-health-metric') || []);
++      const flowNodes = Array.from(document.querySelectorAll('#viewInicio .cashflow-mini-metrics > div'));
++      return {
++        eyebrow: text('.inicio-health-eyebrow'),
++        label: text('.inicio-health-label'),
++        detail: text('.inicio-health-copy p'),
++        score: score
++          ? {
++              present: true,
++              value: scoreValue,
++              hasDe100: text('.inicio-health-score').includes('de 100'),
++              role: score.getAttribute('role'),
++              ariaLabel: score.getAttribute('aria-label'),
++            }
++          : { present: false },
++        metricLabels: metricNodes.map((node) => norm(node.querySelector('small')?.textContent)),
++        metricValues: metricNodes.map((node) => norm(node.querySelector('strong')?.textContent)),
++        flowLabels: flowNodes.map((node) => norm(node.querySelector('small')?.textContent)),
++        flowValues: flowNodes.map((node) => norm(node.querySelector('strong')?.textContent)),
++        surface: surface
++          ? {
++              backgroundColor: surface.backgroundColor,
++              borderWidth: surface.borderWidth,
++              boxShadow: surface.boxShadow,
++              padding: surface.padding,
++              borderRadius: surface.borderRadius,
++            }
++          : null,
++      };
++    });
++    expect(healthSnapshot.eyebrow).toBe('Seu momento financeiro');
++    expect(healthSnapshot.label.length).toBeGreaterThan(0);
++    expect(healthSnapshot.detail.length).toBeGreaterThan(0);
++    expect(healthSnapshot.metricLabels).toEqual(['Entradas', 'Saídas', 'Resultado']);
++    expect(healthSnapshot.flowLabels).toEqual(['Entradas', 'Saídas', 'Saldo do mês']);
++    expect(healthSnapshot.metricValues[0]).toBe(healthSnapshot.flowValues[0]);
++    expect(healthSnapshot.metricValues[1]).toBe(healthSnapshot.flowValues[1]);
++    expect(healthSnapshot.metricValues[2]).toBe(healthSnapshot.flowValues[2]);
++    if (healthSnapshot.score.present) {
++      expect(healthSnapshot.score.value).toMatch(/^\d+$/);
++      expect(healthSnapshot.score.hasDe100).toBe(true);
++      expect(healthSnapshot.score.role).toBe('img');
++      expect(healthSnapshot.score.ariaLabel).toBe(`Score de saúde financeira: ${healthSnapshot.score.value} de 100`);
++    } else {
++      await expect(page.locator('#viewInicio .inicio-health-score')).toHaveCount(0);
++    }
++    expect(healthSnapshot.surface).not.toBeNull();
++    expect(healthSnapshot.surface.backgroundColor).toMatch(/^(rgba\(0, 0, 0, 0\)|transparent)$/);
++    expect(healthSnapshot.surface.borderWidth).toBe('0px');
++    expect(healthSnapshot.surface.boxShadow).toBe('none');
++    expect(healthSnapshot.surface.padding).toBe('0px');
++    expect(healthSnapshot.surface.borderRadius).toBe('0px');
++    await testInfo.attach('saude-financeira.json', {
++      body: JSON.stringify(healthSnapshot, null, 2),
++      contentType: 'application/json',
++    });
++
+     const chartSnapshot = () => page.evaluate(() => {
+       const chartOn = (id) => {
+         const canvas = document.getElementById(id);
+@@ -162,13 +240,29 @@ test.describe('Início — navegação e renderização', () => {
+     await investSymbol.click();
+     expect(await page.locator('#investBreakdownBox').getAttribute('aria-hidden')).toBe(breakdownBefore);
+ 
++    const overviewSnapshot = () => page.evaluate(() => {
++      const card = document.querySelector('#viewDashboard .dashboard-health-card');
++      return {
++        hasHealthCard: !!card,
++        healthText: (card?.textContent || '').replace(/\s+/g, ' ').trim(),
++        inicioMarkupCount: document.querySelectorAll('#viewDashboard .inicio-health-content').length,
++      };
++    });
+     const healthBefore = (await page.locator('#viewInicio .advanced-dashboard').innerText()).trim();
+     const flowBefore = (await page.locator('#viewInicio .cashflow-mini-summary').innerText()).trim();
++    const overviewBefore = await overviewSnapshot();
+     expect(healthBefore.length).toBeGreaterThan(0);
+     expect(flowBefore.length).toBeGreaterThan(0);
++    expect(overviewBefore.hasHealthCard).toBe(true);
++    expect(overviewBefore.inicioMarkupCount).toBe(0);
+     await app.openTab(page, 'dashboard');
+     await app.openTab(page, 'inicio');
++    const overviewAfter = await overviewSnapshot();
++    expect(overviewAfter.hasHealthCard).toBe(true);
++    expect(overviewAfter.inicioMarkupCount).toBe(0);
++    expect(overviewAfter.healthText).toBe(overviewBefore.healthText);
+     expect(await page.locator('#viewInicio .advanced-dashboard').count()).toBe(1);
++    expect(await page.locator('#viewInicio .inicio-health-content').count()).toBe(1);
+     expect(await page.locator('#viewInicio .cashflow-mini-summary').count()).toBe(1);
+     expect((await page.locator('#viewInicio .advanced-dashboard').innerText()).trim()).toBe(healthBefore);
+     expect((await page.locator('#viewInicio .cashflow-mini-summary').innerText()).trim()).toBe(flowBefore);
