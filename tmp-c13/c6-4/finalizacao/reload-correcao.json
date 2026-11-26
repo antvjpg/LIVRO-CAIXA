@@ -1,0 +1,26 @@
+{
+  "defeito": "Ao recarregar com preferência salva '0', o gráfico da Início não renderizava.",
+  "causa": "renderBalances() forçava patrimonySparkVisible=true durante a restauração da aba, mas a inicialização posterior em 99-init.js lia localStorage e sobrescrevia o valor para false.",
+  "correcao": "Inicialização de PATRIMONY_SPARK_STORAGE_KEY e patrimonySparkVisible movida para antes da restauração da última aba em js/99-init.js.",
+  "antes": {
+    "preferencia": "0",
+    "forced": true,
+    "visible": false,
+    "chart": false,
+    "boxEmpty": true,
+    "expanded": "false"
+  },
+  "depois": {
+    "preferencia": "0",
+    "forced": true,
+    "visible": true,
+    "chart": true,
+    "boxEmpty": null,
+    "expanded": "true"
+  },
+  "validacao": {
+    "metodo": "Chromium/CDP com Page.reload, sessão simulada e renderBalances() sem forçar a preferência manualmente",
+    "preferencias_testadas": ["0", "1"],
+    "resultado": "PASS para ambas"
+  }
+}

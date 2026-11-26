@@ -60,8 +60,19 @@ window.addEventListener('beforeunload', e => {
     }
     if (index < 0) index = 0;
     nav.dataset.active = tabName || 'caixa';
-    nav.style.setProperty('--nav-indicator-x', `${index * 100}%`);
+    const active = buttons[index];
+    if (active) {
+      buttons.forEach(button => button.classList.toggle('is-active', button === active));
+      const offset = active.getBoundingClientRect().left - nav.getBoundingClientRect().left - 4;
+      nav.style.setProperty('--nav-indicator-x', `${Math.round(offset)}px`);
+      nav.style.setProperty('--nav-indicator-width', `${active.offsetWidth}px`);
+    }
   }
+
+  window.addEventListener('resize', () => {
+    const nav = document.querySelector('.mobile-bottom-nav');
+    if (nav) updateNavIndicator(nav.dataset.active || 'caixa');
+  });
 
   function markValueRefresh(root = document) {
     if (window.__skipValueRefresh) return;

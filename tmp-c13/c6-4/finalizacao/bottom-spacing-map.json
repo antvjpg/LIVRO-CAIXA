@@ -1,0 +1,37 @@
+{
+  "finalidade": "Identificar as regras que geram o espaçamento inferior no final de cada aba.",
+  "metodo": "Chromium/CDP, viewport 390x844 e 1280x800, leitura de getComputedStyle(document.body).paddingBottom e getComputedStyle(main).paddingBottom após switchTab.",
+  "mobile-390": {
+    "todas-as-abas": { "body": "96px", "main": "24px", "total": 120, "footerAltura": "55.9px" },
+    "conteudo_no_tail": {
+      "footer": {
+        "selector": "footer",
+        "texto": "livro-caixa · dados sincronizados com a nuvem pela sua conta",
+        "regras": [
+          "style/components.css:666-672 — padding:24px, font-size:11px (base)",
+          "style/features.css:816 — padding:16px 14px calc(122px + env(safe-area-inset-bottom)) em <=680px"
+        ],
+        "altura_medida_em_inicio": "55.9px",
+        "aplicacao": "Regra global do footer em mobile, válida para todas as abas."
+      },
+      "elementos_fixos": {
+        "nav": "style/layout.css:252 — bottom:max(14px,env(...)), min-height:68px",
+        "fab": "style/layout.css:266 — bottom:calc(96px + env(...)); body[data-tab=inicio] .fab-add 48x48 em style/features.css:4830"
+      },
+      "espaco_vazio": "Após o footer há apenas o padding-bottom do body; antes do footer há o padding-bottom do main."
+    },
+    "regras": [
+          "style/layout.css:249 — body padding-bottom calc(96px + env(safe-area-inset-bottom)) para todas as abas em <=680px",
+          "style/layout.css:40 — main padding 14px 14px 24px em <=680px",
+          "style/features.css:816 — footer padding-bottom calc(24px + env(safe-area-inset-bottom)) em <=680px"
+    ]
+  },
+  "desktop-1280": {
+    "inicio": { "body": "0px", "main": "24px", "total": 24 },
+    "outras-abas": { "body": "0px", "main": "80px", "total": 80 },
+    "regras": [
+      "style/base.css:68 — main padding 28px 24px 80px",
+      "style/features.css:4370-4372 — body[data-tab=inicio] main padding-bottom 24px"
+    ]
+  }
+}

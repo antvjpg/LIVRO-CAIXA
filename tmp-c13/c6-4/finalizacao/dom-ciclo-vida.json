@@ -1,0 +1,169 @@
+{
+  "initial": {
+    "tab": "inicio",
+    "inicioSectionCount": 1,
+    "inicioSectionVisible": true,
+    "inicioAmount": "R$ 0,00",
+    "stripTotalCount": 0,
+    "stripTotalVisible": false,
+    "stripTotalAmount": "",
+    "stripLabels": [
+      "Bancos",
+      "Caixinhas",
+      "Investimentos"
+    ],
+    "charts": {
+      "inicio": true,
+      "strip": false
+    },
+    "breakdownHidden": "true",
+    "evolutionVisible": true
+  },
+  "cycles": [
+    {
+      "step": "caixa-1",
+      "state": {
+        "tab": "caixa",
+        "inicioSectionCount": 1,
+        "inicioSectionVisible": false,
+        "inicioAmount": "R$ 0,00",
+        "stripTotalCount": 1,
+        "stripTotalVisible": true,
+        "stripTotalAmount": "R$ 0,00",
+        "stripLabels": [
+          "Patrimônio Total",
+          "Bancos",
+          "Caixinhas",
+          "Investimentos"
+        ],
+        "charts": {
+          "inicio": false,
+          "strip": true
+        },
+        "breakdownHidden": "true",
+        "evolutionVisible": false
+      }
+    },
+    {
+      "step": "inicio-1",
+      "state": {
+        "tab": "inicio",
+        "inicioSectionCount": 1,
+        "inicioSectionVisible": true,
+        "inicioAmount": "R$ 0,00",
+        "stripTotalCount": 0,
+        "stripTotalVisible": false,
+        "stripTotalAmount": "",
+        "stripLabels": [
+          "Bancos",
+          "Caixinhas",
+          "Investimentos"
+        ],
+        "charts": {
+          "inicio": true,
+          "strip": false
+        },
+        "breakdownHidden": "true",
+        "evolutionVisible": true
+      }
+    },
+    {
+      "step": "caixa-2",
+      "state": {
+        "tab": "caixa",
+        "inicioSectionCount": 1,
+        "inicioSectionVisible": false,
+        "inicioAmount": "R$ 0,00",
+        "stripTotalCount": 1,
+        "stripTotalVisible": true,
+        "stripTotalAmount": "R$ 0,00",
+        "stripLabels": [
+          "Patrimônio Total",
+          "Bancos",
+          "Caixinhas",
+          "Investimentos"
+        ],
+        "charts": {
+          "inicio": false,
+          "strip": true
+        },
+        "breakdownHidden": "true",
+        "evolutionVisible": false
+      }
+    },
+    {
+      "step": "inicio-2",
+      "state": {
+        "tab": "inicio",
+        "inicioSectionCount": 1,
+        "inicioSectionVisible": true,
+        "inicioAmount": "R$ 0,00",
+        "stripTotalCount": 0,
+        "stripTotalVisible": false,
+        "stripTotalAmount": "",
+        "stripLabels": [
+          "Bancos",
+          "Caixinhas",
+          "Investimentos"
+        ],
+        "charts": {
+          "inicio": true,
+          "strip": false
+        },
+        "breakdownHidden": "true",
+        "evolutionVisible": true
+      }
+    },
+    {
+      "step": "caixa-3",
+      "state": {
+        "tab": "caixa",
+        "inicioSectionCount": 1,
+        "inicioSectionVisible": false,
+        "inicioAmount": "R$ 0,00",
+        "stripTotalCount": 1,
+        "stripTotalVisible": true,
+        "stripTotalAmount": "R$ 0,00",
+        "stripLabels": [
+          "Patrimônio Total",
+          "Bancos",
+          "Caixinhas",
+          "Investimentos"
+        ],
+        "charts": {
+          "inicio": false,
+          "strip": true
+        },
+        "breakdownHidden": "true",
+        "evolutionVisible": false
+      }
+    },
+    {
+      "step": "inicio-3",
+      "state": {
+        "tab": "inicio",
+        "inicioSectionCount": 1,
+        "inicioSectionVisible": true,
+        "inicioAmount": "R$ 0,00",
+        "stripTotalCount": 0,
+        "stripTotalVisible": false,
+        "stripTotalAmount": "",
+        "stripLabels": [
+          "Bancos",
+          "Caixinhas",
+          "Investimentos"
+        ],
+        "charts": {
+          "inicio": true,
+          "strip": false
+        },
+        "breakdownHidden": "true",
+        "evolutionVisible": true
+      }
+    }
+  ],
+  "breakdownAfterClick": {
+    "hidden": "false",
+    "tab": "inicio"
+  }
+}

@@ -356,6 +356,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Entrada extra para consumir a primeira ação de Voltar dentro do app
   try { history.pushState(appBackState, ''); } catch (_) {}
   LAST_TAB_STORAGE_KEY = 'livrocaixa_last_tab';
+  PATRIMONY_SPARK_STORAGE_KEY = 'livro-caixa-patrimony-spark';
+  patrimonySparkVisible = localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY) !== '0';
   TAB_NAMES = ['dash', 'dashboard', 'caixa', 'invest', 'pockets', 'cards', 'receivables', 'bills', 'profile', 'goals', 'inicio'];
   currentTab = 'caixa';
   lastTabRestored = false;
@@ -488,8 +490,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   VIEW_PERIOD_KEY = 'livrocaixa_view_period_v18_08';
   viewPeriod = { mode: 'month', month: currentMonthYM() };
-  PATRIMONY_SPARK_STORAGE_KEY = 'livro-caixa-patrimony-spark';
-  patrimonySparkVisible = localStorage.getItem(PATRIMONY_SPARK_STORAGE_KEY) !== '0';
   /* INVEST_TOTAL_*_KEY são `const` globais em js/18-render-core.js (mesmo valor).
      Atribuí-los aqui lançava "TypeError: Assignment to constant variable" no
      DOMContentLoaded, abortando todo o restante da inicialização (inclusive o

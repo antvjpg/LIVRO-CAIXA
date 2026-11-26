@@ -1,0 +1,972 @@
+{
+  "320": {
+    "viewport": {
+      "w": 320,
+      "h": 720
+    },
+    "cards": [
+      {
+        "cls": "balance-card bank-summary-card",
+        "rect": {
+          "x": 14,
+          "y": 311.5,
+          "w": 93.3,
+          "h": 74,
+          "bottom": 385.5,
+          "right": 107.3
+        },
+        "label": {
+          "text": "Bancos",
+          "title": "Bancos",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 51,
+          "clientWidth": 51
+        },
+        "amount": {
+          "text": "R$ 4.120,00",
+          "rect": {
+            "x": 22,
+            "y": 354.5,
+            "w": 76.9,
+            "h": 18,
+            "bottom": 372.5,
+            "right": 98.9
+          },
+          "fontSize": "14px",
+          "scrollWidth": 77,
+          "clientWidth": 77
+        },
+        "symbolRect": {
+          "x": 77.3,
+          "y": 322.5,
+          "w": 22,
+          "h": 22,
+          "bottom": 344.5,
+          "right": 99.3
+        },
+        "amountSymbolOverlap": 0
+      },
+      {
+        "cls": "balance-card pocket-summary-card",
+        "rect": {
+          "x": 113.3,
+          "y": 311.5,
+          "w": 93.3,
+          "h": 74,
+          "bottom": 385.5,
+          "right": 206.7
+        },
+        "label": {
+          "text": "Caixinhas",
+          "title": "Caixinhas",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 59,
+          "clientWidth": 51
+        },
+        "amount": {
+          "text": "R$ 1.980,00",
+          "rect": {
+            "x": 121.3,
+            "y": 354.5,
+            "w": 76.9,
+            "h": 18,
+            "bottom": 372.5,
+            "right": 198.2
+          },
+          "fontSize": "14px",
+          "scrollWidth": 77,
+          "clientWidth": 77
+        },
+        "symbolRect": {
+          "x": 176.7,
+          "y": 322.5,
+          "w": 22,
+          "h": 22,
+          "bottom": 344.5,
+          "right": 198.7
+        },
+        "amountSymbolOverlap": 0
+      },
+      {
+        "cls": "balance-card invest-summary-card",
+        "rect": {
+          "x": 212.7,
+          "y": 311.5,
+          "w": 93.3,
+          "h": 74,
+          "bottom": 385.5,
+          "right": 306
+        },
+        "label": {
+          "text": "Investimentos",
+          "title": "Investimentos",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 85,
+          "clientWidth": 51
+        },
+        "amount": {
+          "text": "R$ 6.350,80",
+          "rect": {
+            "x": 220.7,
+            "y": 354.5,
+            "w": 76.9,
+            "h": 18,
+            "bottom": 372.5,
+            "right": 297.5
+          },
+          "fontSize": "14px",
+          "scrollWidth": 77,
+          "clientWidth": 77
+        },
+        "symbolRect": {
+          "x": 276,
+          "y": 322.5,
+          "w": 22,
+          "h": 22,
+          "bottom": 344.5,
+          "right": 298
+        },
+        "amountSymbolOverlap": 0
+      }
+    ],
+    "cardsSameRow": true,
+    "patrimonio": {
+      "rect": {
+        "x": 14,
+        "y": 217,
+        "w": 292,
+        "h": 78.5,
+        "bottom": 295.5,
+        "right": 306
+      },
+      "isCard": false,
+      "background": "none",
+      "border": "0px",
+      "delta": "↑ 4%"
+    },
+    "evolution": {
+      "rect": {
+        "x": 14,
+        "y": 406.5,
+        "w": 292,
+        "h": 175,
+        "bottom": 581.5,
+        "right": 306
+      },
+      "background": "none",
+      "border": "0px",
+      "gapFromCards": 21,
+      "chartType": "bar",
+      "chartPoints": 6,
+      "empty": false
+    },
+    "fixed": {
+      "fab": {
+        "x": 258,
+        "y": 576,
+        "w": 48,
+        "h": 48,
+        "bottom": 624,
+        "right": 306
+      },
+      "nav": {
+        "x": 14,
+        "y": 638,
+        "w": 292,
+        "h": 68,
+        "bottom": 706,
+        "right": 306
+      },
+      "overlapTop": {
+        "patrimonio": 0,
+        "evolution": 264,
+        "saude": 21128
+      }
+    },
+    "navButtons": 6,
+    "navWhiteSpace": [
+      "nowrap",
+      "nowrap",
+      "nowrap",
+      "nowrap",
+      "nowrap",
+      "nowrap"
+    ],
+    "overflowX": {
+      "body": 0,
+      "html": 0
+    },
+    "titleSizes": {
+      "patrimonio": "13px",
+      "evolucao": "13px",
+      "saude": "13px"
+    },
+    "bottomFixed": {
+      "scrollY": 658,
+      "maxScroll": 658,
+      "overlap": {
+        "main > .inicio-patrimonio": {
+          "fab": 0,
+          "nav": 0
+        },
+        "main > .inicio-patrimony-evolution": {
+          "fab": 0,
+          "nav": 0
+        },
+        "#viewInicio .advanced-dashboard-card": {
+          "fab": 0,
+          "nav": 0
+        },
+        "#viewInicio .dashboard-next-payment-card": {
+          "fab": 0,
+          "nav": 0
+        }
+      }
+    }
+  },
+  "360": {
+    "viewport": {
+      "w": 360,
+      "h": 800
+    },
+    "cards": [
+      {
+        "cls": "balance-card bank-summary-card",
+        "rect": {
+          "x": 14,
+          "y": 327.5,
+          "w": 105.3,
+          "h": 82,
+          "bottom": 409.5,
+          "right": 119.3
+        },
+        "label": {
+          "text": "Bancos",
+          "title": "Bancos",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 53,
+          "clientWidth": 53
+        },
+        "amount": {
+          "text": "R$ 4.120,00",
+          "rect": {
+            "x": 25,
+            "y": 376.5,
+            "w": 76.9,
+            "h": 18,
+            "bottom": 394.5,
+            "right": 101.9
+          },
+          "fontSize": "14px",
+          "scrollWidth": 77,
+          "clientWidth": 77
+        },
+        "symbolRect": {
+          "x": 82.3,
+          "y": 340.5,
+          "w": 26,
+          "h": 26,
+          "bottom": 366.5,
+          "right": 108.3
+        },
+        "amountSymbolOverlap": 0
+      },
+      {
+        "cls": "balance-card pocket-summary-card",
+        "rect": {
+          "x": 127.3,
+          "y": 327.5,
+          "w": 105.3,
+          "h": 82,
+          "bottom": 409.5,
+          "right": 232.7
+        },
+        "label": {
+          "text": "Caixinhas",
+          "title": "Caixinhas",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 59,
+          "clientWidth": 53
+        },
+        "amount": {
+          "text": "R$ 1.980,00",
+          "rect": {
+            "x": 138.3,
+            "y": 376.5,
+            "w": 76.9,
+            "h": 18,
+            "bottom": 394.5,
+            "right": 215.2
+          },
+          "fontSize": "14px",
+          "scrollWidth": 77,
+          "clientWidth": 77
+        },
+        "symbolRect": {
+          "x": 195.7,
+          "y": 340.5,
+          "w": 26,
+          "h": 26,
+          "bottom": 366.5,
+          "right": 221.7
+        },
+        "amountSymbolOverlap": 0
+      },
+      {
+        "cls": "balance-card invest-summary-card",
+        "rect": {
+          "x": 240.7,
+          "y": 327.5,
+          "w": 105.3,
+          "h": 82,
+          "bottom": 409.5,
+          "right": 346
+        },
+        "label": {
+          "text": "Investimentos",
+          "title": "Investimentos",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 85,
+          "clientWidth": 53
+        },
+        "amount": {
+          "text": "R$ 6.350,80",
+          "rect": {
+            "x": 251.7,
+            "y": 376.5,
+            "w": 76.9,
+            "h": 18,
+            "bottom": 394.5,
+            "right": 328.5
+          },
+          "fontSize": "14px",
+          "scrollWidth": 77,
+          "clientWidth": 77
+        },
+        "symbolRect": {
+          "x": 309,
+          "y": 340.5,
+          "w": 26,
+          "h": 26,
+          "bottom": 366.5,
+          "right": 335
+        },
+        "amountSymbolOverlap": 0
+      }
+    ],
+    "cardsSameRow": true,
+    "patrimonio": {
+      "rect": {
+        "x": 14,
+        "y": 233,
+        "w": 332,
+        "h": 78.5,
+        "bottom": 311.5,
+        "right": 346
+      },
+      "isCard": false,
+      "background": "none",
+      "border": "0px",
+      "delta": "↑ 4%"
+    },
+    "evolution": {
+      "rect": {
+        "x": 14,
+        "y": 430.5,
+        "w": 332,
+        "h": 175,
+        "bottom": 605.5,
+        "right": 346
+      },
+      "background": "none",
+      "border": "0px",
+      "gapFromCards": 21,
+      "chartType": "bar",
+      "chartPoints": 6,
+      "empty": false
+    },
+    "fixed": {
+      "fab": {
+        "x": 298,
+        "y": 656,
+        "w": 48,
+        "h": 48,
+        "bottom": 704,
+        "right": 346
+      },
+      "nav": {
+        "x": 14,
+        "y": 718,
+        "w": 332,
+        "h": 68,
+        "bottom": 786,
+        "right": 346
+      },
+      "overlapTop": {
+        "patrimonio": 0,
+        "evolution": 0,
+        "saude": 24880
+      }
+    },
+    "navButtons": 6,
+    "navWhiteSpace": [
+      "nowrap",
+      "nowrap",
+      "nowrap",
+      "nowrap",
+      "nowrap",
+      "nowrap"
+    ],
+    "overflowX": {
+      "body": 0,
+      "html": 0
+    },
+    "titleSizes": {
+      "patrimonio": "13px",
+      "evolucao": "13px",
+      "saude": "13px"
+    },
+    "bottomFixed": {
+      "scrollY": 586,
+      "maxScroll": 586,
+      "overlap": {
+        "main > .inicio-patrimonio": {
+          "fab": 0,
+          "nav": 0
+        },
+        "main > .inicio-patrimony-evolution": {
+          "fab": 0,
+          "nav": 0
+        },
+        "#viewInicio .advanced-dashboard-card": {
+          "fab": 0,
+          "nav": 0
+        },
+        "#viewInicio .dashboard-next-payment-card": {
+          "fab": 0,
+          "nav": 0
+        }
+      }
+    }
+  },
+  "390": {
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "cards": [
+      {
+        "cls": "balance-card bank-summary-card",
+        "rect": {
+          "x": 14,
+          "y": 327.5,
+          "w": 115.3,
+          "h": 82,
+          "bottom": 409.5,
+          "right": 129.3
+        },
+        "label": {
+          "text": "Bancos",
+          "title": "Bancos",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 63,
+          "clientWidth": 63
+        },
+        "amount": {
+          "text": "R$ 4.120,00",
+          "rect": {
+            "x": 25,
+            "y": 376.5,
+            "w": 76.9,
+            "h": 18,
+            "bottom": 394.5,
+            "right": 101.9
+          },
+          "fontSize": "14px",
+          "scrollWidth": 77,
+          "clientWidth": 77
+        },
+        "symbolRect": {
+          "x": 92.3,
+          "y": 340.5,
+          "w": 26,
+          "h": 26,
+          "bottom": 366.5,
+          "right": 118.3
+        },
+        "amountSymbolOverlap": 0
+      },
+      {
+        "cls": "balance-card pocket-summary-card",
+        "rect": {
+          "x": 137.3,
+          "y": 327.5,
+          "w": 115.3,
+          "h": 82,
+          "bottom": 409.5,
+          "right": 252.7
+        },
+        "label": {
+          "text": "Caixinhas",
+          "title": "Caixinhas",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 63,
+          "clientWidth": 63
+        },
+        "amount": {
+          "text": "R$ 1.980,00",
+          "rect": {
+            "x": 148.3,
+            "y": 376.5,
+            "w": 76.9,
+            "h": 18,
+            "bottom": 394.5,
+            "right": 225.2
+          },
+          "fontSize": "14px",
+          "scrollWidth": 77,
+          "clientWidth": 77
+        },
+        "symbolRect": {
+          "x": 215.7,
+          "y": 340.5,
+          "w": 26,
+          "h": 26,
+          "bottom": 366.5,
+          "right": 241.7
+        },
+        "amountSymbolOverlap": 0
+      },
+      {
+        "cls": "balance-card invest-summary-card",
+        "rect": {
+          "x": 260.7,
+          "y": 327.5,
+          "w": 115.3,
+          "h": 82,
+          "bottom": 409.5,
+          "right": 376
+        },
+        "label": {
+          "text": "Investimentos",
+          "title": "Investimentos",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 85,
+          "clientWidth": 63
+        },
+        "amount": {
+          "text": "R$ 6.350,80",
+          "rect": {
+            "x": 271.7,
+            "y": 376.5,
+            "w": 76.9,
+            "h": 18,
+            "bottom": 394.5,
+            "right": 348.5
+          },
+          "fontSize": "14px",
+          "scrollWidth": 77,
+          "clientWidth": 77
+        },
+        "symbolRect": {
+          "x": 339,
+          "y": 340.5,
+          "w": 26,
+          "h": 26,
+          "bottom": 366.5,
+          "right": 365
+        },
+        "amountSymbolOverlap": 0
+      }
+    ],
+    "cardsSameRow": true,
+    "patrimonio": {
+      "rect": {
+        "x": 14,
+        "y": 233,
+        "w": 362,
+        "h": 78.5,
+        "bottom": 311.5,
+        "right": 376
+      },
+      "isCard": false,
+      "background": "none",
+      "border": "0px",
+      "delta": "↑ 4%"
+    },
+    "evolution": {
+      "rect": {
+        "x": 14,
+        "y": 430.5,
+        "w": 362,
+        "h": 175,
+        "bottom": 605.5,
+        "right": 376
+      },
+      "background": "none",
+      "border": "0px",
+      "gapFromCards": 21,
+      "chartType": "bar",
+      "chartPoints": 6,
+      "empty": false
+    },
+    "fixed": {
+      "fab": {
+        "x": 328,
+        "y": 700,
+        "w": 48,
+        "h": 48,
+        "bottom": 748,
+        "right": 376
+      },
+      "nav": {
+        "x": 14,
+        "y": 762,
+        "w": 362,
+        "h": 68,
+        "bottom": 830,
+        "right": 376
+      },
+      "overlapTop": {
+        "patrimonio": 0,
+        "evolution": 0,
+        "saude": 26920
+      }
+    },
+    "navButtons": 6,
+    "navWhiteSpace": [
+      "nowrap",
+      "nowrap",
+      "nowrap",
+      "nowrap",
+      "nowrap",
+      "nowrap"
+    ],
+    "overflowX": {
+      "body": 0,
+      "html": 0
+    },
+    "titleSizes": {
+      "patrimonio": "13px",
+      "evolucao": "13px",
+      "saude": "13px"
+    },
+    "bottomFixed": {
+      "scrollY": 542,
+      "maxScroll": 542,
+      "overlap": {
+        "main > .inicio-patrimonio": {
+          "fab": 0,
+          "nav": 0
+        },
+        "main > .inicio-patrimony-evolution": {
+          "fab": 0,
+          "nav": 0
+        },
+        "#viewInicio .advanced-dashboard-card": {
+          "fab": 0,
+          "nav": 0
+        },
+        "#viewInicio .dashboard-next-payment-card": {
+          "fab": 0,
+          "nav": 0
+        }
+      }
+    }
+  },
+  "1280": {
+    "viewport": {
+      "w": 1280,
+      "h": 800
+    },
+    "cards": [
+      {
+        "cls": "balance-card bank-summary-card",
+        "rect": {
+          "x": 96.5,
+          "y": 354.2,
+          "w": 350.7,
+          "h": 93,
+          "bottom": 447.2,
+          "right": 447.2
+        },
+        "label": {
+          "text": "Bancos",
+          "title": "Bancos",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 295,
+          "clientWidth": 295
+        },
+        "amount": {
+          "text": "R$ 4.120,00",
+          "rect": {
+            "x": 107.5,
+            "y": 407.2,
+            "w": 112,
+            "h": 25,
+            "bottom": 432.2,
+            "right": 219.5
+          },
+          "fontSize": "20px",
+          "scrollWidth": 112,
+          "clientWidth": 112
+        },
+        "symbolRect": {
+          "x": 406.2,
+          "y": 367.2,
+          "w": 30,
+          "h": 30,
+          "bottom": 397.2,
+          "right": 436.2
+        },
+        "amountSymbolOverlap": 0
+      },
+      {
+        "cls": "balance-card pocket-summary-card",
+        "rect": {
+          "x": 457.2,
+          "y": 354.2,
+          "w": 350.7,
+          "h": 93,
+          "bottom": 447.2,
+          "right": 807.8
+        },
+        "label": {
+          "text": "Caixinhas",
+          "title": "Caixinhas",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 295,
+          "clientWidth": 295
+        },
+        "amount": {
+          "text": "R$ 1.980,00",
+          "rect": {
+            "x": 468.2,
+            "y": 407.2,
+            "w": 112,
+            "h": 25,
+            "bottom": 432.2,
+            "right": 580.2
+          },
+          "fontSize": "20px",
+          "scrollWidth": 112,
+          "clientWidth": 112
+        },
+        "symbolRect": {
+          "x": 766.8,
+          "y": 367.2,
+          "w": 30,
+          "h": 30,
+          "bottom": 397.2,
+          "right": 796.8
+        },
+        "amountSymbolOverlap": 0
+      },
+      {
+        "cls": "balance-card invest-summary-card",
+        "rect": {
+          "x": 817.8,
+          "y": 354.2,
+          "w": 350.7,
+          "h": 93,
+          "bottom": 447.2,
+          "right": 1168.5
+        },
+        "label": {
+          "text": "Investimentos",
+          "title": "Investimentos",
+          "whiteSpace": "nowrap",
+          "textOverflow": "ellipsis",
+          "fontSize": "10px",
+          "lines": 1,
+          "scrollWidth": 295,
+          "clientWidth": 295
+        },
+        "amount": {
+          "text": "R$ 6.350,80",
+          "rect": {
+            "x": 828.8,
+            "y": 407.2,
+            "w": 112,
+            "h": 25,
+            "bottom": 432.2,
+            "right": 940.9
+          },
+          "fontSize": "20px",
+          "scrollWidth": 112,
+          "clientWidth": 112
+        },
+        "symbolRect": {
+          "x": 1127.5,
+          "y": 367.2,
+          "w": 30,
+          "h": 30,
+          "bottom": 397.2,
+          "right": 1157.5
+        },
+        "amountSymbolOverlap": 0
+      }
+    ],
+    "cardsSameRow": true,
+    "patrimonio": {
+      "rect": {
+        "x": 96.5,
+        "y": 243,
+        "w": 1072,
+        "h": 93.2,
+        "bottom": 336.2,
+        "right": 1168.5
+      },
+      "isCard": false,
+      "background": "none",
+      "border": "0px",
+      "delta": "↑ 4%"
+    },
+    "evolution": {
+      "rect": {
+        "x": 96.5,
+        "y": 480.2,
+        "w": 1072,
+        "h": 191,
+        "bottom": 671.2,
+        "right": 1168.5
+      },
+      "background": "none",
+      "border": "0px",
+      "gapFromCards": 33,
+      "chartType": "bar",
+      "chartPoints": 6,
+      "empty": false
+    },
+    "fixed": {
+      "fab": {
+        "x": 1187,
+        "y": 722,
+        "w": 56,
+        "h": 56,
+        "bottom": 778,
+        "right": 1243
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "bottom": 0,
+        "right": 0
+      },
+      "overlapTop": {
+        "patrimonio": 0,
+        "evolution": 0,
+        "saude": 0
+      }
+    },
+    "navButtons": 6,
+    "navWhiteSpace": [
+      "normal",
+      "normal",
+      "normal",
+      "normal",
+      "normal",
+      "normal"
+    ],
+    "overflowX": {
+      "body": 0,
+      "html": 0
+    },
+    "titleSizes": {
+      "patrimonio": "13px",
+      "evolucao": "13px",
+      "saude": "13px"
+    },
+    "bottomFixed": {
+      "scrollY": 205,
+      "maxScroll": 205,
+      "overlap": {
+        "main > .inicio-patrimonio": {
+          "fab": 0,
+          "nav": 0
+        },
+        "main > .inicio-patrimony-evolution": {
+          "fab": 0,
+          "nav": 0
+        },
+        "#viewInicio .advanced-dashboard-card": {
+          "fab": 0,
+          "nav": 0
+        },
+        "#viewInicio .dashboard-next-payment-card": {
+          "fab": 0,
+          "nav": 0
+        }
+      }
+    }
+  },
+  "interactions": {
+    "period-3m": {
+      "value": "3m",
+      "points": 3,
+      "expected": 3
+    },
+    "period-1y": {
+      "value": "1y",
+      "points": 12,
+      "expected": 12
+    },
+    "period-6m": {
+      "value": "6m",
+      "points": 6,
+      "expected": 6
+    },
+    "tooltipAfterBarClick": {
+      "hidden": false,
+      "text": "set: R$ 24.000,00"
+    },
+    "tooltipAfterOutsideClick": {
+      "hidden": true
+    },
+    "toggle": {
+      "before": {
+        "expanded": "true",
+        "chart": true
+      },
+      "after": {
+        "expanded": "false",
+        "chart": false
+      }
+    }
+  }
+}

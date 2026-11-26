@@ -1,0 +1,30 @@
+{
+  "finalidade": "Verificar alinhamento do FAB em relação à BNI, ao botão de busca e à viewport.",
+  "metodo": "Chromium/CDP em 320x720, 360x800 e 390x844; estados topo e fim de scroll (nav-hidden).",
+  "resultado": {
+    "sobreposicao": "Nenhuma em nenhum viewport/estado (FAB x nav = 0; FAB x busca = 0).",
+    "topo": {
+      "bottomCss": "96px",
+      "gapFAB_Nav": "14px",
+      "gapFAB_Busca": "21px",
+      "inicio": { "tamanho": "48x48", "rightCss": "14px", "deltaRightVsBusca": "0px", "deltaCentroVsBusca": "+3px" },
+      "outrasAbas": { "tamanho": "54x54", "rightCss": "18px", "deltaRightVsBusca": "-4px", "deltaCentroVsBusca": "-4px" }
+    },
+    "fimDoScroll": {
+      "bottomCss": "18px",
+      "navOculta": true,
+      "buscaOculta": true,
+      "sobreposicao": "Nenhuma"
+    },
+    "profile": "FAB oculto (display:none).",
+    "dashboard": "FAB visível com ícone de chat; mesma geometria das outras abas."
+  },
+  "ponto_de_atencao": "O FAB da Início tem borda direita alinhada à busca, mas centro 3px à direita por ser 48px contra 54px. Nas outras abas, o FAB fica 4px à esquerda da busca (right:18px vs right:14px).",
+  "alinhamento_interno": {
+    "metodo": "CDP, 390x844, getBoundingClientRect do FAB e do ícone visível.",
+    "inicio": { "fab": "48x48", "icone": "25.2x28", "deltaCentro": { "x": -0.01, "y": 0 } },
+    "caixa": { "fab": "54x54", "icone": "25.2x28", "deltaCentro": { "x": -0.01, "y": 0 } },
+    "dashboard": { "fab": "54x54", "iconeChat": "25.2x28", "deltaCentro": { "x": -0.01, "y": 0 } },
+    "conclusao": "O ícone está centralizado pelo display:grid + place-items:center do .fab-add. Não há desalinhamento estrutural medido; eventual percepção visual é métrica do glifo da fonte Flaticon."
+  }
+}

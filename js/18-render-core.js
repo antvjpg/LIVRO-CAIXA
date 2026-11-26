@@ -256,7 +256,21 @@ function editInstitution(btn, key) {
         maintainAspectRatio: false,
         datasets: isInicioEvolution ? { bar: { barPercentage: 0.9, categoryPercentage: 0.94 } } : undefined,
         layout: isInicioEvolution ? { padding: { top: 6 } } : undefined,
-        animation: isInicioEvolution ? { duration: 620, easing: 'easeOutQuart' } : undefined,
+        animation: isInicioEvolution ? {
+          duration: 620,
+          easing: 'easeOutQuart',
+          onComplete: () => {
+            if (patrimonySparklineInstances[ctx]) {
+              patrimonySparklineInstances[ctx].options.animations = { x: { duration: 0 }, width: { duration: 0 } };
+            }
+          }
+        } : undefined,
+        animations: isInicioEvolution ? {
+          x: { duration: 0 },
+          width: { duration: 0 },
+          y: { from: (animationCtx) => animationCtx.chart.scales.y?.getBasePixel?.() ?? animationCtx.chart.chartArea?.bottom ?? 0 },
+          base: { from: (animationCtx) => animationCtx.chart.scales.y?.getBasePixel?.() ?? animationCtx.chart.chartArea?.bottom ?? 0 }
+        } : undefined,
         interaction: { mode: 'index', intersect: isInicioEvolution },
         ...(isInicioEvolution ? {
           onHover: () => hideInicioEvolutionTooltip(),
@@ -786,7 +800,7 @@ function editInstitution(btn, key) {
       ${pocketShare === null ? '' : `<span class="balance-share">${formatIndicatorPercent(pocketShare, 1)} do patrimônio</span>`}
     </div>
     <div class="balance-card invest-summary-card" role="button" tabindex="0" aria-label="Ver investimentos" title="Ver investimentos">
-      <div class="balance-card-head"><span class="label" title="Investimentos">Invest.</span><span class="balance-symbol" role="button" tabindex="0" aria-expanded="${investBreakdownVisible}" aria-controls="investBreakdownBox" aria-label="${investBreakdownVisible ? 'Recolher gráfico de investimentos' : 'Mostrar gráfico de investimentos'}"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span></div>
+      <div class="balance-card-head"><span class="label" title="Investimentos">Investimentos</span><span class="balance-symbol" role="button" tabindex="0" aria-expanded="${investBreakdownVisible}" aria-controls="investBreakdownBox" aria-label="${investBreakdownVisible ? 'Recolher gráfico de investimentos' : 'Mostrar gráfico de investimentos'}"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span></div>
       <span class="amount">${investLabel}</span>
       ${investShare === null ? '' : `<span class="balance-share">${formatIndicatorPercent(investShare, 1)} do patrimônio</span>`}
     </div>

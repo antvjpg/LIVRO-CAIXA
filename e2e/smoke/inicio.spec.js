@@ -255,7 +255,7 @@ test.describe('Início — navegação e renderização', () => {
         : null,
     }));
     expect(stripSnapshot.tab).toBe('inicio');
-    expect(stripSnapshot.labels).toEqual(['Bancos', 'Caixinhas', 'Invest.']);
+    expect(stripSnapshot.labels).toEqual(['Bancos', 'Caixinhas', 'Investimentos']);
     expect(stripSnapshot.investLabelTitle).toBe('Investimentos');
     expect(stripSnapshot.hasTotalCard).toBe(false);
     if (stripSnapshot.expectedTotal !== null) {
