@@ -229,14 +229,38 @@
     </div>
   </div>
 
-  <!-- Patrimônio total — card existente da Início, reposicionado antes da faixa -->
-  <div class="inicio-card balance-card inicio-patrimonio">
-    <div class="balance-card-head"><span class="label">Patrimônio Total</span><span class="balance-symbol" role="button" tabindex="0" aria-expanded="true" aria-controls="patrimonySparkBoxInicio" aria-label="Recolher gráfico do patrimônio"><i class="fi fi-rr-wallet" aria-hidden="true"></i></span></div>
-    <span class="amount"></span>
-    <div class="patrimony-spark-box" id="patrimonySparkBoxInicio" aria-hidden="false"><canvas id="patrimonySparklineInicio" role="img" aria-label="Evolução do patrimônio nos últimos 6 meses"></canvas></div>
-  </div>
+  <!-- C6-INICIO-04 — Patrimônio Total fora de card, direto na superfície da página -->
+  <section class="inicio-patrimonio" aria-labelledby="inicioPatrimonioLabel">
+    <span class="label" id="inicioPatrimonioLabel">Patrimônio total</span>
+    <div class="inicio-patrimonio-value">
+      <span class="amount"></span>
+      <span class="inicio-patrimonio-delta-slot" aria-live="polite"></span>
+    </div>
+  </section>
 
   <div class="balance-strip" id="balanceStrip"></div>
+
+  <!-- C6-INICIO-04 — evolução patrimonial independente, abaixo dos saldos -->
+  <section class="inicio-patrimony-evolution" id="inicioPatrimonyEvolution" aria-labelledby="inicioPatrimonyEvolutionLabel">
+    <div class="inicio-patrimony-evolution-head">
+      <span class="inicio-patrimony-evolution-title">
+        <span class="balance-symbol" role="button" tabindex="0" aria-expanded="true" aria-controls="patrimonySparkBoxInicio" aria-label="Recolher gráfico do patrimônio"><i class="fi fi-rr-wallet" aria-hidden="true"></i></span>
+        <span class="label" id="inicioPatrimonyEvolutionLabel">Evolução do patrimônio</span>
+      </span>
+      <div class="inicio-patrimony-period">
+        <select id="inicioPeriodSelect" aria-label="Período da evolução patrimonial">
+          <option value="3m">3 meses</option>
+          <option value="6m" selected>6 meses</option>
+          <option value="1y">1 ano</option>
+        </select>
+      </div>
+    </div>
+    <div class="patrimony-spark-box" id="patrimonySparkBoxInicio" aria-hidden="false">
+      <canvas id="patrimonySparklineInicio" role="img" aria-label="Evolução do patrimônio nos últimos 6 meses"></canvas>
+      <span class="inicio-evolution-tooltip" id="inicioEvolutionTooltip" role="status" hidden></span>
+    </div>
+    <p class="inicio-patrimony-evolution-empty" id="inicioPatrimonyEvolutionEmpty" hidden>Sem histórico disponível para exibir a evolução.</p>
+  </section>
 
   <!-- V18-12: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
   <section class="period-bar is-collapsed" id="universalPeriodBar" aria-label="Período de visualização">
@@ -1652,6 +1676,7 @@ LIVRO-CAIXA — MAPA DE ORGANIZAÇÃO DO JAVASCRIPT
   <button type="button" class="is-active" data-destination="caixa" aria-label="Livro-Caixa"><span class="nav-icon"><i class="fi fi-rr-book-bookmark" aria-hidden="true"></i></span></button>
 <button type="button" data-destination="invest" aria-label="Investimentos"><span class="nav-icon"><i class="fi fi-rr-chat-arrow-grow" aria-hidden="true"></i></span></button>
   <button type="button" data-destination="profile" aria-label="Perfil"><span class="nav-icon"><i class="fi fi-rr-user" aria-hidden="true"></i></span></button>
+  <button type="button" id="btnUniversalSearchNav" title="Buscar" aria-label="Buscar"><span class="nav-icon"><i class="fi fi-rr-search" aria-hidden="true"></i></span></button>
 </nav>
 <div class="emoji-float-overlay" id="emojiFloatOverlay" role="dialog" aria-modal="true" aria-label="Escolher ícone">
   <div class="emoji-float-window">

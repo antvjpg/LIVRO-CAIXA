@@ -77,7 +77,7 @@ test.describe('Início — navegação e renderização', () => {
     await expect(page.locator('#viewInicio .advanced-dashboard-card .balance-symbol i')).toHaveClass(/fi-rr-financial-health/);
 
     const cards = [
-      { label: 'Patrimônio Total', selector: 'main > .inicio-patrimonio' },
+      { label: 'Patrimônio total', selector: 'main > .inicio-patrimonio' },
       { label: 'Saúde Financeira', selector: '#viewInicio .advanced-dashboard-card' },
       { label: 'Próximo Pagamento', selector: '#viewInicio .dashboard-next-payment-card' },
     ];
@@ -85,6 +85,8 @@ test.describe('Início — navegação e renderização', () => {
       await expect(page.locator(card.selector), `card ${card.label}`).toBeVisible();
       await expect(page.locator(card.selector), `card ${card.label}`).toContainText(card.label);
     }
+
+    await expect(page.locator('#viewInicio .next-pay-kicker')).toHaveCount(0);
 
     const containers = [
       '#viewInicio .advanced-dashboard',
@@ -174,7 +176,9 @@ test.describe('Início — navegação e renderização', () => {
 
     const surfaceSnapshot = await page.evaluate(() => {
       const cs = (selector) => getComputedStyle(document.querySelector(selector));
+      const patrimonio = document.querySelector('main > .inicio-patrimonio');
       return {
+        patrimonioIsCard: patrimonio?.classList.contains('balance-card') || false,
         patrimonioBackground: cs('main > .inicio-patrimonio').backgroundImage,
         patrimonioAmountSize: parseFloat(cs('main > .inicio-patrimonio .amount').fontSize),
         pageBackground: cs('main').backgroundColor,
@@ -183,21 +187,19 @@ test.describe('Início — navegação e renderização', () => {
         bankPaddingTop: cs('#balanceStrip > .bank-summary-card').paddingTop,
         healthPaddingTop: cs('#viewInicio .advanced-dashboard-card').paddingTop,
         bankHeadMargin: cs('#balanceStrip > .bank-summary-card .balance-card-head').marginBottom,
-        patrimonioBorder: cs('main > .inicio-patrimonio').borderTopColor,
-        bankBorder: cs('#balanceStrip > .bank-summary-card').borderTopColor,
         stripGap: cs('#balanceStrip').columnGap,
         stripMarginBottom: cs('#balanceStrip').marginBottom,
         mainPaddingBottom: cs('main').paddingBottom,
       };
     });
-    expect(surfaceSnapshot.patrimonioBackground).toContain('gradient');
-    expect(surfaceSnapshot.patrimonioAmountSize).toBeGreaterThanOrEqual(27);
+    expect(surfaceSnapshot.patrimonioIsCard).toBe(false);
+    expect(surfaceSnapshot.patrimonioBackground).toBe('none');
+    expect(surfaceSnapshot.patrimonioAmountSize).toBeGreaterThanOrEqual(28);
     expect(surfaceSnapshot.bankBackground).not.toBe(surfaceSnapshot.pageBackground);
     expect(surfaceSnapshot.healthBackground).toBe(surfaceSnapshot.bankBackground);
-    expect(surfaceSnapshot.bankPaddingTop).toBe('16px');
-    expect(surfaceSnapshot.healthPaddingTop).toBe('16px');
+    expect(surfaceSnapshot.bankPaddingTop).toBe('12px');
+    expect(surfaceSnapshot.healthPaddingTop).toBe('18px');
     expect(surfaceSnapshot.bankHeadMargin).toBe('6px');
-    expect(surfaceSnapshot.patrimonioBorder).toBe(surfaceSnapshot.bankBorder);
     expect(parseFloat(surfaceSnapshot.stripGap)).toBeLessThanOrEqual(10);
     expect(parseFloat(surfaceSnapshot.stripMarginBottom)).toBeGreaterThanOrEqual(18);
     expect(parseFloat(surfaceSnapshot.mainPaddingBottom)).toBeLessThanOrEqual(24);
@@ -212,16 +214,33 @@ test.describe('Início — navegação e renderização', () => {
         if (!canvas || typeof Chart === 'undefined' || typeof Chart.getChart !== 'function') return false;
         return !!Chart.getChart(canvas);
       };
+      const chartType = (id) => {
+        const canvas = document.getElementById(id);
+        const chart = canvas && typeof Chart !== 'undefined' && typeof Chart.getChart === 'function' ? Chart.getChart(canvas) : null;
+        return chart?.config?.type || null;
+      };
+      const chartPoints = (id) => {
+        const canvas = document.getElementById(id);
+        const chart = canvas && typeof Chart !== 'undefined' && typeof Chart.getChart === 'function' ? Chart.getChart(canvas) : null;
+        return chart?.data?.labels?.length || 0;
+      };
       return {
         inicio: chartOn('patrimonySparklineInicio'),
         strip: chartOn('patrimonySparkline'),
+        inicioType: chartType('patrimonySparklineInicio'),
+        inicioPoints: chartPoints('patrimonySparklineInicio'),
+        stripType: chartType('patrimonySparkline'),
+        evolutionVisible: !!document.querySelector('main > .inicio-patrimony-evolution')
+          && getComputedStyle(document.querySelector('main > .inicio-patrimony-evolution')).display !== 'none',
+        evolutionEmptyVisible: !!document.querySelector('#inicioPatrimonyEvolutionEmpty')
+          && !document.querySelector('#inicioPatrimonyEvolutionEmpty').hidden,
         preference: localStorage.getItem('livro-caixa-patrimony-spark'),
-        ariaExpanded: document.querySelector('main > .inicio-patrimonio .balance-symbol')?.getAttribute('aria-expanded') || null,
+        ariaExpanded: document.querySelector('main > .inicio-patrimony-evolution .balance-symbol')?.getAttribute('aria-expanded') || null,
       };
     });
     const ensureSparkVisible = async () => {
       if ((await chartSnapshot()).preference === '0') {
-        await page.locator('main > .inicio-patrimonio .balance-symbol').click();
+        await page.locator('main > .inicio-patrimony-evolution .balance-symbol').click();
       }
     };
 
@@ -243,6 +262,55 @@ test.describe('Início — navegação e renderização', () => {
       expect(stripSnapshot.localTotal).toBe(stripSnapshot.expectedTotal);
     }
 
+    const compositionSnapshot = await page.evaluate(() => {
+      const labels = Array.from(document.querySelectorAll('#balanceStrip > .balance-card .label'));
+      return {
+        labelStyles: labels.map((el) => {
+          const cs = getComputedStyle(el);
+          return {
+            text: (el.textContent || '').trim(),
+            title: el.getAttribute('title'),
+            whiteSpace: cs.whiteSpace,
+            overflow: cs.overflow,
+            textOverflow: cs.textOverflow,
+            lineHeight: parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.25,
+            height: el.getBoundingClientRect().height,
+          };
+        }),
+        iconBackgrounds: Array.from(document.querySelectorAll('#balanceStrip > .balance-card .balance-symbol'))
+          .map((el) => getComputedStyle(el).backgroundColor),
+        deltaCount: document.querySelectorAll('main > .inicio-patrimonio .inicio-patrimonio-delta').length,
+        deltaText: (document.querySelector('main > .inicio-patrimonio .inicio-patrimonio-delta')?.textContent || '').trim(),
+        titleSizes: {
+          patrimonio: getComputedStyle(document.querySelector('main > .inicio-patrimonio .label')).fontSize,
+          evolucao: getComputedStyle(document.querySelector('main > .inicio-patrimony-evolution-head .label')).fontSize,
+          saude: getComputedStyle(document.querySelector('#viewInicio .advanced-dashboard-card .label')).fontSize,
+        },
+        periodOptions: Array.from(document.querySelectorAll('#inicioPeriodSelect option')).map((el) => el.value),
+        navWhiteSpace: Array.from(document.querySelectorAll('.mobile-bottom-nav button')).map((el) => getComputedStyle(el).whiteSpace),
+      };
+    });
+    for (const label of compositionSnapshot.labelStyles) {
+      expect(label.whiteSpace).toBe('nowrap');
+      expect(label.overflow).toBe('hidden');
+      expect(label.textOverflow).toBe('ellipsis');
+      expect(label.height).toBeLessThanOrEqual(label.lineHeight + 1);
+      expect(label.title).toBeTruthy();
+    }
+    for (const background of compositionSnapshot.iconBackgrounds) {
+      expect(background === 'rgba(0, 0, 0, 0)' || background === 'transparent').toBe(true);
+    }
+    expect(compositionSnapshot.deltaCount).toBeLessThanOrEqual(1);
+    if (compositionSnapshot.deltaCount === 1) {
+      expect(compositionSnapshot.deltaText).toMatch(/^[↑↓] \d+(?:,\d)?%$/);
+    }
+    expect(compositionSnapshot.titleSizes.patrimonio).toBe(compositionSnapshot.titleSizes.saude);
+    expect(compositionSnapshot.titleSizes.evolucao).toBe(compositionSnapshot.titleSizes.saude);
+    expect(compositionSnapshot.periodOptions).toEqual(['3m', '6m', '1y']);
+    for (const whiteSpace of compositionSnapshot.navWhiteSpace) {
+      expect(whiteSpace).toBe('nowrap');
+    }
+
     const layoutSnapshot = await page.evaluate(() => {
       const rect = (selector) => {
         const el = document.querySelector(selector);
@@ -255,12 +323,14 @@ test.describe('Início — navegação e renderização', () => {
       const bank = rect('#balanceStrip > .bank-summary-card');
       const pocket = rect('#balanceStrip > .pocket-summary-card');
       const invest = rect('#balanceStrip > .invest-summary-card');
+      const evolution = rect('main > .inicio-patrimony-evolution');
       return {
         headerBeforePatrimonio: !!header && !!patrimonio && header.bottom <= patrimonio.top + 1,
         patrimonioBeforeBank: !!patrimonio && !!bank && patrimonio.bottom <= bank.top + 1,
-        bankBeforePocket: !!bank && !!pocket && bank.bottom <= pocket.top + 1,
-        bankFullWidth: !!bank && !!pocket && bank.width > pocket.width,
-        pocketInvestSameRow: !!pocket && !!invest && Math.abs(pocket.top - invest.top) < 1 && pocket.right <= invest.left + 1,
+        saldosSameRow: !!bank && !!pocket && !!invest
+          && Math.abs(bank.top - pocket.top) < 1 && Math.abs(pocket.top - invest.top) < 1
+          && bank.right <= pocket.left + 1 && pocket.right <= invest.left + 1,
+        saldosBeforeEvolution: !!invest && !!evolution && invest.bottom <= evolution.top + 1,
         resumoFluxoCount: document.querySelectorAll('#viewInicio .cashflow-mini-summary').length,
         resumoFluxoText: (document.querySelector('#viewInicio')?.textContent || '').includes('Resumo do fluxo'),
         breakdownCollapsed: document.querySelector('#investBreakdownBox')?.getAttribute('aria-hidden') === 'true',
@@ -268,9 +338,8 @@ test.describe('Início — navegação e renderização', () => {
     });
     expect(layoutSnapshot.headerBeforePatrimonio).toBe(true);
     expect(layoutSnapshot.patrimonioBeforeBank).toBe(true);
-    expect(layoutSnapshot.bankBeforePocket).toBe(true);
-    expect(layoutSnapshot.bankFullWidth).toBe(true);
-    expect(layoutSnapshot.pocketInvestSameRow).toBe(true);
+    expect(layoutSnapshot.saldosSameRow).toBe(true);
+    expect(layoutSnapshot.saldosBeforeEvolution).toBe(true);
     expect(layoutSnapshot.resumoFluxoCount).toBe(0);
     expect(layoutSnapshot.resumoFluxoText).toBe(false);
     expect(layoutSnapshot.breakdownCollapsed).toBe(true);
@@ -278,6 +347,25 @@ test.describe('Início — navegação e renderização', () => {
     await ensureSparkVisible();
     await expect.poll(async () => (await chartSnapshot()).inicio).toBe(true);
     expect((await chartSnapshot()).strip).toBe(false);
+    expect((await chartSnapshot()).inicioType).toBe('bar');
+    expect((await chartSnapshot()).evolutionVisible).toBe(true);
+    expect((await chartSnapshot()).evolutionEmptyVisible).toBe(false);
+
+    await page.locator('#inicioPeriodSelect').selectOption('3m');
+    await expect.poll(async () => (await chartSnapshot()).inicioPoints).toBe(3);
+    await page.locator('#inicioPeriodSelect').selectOption('1y');
+    await expect.poll(async () => (await chartSnapshot()).inicioPoints).toBe(12);
+    await page.locator('#inicioPeriodSelect').selectOption('6m');
+    await expect.poll(async () => (await chartSnapshot()).inicioPoints).toBe(6);
+
+    const searchNav = page.locator('#btnUniversalSearchNav');
+    expect(await searchNav.count()).toBe(1);
+    if (await searchNav.isVisible()) {
+      await searchNav.click();
+      await expect(page.locator('#universalSearchOverlay')).toHaveClass(/is-open/);
+      await page.locator('[data-close-search]').click();
+      await expect(page.locator('#universalSearchOverlay')).not.toHaveClass(/is-open/);
+    }
 
     await app.openTab(page, 'caixa');
     const caixaStrip = await page.evaluate(() => ({
@@ -287,6 +375,7 @@ test.describe('Início — navegação e renderização', () => {
     expect(caixaStrip.cards).toBe(4);
     expect(caixaStrip.hasTotalCard).toBe(true);
     await expect.poll(async () => (await chartSnapshot()).strip).toBe(true);
+    expect((await chartSnapshot()).stripType).toBe('line');
     expect((await chartSnapshot()).inicio).toBe(false);
 
     await app.openTab(page, 'dashboard');
@@ -297,7 +386,7 @@ test.describe('Início — navegação e renderização', () => {
     await expect.poll(async () => (await chartSnapshot()).inicio).toBe(true);
     expect((await chartSnapshot()).strip).toBe(false);
 
-    const sparkSymbol = page.locator('main > .inicio-patrimonio .balance-symbol');
+    const sparkSymbol = page.locator('main > .inicio-patrimony-evolution .balance-symbol');
     const preferenceBefore = (await chartSnapshot()).preference;
     const flipped = preferenceBefore === '0' ? '1' : '0';
     await sparkSymbol.click();

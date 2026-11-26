@@ -1,0 +1,82 @@
+[
+  {
+    "file": "claro-01-oliva.png",
+    "dark": false,
+    "lightTheme": "1",
+    "darkTheme": "5",
+    "chart": true,
+    "color": "#566e3cE6"
+  },
+  {
+    "file": "claro-02-verde.png",
+    "dark": false,
+    "lightTheme": "2",
+    "darkTheme": "5",
+    "chart": true,
+    "color": "#327957E6"
+  },
+  {
+    "file": "claro-03-lima.png",
+    "dark": false,
+    "lightTheme": "3",
+    "darkTheme": "5",
+    "chart": true,
+    "color": "#337456E6"
+  },
+  {
+    "file": "claro-04-terracota.png",
+    "dark": false,
+    "lightTheme": "4",
+    "darkTheme": "5",
+    "chart": true,
+    "color": "#9e5940E6"
+  },
+  {
+    "file": "claro-05-laranja.png",
+    "dark": false,
+    "lightTheme": "5",
+    "darkTheme": "5",
+    "chart": true,
+    "color": "#ba4002E6"
+  },
+  {
+    "file": "escuro-01-oliva.png",
+    "dark": true,
+    "lightTheme": "5",
+    "darkTheme": "1",
+    "chart": true,
+    "color": "#9dd08bE6"
+  },
+  {
+    "file": "escuro-02-verde.png",
+    "dark": true,
+    "lightTheme": "5",
+    "darkTheme": "2",
+    "chart": true,
+    "color": "#22c55eE6"
+  },
+  {
+    "file": "escuro-03-bege.png",
+    "dark": true,
+    "lightTheme": "5",
+    "darkTheme": "3",
+    "chart": true,
+    "color": "#c9a86aE6"
+  },
+  {
+    "file": "escuro-04-terracota.png",
+    "dark": true,
+    "lightTheme": "5",
+    "darkTheme": "4",
+    "chart": true,
+    "color": "#d08860E6"
+  },
+  {
+    "file": "escuro-05-laranja.png",
+    "dark": true,
+    "lightTheme": "5",
+    "darkTheme": "5",
+    "chart": true,
+    "color": "#e85002E6"
+  }
+]

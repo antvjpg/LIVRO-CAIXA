@@ -64,6 +64,7 @@ window.addEventListener('beforeunload', e => {
   }
 
   function markValueRefresh(root = document) {
+    if (window.__skipValueRefresh) return;
     root.querySelectorAll('.balance-card .amount,.card-amount').forEach((node) => {
       node.classList.remove('value-refresh');
       requestAnimationFrame(() => node.classList.add('value-refresh'));

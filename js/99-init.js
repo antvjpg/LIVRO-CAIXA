@@ -271,7 +271,10 @@ document.addEventListener('DOMContentLoaded', () => {
       renderInvestments();
       renderPockets();
       renderPocketBalances();
+      window.__skipValueRefresh = true;
       renderBalances();
+      window.__skipValueRefresh = false;
+      requestAnimationFrame(() => syncPatrimonySparklines(!!currentUser && !!firstLoadDone));
     });
   });
   darkThemeOptions.forEach(option => {
@@ -288,7 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
       renderInvestments();
       renderPockets();
       renderPocketBalances();
+      window.__skipValueRefresh = true;
       renderBalances();
+      window.__skipValueRefresh = false;
+      requestAnimationFrame(() => syncPatrimonySparklines(!!currentUser && !!firstLoadDone));
     });
   });
 
@@ -305,7 +311,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderInvestments();
     renderPockets();
     renderPocketBalances();
+    window.__skipValueRefresh = true;
     renderBalances();
+    window.__skipValueRefresh = false;
+    requestAnimationFrame(() => syncPatrimonySparklines(!!currentUser && !!firstLoadDone));
     renderDashboardTab();
   };
 
@@ -753,6 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
   DASH_PERIODS = {
     '7d':  { label: '7 dias',  days: 7,   bucket: 'day'   },
     '30d': { label: '30 dias', days: 30,  bucket: 'chunk' },
+    '3m':  { label: '3 meses', months: 3, bucket: 'month' },
     '6m':  { label: '6 meses', months: 6, bucket: 'month' },
     '1y':  { label: '1 ano',   months: 12, bucket: 'month' }
   };
@@ -1591,6 +1601,7 @@ if (circle1) {
   document.getElementById('btnOpenDrawer')?.addEventListener('click', openDrawer);
   document.getElementById('btnNotifications')?.addEventListener('click', openNotifications);
   document.getElementById('btnUniversalSearch')?.addEventListener('click', openUniversalSearch);
+  document.getElementById('btnUniversalSearchNav')?.addEventListener('click', openUniversalSearch);
   document.querySelector('[data-close-search]')?.addEventListener('click', closeUniversalSearch);
   document.getElementById('universalSearchInput')?.addEventListener('input', event => renderUniversalSearchResults(event.target.value || ''));
   document.getElementById('universalSearchOverlay')?.addEventListener('click', event => { if (event.target.id === 'universalSearchOverlay') closeUniversalSearch(); });

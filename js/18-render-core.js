@@ -55,11 +55,35 @@ function editInstitution(btn, key) {
 
   let PATRIMONY_SPARK_STORAGE_KEY;
 
+  function setInicioEvolutionEmpty(show) {
+    const empty = document.getElementById('inicioPatrimonyEvolutionEmpty');
+    const box = document.getElementById('patrimonySparkBoxInicio');
+    if (empty) empty.hidden = !show;
+    if (box) box.classList.toggle('is-empty', show);
+    if (show) hideInicioEvolutionTooltip();
+  }
+
+  function hideInicioEvolutionTooltip() {
+    const tooltip = document.getElementById('inicioEvolutionTooltip');
+    if (tooltip) tooltip.hidden = true;
+  }
+
+  function inicioPeriodKey() {
+    const period = typeof dashFilters !== 'undefined' ? dashFilters?.period : null;
+    return period === '3m' || period === '1y' ? period : '6m';
+  }
+
+  function syncInicioPeriodUI() {
+    const active = inicioPeriodKey();
+    const select = document.getElementById('inicioPeriodSelect');
+    if (select) select.value = active;
+  }
+
   function destroyPatrimonySparkline(context) {
     const existing = patrimonySparklineInstances[context];
-    if (!existing) return;
-    try { existing.destroy(); } catch (_) { /* instância já inválida */ }
+    try { existing?.destroy(); } catch (_) { /* instância já inválida */ }
     patrimonySparklineInstances[context] = null;
+    if (context === 'inicio') setInicioEvolutionEmpty(true);
   }
 
   function activePatrimonySparkContext() {
@@ -104,12 +128,18 @@ function editInstitution(btn, key) {
 
   function renderPatrimonySparkline(enabled, context) {
     const ctx = context === 'inicio' ? 'inicio' : 'strip';
-    const targetCanvasId = ctx === 'inicio' ? 'patrimonySparklineInicio' : 'patrimonySparkline';
-    destroyPatrimonySparkline(ctx);
+    const isInicioEvolution = ctx === 'inicio';
+    const targetCanvasId = isInicioEvolution ? 'patrimonySparklineInicio' : 'patrimonySparkline';
     const canvas = document.getElementById(targetCanvasId);
-    if (!enabled || !patrimonySparkVisible || !canvas) return;
-    const series = dashboardMonthSeries(6);
-    const styles = getComputedStyle(document.body);
+    if (!enabled || !patrimonySparkVisible || !canvas) {
+      destroyPatrimonySparkline(ctx);
+      return;
+    }
+    const inicioPeriod = isInicioEvolution ? inicioPeriodKey() : null;
+    const seriesCount = inicioPeriod === '1y' ? 12 : inicioPeriod === '3m' ? 3 : 6;
+    const series = dashboardMonthSeries(seriesCount);
+    const styles = getComputedStyle(canvas);
+    const bgStyles = getComputedStyle(canvas.closest('main') || document.body);
     const readVar = (name, fallbackValue) => styles.getPropertyValue(name).trim() || fallbackValue;
     const toRgb = (value) => {
       const v = String(value || '').trim();
@@ -135,70 +165,149 @@ function editInstitution(btn, key) {
     };
     const toHex = (rgb) => '#' + rgb.map(value => value.toString(16).padStart(2, '0')).join('');
     const card = canvas.closest('.balance-card');
-    const cardStyles = card ? getComputedStyle(card) : styles;
+    const cardStyles = card ? getComputedStyle(card) : bgStyles;
     const bgStops = Array.from(String(cardStyles.backgroundImage).matchAll(/rgba?\([^)]+\)/g), match => toRgb(match[0])).filter(Boolean);
     const bgSolid = toRgb(cardStyles.backgroundColor);
     const bgRgbs = bgStops.length ? bgStops : (bgSolid ? [bgSolid] : [[28, 43, 36]]);
     const meanBg = bgRgbs.reduce((acc, rgb) => [acc[0] + rgb[0], acc[1] + rgb[1], acc[2] + rgb[2]], [0, 0, 0]).map(value => Math.round(value / bgRgbs.length));
-    const byContrast = (a, b) => contrastRatio(b, meanBg) - contrastRatio(a, meanBg);
-    const hueCandidates = [readVar('--accent', ''), readVar('--color-gold', ''), readVar('--color-green', '')].map(toRgb).filter(Boolean).sort(byContrast);
-    const anchorCandidates = [readVar('--paper', ''), readVar('--ink', '')].map(toRgb).filter(Boolean).sort(byContrast);
-    const chosen = hueCandidates.find(rgb => contrastRatio(rgb, meanBg) >= 3)
-      || anchorCandidates.find(rgb => contrastRatio(rgb, meanBg) >= 3)
-      || hueCandidates[0]
-      || anchorCandidates[0]
-      || [176, 141, 62];
+    const baseColor = toRgb(readVar('--accent', ''))
+      || toRgb(readVar('--color-green', ''))
+      || toRgb(readVar('--color-gold', ''))
+      || [50, 121, 87];
+    const toward = luminance(meanBg) > 0.5 ? [0, 0, 0] : [255, 255, 255];
+    let chosen = baseColor;
+    for (let step = 0; step <= 10 && contrastRatio(chosen, meanBg) < 4.5; step += 1) {
+      const amount = step / 10;
+      chosen = baseColor.map((value, index) => Math.round(value + (toward[index] - value) * amount));
+    }
     const lineColor = toHex(chosen);
     const values = series.map(item => Number(item.patrimony || 0));
     const min = Math.min(...values);
     const max = Math.max(...values);
     const pad = Math.max((max - min) * 0.15, 1);
+    const tickColor = readVar('--ink-soft', readVar('--ink', '#5f6b63'));
+    const gridColor = readVar('--line', 'rgba(0, 0, 0, 0.08)');
+    const lineDataset = {
+      data: values,
+      borderColor: lineColor,
+      borderWidth: 2,
+      tension: 0.4,
+      fill: true,
+      backgroundColor: (chartContext) => {
+        const chart = chartContext.chart;
+        if (!chart.chartArea) return lineColor + '2E';
+        const gradient = chart.ctx.createLinearGradient(0, chart.chartArea.top, 0, chart.chartArea.bottom);
+        gradient.addColorStop(0, lineColor + '59');
+        gradient.addColorStop(1, lineColor + '0A');
+        return gradient;
+      },
+      pointRadius: 3,
+      pointHoverRadius: 5,
+      pointHitRadius: 10,
+      pointBorderWidth: 0,
+      pointBackgroundColor: lineColor,
+      pointHoverBackgroundColor: lineColor
+    };
+    const barDataset = {
+      data: values,
+      backgroundColor: lineColor + 'E6',
+      hoverBackgroundColor: lineColor,
+      borderRadius: 4,
+      borderSkipped: false,
+      barPercentage: 0.88,
+      categoryPercentage: 0.92,
+      maxBarThickness: seriesCount === 3 ? 48 : seriesCount === 6 ? 34 : 14
+    };
+    const existing = patrimonySparklineInstances[ctx];
+    if (existing && existing.canvas === canvas && existing.config.type === (isInicioEvolution ? 'bar' : 'line')) {
+      const dataset = existing.data.datasets[0];
+      existing.data.__inicioSeries = series;
+      existing.data.labels = series.map(item => item.label);
+      dataset.data = values;
+      if (isInicioEvolution) {
+        dataset.backgroundColor = lineColor + 'E6';
+        dataset.hoverBackgroundColor = lineColor;
+        dataset.maxBarThickness = barDataset.maxBarThickness;
+        existing.options.datasets.bar.barPercentage = 0.9;
+        existing.options.datasets.bar.categoryPercentage = 0.94;
+        existing.options.scales.x.ticks.color = tickColor;
+        existing.options.scales.y.grid.color = gridColor;
+        existing.options.scales.y.ticks.color = tickColor;
+      } else {
+        dataset.borderColor = lineColor;
+        dataset.backgroundColor = lineDataset.backgroundColor;
+        dataset.pointBackgroundColor = lineColor;
+        dataset.pointHoverBackgroundColor = lineColor;
+      }
+      existing.update();
+      if (isInicioEvolution) setInicioEvolutionEmpty(false);
+      return;
+    }
+    destroyPatrimonySparkline(ctx);
     patrimonySparklineInstances[ctx] = new Chart(canvas, {
-      type: 'line',
+      type: isInicioEvolution ? 'bar' : 'line',
       data: {
         labels: series.map(item => item.label),
-        datasets: [{
-          data: values,
-          borderColor: lineColor,
-          borderWidth: 2,
-          tension: 0.4,
-          fill: true,
-          backgroundColor: (context) => {
-            const chart = context.chart;
-            if (!chart.chartArea) return lineColor + '2E';
-            const gradient = chart.ctx.createLinearGradient(0, chart.chartArea.top, 0, chart.chartArea.bottom);
-            gradient.addColorStop(0, lineColor + '59');
-            gradient.addColorStop(1, lineColor + '0A');
-            return gradient;
-          },
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          pointHitRadius: 10,
-          pointBorderWidth: 0,
-          pointBackgroundColor: lineColor,
-          pointHoverBackgroundColor: lineColor
-        }]
+        datasets: [isInicioEvolution ? barDataset : lineDataset],
+        __inicioSeries: isInicioEvolution ? series : undefined
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
+        datasets: isInicioEvolution ? { bar: { barPercentage: 0.9, categoryPercentage: 0.94 } } : undefined,
+        layout: isInicioEvolution ? { padding: { top: 6 } } : undefined,
+        animation: isInicioEvolution ? { duration: 620, easing: 'easeOutQuart' } : undefined,
+        interaction: { mode: 'index', intersect: isInicioEvolution },
+        ...(isInicioEvolution ? {
+          onHover: () => hideInicioEvolutionTooltip(),
+          onClick: (event, elements, chart) => {
+            if (!elements.length) {
+              hideInicioEvolutionTooltip();
+              return;
+            }
+            const tooltip = document.getElementById('inicioEvolutionTooltip');
+            const bar = elements[0].element;
+            const index = elements[0].index;
+            const currentSeries = chart?.data?.__inicioSeries || series;
+            if (!tooltip || !bar || !currentSeries[index] || !chart) return;
+            tooltip.textContent = `${currentSeries[index].label}: ${fmt(chart.data.datasets[0].data[index])}`;
+            tooltip.hidden = false;
+            const width = tooltip.offsetWidth || 70;
+            const height = tooltip.offsetHeight || 20;
+            const center = Math.max(width / 2 + 2, Math.min(chart.width - width / 2 - 2, bar.x + bar.width / 2));
+            const middle = Math.max(height / 2 + 2, Math.min(chart.height - height / 2 - 2, bar.y + bar.height / 2));
+            tooltip.style.left = `${center}px`;
+            tooltip.style.top = `${middle}px`;
+            tooltip.style.transform = 'translate(-50%, -50%)';
+          }
+        } : {}),
         plugins: {
           legend: { display: false },
           tooltip: {
+            enabled: !isInicioEvolution,
             displayColors: false,
             callbacks: {
               title: items => (items && items.length && series[items[0].dataIndex] ? series[items[0].dataIndex].label : ''),
-              label: context => ' ' + fmt(context.parsed.y)
+              label: chartContext => ' ' + fmt(chartContext.parsed.y)
             }
           }
         },
-        scales: {
-          x: { display: false },
-          y: { display: false, min: min - pad, max: max + pad }
-        }
+        scales: isInicioEvolution
+          ? {
+              x: { display: true, grid: { display: false }, ticks: { color: tickColor, font: { size: 10 } } },
+              y: {
+                display: true,
+                beginAtZero: true,
+                grace: '10%',
+                border: { display: false },
+                grid: { color: gridColor },
+                ticks: { color: tickColor, font: { size: 9 }, maxTicksLimit: 4, padding: 6, callback: value => fmt(value) }
+              }
+            }
+          : { x: { display: false }, y: { display: false, min: min - pad, max: max + pad } }
       }
     });
+    if (isInicioEvolution) setInicioEvolutionEmpty(false);
   }
 
   function togglePatrimonySparkline(context) {
@@ -207,10 +316,10 @@ function editInstitution(btn, key) {
       localStorage.setItem(PATRIMONY_SPARK_STORAGE_KEY, patrimonySparkVisible ? '1' : '0');
     } catch (error) { /* armazenamento indisponível: estado vale só para a sessão */ }
     const symbol = context === 'inicio'
-      ? document.querySelector('main > .inicio-patrimonio .balance-symbol')
+      ? document.querySelector('main > .inicio-patrimony-evolution .balance-symbol')
       : document.querySelector('#balanceStrip .balance-card.total .balance-symbol');
     const box = context === 'inicio'
-      ? document.querySelector('main > .inicio-patrimonio .patrimony-spark-box')
+      ? document.querySelector('main > .inicio-patrimony-evolution .patrimony-spark-box')
       : document.getElementById('patrimonySparkBox');
     if (symbol) {
       symbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
@@ -223,10 +332,10 @@ function editInstitution(btn, key) {
     // Sincroniza o outro contexto
     const otherContext = context === 'inicio' ? 'strip' : 'inicio';
     const otherSymbol = otherContext === 'inicio'
-      ? document.querySelector('main > .inicio-patrimonio .balance-symbol')
+      ? document.querySelector('main > .inicio-patrimony-evolution .balance-symbol')
       : document.querySelector('#balanceStrip .balance-card.total .balance-symbol');
     const otherBox = otherContext === 'inicio'
-      ? document.querySelector('main > .inicio-patrimonio .patrimony-spark-box')
+      ? document.querySelector('main > .inicio-patrimony-evolution .patrimony-spark-box')
       : document.getElementById('patrimonySparkBox');
     if (otherSymbol) {
       otherSymbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
@@ -619,6 +728,21 @@ function editInstitution(btn, key) {
     });
   }
 
+  function patrimonioDeltaHTML(current, previous) {
+    if (!Number.isFinite(current) || !Number.isFinite(previous) || Math.abs(previous) < 0.005) return '';
+    const pct = ((current - previous) / Math.abs(previous)) * 100;
+    if (!Number.isFinite(pct) || Math.abs(pct) > 999) return '';
+    const rounded = Math.abs(pct) < 0.05 ? 0 : pct;
+    if (rounded === 0) return '';
+    const magnitude = Math.abs(rounded);
+    const value = magnitude < 10 && Math.abs(magnitude - Math.round(magnitude)) < 0.05
+      ? String(Math.round(magnitude))
+      : magnitude.toFixed(1).replace('.', ',');
+    const arrow = rounded >= 0 ? '↑' : '↓';
+    const detail = `${rounded >= 0 ? 'Crescimento' : 'Redução'} de ${value}% em relação ao mês anterior`;
+    return `<span class="inicio-patrimonio-delta ${rounded >= 0 ? 'up' : 'down'}" title="${detail}" aria-label="${detail}">${arrow} ${value}%</span>`;
+  }
+
   function renderBalances() {
     const strip = document.getElementById('balanceStrip');
     if (!strip) return;
@@ -639,6 +763,8 @@ function editInstitution(btn, key) {
     const investLabel = balancesReady ? fmt(investTotal) : '—';
     const insightValue = balancesReady ? flowInsight.value : '—';
     const insightDetail = balancesReady ? flowInsight.detail : 'Aguardando dados';
+    const previousPatrimonio = dashboardMonthSeries(2)[0]?.patrimony;
+    const patrimonioDeltaHTMLValue = balancesReady ? patrimonioDeltaHTML(totalPatrimonio, previousPatrimonio) : '';
 
     const totalCardHTML = `
     <div class="balance-card total">
@@ -650,12 +776,12 @@ function editInstitution(btn, key) {
     let html = document.body.dataset.tab === 'inicio' ? '' : totalCardHTML;
     html += `
     <div class="balance-card bank-summary-card" role="button" tabindex="0" aria-label="Ver saldos dos bancos" title="Ver saldos dos bancos">
-      <div class="balance-card-head"><span class="label">Bancos</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-bank" aria-hidden="true"></i></span></div>
+      <div class="balance-card-head"><span class="label" title="Bancos">Bancos</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-bank" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && bankTotal < 0 ? 'neg' : ''}">${bankLabel}</span>
       ${bankShare === null ? '' : `<span class="balance-share">${formatIndicatorPercent(bankShare, 1)} do patrimônio</span>`}
     </div>
     <div class="balance-card pocket-summary-card" role="button" tabindex="0" aria-label="Ver caixinhas" title="Ver caixinhas">
-      <div class="balance-card-head"><span class="label">Caixinhas</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span></div>
+      <div class="balance-card-head"><span class="label" title="Caixinhas">Caixinhas</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-piggy-bank" aria-hidden="true"></i></span></div>
       <span class="amount ${balancesReady && pocketTotal < 0 ? 'neg' : ''}">${pocketLabel}</span>
       ${pocketShare === null ? '' : `<span class="balance-share">${formatIndicatorPercent(pocketShare, 1)} do patrimônio</span>`}
     </div>
@@ -667,6 +793,12 @@ function editInstitution(btn, key) {
     <div class="invest-breakdown-box${investBreakdownVisible ? '' : ' is-collapsed'}" id="investBreakdownBox" aria-hidden="${!investBreakdownVisible}"></div>`;
     strip.innerHTML = html;
     markValueRefresh(strip);
+    // C6-INICIO-04 — a Início sempre abre com a evolução visível; a preferência
+    // salva continua valendo para o gráfico da faixa do Livro-Caixa.
+    if (document.body.dataset.tab === 'inicio' && !window.__inicioSparkForcedVisible) {
+      patrimonySparkVisible = true;
+      window.__inicioSparkForcedVisible = true;
+    }
     // C6-INICIO-02 — mantém vivo somente o gráfico do contexto visível.
     syncPatrimonySparklines(balancesReady);
     const sparkToggleSymbol = strip.querySelector('.balance-card.total .balance-symbol');
@@ -686,6 +818,9 @@ function editInstitution(btn, key) {
       inicioBalanceCard.textContent = totalLabel;
       inicioBalanceCard.className = `amount ${balancesReady && totalPatrimonio < 0 ? 'neg' : ''}`;
     }
+    const inicioDeltaSlot = document.querySelector('main > .inicio-patrimonio .inicio-patrimonio-delta-slot');
+    if (inicioDeltaSlot) inicioDeltaSlot.innerHTML = patrimonioDeltaHTMLValue;
+    syncInicioPeriodUI();
     bankSummaryCard?.addEventListener('click', openBankPanel);
     bankSummaryCard?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
@@ -727,8 +862,8 @@ function editInstitution(btn, key) {
     });
     // B.1.3.3 — estado visual do gráfico do Início sempre derivado de
     // patrimonySparkVisible (não apenas quando há preferência salva).
-    const inicioBox = document.querySelector('main > .inicio-patrimonio .patrimony-spark-box');
-    const inicioSymbol = document.querySelector('main > .inicio-patrimonio .balance-symbol');
+    const inicioBox = document.querySelector('main > .inicio-patrimony-evolution .patrimony-spark-box');
+    const inicioSymbol = document.querySelector('main > .inicio-patrimony-evolution .balance-symbol');
     if (inicioBox) {
       inicioBox.classList.toggle('is-collapsed', !patrimonySparkVisible);
       inicioBox.setAttribute('aria-hidden', String(!patrimonySparkVisible));
@@ -738,10 +873,10 @@ function editInstitution(btn, key) {
       inicioSymbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
     }
 
-    // C6-INICIO-02 — listener no card de Patrimônio da Início: o host é estático
+    // C6-INICIO-04 — listener na seção de evolução da Início: o host é estático
     // e permanece fora da view para manter a nova hierarquia visual.
     if (!window.__patrimonyInicioListenerSetup) {
-      const patrimonioHost = document.querySelector('main > .inicio-patrimonio');
+      const patrimonioHost = document.querySelector('main > .inicio-patrimony-evolution');
       if (patrimonioHost) {
         const isSparkSymbol = (target) => target instanceof Element && !!target.closest('.balance-symbol');
         patrimonioHost.addEventListener('click', (event) => {
@@ -755,6 +890,29 @@ function editInstitution(btn, key) {
         });
         window.__patrimonyInicioListenerSetup = true;
       }
+    }
+    if (!window.__inicioTooltipOutsideListenerSetup) {
+      document.addEventListener('click', (event) => {
+        const box = document.getElementById('patrimonySparkBoxInicio');
+        if (!box) return;
+        if (event.target instanceof Node && box.contains(event.target)) return;
+        hideInicioEvolutionTooltip();
+      });
+      window.__inicioTooltipOutsideListenerSetup = true;
+    }
+    if (!window.__inicioPeriodListenerSetup) {
+      const periodSelect = document.getElementById('inicioPeriodSelect');
+      periodSelect?.addEventListener('change', () => {
+        const period = periodSelect.value;
+        if (period === inicioPeriodKey()) return;
+        if (typeof dashFilters !== 'undefined' && dashFilters) {
+          dashFilters.period = period;
+          if (typeof dashSaveFilters === 'function') dashSaveFilters();
+        }
+        syncInicioPeriodUI();
+        syncPatrimonySparklines(!!currentUser && !!firstLoadDone);
+      });
+      window.__inicioPeriodListenerSetup = true;
     }
   }
 
