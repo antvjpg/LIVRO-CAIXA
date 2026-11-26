@@ -1,0 +1,11 @@
+{
+  "viewport": "390x844",
+  "scrollY": 542,
+  "maxScroll": 542,
+  "overlap": {
+    "main > .inicio-patrimonio": { "fab": 0, "nav": 0 },
+    "main > .inicio-patrimony-evolution": { "fab": 0, "nav": 0 },
+    "#viewInicio .advanced-dashboard-card": { "fab": 0, "nav": 0 },
+    "#viewInicio .dashboard-next-payment-card": { "fab": 0, "nav": 0 }
+  }
+}
