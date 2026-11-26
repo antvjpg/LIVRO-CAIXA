@@ -1,4 +1,4 @@
-# Classificação e pontuação — v1.1.0
+# Classificação e pontuação — v1.1.1
 
 ## Finalidade
 
@@ -39,7 +39,7 @@ Confiança na existência de uma declaração não equivale a confiança de que 
 | 1 | Erro de execução, configuração ou inconsistência documental. |
 | 2 | Achado confirmado P0/P1. |
 
-O detector v1.1.0 não produz P0/P1 confirmados. Portanto, seu uso normal termina com código 0 mesmo quando há candidatos.
+O detector v1.1.1 não produz P0/P1 confirmados. Portanto, seu uso normal termina com código 0 mesmo quando há candidatos.
 
 ## Slop Index
 
@@ -53,7 +53,7 @@ Motivos:
 - não separa candidatos de defeitos;
 - pode incentivar remoção de recursos legítimos apenas para reduzir a nota.
 
-Resultados históricos permanecem nos relatórios antigos, mas não devem ser usados como gate da v1.1.0.
+Resultados históricos permanecem nos relatórios antigos, mas não devem ser usados como gate da v1.1.1.
 
 ## Regras de elevação
 

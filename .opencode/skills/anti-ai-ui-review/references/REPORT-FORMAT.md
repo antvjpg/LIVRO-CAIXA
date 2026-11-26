@@ -1,4 +1,4 @@
-# Formato de relatório — v1.1.0
+# Formato de relatório — v1.1.1
 
 ## JSON
 
@@ -6,7 +6,7 @@ O comando `--json` produz:
 
 ```json
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "mode": "detect",
   "scopeFilter": null,
   "view": null,

@@ -1,16 +1,16 @@
 ---
 name: anti-ai-ui-review
 description: "Detecta candidatos a padrões visuais genéricos de AI look no LIVRO-CAIXA, com rastreabilidade, contexto e classificação explícita. Use para auditar ou refinar a aba Início, cards, temas, tipografia, superfícies, contraste e acessibilidade sem reabrir decisões aprovadas. Modos: detect (somente leitura), refine (ajuste cirúrgico), rebuild (somente com autorização explícita)."
-version: "1.1.0"
+version: "1.1.1"
 argument-hint: "[detect|refine|rebuild] [alvo]"
 license: MIT
 ---
 
-# Anti-AI UI Review — LIVRO-CAIXA v1.1.0
+# Anti-AI UI Review — LIVRO-CAIXA v1.1.1
 
 Skill local derivada de práticas de `impeccable`, `hallmark`, `superdesign`, `avoid-ai-design`, `frontend-slop-guard`, `ui-craft` e `anti-ai-slop-ui`, adaptada ao design system existente.
 
-A v1.1.0 corrige a metodologia da v1.0.0: heurística não é defeito confirmado, sinal estético não é violação WCAG e contagem de padrões não é nota de qualidade.
+A v1.1.1 corrige a metodologia da v1.0.0 e refina a v1.1.0: heurística não é defeito confirmado, sinal estético não é violação WCAG, contagem de padrões não é nota de qualidade e presença de regra de redução de movimento não prova cobertura da animação.
 
 ## Regras de ouro
 
@@ -96,5 +96,5 @@ Um bom relatório:
 - `references/SCORING.md` — severidade, confiança, status e códigos de saída.
 - `references/REPORT-FORMAT.md` — esquema JSON e Markdown.
 - `references/SOURCES.md` — fontes e natureza das regras.
-- `references/CHANGELOG.md` — histórico v1.0.0 → v1.1.0.
+- `references/CHANGELOG.md` — histórico v1.0.0 → v1.1.0 → v1.1.1.
 - `VALIDACAO.md` — testes e resultados.

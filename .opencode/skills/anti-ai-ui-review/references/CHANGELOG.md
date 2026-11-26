@@ -22,7 +22,7 @@ Limitações identificadas na auditoria posterior:
 
 Os relatórios e métricas da v1.0.0 permanecem preservados em `tmp-c13/c6-3/refinamento-visual/`.
 
-## 1.1.0 — em implementação
+## 1.1.0 — publicada em `24d16fb`
 
 Foco: corrigir metodologia, rastreabilidade e classificação.
 
@@ -34,3 +34,15 @@ Foco: corrigir metodologia, rastreabilidade e classificação.
 - Testes automatizados próprios do detector.
 - `--self-check` para sincronizar detector e documentação.
 - Códigos de saída documentados.
+
+## 1.1.1 — em implementação
+
+Rodada corretiva sem alterar os modos da skill.
+
+- `prefers-reduced-motion` exige relação entre seletor animado e regra de redução.
+- Texto visível mantém mapeamento com a posição original no HTML.
+- Texto dinâmico gerado por JavaScript passa a ser limitação explícita.
+- `--view` distingue regras exclusivas, compartilhadas e não relacionadas.
+- Resumo separa `filesDiscovered` de `filesAnalyzed`.
+- `--self-check` valida gatilho, limitações e procedimento de validação.
+- Testes adicionais para os casos acima.

@@ -3,7 +3,8 @@
 ## 1. Identificação
 
 - **SHA inicial:** `ae3f779f6fa2be897290d2040715beef2fab9e4a`
-- **HEAD após a implementação:** `ae3f779f6fa2be897290d2040715beef2fab9e4a`
+- **HEAD no momento da implementação local:** `ae3f779f6fa2be897290d2040715beef2fab9e4a`
+- **Publicação desta versão:** commit `24d16fb1438749175b69386fa1a374356ceaf7df`; este relatório foi produzido antes dessa publicação.
 - **SHA final da árvore de trabalho:** não aplicável; não houve commit.
 - **Branch:** `feat/app-layout-redesign`
 - **Estado Git:** alterações pendentes apenas em `.opencode/skills/anti-ai-ui-review/`.
@@ -58,7 +59,7 @@ Antes da implementação, o repositório estava limpo em `ae3f779`. Todos os arq
 - Três camadas separadas: detecção estática, análise contextual/visual e validação.
 - `severity`, `confidence` e `status` são campos independentes.
 - Heurística estática nunca gera P0/P1.
-- États possíveis: `confirmed`, `candidate`, `inconclusive`, `false_positive`, `unsupported`.
+- Estados possíveis: `confirmed`, `candidate`, `inconclusive`, `false_positive`, `unsupported`.
 - Slop Index desativado como critério de aprovação.
 - Relatórios separam confirmados, candidatos, inconclusivos, falsos positivos e observações.
 
@@ -150,7 +151,7 @@ Foram procurados erros introduzidos durante a atualização:
 - Header da tabela de regras foi inicialmente interpretado como regra documentada; corrigido ao ignorar severidades inválidas.
 - Número de linha em declaração multilinha foi corrigido para contar quebras antes da declaração.
 - `@keyframes` gerava achado duplicado de movimento reduzido; corrigido para considerar apenas declarações de animação.
-- `--view inicio` initially removeu achados globais; corrigido para incluir regras globais e filtrar por seletor `#viewInicio`.
+- `--view inicio` inicialmente removeu achados globais; corrigido para incluir regras globais e filtrar por seletor `#viewInicio`.
 - Regex do teste Markdown não reconhecia IDs com múltiplos hífens; corrigido.
 - Fonte opcional foi reclassificada corretamente após ajuste do detector de seletor condicional.
 

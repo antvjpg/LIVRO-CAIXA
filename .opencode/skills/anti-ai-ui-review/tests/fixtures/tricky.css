@@ -1,0 +1,8 @@
+:root {
+  --pattern: "a { b }";
+  --font-family-ui: 'Plus Jakarta Sans', sans-serif;
+}
+.card {
+  animation: pulse 1s ease;
+  content: "}";
+}

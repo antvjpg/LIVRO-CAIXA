@@ -168,3 +168,61 @@ test('no duplicate findings', () => {
   const keys = report.findings.map((f) => `${f.id}|${f.file}|${f.line}|${f.snippet}`);
   assert.equal(new Set(keys).size, keys.length);
 });
+
+test('reduced-motion in an unrelated selector remains inconclusive', () => {
+  const report = runJson([fixture('reduced-unrelated.css')]);
+  const list = findings(report, 'CSS-REDUCED-MOTION-001');
+  assert.equal(list.length, 1);
+  assert.equal(list[0].status, 'inconclusive');
+  assert.equal(list[0].severity, 'P2');
+  assert.match(list[0].evidence, /coverage of this animation is unproven/i);
+});
+
+test('visible-text rules do not use attributes as source', () => {
+  const report = runJson([fixture('content-attributes.html')]);
+  assert.equal(findings(report, 'CONTENT-HYPE-001').length, 0);
+  const dot = findings(report, 'CONTENT-MIDDLE-DOT-001');
+  assert.equal(dot.length, 1);
+  assert.equal(dot[0].line, 6);
+  assert.doesNotMatch(JSON.stringify(report), /Elevate|Seamless|supercharge/i);
+});
+
+test('JavaScript-only files are discovered but not analyzed', () => {
+  const report = runJson([fixture('dynamic.js')]);
+  assert.equal(report.summary.filesDiscovered, 1);
+  assert.equal(report.summary.filesAnalyzed, 0);
+  assert.equal(report.findings.length, 0);
+  assert.ok(report.limitations.some((l) => /JavaScript is not analyzed/i.test(l)));
+  assert.ok(report.summary.ignoredExtensions.includes('.js'));
+});
+
+test('brace-like characters inside strings do not break CSS parsing', () => {
+  const report = runJson([fixture('tricky.css')]);
+  const reduced = findings(report, 'CSS-REDUCED-MOTION-001');
+  assert.equal(reduced.length, 1);
+  assert.equal(findings(report, 'CSS-FONT-PRIMARY-001').length, 0);
+});
+
+test('shared global styles remain visible under --view', () => {
+  const report = runJson([fixture('shared.css'), '--view', 'inicio']);
+  assert.equal(report.findings.length, 1);
+  assert.equal(report.findings[0].viewRelation, 'shared');
+});
+
+test('same rule in different selectors produces distinct findings', () => {
+  const report = runJson([fixture('same-rule.css')]);
+  const list = findings(report, 'CSS-MOTION-001');
+  assert.equal(list.length, 2);
+  assert.deepEqual(list.map((f) => f.selector).sort(), ['.first', '.second']);
+});
+
+test('documentation contains trigger, limitations and validation for every rule', () => {
+  const tells = fs.readFileSync(path.join(SKILL_DIR, 'references', 'TELLS.md'), 'utf8');
+  const normalize = (value) => String(value || '').replace(/\s+/g, ' ').trim();
+  for (const r of RULES) {
+    assert.ok(tells.includes(`| ${r.id} |`), r.id);
+    assert.ok(tells.includes(normalize(r.trigger)), `${r.id} trigger`);
+    assert.ok(tells.includes(normalize(r.limitations)), `${r.id} limitations`);
+    assert.ok(tells.includes(normalize(r.validation)), `${r.id} validation`);
+  }
+});

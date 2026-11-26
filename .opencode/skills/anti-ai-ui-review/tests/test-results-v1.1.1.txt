@@ -1,0 +1,28 @@
+✔ self-check passes and version is synchronized (611.421458ms)
+✔ rule metadata uses valid severities, scopes and statuses (1.837188ms)
+✔ transition: all is found, multiline is supported, comments are ignored and severity is P2 (614.981145ms)
+✔ outline none with focus-visible is contextual, without replacement is inconclusive (1098.695468ms)
+✔ reduced motion considers rules across the loaded CSS set (638.686458ms)
+✔ optional font is not treated as primary font (609.442031ms)
+✔ glassmorphism and glow are contextual (1064.460104ms)
+✔ aesthetic patterns remain INFO candidates (555.60552ms)
+✔ content rules inspect visible text only (613.559323ms)
+✔ view and rendered scopes change results (1049.90349ms)
+✔ JSON and Markdown report the same findings (1243.97ms)
+✔ candidate findings do not fail the audit; invalid config does (1301.151771ms)
+✔ no duplicate findings (490.349948ms)
+✔ reduced-motion in an unrelated selector remains inconclusive (585.292864ms)
+✔ visible-text rules do not use attributes as source (607.235729ms)
+✔ JavaScript-only files are discovered but not analyzed (597.964635ms)
+✔ brace-like characters inside strings do not break CSS parsing (557.007448ms)
+✔ shared global styles remain visible under --view (552.109687ms)
+✔ same rule in different selectors produces distinct findings (547.645677ms)
+✔ documentation contains trigger, limitations and validation for every rule (10.844322ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14224.762651
