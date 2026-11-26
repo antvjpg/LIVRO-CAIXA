@@ -4,9 +4,6 @@ description: "Detecta e corrige padrões visuais de 'AI look' no LIVRO-CAIXA. Us
 version: "1.0.0"
 argument-hint: "[detect|refine|rebuild] [alvo]"
 license: MIT
-allowed-tools:
-  - Bash(node .opencode/skills/anti-ai-ui-review/scripts/detect.mjs *)
-  - Bash(npm run code:*)
 ---
 
 # Anti-AI UI Review — LIVRO-CAIXA

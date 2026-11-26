@@ -49,6 +49,30 @@ test.describe('Início — navegação e renderização', () => {
     await expect(page.locator('main > .inicio-header h2')).toHaveText('Início');
     await expect(page.locator('main > .inicio-header .light-theme-option')).toHaveCount(5);
     await expect(page.locator('main > .inicio-header .dark-theme-option')).toHaveCount(5);
+
+    const temaInicial = await page.evaluate(() => ({
+      escuro: document.body.classList.contains('dark-mode'),
+      claro: document.body.dataset.lightTheme,
+      escuroId: document.body.dataset.darkTheme,
+    }));
+    const proximoClaro = temaInicial.claro === '4' ? '5' : '4';
+    await page.locator(`main > .inicio-header .light-theme-option[data-theme="${proximoClaro}"]`).click();
+    await expect.poll(async () => page.evaluate(() => document.body.dataset.lightTheme)).toBe(proximoClaro);
+    expect(await page.evaluate(() => document.body.classList.contains('dark-mode'))).toBe(false);
+    expect(await page.evaluate(() => Array.from(document.querySelectorAll('.light-theme-option[aria-pressed="true"]')).map((el) => el.dataset.theme))).toEqual([proximoClaro, proximoClaro]);
+
+    const proximoEscuro = temaInicial.escuroId === '3' ? '4' : '3';
+    await page.locator(`main > .inicio-header .dark-theme-option[data-theme="${proximoEscuro}"]`).click();
+    await expect.poll(async () => page.evaluate(() => document.body.dataset.darkTheme)).toBe(proximoEscuro);
+    expect(await page.evaluate(() => document.body.classList.contains('dark-mode'))).toBe(true);
+    expect(await page.evaluate(() => Array.from(document.querySelectorAll('.dark-theme-option[aria-pressed="true"]')).map((el) => el.dataset.theme))).toEqual([proximoEscuro, proximoEscuro]);
+
+    if (temaInicial.escuro) {
+      await page.locator(`main > .inicio-header .dark-theme-option[data-theme="${temaInicial.escuroId}"]`).click();
+    } else {
+      await page.locator(`main > .inicio-header .light-theme-option[data-theme="${temaInicial.claro}"]`).click();
+    }
+
     await expect(page.locator('#viewInicio .inicio-footer button')).toHaveCount(0);
     await expect(page.locator('#viewInicio .advanced-dashboard-card .balance-symbol i')).toHaveClass(/fi-rr-financial-health/);
 

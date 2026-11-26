@@ -1,0 +1,149 @@
+{
+  "lang": "pt-BR",
+  "colorScheme": "normal",
+  "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content",
+  "themeColor": "#1C2B24",
+  "skipLinks": [],
+  "overflowX": {
+    "html": "hidden",
+    "body": "hidden"
+  },
+  "themeButtons": [
+    {
+      "cls": "light-theme-option",
+      "theme": "1",
+      "label": "Tema claro Oliva",
+      "title": "Claro: Oliva",
+      "pressed": "true",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    },
+    {
+      "cls": "light-theme-option",
+      "theme": "2",
+      "label": "Tema claro Verde",
+      "title": "Claro: Verde",
+      "pressed": "false",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    },
+    {
+      "cls": "light-theme-option",
+      "theme": "3",
+      "label": "Tema claro Lima",
+      "title": "Claro: Lima",
+      "pressed": "false",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    },
+    {
+      "cls": "light-theme-option",
+      "theme": "4",
+      "label": "Tema claro Terracota",
+      "title": "Claro: Terracota",
+      "pressed": "false",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    },
+    {
+      "cls": "light-theme-option",
+      "theme": "5",
+      "label": "Tema claro Laranja",
+      "title": "Claro: Laranja",
+      "pressed": "false",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    },
+    {
+      "cls": "dark-theme-option",
+      "theme": "1",
+      "label": "Tema escuro Oliva",
+      "title": "Escuro: Oliva",
+      "pressed": "true",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    },
+    {
+      "cls": "dark-theme-option",
+      "theme": "2",
+      "label": "Tema escuro Verde",
+      "title": "Escuro: Verde",
+      "pressed": "false",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    },
+    {
+      "cls": "dark-theme-option",
+      "theme": "3",
+      "label": "Tema escuro Bege",
+      "title": "Escuro: Bege",
+      "pressed": "false",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    },
+    {
+      "cls": "dark-theme-option",
+      "theme": "4",
+      "label": "Tema escuro Terracota",
+      "title": "Escuro: Terracota",
+      "pressed": "false",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    },
+    {
+      "cls": "dark-theme-option",
+      "theme": "5",
+      "label": "Tema escuro Laranja",
+      "title": "Escuro: Laranja",
+      "pressed": "false",
+      "rect": {
+        "w": 14,
+        "h": 14
+      },
+      "touchAction": "auto"
+    }
+  ],
+  "iconButtonsWithoutAria": 2,
+  "divRoleButtonInInicio": 0,
+  "keyStyles": {
+    "patrimonioLabelSize": "13px",
+    "patrimonioAmountSize": "27px",
+    "bankAmountTabular": null,
+    "headerH2TextWrap": "wrap",
+    "healthLabelSize": "13px",
+    "nextLabelSize": "13px"
+  },
+  "styleRuleCounts": {
+    "focusVisible": 31,
+    "reducedMotion": 8,
+    "transitionAll": 0,
+    "outlineNone": 9
+  }
+}

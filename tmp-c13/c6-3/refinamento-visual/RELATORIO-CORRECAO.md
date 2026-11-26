@@ -2,11 +2,12 @@
 
 ## 1. HEAD e estado
 
-- **SHA analisado:** `0798356052a96ee26843897faf60ba08c76ae6e9`
-- **SHA final:** `0798356052a96ee26843897faf60ba08c76ae6e9`
+- **SHA analisado (baseline):** `0798356052a96ee26843897faf60ba08c76ae6e9`
+- **SHA publicado:** `1e78e2d2625756bb85512cb949d12a478734de86`
 - **Branch:** `feat/app-layout-redesign`
-- **Estado final:** `M e2e/smoke/inicio.spec.js`; `M index.html`; `M style/features.css`; artefatos em `tmp-c13/c6-3/refinamento-visual/`.
-- **Commit/push/merge/release/deploy:** nenhum.
+- **Estado no commit publicado:** árvore limpa.
+- **Estado desta revisão pós-auditoria:** alterações pendentes em `style/features.css`, `e2e/smoke/inicio.spec.js`, `.opencode/skills/anti-ai-ui-review/` e artefatos em `tmp-c13/c6-3/refinamento-visual/`.
+- **Commit/push do trabalho original:** realizado em `1e78e2d`; nesta revisão: nenhum.
 
 A estrutura, a ordem, o posicionamento e as dimensões dos cards da Início foram preservados.
 

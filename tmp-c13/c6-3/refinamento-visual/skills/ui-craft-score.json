@@ -1,11 +1,24 @@
-<anonymous_script>:5910
-      "hint": "Body/inputs below 16px trigger iOS zoom
-
-SyntaxError: Unterminated string in JSON at position 182400 (line 5910 column 55)
-    at JSON.parse (<anonymous>)
-    at file:///data/data/com.termux/files/usr/tmp/opencode/skills/ui-craft/scripts/score.mjs:31:15
-    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:650:26)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:105:5)
-
-Node.js v26.12.1
+{
+  "status": "REPLACED",
+  "reason": "Artefato anterior continha stderr de uma falha do score.mjs ao processar a saída completa do repositório.",
+  "validAlternative": "ui-craft-inicio-score.json",
+  "fullRepositoryAudit": {
+    "files": 121,
+    "blocking": 16,
+    "warn": 792,
+    "slop": 212,
+    "info": 9,
+    "slopIndex": 51,
+    "slopBand": "is the default"
+  },
+  "targetedInicioAudit": {
+    "files": 6,
+    "blocking": 10,
+    "warn": 529,
+    "slop": 31,
+    "info": 9,
+    "slopIndex": 79,
+    "slopBand": "is the default"
+  },
+  "interpretation": "Indicadores heurísticos; não constituem aprovação ou reprovação automática do design."
+}

@@ -1,4 +1,6 @@
-# Ajuste de hierarquia — validação visual
+# C6-INICIO-03B — matriz visual final da correção
+
+SHA publicado: `1e78e2d2625756bb85512cb949d12a478734de86`.
 
 Viewports: 320×720, 360×800, 390×844 e 1280×800. Temas: 5 claros e 5 escuros.
 

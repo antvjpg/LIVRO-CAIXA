@@ -1,0 +1,71 @@
+{
+  "before": {
+    "tab": "inicio",
+    "darkMode": false,
+    "lightTheme": "1",
+    "darkTheme": null,
+    "lightButtons": 5,
+    "darkButtons": 5,
+    "lightPressed": [
+      "1",
+      "1"
+    ],
+    "darkPressed": [
+      "1",
+      "1"
+    ],
+    "footerButtons": 0,
+    "healthIcon": "fi fi-rr-financial-health",
+    "borderPatrimonio": "color(srgb 0.771137 0.768314 0.677804)",
+    "borderBank": "color(srgb 0.771137 0.768314 0.677804)",
+    "titleHealth": "13px",
+    "titleNext": "13px",
+    "nextInnerBorder": "0px"
+  },
+  "light": {
+    "tab": "inicio",
+    "darkMode": false,
+    "lightTheme": "4",
+    "darkTheme": null,
+    "lightButtons": 5,
+    "darkButtons": 5,
+    "lightPressed": [
+      "4",
+      "4"
+    ],
+    "darkPressed": [
+      "1",
+      "1"
+    ],
+    "footerButtons": 0,
+    "healthIcon": "fi fi-rr-financial-health",
+    "borderPatrimonio": "color(srgb 0.868706 0.764706 0.682667)",
+    "borderBank": "color(srgb 0.868706 0.764706 0.682667)",
+    "titleHealth": "13px",
+    "titleNext": "13px",
+    "nextInnerBorder": "0px"
+  },
+  "dark": {
+    "tab": "inicio",
+    "darkMode": true,
+    "lightTheme": "4",
+    "darkTheme": "3",
+    "lightButtons": 5,
+    "darkButtons": 5,
+    "lightPressed": [
+      "4",
+      "4"
+    ],
+    "darkPressed": [
+      "3",
+      "3"
+    ],
+    "footerButtons": 0,
+    "healthIcon": "fi fi-rr-financial-health",
+    "borderPatrimonio": "color(srgb 0.133333 0.188235 0.14902)",
+    "borderBank": "color(srgb 0.133333 0.188235 0.14902)",
+    "titleHealth": "13px",
+    "titleNext": "13px",
+    "nextInnerBorder": "0px"
+  }
+}

@@ -4476,7 +4476,7 @@ body[data-tab="inicio"] #balanceStrip .balance-share{
   color:var(--ink);
   border-radius:var(--radius-lg);
   padding:16px 20px 18px;
-  border:1px solid color-mix(in srgb,var(--accent) 12%,var(--line));
+  border:1px solid var(--inicio-card-border);
   box-shadow:0 2px 8px color-mix(in srgb,var(--accent) 8%,transparent);
 }
 #viewInicio .advanced-dashboard-card .balance-card-head,

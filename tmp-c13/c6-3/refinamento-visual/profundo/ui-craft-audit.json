@@ -1,0 +1,4656 @@
+{
+  "summary": {
+    "files": 6,
+    "blocking": 10,
+    "warn": 529,
+    "slop": 31,
+    "info": 9,
+    "slopIndex": 79,
+    "slopBand": "is the default",
+    "uniqueColors": 174,
+    "uniqueSpacings": 124,
+    "fonts": [
+      "plus jakarta sans",
+      "inter",
+      "segoe ui symbol",
+      "noto sans symbols",
+      "georgia"
+    ],
+    "contrastPairsChecked": 0,
+    "contrastPairsUnresolved": 0
+  },
+  "findings": [
+    {
+      "sev": "BLOCKING",
+      "rule": "focus-removed",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 128,
+      "msg": "outline removed",
+      "hint": "Provide a :focus-visible replacement with >=3:1 contrast in the same rule."
+    },
+    {
+      "sev": "BLOCKING",
+      "rule": "focus-removed",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 101,
+      "msg": "outline removed",
+      "hint": "Provide a :focus-visible replacement with >=3:1 contrast in the same rule."
+    },
+    {
+      "sev": "BLOCKING",
+      "rule": "focus-removed",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 679,
+      "msg": "outline removed",
+      "hint": "Provide a :focus-visible replacement with >=3:1 contrast in the same rule."
+    },
+    {
+      "sev": "BLOCKING",
+      "rule": "flash-rate",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 784,
+      "msg": "infinite animation cycling faster than 3 times per second",
+      "hint": "WCAG 2.3.1. Slow the cycle below 333ms per flash or make it finite."
+    },
+    {
+      "sev": "BLOCKING",
+      "rule": "focus-removed",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2325,
+      "msg": "outline removed",
+      "hint": "Provide a :focus-visible replacement with >=3:1 contrast in the same rule."
+    },
+    {
+      "sev": "BLOCKING",
+      "rule": "focus-removed",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2750,
+      "msg": "outline removed",
+      "hint": "Provide a :focus-visible replacement with >=3:1 contrast in the same rule."
+    },
+    {
+      "sev": "BLOCKING",
+      "rule": "focus-removed",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3025,
+      "msg": "outline removed",
+      "hint": "Provide a :focus-visible replacement with >=3:1 contrast in the same rule."
+    },
+    {
+      "sev": "BLOCKING",
+      "rule": "focus-removed",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7295,
+      "msg": "outline removed",
+      "hint": "Provide a :focus-visible replacement with >=3:1 contrast in the same rule."
+    },
+    {
+      "sev": "BLOCKING",
+      "rule": "focus-removed",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7298,
+      "msg": "outline removed",
+      "hint": "Provide a :focus-visible replacement with >=3:1 contrast in the same rule."
+    },
+    {
+      "sev": "BLOCKING",
+      "rule": "no-reduced-motion",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 0,
+      "msg": "animations present but prefers-reduced-motion is never handled",
+      "hint": "Add a @media (prefers-reduced-motion: reduce) block. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 91,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "autocomplete-off",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 197,
+      "msg": "autocomplete disabled",
+      "hint": "Breaks password managers and autofill. Use a specific token (one-time-code, new-password) instead of off."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 425,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 496,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 505,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "autocomplete-off",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 611,
+      "msg": "autocomplete disabled",
+      "hint": "Breaks password managers and autofill. Use a specific token (one-time-code, new-password) instead of off."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 715,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 732,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "autocomplete-off",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 744,
+      "msg": "autocomplete disabled",
+      "hint": "Breaks password managers and autofill. Use a specific token (one-time-code, new-password) instead of off."
+    },
+    {
+      "sev": "WARN",
+      "rule": "autocomplete-off",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 754,
+      "msg": "autocomplete disabled",
+      "hint": "Breaks password managers and autofill. Use a specific token (one-time-code, new-password) instead of off."
+    },
+    {
+      "sev": "WARN",
+      "rule": "autocomplete-off",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 853,
+      "msg": "autocomplete disabled",
+      "hint": "Breaks password managers and autofill. Use a specific token (one-time-code, new-password) instead of off."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 978,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "autocomplete-off",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1147,
+      "msg": "autocomplete disabled",
+      "hint": "Breaks password managers and autofill. Use a specific token (one-time-code, new-password) instead of off."
+    },
+    {
+      "sev": "WARN",
+      "rule": "autocomplete-off",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1155,
+      "msg": "autocomplete disabled",
+      "hint": "Breaks password managers and autofill. Use a specific token (one-time-code, new-password) instead of off."
+    },
+    {
+      "sev": "WARN",
+      "rule": "autocomplete-off",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1212,
+      "msg": "autocomplete disabled",
+      "hint": "Breaks password managers and autofill. Use a specific token (one-time-code, new-password) instead of off."
+    },
+    {
+      "sev": "WARN",
+      "rule": "autocomplete-off",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1214,
+      "msg": "autocomplete disabled",
+      "hint": "Breaks password managers and autofill. Use a specific token (one-time-code, new-password) instead of off."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1258,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1263,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1271,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1276,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1299,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1304,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1398,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1434,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "fixed-no-safe-area",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 0,
+      "msg": "bottom-anchored fixed element without a safe-area inset",
+      "hint": "padding-bottom: env(safe-area-inset-bottom), or it sits under the home indicator."
+    },
+    {
+      "sev": "WARN",
+      "rule": "important",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 2,
+      "msg": "!important",
+      "hint": "Usually a specificity problem. Acceptable only in reduced-motion resets."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 10,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 11,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 20,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 30,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 63,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 71,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 72,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 73,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 73,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 80,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 83,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 88,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 99,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 99,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 100,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 106,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 107,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 110,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 116,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 121,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 122,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 123,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 127,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 128,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 131,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 136,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 137,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 138,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 139,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 155,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-all",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 163,
+      "msg": "transition: all",
+      "hint": "Enumerate properties. \"all\" animates layout props by accident."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 225,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 240,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 273,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 276,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 277,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 280,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 296,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 11,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 30,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 40,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 76,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 94,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 96,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 126,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 161,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 174,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 188,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 192,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 200,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 214,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 242,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 246,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 254,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 288,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 290,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 296,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 306,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 336,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 349,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 360,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 382,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 403,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 404,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 418,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 421,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 422,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 427,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 434,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 441,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 444,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 445,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 447,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 458,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-all",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 463,
+      "msg": "transition: all",
+      "hint": "Enumerate properties. \"all\" animates layout props by accident."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 475,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 484,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 485,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 488,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 489,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 490,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 551,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-filter",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 551,
+      "msg": "transition on filter / backdrop-filter",
+      "hint": "Blur is paint-bound and re-rasterises every frame. Cross-fade opacity instead."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 555,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 561,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 562,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 583,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 595,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 601,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 604,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 605,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 610,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 612,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 613,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 614,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 616,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 617,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 622,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "important",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 636,
+      "msg": "!important",
+      "hint": "Usually a specificity problem. Acceptable only in reduced-motion resets."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 648,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 648,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 672,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 675,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 676,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 679,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 684,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 685,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 686,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 688,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 689,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 691,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 696,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 704,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-custom-property",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 704,
+      "msg": "transition on a CSS custom property",
+      "hint": "Custom properties do not interpolate unless registered with @property. Animate the concrete property."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-custom-property",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 712,
+      "msg": "transition on a CSS custom property",
+      "hint": "Custom properties do not interpolate unless registered with @property. Animate the concrete property."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 716,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-custom-property",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 719,
+      "msg": "transition on a CSS custom property",
+      "hint": "Custom properties do not interpolate unless registered with @property. Animate the concrete property."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 725,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 749,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 756,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 758,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 771,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-custom-property",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 771,
+      "msg": "transition on a CSS custom property",
+      "hint": "Custom properties do not interpolate unless registered with @property. Animate the concrete property."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 772,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-custom-property",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 772,
+      "msg": "transition on a CSS custom property",
+      "hint": "Custom properties do not interpolate unless registered with @property. Animate the concrete property."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 807,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 809,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 822,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 829,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 830,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 832,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 833,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 836,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 838,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 839,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 842,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 844,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 846,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 847,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 848,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 849,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 852,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 854,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 855,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 861,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 865,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 872,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 873,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 878,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 880,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 881,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 885,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 890,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 891,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 893,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 895,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 899,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 900,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 901,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 905,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 906,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 908,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 915,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 919,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 920,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 921,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 923,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 925,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 929,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 930,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 931,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 938,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 945,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 948,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 949,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 950,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 952,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 954,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 958,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 959,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 960,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 963,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 964,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 965,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 967,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 969,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 973,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 974,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 975,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 977,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 978,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 979,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 981,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 983,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 987,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 988,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 989,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1003,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1011,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1012,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1013,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1022,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1025,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1026,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1028,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1034,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1036,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1037,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1038,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1109,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1140,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1166,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1183,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1236,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1243,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1252,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1285,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1316,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1320,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1338,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1369,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1412,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1471,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1564,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1579,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1602,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1623,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1646,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1652,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1661,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1669,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1677,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1692,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1715,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1736,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1759,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1765,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1773,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1786,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1826,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1873,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1877,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1911,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1933,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2025,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2042,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2183,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2196,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2197,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2288,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2303,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2343,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2414,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2437,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2491,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2515,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2527,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2713,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2728,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2765,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2789,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 2993,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3004,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3051,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3066,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3153,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3197,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3277,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3314,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3337,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3529,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3621,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3665,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3708,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3721,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3747,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3748,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3751,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3760,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3913,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3939,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3948,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3966,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4051,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4056,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4057,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4058,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4097,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4101,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4129,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4136,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4144,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4162,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4268,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4590,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4606,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4618,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4668,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4673,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4686,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4730,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4752,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4775,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4785,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4792,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4792,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4794,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4794,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4795,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4795,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4810,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4955,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4968,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5040,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5046,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5079,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5088,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5094,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5117,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5118,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5143,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5151,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5318,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5335,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5367,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5392,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5401,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5447,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5449,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5454,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5458,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5491,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5508,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5514,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5537,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5540,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5548,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5580,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5582,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5583,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5585,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5595,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5595,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5602,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5607,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5612,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5617,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5626,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5652,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5653,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5655,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5656,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5668,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5672,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5680,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5686,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5716,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5736,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5746,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5767,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5794,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5856,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5865,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5876,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5921,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5944,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 5955,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6133,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6144,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6151,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6156,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6187,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6194,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6195,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6214,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6234,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6309,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6349,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6369,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6384,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6413,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6425,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6446,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6565,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6595,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6624,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6626,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6632,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6648,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6669,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6673,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6711,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6748,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6826,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6841,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6864,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6875,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6888,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6895,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6902,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6913,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6927,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6952,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6967,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 6996,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7000,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7001,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7079,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7159,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7239,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7250,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7252,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7349,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7367,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7395,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7402,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7427,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7473,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7482,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 7560,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 11,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 24,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 30,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 31,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 31,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 32,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 34,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 40,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 42,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 51,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 55,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 68,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 78,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 81,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 82,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 87,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 89,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 93,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 94,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 106,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 109,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 113,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 115,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 116,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 117,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 120,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 128,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 129,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 130,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 132,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 136,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 148,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 161,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 162,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 163,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 168,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 171,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 172,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 177,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 180,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 181,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 183,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 189,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 190,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "zindex-arbitrary",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 252,
+      "msg": "z-index outside the fixed scale",
+      "hint": "base 0 / dropdown 10 / sticky 20 / overlay 30 / modal 40 / toast 50. Arbitrary values start an arms race."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 253,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 253,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "animate-layout-prop",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 279,
+      "msg": "transition on a layout/paint property",
+      "hint": "Animate transform and opacity only. See references/motion.md."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 282,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 282,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 283,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 283,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 284,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 313,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 342,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 345,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 349,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 382,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 388,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 399,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 408,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 415,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 445,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 464,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 466,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 540,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 542,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 577,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 584,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 591,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 595,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 602,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 606,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 607,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 611,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 612,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 688,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "line-height-1",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 716,
+      "msg": "line-height: 1",
+      "hint": "Wrapping text needs >=1.5 body / <=1.25 display."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 725,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/themes.css",
+      "line": 318,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/themes.css",
+      "line": 327,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "WARN",
+      "rule": "small-input-font",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/themes.css",
+      "line": 342,
+      "msg": "font-size below 16px",
+      "hint": "Body/inputs below 16px trigger iOS zoom and hurt readability."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "emoji-as-icon",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 92,
+      "msg": "emoji used as interface iconography",
+      "hint": "Platform-dependent rendering, read verbatim by screen readers, and the loudest slop tell. Use a real icon set."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "emoji-as-icon",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 595,
+      "msg": "emoji used as interface iconography",
+      "hint": "Platform-dependent rendering, read verbatim by screen readers, and the loudest slop tell. Use a real icon set."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "emoji-as-icon",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1173,
+      "msg": "emoji used as interface iconography",
+      "hint": "Platform-dependent rendering, read verbatim by screen readers, and the loudest slop tell. Use a real icon set."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "emoji-as-icon",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1660,
+      "msg": "emoji used as interface iconography",
+      "hint": "Platform-dependent rendering, read verbatim by screen readers, and the loudest slop tell. Use a real icon set."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "emoji-as-icon",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/index.html",
+      "line": 1678,
+      "msg": "emoji used as interface iconography",
+      "hint": "Platform-dependent rendering, read verbatim by screen readers, and the loudest slop tell. Use a real icon set."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "glassmorphism",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 100,
+      "msg": "backdrop blur",
+      "hint": "Reserve translucency for genuinely overlapping layers, not as a surface style."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/base.css",
+      "line": 191,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "inter-default",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 295,
+      "msg": "Inter / Geist",
+      "hint": "Excellent faces, and the two most-suggested defaults. Acceptable only as a stated decision."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "glassmorphism",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 672,
+      "msg": "backdrop blur",
+      "hint": "Reserve translucency for genuinely overlapping layers, not as a surface style."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "inter-default",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 727,
+      "msg": "Inter / Geist",
+      "hint": "Excellent faces, and the two most-suggested defaults. Acceptable only as a stated decision."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "inter-default",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 762,
+      "msg": "Inter / Geist",
+      "hint": "Excellent faces, and the two most-suggested defaults. Acceptable only as a stated decision."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "glassmorphism",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 771,
+      "msg": "backdrop blur",
+      "hint": "Reserve translucency for genuinely overlapping layers, not as a surface style."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "glassmorphism",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 817,
+      "msg": "backdrop blur",
+      "hint": "Reserve translucency for genuinely overlapping layers, not as a surface style."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 836,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 842,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "glassmorphism",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1026,
+      "msg": "backdrop blur",
+      "hint": "Reserve translucency for genuinely overlapping layers, not as a surface style."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1028,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1126,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "emoji-as-icon",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1263,
+      "msg": "emoji used as interface iconography",
+      "hint": "Platform-dependent rendering, read verbatim by screen readers, and the loudest slop tell. Use a real icon set."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1307,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1459,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3651,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 3705,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4088,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 4624,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 46,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "three-equal-cards",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 86,
+      "msg": "three equal columns",
+      "hint": "The most-represented layout in existence. Weight one item dominant, or use a list or a table."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "emoji-as-icon",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 140,
+      "msg": "emoji used as interface iconography",
+      "hint": "Platform-dependent rendering, read verbatim by screen readers, and the loudest slop tell. Use a real icon set."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "glassmorphism",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 163,
+      "msg": "backdrop blur",
+      "hint": "Reserve translucency for genuinely overlapping layers, not as a surface style."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "glassmorphism",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 252,
+      "msg": "backdrop blur",
+      "hint": "Reserve translucency for genuinely overlapping layers, not as a surface style."
+    },
+    {
+      "sev": "SLOP",
+      "rule": "glassmorphism",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 281,
+      "msg": "backdrop blur",
+      "hint": "Reserve translucency for genuinely overlapping layers, not as a surface style."
+    },
+    {
+      "sev": "INFO",
+      "rule": "will-change-static",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 552,
+      "msg": "will-change",
+      "hint": "Apply just before animating and remove after; permanent promotion costs memory."
+    },
+    {
+      "sev": "INFO",
+      "rule": "blur-heavy",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/features.css",
+      "line": 1026,
+      "msg": "blur radius above 8px",
+      "hint": "Cost scales with radius and area. Never animate a blur this large."
+    },
+    {
+      "sev": "INFO",
+      "rule": "blur-heavy",
+      "file": "../../usr/tmp/opencode/audit-target-inicio/style/layout.css",
+      "line": 252,
+      "msg": "blur radius above 8px",
+      "hint": "Cost scales with radius and area. Never animate a blur this large."
+    },
+    {
+      "sev": "INFO",
+      "rule": "color-sprawl",
+      "file": "project",
+      "line": 0,
+      "msg": "174 unique colors",
+      "hint": "Cluster near-duplicates into <=12 semantic tokens. See references/tokens.md."
+    },
+    {
+      "sev": "INFO",
+      "rule": "space-sprawl",
+      "file": "project",
+      "line": 0,
+      "msg": "124 distinct px values",
+      "hint": "Collapse to one 4px-based 9-step scale."
+    },
+    {
+      "sev": "INFO",
+      "rule": "font-sprawl",
+      "file": "project",
+      "line": 0,
+      "msg": "5 font families: plus jakarta sans, inter, segoe ui symbol, noto sans symbols, georgia",
+      "hint": "Ceiling is 2. A weight range beats a third family."
+    },
+    {
+      "sev": "INFO",
+      "rule": "shadow-sprawl",
+      "file": "project",
+      "line": 0,
+      "msg": "98 distinct shadows",
+      "hint": "Three elevation levels is the ceiling."
+    },
+    {
+      "sev": "INFO",
+      "rule": "radius-sprawl",
+      "file": "project",
+      "line": 0,
+      "msg": "35 distinct radii",
+      "hint": "Three values: small, medium, pill."
+    },
+    {
+      "sev": "INFO",
+      "rule": "raw-values",
+      "file": "project",
+      "line": 0,
+      "msg": "302 raw colors and 3437 raw px outside the token file",
+      "hint": "Every raw value is either a defect or a missing token."
+    }
+  ]
+}

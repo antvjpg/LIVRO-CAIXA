@@ -1,0 +1,68 @@
+index.html
+  P2 T10 L54 middle-dot separator; prefer layout spacing
+  P2 T10 L495 middle-dot separator; prefer layout spacing
+  P2 T10 L862 middle-dot separator; prefer layout spacing
+  P2 T10 L1008 middle-dot separator; prefer layout spacing
+  P2 T10 L1552 middle-dot separator; prefer layout spacing
+  P2 T10 L1599 middle-dot separator; prefer layout spacing
+style/base.css
+  P1 T3 L163 transition:all
+  P2 T5 L100 glassmorphism; justify real overlap
+  P2 T6 L128 outline removed; verify :focus-visible replacement
+  P2 T4 L191 three equal columns; verify it is data, not template cards
+  P2 T7 L277 layout-property animation
+style/features.css
+  P1 T3 L463 transition:all
+  P2 T6 L101 outline removed; verify :focus-visible replacement
+  P2 T9 L103 zero-offset colored shadow/glow
+  P2 T8 L295 Inter as a font choice; verify it is deliberate
+  P2 T7 L382 layout-property animation
+  P2 T7 L475 layout-property animation
+  P2 T7 L583 layout-property animation
+  P2 T5 L672 glassmorphism; justify real overlap
+  P2 T6 L679 outline removed; verify :focus-visible replacement
+  P2 T8 L727 Inter as a font choice; verify it is deliberate
+  P2 T8 L762 Inter as a font choice; verify it is deliberate
+  P2 T5 L771 glassmorphism; justify real overlap
+  P2 T5 L817 glassmorphism; justify real overlap
+  P2 T4 L836 three equal columns; verify it is data, not template cards
+  P2 T4 L842 three equal columns; verify it is data, not template cards
+  P2 T12 L849 fingernail accent border
+  P2 T5 L1026 glassmorphism; justify real overlap
+  P2 T4 L1028 three equal columns; verify it is data, not template cards
+  P2 T4 L1126 three equal columns; verify it is data, not template cards
+  P2 T4 L1307 three equal columns; verify it is data, not template cards
+  P2 T4 L1459 three equal columns; verify it is data, not template cards
+  P2 T9 L2324 zero-offset colored shadow/glow
+  P2 T6 L2325 outline removed; verify :focus-visible replacement
+  P2 T9 L2749 zero-offset colored shadow/glow
+  P2 T6 L2750 outline removed; verify :focus-visible replacement
+  P2 T6 L3025 outline removed; verify :focus-visible replacement
+  P2 T4 L3651 three equal columns; verify it is data, not template cards
+  P2 T4 L3705 three equal columns; verify it is data, not template cards
+  P2 T12 L4001 fingernail accent border
+  P2 T12 L4004 fingernail accent border
+  P2 T4 L4088 three equal columns; verify it is data, not template cards
+  P2 T9 L4367 zero-offset colored shadow/glow
+  P2 T4 L4624 three equal columns; verify it is data, not template cards
+  P2 T7 L5392 layout-property animation
+  P2 T12 L6610 fingernail accent border
+  P2 T6 L7295 outline removed; verify :focus-visible replacement
+  P2 T6 L7298 outline removed; verify :focus-visible replacement
+  P2 T7 L7367 layout-property animation
+style/layout.css
+  P2 T13 L0 animations without prefers-reduced-motion
+  P2 T9 L38 zero-offset colored shadow/glow
+  P2 T4 L46 three equal columns; verify it is data, not template cards
+  P2 T4 L86 three equal columns; verify it is data, not template cards
+  P2 T5 L163 glassmorphism; justify real overlap
+  P2 T9 L218 zero-offset colored shadow/glow
+  P2 T5 L252 glassmorphism; justify real overlap
+  P2 T5 L281 glassmorphism; justify real overlap
+  P2 T9 L655 zero-offset colored shadow/glow
+style/themes.css
+  P2 T9 L325 zero-offset colored shadow/glow
+  P2 T9 L334 zero-offset colored shadow/glow
+  P2 T9 L345 zero-offset colored shadow/glow
+61 findings  P0 0  P1 2  P2 59
+Code-certain only. Visual tells and intentional choices require the rendered review.
