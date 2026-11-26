@@ -49,7 +49,7 @@ test.describe('Início — navegação e renderização', () => {
     await expect(page.locator('main > .inicio-header h2')).toHaveText('Início');
 
     const cards = [
-      { label: 'Patrimônio Total', selector: '#viewInicio .balance-card' },
+      { label: 'Patrimônio Total', selector: 'main > .inicio-patrimonio' },
       { label: 'Saúde Financeira', selector: '#viewInicio .advanced-dashboard-card' },
       { label: 'Próximo Pagamento', selector: '#viewInicio .dashboard-next-payment-card' },
     ];
@@ -61,7 +61,6 @@ test.describe('Início — navegação e renderização', () => {
     const containers = [
       '#viewInicio .advanced-dashboard',
       '#viewInicio .next-pay-inner',
-      '#viewInicio .cashflow-mini-summary',
     ];
     for (const selector of containers) {
       await expect(page.locator(selector), `container ${selector}`).toBeVisible();
@@ -89,7 +88,7 @@ test.describe('Início — navegação e renderização', () => {
       const scoreValue = norm(score?.querySelector('strong')?.textContent);
       const surface = root ? getComputedStyle(root) : null;
       const metricNodes = Array.from(root?.querySelectorAll('.inicio-health-metric') || []);
-      const flowNodes = Array.from(document.querySelectorAll('#viewInicio .cashflow-mini-metrics > div'));
+      const flowNodes = Array.from(document.querySelectorAll('#viewDashboard .dashboard-metrics > div'));
       return {
         eyebrow: text('.inicio-health-eyebrow'),
         label: text('.inicio-health-label'),
@@ -122,7 +121,7 @@ test.describe('Início — navegação e renderização', () => {
     expect(healthSnapshot.label.length).toBeGreaterThan(0);
     expect(healthSnapshot.detail.length).toBeGreaterThan(0);
     expect(healthSnapshot.metricLabels).toEqual(['Entradas', 'Saídas', 'Resultado']);
-    expect(healthSnapshot.flowLabels).toEqual(['Entradas', 'Saídas', 'Saldo do mês']);
+    expect(healthSnapshot.flowLabels).toEqual(['Entradas no mês', 'Saídas no mês', 'Fluxo líquido', 'Patrimônio atual']);
     expect(healthSnapshot.metricValues[0]).toBe(healthSnapshot.flowValues[0]);
     expect(healthSnapshot.metricValues[1]).toBe(healthSnapshot.flowValues[1]);
     expect(healthSnapshot.metricValues[2]).toBe(healthSnapshot.flowValues[2]);
@@ -155,12 +154,12 @@ test.describe('Início — navegação e renderização', () => {
         inicio: chartOn('patrimonySparklineInicio'),
         strip: chartOn('patrimonySparkline'),
         preference: localStorage.getItem('livro-caixa-patrimony-spark'),
-        ariaExpanded: document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol')?.getAttribute('aria-expanded') || null,
+        ariaExpanded: document.querySelector('main > .inicio-patrimonio .balance-symbol')?.getAttribute('aria-expanded') || null,
       };
     });
     const ensureSparkVisible = async () => {
       if ((await chartSnapshot()).preference === '0') {
-        await page.locator('#viewInicio .inicio-card.balance-card .balance-symbol').click();
+        await page.locator('main > .inicio-patrimonio .balance-symbol').click();
       }
     };
 
@@ -169,7 +168,7 @@ test.describe('Início — navegação e renderização', () => {
       labels: Array.from(document.querySelectorAll('#balanceStrip > .balance-card .label')).map((el) => (el.textContent || '').trim()),
       investLabelTitle: document.querySelector('#balanceStrip > .invest-summary-card .label')?.getAttribute('title') || null,
       hasTotalCard: !!document.querySelector('#balanceStrip > .balance-card.total'),
-      localTotal: (document.querySelector('#viewInicio .inicio-card.balance-card .amount')?.textContent || '').trim(),
+      localTotal: (document.querySelector('main > .inicio-patrimonio .amount')?.textContent || '').trim(),
       expectedTotal: ['fmt', 'totalBankBalance', 'totalPocketBalance', 'totalInvestBalance'].every((name) => typeof window[name] === 'function')
         ? window.fmt(window.totalBankBalance() + window.totalPocketBalance() + window.totalInvestBalance())
         : null,
@@ -181,6 +180,38 @@ test.describe('Início — navegação e renderização', () => {
     if (stripSnapshot.expectedTotal !== null) {
       expect(stripSnapshot.localTotal).toBe(stripSnapshot.expectedTotal);
     }
+
+    const layoutSnapshot = await page.evaluate(() => {
+      const rect = (selector) => {
+        const el = document.querySelector(selector);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, width: r.width };
+      };
+      const header = rect('main > .inicio-header');
+      const patrimonio = rect('main > .inicio-patrimonio');
+      const bank = rect('#balanceStrip > .bank-summary-card');
+      const pocket = rect('#balanceStrip > .pocket-summary-card');
+      const invest = rect('#balanceStrip > .invest-summary-card');
+      return {
+        headerBeforePatrimonio: !!header && !!patrimonio && header.bottom <= patrimonio.top + 1,
+        patrimonioBeforeBank: !!patrimonio && !!bank && patrimonio.bottom <= bank.top + 1,
+        bankBeforePocket: !!bank && !!pocket && bank.bottom <= pocket.top + 1,
+        bankFullWidth: !!bank && !!pocket && bank.width > pocket.width,
+        pocketInvestSameRow: !!pocket && !!invest && Math.abs(pocket.top - invest.top) < 1 && pocket.right <= invest.left + 1,
+        resumoFluxoCount: document.querySelectorAll('#viewInicio .cashflow-mini-summary').length,
+        resumoFluxoText: (document.querySelector('#viewInicio')?.textContent || '').includes('Resumo do fluxo'),
+        breakdownCollapsed: document.querySelector('#investBreakdownBox')?.getAttribute('aria-hidden') === 'true',
+      };
+    });
+    expect(layoutSnapshot.headerBeforePatrimonio).toBe(true);
+    expect(layoutSnapshot.patrimonioBeforeBank).toBe(true);
+    expect(layoutSnapshot.bankBeforePocket).toBe(true);
+    expect(layoutSnapshot.bankFullWidth).toBe(true);
+    expect(layoutSnapshot.pocketInvestSameRow).toBe(true);
+    expect(layoutSnapshot.resumoFluxoCount).toBe(0);
+    expect(layoutSnapshot.resumoFluxoText).toBe(false);
+    expect(layoutSnapshot.breakdownCollapsed).toBe(true);
 
     await ensureSparkVisible();
     await expect.poll(async () => (await chartSnapshot()).inicio).toBe(true);
@@ -204,7 +235,7 @@ test.describe('Início — navegação e renderização', () => {
     await expect.poll(async () => (await chartSnapshot()).inicio).toBe(true);
     expect((await chartSnapshot()).strip).toBe(false);
 
-    const sparkSymbol = page.locator('#viewInicio .inicio-card.balance-card .balance-symbol');
+    const sparkSymbol = page.locator('main > .inicio-patrimonio .balance-symbol');
     const preferenceBefore = (await chartSnapshot()).preference;
     const flipped = preferenceBefore === '0' ? '1' : '0';
     await sparkSymbol.click();
@@ -235,6 +266,8 @@ test.describe('Início — navegação e renderização', () => {
     const breakdownBefore = await page.locator('#investBreakdownBox').getAttribute('aria-hidden');
     await investSymbol.click();
     const breakdownAfter = await page.locator('#investBreakdownBox').getAttribute('aria-hidden');
+    expect(breakdownBefore).toBe('true');
+    expect(breakdownAfter).toBe('false');
     expect(breakdownAfter).not.toBe(breakdownBefore);
     await expect(page.locator('body')).toHaveAttribute('data-tab', 'inicio');
     await investSymbol.click();
@@ -249,10 +282,10 @@ test.describe('Início — navegação e renderização', () => {
       };
     });
     const healthBefore = (await page.locator('#viewInicio .advanced-dashboard').innerText()).trim();
-    const flowBefore = (await page.locator('#viewInicio .cashflow-mini-summary').innerText()).trim();
+    const patrimonioBefore = (await page.locator('main > .inicio-patrimonio').innerText()).trim();
     const overviewBefore = await overviewSnapshot();
     expect(healthBefore.length).toBeGreaterThan(0);
-    expect(flowBefore.length).toBeGreaterThan(0);
+    expect(patrimonioBefore.length).toBeGreaterThan(0);
     expect(overviewBefore.hasHealthCard).toBe(true);
     expect(overviewBefore.inicioMarkupCount).toBe(0);
     await app.openTab(page, 'dashboard');
@@ -261,11 +294,12 @@ test.describe('Início — navegação e renderização', () => {
     expect(overviewAfter.hasHealthCard).toBe(true);
     expect(overviewAfter.inicioMarkupCount).toBe(0);
     expect(overviewAfter.healthText).toBe(overviewBefore.healthText);
+    expect(await page.locator('main > .inicio-patrimonio').count()).toBe(1);
     expect(await page.locator('#viewInicio .advanced-dashboard').count()).toBe(1);
     expect(await page.locator('#viewInicio .inicio-health-content').count()).toBe(1);
-    expect(await page.locator('#viewInicio .cashflow-mini-summary').count()).toBe(1);
+    expect(await page.locator('#viewInicio .cashflow-mini-summary').count()).toBe(0);
+    expect((await page.locator('main > .inicio-patrimonio').innerText()).trim()).toBe(patrimonioBefore);
     expect((await page.locator('#viewInicio .advanced-dashboard').innerText()).trim()).toBe(healthBefore);
-    expect((await page.locator('#viewInicio .cashflow-mini-summary').innerText()).trim()).toBe(flowBefore);
 
     await testInfo.attach('inicio-redesign.png', {
       body: await page.screenshot(),

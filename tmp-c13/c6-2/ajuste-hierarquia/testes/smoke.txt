@@ -1,0 +1,6 @@
+npm notice run livro-caixa-code-qa@0.1.0 code:smoke
+npm notice run node e2e/scripts/run-code.cjs -- --project=smoke
+[C.O.D.E.] execução runId=local-60c67588-f21f-41a9-8c27-4829bfcfcc7d tentativa=1 workflow=local
+npm notice run livro-caixa-code-qa@0.1.0 npx
+npm notice run 'playwright' test --project=smoke
+sh: 1: playwright: not found

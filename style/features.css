@@ -4318,7 +4318,7 @@ body[data-tab="dash"] .fab-add{
 /* C.4-V05-B D-05 — composição da view Início (tokens existentes, sem paleta paralela) */
 main > .inicio-header{
   display:none;
-  margin:0 0 24px;
+  margin:0 0 18px;
 }
 body[data-tab="inicio"] main > .inicio-header{
   display:block;
@@ -4330,11 +4330,22 @@ main > .inicio-header .hint{
   margin:4px 0 0;
   display:block;
 }
+main > .inicio-patrimonio{
+  display:none;
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+  padding:22px;
+  margin:0 0 12px;
+}
+body[data-tab="inicio"] main > .inicio-patrimonio{
+  display:block;
+}
 body[data-tab="inicio"] #balanceStrip{
   grid-template-columns:repeat(2, minmax(0, 1fr));
   align-items:stretch;
-  gap:15px;
-  margin:0 0 26px;
+  gap:13px;
+  margin:0 0 16px;
 }
 body[data-tab="inicio"] #balanceStrip > .bank-summary-card{
   grid-column:1 / -1;
@@ -4367,12 +4378,9 @@ body[data-tab="inicio"] #balanceStrip > .bank-summary-card .amount{
   grid-template-columns:repeat(2, minmax(0, 1fr));
   align-items:stretch;
   column-gap:16px;
-  row-gap:24px;
+  row-gap:16px;
   width:100%;
   max-width:100%;
-}
-#viewInicio .inicio-grid > .balance-card{
-  grid-column:1 / -1;
 }
 #viewInicio .inicio-card{
   min-width:0;
@@ -4394,12 +4402,12 @@ body[data-tab="inicio"] #balanceStrip > .bank-summary-card .amount{
 #viewInicio .dashboard-next-payment-card .next-pay-inner{
   min-width:0;
 }
-#viewInicio .patrimony-spark-box,
-#viewInicio .patrimony-spark-box canvas{
+main > .inicio-patrimonio .patrimony-spark-box,
+main > .inicio-patrimonio .patrimony-spark-box canvas{
   box-sizing:border-box;
   max-width:100%;
 }
-#viewInicio .patrimony-spark-box canvas{
+main > .inicio-patrimonio .patrimony-spark-box canvas{
   display:block;
 }
 /* Em colunas estreitas, o badge do health-card nao pode esmagar o rotulo:
@@ -4549,14 +4557,7 @@ body[data-tab="inicio"] #balanceStrip > .bank-summary-card .amount{
   display:flex;
   align-items:flex-end;
   gap:16px;
-  margin-top:24px;
-}
-/* Exceção escopada: o resumo existe em Início (D-04) e deve ser visível aqui */
-#viewInicio .inicio-footer .cashflow-mini-summary{
-  display:block;
-  flex:1 1 auto;
-  min-width:0;
-  margin:0;
+  margin-top:16px;
 }
 @media(max-width:680px){
   body[data-tab="inicio"] #balanceStrip .balance-card .label{
@@ -4573,12 +4574,15 @@ body[data-tab="inicio"] #balanceStrip > .bank-summary-card .amount{
     min-width:26px;
     border-radius:9px;
   }
+  main > .inicio-patrimonio{
+    margin-bottom:10px;
+  }
+  body[data-tab="inicio"] #balanceStrip{
+    gap:12px;
+  }
   #viewInicio .inicio-grid{
     grid-template-columns:minmax(0, 1fr);
-    row-gap:18px;
-  }
-  #viewInicio .inicio-grid > .balance-card{
-    grid-column:1;
+    row-gap:14px;
   }
 }
 

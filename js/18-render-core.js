@@ -207,10 +207,10 @@ function editInstitution(btn, key) {
       localStorage.setItem(PATRIMONY_SPARK_STORAGE_KEY, patrimonySparkVisible ? '1' : '0');
     } catch (error) { /* armazenamento indisponível: estado vale só para a sessão */ }
     const symbol = context === 'inicio'
-      ? document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol')
+      ? document.querySelector('main > .inicio-patrimonio .balance-symbol')
       : document.querySelector('#balanceStrip .balance-card.total .balance-symbol');
     const box = context === 'inicio'
-      ? document.querySelector('#viewInicio .inicio-card.balance-card .patrimony-spark-box')
+      ? document.querySelector('main > .inicio-patrimonio .patrimony-spark-box')
       : document.getElementById('patrimonySparkBox');
     if (symbol) {
       symbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
@@ -223,10 +223,10 @@ function editInstitution(btn, key) {
     // Sincroniza o outro contexto
     const otherContext = context === 'inicio' ? 'strip' : 'inicio';
     const otherSymbol = otherContext === 'inicio'
-      ? document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol')
+      ? document.querySelector('main > .inicio-patrimonio .balance-symbol')
       : document.querySelector('#balanceStrip .balance-card.total .balance-symbol');
     const otherBox = otherContext === 'inicio'
-      ? document.querySelector('#viewInicio .inicio-card.balance-card .patrimony-spark-box')
+      ? document.querySelector('main > .inicio-patrimonio .patrimony-spark-box')
       : document.getElementById('patrimonySparkBox');
     if (otherSymbol) {
       otherSymbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
@@ -681,7 +681,7 @@ function editInstitution(btn, key) {
     const openBankPanel = () => openBankManagementPanel();
 
     // Atualiza card de Patrimônio Total da view Início
-    const inicioBalanceCard = document.querySelector('#viewInicio .inicio-card.balance-card .amount');
+    const inicioBalanceCard = document.querySelector('main > .inicio-patrimonio .amount');
     if (inicioBalanceCard) {
       inicioBalanceCard.textContent = totalLabel;
       inicioBalanceCard.className = `amount ${balancesReady && totalPatrimonio < 0 ? 'neg' : ''}`;
@@ -727,8 +727,8 @@ function editInstitution(btn, key) {
     });
     // B.1.3.3 — estado visual do gráfico do Início sempre derivado de
     // patrimonySparkVisible (não apenas quando há preferência salva).
-    const inicioBox = document.querySelector('#viewInicio .inicio-card.balance-card .patrimony-spark-box');
-    const inicioSymbol = document.querySelector('#viewInicio .inicio-card.balance-card .balance-symbol');
+    const inicioBox = document.querySelector('main > .inicio-patrimonio .patrimony-spark-box');
+    const inicioSymbol = document.querySelector('main > .inicio-patrimonio .balance-symbol');
     if (inicioBox) {
       inicioBox.classList.toggle('is-collapsed', !patrimonySparkVisible);
       inicioBox.setAttribute('aria-hidden', String(!patrimonySparkVisible));
@@ -738,16 +738,16 @@ function editInstitution(btn, key) {
       inicioSymbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
     }
 
-    // B.1.3.3 — listener por delegação em #viewInicio: sobrevive à troca de
-    // innerHTML dos filhos e independe da aba ativa no momento da carga.
+    // C6-INICIO-02 — listener no card de Patrimônio da Início: o host é estático
+    // e permanece fora da view para manter a nova hierarquia visual.
     if (!window.__patrimonyInicioListenerSetup) {
-      const viewInicio = document.getElementById('viewInicio');
-      if (viewInicio) {
-        const isSparkSymbol = (target) => target instanceof Element && !!target.closest('.inicio-card.balance-card .balance-symbol');
-        viewInicio.addEventListener('click', (event) => {
+      const patrimonioHost = document.querySelector('main > .inicio-patrimonio');
+      if (patrimonioHost) {
+        const isSparkSymbol = (target) => target instanceof Element && !!target.closest('.balance-symbol');
+        patrimonioHost.addEventListener('click', (event) => {
           if (isSparkSymbol(event.target)) togglePatrimonySparkline('inicio');
         });
-        viewInicio.addEventListener('keydown', (event) => {
+        patrimonioHost.addEventListener('keydown', (event) => {
           if ((event.key === 'Enter' || event.key === ' ') && isSparkSymbol(event.target)) {
             event.preventDefault();
             togglePatrimonySparkline('inicio');
