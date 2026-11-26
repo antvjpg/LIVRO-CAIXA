@@ -144,6 +144,31 @@ test.describe('Início — navegação e renderização', () => {
       contentType: 'application/json',
     });
 
+    const surfaceSnapshot = await page.evaluate(() => {
+      const cs = (selector) => getComputedStyle(document.querySelector(selector));
+      return {
+        patrimonioBackground: cs('main > .inicio-patrimonio').backgroundImage,
+        patrimonioAmountSize: parseFloat(cs('main > .inicio-patrimonio .amount').fontSize),
+        pageBackground: cs('main').backgroundColor,
+        bankBackground: cs('#balanceStrip > .bank-summary-card').backgroundColor,
+        healthBackground: cs('#viewInicio .advanced-dashboard-card').backgroundColor,
+        bankPaddingTop: cs('#balanceStrip > .bank-summary-card').paddingTop,
+        healthPaddingTop: cs('#viewInicio .advanced-dashboard-card').paddingTop,
+        bankHeadMargin: cs('#balanceStrip > .bank-summary-card .balance-card-head').marginBottom,
+      };
+    });
+    expect(surfaceSnapshot.patrimonioBackground).toContain('gradient');
+    expect(surfaceSnapshot.patrimonioAmountSize).toBeGreaterThanOrEqual(27);
+    expect(surfaceSnapshot.bankBackground).not.toBe(surfaceSnapshot.pageBackground);
+    expect(surfaceSnapshot.healthBackground).toBe(surfaceSnapshot.bankBackground);
+    expect(surfaceSnapshot.bankPaddingTop).toBe('16px');
+    expect(surfaceSnapshot.healthPaddingTop).toBe('16px');
+    expect(surfaceSnapshot.bankHeadMargin).toBe('6px');
+    await testInfo.attach('superficies-inicio.json', {
+      body: JSON.stringify(surfaceSnapshot, null, 2),
+      contentType: 'application/json',
+    });
+
     const chartSnapshot = () => page.evaluate(() => {
       const chartOn = (id) => {
         const canvas = document.getElementById(id);

@@ -4335,11 +4335,55 @@ main > .inicio-patrimonio{
   min-width:0;
   max-width:100%;
   overflow-wrap:anywhere;
-  padding:22px;
+  padding:16px 22px 20px;
   margin:0 0 12px;
+  border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);
+  box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 24%,transparent);
 }
 body[data-tab="inicio"] main > .inicio-patrimonio{
   display:block;
+}
+body:not(.dark-mode) main > .inicio-patrimonio{
+  background:linear-gradient(120deg,var(--surface-accent),var(--accent));
+  color:var(--header-foreground);
+}
+body.dark-mode main > .inicio-patrimonio{
+  background:linear-gradient(125deg,var(--surface-accent),var(--accent-subtle));
+  color:var(--ink);
+  border-color:color-mix(in srgb,var(--accent) 26%,transparent);
+}
+main > .inicio-patrimonio .label{
+  font-size:var(--font-size-body);
+  opacity:1;
+}
+body:not(.dark-mode) main > .inicio-patrimonio .label{
+  color:color-mix(in srgb,var(--header-foreground) 78%,transparent);
+}
+body.dark-mode main > .inicio-patrimonio .label{
+  color:var(--ink-soft);
+}
+main > .inicio-patrimonio .amount{
+  font-size:var(--font-size-heading);
+  line-height:var(--line-height-tight);
+}
+body:not(.dark-mode) main > .inicio-patrimonio .amount{
+  color:var(--header-foreground);
+}
+body.dark-mode main > .inicio-patrimonio .amount{
+  color:var(--ink);
+}
+body:not(.dark-mode) main > .inicio-patrimonio .amount.neg{
+  color:var(--danger-foreground);
+}
+main > .inicio-patrimonio .balance-symbol{
+  background:color-mix(in srgb,var(--header-foreground) 19%,transparent);
+  color:var(--header-foreground);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--header-foreground) 14%,transparent);
+}
+body.dark-mode main > .inicio-patrimonio .balance-symbol{
+  background:color-mix(in srgb,var(--accent) 16%,transparent);
+  color:var(--ink);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 28%,transparent);
 }
 body[data-tab="inicio"] #balanceStrip{
   grid-template-columns:repeat(2, minmax(0, 1fr));
@@ -4362,16 +4406,31 @@ body[data-tab="inicio"] #balanceStrip > .invest-breakdown-box{
 }
 body[data-tab="inicio"] #balanceStrip .balance-card{
   min-height:0;
-  padding:20px 22px;
+  padding:16px 20px 18px;
+  background:color-mix(in srgb,var(--paper-2) 72%,var(--accent-subtle));
+  border-color:color-mix(in srgb,var(--accent) 28%,var(--line));
+  box-shadow:0 3px 12px color-mix(in srgb,var(--accent) 12%,transparent);
+}
+body[data-tab="inicio"] #balanceStrip .balance-card-head{
+  margin-bottom:6px;
+}
+body[data-tab="inicio"] #balanceStrip .balance-card .label{
+  font-size:var(--font-size-caption);
 }
 body[data-tab="inicio"] #balanceStrip .balance-card .amount{
-  font-size:clamp(18px, 2.4vw, 22px);
+  font-size:clamp(18px, 2.6vw, 26px);
   overflow-wrap:anywhere;
+  margin-top:2px;
 }
 body[data-tab="inicio"] #balanceStrip > .bank-summary-card .amount{
-  font-size:clamp(22px, 3vw, 32px);
+  font-size:clamp(22px, 3.2vw, 34px);
   line-height:1.05;
   letter-spacing:-.035em;
+}
+body[data-tab="inicio"] #balanceStrip .balance-share{
+  color:var(--ink);
+  background:var(--accent-subtle);
+  border-color:color-mix(in srgb,var(--accent) 24%,var(--line));
 }
 #viewInicio .inicio-grid{
   display:grid;
@@ -4391,12 +4450,20 @@ body[data-tab="inicio"] #balanceStrip > .bank-summary-card .amount{
 /* Cards que não herdam .balance-card precisam da mesma superfície/estrutura */
 #viewInicio .advanced-dashboard-card,
 #viewInicio .dashboard-next-payment-card{
-  background:var(--paper);
+  background:color-mix(in srgb,var(--paper-2) 72%,var(--accent-subtle));
   color:var(--ink);
   border-radius:var(--radius-lg);
-  padding:22px;
-  border:1px solid var(--line);
-  box-shadow:var(--shadow-sm);
+  padding:16px 20px 18px;
+  border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line));
+  box-shadow:0 3px 12px color-mix(in srgb,var(--accent) 12%,transparent);
+}
+#viewInicio .advanced-dashboard-card .balance-card-head,
+#viewInicio .dashboard-next-payment-card .balance-card-head{
+  margin-bottom:6px;
+}
+#viewInicio .advanced-dashboard-card .label,
+#viewInicio .dashboard-next-payment-card .label{
+  font-size:var(--font-size-caption);
 }
 #viewInicio .advanced-dashboard-card .advanced-dashboard,
 #viewInicio .dashboard-next-payment-card .next-pay-inner{
@@ -4458,8 +4525,8 @@ main > .inicio-patrimonio .patrimony-spark-box canvas{
 }
 
 #viewInicio .inicio-health-eyebrow {
-  color: var(--ink-soft);
-  font-size: 10px;
+  color: var(--ink);
+  font-size: var(--font-size-caption);
   font-weight: 700;
   letter-spacing: .075em;
   text-transform: uppercase;
@@ -4483,7 +4550,7 @@ main > .inicio-patrimonio .patrimony-spark-box canvas{
 
 #viewInicio .inicio-health-copy p {
   margin: 0;
-  color: var(--ink-soft);
+  color: var(--ink);
   font-size: 11px;
   line-height: 1.45;
 }
@@ -4511,7 +4578,7 @@ main > .inicio-patrimonio .patrimony-spark-box canvas{
 
 #viewInicio .inicio-health-score span {
   margin-top: 3px;
-  color: var(--ink-soft);
+  color: var(--ink);
   font-size: 9px;
 }
 
@@ -4532,14 +4599,14 @@ main > .inicio-patrimonio .patrimony-spark-box canvas{
 }
 
 #viewInicio .inicio-health-metric small {
-  color: var(--ink-soft);
-  font-size: 10px;
+  color: var(--ink);
+  font-size: var(--font-size-caption);
   line-height: 1.2;
 }
 
 #viewInicio .inicio-health-metric strong {
   color: var(--ink);
-  font-size: clamp(10px, 1.15vw, 13px);
+  font-size: clamp(11px, 1.2vw, 14px);
   font-weight: 750;
   line-height: 1.3;
   font-variant-numeric: tabular-nums;
@@ -4552,6 +4619,13 @@ main > .inicio-patrimonio .patrimony-spark-box canvas{
 
 #viewInicio .inicio-health-metric strong.negative {
   color: var(--danger);
+}
+#viewInicio .next-pay-inner{
+  background:color-mix(in srgb,var(--surface) 88%,var(--accent-subtle));
+  border-color:color-mix(in srgb,var(--accent) 20%,var(--line));
+}
+#viewInicio .next-pay-kicker{
+  color:var(--ink);
 }
 #viewInicio .inicio-footer{
   display:flex;
@@ -4583,6 +4657,11 @@ main > .inicio-patrimonio .patrimony-spark-box canvas{
   #viewInicio .inicio-grid{
     grid-template-columns:minmax(0, 1fr);
     row-gap:14px;
+  }
+}
+@media(min-width:681px){
+  main > .inicio-patrimonio .amount{
+    font-size:clamp(var(--font-size-heading), 4vw, 40px);
   }
 }
 

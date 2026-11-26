@@ -1,0 +1,49 @@
+{
+  "inicio": {
+    "tab": "inicio",
+    "headerDisplay": "block",
+    "patrimonioDisplay": "block",
+    "stripHidden": false,
+    "stripCards": [
+      "Bancos",
+      "Caixinhas",
+      "Invest."
+    ],
+    "inicioHealthCount": 1,
+    "dashboardHealthCount": 1,
+    "dashboardInicioMarkupCount": 0,
+    "resumoFluxoCount": 0
+  },
+  "caixa": {
+    "tab": "caixa",
+    "headerDisplay": "none",
+    "patrimonioDisplay": "none",
+    "stripHidden": false,
+    "stripCards": [
+      "Patrimônio Total",
+      "Bancos",
+      "Caixinhas",
+      "Invest."
+    ],
+    "inicioHealthCount": 1,
+    "dashboardHealthCount": 1,
+    "dashboardInicioMarkupCount": 0,
+    "resumoFluxoCount": 0
+  },
+  "dashboard": {
+    "tab": "dashboard",
+    "headerDisplay": "none",
+    "patrimonioDisplay": "none",
+    "stripHidden": true,
+    "stripCards": [
+      "Patrimônio Total",
+      "Bancos",
+      "Caixinhas",
+      "Invest."
+    ],
+    "inicioHealthCount": 1,
+    "dashboardHealthCount": 1,
+    "dashboardInicioMarkupCount": 0,
+    "resumoFluxoCount": 0
+  }
+}

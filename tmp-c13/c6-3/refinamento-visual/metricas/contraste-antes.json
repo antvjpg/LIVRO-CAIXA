@@ -1,0 +1,1975 @@
+{
+  "label": "antes",
+  "rows": [
+    {
+      "theme": "claro-1-oliva",
+      "tokens": {
+        "paper": "#F7F5EF",
+        "surface": "#FFFEFA",
+        "surfaceRaised": "#FCFDF9",
+        "surfaceAccent": "#1E2E16",
+        "accent": "#5F7A43",
+        "accentSubtle": "color-mix(in srgb,#5F7A43 14%,#F7F5EF)",
+        "ink": "#1A2417",
+        "inkSoft": "#4C5A52",
+        "line": "#D8D2C1",
+        "success": "#1F6F45",
+        "danger": "#B3432B",
+        "warning": "#A65A17",
+        "headerForeground": "#F7F5EF"
+      },
+      "pageVsCard": 1.08,
+      "bankLabel": 15.9,
+      "bankAmount": 15.9,
+      "bankShare": 6.2,
+      "healthEyebrow": 6.66,
+      "healthLabel": 5.64,
+      "healthDetail": 6.66,
+      "healthScore": 4.43,
+      "healthScoreCaption": 6.66,
+      "healthPositive": 5.64,
+      "healthNegative": 5.13,
+      "nextKicker": 4.43,
+      "nextStrong": 15.9,
+      "nextAmount": 15.9,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#F7F5EF",
+          "surface": "#FFFEFA",
+          "surfaceRaised": "#FCFDF9",
+          "surfaceAccent": "#1E2E16",
+          "accent": "#5F7A43",
+          "accentSubtle": "color-mix(in srgb,#5F7A43 14%,#F7F5EF)",
+          "ink": "#1A2417",
+          "inkSoft": "#4C5A52",
+          "line": "#D8D2C1",
+          "success": "#1F6F45",
+          "danger": "#B3432B",
+          "warning": "#A65A17",
+          "headerForeground": "#F7F5EF"
+        },
+        "pageBg": "rgb(247, 245, 239)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(247, 245, 239)",
+          "bgImage": "none",
+          "labelColor": "rgb(26, 36, 23)",
+          "amountColor": "rgb(26, 36, 23)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(255, 254, 250)",
+          "bgImage": "none",
+          "labelColor": "rgb(26, 36, 23)",
+          "amountColor": "rgb(26, 36, 23)",
+          "shareColor": "rgb(76, 90, 82)",
+          "shareBg": "color(srgb 0.372549 0.478431 0.262745 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(247, 245, 239)",
+          "border": "rgb(216, 210, 193)",
+          "eyebrowColor": "rgb(76, 90, 82)",
+          "labelColor": "rgb(31, 111, 69)",
+          "detailColor": "rgb(76, 90, 82)",
+          "scoreColor": "rgb(95, 122, 67)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(76, 90, 82)",
+          "positiveColor": "rgb(31, 111, 69)",
+          "negativeColor": "rgb(179, 67, 43)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(247, 245, 239)",
+          "innerBg": "rgb(255, 254, 250)",
+          "kickerColor": "rgb(95, 122, 67)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(26, 36, 23)",
+          "amountColor": "rgb(26, 36, 23)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    },
+    {
+      "theme": "claro-2-verde",
+      "tokens": {
+        "paper": "#F8F7F2",
+        "surface": "#FFFEFA",
+        "surfaceRaised": "#FCFDF9",
+        "surfaceAccent": "#18382C",
+        "accent": "#327957",
+        "accentSubtle": "#E8F2EB",
+        "ink": "#19352A",
+        "inkSoft": "#66746B",
+        "line": "#E1E1D9",
+        "success": "#1F6F45",
+        "danger": "#B3432B",
+        "warning": "#A65A17",
+        "headerForeground": "#F9F8F3"
+      },
+      "pageVsCard": 1.06,
+      "bankLabel": 13.14,
+      "bankAmount": 13.14,
+      "bankShare": 4.15,
+      "healthEyebrow": 4.58,
+      "healthLabel": 5.73,
+      "healthDetail": 4.58,
+      "healthScore": 4.88,
+      "healthScoreCaption": 4.58,
+      "healthPositive": 5.73,
+      "healthNegative": 5.21,
+      "nextKicker": 4.88,
+      "nextStrong": 13.14,
+      "nextAmount": 13.14,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#F8F7F2",
+          "surface": "#FFFEFA",
+          "surfaceRaised": "#FCFDF9",
+          "surfaceAccent": "#18382C",
+          "accent": "#327957",
+          "accentSubtle": "#E8F2EB",
+          "ink": "#19352A",
+          "inkSoft": "#66746B",
+          "line": "#E1E1D9",
+          "success": "#1F6F45",
+          "danger": "#B3432B",
+          "warning": "#A65A17",
+          "headerForeground": "#F9F8F3"
+        },
+        "pageBg": "rgb(248, 247, 242)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(248, 247, 242)",
+          "bgImage": "none",
+          "labelColor": "rgb(25, 53, 42)",
+          "amountColor": "rgb(25, 53, 42)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(255, 254, 250)",
+          "bgImage": "none",
+          "labelColor": "rgb(25, 53, 42)",
+          "amountColor": "rgb(25, 53, 42)",
+          "shareColor": "rgb(102, 116, 107)",
+          "shareBg": "color(srgb 0.196078 0.47451 0.341176 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(248, 247, 242)",
+          "border": "rgb(225, 225, 217)",
+          "eyebrowColor": "rgb(102, 116, 107)",
+          "labelColor": "rgb(31, 111, 69)",
+          "detailColor": "rgb(102, 116, 107)",
+          "scoreColor": "rgb(50, 121, 87)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(102, 116, 107)",
+          "positiveColor": "rgb(31, 111, 69)",
+          "negativeColor": "rgb(179, 67, 43)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(248, 247, 242)",
+          "innerBg": "rgb(255, 254, 250)",
+          "kickerColor": "rgb(50, 121, 87)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(25, 53, 42)",
+          "amountColor": "rgb(25, 53, 42)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    },
+    {
+      "theme": "claro-3-lima",
+      "tokens": {
+        "paper": "#FAF9F6",
+        "surface": "#ffffff",
+        "surfaceRaised": "#F3F6EF",
+        "surfaceAccent": "#31572C",
+        "accent": "#40916C",
+        "accentSubtle": "color-mix(in srgb,#ECF39E 55%,#FAF9F6)",
+        "ink": "#31572C",
+        "inkSoft": "#3D7A5C",
+        "line": "color-mix(in srgb,#90A955 35%,#FAF9F6)",
+        "success": "#1F6F45",
+        "danger": "#B3432B",
+        "warning": "#A65A17",
+        "headerForeground": "#FAF9F6"
+      },
+      "pageVsCard": 1.05,
+      "bankLabel": 8.3,
+      "bankAmount": 8.3,
+      "bankShare": 4.43,
+      "healthEyebrow": 4.82,
+      "healthLabel": 5.84,
+      "healthDetail": 4.82,
+      "healthScore": 3.64,
+      "healthScoreCaption": 4.82,
+      "healthPositive": 5.84,
+      "healthNegative": 5.31,
+      "nextKicker": 3.64,
+      "nextStrong": 8.3,
+      "nextAmount": 8.3,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#FAF9F6",
+          "surface": "#ffffff",
+          "surfaceRaised": "#F3F6EF",
+          "surfaceAccent": "#31572C",
+          "accent": "#40916C",
+          "accentSubtle": "color-mix(in srgb,#ECF39E 55%,#FAF9F6)",
+          "ink": "#31572C",
+          "inkSoft": "#3D7A5C",
+          "line": "color-mix(in srgb,#90A955 35%,#FAF9F6)",
+          "success": "#1F6F45",
+          "danger": "#B3432B",
+          "warning": "#A65A17",
+          "headerForeground": "#FAF9F6"
+        },
+        "pageBg": "rgb(250, 249, 246)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(250, 249, 246)",
+          "bgImage": "none",
+          "labelColor": "rgb(49, 87, 44)",
+          "amountColor": "rgb(49, 87, 44)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(255, 255, 255)",
+          "bgImage": "none",
+          "labelColor": "rgb(49, 87, 44)",
+          "amountColor": "rgb(49, 87, 44)",
+          "shareColor": "rgb(61, 122, 92)",
+          "shareBg": "color(srgb 0.25098 0.568627 0.423529 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(250, 249, 246)",
+          "border": "color(srgb 0.834902 0.866667 0.743725)",
+          "eyebrowColor": "rgb(61, 122, 92)",
+          "labelColor": "rgb(31, 111, 69)",
+          "detailColor": "rgb(61, 122, 92)",
+          "scoreColor": "rgb(64, 145, 108)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(61, 122, 92)",
+          "positiveColor": "rgb(31, 111, 69)",
+          "negativeColor": "rgb(179, 67, 43)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(250, 249, 246)",
+          "innerBg": "rgb(255, 255, 255)",
+          "kickerColor": "rgb(64, 145, 108)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(49, 87, 44)",
+          "amountColor": "rgb(49, 87, 44)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    },
+    {
+      "theme": "claro-4-terracota",
+      "tokens": {
+        "paper": "#FBF6EF",
+        "surface": "#FFFDF8",
+        "surfaceRaised": "#FFFBF5",
+        "surfaceAccent": "#8F4F3C",
+        "accent": "#C66F50",
+        "accentSubtle": "#F7E7E0",
+        "ink": "#342C25",
+        "inkSoft": "#81766B",
+        "line": "#E2D3C0",
+        "success": "#1F6F45",
+        "danger": "#B3432B",
+        "warning": "#A65A17",
+        "headerForeground": "#FFFFFF"
+      },
+      "pageVsCard": 1.06,
+      "bankLabel": 13.48,
+      "bankAmount": 13.48,
+      "bankShare": 3.82,
+      "healthEyebrow": 4.12,
+      "healthLabel": 5.71,
+      "healthDetail": 4.12,
+      "healthScore": 3.37,
+      "healthScoreCaption": 4.12,
+      "healthPositive": 5.71,
+      "healthNegative": 5.2,
+      "nextKicker": 3.37,
+      "nextStrong": 13.48,
+      "nextAmount": 13.48,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#FBF6EF",
+          "surface": "#FFFDF8",
+          "surfaceRaised": "#FFFBF5",
+          "surfaceAccent": "#8F4F3C",
+          "accent": "#C66F50",
+          "accentSubtle": "#F7E7E0",
+          "ink": "#342C25",
+          "inkSoft": "#81766B",
+          "line": "#E2D3C0",
+          "success": "#1F6F45",
+          "danger": "#B3432B",
+          "warning": "#A65A17",
+          "headerForeground": "#FFFFFF"
+        },
+        "pageBg": "rgb(251, 246, 239)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(251, 246, 239)",
+          "bgImage": "none",
+          "labelColor": "rgb(52, 44, 37)",
+          "amountColor": "rgb(52, 44, 37)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(255, 253, 248)",
+          "bgImage": "none",
+          "labelColor": "rgb(52, 44, 37)",
+          "amountColor": "rgb(52, 44, 37)",
+          "shareColor": "rgb(129, 118, 107)",
+          "shareBg": "color(srgb 0.776471 0.435294 0.313726 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(251, 246, 239)",
+          "border": "rgb(226, 211, 192)",
+          "eyebrowColor": "rgb(129, 118, 107)",
+          "labelColor": "rgb(31, 111, 69)",
+          "detailColor": "rgb(129, 118, 107)",
+          "scoreColor": "rgb(198, 111, 80)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(129, 118, 107)",
+          "positiveColor": "rgb(31, 111, 69)",
+          "negativeColor": "rgb(179, 67, 43)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(251, 246, 239)",
+          "innerBg": "rgb(255, 253, 248)",
+          "kickerColor": "rgb(198, 111, 80)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(52, 44, 37)",
+          "amountColor": "rgb(52, 44, 37)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    },
+    {
+      "theme": "claro-5-laranja",
+      "tokens": {
+        "paper": "#F9F9F9",
+        "surface": "#FFFFFF",
+        "surfaceRaised": "#F4F4F4",
+        "surfaceAccent": "#E85002",
+        "accent": "#E85002",
+        "accentSubtle": "#FFF0E8",
+        "ink": "#1A1A1A",
+        "inkSoft": "#646464",
+        "line": "#E8E8E8",
+        "success": "#1F6F45",
+        "danger": "#B3432B",
+        "warning": "#A65A17",
+        "headerForeground": "#FFFFFF"
+      },
+      "pageVsCard": 1.05,
+      "bankLabel": 17.4,
+      "bankAmount": 17.4,
+      "bankShare": 5.07,
+      "healthEyebrow": 5.62,
+      "healthLabel": 5.84,
+      "healthDetail": 5.62,
+      "healthScore": 3.57,
+      "healthScoreCaption": 5.62,
+      "healthPositive": 5.84,
+      "healthNegative": 5.31,
+      "nextKicker": 3.57,
+      "nextStrong": 17.4,
+      "nextAmount": 17.4,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#F9F9F9",
+          "surface": "#FFFFFF",
+          "surfaceRaised": "#F4F4F4",
+          "surfaceAccent": "#E85002",
+          "accent": "#E85002",
+          "accentSubtle": "#FFF0E8",
+          "ink": "#1A1A1A",
+          "inkSoft": "#646464",
+          "line": "#E8E8E8",
+          "success": "#1F6F45",
+          "danger": "#B3432B",
+          "warning": "#A65A17",
+          "headerForeground": "#FFFFFF"
+        },
+        "pageBg": "rgb(249, 249, 249)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(249, 249, 249)",
+          "bgImage": "none",
+          "labelColor": "rgb(26, 26, 26)",
+          "amountColor": "rgb(26, 26, 26)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(255, 255, 255)",
+          "bgImage": "none",
+          "labelColor": "rgb(26, 26, 26)",
+          "amountColor": "rgb(26, 26, 26)",
+          "shareColor": "rgb(100, 100, 100)",
+          "shareBg": "color(srgb 0.909804 0.313726 0.00784314 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(249, 249, 249)",
+          "border": "rgb(232, 232, 232)",
+          "eyebrowColor": "rgb(100, 100, 100)",
+          "labelColor": "rgb(31, 111, 69)",
+          "detailColor": "rgb(100, 100, 100)",
+          "scoreColor": "rgb(232, 80, 2)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(100, 100, 100)",
+          "positiveColor": "rgb(31, 111, 69)",
+          "negativeColor": "rgb(179, 67, 43)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(249, 249, 249)",
+          "innerBg": "rgb(255, 255, 255)",
+          "kickerColor": "rgb(232, 80, 2)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(26, 26, 26)",
+          "amountColor": "rgb(26, 26, 26)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    },
+    {
+      "theme": "escuro-1-oliva",
+      "tokens": {
+        "paper": "#1A1917",
+        "surface": "#232120",
+        "surfaceRaised": "#2D2B28",
+        "surfaceAccent": "#33301E",
+        "accent": "#9DD08B",
+        "accentSubtle": "#3A4331",
+        "ink": "#F1EDE1",
+        "inkSoft": "#A6A091",
+        "line": "#37342D",
+        "success": "#7AD3A3",
+        "danger": "#F0785E",
+        "warning": "#E4BC62",
+        "headerForeground": "#F3EFE4"
+      },
+      "pageVsCard": 1.1,
+      "bankLabel": 13.7,
+      "bankAmount": 13.7,
+      "bankShare": 4.74,
+      "healthEyebrow": 6.74,
+      "healthLabel": 9.77,
+      "healthDetail": 6.74,
+      "healthScore": 9.9,
+      "healthScoreCaption": 6.74,
+      "healthPositive": 9.77,
+      "healthNegative": 6.32,
+      "nextKicker": 9.9,
+      "nextStrong": 13.7,
+      "nextAmount": 13.7,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#1A1917",
+          "surface": "#232120",
+          "surfaceRaised": "#2D2B28",
+          "surfaceAccent": "#33301E",
+          "accent": "#9DD08B",
+          "accentSubtle": "#3A4331",
+          "ink": "#F1EDE1",
+          "inkSoft": "#A6A091",
+          "line": "#37342D",
+          "success": "#7AD3A3",
+          "danger": "#F0785E",
+          "warning": "#E4BC62",
+          "headerForeground": "#F3EFE4"
+        },
+        "pageBg": "rgb(26, 25, 23)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(26, 25, 23)",
+          "bgImage": "none",
+          "labelColor": "rgb(241, 237, 225)",
+          "amountColor": "rgb(241, 237, 225)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(35, 33, 32)",
+          "bgImage": "none",
+          "labelColor": "rgb(241, 237, 225)",
+          "amountColor": "rgb(241, 237, 225)",
+          "shareColor": "rgb(166, 160, 145)",
+          "shareBg": "color(srgb 0.615686 0.815686 0.545098 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(26, 25, 23)",
+          "border": "rgb(55, 52, 45)",
+          "eyebrowColor": "rgb(166, 160, 145)",
+          "labelColor": "rgb(122, 211, 163)",
+          "detailColor": "rgb(166, 160, 145)",
+          "scoreColor": "rgb(157, 208, 139)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(166, 160, 145)",
+          "positiveColor": "rgb(122, 211, 163)",
+          "negativeColor": "rgb(240, 120, 94)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(26, 25, 23)",
+          "innerBg": "rgb(35, 33, 32)",
+          "kickerColor": "rgb(157, 208, 139)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(241, 237, 225)",
+          "amountColor": "rgb(241, 237, 225)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    },
+    {
+      "theme": "escuro-2-verde",
+      "tokens": {
+        "paper": "#121212",
+        "surface": "#1C1C1E",
+        "surfaceRaised": "#262628",
+        "surfaceAccent": "#27362C",
+        "accent": "#22C55E",
+        "accentSubtle": "#1E3A27",
+        "ink": "#FFFFFF",
+        "inkSoft": "#9A9A9E",
+        "line": "#2C2C2E",
+        "success": "#7AD3A3",
+        "danger": "#F0785E",
+        "warning": "#E4BC62",
+        "headerForeground": "#F3EFE4"
+      },
+      "pageVsCard": 1.1,
+      "bankLabel": 17.01,
+      "bankAmount": 17.01,
+      "bankShare": 4.97,
+      "healthEyebrow": 6.68,
+      "healthLabel": 10.41,
+      "healthDetail": 6.68,
+      "healthScore": 8.22,
+      "healthScoreCaption": 6.68,
+      "healthPositive": 10.41,
+      "healthNegative": 6.74,
+      "nextKicker": 8.22,
+      "nextStrong": 17.01,
+      "nextAmount": 17.01,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#121212",
+          "surface": "#1C1C1E",
+          "surfaceRaised": "#262628",
+          "surfaceAccent": "#27362C",
+          "accent": "#22C55E",
+          "accentSubtle": "#1E3A27",
+          "ink": "#FFFFFF",
+          "inkSoft": "#9A9A9E",
+          "line": "#2C2C2E",
+          "success": "#7AD3A3",
+          "danger": "#F0785E",
+          "warning": "#E4BC62",
+          "headerForeground": "#F3EFE4"
+        },
+        "pageBg": "rgb(18, 18, 18)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(18, 18, 18)",
+          "bgImage": "none",
+          "labelColor": "rgb(255, 255, 255)",
+          "amountColor": "rgb(255, 255, 255)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(28, 28, 30)",
+          "bgImage": "none",
+          "labelColor": "rgb(255, 255, 255)",
+          "amountColor": "rgb(255, 255, 255)",
+          "shareColor": "rgb(154, 154, 158)",
+          "shareBg": "color(srgb 0.133333 0.772549 0.368627 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(18, 18, 18)",
+          "border": "rgb(44, 44, 46)",
+          "eyebrowColor": "rgb(154, 154, 158)",
+          "labelColor": "rgb(122, 211, 163)",
+          "detailColor": "rgb(154, 154, 158)",
+          "scoreColor": "rgb(34, 197, 94)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(154, 154, 158)",
+          "positiveColor": "rgb(122, 211, 163)",
+          "negativeColor": "rgb(240, 120, 94)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(18, 18, 18)",
+          "innerBg": "rgb(28, 28, 30)",
+          "kickerColor": "rgb(34, 197, 94)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(255, 255, 255)",
+          "amountColor": "rgb(255, 255, 255)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    },
+    {
+      "theme": "escuro-3-bege",
+      "tokens": {
+        "paper": "#0F1712",
+        "surface": "#16211A",
+        "surfaceRaised": "#203025",
+        "surfaceAccent": "#2A3A2E",
+        "accent": "#C9A86A",
+        "accentSubtle": "#3B3525",
+        "ink": "#F3EFE4",
+        "inkSoft": "#8FA396",
+        "line": "#2A3A2E",
+        "success": "#7AD3A3",
+        "danger": "#F0785E",
+        "warning": "#E4BC62",
+        "headerForeground": "#F3EFE4"
+      },
+      "pageVsCard": 1.1,
+      "bankLabel": 14.43,
+      "bankAmount": 14.43,
+      "bankShare": 4.99,
+      "healthEyebrow": 6.81,
+      "healthLabel": 10.14,
+      "healthDetail": 6.81,
+      "healthScore": 8.07,
+      "healthScoreCaption": 6.81,
+      "healthPositive": 10.14,
+      "healthNegative": 6.56,
+      "nextKicker": 8.07,
+      "nextStrong": 14.43,
+      "nextAmount": 14.43,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#0F1712",
+          "surface": "#16211A",
+          "surfaceRaised": "#203025",
+          "surfaceAccent": "#2A3A2E",
+          "accent": "#C9A86A",
+          "accentSubtle": "#3B3525",
+          "ink": "#F3EFE4",
+          "inkSoft": "#8FA396",
+          "line": "#2A3A2E",
+          "success": "#7AD3A3",
+          "danger": "#F0785E",
+          "warning": "#E4BC62",
+          "headerForeground": "#F3EFE4"
+        },
+        "pageBg": "rgb(15, 23, 18)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(15, 23, 18)",
+          "bgImage": "none",
+          "labelColor": "rgb(243, 239, 228)",
+          "amountColor": "rgb(243, 239, 228)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(22, 33, 26)",
+          "bgImage": "none",
+          "labelColor": "rgb(243, 239, 228)",
+          "amountColor": "rgb(243, 239, 228)",
+          "shareColor": "rgb(143, 163, 150)",
+          "shareBg": "color(srgb 0.788235 0.658824 0.415686 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(15, 23, 18)",
+          "border": "rgb(42, 58, 46)",
+          "eyebrowColor": "rgb(143, 163, 150)",
+          "labelColor": "rgb(122, 211, 163)",
+          "detailColor": "rgb(143, 163, 150)",
+          "scoreColor": "rgb(201, 168, 106)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(143, 163, 150)",
+          "positiveColor": "rgb(122, 211, 163)",
+          "negativeColor": "rgb(240, 120, 94)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(15, 23, 18)",
+          "innerBg": "rgb(22, 33, 26)",
+          "kickerColor": "rgb(201, 168, 106)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(243, 239, 228)",
+          "amountColor": "rgb(243, 239, 228)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    },
+    {
+      "theme": "escuro-4-terracota",
+      "tokens": {
+        "paper": "#141410",
+        "surface": "#1E1F17",
+        "surfaceRaised": "#292A20",
+        "surfaceAccent": "#403126",
+        "accent": "#D08860",
+        "accentSubtle": "#493127",
+        "ink": "#F5F1E6",
+        "inkSoft": "#A6A48F",
+        "line": "#33342A",
+        "success": "#7AD3A3",
+        "danger": "#F0785E",
+        "warning": "#E4BC62",
+        "headerForeground": "#F3EFE4"
+      },
+      "pageVsCard": 1.11,
+      "bankLabel": 14.73,
+      "bankAmount": 14.73,
+      "bankShare": 5.49,
+      "healthEyebrow": 7.32,
+      "healthLabel": 10.26,
+      "healthDetail": 7.32,
+      "healthScore": 6.48,
+      "healthScoreCaption": 7.32,
+      "healthPositive": 10.26,
+      "healthNegative": 6.64,
+      "nextKicker": 6.48,
+      "nextStrong": 14.73,
+      "nextAmount": 14.73,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#141410",
+          "surface": "#1E1F17",
+          "surfaceRaised": "#292A20",
+          "surfaceAccent": "#403126",
+          "accent": "#D08860",
+          "accentSubtle": "#493127",
+          "ink": "#F5F1E6",
+          "inkSoft": "#A6A48F",
+          "line": "#33342A",
+          "success": "#7AD3A3",
+          "danger": "#F0785E",
+          "warning": "#E4BC62",
+          "headerForeground": "#F3EFE4"
+        },
+        "pageBg": "rgb(20, 20, 16)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(20, 20, 16)",
+          "bgImage": "none",
+          "labelColor": "rgb(245, 241, 230)",
+          "amountColor": "rgb(245, 241, 230)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(30, 31, 23)",
+          "bgImage": "none",
+          "labelColor": "rgb(245, 241, 230)",
+          "amountColor": "rgb(245, 241, 230)",
+          "shareColor": "rgb(166, 164, 143)",
+          "shareBg": "color(srgb 0.815686 0.533333 0.376471 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(20, 20, 16)",
+          "border": "rgb(51, 52, 42)",
+          "eyebrowColor": "rgb(166, 164, 143)",
+          "labelColor": "rgb(122, 211, 163)",
+          "detailColor": "rgb(166, 164, 143)",
+          "scoreColor": "rgb(208, 136, 96)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(166, 164, 143)",
+          "positiveColor": "rgb(122, 211, 163)",
+          "negativeColor": "rgb(240, 120, 94)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(20, 20, 16)",
+          "innerBg": "rgb(30, 31, 23)",
+          "kickerColor": "rgb(208, 136, 96)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(245, 241, 230)",
+          "amountColor": "rgb(245, 241, 230)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    },
+    {
+      "theme": "escuro-5-laranja",
+      "tokens": {
+        "paper": "#000000",
+        "surface": "#121212",
+        "surfaceRaised": "#1A1A1A",
+        "surfaceAccent": "#2A1208",
+        "accent": "#E85002",
+        "accentSubtle": "#4A1C08",
+        "ink": "#F9F9F9",
+        "inkSoft": "#A7A7A7",
+        "line": "#333333",
+        "success": "#7AD3A3",
+        "danger": "#F0785E",
+        "warning": "#E4BC62",
+        "headerForeground": "#F3EFE4"
+      },
+      "pageVsCard": 1.12,
+      "bankLabel": 17.79,
+      "bankAmount": 17.79,
+      "bankShare": 6.95,
+      "healthEyebrow": 8.73,
+      "healthLabel": 11.67,
+      "healthDetail": 8.73,
+      "healthScore": 5.58,
+      "healthScoreCaption": 8.73,
+      "healthPositive": 11.67,
+      "healthNegative": 7.55,
+      "nextKicker": 5.58,
+      "nextStrong": 17.79,
+      "nextAmount": 17.79,
+      "fonts": {
+        "patrimonioLabel": {
+          "size": "11px",
+          "weight": "800",
+          "lineHeight": "13.75px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "patrimonioAmount": {
+          "size": "22px",
+          "weight": "700",
+          "lineHeight": "normal",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankLabel": {
+          "size": "10px",
+          "weight": "800",
+          "lineHeight": "12.5px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "bankAmount": {
+          "size": "32px",
+          "weight": "700",
+          "lineHeight": "33.6px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        },
+        "share": {
+          "size": "9px",
+          "weight": "650",
+          "lineHeight": "10.8px",
+          "family": "\"Plus Jakarta Sans\", sans-serif"
+        }
+      },
+      "padding": {
+        "patrimonioTop": "22px",
+        "bankTop": "20px",
+        "healthTop": "22px",
+        "nextTop": "22px"
+      },
+      "headMargins": {
+        "patrimonio": "10px",
+        "bank": "4px",
+        "health": "10px",
+        "next": "10px"
+      },
+      "thresholds": {
+        "bankLabel": 4.5,
+        "bankAmount": 3,
+        "bankShare": 4.5,
+        "healthEyebrow": 4.5,
+        "healthScore": 3,
+        "healthScoreCaption": 4.5,
+        "nextKicker": 4.5
+      },
+      "raw": {
+        "tokens": {
+          "paper": "#000000",
+          "surface": "#121212",
+          "surfaceRaised": "#1A1A1A",
+          "surfaceAccent": "#2A1208",
+          "accent": "#E85002",
+          "accentSubtle": "#4A1C08",
+          "ink": "#F9F9F9",
+          "inkSoft": "#A7A7A7",
+          "line": "#333333",
+          "success": "#7AD3A3",
+          "danger": "#F0785E",
+          "warning": "#E4BC62",
+          "headerForeground": "#F3EFE4"
+        },
+        "pageBg": "rgb(0, 0, 0)",
+        "mainBg": "rgba(0, 0, 0, 0)",
+        "patrimonio": {
+          "bg": "rgb(0, 0, 0)",
+          "bgImage": "none",
+          "labelColor": "rgb(249, 249, 249)",
+          "amountColor": "rgb(249, 249, 249)",
+          "labelFont": {
+            "size": "11px",
+            "weight": "800",
+            "lineHeight": "13.75px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "22px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "padding": "22px",
+          "headMargin": "10px",
+          "rect": {
+            "top": 247,
+            "height": 196,
+            "width": 1072
+          }
+        },
+        "bank": {
+          "bg": "rgb(18, 18, 18)",
+          "bgImage": "none",
+          "labelColor": "rgb(249, 249, 249)",
+          "amountColor": "rgb(249, 249, 249)",
+          "shareColor": "rgb(167, 167, 167)",
+          "shareBg": "color(srgb 0.909804 0.313726 0.00784314 / 0.12)",
+          "labelFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "12.5px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "amountFont": {
+            "size": "32px",
+            "weight": "700",
+            "lineHeight": "33.6px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "shareFont": {
+            "size": "9px",
+            "weight": "650",
+            "lineHeight": "10.8px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "paddingTop": "20px",
+          "headMargin": "4px"
+        },
+        "healthCard": {
+          "bg": "rgb(0, 0, 0)",
+          "border": "rgb(51, 51, 51)",
+          "eyebrowColor": "rgb(167, 167, 167)",
+          "labelColor": "rgb(122, 211, 163)",
+          "detailColor": "rgb(167, 167, 167)",
+          "scoreColor": "rgb(232, 80, 2)",
+          "scoreFont": {
+            "size": "21px",
+            "weight": "800",
+            "lineHeight": "21px",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "eyebrowFont": {
+            "size": "10px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "scoreCaptionColor": "rgb(167, 167, 167)",
+          "positiveColor": "rgb(122, 211, 163)",
+          "negativeColor": "rgb(240, 120, 94)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        },
+        "nextCard": {
+          "bg": "rgb(0, 0, 0)",
+          "innerBg": "rgb(18, 18, 18)",
+          "kickerColor": "rgb(232, 80, 2)",
+          "kickerFont": {
+            "size": "10px",
+            "weight": "800",
+            "lineHeight": "normal",
+            "family": "\"Plus Jakarta Sans\", sans-serif"
+          },
+          "strongColor": "rgb(249, 249, 249)",
+          "amountColor": "rgb(249, 249, 249)",
+          "paddingTop": "22px",
+          "headMargin": "10px"
+        }
+      }
+    }
+  ]
+}

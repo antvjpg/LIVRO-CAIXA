@@ -1,0 +1,6 @@
+npm notice run livro-caixa-code-qa@0.1.0 code:movimentacoes
+npm notice run node e2e/scripts/run-code.cjs -- --project=movimentacoes
+[C.O.D.E.] execução runId=local-caf27f8b-1e89-49aa-8346-29d157d1c205 tentativa=1 workflow=local
+npm notice run livro-caixa-code-qa@0.1.0 npx
+npm notice run 'playwright' test --project=movimentacoes
+sh: 1: playwright: not found
