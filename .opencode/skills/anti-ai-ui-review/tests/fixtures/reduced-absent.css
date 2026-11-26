@@ -1,0 +1,2 @@
+.x { animation: pulse 1s infinite; }
+@keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }

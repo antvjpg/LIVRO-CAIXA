@@ -1,0 +1,3 @@
+body[data-font="inter"] { --font-family-ui: 'Inter', sans-serif; }
+:root { --font-family-ui: 'Sora', sans-serif; }
+.feature-copy strong { font-family: 'Inter', sans-serif; }

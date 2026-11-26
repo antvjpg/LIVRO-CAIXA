@@ -1,0 +1,362 @@
+# Anti-AI UI Review v1.1.0
+
+Files: 5 | Findings: 65
+Severity: P0 0 · P1 0 · P2 17 · INFO 48
+Status: confirmed 0 · candidate 42 · inconclusive 1 · false_positive 22 · unsupported 0
+
+## Limitations
+- Static detector does not analyze screenshots, pixels, or rendered layout.
+- The rendered scope is unsupported by this command.
+- CSS cascade, specificity, and runtime state are not fully resolved.
+- No --view filter was provided; view-scoped results are not restricted to one view.
+
+## confirmed (0)
+_none_
+
+## candidate (42)
+- INFO CONTENT-MIDDLE-DOT-001 index.html:54 separador middle dot
+  status=candidate confidence=high scope=content
+  selector=n/a snippet="·"
+  evidence=Separator found in text content.
+  validate=Confirmar se o separador prejudica hierarquia ou leitura.
+- P2 CSS-FOCUS-OUTLINE-001 style/base.css:128 outline removido
+  status=candidate confidence=medium scope=global
+  selector=.universal-search-field input snippet="outline: none"
+  evidence=outline:none found; possible :focus-visible replacement exists elsewhere.
+  validate=Navegar por teclado e medir o indicador de foco no elemento real.
+- P2 CSS-MOTION-001 style/base.css:163 transition: all
+  status=candidate confidence=high scope=global
+  selector=.nav-tab snippet="transition: all 0.15s ease"
+  evidence=Static source declaration found.
+  validate=Verificar hover/active/focus e substituir por propriedades explícitas.
+- INFO CSS-THREE-COL-001 style/base.css:191 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=#balanceStrip snippet="grid-template-columns: repeat(3, minmax(0, 1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- P2 CSS-LAYOUT-MOTION-001 style/base.css:277 layout property motion
+  status=candidate confidence=high scope=global
+  selector=.patrimony-spark-box snippet="transition: height .3s ease,margin-top .3s ease,opacity .3s ease"
+  evidence=Static source declaration found.
+  validate=Confirmar estado animado e avaliar substituição por transform/opacity.
+- P2 CSS-FOCUS-OUTLINE-001 style/features.css:100 outline removido
+  status=candidate confidence=medium scope=global
+  selector=.reconciliation-field select:focus,
+.reconciliation-field input[data-money="true"]:focus snippet="outline: none"
+  evidence=outline:none found; possible :focus-visible replacement exists elsewhere.
+  validate=Navegar por teclado e medir o indicador de foco no elemento real.
+- INFO CSS-FONT-LOCAL-001 style/features.css:295 fonte local explícita
+  status=candidate confidence=medium scope=component
+  selector=.feature-profile-toggle-copy strong,.feature-profile-toggle-copy small snippet="font-family: 'Inter',sans-serif"
+  evidence=Static source declaration found.
+  validate=Comparar com tokens tipográficos e com a intenção do componente.
+- P2 CSS-LAYOUT-MOTION-001 style/features.css:382 layout property motion
+  status=candidate confidence=high scope=global
+  selector=.feature-budget-row .budget-row-line3 .budget-row-track span snippet="transition: width 0.3s ease"
+  evidence=Static source declaration found.
+  validate=Confirmar estado animado e avaliar substituição por transform/opacity.
+- P2 CSS-MOTION-001 style/features.css:463 transition: all
+  status=candidate confidence=high scope=global
+  selector=.block-pill snippet="transition: all .2s ease"
+  evidence=Static source declaration found.
+  validate=Verificar hover/active/focus e substituir por propriedades explícitas.
+- P2 CSS-LAYOUT-MOTION-001 style/features.css:475 layout property motion
+  status=candidate confidence=high scope=global
+  selector=.circle snippet="transition: left .3s ease"
+  evidence=Static source declaration found.
+  validate=Confirmar estado animado e avaliar substituição por transform/opacity.
+- P2 CSS-LAYOUT-MOTION-001 style/features.css:583 layout property motion
+  status=candidate confidence=high scope=global
+  selector=.card-hero-dots button snippet="transition: width .2s ease,background .2s ease"
+  evidence=Static source declaration found.
+  validate=Confirmar estado animado e avaliar substituição por transform/opacity.
+- P2 CSS-FOCUS-OUTLINE-001 style/features.css:679 outline removido
+  status=candidate confidence=medium scope=global
+  selector=.emoji-float-search input snippet="outline: none"
+  evidence=outline:none found; possible :focus-visible replacement exists elsewhere.
+  validate=Navegar por teclado e medir o indicador de foco no elemento real.
+- INFO CSS-THREE-COL-001 style/features.css:836 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=.history-audit snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-THREE-COL-001 style/features.css:842 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=.history-audit snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-FINGERNAIL-001 style/features.css:849 borda lateral colorida
+  status=candidate confidence=high scope=component
+  selector=.log-entry snippet="border-left: 4px solid var(--accent)"
+  evidence=Static source declaration found.
+  validate=Verificar se a borda comunica estado ou apenas decora.
+- INFO CSS-THREE-COL-001 style/features.css:1028 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=.cashflow-mini-metrics snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-THREE-COL-001 style/features.css:1126 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=#viewBills .toolbar snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-THREE-COL-001 style/features.css:1307 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=#viewBills .toolbar snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-THREE-COL-001 style/features.css:1459 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=#viewBills .bills-toolbar-actions snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- P2 CSS-FOCUS-OUTLINE-001 style/features.css:2324 outline removido
+  status=candidate confidence=medium scope=global
+  selector=#panelNovo input:not(#fValor):focus,
+#panelNovo select:focus snippet="outline: none"
+  evidence=outline:none found; possible :focus-visible replacement exists elsewhere.
+  validate=Navegar por teclado e medir o indicador de foco no elemento real.
+- P2 CSS-FOCUS-OUTLINE-001 style/features.css:2749 outline removido
+  status=candidate confidence=medium scope=global
+  selector=#panelTransferencia input:not(#tValor):focus,
+#panelTransferencia select:focus snippet="outline: none"
+  evidence=outline:none found; possible :focus-visible replacement exists elsewhere.
+  validate=Navegar por teclado e medir o indicador de foco no elemento real.
+- P2 CSS-FOCUS-OUTLINE-001 style/features.css:3025 outline removido
+  status=candidate confidence=medium scope=global
+  selector=.bill-value-block input snippet="outline: none"
+  evidence=outline:none found; possible :focus-visible replacement exists elsewhere.
+  validate=Navegar por teclado e medir o indicador de foco no elemento real.
+- INFO CSS-THREE-COL-001 style/features.css:3650 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=#panelPocketMovement .type-toggle,
+#panelInvestMovement .type-toggle snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-THREE-COL-001 style/features.css:3705 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=#panelExportFormat .toolbar snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-FINGERNAIL-001 style/features.css:4000 borda lateral colorida
+  status=candidate confidence=high scope=component
+  selector=#viewBills .commitment-card.is-invoice,
+#viewBills .invoice-card-item snippet="border-left: 3px solid var(--warning)"
+  evidence=Static source declaration found.
+  validate=Verificar se a borda comunica estado ou apenas decora.
+- INFO CSS-FINGERNAIL-001 style/features.css:4004 borda lateral colorida
+  status=candidate confidence=high scope=component
+  selector=#viewBills .commitment-card.is-recurring snippet="border-left: 3px solid var(--accent)"
+  evidence=Static source declaration found.
+  validate=Verificar se a borda comunica estado ou apenas decora.
+- INFO CSS-THREE-COL-001 style/features.css:4088 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=.cashflow-mini-metrics snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-SHADOW-GLOW-001 style/features.css:4366 sombra colorida zero-offset
+  status=candidate confidence=medium scope=component
+  selector=main > .inicio-header .light-theme-option[aria-pressed="true"],
+main > .inicio-header .dark-theme-option[aria-pressed="true"] snippet="box-shadow: 0 0 0 2px var(--paper-2), 0 0 0 3px var(--accent)"
+  evidence=Static source declaration found.
+  validate=Observar o elemento em repouso, hover e foco.
+- INFO CSS-THREE-COL-001 style/features.css:4624 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=#viewInicio .inicio-health-metrics snippet="grid-template-columns: repeat(3, minmax(0, 1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- P2 CSS-LAYOUT-MOTION-001 style/features.css:5391 layout property motion
+  status=candidate confidence=high scope=global
+  selector=#investBalanceStrip .balance-card.total,
+#viewInvest .balance-card.total snippet="transition: height .3s ease,max-height .3s ease"
+  evidence=Static source declaration found.
+  validate=Confirmar estado animado e avaliar substituição por transform/opacity.
+- INFO CSS-FINGERNAIL-001 style/features.css:6610 borda lateral colorida
+  status=candidate confidence=high scope=component
+  selector=.goal-card-v2 snippet="border-left: 4px solid var(--accent)"
+  evidence=Static source declaration found.
+  validate=Verificar se a borda comunica estado ou apenas decora.
+- P2 CSS-FOCUS-OUTLINE-001 style/features.css:7293 outline removido
+  status=candidate confidence=medium scope=global
+  selector=#viewProfile .profile-item,
+#viewProfile .feature-profile-toggle,
+.profile-item[role="button"] snippet="outline: none"
+  evidence=outline:none found; possible :focus-visible replacement exists elsewhere.
+  validate=Navegar por teclado e medir o indicador de foco no elemento real.
+- P2 CSS-FOCUS-OUTLINE-001 style/features.css:7298 outline removido
+  status=candidate confidence=medium scope=global
+  selector=#viewProfile .profile-item:focus snippet="outline: none"
+  evidence=outline:none found; possible :focus-visible replacement exists elsewhere.
+  validate=Navegar por teclado e medir o indicador de foco no elemento real.
+- P2 CSS-LAYOUT-MOTION-001 style/features.css:7367 layout property motion
+  status=candidate confidence=high scope=global
+  selector=.credit-card-limit-track > span snippet="transition: width .25s ease"
+  evidence=Static source declaration found.
+  validate=Confirmar estado animado e avaliar substituição por transform/opacity.
+- INFO CSS-SHADOW-GLOW-001 style/layout.css:38 sombra colorida zero-offset
+  status=candidate confidence=medium scope=component
+  selector=#btnNotifications .notification-badge snippet="box-shadow: 0 0 0 2px var(--surface-accent)"
+  evidence=Static source declaration found.
+  validate=Observar o elemento em repouso, hover e foco.
+- INFO CSS-THREE-COL-001 style/layout.css:46 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=#balanceStrip snippet="grid-template-columns: repeat(3, minmax(0, 1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-THREE-COL-001 style/layout.css:86 três colunas iguais
+  status=candidate confidence=high scope=component
+  selector=.toolbar snippet="grid-template-columns: repeat(3,minmax(0,1fr))"
+  evidence=Static source declaration found.
+  validate=Inspecionar o conteúdo das três colunas no DOM renderizado.
+- INFO CSS-SHADOW-GLOW-001 style/layout.css:218 sombra colorida zero-offset
+  status=candidate confidence=medium scope=component
+  selector=body.dark-mode .balance-card.total snippet="box-shadow: 0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),0 13px 28px rgba(0,0,0,.34),0 0 24px color-mix(in srgb,var(--accent) 18%,transparent)"
+  evidence=Static source declaration found.
+  validate=Observar o elemento em repouso, hover e foco.
+- INFO CSS-SHADOW-GLOW-001 style/layout.css:655 sombra colorida zero-offset
+  status=candidate confidence=medium scope=component
+  selector=body.dark-mode .balance-card.total snippet="box-shadow: 0 0 0 1px color-mix(in srgb,var(--accent) 26%,transparent),0 13px 28px rgba(0,0,0,.34),0 0 24px color-mix(in srgb,var(--accent) 18%,transparent)"
+  evidence=Static source declaration found.
+  validate=Observar o elemento em repouso, hover e foco.
+- INFO CSS-SHADOW-GLOW-001 style/themes.css:325 sombra colorida zero-offset
+  status=candidate confidence=medium scope=component
+  selector=.light-theme-option[aria-pressed="true"] snippet="box-shadow: 0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.36)"
+  evidence=Static source declaration found.
+  validate=Observar o elemento em repouso, hover e foco.
+- INFO CSS-SHADOW-GLOW-001 style/themes.css:334 sombra colorida zero-offset
+  status=candidate confidence=medium scope=component
+  selector=.dark-theme-option[aria-pressed="true"] snippet="box-shadow: 0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.24)"
+  evidence=Static source declaration found.
+  validate=Observar o elemento em repouso, hover e foco.
+- INFO CSS-SHADOW-GLOW-001 style/themes.css:345 sombra colorida zero-offset
+  status=candidate confidence=medium scope=component
+  selector=.theme-picker-section .light-theme-option[aria-pressed="true"],.theme-picker-section .dark-theme-option[aria-pressed="true"] snippet="box-shadow: 0 0 0 2px var(--paper-2),0 0 0 4px var(--accent),inset 0 0 0 1px rgba(255,255,255,.36)"
+  evidence=Static source declaration found.
+  validate=Observar o elemento em repouso, hover e foco.
+
+## inconclusive (1)
+- P2 CSS-REDUCED-MOTION-001 style/layout.css:165 prefers-reduced-motion
+  status=inconclusive confidence=low scope=global
+  selector=.panel.open snippet="animation/keyframes found"
+  evidence=prefers-reduced-motion exists elsewhere in the scanned CSS set; coverage of this animation is unproven.
+  validate=Ativar prefers-reduced-motion no navegador e observar a animação real.
+
+## false_positive (22)
+- INFO CSS-GLASS-001 style/base.css:100 backdrop-filter
+  status=false_positive confidence=medium scope=component
+  selector=.app-drawer-overlay,.notification-overlay snippet="backdrop-filter: blur(5px)"
+  evidence=Selector indicates a likely overlapping layer.
+  validate=Verificar se o elemento realmente cobre conteúdo rolável ou camada inferior.
+- INFO CSS-SHADOW-GLOW-001 style/features.css:102 sombra colorida zero-offset
+  status=false_positive confidence=medium scope=component
+  selector=.reconciliation-field select:focus,
+.reconciliation-field input[data-money="true"]:focus snippet="box-shadow: 0 0 0 3px var(--accent-subtle)"
+  evidence=Selector is an interaction state.
+  validate=Observar o elemento em repouso, hover e foco.
+- INFO CSS-REDUCED-MOTION-001 style/features.css:111 prefers-reduced-motion
+  status=false_positive confidence=low scope=global
+  selector=.reconciliation-balances snippet="animation/keyframes found"
+  evidence=prefers-reduced-motion exists in this CSS file.
+  validate=Ativar prefers-reduced-motion no navegador e observar a animação real.
+- INFO CSS-GLASS-001 style/features.css:672 backdrop-filter
+  status=false_positive confidence=medium scope=component
+  selector=.emoji-float-overlay snippet="backdrop-filter: blur(6px)"
+  evidence=Selector indicates a likely overlapping layer.
+  validate=Verificar se o elemento realmente cobre conteúdo rolável ou camada inferior.
+- INFO CSS-FONT-PRIMARY-001 style/features.css:727 fonte principal
+  status=false_positive confidence=high scope=global
+  selector=body[data-font="inter"] snippet="--font-family-ui: 'Inter',sans-serif"
+  evidence=Conditional or token-level selector.
+  validate=Consultar getComputedStyle no elemento de texto principal.
+- INFO CSS-FONT-PRIMARY-001 style/features.css:734 fonte principal
+  status=false_positive confidence=high scope=global
+  selector=body[data-font="sora"] snippet="--font-family-ui: 'Sora',sans-serif"
+  evidence=Conditional or token-level selector.
+  validate=Consultar getComputedStyle no elemento de texto principal.
+- INFO CSS-FONT-PRIMARY-001 style/features.css:762 fonte principal
+  status=false_positive confidence=high scope=global
+  selector=body[data-font="inter"] snippet="--font-family-ui: 'Inter',sans-serif"
+  evidence=Conditional or token-level selector.
+  validate=Consultar getComputedStyle no elemento de texto principal.
+- INFO CSS-FONT-PRIMARY-001 style/features.css:769 fonte principal
+  status=false_positive confidence=high scope=global
+  selector=body[data-font="sora"] snippet="--font-family-ui: 'Sora',sans-serif"
+  evidence=Conditional or token-level selector.
+  validate=Consultar getComputedStyle no elemento de texto principal.
+- INFO CSS-GLASS-001 style/features.css:771 backdrop-filter
+  status=false_positive confidence=medium scope=component
+  selector=.mobile-bottom-nav::before snippet="backdrop-filter: blur(4px)"
+  evidence=Selector indicates a likely overlapping layer.
+  validate=Verificar se o elemento realmente cobre conteúdo rolável ou camada inferior.
+- INFO CSS-REDUCED-MOTION-001 style/features.css:777 prefers-reduced-motion
+  status=false_positive confidence=low scope=global
+  selector=.tab-content snippet="animation/keyframes found"
+  evidence=prefers-reduced-motion exists in this CSS file.
+  validate=Ativar prefers-reduced-motion no navegador e observar a animação real.
+- INFO CSS-REDUCED-MOTION-001 style/features.css:781 prefers-reduced-motion
+  status=false_positive confidence=low scope=global
+  selector=.value-refresh snippet="animation/keyframes found"
+  evidence=prefers-reduced-motion exists in this CSS file.
+  validate=Ativar prefers-reduced-motion no navegador e observar a animação real.
+- INFO CSS-REDUCED-MOTION-001 style/features.css:784 prefers-reduced-motion
+  status=false_positive confidence=low scope=global
+  selector=body.is-data-loading .balance-card::after,body.is-data-loading #categorySummary::after,body.is-data-loading #ledgerBody::after,body.is-data-loading #pocketBalanceStrip::after,body.is-data-loading #viewInvest .invest-grid > *::after,body.is-data-loading #pocketGrid > *::after snippet="animation/keyframes found"
+  evidence=prefers-reduced-motion exists in this CSS file.
+  validate=Ativar prefers-reduced-motion no navegador e observar a animação real.
+- INFO CSS-GLASS-001 style/features.css:817 backdrop-filter
+  status=false_positive confidence=medium scope=component
+  selector=.mobile-bottom-nav snippet="backdrop-filter: blur(8px) saturate(1.35)"
+  evidence=Selector indicates a likely overlapping layer.
+  validate=Verificar se o elemento realmente cobre conteúdo rolável ou camada inferior.
+- INFO CSS-GLASS-001 style/features.css:1026 backdrop-filter
+  status=false_positive confidence=medium scope=component
+  selector=.pin-overlay snippet="backdrop-filter: blur(10px)"
+  evidence=Selector indicates a likely overlapping layer.
+  validate=Verificar se o elemento realmente cobre conteúdo rolável ou camada inferior.
+- INFO CSS-REDUCED-MOTION-001 style/features.css:1026 prefers-reduced-motion
+  status=false_positive confidence=low scope=global
+  selector=.pin-box snippet="animation/keyframes found"
+  evidence=prefers-reduced-motion exists in this CSS file.
+  validate=Ativar prefers-reduced-motion no navegador e observar a animação real.
+- INFO CSS-SHADOW-GLOW-001 style/features.css:2323 sombra colorida zero-offset
+  status=false_positive confidence=medium scope=component
+  selector=#panelNovo input:not(#fValor):focus,
+#panelNovo select:focus snippet="box-shadow: 0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent)"
+  evidence=Selector is an interaction state.
+  validate=Observar o elemento em repouso, hover e foco.
+- INFO CSS-SHADOW-GLOW-001 style/features.css:2748 sombra colorida zero-offset
+  status=false_positive confidence=medium scope=component
+  selector=#panelTransferencia input:not(#tValor):focus,
+#panelTransferencia select:focus snippet="box-shadow: 0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent)"
+  evidence=Selector is an interaction state.
+  validate=Observar o elemento em repouso, hover e foco.
+- INFO CSS-REDUCED-MOTION-001 style/features.css:7057 prefers-reduced-motion
+  status=false_positive confidence=low scope=global
+  selector=.drag-placeholder snippet="animation/keyframes found"
+  evidence=prefers-reduced-motion exists in this CSS file.
+  validate=Ativar prefers-reduced-motion no navegador e observar a animação real.
+- INFO CSS-REDUCED-MOTION-001 style/features.css:7094 prefers-reduced-motion
+  status=false_positive confidence=low scope=global
+  selector=.invest-grid > .invest-box.is-holding .drag-handle,
+.invest-grid > .asset-card.is-holding .drag-handle snippet="animation/keyframes found"
+  evidence=prefers-reduced-motion exists in this CSS file.
+  validate=Ativar prefers-reduced-motion no navegador e observar a animação real.
+- INFO CSS-REDUCED-MOTION-001 style/features.css:7582 prefers-reduced-motion
+  status=false_positive confidence=low scope=global
+  selector=#authDiagnosticToggle::after snippet="animation/keyframes found"
+  evidence=prefers-reduced-motion exists in this CSS file.
+  validate=Ativar prefers-reduced-motion no navegador e observar a animação real.
+- INFO CSS-GLASS-001 style/layout.css:163 backdrop-filter
+  status=false_positive confidence=medium scope=component
+  selector=.modal-overlay snippet="backdrop-filter: blur(7px)"
+  evidence=Selector indicates a likely overlapping layer.
+  validate=Verificar se o elemento realmente cobre conteúdo rolável ou camada inferior.
+- INFO CSS-GLASS-001 style/layout.css:252 backdrop-filter
+  status=false_positive confidence=medium scope=component
+  selector=.mobile-bottom-nav snippet="backdrop-filter: blur(12px) saturate(1.5)"
+  evidence=Selector indicates a likely overlapping layer.
+  validate=Verificar se o elemento realmente cobre conteúdo rolável ou camada inferior.
+
+## unsupported (0)
+_none_
+

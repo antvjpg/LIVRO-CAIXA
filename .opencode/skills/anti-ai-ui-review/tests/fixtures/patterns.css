@@ -1,0 +1,4 @@
+.metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.hero { background: linear-gradient(90deg, #4f46e5, #7c3aed); }
+.title { background-clip: text; }
+.alert { border-left: 3px solid red; }

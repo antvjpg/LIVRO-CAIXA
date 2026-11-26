@@ -1,93 +1,100 @@
 ---
 name: anti-ai-ui-review
-description: "Detecta e corrige padrões visuais de 'AI look' no LIVRO-CAIXA. Use para auditar, revisar ou refinar a aba Início, cards, temas, tipografia, superfícies, contraste e acessibilidade sem reabrir decisões aprovadas. Modos: detect (somente leitura), refine (ajuste cirúrgico), rebuild (somente com autorização explícita)."
-version: "1.0.0"
+description: "Detecta candidatos a padrões visuais genéricos de AI look no LIVRO-CAIXA, com rastreabilidade, contexto e classificação explícita. Use para auditar ou refinar a aba Início, cards, temas, tipografia, superfícies, contraste e acessibilidade sem reabrir decisões aprovadas. Modos: detect (somente leitura), refine (ajuste cirúrgico), rebuild (somente com autorização explícita)."
+version: "1.1.0"
 argument-hint: "[detect|refine|rebuild] [alvo]"
 license: MIT
 ---
 
-# Anti-AI UI Review — LIVRO-CAIXA
+# Anti-AI UI Review — LIVRO-CAIXA v1.1.0
 
-Skill local derivada das práticas de `impeccable`, `hallmark`, `superdesign`, `avoid-ai-design`, `frontend-slop-guard`, `ui-craft` e `anti-ai-slop-ui`, adaptada ao design system existente do LIVRO-CAIXA.
+Skill local derivada de práticas de `impeccable`, `hallmark`, `superdesign`, `avoid-ai-design`, `frontend-slop-guard`, `ui-craft` e `anti-ai-slop-ui`, adaptada ao design system existente.
+
+A v1.1.0 corrige a metodologia da v1.0.0: heurística não é defeito confirmado, sinal estético não é violação WCAG e contagem de padrões não é nota de qualidade.
 
 ## Regras de ouro
 
-1. **O brief e o design system vencem.** Tokens, temas, identidade e decisões já aprovadas não são substituídas por preferência estética.
-2. **Detectar não é editar.** O modo `detect` é somente leitura; achados são candidatos, não prova de autoria nem defeito confirmado.
-3. **Refinar preserva.** O modo `refine` mantém estrutura, ordem, dados, interações e cálculos; muda somente apresentação comprovadamente problemática.
-4. **Rebuild exige autorização.** Nunca reconstrua uma tela existente sem pedido explícito.
-5. **Corrija a origem.** Prefira tokens semânticos e regras existentes a exceções por tema ou cores literais.
-6. **Contraste textual ≠ contraste de superfície.** Avalie separadamente; não aumente saturação para diferenciar cards.
-7. **Verifique o renderizado.** No Termux, use Chromium headless + CDP; Playwright não é disponível localmente.
-8. **Não declare aprovação oficial** com base apenas em auditoria local.
+1. O brief, o design system e as decisões aprovadas vencem a preferência estética.
+2. `detect` é somente leitura e produz candidatos, não ordens de mudança.
+3. `refine` exige evidência contextual e aprovação; preserva estrutura, dados, cálculos e navegação.
+4. `rebuild` exige autorização explícita e plano de direção.
+5. Corrigir a origem com tokens existentes, não com exceções visuais.
+6. Separar severidade, confiança e status.
+7. Separar contraste textual de contraste entre superfícies.
+8. Verificar o render com Chromium/CDP no Termux; Playwright não é disponível localmente.
+9. Não declarar aprovação oficial com base apenas em auditoria local.
+10. Preferir precisão sobre quantidade de alertas.
 
 ## Modos
 
-- `detect` (padrão): escaneia código e capturas, produz relatório, não altera arquivos.
-- `refine`: aplica correções mínimas em superfície, tipografia, contraste e espaçamento após evidência reprodutível.
-- `rebuild`: somente quando o usuário pedir substituição visual completa; exige plano de direção antes de editar.
+- `detect`: executa detector estático, inspeção contextual e revisão de capturas; não edita arquivos.
+- `refine`: aplica ajustes mínimos após evidência e autorização.
+- `rebuild`: somente quando solicitado; nunca como consequência de score.
 
-## Fluxo obrigatório
+## Três camadas independentes
 
-### 1. Gate
+### 1. Detecção estática
 
-Confirme branch, HEAD, `git status --short` e presença de alterações alheias. Não sobrescreva nada.
-
-### 2. Contexto
-
-Leia:
-
-- `docs/design-system/`;
-- `style/themes.css`, `style/base.css`, `style/layout.css`, `style/features.css`;
-- o HTML/componente alvo;
-- capturas em `tmp-c13/` quando existirem.
-
-Classifique a superfície: `operate` (dashboard/app financeiro), `read` ou `persuade`. A aba Início é `operate`.
-
-### 3. Scan
-
-Execute o detector local:
+Encontra candidatos em código e CSS com `arquivo:linha`, seletor e trecho.
 
 ```bash
-node .opencode/skills/anti-ai-ui-review/scripts/detect.mjs [arquivos]
-node .opencode/skills/anti-ai-ui-review/scripts/detect.mjs --json [arquivos]
+node .opencode/skills/anti-ai-ui-review/scripts/detect.mjs [paths]
+node .opencode/skills/anti-ai-ui-review/scripts/detect.mjs --json [paths]
+node .opencode/skills/anti-ai-ui-review/scripts/detect.mjs --self-check
 ```
 
-Use `references/TELLS.md` para os sinais que o detector não consegue provar por código.
+Opções: `--scope global|view|component|content|rendered`, `--view <nome>`, `--json`, `--help`.
 
-### 4. Render
+O detector não analisa imagens. Ele não possui leitor de pixels nem avalia capturas. Inspeção visual é etapa separada.
 
-Capture viewport e full-page nos temas claros/escuros aplicáveis. Faça o teste da silhueta: reduza a captura a 25%, converta em preto e branco e pergunte se a forma poderia pertencer a qualquer produto. Compare com a matriz anterior antes de concluir.
+### 2. Análise contextual e visual
 
-### 5. Auditoria
+Para cada candidato:
 
-Para cada achado, registre:
+- determine se pertence à view/componente auditado;
+- verifique se é escolha intencional do design system;
+- observe o tema e o viewport;
+- compare com capturas e, quando possível, com o DOM renderizado;
+- classifique como `confirmed`, `candidate`, `inconclusive` ou `false_positive`.
 
-- ID e severidade (P0/P1/P2/INFO);
-- `arquivo:linha` ou região da captura;
-- por que lê como default;
-- evidência: código, render ou inferência;
-- decisão: corrigir, manter com justificativa ou levar ao usuário.
+### 3. Validação
 
-### 6. Refine (quando autorizado)
+Só chamar um achado de confirmado quando houver evidência funcional, visual ou de acessibilidade. Usar CDP, medições e testes. C.O.D.E. é gate complementar.
 
-- Uma mudança por problema comprovado.
-- Nenhuma paleta nova.
-- Nenhum seletor específico de tema sem justificativa.
-- Preserve funções, cálculos, navegação, IDs e contratos E2E.
-- Reescaneie e recapture após a edição.
+## Fluxo
+
+1. **Gate:** branch, HEAD, `git status --short`, alterações alheias.
+2. **Contexto:** ler `docs/design-system/`, CSS de tema/base/layout/features, HTML/componente alvo e capturas existentes. Classificar a superfície como `operate`, `read` ou `persuade`. A Início é `operate`.
+3. **Scan estático:** executar `detect.mjs`. Rodar `--self-check` quando houver suspeita de divergência documental.
+4. **Render:** capturar viewport/full-page nos temas aplicáveis. Fazer teste da silhueta quando a questão for estrutural.
+5. **Auditoria:** preencher ID, severidade, confiança, status, evidência, impacto, limitação e validação.
+6. **Refine:** somente com autorização; uma mudança por problema comprovado; reescanear e recapturar.
+
+## Escopos
+
+- `global`: estilos compartilhados.
+- `view`: view selecionada por `--view` ou seletor `#view...`.
+- `component`: componente local.
+- `content`: somente texto visível.
+- `rendered`: não suportado pelo detector estático; exige navegador.
+
+Quando o detector não consegue determinar o escopo, declara a limitação.
 
 ## Critérios de saída
 
-Um bom resultado não é “sem gradientes”. É:
+Um bom relatório:
 
-- **Justificado:** cada decisão remonta ao produto/design system.
-- **Coerente:** tipografia, cor, superfície e espaço reforçam uma ideia.
-- **Não convergente:** não cai em clusters de segunda ordem (creme+terracota, preto+neon, mono-all-caps, hero+três cards).
-- **Consistente:** usa os mesmos tokens das views irmãs.
-- **Verificado:** medido em tema claro/escuro e viewport real.
+- rastreia cada achado a uma regra documentada;
+- separa defeitos confirmados de candidatos e observações;
+- explica por que um padrão é problemático no contexto;
+- não converte score em aprovação;
+- preserva decisões aprovadas sem evidência contrária.
 
 ## Referências
 
-- `references/TELLS.md` — catálogo adaptado.
-- `references/SOURCES.md` — fontes, stars e conceitos incorporados.
+- `references/TELLS.md` — catálogo sincronizado com o detector.
+- `references/SCORING.md` — severidade, confiança, status e códigos de saída.
+- `references/REPORT-FORMAT.md` — esquema JSON e Markdown.
+- `references/SOURCES.md` — fontes e natureza das regras.
+- `references/CHANGELOG.md` — histórico v1.0.0 → v1.1.0.
+- `VALIDACAO.md` — testes e resultados.

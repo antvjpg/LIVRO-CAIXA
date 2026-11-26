@@ -1,0 +1,12 @@
+.nav-tab {
+  color: red;
+  transition: all 0.15s ease;
+}
+.block-pill {
+  transition:
+    all 200ms ease;
+}
+/* .commented { transition: all 1s; } */
+@media (max-width: 600px) {
+  .responsive { transition: all 1s; }
+}

@@ -26,6 +26,15 @@ Stars obtidos via GitHub Search API em `2026-11-26`. Star count mede distribuiç
 
 A skill local não copia scripts de terceiros. O detector em `scripts/detect.mjs` foi reescrito para o escopo do LIVRO-CAIXA e não instala dependências.
 
+## Natureza das regras
+
+- **Normativas:** WCAG 2.2 e Web Interface Guidelines. Quando uma regra deriva delas, a validação exige medição, DOM ou comportamento renderizado. Exemplos: foco visível, alvo de toque, contraste, movimento reduzido e flashes.
+- **Heurísticas de manutenção:** `transition: all`, animação de propriedades de layout, token sprawl. São candidatos P2/INFO; não bloqueiam aprovação isoladamente.
+- **Heurísticas estéticas:** purple, glassmorphism, três colunas, labels uppercase, middle dot e raio uniforme. São INFO e dependem de contexto, marca e design system.
+- **Conteúdo:** copy de hype e separadores são avaliados somente em texto visível.
+
+A skill não usa star count como evidência de qualidade. Stars indicam distribuição; a adoção de um conceito depende de aplicabilidade e rastreabilidade.
+
 ## Revisão periódica
 
 Esta lista foi capturada em `2026-11-26`. Revisar anualmente ou quando uma nova geração de skills anti-slop aparecer. Não é necessário pesquisar na web para cada tarefa: consultar `TELLS.md` primeiro.
