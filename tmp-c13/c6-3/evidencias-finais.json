@@ -1,0 +1,49 @@
+{
+  "fonts": {
+    "320": {
+      "category": "12px",
+      "action": "12px",
+      "label": "13px",
+      "percent": "20px",
+      "sameRow": true,
+      "overflow": false
+    },
+    "360": {
+      "category": "12px",
+      "action": "12px",
+      "label": "13px",
+      "percent": "20px",
+      "sameRow": true,
+      "overflow": false
+    },
+    "390": {
+      "category": "12px",
+      "action": "12px",
+      "label": "13px",
+      "percent": "20px",
+      "sameRow": true,
+      "overflow": false
+    },
+    "1280": {
+      "category": "12px",
+      "action": "12px",
+      "label": "13px",
+      "percent": "24px",
+      "sameRow": true,
+      "overflow": false
+    }
+  },
+  "values": {},
+  "prints": [
+    "orcamento-final-320",
+    "orcamento-final-360",
+    "orcamento-final-390",
+    "orcamento-final-1280",
+    "nav-final-320",
+    "nav-final-360",
+    "nav-final-390",
+    "nav-final-390-caixa",
+    "nav-final-390-dashboard",
+    "nav-final-390-escuro"
+  ]
+}

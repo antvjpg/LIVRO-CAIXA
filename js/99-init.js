@@ -441,6 +441,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabName === 'dashboard' || tabName === 'inicio') {
   renderAdvancedDashboard();
 }
+    if (tabName === 'inicio' && typeof renderInicioBudgets === 'function') {
+      renderInicioBudgets();
+    }
     // C6-INICIO-02 — a faixa muda entre Início e Livro-Caixa; reconstruí-la
     // após a troca mantém o card Patrimônio Total apenas em caixa.
     if (tabName === 'inicio' || tabName === 'caixa') {

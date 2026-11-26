@@ -1,0 +1,193 @@
+{
+  "injected": {
+    "cycle": "2026-11",
+    "start": "2026-11-01"
+  },
+  "initial": {
+    "tab": "inicio",
+    "hostCount": 1,
+    "summaryCount": 1,
+    "actionCount": 1,
+    "progressbars": 4,
+    "empty": false,
+    "cycle": "Novembro / 2026",
+    "percent": "53%",
+    "status": "Dentro do limite",
+    "values": [
+      "R$ 2.670,00",
+      "R$ 5.000,00",
+      "R$ 2.330,00"
+    ],
+    "categories": [
+      {
+        "name": "Alimentação",
+        "percent": "105%",
+        "values": "R$ 1.050,00 de R$ 1.000,00",
+        "flag": "Excedido",
+        "realPercent": "105.00",
+        "ariaNow": "100",
+        "ariaLabel": "Utilização de Alimentação"
+      },
+      {
+        "name": "Moradia",
+        "percent": "80%",
+        "values": "R$ 1.200,00 de R$ 1.500,00",
+        "flag": "Atenção",
+        "realPercent": "80.00",
+        "ariaNow": "80",
+        "ariaLabel": "Utilização de Moradia"
+      },
+      {
+        "name": "Transporte",
+        "percent": "64%",
+        "values": "R$ 320,00 de R$ 500,00",
+        "flag": "",
+        "realPercent": "64.00",
+        "ariaNow": "64",
+        "ariaLabel": "Utilização de Transporte"
+      }
+    ],
+    "totalTrack": {
+      "realPercent": "53.40",
+      "ariaNow": "53",
+      "ariaLabel": "Utilização geral do orçamento"
+    }
+  },
+  "modalOpen": true,
+  "overviewBefore": {
+    "health": "○Saúde financeira · score 100/100Registre movimentações para ver sua saúde financeira.100 · Comece seu acompanhamento",
+    "inicioBlocks": 0
+  },
+  "afterSwitch": {
+    "tab": "inicio",
+    "hostCount": 1,
+    "summaryCount": 1,
+    "actionCount": 1,
+    "progressbars": 4,
+    "empty": false,
+    "cycle": "Novembro / 2026",
+    "percent": "53%",
+    "status": "Dentro do limite",
+    "values": [
+      "R$ 2.670,00",
+      "R$ 5.000,00",
+      "R$ 2.330,00"
+    ],
+    "categories": [
+      {
+        "name": "Alimentação",
+        "percent": "105%",
+        "values": "R$ 1.050,00 de R$ 1.000,00",
+        "flag": "Excedido",
+        "realPercent": "105.00",
+        "ariaNow": "100",
+        "ariaLabel": "Utilização de Alimentação"
+      },
+      {
+        "name": "Moradia",
+        "percent": "80%",
+        "values": "R$ 1.200,00 de R$ 1.500,00",
+        "flag": "Atenção",
+        "realPercent": "80.00",
+        "ariaNow": "80",
+        "ariaLabel": "Utilização de Moradia"
+      },
+      {
+        "name": "Transporte",
+        "percent": "64%",
+        "values": "R$ 320,00 de R$ 500,00",
+        "flag": "",
+        "realPercent": "64.00",
+        "ariaNow": "64",
+        "ariaLabel": "Utilização de Transporte"
+      }
+    ],
+    "totalTrack": {
+      "realPercent": "53.40",
+      "ariaNow": "53",
+      "ariaLabel": "Utilização geral do orçamento"
+    }
+  },
+  "overviewAfter": {
+    "health": "!Saúde financeira · score 83/100As saídas superaram as entradas neste mês.83 · Atenção",
+    "inicioBlocks": 0
+  },
+  "layout": {
+    "320": {
+      "horizontalOverflow": false,
+      "cardLeft": 14,
+      "cardRight": 306,
+      "viewport": 320,
+      "tracks": 4,
+      "trackWidths": [
+        250,
+        250,
+        250,
+        250
+      ],
+      "valuesRight": [
+        285,
+        285,
+        285
+      ],
+      "navOverlap": false
+    },
+    "360": {
+      "horizontalOverflow": false,
+      "cardLeft": 14,
+      "cardRight": 346,
+      "viewport": 360,
+      "tracks": 4,
+      "trackWidths": [
+        290,
+        290,
+        290,
+        290
+      ],
+      "valuesRight": [
+        325,
+        325,
+        325
+      ],
+      "navOverlap": false
+    },
+    "390": {
+      "horizontalOverflow": false,
+      "cardLeft": 14,
+      "cardRight": 376,
+      "viewport": 390,
+      "tracks": 4,
+      "trackWidths": [
+        320,
+        320,
+        320,
+        320
+      ],
+      "valuesRight": [
+        355,
+        355,
+        355
+      ],
+      "navOverlap": false
+    },
+    "1280": {
+      "horizontalOverflow": false,
+      "cardLeft": 97,
+      "cardRight": 1169,
+      "viewport": 1265,
+      "tracks": 4,
+      "trackWidths": [
+        1030,
+        1030,
+        1030,
+        1030
+      ],
+      "valuesRight": [
+        454,
+        801,
+        1147
+      ],
+      "navOverlap": false
+    }
+  }
+}

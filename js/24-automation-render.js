@@ -81,7 +81,7 @@
     let generated = 0;
     if (featureSettings.autoLaunchRecurring || manual) generated = await autoGenerateRecurringBills();
     if (featureSettings.autoRefreshQuotes || manual) { try { await updateAllInvestmentPrices({ auto: !manual }); } catch (err) {} }
-    renderNotifications(); renderAdvancedDashboard(); renderDashboardTab(); return { generated };
+    renderNotifications(); renderAdvancedDashboard(); if (document.body.dataset.tab === 'inicio' && typeof renderInicioBudgets === 'function') renderInicioBudgets(); renderDashboardTab(); return { generated };
   }
   function startFeatureAutomation() {
     if (featureAutomationTimer) { clearInterval(featureAutomationTimer); featureAutomationTimer = null; }
@@ -100,6 +100,7 @@
     renderCategoryManageList();
     renderCategorySummary();
     renderAdvancedDashboard();
+    if (document.body.dataset.tab === 'inicio' && typeof renderInicioBudgets === 'function') renderInicioBudgets();
     renderDashboardTab();
     renderLedger();
     renderInvestments();

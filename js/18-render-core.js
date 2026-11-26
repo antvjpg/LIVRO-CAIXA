@@ -3315,3 +3315,52 @@ function checkLocalPinLock() {
     const { start, end } = financialCycleRangeForKey(cycleKey);
     return entries.filter(entry => entry.type === 'out' && entry.category === categoryId && entry.date >= start && entry.date <= end).reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
   }
+  function renderInicioBudgets() {
+    const host = document.getElementById('inicioBudgets');
+    if (!host) return;
+    const result = typeof dashBudgetRows === 'function' ? dashBudgetRows() : { cycle: currentFinancialCycleKey(), rows: [] };
+    const cycle = result && result.cycle ? result.cycle : currentFinancialCycleKey();
+    const cycleHost = document.getElementById('inicioBudgetCycle');
+    if (cycleHost) cycleHost.textContent = typeof formatMonthLabel === 'function' ? formatMonthLabel(cycle) : cycle;
+    const rows = Array.isArray(result && result.rows) ? result.rows : [];
+    const planned = rows.reduce((sum, row) => sum + Math.max(0, Number(row.planned) || 0), 0);
+    const spent = rows.reduce((sum, row) => sum + Math.max(0, Number(row.spent) || 0), 0);
+    const rest = planned - spent;
+    const rawPct = planned > 0 ? spent / planned * 100 : 0;
+    const pct = Number.isFinite(rawPct) ? rawPct : 0;
+    const tier = pct >= 100 ? 'excedido' : pct >= 80 ? 'atencao' : 'normal';
+    const statusLabel = tier === 'excedido' ? 'Limite excedido' : tier === 'atencao' ? 'Atenção' : 'Dentro do limite';
+    const percentText = value => `${Math.round(Number.isFinite(value) ? value : 0).toString().replace('-', '−')}%`;
+    const pctText = planned > 0 ? percentText(pct) : '—';
+    const visualPct = Math.max(0, Math.min(100, pct));
+    const hasConfigured = Array.isArray(budgets) && budgets.length > 0;
+    if (!hasConfigured || planned <= 0) {
+      const message = hasConfigured
+        ? 'Defina limites para acompanhar seus orçamentos neste ciclo.'
+        : 'Você ainda não tem orçamentos cadastrados para este ciclo.';
+      host.innerHTML = `<div class="inicio-budget-empty"><p>${message}</p><button type="button" class="inicio-budget-action" data-open-budget>Configurar orçamentos<span class="inicio-budget-chevron" aria-hidden="true"></span></button></div>`;
+      host.querySelector('[data-open-budget]')?.addEventListener('click', () => { if (typeof openBudgetModal === 'function') openBudgetModal(); });
+      return;
+    }
+    const priority = row => {
+      const value = Number(row.pct) || 0;
+      return value >= 100 ? 0 : value >= 80 ? 1 : 2;
+    };
+    const top = rows.slice().sort((a, b) =>
+      priority(a) - priority(b)
+      || (Number(b.pct) || 0) - (Number(a.pct) || 0)
+      || String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR')
+    ).slice(0, 3);
+    const categoryHTML = top.map(row => {
+      const name = String(row.name || 'Categoria');
+      const categoryPlanned = Math.max(0, Number(row.planned) || 0);
+      const categorySpent = Math.max(0, Number(row.spent) || 0);
+      const categoryPct = categoryPlanned > 0 ? categorySpent / categoryPlanned * 100 : 0;
+      const categoryTier = categoryPct >= 100 ? 'excedido' : categoryPct >= 80 ? 'atencao' : 'normal';
+      const categoryFlag = categoryTier === 'excedido' ? 'Excedido' : categoryTier === 'atencao' ? 'Atenção' : '';
+      const categoryVisual = Math.max(0, Math.min(100, categoryPct));
+      return `<div class="inicio-budget-category"><div class="inicio-budget-category-head"><strong>${escapeHTML(name)}</strong><b class="${categoryTier}">${percentText(categoryPct)}</b></div><div class="inicio-budget-track" role="progressbar" aria-label="Utilização de ${escapeHTML(name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(categoryVisual)}" aria-valuetext="${percentText(categoryPct)} do limite"><i class="${categoryTier}" style="width:${categoryVisual.toFixed(2)}%" data-real-percent="${categoryPct.toFixed(2)}"></i></div><div class="inicio-budget-category-values"><span>${fmt(categorySpent)} de ${fmt(categoryPlanned)}</span>${categoryFlag ? `<span class="inicio-budget-flag ${categoryTier}">${categoryFlag}</span>` : ''}</div></div>`;
+    }).join('');
+    host.innerHTML = `<div class="inicio-budget-summary"><div class="inicio-budget-percent ${tier}"><strong>${pctText}</strong><small>${statusLabel}</small></div><div class="inicio-budget-track" role="progressbar" aria-label="Utilização geral do orçamento" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(visualPct)}" aria-valuetext="${pctText} do limite"><i class="${tier}" style="width:${visualPct.toFixed(2)}%" data-real-percent="${pct.toFixed(2)}"></i></div><div class="inicio-budget-values"><span><small>Utilizado</small><b>${fmt(spent)}</b></span><span><small>Previsto</small><b>${fmt(planned)}</b></span><span><small>Disponível</small><b class="${rest < 0 ? 'negative' : ''}">${fmt(rest)}</b></span></div></div><div class="inicio-budget-divider"></div><div class="inicio-budget-categories">${categoryHTML}</div><div class="inicio-budget-divider"></div><button type="button" class="inicio-budget-action" data-open-budget>Ver todos os orçamentos<span class="inicio-budget-chevron" aria-hidden="true"></span></button>`;
+    host.querySelectorAll('[data-open-budget]').forEach(button => button.addEventListener('click', () => { if (typeof openBudgetModal === 'function') openBudgetModal(); }));
+  }
