@@ -1,0 +1,54 @@
+{
+  "total": 10,
+  "cappedTotal": 10,
+  "slopIndex": 79,
+  "slopBand": "is the default",
+  "band": "Default. This is generated, not designed - rewrite the surface before any polish.",
+  "dimensions": {
+    "Floor": {
+      "score": 0,
+      "max": 35,
+      "note": "10 blocking violation(s)"
+    },
+    "System": {
+      "score": 0,
+      "max": 20,
+      "note": "174 colors, 124 px values, 5 fonts"
+    },
+    "Craft": {
+      "score": 0,
+      "max": 20,
+      "note": "529 warning(s)"
+    },
+    "Originality": {
+      "score": 0,
+      "max": 15,
+      "note": "Slop Index 79 - is the default"
+    },
+    "Content": {
+      "score": 10,
+      "max": 10,
+      "note": "no placeholder copy found"
+    }
+  },
+  "summary": {
+    "files": 6,
+    "blocking": 10,
+    "warn": 529,
+    "slop": 31,
+    "info": 9,
+    "slopIndex": 79,
+    "slopBand": "is the default",
+    "uniqueColors": 174,
+    "uniqueSpacings": 124,
+    "fonts": [
+      "plus jakarta sans",
+      "inter",
+      "segoe ui symbol",
+      "noto sans symbols",
+      "georgia"
+    ],
+    "contrastPairsChecked": 0,
+    "contrastPairsUnresolved": 0
+  }
+}

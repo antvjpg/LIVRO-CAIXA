@@ -1,0 +1,377 @@
+{
+  "tool": "avoid-ai-design",
+  "version": "0.5.0",
+  "scanned": 5,
+  "summary": {
+    "P0": 1,
+    "P1": 14,
+    "P2": 5,
+    "total": 20
+  },
+  "stacks": {
+    "index.html": {
+      "distinct": 5,
+      "template": false
+    },
+    "style/features.css": {
+      "distinct": 5,
+      "template": false
+    },
+    "style/themes.css": {
+      "distinct": 2,
+      "template": false
+    },
+    "style/base.css": {
+      "distinct": 3,
+      "template": false
+    },
+    "style/layout.css": {
+      "distinct": 3,
+      "template": false
+    }
+  },
+  "findings": [
+    {
+      "file": "index.html",
+      "id": "I2",
+      "severity": "P1",
+      "name": "Emoji as interface icons",
+      "why": "Emoji standing in for iconography in features, nav, or footers.",
+      "lines": [
+        92,
+        595
+      ],
+      "notes": []
+    },
+    {
+      "file": "index.html",
+      "id": "K7",
+      "severity": "P1",
+      "name": "No visible keyboard focus",
+      "why": "Interactive elements with no :focus-visible style: the polish gap, and an accessibility defect.",
+      "lines": [
+        1
+      ],
+      "notes": []
+    },
+    {
+      "file": "index.html",
+      "id": "M6",
+      "severity": "P1",
+      "name": "Motion without prefers-reduced-motion",
+      "why": "Animation that ignores reduced-motion settings fails users who asked for less movement.",
+      "lines": [
+        93
+      ],
+      "notes": []
+    },
+    {
+      "file": "index.html",
+      "id": "T2",
+      "severity": "P1",
+      "name": "A face from the 'tasteful free font' cluster",
+      "why": "Space Grotesk, Geist, Syne, Sora, Instrument Serif, Fraunces, Cal Sans: the non-generic choices that became generic.",
+      "lines": [
+        18
+      ],
+      "notes": [
+        "Sora"
+      ]
+    },
+    {
+      "file": "index.html",
+      "id": "SD4d",
+      "severity": "P2",
+      "name": "Template chrome: meta strings joined with middle dots",
+      "why": "'A · B · C' metadata strings are a stock chrome move, not a decision about this content.",
+      "lines": [
+        54,
+        495,
+        862,
+        1008,
+        1599
+      ],
+      "notes": []
+    },
+    {
+      "file": "index.html",
+      "id": "SD4w",
+      "severity": "P2",
+      "name": "Template chrome: 'WORD — fragment' labels",
+      "why": "Labels built as an uppercase word + spaced em dash + fragment are a recurring generated pattern.",
+      "lines": [
+        495
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/features.css",
+      "id": "T1",
+      "severity": "P0",
+      "name": "Inter as the primary face",
+      "why": "Inter is the default of nearly every AI tool and component library.",
+      "lines": [
+        295
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/features.css",
+      "id": "K2",
+      "severity": "P1",
+      "name": "One radius + soft shadow on every surface",
+      "why": "Identical radius and shadow everywhere flattens hierarchy into a template.",
+      "lines": [
+        3,
+        606,
+        674,
+        822,
+        826,
+        1002,
+        1026,
+        1028,
+        1093,
+        1341,
+        1577,
+        1690,
+        1887,
+        1998,
+        2202,
+        2309,
+        2622,
+        2734,
+        2943,
+        3206,
+        3346,
+        3535,
+        3576,
+        3589,
+        3731,
+        3895,
+        3924,
+        4106,
+        4200,
+        4274,
+        4837,
+        4846,
+        5124,
+        5563,
+        5984,
+        6041,
+        6080,
+        6317,
+        6451,
+        6544,
+        6719,
+        7221,
+        7495
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/features.css",
+      "id": "K3",
+      "severity": "P1",
+      "name": "Glassmorphism (backdrop-blur)",
+      "why": "Frosted surfaces by reflex; keep blur only where layering is real, like a nav over scrolling content.",
+      "lines": [
+        672,
+        771,
+        817,
+        1026
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/features.css",
+      "id": "SD4",
+      "severity": "P1",
+      "name": "Template chrome: tracked ALL-CAPS labels",
+      "why": "An uppercase, letter-spaced label on everything is chrome that appears whatever the subject.",
+      "lines": [
+        35,
+        75,
+        172,
+        209,
+        359,
+        403,
+        422,
+        593,
+        604,
+        622,
+        688,
+        1106,
+        1599,
+        1712,
+        1784,
+        2299,
+        2337,
+        2407,
+        2430,
+        2724,
+        2758,
+        2782,
+        3002,
+        3192,
+        3514,
+        3658,
+        3682,
+        3749,
+        4050,
+        4268,
+        4563,
+        4927,
+        5665,
+        6380,
+        7347
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/features.css",
+      "id": "M8",
+      "severity": "P2",
+      "name": "Every card lifts on hover",
+      "why": "A rise-and-shadow on every card, clickable or not, is motion with no meaning; Anthropic lists 'hover transitions on every card'.",
+      "lines": [
+        713,
+        2444,
+        2796
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/features.css",
+      "id": "SD4w",
+      "severity": "P2",
+      "name": "Template chrome: 'WORD — fragment' labels",
+      "why": "Labels built as an uppercase word + spaced em dash + fragment are a recurring generated pattern.",
+      "lines": [
+        4288,
+        4718,
+        4734,
+        4784,
+        4797,
+        4833,
+        4853,
+        6899
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/themes.css",
+      "id": "K2",
+      "severity": "P1",
+      "name": "One radius + soft shadow on every surface",
+      "why": "Identical radius and shadow everywhere flattens hierarchy into a template.",
+      "lines": [
+        317,
+        326,
+        343
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/themes.css",
+      "id": "SD4w",
+      "severity": "P2",
+      "name": "Template chrome: 'WORD — fragment' labels",
+      "why": "Labels built as an uppercase word + spaced em dash + fragment are a recurring generated pattern.",
+      "lines": [
+        2,
+        9,
+        253
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/base.css",
+      "id": "K2",
+      "severity": "P1",
+      "name": "One radius + soft shadow on every surface",
+      "why": "Identical radius and shadow everywhere flattens hierarchy into a template.",
+      "lines": [
+        73,
+        115,
+        212
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/base.css",
+      "id": "K3",
+      "severity": "P1",
+      "name": "Glassmorphism (backdrop-blur)",
+      "why": "Frosted surfaces by reflex; keep blur only where layering is real, like a nav over scrolling content.",
+      "lines": [
+        100
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/base.css",
+      "id": "SD4",
+      "severity": "P1",
+      "name": "Template chrome: tracked ALL-CAPS labels",
+      "why": "An uppercase, letter-spaced label on everything is chrome that appears whatever the subject.",
+      "lines": [
+        61,
+        71,
+        75,
+        116,
+        131,
+        238
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/layout.css",
+      "id": "K2",
+      "severity": "P1",
+      "name": "One radius + soft shadow on every surface",
+      "why": "Identical radius and shadow everywhere flattens hierarchy into a template.",
+      "lines": [
+        35,
+        41,
+        48,
+        49,
+        63,
+        97,
+        118,
+        164,
+        303,
+        318,
+        669
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/layout.css",
+      "id": "K3",
+      "severity": "P1",
+      "name": "Glassmorphism (backdrop-blur)",
+      "why": "Frosted surfaces by reflex; keep blur only where layering is real, like a nav over scrolling content.",
+      "lines": [
+        163,
+        252,
+        281
+      ],
+      "notes": []
+    },
+    {
+      "file": "style/layout.css",
+      "id": "SD4",
+      "severity": "P1",
+      "name": "Template chrome: tracked ALL-CAPS labels",
+      "why": "An uppercase, letter-spaced label on everything is chrome that appears whatever the subject.",
+      "lines": [
+        109,
+        283,
+        312,
+        381,
+        396
+      ],
+      "notes": []
+    }
+  ]
+}

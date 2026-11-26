@@ -1,0 +1,56 @@
+avoid-ai-design detect v0.5.0 · 5 files scanned
+
+index.html  P0 0 · P1 4 · P2 2 · stack 5
+  P1  I2   Emoji as interface icons  L92, L595
+        Emoji standing in for iconography in features, nav, or footers.
+  P1  K7   No visible keyboard focus  L1
+        Interactive elements with no :focus-visible style: the polish gap, and an accessibility defect.
+  P1  M6   Motion without prefers-reduced-motion  L93
+        Animation that ignores reduced-motion settings fails users who asked for less movement.
+  P1  T2   A face from the 'tasteful free font' cluster  L18  · Sora
+        Space Grotesk, Geist, Syne, Sora, Instrument Serif, Fraunces, Cal Sans: the non-generic choices that became generic.
+  P2  SD4d Template chrome: meta strings joined with middle dots  L54, L495, L862, L1008 (+1)
+        'A · B · C' metadata strings are a stock chrome move, not a decision about this content.
+  P2  SD4w Template chrome: 'WORD — fragment' labels  L495
+        Labels built as an uppercase word + spaced em dash + fragment are a recurring generated pattern.
+
+style/features.css  P0 1 · P1 3 · P2 2 · stack 5
+  P0  T1   Inter as the primary face  L295
+        Inter is the default of nearly every AI tool and component library.
+  P1  K2   One radius + soft shadow on every surface  L3, L606, L674, L822 (+39)
+        Identical radius and shadow everywhere flattens hierarchy into a template.
+  P1  K3   Glassmorphism (backdrop-blur)  L672, L771, L817, L1026
+        Frosted surfaces by reflex; keep blur only where layering is real, like a nav over scrolling content.
+  P1  SD4  Template chrome: tracked ALL-CAPS labels  L35, L75, L172, L209 (+31)
+        An uppercase, letter-spaced label on everything is chrome that appears whatever the subject.
+  P2  M8   Every card lifts on hover  L713, L2444, L2796
+        A rise-and-shadow on every card, clickable or not, is motion with no meaning; Anthropic lists 'hover transitions on every card'.
+  P2  SD4w Template chrome: 'WORD — fragment' labels  L4288, L4718, L4734, L4784 (+4)
+        Labels built as an uppercase word + spaced em dash + fragment are a recurring generated pattern.
+
+style/themes.css  P0 0 · P1 1 · P2 1 · stack 2
+  P1  K2   One radius + soft shadow on every surface  L317, L326, L343
+        Identical radius and shadow everywhere flattens hierarchy into a template.
+  P2  SD4w Template chrome: 'WORD — fragment' labels  L2, L9, L253
+        Labels built as an uppercase word + spaced em dash + fragment are a recurring generated pattern.
+
+style/base.css  P0 0 · P1 3 · P2 0 · stack 3
+  P1  K2   One radius + soft shadow on every surface  L73, L115, L212
+        Identical radius and shadow everywhere flattens hierarchy into a template.
+  P1  K3   Glassmorphism (backdrop-blur)  L100
+        Frosted surfaces by reflex; keep blur only where layering is real, like a nav over scrolling content.
+  P1  SD4  Template chrome: tracked ALL-CAPS labels  L61, L71, L75, L116 (+2)
+        An uppercase, letter-spaced label on everything is chrome that appears whatever the subject.
+
+style/layout.css  P0 0 · P1 3 · P2 0 · stack 3
+  P1  K2   One radius + soft shadow on every surface  L35, L41, L48, L49 (+7)
+        Identical radius and shadow everywhere flattens hierarchy into a template.
+  P1  K3   Glassmorphism (backdrop-blur)  L163, L252, L281
+        Frosted surfaces by reflex; keep blur only where layering is real, like a nav over scrolling content.
+  P1  SD4  Template chrome: tracked ALL-CAPS labels  L109, L283, L312, L381 (+1)
+        An uppercase, letter-spaced label on everything is chrome that appears whatever the subject.
+
+20 findings  P0 1 · P1 14 · P2 5
+Stack = distinct tells per file; 6 or more reads as a template (57 of 120 AI-built pages in a 2026 count).
+Code-certain signals only. Palette weight, rhythm, and hierarchy need a render (SKILL.md, step 2).
+A finding is a default nobody chose, not proof an AI made it. If the brief asked for it, keep it: avoid-ai-design-ignore: <ID>.

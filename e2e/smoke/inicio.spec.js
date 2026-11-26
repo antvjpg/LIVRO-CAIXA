@@ -47,6 +47,10 @@ test.describe('Início — navegação e renderização', () => {
 
     await expect(page.locator('#viewInicio')).toHaveClass(/active/);
     await expect(page.locator('main > .inicio-header h2')).toHaveText('Início');
+    await expect(page.locator('main > .inicio-header .light-theme-option')).toHaveCount(5);
+    await expect(page.locator('main > .inicio-header .dark-theme-option')).toHaveCount(5);
+    await expect(page.locator('#viewInicio .inicio-footer button')).toHaveCount(0);
+    await expect(page.locator('#viewInicio .advanced-dashboard-card .balance-symbol i')).toHaveClass(/fi-rr-financial-health/);
 
     const cards = [
       { label: 'Patrimônio Total', selector: 'main > .inicio-patrimonio' },
@@ -155,6 +159,11 @@ test.describe('Início — navegação e renderização', () => {
         bankPaddingTop: cs('#balanceStrip > .bank-summary-card').paddingTop,
         healthPaddingTop: cs('#viewInicio .advanced-dashboard-card').paddingTop,
         bankHeadMargin: cs('#balanceStrip > .bank-summary-card .balance-card-head').marginBottom,
+        patrimonioBorder: cs('main > .inicio-patrimonio').borderTopColor,
+        bankBorder: cs('#balanceStrip > .bank-summary-card').borderTopColor,
+        stripGap: cs('#balanceStrip').columnGap,
+        stripMarginBottom: cs('#balanceStrip').marginBottom,
+        mainPaddingBottom: cs('main').paddingBottom,
       };
     });
     expect(surfaceSnapshot.patrimonioBackground).toContain('gradient');
@@ -164,6 +173,10 @@ test.describe('Início — navegação e renderização', () => {
     expect(surfaceSnapshot.bankPaddingTop).toBe('16px');
     expect(surfaceSnapshot.healthPaddingTop).toBe('16px');
     expect(surfaceSnapshot.bankHeadMargin).toBe('6px');
+    expect(surfaceSnapshot.patrimonioBorder).toBe(surfaceSnapshot.bankBorder);
+    expect(parseFloat(surfaceSnapshot.stripGap)).toBeLessThanOrEqual(10);
+    expect(parseFloat(surfaceSnapshot.stripMarginBottom)).toBeGreaterThanOrEqual(18);
+    expect(parseFloat(surfaceSnapshot.mainPaddingBottom)).toBeLessThanOrEqual(24);
     await testInfo.attach('superficies-inicio.json', {
       body: JSON.stringify(surfaceSnapshot, null, 2),
       contentType: 'application/json',

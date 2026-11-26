@@ -1,0 +1,3 @@
+npm notice run livro-caixa-code-qa@0.1.0 code:syntax
+npm notice run node e2e/scripts/syntax-check.cjs
+SINTAXE: OK (0 bloco(s) inline de index.html + 31 arquivo(s) .js)

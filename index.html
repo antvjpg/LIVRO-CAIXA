@@ -211,6 +211,22 @@
   <div class="inicio-header">
     <h2>Início</h2>
     <p class="hint">Resumo financeiro rápido</p>
+    <div class="inicio-theme-picker" aria-label="Trocar tema">
+      <div class="inicio-theme-group" role="group" aria-label="Temas claros">
+        <button type="button" class="light-theme-option" data-theme="1" aria-label="Tema claro Oliva" title="Claro: Oliva" aria-pressed="true"></button>
+        <button type="button" class="light-theme-option" data-theme="2" aria-label="Tema claro Verde" title="Claro: Verde" aria-pressed="false"></button>
+        <button type="button" class="light-theme-option" data-theme="3" aria-label="Tema claro Lima" title="Claro: Lima" aria-pressed="false"></button>
+        <button type="button" class="light-theme-option" data-theme="4" aria-label="Tema claro Terracota" title="Claro: Terracota" aria-pressed="false"></button>
+        <button type="button" class="light-theme-option" data-theme="5" aria-label="Tema claro Laranja" title="Claro: Laranja" aria-pressed="false"></button>
+      </div>
+      <div class="inicio-theme-group" role="group" aria-label="Temas escuros">
+        <button type="button" class="dark-theme-option" data-theme="1" aria-label="Tema escuro Oliva" title="Escuro: Oliva" aria-pressed="true"></button>
+        <button type="button" class="dark-theme-option" data-theme="2" aria-label="Tema escuro Verde" title="Escuro: Verde" aria-pressed="false"></button>
+        <button type="button" class="dark-theme-option" data-theme="3" aria-label="Tema escuro Bege" title="Escuro: Bege" aria-pressed="false"></button>
+        <button type="button" class="dark-theme-option" data-theme="4" aria-label="Tema escuro Terracota" title="Escuro: Terracota" aria-pressed="false"></button>
+        <button type="button" class="dark-theme-option" data-theme="5" aria-label="Tema escuro Laranja" title="Escuro: Laranja" aria-pressed="false"></button>
+      </div>
+    </div>
   </div>
 
   <!-- Patrimônio total — card existente da Início, reposicionado antes da faixa -->
@@ -437,7 +453,7 @@
       <div class="inicio-grid">
         <!-- Saúde financeira -->
         <div class="inicio-card advanced-dashboard-card">
-          <div class="balance-card-head"><span class="label">Saúde Financeira</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-heart" aria-hidden="true"></i></span></div>
+          <div class="balance-card-head"><span class="label">Saúde Financeira</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-financial-health" aria-hidden="true"></i></span></div>
           <div class="advanced-dashboard"></div>
         </div>
 
@@ -446,10 +462,6 @@
           <div class="balance-card-head"><span class="label">Próximo Pagamento</span><span class="balance-symbol" aria-hidden="true"><i class="fi fi-rr-calendar-day" aria-hidden="true"></i></span></div>
           <div class="next-pay-inner"></div>
         </div>
-      </div>
-
-      <div class="inicio-footer">
-        <button type="button" class="primary" title="Adicionar" aria-label="Adicionar"><i class="fi fi-rr-plus add-icon" aria-hidden="true"></i><i class="fi fi-rr-messages fab-chat-icon" aria-hidden="true"></i></button>
       </div>
     </div>
 
