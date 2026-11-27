@@ -58,13 +58,20 @@ function editInstitution(btn, key) {
   function setInicioEvolutionEmpty(show) {
     const empty = document.getElementById('inicioPatrimonyEvolutionEmpty');
     const box = document.getElementById('patrimonySparkBoxInicio');
+    const symbol = document.querySelector('main > .inicio-patrimony-evolution .balance-symbol');
+    const expanded = !show && !!patrimonySparkVisible;
     if (empty) empty.hidden = !show;
-    if (box) box.classList.toggle('is-empty', show);
-    if (show) {
-      hideInicioEvolutionTooltip();
-      const data = document.getElementById('inicioEvolutionData');
-      if (data) data.textContent = '';
+    if (box) {
+      box.classList.toggle('is-empty', show);
+      box.setAttribute('aria-hidden', String(show || !patrimonySparkVisible));
     }
+    if (symbol) {
+      symbol.setAttribute('aria-expanded', String(expanded));
+      symbol.setAttribute('aria-label', expanded ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
+    }
+    hideInicioEvolutionTooltip();
+    const data = document.getElementById('inicioEvolutionData');
+    if (data) data.textContent = '';
   }
 
   function hideInicioEvolutionTooltip() {
@@ -106,7 +113,7 @@ function editInstitution(btn, key) {
     const existing = patrimonySparklineInstances[context];
     try { existing?.destroy(); } catch (_) { /* instância já inválida */ }
     patrimonySparklineInstances[context] = null;
-    if (context === 'inicio') setInicioEvolutionEmpty(true);
+    if (context === 'inicio') setInicioEvolutionEmpty(false);
   }
 
   function activePatrimonySparkContext() {
@@ -157,6 +164,14 @@ function editInstitution(btn, key) {
     if (isInicioEvolution && canvas) canvas.setAttribute('aria-label', `Evolução do patrimônio ${inicioEvolutionPeriodPhrase()}`);
     if (!enabled || !patrimonySparkVisible || !canvas) {
       destroyPatrimonySparkline(ctx);
+      return;
+    }
+    const hasHistory = (Array.isArray(banks) && banks.length > 0)
+      || (Array.isArray(pockets) && pockets.length > 0)
+      || (Array.isArray(investments) && investments.length > 0);
+    if (isInicioEvolution && !hasHistory) {
+      destroyPatrimonySparkline(ctx);
+      setInicioEvolutionEmpty(true);
       return;
     }
     const inicioPeriod = isInicioEvolution ? inicioPeriodKey() : null;
@@ -365,14 +380,19 @@ function editInstitution(btn, key) {
     const box = context === 'inicio'
       ? document.querySelector('main > .inicio-patrimony-evolution .patrimony-spark-box')
       : document.getElementById('patrimonySparkBox');
-    if (symbol) {
-      symbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
-      symbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
-    }
-    if (box) {
-      box.classList.toggle('is-collapsed', !patrimonySparkVisible);
-      box.setAttribute('aria-hidden', String(!patrimonySparkVisible));
-    }
+    const syncControl = (controlSymbol, controlBox) => {
+      const isEmpty = !!controlBox?.classList.contains('is-empty');
+      const expanded = !!patrimonySparkVisible && !isEmpty;
+      if (controlSymbol) {
+        controlSymbol.setAttribute('aria-expanded', String(expanded));
+        controlSymbol.setAttribute('aria-label', expanded ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
+      }
+      if (controlBox) {
+        controlBox.classList.toggle('is-collapsed', !patrimonySparkVisible);
+        controlBox.setAttribute('aria-hidden', String(isEmpty || !patrimonySparkVisible));
+      }
+    };
+    syncControl(symbol, box);
     // Sincroniza o outro contexto
     const otherContext = context === 'inicio' ? 'strip' : 'inicio';
     const otherSymbol = otherContext === 'inicio'
@@ -381,14 +401,7 @@ function editInstitution(btn, key) {
     const otherBox = otherContext === 'inicio'
       ? document.querySelector('main > .inicio-patrimony-evolution .patrimony-spark-box')
       : document.getElementById('patrimonySparkBox');
-    if (otherSymbol) {
-      otherSymbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
-      otherSymbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
-    }
-    if (otherBox) {
-      otherBox.classList.toggle('is-collapsed', !patrimonySparkVisible);
-      otherBox.setAttribute('aria-hidden', String(!patrimonySparkVisible));
-    }
+    syncControl(otherSymbol, otherBox);
     const sparkReady = !!currentUser && !!firstLoadDone;
     if (patrimonySparkVisible) {
       syncPatrimonySparklines(sparkReady);
@@ -908,13 +921,15 @@ function editInstitution(btn, key) {
     // patrimonySparkVisible (não apenas quando há preferência salva).
     const inicioBox = document.querySelector('main > .inicio-patrimony-evolution .patrimony-spark-box');
     const inicioSymbol = document.querySelector('main > .inicio-patrimony-evolution .balance-symbol');
+    const inicioEmpty = !!inicioBox?.classList.contains('is-empty');
+    const inicioExpanded = !!patrimonySparkVisible && !inicioEmpty;
     if (inicioBox) {
       inicioBox.classList.toggle('is-collapsed', !patrimonySparkVisible);
-      inicioBox.setAttribute('aria-hidden', String(!patrimonySparkVisible));
+      inicioBox.setAttribute('aria-hidden', String(inicioEmpty || !patrimonySparkVisible));
     }
     if (inicioSymbol) {
-      inicioSymbol.setAttribute('aria-expanded', String(patrimonySparkVisible));
-      inicioSymbol.setAttribute('aria-label', patrimonySparkVisible ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
+      inicioSymbol.setAttribute('aria-expanded', String(inicioExpanded));
+      inicioSymbol.setAttribute('aria-label', inicioExpanded ? 'Recolher gráfico do patrimônio' : 'Mostrar gráfico do patrimônio');
     }
 
     // C6-INICIO-04 — listener na seção de evolução da Início: o host é estático
