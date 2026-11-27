@@ -37,6 +37,7 @@ Implementar um bloco compacto de acompanhamento de orçamentos na aba Início, c
 - Nenhuma alteração ao output de `renderAdvancedDashboard()` para Visão Geral.
 - Ajuste de proporção tipográfica após revisão visual: rótulo do card alinhado aos demais cards da Início (13px), percentual reduzido para `clamp(20px, 2vw, 24px)`, status para 11px e nome das categorias/ação “Ver todos os orçamentos” para 12px. Evidências: `tmp-c13/c6-3/prints/orcamento-390-fontes.png` e `orcamento-final-390.png`.
 - Ajuste de responsividade após revisão visual: `Utilizado / Previsto / Disponível` permanecem em uma única linha também em 320px. Evidência: `tmp-c13/c6-3/prints/orcamento-320-valores-linha.png`.
+- Ajuste posterior na BNI: botão ativo deixou de crescer (`flex:0 1 auto`) e a barra passou a distribuir o espaço com `justify-content:space-between`, uniformizando os ícones. Evidências: `tmp-c13/c6-3/prints/nav-uniformizada-{320,360,390}.png` e `nav-uniformizada.json`.
 
 ## 4. Arquivos alterados/criados
 
@@ -71,6 +72,7 @@ Implementar um bloco compacto de acompanhamento de orçamentos na aba Início, c
 | CDP — proporção tipográfica | PASS | Rótulo 13px, percentual 20px em 390px/24px em 1280px, status 11px, categoria e ação 12px. |
 | CDP — valores em uma linha em 320px | PASS | Três colunas no mesmo `y`, sem overflow horizontal. |
 | CDP — BNI nos estados finais | PASS | Capturas em 320/360/390, caixa, dashboard e tema escuro. |
+| CDP — BNI uniformizada | PASS | Gaps iguais entre botões (13,2px em 320; 7px em 360; 14,5px em 390), pílula alinhada ao botão ativo e sem overflow. |
 | CDP — estado vazio e limite zero | PASS | Mensagens distintas, sem percentual fictício e sem barras. |
 | Playwright local | BLOCKED | `Error: Unsupported platform: android`; `sh: 1: playwright: not found`. |
 | C.O.D.E. remoto | NOT RUN | Workflow manual; não disparado. |

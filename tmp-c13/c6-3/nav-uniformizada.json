@@ -1,0 +1,44 @@
+{
+  "320": {
+    "gaps": [
+      13.2,
+      13.2,
+      13.2,
+      13.2
+    ],
+    "activeW": 51.4,
+    "pill": {
+      "x": "3px",
+      "width": "51px"
+    },
+    "overflow": false
+  },
+  "360": {
+    "gaps": [
+      7,
+      7,
+      7,
+      7
+    ],
+    "activeW": 68,
+    "pill": {
+      "x": "3px",
+      "width": "68px"
+    },
+    "overflow": false
+  },
+  "390": {
+    "gaps": [
+      14.5,
+      14.5,
+      14.5,
+      14.5
+    ],
+    "activeW": 68,
+    "pill": {
+      "x": "3px",
+      "width": "68px"
+    },
+    "overflow": false
+  }
+}

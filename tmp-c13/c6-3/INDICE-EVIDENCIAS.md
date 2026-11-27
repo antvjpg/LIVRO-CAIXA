@@ -64,6 +64,8 @@
 - `prints/orcamento-final-320.png`
 - `prints/orcamento-final-360.png`
 - `prints/orcamento-final-390.png`
+- `prints/final-320-orcamento-bni.png`
+- `prints/final-390-orcamento-bni.png`
 - `prints/orcamento-final-1280.png`
 - `prints/orcamento-390-fontes.png` — comparação após primeiro ajuste tipográfico.
 - `prints/orcamento-320-valores-linha.png` — validação dos três valores em uma linha em 320px.
@@ -75,6 +77,10 @@
 - `prints/nav-final-390-caixa.png`
 - `prints/nav-final-390-dashboard.png`
 - `prints/nav-final-390-escuro.png`
+- `prints/nav-uniformizada-320.png`
+- `prints/nav-uniformizada-360.png`
+- `prints/nav-uniformizada-390.png`
+- `nav-uniformizada.json` — gaps, largura do ativo e alinhamento da pílula após uniformização.
 
 ### Testes
 - `e2e/smoke/inicio-orcamentos.spec.js` — cálculo, estado vazio/zero, navegação, alternância, duplicação e responsividade.
