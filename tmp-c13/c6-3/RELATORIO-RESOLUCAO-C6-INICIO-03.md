@@ -144,4 +144,40 @@
 
 Não há interferência indevida demonstrada entre Início e Visão Geral após as correções. A-05 e A-06 são acoplamentos reais, mas com outros destinos (`dash` e Livro-Caixa), e foram documentados sem alteração. A-07, P-01 e P-02 eram defeitos comprovados e foram corrigidos com mudanças localizadas. A-08 não exige correção adicional.
 
+## 9. Correção pontual pós-revisão — estado vazio por ciclo
+
+A revisão do commit `651c081` apontou uma inconsistência em P-02: `hasConfigured` considerava qualquer orçamento armazenado, inclusive de ciclos anteriores. Com apenas um orçamento antigo, `budgetFor()` o ignorava corretamente, mas a interface exibia “Defina limites” em vez de “Você ainda não tem orçamentos para este ciclo”.
+
+**Código anterior:**
+```js
+const hasConfigured = Array.isArray(budgets) && budgets.length > 0;
+```
+
+**Código atual:**
+```js
+const hasCurrentBudget = Array.isArray(budgets) && budgets.some(item => {
+  if (!item || !item.categoryId) return false;
+  const selected = budgetFor(item.categoryId);
+  return !!selected && selected.id === item.id;
+});
+```
+
+A mensagem agora distingue:
+- nenhum orçamento selecionável no ciclo → “Você ainda não tem orçamentos cadastrados para este ciclo”;
+- orçamento do ciclo com limite zero → “Defina limites para acompanhar seus orçamentos neste ciclo”;
+- limites positivos → renderização normal.
+
+O teste de limite zero foi ajustado para usar `month: cycle` em vez de um mês fixo, preservando a distinção entre cenários.
+
+**Validação CDP (`validacao-estado-vazio-ciclo.json`):**
+
+| Cenário | Mensagem observada |
+|---|---|
+| Sem orçamento | “Você ainda não tem orçamentos cadastrados para este ciclo.” |
+| Somente orçamento do ciclo anterior | “Você ainda não tem orçamentos cadastrados para este ciclo.” |
+| Orçamento do ciclo com valor zero | “Defina limites para acompanhar seus orçamentos neste ciclo.” |
+| Orçamento positivo do ciclo | Render normal, 50%, duas barras. |
+
+O spec E2E permanece **BLOCKED** localmente por Playwright; os cenários foram escritos, mas não executados neste ambiente.
+
 **Não foi feito commit, push, merge, release ou deploy.**

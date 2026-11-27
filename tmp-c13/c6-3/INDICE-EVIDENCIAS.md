@@ -62,6 +62,7 @@
 - `tmp-c13/c6-3/RELATORIO-RESOLUCAO-C6-INICIO-03.md` — diagnóstico A-05 a A-08, P-01/P-02, correções e parecer final.
 - `tmp-c13/c6-3/diagnostico-pre-correcao.json` — estado CDP observado antes das correções.
 - `tmp-c13/c6-3/diagnostico-pos-correcao.json` — estado CDP observado depois das correções.
+- `tmp-c13/c6-3/validacao-estado-vazio-ciclo.json` — distinção entre sem orçamento, orçamento antigo, limite zero e limite positivo.
 
 ### Bloco de Orçamentos
 - `prints/orcamento-final-320.png`

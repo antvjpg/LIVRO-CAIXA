@@ -257,7 +257,7 @@ test.describe('Início — bloco de Orçamentos', () => {
 
   test('exibe estado vazio e estado de limite zero sem percentuais fictícios', async ({ page }) => {
     await abrir(page);
-    await injetar(page, { budgets: [], entries: [] });
+    const { cycle } = await injetar(page, { budgets: [], entries: [] });
     let snap = await snapshot(page);
     expect(snap.empty).toBe(true);
     expect(snap.emptyText).toContain('Você ainda não tem orçamentos');
@@ -265,7 +265,7 @@ test.describe('Início — bloco de Orçamentos', () => {
     expect(snap.progressbars).toBe(0);
 
     await injetar(page, {
-      budgets: [{ id: 'bud_zero', categoryId: 'cat_alim', amount: 0, month: '2026-01', updatedAt: '2026-01-01T00:00:00Z' }],
+      budgets: [{ id: 'bud_zero', categoryId: 'cat_alim', amount: 0, month: cycle, updatedAt: '2026-01-01T00:00:00Z' }],
       entries: [],
     });
     snap = await snapshot(page);

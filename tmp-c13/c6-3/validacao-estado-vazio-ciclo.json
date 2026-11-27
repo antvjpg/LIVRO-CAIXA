@@ -1,0 +1,28 @@
+{
+  "cycle": "2026-11",
+  "previous": "2026-10",
+  "semOrcamento": {
+    "empty": true,
+    "message": "Você ainda não tem orçamentos cadastrados para este ciclo.",
+    "percent": "",
+    "bars": 0
+  },
+  "soAntigo": {
+    "empty": true,
+    "message": "Você ainda não tem orçamentos cadastrados para este ciclo.",
+    "percent": "",
+    "bars": 0
+  },
+  "zeroCicloAtual": {
+    "empty": true,
+    "message": "Defina limites para acompanhar seus orçamentos neste ciclo.",
+    "percent": "",
+    "bars": 0
+  },
+  "valorPositivo": {
+    "empty": false,
+    "message": "",
+    "percent": "50%",
+    "bars": 2
+  }
+}

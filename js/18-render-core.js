@@ -3342,9 +3342,13 @@ function checkLocalPinLock() {
     const percentText = value => `${Math.round(Number.isFinite(value) ? value : 0).toString().replace('-', '−')}%`;
     const pctText = planned > 0 ? percentText(pct) : '—';
     const visualPct = Math.max(0, Math.min(100, pct));
-    const hasConfigured = Array.isArray(budgets) && budgets.length > 0;
-    if (!hasConfigured || planned <= 0) {
-      const message = hasConfigured
+    const hasCurrentBudget = Array.isArray(budgets) && budgets.some(item => {
+      if (!item || !item.categoryId) return false;
+      const selected = budgetFor(item.categoryId);
+      return !!selected && selected.id === item.id;
+    });
+    if (!hasCurrentBudget || planned <= 0) {
+      const message = hasCurrentBudget
         ? 'Defina limites para acompanhar seus orçamentos neste ciclo.'
         : 'Você ainda não tem orçamentos cadastrados para este ciclo.';
       host.innerHTML = `<div class="inicio-budget-empty"><p>${message}</p><button type="button" class="inicio-budget-action" data-open-budget>Configurar orçamentos<span class="inicio-budget-chevron" aria-hidden="true"></span></button></div>`;
