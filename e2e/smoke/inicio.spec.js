@@ -358,6 +358,23 @@ test.describe('Início — navegação e renderização', () => {
     await page.locator('#inicioPeriodSelect').selectOption('6m');
     await expect.poll(async () => (await chartSnapshot()).inicioPoints).toBe(6);
 
+    const canvas = page.locator('#patrimonySparklineInicio');
+    const evolutionData = page.locator('#inicioEvolutionData');
+    await expect(canvas).toHaveAttribute('aria-describedby', 'inicioEvolutionData');
+    await expect(canvas).toHaveAttribute('aria-label', 'Evolução do patrimônio nos últimos 6 meses');
+    expect((await evolutionData.textContent() || '').split(';').length).toBe(6);
+    await expect(page.locator('#inicioPatrimonyEvolutionEmpty')).toHaveAttribute('role', 'status');
+    await expect(page.locator('#inicioPatrimonyEvolutionEmpty')).toHaveAttribute('aria-live', 'polite');
+
+    await page.locator('#inicioPeriodSelect').selectOption('3m');
+    await expect.poll(async () => canvas.getAttribute('aria-label')).toBe('Evolução do patrimônio nos últimos 3 meses');
+    await expect.poll(async () => (await evolutionData.textContent() || '').split(';').length).toBe(3);
+    await page.locator('#inicioPeriodSelect').selectOption('1y');
+    await expect.poll(async () => canvas.getAttribute('aria-label')).toBe('Evolução do patrimônio no último ano');
+    await expect.poll(async () => (await evolutionData.textContent() || '').split(';').length).toBe(12);
+    await page.locator('#inicioPeriodSelect').selectOption('6m');
+    await expect.poll(async () => (await evolutionData.textContent() || '').split(';').length).toBe(6);
+
     const searchNav = page.locator('#btnUniversalSearchNav');
     expect(await searchNav.count()).toBe(1);
     if (await searchNav.isVisible()) {

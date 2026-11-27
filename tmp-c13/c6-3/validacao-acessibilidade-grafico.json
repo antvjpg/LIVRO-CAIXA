@@ -1,0 +1,117 @@
+{
+  "3m": {
+    "label": "Evolução do patrimônio nos últimos 3 meses",
+    "describedBy": "inicioEvolutionData",
+    "entries": [
+      "Evolução do patrimônio nos últimos 3 meses: set: R$ 0,00",
+      "out: R$ 0,00",
+      "nov: R$ 0,00."
+    ],
+    "text": "Evolução do patrimônio nos últimos 3 meses: set: R$ 0,00; out: R$ 0,00; nov: R$ 0,00.",
+    "hiddenStyle": {
+      "position": "absolute",
+      "width": "1px",
+      "height": "1px",
+      "clip": "rect(0px, 0px, 0px, 0px)"
+    },
+    "emptyAttr": {
+      "role": "status",
+      "live": "polite",
+      "hidden": true
+    }
+  },
+  "6m": {
+    "label": "Evolução do patrimônio nos últimos 6 meses",
+    "describedBy": "inicioEvolutionData",
+    "entries": [
+      "Evolução do patrimônio nos últimos 6 meses: jun: R$ 0,00",
+      "jul: R$ 0,00",
+      "ago: R$ 0,00",
+      "set: R$ 0,00",
+      "out: R$ 0,00",
+      "nov: R$ 0,00."
+    ],
+    "text": "Evolução do patrimônio nos últimos 6 meses: jun: R$ 0,00; jul: R$ 0,00; ago: R$ 0,00; set: R$ 0,00; out: R$ 0,00; nov: R$ 0,00.",
+    "hiddenStyle": {
+      "position": "absolute",
+      "width": "1px",
+      "height": "1px",
+      "clip": "rect(0px, 0px, 0px, 0px)"
+    },
+    "emptyAttr": {
+      "role": "status",
+      "live": "polite",
+      "hidden": true
+    }
+  },
+  "1y": {
+    "label": "Evolução do patrimônio no último ano",
+    "describedBy": "inicioEvolutionData",
+    "entries": [
+      "Evolução do patrimônio no último ano: dez: R$ 0,00",
+      "jan: R$ 0,00",
+      "fev: R$ 0,00",
+      "mar: R$ 0,00",
+      "abr: R$ 0,00",
+      "mai: R$ 0,00",
+      "jun: R$ 0,00",
+      "jul: R$ 0,00",
+      "ago: R$ 0,00",
+      "set: R$ 0,00",
+      "out: R$ 0,00",
+      "nov: R$ 0,00."
+    ],
+    "text": "Evolução do patrimônio no último ano: dez: R$ 0,00; jan: R$ 0,00; fev: R$ 0,00; mar: R$ 0,00; abr: R$ 0,00; mai: R$ 0,00; jun: R$ 0,00; jul: R$ 0,00; ago: R$ 0,00; set: R$ 0,00; out: R$ 0,00; nov: R$ 0,00.",
+    "hiddenStyle": {
+      "position": "absolute",
+      "width": "1px",
+      "height": "1px",
+      "clip": "rect(0px, 0px, 0px, 0px)"
+    },
+    "emptyAttr": {
+      "role": "status",
+      "live": "polite",
+      "hidden": true
+    }
+  },
+  "emptyAX": {
+    "status": {
+      "role": "status",
+      "properties": [
+        {
+          "name": "live",
+          "value": "polite"
+        },
+        {
+          "name": "atomic",
+          "value": true
+        },
+        {
+          "name": "relevant",
+          "value": "additions text"
+        }
+      ]
+    },
+    "text": {
+      "role": "StaticText",
+      "name": "Sem histórico disponível para exibir a evolução."
+    }
+  },
+  "emptyAfterShow": {
+    "label": "Evolução do patrimônio no último ano",
+    "describedBy": "inicioEvolutionData",
+    "entries": [],
+    "text": "",
+    "hiddenStyle": {
+      "position": "absolute",
+      "width": "1px",
+      "height": "1px",
+      "clip": "rect(0px, 0px, 0px, 0px)"
+    },
+    "emptyAttr": {
+      "role": "status",
+      "live": "polite",
+      "hidden": false
+    }
+  }
+}

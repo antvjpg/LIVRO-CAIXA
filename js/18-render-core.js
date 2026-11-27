@@ -60,7 +60,11 @@ function editInstitution(btn, key) {
     const box = document.getElementById('patrimonySparkBoxInicio');
     if (empty) empty.hidden = !show;
     if (box) box.classList.toggle('is-empty', show);
-    if (show) hideInicioEvolutionTooltip();
+    if (show) {
+      hideInicioEvolutionTooltip();
+      const data = document.getElementById('inicioEvolutionData');
+      if (data) data.textContent = '';
+    }
   }
 
   function hideInicioEvolutionTooltip() {
@@ -71,6 +75,25 @@ function editInstitution(btn, key) {
   function inicioPeriodKey() {
     const period = typeof dashFilters !== 'undefined' ? dashFilters?.period : null;
     return period === '3m' || period === '1y' ? period : '6m';
+  }
+
+  function inicioEvolutionPeriodPhrase() {
+    return inicioPeriodKey() === '3m'
+      ? 'nos últimos 3 meses'
+      : inicioPeriodKey() === '1y'
+        ? 'no último ano'
+        : 'nos últimos 6 meses';
+  }
+
+  function updateInicioEvolutionData(series) {
+    const host = document.getElementById('inicioEvolutionData');
+    if (!host) return;
+    const values = Array.isArray(series)
+      ? series.map(item => `${item.label}: ${fmt(item.patrimony)}`).join('; ')
+      : '';
+    host.textContent = values
+      ? `Evolução do patrimônio ${inicioEvolutionPeriodPhrase()}: ${values}.`
+      : '';
   }
 
   function syncInicioPeriodUI() {
@@ -131,6 +154,7 @@ function editInstitution(btn, key) {
     const isInicioEvolution = ctx === 'inicio';
     const targetCanvasId = isInicioEvolution ? 'patrimonySparklineInicio' : 'patrimonySparkline';
     const canvas = document.getElementById(targetCanvasId);
+    if (isInicioEvolution && canvas) canvas.setAttribute('aria-label', `Evolução do patrimônio ${inicioEvolutionPeriodPhrase()}`);
     if (!enabled || !patrimonySparkVisible || !canvas) {
       destroyPatrimonySparkline(ctx);
       return;
@@ -240,7 +264,10 @@ function editInstitution(btn, key) {
         dataset.pointHoverBackgroundColor = lineColor;
       }
       existing.update();
-      if (isInicioEvolution) setInicioEvolutionEmpty(false);
+      if (isInicioEvolution) {
+        setInicioEvolutionEmpty(false);
+        updateInicioEvolutionData(series);
+      }
       return;
     }
     destroyPatrimonySparkline(ctx);
@@ -321,7 +348,10 @@ function editInstitution(btn, key) {
           : { x: { display: false }, y: { display: false, min: min - pad, max: max + pad } }
       }
     });
-    if (isInicioEvolution) setInicioEvolutionEmpty(false);
+    if (isInicioEvolution) {
+      setInicioEvolutionEmpty(false);
+      updateInicioEvolutionData(series);
+    }
   }
 
   function togglePatrimonySparkline(context) {

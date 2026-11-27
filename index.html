@@ -256,10 +256,11 @@
       </div>
     </div>
     <div class="patrimony-spark-box" id="patrimonySparkBoxInicio" aria-hidden="false">
-      <canvas id="patrimonySparklineInicio" role="img" aria-label="Evolução do patrimônio nos últimos 6 meses"></canvas>
+      <canvas id="patrimonySparklineInicio" role="img" aria-label="Evolução do patrimônio nos últimos 6 meses" aria-describedby="inicioEvolutionData"></canvas>
+      <div id="inicioEvolutionData" class="card-visually-hidden"></div>
       <span class="inicio-evolution-tooltip" id="inicioEvolutionTooltip" role="status" hidden></span>
     </div>
-    <p class="inicio-patrimony-evolution-empty" id="inicioPatrimonyEvolutionEmpty" hidden>Sem histórico disponível para exibir a evolução.</p>
+    <p class="inicio-patrimony-evolution-empty" id="inicioPatrimonyEvolutionEmpty" role="status" aria-live="polite" hidden>Sem histórico disponível para exibir a evolução.</p>
   </section>
 
   <!-- V18-12: estado atual e histórico são independentes; este seletor controla apenas o período visualizado. -->
