@@ -7,6 +7,7 @@ const app = require('../helpers/app');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials } = require('../helpers/env');
 const qa = require('../helpers/qa-account');
+const fixtures = require('../fixtures/fixtures');
 
 test.describe('Início — navegação e renderização', () => {
   let watchAtual = null;
@@ -487,6 +488,72 @@ test.describe('Início — navegação e renderização', () => {
       contentType: 'text/plain',
     });
 
+    expect(watch.pageErrors(), 'erros não tratados na página').toHaveLength(0);
+  });
+
+  test('FAB global abre novo lançamento na aba Início', async ({ page }, testInfo) => {
+    const creds = resolveCredentials();
+    const dialogs = app.attachDialogHandler(page);
+    const watch = watchPage(page);
+    watchAtual = watch;
+
+    const sessao = await qa.ensureUiSession(page, creds);
+    if (sessao.status !== 'ok') {
+      const diag = await page
+        .evaluate(() => ({
+          origem: location.origin,
+          chavesLocalStorage: Object.keys(localStorage).length,
+          sessaoPersistida: Object.keys(localStorage).some((k) => k.indexOf('firebase:authUser:') === 0),
+          overlayAuthOculto: document.getElementById('authOverlay')?.classList.contains('hidden') === true,
+        }))
+        .catch(() => ({ erro: 'sem acesso ao contexto da página' }));
+      test.skip(
+        true,
+        `BLOCKED: sem sessão QA — ${sessao.error} | ${sessao.hint || ''} — origem=${diag.origem} chaves=${diag.chavesLocalStorage} persistida=${diag.sessaoPersistida} overlayOculto=${diag.overlayAuthOculto}`
+      );
+    }
+
+    if (creds) await expect(page.locator('#userBar')).toContainText(creds.email, { timeout: 20_000 });
+
+    await app.waitForDataReady(page);
+    await expect(page.locator('#syncOverlay')).toBeHidden({ timeout: 30_000 });
+
+    await app.openTab(page, 'inicio');
+    await expect(page.locator('#viewInicio')).toHaveClass(/active/);
+    await expect(page.locator('body')).toHaveAttribute('data-tab', 'inicio');
+    await expect(page.locator('#viewInicio .inicio-footer button')).toHaveCount(0);
+
+    await app.ensureBankExists(page, fixtures.bank.name, fixtures.bank.initial);
+    const ledgerAntes = await app.ledgerCount(page);
+
+    await app.openNewEntry(page, fixtures.bank.name);
+
+    await expect(page.locator('#panelNovo')).toHaveClass(/open/);
+    await expect(page.locator('#panelNovoTitle')).toContainText('Novo lançamento');
+    await expect(page.locator('#viewInicio')).toHaveClass(/active/);
+    await expect(page.locator('body')).toHaveAttribute('data-tab', 'inicio');
+
+    for (const selector of ['#tglIn', '#tglOut', '#fData', '#fDesc', '#fBanco', '#fValor', '#fSalvar']) {
+      await expect(page.locator(selector), `campo ${selector}`).toBeVisible();
+    }
+    await expect(page.locator('#fBanco option')).not.toHaveCount(0);
+
+    await testInfo.attach('inicio-fab-novo-lancamento.txt', {
+      body: [
+        `url=${page.url()}`,
+        `usuario=${creds ? creds.email : 'n/d'}`,
+        `aba=${await page.locator('body').getAttribute('data-tab')}`,
+        `painelNovoAberto=${await page.locator('#panelNovo').evaluate((el) => el.classList.contains('open'))}`,
+        `ledgerAntes=${ledgerAntes}`,
+        `dialogos=${dialogs.length}`,
+        `console=${JSON.stringify(watch.counts())}`,
+      ].join('\n'),
+      contentType: 'text/plain',
+    });
+
+    await page.evaluate(() => window.closeAllPanels?.());
+    await expect(page.locator('#panelNovo')).not.toHaveClass(/open/);
+    expect(await app.ledgerCount(page), 'nenhum lançamento deve ser salvo ao fechar o painel').toBe(ledgerAntes);
     expect(watch.pageErrors(), 'erros não tratados na página').toHaveLength(0);
   });
 });
