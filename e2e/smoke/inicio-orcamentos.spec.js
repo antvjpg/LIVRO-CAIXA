@@ -49,6 +49,7 @@ test.describe('Início — bloco de Orçamentos', () => {
       }
       const cycle = currentFinancialCycleKey();
       const { start } = financialCycleRangeForKey(cycle);
+      const spent = overrides.spent || {};
       const nextCategories = overrides.categories || [
         { id: 'cat_alim', name: 'Alimentação' },
         { id: 'cat_moradia', name: 'Moradia' },
@@ -65,10 +66,10 @@ test.describe('Início — bloco de Orçamentos', () => {
         : overrides.budgets;
       const nextEntries = overrides.entries === undefined
         ? [
-            { id: 'e_alim', type: 'out', category: 'cat_alim', amount: overrides.alimSpent === undefined ? 1050 : overrides.alimSpent, date: start },
-            { id: 'e_moradia', type: 'out', category: 'cat_moradia', amount: 1200, date: start },
-            { id: 'e_transp', type: 'out', category: 'cat_transp', amount: 320, date: start },
-            { id: 'e_educ', type: 'out', category: 'cat_educ', amount: 100, date: start },
+            { id: 'e_alim', type: 'out', category: 'cat_alim', amount: spent.cat_alim ?? overrides.alimSpent ?? 1050, date: start },
+            { id: 'e_moradia', type: 'out', category: 'cat_moradia', amount: spent.cat_moradia ?? 1200, date: start },
+            { id: 'e_transp', type: 'out', category: 'cat_transp', amount: spent.cat_transp ?? 320, date: start },
+            { id: 'e_educ', type: 'out', category: 'cat_educ', amount: spent.cat_educ ?? 100, date: start },
           ]
         : overrides.entries;
       budgets = nextBudgets;
@@ -123,7 +124,7 @@ test.describe('Início — bloco de Orçamentos', () => {
     expect(snap.progressbars).toBe(4);
     expect(snap.empty).toBe(false);
     expect(snap.percent).toBe('53%');
-    expect(snap.status).toBe('Dentro do limite');
+    expect(snap.status).toBe('Limite excedido');
     expect(snap.totalTrack.realPercent).toBe('53.40');
     expect(snap.totalTrack.ariaLabel).toBe('Utilização geral do orçamento');
     expect(snap.values).toEqual(['R$ 2.670,00', 'R$ 5.000,00', 'R$ 2.330,00']);
@@ -153,6 +154,105 @@ test.describe('Início — bloco de Orçamentos', () => {
     expect(snap.categories[0].realPercent).toBe('150.00');
     expect(snap.categories[0].ariaNow).toBe('100');
     expect(snap.percent).toBe('62%');
+    expect(snap.status).toBe('Limite excedido');
+  });
+
+  test('status geral reflete a categoria mais grave', async ({ page }) => {
+    await abrir(page);
+    await injetar(page, { spent: { cat_alim: 700, cat_moradia: 900, cat_transp: 300, cat_educ: 1000 } });
+    let snap = await snapshot(page);
+    expect(snap.percent).toBe('58%');
+    expect(snap.status).toBe('Dentro do limite');
+    expect(snap.categories.every((row) => row.flag === '')).toBe(true);
+
+    await injetar(page, { spent: { cat_alim: 1200, cat_moradia: 600, cat_transp: 200, cat_educ: 100 } });
+    snap = await snapshot(page);
+    expect(snap.percent).toBe('42%');
+    expect(snap.status).toBe('Limite excedido');
+    expect(snap.categories[0].flag).toBe('Excedido');
+    expect(snap.categories[1].flag).toBe('');
+
+    await injetar(page, {
+      budgets: [
+        { id: 'bud_alim', categoryId: 'cat_alim', amount: 1000, updatedAt: '2026-01-01T00:00:00Z' },
+        { id: 'bud_transp', categoryId: 'cat_transp', amount: 500, updatedAt: '2026-01-01T00:00:00Z' },
+      ],
+      spent: { cat_alim: 1200, cat_transp: 600 },
+    });
+    snap = await snapshot(page);
+    expect(snap.percent).toBe('120%');
+    expect(snap.status).toBe('Limite excedido');
+    expect(snap.categories.filter((row) => row.flag === 'Excedido').length).toBe(2);
+
+    await injetar(page, { spent: { cat_alim: 1000, cat_moradia: 900, cat_transp: 300, cat_educ: 1000 } });
+    snap = await snapshot(page);
+    expect(snap.percent).toBe('64%');
+    expect(snap.status).toBe('Limite excedido');
+  });
+
+  test('alertas da Visão Geral não são consumidos por renderizações repetidas', async ({ page }) => {
+    await abrir(page);
+    await injetar(page);
+    const ler = () => page.evaluate(() => ({
+      alerts: (document.querySelector('#viewDashboard .dashboard-alerts')?.textContent || '').replace(/\s+/g, ' ').trim(),
+      stored: localStorage.getItem('livrocaixa_budget_alerts_shown'),
+    }));
+
+    await page.evaluate(() => {
+      localStorage.removeItem('livrocaixa_budget_alerts_shown');
+      renderAdvancedDashboard();
+    });
+    const primeiro = await ler();
+    expect(primeiro.alerts).toContain('Limite ultrapassado');
+    expect(primeiro.stored).toBeNull();
+
+    await page.evaluate(() => renderAdvancedDashboard());
+    const segundo = await ler();
+    expect(segundo.alerts).toBe(primeiro.alerts);
+    expect(segundo.stored).toBeNull();
+
+    await app.openTab(page, 'dashboard');
+    await app.openTab(page, 'inicio');
+    await app.openTab(page, 'dashboard');
+    expect(await ler()).toEqual(primeiro);
+  });
+
+  test('orçamento selecionado respeita o ciclo financeiro atual', async ({ page }) => {
+    await abrir(page);
+    const cycleInfo = await page.evaluate(() => {
+      const cycle = currentFinancialCycleKey();
+      const previous = cycle.replace(/(\d{4})-(\d{2})/, (_, year, month) => month === '01'
+        ? `${Number(year) - 1}-12`
+        : `${year}-${String(Number(month) - 1).padStart(2, '0')}`);
+      return { cycle, previous };
+    });
+
+    await injetar(page, {
+      budgets: [{ id: 'bud_cur', categoryId: 'cat_alim', amount: 1000, month: cycleInfo.cycle, updatedAt: '2026-01-01T00:00:00Z' }],
+      spent: { cat_alim: 500 },
+    });
+    let snap = await snapshot(page);
+    expect(snap.values[1]).toBe('R$ 1.000,00');
+    expect(snap.percent).toBe('50%');
+
+    await injetar(page, {
+      budgets: [{ id: 'bud_old', categoryId: 'cat_alim', amount: 1000, month: cycleInfo.previous, updatedAt: '2026-01-01T00:00:00Z' }],
+      spent: { cat_alim: 500 },
+    });
+    snap = await snapshot(page);
+    expect(snap.empty).toBe(true);
+    expect(snap.emptyText).toContain('não tem orçamentos');
+
+    await injetar(page, {
+      budgets: [
+        { id: 'bud_cur', categoryId: 'cat_alim', amount: 800, month: cycleInfo.cycle, updatedAt: '2026-01-01T00:00:00Z' },
+        { id: 'bud_old', categoryId: 'cat_alim', amount: 5000, month: cycleInfo.previous, updatedAt: '2026-06-01T00:00:00Z' },
+      ],
+      spent: { cat_alim: 400 },
+    });
+    snap = await snapshot(page);
+    expect(snap.values[1]).toBe('R$ 800,00');
+    expect(snap.percent).toBe('50%');
   });
 
   test('exibe estado vazio e estado de limite zero sem percentuais fictícios', async ({ page }) => {

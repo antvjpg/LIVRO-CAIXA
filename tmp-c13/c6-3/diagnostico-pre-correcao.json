@@ -1,0 +1,34 @@
+{
+  "_origem": "Saída CDP observada antes das correções; transcrita para preservar o estado pré-alteração. O arquivo de medição automática foi sobrescrito pela execução pós-correção.",
+  "A05": {
+    "periodStorage": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
+    "visaoGeral": { "mentions3m": false },
+    "dash": { "values": ["7d", "30d", "6m", "1y", "custom"], "active": [] }
+  },
+  "A06": {
+    "inicio": { "pref": "0", "chart": true },
+    "caixa": { "pref": "0", "totalExpanded": "true", "totalCollapsed": false, "stripChart": false }
+  },
+  "A07": {
+    "render1": {
+      "alerts": "Avisos importantesAtualizado agora!Fluxo negativoAs saídas superam as entradas em R$ 1.050,00.!Limite ultrapassadoVocê ultrapassou o limite de Alimentação em R$ 50,00.",
+      "key": "{\"cat_alim_2026-11_over\":true}"
+    },
+    "render2": {
+      "alerts": "Avisos importantesAtualizado agora!Fluxo negativoAs saídas superam as entradas em R$ 1.050,00.",
+      "key": "{\"cat_alim_2026-11_over\":true}"
+    },
+    "afterToggle": {
+      "alerts": "Avisos importantesAtualizado agora!Fluxo negativoAs saídas superam as entradas em R$ 1.050,00.",
+      "key": "{\"cat_alim_2026-11_over\":true}"
+    }
+  },
+  "A08": { "counts": { "hosts": 1, "summaries": 1, "actions": 1, "bars": 2 } },
+  "P01_misto": { "percent": "53%", "status": "Dentro do limite", "flags": ["Excedido", "Atenção"] },
+  "P02": {
+    "cycle": "2026-11",
+    "prev": "2026-10",
+    "found": { "amount": 1000, "month": "2026-10" },
+    "rows": [{ "name": "Alimentação", "planned": 1000, "spent": 1050, "pct": 105 }]
+  }
+}

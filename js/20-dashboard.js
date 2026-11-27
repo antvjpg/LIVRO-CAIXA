@@ -222,9 +222,6 @@
       const pct = spent / budget.amount * 100;
       const tier = pct >= 100 ? 'over' : pct >= 80 ? '80' : null;
       if (!tier) return;
-      const alertKey = `${cat.id}_${budgetCycle}_${tier}`;
-      if (getShownBudgetAlerts()[alertKey]) return;
-      markBudgetAlertShown(alertKey);
       const msg = tier === 'over'
         ? `Você ultrapassou o limite de ${cat.name} em ${fmt(spent - budget.amount)}.`
         : `Você já utilizou ${pct.toFixed(0)}% do limite de ${cat.name}.`;
@@ -1833,7 +1830,7 @@
         ? readMoneyInput(document.getElementById('featureSavingsGoalAmount'))
         : featureSettings.monthlySavingsGoal });
     budgets = budgets.filter(item => !document.getElementById(`budget-${item.categoryId}`));
-    document.querySelectorAll('[data-budget-category]').forEach(input => { const amount = readMoneyInput(input); const categoryId = input.dataset.budgetCategory; if (amount > 0) budgets.push({ id: `bud_${categoryId}`, categoryId, month: currentMonthYM(), amount, updatedAt: new Date().toISOString() }); });
+    document.querySelectorAll('[data-budget-category]').forEach(input => { const amount = readMoneyInput(input); const categoryId = input.dataset.budgetCategory; if (amount > 0) budgets.push({ id: `bud_${categoryId}`, categoryId, month: currentFinancialCycleKey(), amount, updatedAt: new Date().toISOString() }); });
     persistFeatureSettings();
     if (!silent && statusEl) statusEl.textContent = 'Salvando…';
     try {

@@ -3306,10 +3306,14 @@ function checkLocalPinLock() {
     lockPinNow();
 }
 
-  function budgetFor(categoryId) {
-    const matches = budgets.filter(item => item.categoryId === categoryId);
+  function budgetFor(categoryId, cycleKey = currentFinancialCycleKey()) {
+    const allowedMonths = new Set([cycleKey]);
+    if (typeof currentMonthYM === 'function') allowedMonths.add(currentMonthYM());
+    const matches = budgets.filter(item => item.categoryId === categoryId && allowedMonths.has(item.month));
     if (!matches.length) return null;
-    return matches.reduce((latest, item) => (!latest || new Date(item.updatedAt || 0) > new Date(latest.updatedAt || 0)) ? item : latest, null);
+    const exact = matches.filter(item => item.month === cycleKey);
+    const candidates = exact.length ? exact : matches;
+    return candidates.reduce((latest, item) => (!latest || new Date(item.updatedAt || 0) > new Date(latest.updatedAt || 0)) ? item : latest, null);
   }
   function budgetSpent(categoryId, cycleKey = currentFinancialCycleKey()) {
     const { start, end } = financialCycleRangeForKey(cycleKey);
@@ -3328,7 +3332,12 @@ function checkLocalPinLock() {
     const rest = planned - spent;
     const rawPct = planned > 0 ? spent / planned * 100 : 0;
     const pct = Number.isFinite(rawPct) ? rawPct : 0;
-    const tier = pct >= 100 ? 'excedido' : pct >= 80 ? 'atencao' : 'normal';
+    const tierFor = value => value >= 100 ? 'excedido' : value >= 80 ? 'atencao' : 'normal';
+    const tierRank = { normal: 0, atencao: 1, excedido: 2 };
+    const tier = rows.reduce((worst, row) => {
+      const rowTier = tierFor(Math.max(0, Number(row.pct) || 0));
+      return tierRank[rowTier] > tierRank[worst] ? rowTier : worst;
+    }, tierFor(pct));
     const statusLabel = tier === 'excedido' ? 'Limite excedido' : tier === 'atencao' ? 'Atenção' : 'Dentro do limite';
     const percentText = value => `${Math.round(Number.isFinite(value) ? value : 0).toString().replace('-', '−')}%`;
     const pctText = planned > 0 ? percentText(pct) : '—';

@@ -1,0 +1,30 @@
+{
+  "A05": {
+    "periodStorage": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
+    "visaoGeral": { "mentions3m": false },
+    "dash": { "values": ["7d", "30d", "6m", "1y", "custom"], "active": [] },
+    "interpretacao": "Sem interferência com Visão Geral. O mismatch é apenas na aba dash, fora do escopo desta tarefa."
+  },
+  "A06": {
+    "inicio": { "pref": "0", "chart": true },
+    "caixa": { "pref": "0", "totalExpanded": "true", "totalCollapsed": false, "stripChart": false },
+    "interpretacao": "Sem interferência com Visão Geral. Há resíduo de estado apenas entre Início e Livro-Caixa, fora do escopo."
+  },
+  "A07": {
+    "render1": {
+      "alerts": "Avisos importantesAtualizado agora!Fluxo negativoAs saídas superam as entradas em R$ 1.050,00.!Limite ultrapassadoVocê ultrapassou o limite de Alimentação em R$ 50,00.",
+      "key": ""
+    },
+    "render2": {
+      "alerts": "Avisos importantesAtualizado agora!Fluxo negativoAs saídas superam as entradas em R$ 1.050,00.!Limite ultrapassadoVocê ultrapassou o limite de Alimentação em R$ 50,00.",
+      "key": ""
+    },
+    "afterToggle": {
+      "alerts": "Avisos importantesAtualizado agora!Fluxo negativoAs saídas superam as entradas em R$ 1.050,00.!Limite ultrapassadoVocê ultrapassou o limite de Alimentação em R$ 50,00.",
+      "key": ""
+    }
+  },
+  "A08": { "counts": { "hosts": 1, "summaries": 1, "actions": 1, "bars": 2 } },
+  "P01_misto": { "percent": "53%", "status": "Limite excedido", "flags": ["Excedido", "Atenção"] },
+  "P02": { "cycle": "2026-11", "prev": "2026-10", "found": null, "rows": [] }
+}

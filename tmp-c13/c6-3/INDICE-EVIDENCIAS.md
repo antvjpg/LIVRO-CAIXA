@@ -1,6 +1,6 @@
 # Índice de metodologia e evidências — C6-INICIO-03
 
-**Base:** `db5bdb9`  
+**Base inicial:** `db5bdb9` · **Base da resolução:** `0ce0085`
 **Branch:** `feat/app-layout-redesign`  
 **Data:** 2026-11-26  
 **Finalidade:** documentar como o isolamento Início ↔ Visão Geral e o bloco de Orçamentos foram investigados, implementados e validados.
@@ -59,6 +59,9 @@
 - `tmp-c13/c6-3/RELATORIO-IMPLEMENTACAO-C6-03-ORCAMENTOS.md` — implementação, validações, limitações e diff.
 - `tmp-c13/c6-3/validacao-c6-03.json` — snapshot CDP de cálculo, modal, alternância e layout.
 - `tmp-c13/c6-3/evidencias-finais.json` — medidas finais de tipografia, valores em linha e lista de capturas.
+- `tmp-c13/c6-3/RELATORIO-RESOLUCAO-C6-INICIO-03.md` — diagnóstico A-05 a A-08, P-01/P-02, correções e parecer final.
+- `tmp-c13/c6-3/diagnostico-pre-correcao.json` — estado CDP observado antes das correções.
+- `tmp-c13/c6-3/diagnostico-pos-correcao.json` — estado CDP observado depois das correções.
 
 ### Bloco de Orçamentos
 - `prints/orcamento-final-320.png`
@@ -69,6 +72,8 @@
 - `prints/orcamento-final-1280.png`
 - `prints/orcamento-390-fontes.png` — comparação após primeiro ajuste tipográfico.
 - `prints/orcamento-320-valores-linha.png` — validação dos três valores em uma linha em 320px.
+- `prints/p01-status-apos-390.png` — status geral corrigido (`53% · Limite excedido`).
+- `prints/a07-alertas-apos-390.png` — alertas da Visão Geral estáveis após correção.
 
 ### Barra de navegação inferior
 - `prints/nav-final-320.png`
@@ -83,11 +88,12 @@
 - `nav-uniformizada.json` — gaps, largura do ativo e alinhamento da pílula após uniformização.
 
 ### Testes
-- `e2e/smoke/inicio-orcamentos.spec.js` — cálculo, estado vazio/zero, navegação, alternância, duplicação e responsividade.
+- `e2e/smoke/inicio-orcamentos.spec.js` — cálculo, estado vazio/zero, navegação, alternância, duplicação, responsividade, P-01, A-07 e P-02.
 
 ## 4. Limitações
 
 - Os prints e medições CDP usam fixture fictícia em memória; não representam dados financeiros reais.
 - O spec E2E foi escrito, mas não executado localmente por indisponibilidade do Playwright no Android.
-- O veredito definitivo de isolamento depende da execução em CI/PC e da resolução dos acoplamentos preexistentes listados na auditoria.
+- A-05 e A-06 permanecem documentados como acoplamentos com `dash` e Livro-Caixa, fora do escopo desta resolução.
+- O veredito definitivo de isolamento depende de CI/PC, C.O.D.E. e revisão independente.
 - C6-INICIO-02 permanece preservada em `db5bdb9`, com pendências P-01/P-03/P-04 registradas.
