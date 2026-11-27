@@ -15,18 +15,19 @@
 
 Script reproduzível: `tmp-c13/c6-9/cdp-c9.mjs`.  
 Resultados brutos: `tmp-c13/c6-9/c9-resultados.json`.
+Resultados originais preservados: `tmp-c13/c6-9/c9-resultados-v1.json`.
 
 ## 2. Resultados por cenário
 
 | Cenário | Resultado | Evidência |
 |---|---|---|
-| **C09-01** — foco e navegação por teclado | **PASS** | Controle alcançado em 17 Tabs; `outline: rgb(95,122,67) solid 3px`; seletor alcançado com 2 Tabs adicionais; Tab seguinte chegou ao botão de orçamentos (sem armadilha de foco). |
+| **C09-01** — foco e navegação por teclado | **PASS (evidência corrigida)** | Controle correto alcançado em 18 Tabs; `:focus-visible=true`; `outline: rgb(95,122,67) solid 2px`; `outline-offset: 3px`; seletor alcançado com 2 Tabs adicionais; Tab seguinte chegou ao botão de orçamentos (sem armadilha de foco). |
 | **C09-02** — Enter | **PASS** | Expandido → `aria-expanded=false`, `aria-label="Mostrar gráfico do patrimônio"`, `aria-hidden=true`, `is-collapsed=true`, instância destruída. Segundo Enter restaurou tudo; contador de toggle: 1 por tecla. |
 | **C09-03** — Espaço | **PASS** | Mesmas transições de C09-02; `scrollY=49` antes e depois; contador: 1 por tecla. |
 | **C09-04** — sincronização de estados | **PASS** | Em Início e Caixa, `aria-expanded`, `aria-label`, `aria-hidden`, classes visuais, preferência `livro-caixa-patrimony-spark="1"` e instâncias Chart.js coerentes. Gráfico da Caixa preservado; gráfico da Início recriado ao retornar. |
 | **C09-05** — seletor de período por teclado | **PASS** | `ArrowUp` → `3m`, `ArrowDown` → `6m`, `ArrowUp` → `3m`; pontos 3/6/3; `aria-label` do canvas atualizado; `#inicioEvolutionData` com 3/6/3 entradas e mesmos valores. |
 | **C09-06** — estado vazio | **PASS (automático)** / **BLOCKED (leitor de tela real)** | Sem contas: mensagem visível, `role=status`, `aria-live=polite`, `aria-hidden=true`, sem instância, texto alternativo vazio. Com dados: mensagem oculta, instância recriada, texto restaurado. Anúncio real por leitor de tela não executado. |
-| **C09-07** — regressão e estabilidade | **PASS** | 6 acionamentos alternados sem duplicação (contador zerado a cada bloco), 0 exceções/erros de console, Caixa preservada, Início estável. |
+| **C09-07** — regressão e estabilidade | **PASS (evidência corrigida)** | Após Shift+Tab real, `document.activeElement` confirmado como o controle; contador zerado; 6 transições reais (Enter/Espaço alternados) com contagens 1–6; estados `false/true` alternados; instância Chart.js destruída/recriada em cada par; 0 erros de console. |
 
 ## 3. Defeitos encontrados e correções
 
@@ -81,6 +82,23 @@ Nenhum arquivo de teste E2E, HTML, CSS ou outro módulo foi alterado.
 - `outline` does control after Tab: `rgb(95, 122, 67) solid 3px`.
 - Erros de console: **0**.
 - Screenshots em `tmp-c13/c6-9/prints/`.
+
+### 5.1 Correções de evidências após auditoria independente
+
+A auditoria independente apontou duas inconsistências no script/relatório original. O JSON anterior foi preservado como `tmp-c13/c6-9/c9-resultados-v1.json` para rastreabilidade.
+
+| Item | Situação anterior | Correção | Resultado |
+|---|---|---|---|
+| C09-01 | O script media `outline` do controle, mas a primeira sequência de Tab havia parado em outro `.balance-symbol`; registrou `outline-style: none` e o relatório afirmava 3 px. | O laço agora exige `focus.activeIsControl`; o `getComputedStyle` é lido do `document.activeElement`; foram registrados `:focus-visible`, estilo, largura, cor e offset. | Reexecutado: `activeIsControl=true`, `:focus-visible=true`, `outline=solid 2px`, `outline-offset=3px`. **PASS**. |
+| C09-07 | O foco permaneceu em `#inicioPeriodSelect` após C09-06; `toggleCount=0` não comprovou estabilidade. | Shift+Tab real até o controle; confirmação de `document.activeElement`; contador zerado depois; 6 teclas reais com snapshot por transição. | Reexecutado: 6 transições, contagens 1–6, estados alternados, gráfico destruído/recriado. **PASS**. |
+
+Nenhuma alteração de produção foi necessária para essas duas correções: o indicador de foco já existia (`solid 2px`) e o controle já respondia corretamente; apenas a captura da evidência estava errada.
+
+Classificação dos testes:
+- **Executados e aprovados:** C09-01, C09-02, C09-03, C09-04, C09-05, C09-06 (automático), C09-07.
+- **Executados e falharam na primeira versão:** C09-01 e C09-07 por erro do script de medição; corrigidos e repetidos.
+- **Bloqueados:** anúncio real com leitor de tela.
+- **Não executados:** C.O.D.E., Smoke completa, sessão QA real.
 
 ## 6. Limitações
 

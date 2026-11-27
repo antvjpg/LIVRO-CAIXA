@@ -7,9 +7,13 @@
       "text": "Bem Vindo de volta\n    Livro-Caixa · sin"
     },
     "focus": {
-      "outline": "rgb(95, 122, 67) none 3px",
-      "outlineColor": "rgb(95, 122, 67)",
+      "activeIsControl": false,
+      "focusVisible": false,
+      "outline": "rgb(26, 36, 23) none 3px",
+      "outlineStyle": "none",
+      "outlineColor": "rgb(26, 36, 23)",
       "outlineWidth": "3px",
+      "outlineOffset": "0px",
       "boxShadow": "none"
     },
     "ctrl": {
@@ -212,7 +216,7 @@
       }
     },
     {
-      "i": "select+1",
+      "i": 18,
       "active": {
         "tag": "SPAN",
         "id": "",
@@ -221,7 +225,7 @@
       }
     },
     {
-      "i": "select+2",
+      "i": "select+1",
       "active": {
         "tag": "SELECT",
         "id": "inicioPeriodSelect",
@@ -232,11 +236,15 @@
   ],
   "C09_01": {
     "control": {
-      "reachedAt": 17,
+      "reachedAt": 18,
       "focus": {
-        "outline": "rgb(95, 122, 67) none 3px",
+        "activeIsControl": true,
+        "focusVisible": true,
+        "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
-        "outlineWidth": "3px",
+        "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "active": {
@@ -247,7 +255,7 @@
       }
     },
     "select": {
-      "reachedAfterControl": 2,
+      "reachedAfterControl": 1,
       "active": {
         "tag": "SELECT",
         "id": "inicioPeriodSelect",
@@ -277,9 +285,13 @@
         "text": ""
       },
       "focus": {
+        "activeIsControl": true,
+        "focusVisible": true,
         "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
         "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -335,9 +347,13 @@
         "text": ""
       },
       "focus": {
+        "activeIsControl": true,
+        "focusVisible": true,
         "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
         "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -389,9 +405,13 @@
         "text": ""
       },
       "focus": {
+        "activeIsControl": true,
+        "focusVisible": true,
         "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
         "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -449,9 +469,13 @@
         "text": ""
       },
       "focus": {
+        "activeIsControl": true,
+        "focusVisible": true,
         "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
         "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -507,9 +531,13 @@
         "text": ""
       },
       "focus": {
+        "activeIsControl": true,
+        "focusVisible": true,
         "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
         "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -561,9 +589,13 @@
         "text": ""
       },
       "focus": {
+        "activeIsControl": true,
+        "focusVisible": true,
         "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
         "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -621,9 +653,13 @@
         "text": "Bem Vindo de volta\n    Livro-Caixa · sin"
       },
       "focus": {
-        "outline": "rgb(95, 122, 67) none 3px",
-        "outlineColor": "rgb(95, 122, 67)",
+        "activeIsControl": false,
+        "focusVisible": false,
+        "outline": "rgb(26, 36, 23) none 3px",
+        "outlineStyle": "none",
+        "outlineColor": "rgb(26, 36, 23)",
         "outlineWidth": "3px",
+        "outlineOffset": "0px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -675,9 +711,13 @@
         "text": "Bem Vindo de volta\n    Livro-Caixa · sin"
       },
       "focus": {
-        "outline": "rgb(95, 122, 67) none 3px",
-        "outlineColor": "rgb(95, 122, 67)",
+        "activeIsControl": false,
+        "focusVisible": false,
+        "outline": "rgb(26, 36, 23) none 3px",
+        "outlineStyle": "none",
+        "outlineColor": "rgb(26, 36, 23)",
         "outlineWidth": "3px",
+        "outlineOffset": "0px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -735,9 +775,13 @@
         "text": "3 meses\n          6 meses\n          1 an"
       },
       "focus": {
-        "outline": "rgb(95, 122, 67) none 3px",
+        "activeIsControl": false,
+        "focusVisible": true,
+        "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
-        "outlineWidth": "3px",
+        "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -793,9 +837,13 @@
         "text": "3 meses\n          6 meses\n          1 an"
       },
       "focus": {
-        "outline": "rgb(95, 122, 67) none 3px",
+        "activeIsControl": false,
+        "focusVisible": true,
+        "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
-        "outlineWidth": "3px",
+        "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -854,9 +902,13 @@
         "text": "3 meses\n          6 meses\n          1 an"
       },
       "focus": {
-        "outline": "rgb(95, 122, 67) none 3px",
+        "activeIsControl": false,
+        "focusVisible": true,
+        "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
-        "outlineWidth": "3px",
+        "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -914,9 +966,13 @@
         "text": "3 meses\n          6 meses\n          1 an"
       },
       "focus": {
-        "outline": "rgb(95, 122, 67) none 3px",
+        "activeIsControl": false,
+        "focusVisible": true,
+        "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
-        "outlineWidth": "3px",
+        "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -968,9 +1024,13 @@
         "text": "3 meses\n          6 meses\n          1 an"
       },
       "focus": {
-        "outline": "rgb(95, 122, 67) none 3px",
+        "activeIsControl": false,
+        "focusVisible": true,
+        "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
-        "outlineWidth": "3px",
+        "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -1020,17 +1080,21 @@
     }
   },
   "C09_07": {
-    "afterRepeats": {
+    "focusedControl": {
       "active": {
-        "tag": "SELECT",
-        "id": "inicioPeriodSelect",
-        "cls": "",
-        "text": "3 meses\n          6 meses\n          1 an"
+        "tag": "SPAN",
+        "id": "",
+        "cls": "balance-symbol",
+        "text": ""
       },
       "focus": {
-        "outline": "rgb(95, 122, 67) none 3px",
+        "activeIsControl": true,
+        "focusVisible": true,
+        "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
         "outlineColor": "rgb(95, 122, 67)",
-        "outlineWidth": "3px",
+        "outlineWidth": "2px",
+        "outlineOffset": "3px",
         "boxShadow": "none"
       },
       "ctrl": {
@@ -1069,7 +1133,437 @@
       "pref": "1",
       "periodPref": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
       "scrollY": 49,
-      "toggleCount": 0,
+      "toggleCount": 2,
+      "strip": {
+        "symbolExpanded": "",
+        "symbolLabel": "",
+        "chart": false
+      },
+      "inicioChart": true,
+      "tab": "inicio"
+    },
+    "transitions": [
+      {
+        "key": "Enter",
+        "active": {
+          "tag": "SPAN",
+          "id": "",
+          "cls": "balance-symbol",
+          "text": ""
+        },
+        "focus": {
+          "activeIsControl": true,
+          "focusVisible": true,
+          "outline": "rgb(95, 122, 67) solid 2px",
+          "outlineStyle": "solid",
+          "outlineColor": "rgb(95, 122, 67)",
+          "outlineWidth": "2px",
+          "outlineOffset": "3px",
+          "boxShadow": "none"
+        },
+        "ctrl": {
+          "expanded": "false",
+          "label": "Mostrar gráfico do patrimônio",
+          "role": "button",
+          "tabindex": "0"
+        },
+        "box": {
+          "ariaHidden": "true",
+          "collapsed": true,
+          "emptyClass": false,
+          "display": "block"
+        },
+        "canvas": {
+          "label": "Evolução do patrimônio nos últimos 3 meses",
+          "describedBy": "inicioEvolutionData",
+          "points": 0
+        },
+        "dataText": "",
+        "dataEntries": [],
+        "empty": {
+          "hidden": true,
+          "text": "Sem histórico disponível para exibir a evolução.",
+          "role": "status",
+          "live": "polite"
+        },
+        "select": {
+          "value": "3m",
+          "label": "Período da evolução patrimonial"
+        },
+        "pref": "0",
+        "periodPref": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
+        "scrollY": 49,
+        "toggleCount": 1,
+        "strip": {
+          "symbolExpanded": "",
+          "symbolLabel": "",
+          "chart": false
+        },
+        "inicioChart": false,
+        "tab": "inicio"
+      },
+      {
+        "key": "Space",
+        "active": {
+          "tag": "SPAN",
+          "id": "",
+          "cls": "balance-symbol",
+          "text": ""
+        },
+        "focus": {
+          "activeIsControl": true,
+          "focusVisible": true,
+          "outline": "rgb(95, 122, 67) solid 2px",
+          "outlineStyle": "solid",
+          "outlineColor": "rgb(95, 122, 67)",
+          "outlineWidth": "2px",
+          "outlineOffset": "3px",
+          "boxShadow": "none"
+        },
+        "ctrl": {
+          "expanded": "true",
+          "label": "Recolher gráfico do patrimônio",
+          "role": "button",
+          "tabindex": "0"
+        },
+        "box": {
+          "ariaHidden": "false",
+          "collapsed": false,
+          "emptyClass": false,
+          "display": "block"
+        },
+        "canvas": {
+          "label": "Evolução do patrimônio nos últimos 3 meses",
+          "describedBy": "inicioEvolutionData",
+          "points": 3
+        },
+        "dataText": "Evolução do patrimônio nos últimos 3 meses: set: R$ 1.000,00; out: R$ 1.000,00; nov: R$ 1.000,00.",
+        "dataEntries": [
+          "Evolução do patrimônio nos últimos 3 meses: set: R$ 1.000,00",
+          "out: R$ 1.000,00",
+          "nov: R$ 1.000,00."
+        ],
+        "empty": {
+          "hidden": true,
+          "text": "Sem histórico disponível para exibir a evolução.",
+          "role": "status",
+          "live": "polite"
+        },
+        "select": {
+          "value": "3m",
+          "label": "Período da evolução patrimonial"
+        },
+        "pref": "1",
+        "periodPref": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
+        "scrollY": 49,
+        "toggleCount": 2,
+        "strip": {
+          "symbolExpanded": "",
+          "symbolLabel": "",
+          "chart": false
+        },
+        "inicioChart": true,
+        "tab": "inicio"
+      },
+      {
+        "key": "Enter",
+        "active": {
+          "tag": "SPAN",
+          "id": "",
+          "cls": "balance-symbol",
+          "text": ""
+        },
+        "focus": {
+          "activeIsControl": true,
+          "focusVisible": true,
+          "outline": "rgb(95, 122, 67) solid 2px",
+          "outlineStyle": "solid",
+          "outlineColor": "rgb(95, 122, 67)",
+          "outlineWidth": "2px",
+          "outlineOffset": "3px",
+          "boxShadow": "none"
+        },
+        "ctrl": {
+          "expanded": "false",
+          "label": "Mostrar gráfico do patrimônio",
+          "role": "button",
+          "tabindex": "0"
+        },
+        "box": {
+          "ariaHidden": "true",
+          "collapsed": true,
+          "emptyClass": false,
+          "display": "block"
+        },
+        "canvas": {
+          "label": "Evolução do patrimônio nos últimos 3 meses",
+          "describedBy": "inicioEvolutionData",
+          "points": 0
+        },
+        "dataText": "",
+        "dataEntries": [],
+        "empty": {
+          "hidden": true,
+          "text": "Sem histórico disponível para exibir a evolução.",
+          "role": "status",
+          "live": "polite"
+        },
+        "select": {
+          "value": "3m",
+          "label": "Período da evolução patrimonial"
+        },
+        "pref": "0",
+        "periodPref": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
+        "scrollY": 49,
+        "toggleCount": 3,
+        "strip": {
+          "symbolExpanded": "",
+          "symbolLabel": "",
+          "chart": false
+        },
+        "inicioChart": false,
+        "tab": "inicio"
+      },
+      {
+        "key": "Space",
+        "active": {
+          "tag": "SPAN",
+          "id": "",
+          "cls": "balance-symbol",
+          "text": ""
+        },
+        "focus": {
+          "activeIsControl": true,
+          "focusVisible": true,
+          "outline": "rgb(95, 122, 67) solid 2px",
+          "outlineStyle": "solid",
+          "outlineColor": "rgb(95, 122, 67)",
+          "outlineWidth": "2px",
+          "outlineOffset": "3px",
+          "boxShadow": "none"
+        },
+        "ctrl": {
+          "expanded": "true",
+          "label": "Recolher gráfico do patrimônio",
+          "role": "button",
+          "tabindex": "0"
+        },
+        "box": {
+          "ariaHidden": "false",
+          "collapsed": false,
+          "emptyClass": false,
+          "display": "block"
+        },
+        "canvas": {
+          "label": "Evolução do patrimônio nos últimos 3 meses",
+          "describedBy": "inicioEvolutionData",
+          "points": 3
+        },
+        "dataText": "Evolução do patrimônio nos últimos 3 meses: set: R$ 1.000,00; out: R$ 1.000,00; nov: R$ 1.000,00.",
+        "dataEntries": [
+          "Evolução do patrimônio nos últimos 3 meses: set: R$ 1.000,00",
+          "out: R$ 1.000,00",
+          "nov: R$ 1.000,00."
+        ],
+        "empty": {
+          "hidden": true,
+          "text": "Sem histórico disponível para exibir a evolução.",
+          "role": "status",
+          "live": "polite"
+        },
+        "select": {
+          "value": "3m",
+          "label": "Período da evolução patrimonial"
+        },
+        "pref": "1",
+        "periodPref": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
+        "scrollY": 49,
+        "toggleCount": 4,
+        "strip": {
+          "symbolExpanded": "",
+          "symbolLabel": "",
+          "chart": false
+        },
+        "inicioChart": true,
+        "tab": "inicio"
+      },
+      {
+        "key": "Enter",
+        "active": {
+          "tag": "SPAN",
+          "id": "",
+          "cls": "balance-symbol",
+          "text": ""
+        },
+        "focus": {
+          "activeIsControl": true,
+          "focusVisible": true,
+          "outline": "rgb(95, 122, 67) solid 2px",
+          "outlineStyle": "solid",
+          "outlineColor": "rgb(95, 122, 67)",
+          "outlineWidth": "2px",
+          "outlineOffset": "3px",
+          "boxShadow": "none"
+        },
+        "ctrl": {
+          "expanded": "false",
+          "label": "Mostrar gráfico do patrimônio",
+          "role": "button",
+          "tabindex": "0"
+        },
+        "box": {
+          "ariaHidden": "true",
+          "collapsed": true,
+          "emptyClass": false,
+          "display": "block"
+        },
+        "canvas": {
+          "label": "Evolução do patrimônio nos últimos 3 meses",
+          "describedBy": "inicioEvolutionData",
+          "points": 0
+        },
+        "dataText": "",
+        "dataEntries": [],
+        "empty": {
+          "hidden": true,
+          "text": "Sem histórico disponível para exibir a evolução.",
+          "role": "status",
+          "live": "polite"
+        },
+        "select": {
+          "value": "3m",
+          "label": "Período da evolução patrimonial"
+        },
+        "pref": "0",
+        "periodPref": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
+        "scrollY": 49,
+        "toggleCount": 5,
+        "strip": {
+          "symbolExpanded": "",
+          "symbolLabel": "",
+          "chart": false
+        },
+        "inicioChart": false,
+        "tab": "inicio"
+      },
+      {
+        "key": "Space",
+        "active": {
+          "tag": "SPAN",
+          "id": "",
+          "cls": "balance-symbol",
+          "text": ""
+        },
+        "focus": {
+          "activeIsControl": true,
+          "focusVisible": true,
+          "outline": "rgb(95, 122, 67) solid 2px",
+          "outlineStyle": "solid",
+          "outlineColor": "rgb(95, 122, 67)",
+          "outlineWidth": "2px",
+          "outlineOffset": "3px",
+          "boxShadow": "none"
+        },
+        "ctrl": {
+          "expanded": "true",
+          "label": "Recolher gráfico do patrimônio",
+          "role": "button",
+          "tabindex": "0"
+        },
+        "box": {
+          "ariaHidden": "false",
+          "collapsed": false,
+          "emptyClass": false,
+          "display": "block"
+        },
+        "canvas": {
+          "label": "Evolução do patrimônio nos últimos 3 meses",
+          "describedBy": "inicioEvolutionData",
+          "points": 3
+        },
+        "dataText": "Evolução do patrimônio nos últimos 3 meses: set: R$ 1.000,00; out: R$ 1.000,00; nov: R$ 1.000,00.",
+        "dataEntries": [
+          "Evolução do patrimônio nos últimos 3 meses: set: R$ 1.000,00",
+          "out: R$ 1.000,00",
+          "nov: R$ 1.000,00."
+        ],
+        "empty": {
+          "hidden": true,
+          "text": "Sem histórico disponível para exibir a evolução.",
+          "role": "status",
+          "live": "polite"
+        },
+        "select": {
+          "value": "3m",
+          "label": "Período da evolução patrimonial"
+        },
+        "pref": "1",
+        "periodPref": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
+        "scrollY": 49,
+        "toggleCount": 6,
+        "strip": {
+          "symbolExpanded": "",
+          "symbolLabel": "",
+          "chart": false
+        },
+        "inicioChart": true,
+        "tab": "inicio"
+      }
+    ],
+    "afterRepeats": {
+      "active": {
+        "tag": "SPAN",
+        "id": "",
+        "cls": "balance-symbol",
+        "text": ""
+      },
+      "focus": {
+        "activeIsControl": true,
+        "focusVisible": true,
+        "outline": "rgb(95, 122, 67) solid 2px",
+        "outlineStyle": "solid",
+        "outlineColor": "rgb(95, 122, 67)",
+        "outlineWidth": "2px",
+        "outlineOffset": "3px",
+        "boxShadow": "none"
+      },
+      "ctrl": {
+        "expanded": "true",
+        "label": "Recolher gráfico do patrimônio",
+        "role": "button",
+        "tabindex": "0"
+      },
+      "box": {
+        "ariaHidden": "false",
+        "collapsed": false,
+        "emptyClass": false,
+        "display": "block"
+      },
+      "canvas": {
+        "label": "Evolução do patrimônio nos últimos 3 meses",
+        "describedBy": "inicioEvolutionData",
+        "points": 3
+      },
+      "dataText": "Evolução do patrimônio nos últimos 3 meses: set: R$ 1.000,00; out: R$ 1.000,00; nov: R$ 1.000,00.",
+      "dataEntries": [
+        "Evolução do patrimônio nos últimos 3 meses: set: R$ 1.000,00",
+        "out: R$ 1.000,00",
+        "nov: R$ 1.000,00."
+      ],
+      "empty": {
+        "hidden": true,
+        "text": "Sem histórico disponível para exibir a evolução.",
+        "role": "status",
+        "live": "polite"
+      },
+      "select": {
+        "value": "3m",
+        "label": "Período da evolução patrimonial"
+      },
+      "pref": "1",
+      "periodPref": "{\"period\":\"3m\",\"account\":\"\",\"compare\":true,\"customStart\":\"\",\"customEnd\":\"\"}",
+      "scrollY": 49,
+      "toggleCount": 6,
       "strip": {
         "symbolExpanded": "",
         "symbolLabel": "",
