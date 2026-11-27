@@ -1,6 +1,6 @@
 # Relatório de resolução — C6-INICIO-03
 
-**Base:** `0ce008533168d407f611f424b994fc53980ebaef`  
+**Base:** `0ce008533168d407f611f424b994fc53980ebaef` · **Correções:** `651c081` e `de4ee7f` · **HEAD de referência:** `bdfb965`
 **Branch:** `feat/app-layout-redesign`  
 **Estado inicial:** árvore limpa, `origin/feat/app-layout-redesign...HEAD = 0 0`  
 **Data:** 2026-11-26  

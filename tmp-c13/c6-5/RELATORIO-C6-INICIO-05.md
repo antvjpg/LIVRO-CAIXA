@@ -1,6 +1,6 @@
 # Relatório de implementação — C6-INICIO-05
 
-**Base:** `de4ee7f` (`feat/app-layout-redesign`)  
+**Base:** `de4ee7f` (`feat/app-layout-redesign`) · **Commit de implementação/HEAD:** `bdfb965`
 **Data:** 2026-11-26  
 **Escopo:** acessibilidade do gráfico de evolução patrimonial da Início.  
 **Fora do escopo:** validação dinâmica de teclado/foco/ARIA em cenários de interação — reservada à C6-INICIO-09.

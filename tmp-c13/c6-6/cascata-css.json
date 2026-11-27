@@ -1,0 +1,313 @@
+{
+  "light": {
+    "359": {
+      "inicio": {
+        "tab": "inicio",
+        "strip": {
+          "display": "grid",
+          "columns": "106.328px 106.328px 106.344px",
+          "gap": "6px",
+          "marginBottom": "21px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      },
+      "caixa": {
+        "tab": "caixa",
+        "strip": {
+          "display": "grid",
+          "columns": "104.328px 104.328px 104.344px",
+          "gap": "9px",
+          "marginBottom": "12px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      }
+    },
+    "360": {
+      "inicio": {
+        "tab": "inicio",
+        "strip": {
+          "display": "grid",
+          "columns": "105.328px 105.328px 105.344px",
+          "gap": "8px",
+          "marginBottom": "21px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      },
+      "caixa": {
+        "tab": "caixa",
+        "strip": {
+          "display": "grid",
+          "columns": "104.656px 104.672px 104.656px",
+          "gap": "9px",
+          "marginBottom": "12px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      }
+    },
+    "600": {
+      "inicio": {
+        "tab": "inicio",
+        "strip": {
+          "display": "grid",
+          "columns": "180.328px 180.328px 180.328px",
+          "gap": "8px",
+          "marginBottom": "21px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      },
+      "caixa": {
+        "tab": "caixa",
+        "strip": {
+          "display": "grid",
+          "columns": "179.656px 179.672px 179.672px",
+          "gap": "9px",
+          "marginBottom": "12px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      }
+    },
+    "601": {
+      "inicio": {
+        "tab": "inicio",
+        "strip": {
+          "display": "grid",
+          "columns": "180.656px 180.672px 180.672px",
+          "gap": "8px",
+          "marginBottom": "21px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      },
+      "caixa": {
+        "tab": "caixa",
+        "strip": {
+          "display": "grid",
+          "columns": "180px 180px 180px",
+          "gap": "9px",
+          "marginBottom": "12px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      }
+    },
+    "680": {
+      "inicio": {
+        "tab": "inicio",
+        "strip": {
+          "display": "grid",
+          "columns": "207px 207px 207px",
+          "gap": "8px",
+          "marginBottom": "21px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      },
+      "caixa": {
+        "tab": "caixa",
+        "strip": {
+          "display": "grid",
+          "columns": "206.328px 206.328px 206.328px",
+          "gap": "9px",
+          "marginBottom": "12px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      }
+    },
+    "681": {
+      "inicio": {
+        "tab": "inicio",
+        "strip": {
+          "display": "grid",
+          "columns": "199.328px 199.328px 199.328px",
+          "gap": "10px",
+          "marginBottom": "23px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      },
+      "caixa": {
+        "tab": "caixa",
+        "strip": {
+          "display": "grid",
+          "columns": "198px 198px 198px",
+          "gap": "12px",
+          "marginBottom": "32px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      }
+    },
+    "1024": {
+      "inicio": {
+        "tab": "inicio",
+        "strip": {
+          "display": "grid",
+          "columns": "313.656px 313.672px 313.656px",
+          "gap": "10px",
+          "marginBottom": "23px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      },
+      "caixa": {
+        "tab": "caixa",
+        "strip": {
+          "display": "grid",
+          "columns": "312.328px 312.328px 312.344px",
+          "gap": "12px",
+          "marginBottom": "32px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      }
+    }
+  },
+  "dark": {
+    "390": {
+      "inicio": {
+        "tab": "inicio",
+        "strip": {
+          "display": "grid",
+          "columns": "115.328px 115.328px 115.344px",
+          "gap": "8px",
+          "marginBottom": "21px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      },
+      "caixa": {
+        "tab": "caixa",
+        "strip": {
+          "display": "grid",
+          "columns": "114.656px 114.672px 114.656px",
+          "gap": "9px",
+          "marginBottom": "12px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      }
+    },
+    "600": {
+      "inicio": {
+        "tab": "inicio",
+        "strip": {
+          "display": "grid",
+          "columns": "185.328px 185.328px 185.328px",
+          "gap": "8px",
+          "marginBottom": "21px"
+        },
+        "cards": [
+          "18px 20px 20px",
+          "18px 20px 20px",
+          "18px 20px 20px"
+        ],
+        "share": null,
+        "canvasDisplay": "block",
+        "overflow": false
+      }
+    }
+  }
+}

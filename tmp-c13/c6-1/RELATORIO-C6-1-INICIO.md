@@ -1,5 +1,7 @@
 # C.6.1 — Auditoria dinâmica da aba Início via OpenCode + CDP
 
+> **Recorte histórico (baseline `82b9e1b`).** O botão local “Adicionar” foi removido em `1e78e2d`; Patrimônio saiu de `#viewInicio` em `124e600`/`9cc8e7c` e o bloco de Orçamentos foi adicionado em `f14955d`. Cobertura E2E e ARIA evoluíram até `bdfb965`. Os números e conclusões abaixo descrevem o baseline, não o estado atual; vide `tmp-c13/c6-2` a `c6-6` para a composição vigente.
+
 ## 1. Resumo executivo
 
 - Auditoria dinâmica executada somente leitura sobre a aba Início (`#viewInicio`).

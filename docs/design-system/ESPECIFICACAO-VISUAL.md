@@ -62,7 +62,7 @@ Todas as 110 capturas registraram `paletaVerificada = sim`; a existência da pal
 | Grupo | Critério objetivo |
 |---|---|
 | `tela-inicial` | `#viewCaixa` ativa; barra inferior com 5 destinos e `caixa` selecionado; drawer e pickers ocultos. |
-| `view-inicio` | `#viewInicio` ativa; cards de Patrimônio, Saúde, Próximo Pagamento e Resumo do Fluxo presentes; grid responsivo do C.1 mantido. |
+| `view-inicio` | `body[data-tab="inicio"]`; `main > .inicio-patrimonio` presente; `#viewInicio .inicio-grid` com Saúde Financeira, Próximo Pagamento e Orçamentos; sem `.cashflow-mini-summary` na Início; grid conforme `style/features.css` vigente. |
 | `drawer-aberto` | overlay do Drawer visível; nenhum picker visível; modo claro/escuro correto. |
 | `perfil` | `#viewProfile` ativa; sem drawer/pickers; rolagem no topo. |
 | `view-inicio-rolagem` | conteúdo abaixo da dobra; barra inferior ocultada intencionalmente; `scrollY > 0`. |

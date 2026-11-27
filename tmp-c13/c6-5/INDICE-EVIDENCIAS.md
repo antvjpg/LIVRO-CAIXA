@@ -1,6 +1,6 @@
 # Índice de evidências — C6-INICIO-05
 
-**Base:** `de4ee7f`  
+**Base:** `de4ee7f` · **Commit de implementação:** `bdfb965`
 **Escopo:** acessibilidade do gráfico de evolução patrimonial da Início.
 
 ## Relatório

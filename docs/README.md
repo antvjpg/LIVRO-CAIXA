@@ -33,7 +33,9 @@ Não existe pasta `historico/`: temporalidade é informação de conteúdo, não
 | [`design-system/auth-overlay/AUTHOVERLAY-EVOLUCAO-VISUAL.md`](design-system/auth-overlay/AUTHOVERLAY-EVOLUCAO-VISUAL.md) | Histórico e referência visual do AuthOverlay | Histórico/referência (03/11/2026) | Design system |
 | [`implementacoes/autenticacao/REFATORACAO-AUTENTICACAO-RELATORIO.md`](implementacoes/autenticacao/REFATORACAO-AUTENTICACAO-RELATORIO.md) | Refatoração do ciclo de autenticação | Histórico (02/11/2026) | Implementação / autenticação |
 | [`implementacoes/ia/CORRECOES-GROQ-EXCLUSIVO.md`](implementacoes/ia/CORRECOES-GROQ-EXCLUSIVO.md) | Correções e validação da migração Groq | Histórico (02/11/2026) | Implementação / IA |
-| [`implementacoes/navegacao/NOTION_PHASE_B_CONTENT.md`](implementacoes/navegacao/NOTION_PHASE_B_CONTENT.md) | Consolidação estrutural da aba Início e divergências D-01 a D-08 | Registro vigente no HEAD `23444f0` | Implementação / navegação |
+| [`implementacoes/navegacao/NOTION_PHASE_B_CONTENT.md`](implementacoes/navegacao/NOTION_PHASE_B_CONTENT.md) | Consolidação estrutural da aba Início e divergências D-01 a D-08 | Histórico (`23444f0`); composição vigente em `tmp-c13/c6-*` | Implementação / navegação |
+| `tmp-c13/c6-6/RELATORIO-AUDITORIA-C6-INICIO-06.md` | Auditoria/correção da cascata CSS da Início | Corrente (C6-INICIO-06) | Auditoria / CSS |
+| `tmp-c13/c6-6/MD-RENOMEAR-MESCLAR.md` | Levantamento de `.md` candidatos a renomeação/consolidação | Proposta — somente leitura | Documentação / manutenção |
 | [`implementacoes/correcoes/OPENGOALS_PANEL_FIX_SUMMARY.md`](implementacoes/correcoes/OPENGOALS_PANEL_FIX_SUMMARY.md) | Correção pontual de `openGoalsPanel()` | Histórico (09/11/2026) | Implementação / correções |
 | [`referencias/financeiro/COBERTURA-FLUXOS-FINANCEIROS.md`](referencias/financeiro/COBERTURA-FLUXOS-FINANCEIROS.md) | Matriz/taxonomia de fluxos financeiros | Referência histórica (não é cobertura vigente) | Referência / financeiro |
 | [`padroes/METODOLOGIA-VALIDACAO-NAVEGACAO-CDP.md`](padroes/METODOLOGIA-VALIDACAO-NAVEGACAO-CDP.md) | Metodologia de validação visual com Chromium/CDP | Vigente | Padrões |

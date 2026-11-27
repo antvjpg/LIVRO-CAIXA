@@ -2193,7 +2193,6 @@ header.app-header{
   margin-top:2px;
 }
 #balanceStrip .balance-detail-link{padding-top:6px;font-size:11px;}
-#balanceStrip .balance-share{font-size:10px;margin-top:2px;}
 #balanceStrip .balance-symbol{width:30px;height:30px;min-width:30px;border-radius:10px;flex-shrink:0;}
 #balanceStrip .balance-symbol svg{width:15px;height:15px;}
 
@@ -2605,10 +2604,6 @@ body.dark-mode #panelNovo #btnQuickCat{
   min-height:128px;
   padding-bottom:14px;
   justify-content:flex-start;
-}
-
-#balanceStrip .balance-share{
-  margin-top:8px;
 }
 
 #balanceStrip .bank-summary-card .amount,
@@ -4590,7 +4585,6 @@ body[data-tab="inicio"] #balanceStrip .balance-share{
   min-width:0;
   max-width:100%;
   overflow-wrap:anywhere;
-  padding:22px;
 }
 /* Cards que não herdam .balance-card precisam da mesma superfície/estrutura */
 #viewInicio .advanced-dashboard-card,
@@ -4805,9 +4799,6 @@ main > .inicio-patrimony-evolution .patrimony-spark-box canvas{
   box-sizing:border-box;
   max-width:100%;
 }
-main > .inicio-patrimony-evolution .patrimony-spark-box canvas{
-  display:block;
-}
 /* Em colunas estreitas, o badge do health-card nao pode esmagar o rotulo:
    o flex:1 1 0% + min-width:0 do div filho colapsa o texto a ~8px no desktop. */
 #viewInicio .advanced-dashboard .dashboard-health-card{
@@ -4974,9 +4965,6 @@ main > .inicio-patrimony-evolution .patrimony-spark-box canvas{
 @media(max-width:680px){
   header.app-header .header-search-bar{
     display:none;
-  }
-  body[data-tab="inicio"] #balanceStrip .balance-share{
-    font-size:9px;
   }
   body[data-tab="inicio"] #balanceStrip .balance-symbol{
     width:26px;

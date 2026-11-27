@@ -546,7 +546,7 @@ Esta seção registra a auditoria **somente leitura** executada no HEAD `95b92c6
 | Larguras varridas | 42 (limiares de breakpoints ±1 px, 320–1440) |
 | Condições `@media` de largura | 15/15 atingidas em alguma largura |
 | Overflow horizontal | 0 falhas |
-| `#viewInicio .inicio-grid` | 1 coluna em 390 px; 3 colunas em 1280 px; `gap:14px` |
+| `#viewInicio .inicio-grid` | 1 coluna até 680 px (`row-gap:18px`); 2 colunas acima disso (`column-gap:16px`, `row-gap:20px`). Cards: Saúde Financeira, Próximo Pagamento e Orçamentos |
 | `.mobile-bottom-nav` | `display:grid` em mobile; `display:none` em desktop |
 
 Condições ambientais (`prefers-reduced-motion`, `max-height`) foram registradas no CSSOM, mas não dependem de largura e não foram forçadas nesta coleta.

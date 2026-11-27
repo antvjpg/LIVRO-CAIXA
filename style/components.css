@@ -859,8 +859,6 @@
 
   }
   @media (max-width:600px){
-    /* P2.4.2 — em telas estreitas os 3 cards da principal empilham; demais faixas seguem auto-fit */
-    #balanceStrip{grid-template-columns:minmax(0, 1fr);}
     .balance-strip{grid-template-columns:repeat(auto-fit, minmax(min(100%, 140px), 1fr));}
     .toolbar{grid-template-columns: 1fr 1fr;}
     thead{display:none;}

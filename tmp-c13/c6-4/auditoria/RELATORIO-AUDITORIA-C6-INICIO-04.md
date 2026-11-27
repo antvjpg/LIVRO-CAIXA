@@ -1,6 +1,6 @@
 # RELATÓRIO TÉCNICO DE AUDITORIA — C6-INICIO-04
 
-> Auditoria interna somente leitura. Não é auditoria independente, pois o mesmo agente executou a implementação avaliada.
+> Auditoria interna somente leitura. Não é auditoria independente, pois o mesmo agente executou a implementação avaliada. Recorte histórico no SHA `9cc8e7c`; HEAD de referência atual: `bdfb965`. AUD-01 não foi corrigido nesses commits.
 
 ## 1. Identificação
 

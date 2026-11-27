@@ -1,6 +1,6 @@
 # Relatório de implementação — C6-INICIO-03 / Orçamentos na Início
 
-**Base:** `db5bdb9`  
+**Base:** `db5bdb9` · **SHA final:** `bdfb965` (comportamento temporal refinado em `651c081`/`de4ee7f` e ARIA em `bdfb965`)
 **Branch:** `feat/app-layout-redesign`  
 **Data:** 2026-11-26  
 **Destino da ação aprovado:** abrir modal existente `#panelOrcamento` via `openBudgetModal()`.

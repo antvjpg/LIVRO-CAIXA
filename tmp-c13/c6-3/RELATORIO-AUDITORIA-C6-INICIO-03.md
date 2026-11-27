@@ -1,6 +1,6 @@
 # Relatório técnico de auditoria — C6-INICIO-03
 
-**Base:** `db5bdb9` (`feat/app-layout-redesign`)  
+**Base:** `db5bdb9` (`feat/app-layout-redesign`) — auditoria pré-correção; ver `RELATORIO-RESOLUCAO-C6-INICIO-03.md` e HEAD `bdfb965` para o estado atual.
 **Tipo:** auditoria interna de isolamento entre Início e Visão Geral  
 **Data:** 2026-11-26  
 **Método:** inspeção estática cruzada + validação CDP headless local. Nenhuma alteração de código nesta fase de auditoria.

@@ -1,6 +1,6 @@
 # Índice de metodologia e evidências — C6-INICIO-03
 
-**Base inicial:** `db5bdb9` · **Base da resolução:** `0ce0085`
+**Base inicial:** `db5bdb9` · **Base da resolução:** `0ce0085` · **SHAs finais:** `651c081` (isolamento), `de4ee7f` (estado vazio por ciclo), `bdfb965` (acessibilidade do gráfico)
 **Branch:** `feat/app-layout-redesign`  
 **Data:** 2026-11-26  
 **Finalidade:** documentar como o isolamento Início ↔ Visão Geral e o bloco de Orçamentos foram investigados, implementados e validados.

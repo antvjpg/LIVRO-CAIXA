@@ -1,0 +1,126 @@
+{
+  "light": {
+    "390": {
+      "inicio": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "4px 6px",
+        "color": "rgb(26, 36, 23)",
+        "background": "color(srgb 0.885176 0.893255 0.842824)",
+        "borderColor": "color(srgb 0.733176 0.740706 0.638274)",
+        "opacity": "0.9"
+      },
+      "caixa": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "2px 7px",
+        "color": "rgb(76, 90, 82)",
+        "background": "color(srgb 0.372549 0.478431 0.262745 / 0.12)",
+        "borderColor": "color(srgb 0.752157 0.75451 0.658039)",
+        "opacity": "0.9"
+      }
+    },
+    "600": {
+      "inicio": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "4px 6px",
+        "color": "rgb(26, 36, 23)",
+        "background": "color(srgb 0.885176 0.893255 0.842824)",
+        "borderColor": "color(srgb 0.733176 0.740706 0.638274)",
+        "opacity": "0.9"
+      },
+      "caixa": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "2px 7px",
+        "color": "rgb(76, 90, 82)",
+        "background": "color(srgb 0.372549 0.478431 0.262745 / 0.12)",
+        "borderColor": "color(srgb 0.752157 0.75451 0.658039)",
+        "opacity": "0.9"
+      }
+    },
+    "681": {
+      "inicio": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "4px 6px",
+        "color": "rgb(26, 36, 23)",
+        "background": "color(srgb 0.885176 0.893255 0.842824)",
+        "borderColor": "color(srgb 0.733176 0.740706 0.638274)",
+        "opacity": "0.9"
+      },
+      "caixa": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "2px 7px",
+        "color": "rgb(76, 90, 82)",
+        "background": "color(srgb 0.372549 0.478431 0.262745 / 0.12)",
+        "borderColor": "color(srgb 0.742667 0.747608 0.648157)",
+        "opacity": "0.9"
+      }
+    }
+  },
+  "dark": {
+    "390": {
+      "inicio": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "4px 6px",
+        "color": "rgb(243, 239, 228)",
+        "background": "rgb(59, 53, 37)",
+        "borderColor": "color(srgb 0.314353 0.33098 0.236863)",
+        "opacity": "0.9"
+      },
+      "caixa": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "2px 7px",
+        "color": "rgb(143, 163, 150)",
+        "background": "color(srgb 0.788235 0.658824 0.415686 / 0.12)",
+        "borderColor": "color(srgb 0.788235 0.658824 0.415686 / 0.3)",
+        "opacity": "0.9"
+      }
+    },
+    "600": {
+      "inicio": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "4px 6px",
+        "color": "rgb(243, 239, 228)",
+        "background": "rgb(59, 53, 37)",
+        "borderColor": "color(srgb 0.314353 0.33098 0.236863)",
+        "opacity": "0.9"
+      },
+      "caixa": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "2px 7px",
+        "color": "rgb(143, 163, 150)",
+        "background": "color(srgb 0.788235 0.658824 0.415686 / 0.12)",
+        "borderColor": "color(srgb 0.788235 0.658824 0.415686 / 0.3)",
+        "opacity": "0.9"
+      }
+    },
+    "681": {
+      "inicio": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "4px 6px",
+        "color": "rgb(243, 239, 228)",
+        "background": "rgb(59, 53, 37)",
+        "borderColor": "color(srgb 0.314353 0.33098 0.236863)",
+        "opacity": "0.9"
+      },
+      "caixa": {
+        "fontSize": "9px",
+        "marginTop": "4px",
+        "padding": "2px 7px",
+        "color": "rgb(143, 163, 150)",
+        "background": "color(srgb 0.788235 0.658824 0.415686 / 0.12)",
+        "borderColor": "color(srgb 0.301882 0.322353 0.232157)",
+        "opacity": "0.9"
+      }
+    }
+  }
+}

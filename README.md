@@ -146,13 +146,13 @@ O repositório possui uma infraestrutura de testes E2E própria — **C.O.D.E.**
 ```bash
 npm ci
 npm run code:syntax    # sintaxe dos módulos
-npm run code:oracles   # 116 testes unitários dos oráculos (sem browser)
-npm run code:security  # 52 garantias do próprio C.O.D.E. (offline)
+npm run code:oracles   # 149 testes unitários dos oráculos (sem browser)
+npm run code:security  # 94 garantias do próprio C.O.D.E. (offline)
 npm run code:test      # suítes E2E completas (requer Chromium)
 ```
 
 - Roda no CI a cada push (workflow `C.O.D.E. E2E`) com identidade QA efêmera — **zero secrets**, conta criada e excluída por run; qualidade estrita: qualquer FAIL, BLOCKED ou FLAKY reprova a run (`--strict`).
-- Suítes: smoke/auth, movimentações, investimentos (agrupamento, CRUD serial, persistência no Firestore), metas, caixinhas, cartões, orçamento, categorias, integrações (cartão-fatura, movimentação-dashboard) e regras de segurança do Firestore — **14 arquivos `.spec.js`**.
+- Suítes: smoke/auth, movimentações, investimentos (agrupamento, CRUD serial, persistência no Firestore), metas, caixinhas, cartões, orçamento, categorias, integrações (cartão-fatura, movimentação-dashboard) e regras de segurança do Firestore — **18 arquivos `.spec.js`**.
 - Testes usam oráculos independentes (`e2e/oracles/`): os valores esperados são calculados por modelos de referência, não pela mesma função de produção — divergência entre UI, oráculo e Firestore é falha real.
 - Relatório C.O.D.E. (`e2e/reports/generate-report.cjs`): PASS/FAIL/BLOCKED/SKIPPED/FLAKY, resumo por suíte, top 10 lentos, evidências e histórico persistente entre runs.
 

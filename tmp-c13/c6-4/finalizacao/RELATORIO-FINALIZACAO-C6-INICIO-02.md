@@ -1,6 +1,6 @@
 # RELATÓRIO FINAL — C6-INICIO-02
 
-> Auditoria/validação interna. Não é auditoria independente; o aceite depende de revisão externa.
+> Auditoria/validação interna. Não é auditoria independente; o aceite depende de revisão externa. Recorte histórico em `db5bdb9`; HEAD de referência atual: `bdfb965`. P-01 permanece sem correção confirmada; alterações locais descritas aqui foram posteriormente commitadas em `db5bdb9`.
 
 ## 1. Diagnóstico do estado inicial
 

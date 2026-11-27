@@ -33,7 +33,9 @@
 
 ---
 
-## Estado atual (verificado em 20/11/2026 — HEAD `23444f0`)
+## Estado em 20/11/2026 — HEAD `23444f0` (recorte histórico)
+
+> Para a composição vigente, ver `tmp-c13/c6-3`, `tmp-c13/c6-4` e `tmp-c13/c6-5`; Patrimônio saiu de `#viewInicio`, Resumo do Fluxo não pertence à Início e Orçamentos foi adicionado em `f14955d`.
 
 ### Identificação
 - **Branch:** `feat/app-layout-redesign` (renomeada de `feat/app-navigation-redesign`)
