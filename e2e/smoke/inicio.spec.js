@@ -7,7 +7,7 @@ const app = require('../helpers/app');
 const { watchPage } = require('../helpers/console-watch');
 const { resolveCredentials } = require('../helpers/env');
 const qa = require('../helpers/qa-account');
-const fixtures = require('../fixtures/fixtures');
+const { fixtures } = require('../fixtures/fixtures');
 
 test.describe('Início — navegação e renderização', () => {
   let watchAtual = null;
